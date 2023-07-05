@@ -15,7 +15,7 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-            "com.example.examplemod.ExampleMod"
+            "com.mrcrayfish.furniture.refurbished.FurnitureMod"
         ],
         "client": []
     },

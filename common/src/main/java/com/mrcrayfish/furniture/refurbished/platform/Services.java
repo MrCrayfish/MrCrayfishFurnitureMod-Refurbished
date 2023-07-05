@@ -1,7 +1,7 @@
-package com.example.examplemod.platform;
+package com.mrcrayfish.furniture.refurbished.platform;
 
-import com.example.examplemod.Constants;
-import com.example.examplemod.platform.services.IPlatformHelper;
+import com.mrcrayfish.furniture.refurbished.platform.services.IPlatformHelper;
+import com.mrcrayfish.furniture.refurbished.Constants;
 
 import java.util.ServiceLoader;
 

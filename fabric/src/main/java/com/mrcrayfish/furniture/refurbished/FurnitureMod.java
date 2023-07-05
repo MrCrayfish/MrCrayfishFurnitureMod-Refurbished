@@ -1,8 +1,8 @@
-package com.example.examplemod;
+package com.mrcrayfish.furniture.refurbished;
 
 import net.fabricmc.api.ModInitializer;
 
-public class ExampleMod implements ModInitializer
+public class FurnitureMod implements ModInitializer
 {
     @Override
     public void onInitialize()

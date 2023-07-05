@@ -1,4 +1,4 @@
-package com.example.examplemod.platform.services;
+package com.mrcrayfish.furniture.refurbished.platform.services;
 
 public interface IPlatformHelper
 {
