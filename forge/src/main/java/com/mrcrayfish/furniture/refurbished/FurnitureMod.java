@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished;
 
+import com.mrcrayfish.furniture.refurbished.client.ClientBootstrap;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureBlockTagsProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureItemTagsProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureLootTableProvider;
@@ -11,6 +12,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import java.util.concurrent.CompletableFuture;
@@ -22,6 +24,11 @@ public class FurnitureMod
     {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(this::onGatherData);
+    }
+
+    private void onClientSetup(FMLClientSetupEvent event)
+    {
+        event.enqueueWork(ClientBootstrap::init);
     }
 
     private void onGatherData(GatherDataEvent event)

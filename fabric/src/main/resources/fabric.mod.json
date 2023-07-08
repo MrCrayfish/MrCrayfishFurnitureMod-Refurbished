@@ -17,7 +17,9 @@
         "main": [
             "com.mrcrayfish.furniture.refurbished.FurnitureMod"
         ],
-        "client": []
+        "client": [
+            "com.mrcrayfish.furniture.refurbished.client.ClientFurnitureMod"
+        ]
     },
     "mixins": [
         "${mod_id}.fabric.mixins.json",
