@@ -15,6 +15,13 @@ sourceSets {
         compileClasspath += test.compileClasspath
         runtimeClasspath += test.runtimeClasspath
     }
+    main {
+        resources {
+            srcDirs += [
+                'src/generated'
+            ]
+        }
+    }
 }
 
 configurations {
@@ -57,6 +64,14 @@ loom {
             setConfigName("Fabric Server")
             ideConfigGenerated(true)
             runDir("run")
+        }
+        datagen {
+            inherit testModClient
+            setConfigName("Fabric Data")
+            vmArg "-Dfabric-api.datagen"
+            vmArg "-Dfabric-api.datagen.output-dir=${file("src/generated")}"
+            vmArg "-Dfabric-api.datagen.modid=${mod_id}"
+            runDir "build/datagen"
         }
     }
 }
