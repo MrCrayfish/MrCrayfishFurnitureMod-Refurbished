@@ -13,7 +13,7 @@ public class FurnitureMod implements ModInitializer, DataGeneratorEntrypoint
     @Override
     public void onInitialize()
     {
-        Constants.LOG.info("Hello Fabric world!");
+        Bootstrap.init();
     }
 
     @Override
