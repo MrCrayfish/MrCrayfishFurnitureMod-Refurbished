@@ -44,6 +44,9 @@
         "framework": {
             "containers": [
                 "com.mrcrayfish.furniture.refurbished.core"
+            ],
+            "configs": [
+                "com.mrcrayfish.furniture.refurbished.Config"
             ]
         }
     }
