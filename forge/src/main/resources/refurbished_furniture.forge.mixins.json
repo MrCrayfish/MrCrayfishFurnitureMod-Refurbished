@@ -7,9 +7,9 @@
     "mixins": [
     ],
     "client": [
+        "client.CreativeModeInventoryScreenMixin"
     ],
     "injectors": {
         "defaultRequire": 1
     }
-  }
-  
+}

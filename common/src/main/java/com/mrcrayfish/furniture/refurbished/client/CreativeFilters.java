@@ -125,6 +125,7 @@ public class CreativeFilters
             this.updateFilterTabs();
         }));
         this.updateFilterTabs();
+        this.onSwitchCreativeTab(ClientServices.PLATFORM.getSelectedCreativeModeTab(), screen);
     }
 
     private void updateItems(CreativeModeInventoryScreen screen)
