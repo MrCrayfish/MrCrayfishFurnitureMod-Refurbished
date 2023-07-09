@@ -15,6 +15,17 @@ import java.util.List;
  */
 public class ScreenHelper
 {
+    /**
+     * Creates a tooltip that allows control over the lines. By default, tooltips
+     * only accept a single component, however it's design can accept multiple components
+     * to create a custom multiline tooltip. This utility method unlocks that functionality.
+     * It should be noted that long components will still be split according to the default
+     * split width of tooltips. There is a side effect, only the first component in the
+     * list will be used for narration.
+     *
+     * @param lines a list of components
+     * @return a tooltip with a custom lines
+     */
     public static Tooltip createMultilineTooltip(List<Component> lines)
     {
         if(!lines.isEmpty())
