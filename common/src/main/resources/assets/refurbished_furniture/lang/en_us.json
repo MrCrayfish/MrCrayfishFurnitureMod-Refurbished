@@ -1,3 +1,15 @@
 {
-    "itemGroup.refurbished_furniture": "MrCrayfish's Furniture Mod"
+    "itemGroup.refurbished_furniture": "MrCrayfish's Furniture Mod",
+    "filterCategory.refurbished_furniture.general": "General",
+    "filterCategory.refurbished_furniture.general.desc": "All your basics. Chairs, tables, and more",
+    "filterCategory.refurbished_furniture.bedroom": "Bedroom",
+    "filterCategory.refurbished_furniture.bedroom.desc": "Beds, desks, dressers, and more",
+    "filterCategory.refurbished_furniture.kitchen": "Kitchen",
+    "filterCategory.refurbished_furniture.kitchen.desc": "Cupboards, counters, appliances, and more",
+    "filterCategory.refurbished_furniture.outdoors": "Outdoors",
+    "filterCategory.refurbished_furniture.outdoors.desc": "Mailboxes, hedges, fences, and more",
+    "filterCategory.refurbished_furniture.storage": "Storage",
+    "filterCategory.refurbished_furniture.storage.desc": "All furniture and decorations with storage",
+    "filterCategory.refurbished_furniture.items": "Items",
+    "filterCategory.refurbished_furniture.items.desc": "All items. Spatula, pans, toast, and more"
 }
