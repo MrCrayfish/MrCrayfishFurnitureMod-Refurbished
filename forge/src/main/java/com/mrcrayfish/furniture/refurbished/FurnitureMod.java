@@ -4,6 +4,7 @@ import com.mrcrayfish.furniture.refurbished.client.ClientBootstrap;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureBlockTagsProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureItemTagsProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureLootTableProvider;
+import com.mrcrayfish.furniture.refurbished.data.FurnitureModelProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureRecipeProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
@@ -49,5 +50,6 @@ public class FurnitureMod
         generator.addProvider(event.includeServer(), new FurnitureItemTagsProvider(output, lookupProvider, blockTagsProvider.contentsGetter(), helper));
         generator.addProvider(event.includeServer(), new FurnitureLootTableProvider(output));
         generator.addProvider(event.includeServer(), new FurnitureRecipeProvider(output));
+        generator.addProvider(event.includeClient(), new FurnitureModelProvider(output, helper));
     }
 }

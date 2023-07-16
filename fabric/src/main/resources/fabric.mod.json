@@ -19,6 +19,9 @@
         ],
         "client": [
             "com.mrcrayfish.furniture.refurbished.client.ClientFurnitureMod"
+        ],
+        "fabric-datagen": [
+            "com.mrcrayfish.furniture.refurbished.FurnitureMod"
         ]
     },
     "mixins": [

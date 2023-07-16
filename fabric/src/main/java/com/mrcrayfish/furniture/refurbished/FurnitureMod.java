@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureBlockTagsProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureItemTagsProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureLootTableProvider;
+import com.mrcrayfish.furniture.refurbished.data.FurnitureModelProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureRecipeProvider;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
@@ -24,5 +25,6 @@ public class FurnitureMod implements ModInitializer, DataGeneratorEntrypoint
         pack.addProvider((output, lookupProvider) -> new FurnitureItemTagsProvider(output, lookupProvider, provider));
         FurnitureLootTableProvider.addProviders(pack);
         pack.addProvider(FurnitureRecipeProvider::new);
+        pack.addProvider(FurnitureModelProvider::new);
     }
 }
