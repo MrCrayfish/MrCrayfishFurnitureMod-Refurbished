@@ -78,7 +78,7 @@ public class FurnitureModelProvider extends BlockStateProvider
             Optional.ofNullable(Item.BY_BLOCK.get(block)).ifPresent(item -> {
                 Optional.ofNullable(builder.getVariantForItem()).map(PreparedBlockState.Entry::getPreparedModel).ifPresent(definition -> {
                     ResourceLocation itemName = Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(item));
-                    ResourceLocation model = builder.getVariantForItem().getPreparedModel().getModel();
+                    ResourceLocation model = new ResourceLocation(Constants.MOD_ID, "block/" + builder.getVariantForItem().getPreparedModel().getName());
                     this.itemModels().getBuilder(itemName.toString()).parent(new ModelFile.UncheckedModelFile(model));
                 });
             });
