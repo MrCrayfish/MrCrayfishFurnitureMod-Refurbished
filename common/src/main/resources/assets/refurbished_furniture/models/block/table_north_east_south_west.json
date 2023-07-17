@@ -1,0 +1,13 @@
+{
+	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
+	"elements": [
+		{
+			"from": [0, 14, 0],
+			"to": [16, 15.99, 16],
+			"faces": {
+				"up": {"uv": [10.75, 0, 12.75, 4], "texture": "#texture", "tintindex": 0},
+				"down": {"uv": [10.75, 0, 12.75, 4], "texture": "#texture"}
+			}
+		}
+	]
+}

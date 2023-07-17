@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.Blocks;
 public class ModCreativeTabs
 {
     public static final RegistryEntry<CreativeModeTab> MAIN = RegistryEntry.creativeModeTab(Utils.resource("creative_tab"), builder -> {
-        builder.icon(() -> new ItemStack(Blocks.OAK_PLANKS));
+        builder.icon(() -> new ItemStack(ModBlocks.TABLE_OAK.get()));
         builder.title(Component.translatable("itemGroup." + Constants.MOD_ID).withStyle(ChatFormatting.GOLD));
         builder.displayItems((params, output) -> {
            output.accept(Blocks.OAK_PLANKS);

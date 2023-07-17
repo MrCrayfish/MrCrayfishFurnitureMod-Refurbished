@@ -11,5 +11,15 @@
     "filterCategory.refurbished_furniture.storage": "Storage",
     "filterCategory.refurbished_furniture.storage.desc": "All furniture and decorations with storage",
     "filterCategory.refurbished_furniture.items": "Items",
-    "filterCategory.refurbished_furniture.items.desc": "All items. Spatula, pans, toast, and more"
+    "filterCategory.refurbished_furniture.items.desc": "All items. Spatula, pans, toast, and more",
+    "block.refurbished_furniture.oak_table": "Oak Table",
+    "block.refurbished_furniture.spruce_table": "Spruce Table",
+    "block.refurbished_furniture.birch_table": "Birch Table",
+    "block.refurbished_furniture.jungle_table": "Jungle Table",
+    "block.refurbished_furniture.acacia_table": "Acacia Table",
+    "block.refurbished_furniture.dark_oak_table": "Dark Oak Table",
+    "block.refurbished_furniture.crimson_table": "Crimson Table",
+    "block.refurbished_furniture.warped_table": "Warped Table",
+    "block.refurbished_furniture.mangrove_table": "Mangrove Table",
+    "block.refurbished_furniture.cherry_table": "Cherry Table"
 }

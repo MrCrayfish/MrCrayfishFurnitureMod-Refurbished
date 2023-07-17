@@ -12,6 +12,7 @@ import com.mrcrayfish.framework.api.event.ScreenEvents;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.IconButton;
 import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import com.mrcrayfish.furniture.refurbished.client.util.VanillaTextures;
+import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModCreativeTabs;
 import com.mrcrayfish.furniture.refurbished.core.ModTags;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
@@ -69,7 +70,7 @@ public class CreativeFilters
     private CreativeFilters()
     {
         ImmutableList.Builder<FilterCategory> builder = ImmutableList.builder();
-        builder.add(new FilterCategory(ModTags.Items.GENERAL, new ItemStack(Items.STICK)));
+        builder.add(new FilterCategory(ModTags.Items.GENERAL, new ItemStack(ModBlocks.TABLE_OAK.get())));
         builder.add(new FilterCategory(ModTags.Items.BEDROOM, new ItemStack(Items.STICK)));
         builder.add(new FilterCategory(ModTags.Items.KITCHEN, new ItemStack(Items.STICK)));
         builder.add(new FilterCategory(ModTags.Items.OUTDOORS, new ItemStack(Items.STICK)));
