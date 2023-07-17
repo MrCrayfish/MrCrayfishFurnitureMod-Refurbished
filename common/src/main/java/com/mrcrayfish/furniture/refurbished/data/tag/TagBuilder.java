@@ -1,4 +1,4 @@
-package com.mrcrayfish.furniture.refurbished.data;
+package com.mrcrayfish.furniture.refurbished.data.tag;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;

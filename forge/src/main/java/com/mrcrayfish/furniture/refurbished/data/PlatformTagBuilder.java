@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.data;
 
+import com.mrcrayfish.furniture.refurbished.data.tag.TagBuilder;
 import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagEntry;

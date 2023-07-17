@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.data;
 
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModTags;
+import com.mrcrayfish.furniture.refurbished.data.tag.TagBuilder;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 

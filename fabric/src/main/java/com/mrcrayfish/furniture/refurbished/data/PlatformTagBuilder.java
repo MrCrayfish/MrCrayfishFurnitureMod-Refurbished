@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.data;
 
+import com.mrcrayfish.furniture.refurbished.data.tag.TagBuilder;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
