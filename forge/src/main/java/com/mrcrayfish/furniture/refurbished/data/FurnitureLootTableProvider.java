@@ -1,5 +1,8 @@
 package com.mrcrayfish.furniture.refurbished.data;
 
+import com.mrcrayfish.framework.Registration;
+import com.mrcrayfish.furniture.refurbished.Constants;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.data.loot.EntityLootSubProvider;
@@ -16,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -50,7 +54,7 @@ public class FurnitureLootTableProvider extends LootTableProvider
         @Override
         protected Iterable<net.minecraft.world.level.block.Block> getKnownBlocks()
         {
-            return Collections.emptySet();
+            return Registration.get(Registries.BLOCK).stream().filter(entry -> entry.getId().getNamespace().equals(Constants.MOD_ID)).map(entry -> (net.minecraft.world.level.block.Block) entry.get()).collect(Collectors.toList());
         }
     }
 
