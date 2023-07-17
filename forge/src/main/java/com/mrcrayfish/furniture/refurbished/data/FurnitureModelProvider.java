@@ -14,6 +14,7 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
@@ -48,6 +49,11 @@ public class FurnitureModelProvider extends BlockStateProvider
         // Registers a default texture for all blocks in the mod
         Registration.get(Registries.BLOCK).stream().filter(entry -> entry.getId().getNamespace().equals(Constants.MOD_ID)).forEach(entry -> {
             helper.trackGenerated(this.blockTexture((Block) entry.get()), TEXTURE);
+        });
+
+        // Registers wood particle textures
+        WoodType.values().forEach(type -> {
+            helper.trackGenerated(new ResourceLocation(Constants.MOD_ID, "block/" + type.name() + "_particle"), TEXTURE);
         });
     }
 

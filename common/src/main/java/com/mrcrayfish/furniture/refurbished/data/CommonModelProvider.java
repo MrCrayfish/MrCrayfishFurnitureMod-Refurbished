@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.data;
 
+import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.block.TableBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.data.model.ModelTemplate;
@@ -45,10 +46,16 @@ public class CommonModelProvider
         return new ResourceLocation(name.getNamespace(), "block/" + name.getPath());
     }
 
+    private ResourceLocation woodParticle(WoodType type)
+    {
+        return new ResourceLocation(Constants.MOD_ID, "block/" + type.name() + "_particle");
+    }
+
     private void table(TableBlock block)
     {
         WoodType type = block.getWoodType();
         TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.woodParticle(type));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
         PreparedBlockState state = new PreparedBlockState(block);
         state.createVariant().prop(TableBlock.NORTH, false).prop(TableBlock.EAST, false).prop(TableBlock.SOUTH, false).prop(TableBlock.WEST, false).model(ModelTemplate.TABLE.prepared(type).setTextures(textures)).markAsItem();

@@ -14,22 +14,22 @@ import java.util.Set;
 public class ModelTemplate
 {
     private static final Set<ResourceLocation> MODELS = new HashSet<>();
-    public static final ModelTemplate TABLE = block("table", TextureSlot.TEXTURE);
-    public static final ModelTemplate TABLE_NORTH = block("table_north", TextureSlot.TEXTURE);
-    public static final ModelTemplate TABLE_NORTH_EAST = block("table_north_east", TextureSlot.TEXTURE);
-    public static final ModelTemplate TABLE_NORTH_EAST_SOUTH = block("table_north_east_south", TextureSlot.TEXTURE);
-    public static final ModelTemplate TABLE_EAST = block("table_east", TextureSlot.TEXTURE);
-    public static final ModelTemplate TABLE_EAST_SOUTH = block("table_east_south", TextureSlot.TEXTURE);
-    public static final ModelTemplate TABLE_EAST_SOUTH_WEST = block("table_east_south_west", TextureSlot.TEXTURE);
-    public static final ModelTemplate TABLE_SOUTH = block("table_south", TextureSlot.TEXTURE);
-    public static final ModelTemplate TABLE_SOUTH_WEST = block("table_south_west", TextureSlot.TEXTURE);
-    public static final ModelTemplate TABLE_SOUTH_WEST_NORTH = block("table_south_west_north", TextureSlot.TEXTURE);
-    public static final ModelTemplate TABLE_WEST = block("table_west", TextureSlot.TEXTURE);
-    public static final ModelTemplate TABLE_WEST_NORTH = block("table_west_north", TextureSlot.TEXTURE);
-    public static final ModelTemplate TABLE_WEST_NORTH_EAST = block("table_west_north_east", TextureSlot.TEXTURE);
-    public static final ModelTemplate TABLE_NORTH_SOUTH = block("table_north_south", TextureSlot.TEXTURE);
-    public static final ModelTemplate TABLE_EAST_WEST = block("table_east_west", TextureSlot.TEXTURE);
-    public static final ModelTemplate TABLE_NORTH_EAST_SOUTH_WEST = block("table_north_east_south_west", TextureSlot.TEXTURE);
+    public static final ModelTemplate TABLE = block("table", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate TABLE_NORTH = block("table_north", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate TABLE_NORTH_EAST = block("table_north_east", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate TABLE_NORTH_EAST_SOUTH = block("table_north_east_south", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate TABLE_EAST = block("table_east", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate TABLE_EAST_SOUTH = block("table_east_south", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate TABLE_EAST_SOUTH_WEST = block("table_east_south_west", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate TABLE_SOUTH = block("table_south", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate TABLE_SOUTH_WEST = block("table_south_west", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate TABLE_SOUTH_WEST_NORTH = block("table_south_west_north", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate TABLE_WEST = block("table_west", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate TABLE_WEST_NORTH = block("table_west_north", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate TABLE_WEST_NORTH_EAST = block("table_west_north_east", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate TABLE_NORTH_SOUTH = block("table_north_south", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate TABLE_EAST_WEST = block("table_east_west", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate TABLE_NORTH_EAST_SOUTH_WEST = block("table_north_east_south_west", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
 
     private static ModelTemplate block(String name, TextureSlot ... textures)
     {
