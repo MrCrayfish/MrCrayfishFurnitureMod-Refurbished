@@ -59,7 +59,14 @@ public class FurnitureModelProvider extends FabricModelProvider
                 // Generates the blockstate
                 PreparedStateModel preparedModel = Objects.requireNonNull(entry.getPreparedModel());
                 ResourceLocation model = new ResourceLocation(this.output.getModId(), "block/" + preparedModel.getName());
-                dispatch.register(entry.getValueMap(), Variant.variant().with(VariantProperties.MODEL, model));
+                Variant variant = Variant.variant().with(VariantProperties.MODEL, model);
+                if(preparedModel.getXRotation() != VariantProperties.Rotation.R0) {
+                    variant.with(VariantProperties.X_ROT, preparedModel.getXRotation());
+                }
+                if(preparedModel.getYRotation() != VariantProperties.Rotation.R0) {
+                    variant.with(VariantProperties.Y_ROT, preparedModel.getYRotation());
+                }
+                dispatch.register(entry.getValueMap(), variant);
 
                 // Creates and registers the block model into the model output
                 preparedModel.asTemplate().create(model, preparedModel.getTextures(), generators.modelOutput);

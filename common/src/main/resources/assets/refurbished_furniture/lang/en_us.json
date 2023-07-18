@@ -21,5 +21,15 @@
     "block.refurbished_furniture.crimson_table": "Crimson Table",
     "block.refurbished_furniture.warped_table": "Warped Table",
     "block.refurbished_furniture.mangrove_table": "Mangrove Table",
-    "block.refurbished_furniture.cherry_table": "Cherry Table"
+    "block.refurbished_furniture.cherry_table": "Cherry Table",
+    "block.refurbished_furniture.oak_chair": "Oak Chair",
+    "block.refurbished_furniture.spruce_chair": "Spruce Chair",
+    "block.refurbished_furniture.birch_chair": "Birch Chair",
+    "block.refurbished_furniture.jungle_chair": "Jungle Chair",
+    "block.refurbished_furniture.acacia_chair": "Acacia Chair",
+    "block.refurbished_furniture.dark_oak_chair": "Dark Oak Chair",
+    "block.refurbished_furniture.crimson_chair": "Crimson Chair",
+    "block.refurbished_furniture.warped_chair": "Warped Chair",
+    "block.refurbished_furniture.mangrove_chair": "Mangrove Chair",
+    "block.refurbished_furniture.cherry_chair": "Cherry Chair"
 }

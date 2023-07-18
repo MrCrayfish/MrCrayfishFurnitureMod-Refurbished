@@ -26,5 +26,15 @@ public class CommonItemTagsProvider
         general.add(ModBlocks.TABLE_WARPED.get().asItem());
         general.add(ModBlocks.TABLE_MANGROVE.get().asItem());
         general.add(ModBlocks.TABLE_CHERRY.get().asItem());
+        general.add(ModBlocks.CHAIR_OAK.get().asItem());
+        general.add(ModBlocks.CHAIR_SPRUCE.get().asItem());
+        general.add(ModBlocks.CHAIR_BIRCH.get().asItem());
+        general.add(ModBlocks.CHAIR_JUNGLE.get().asItem());
+        general.add(ModBlocks.CHAIR_ACACIA.get().asItem());
+        general.add(ModBlocks.CHAIR_DARK_OAK.get().asItem());
+        general.add(ModBlocks.CHAIR_CRIMSON.get().asItem());
+        general.add(ModBlocks.CHAIR_WARPED.get().asItem());
+        general.add(ModBlocks.CHAIR_MANGROVE.get().asItem());
+        general.add(ModBlocks.CHAIR_CHERRY.get().asItem());
     }
 }

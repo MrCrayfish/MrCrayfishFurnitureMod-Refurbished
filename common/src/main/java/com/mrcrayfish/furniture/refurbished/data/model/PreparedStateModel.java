@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.data.model;
 
+import net.minecraft.data.models.blockstates.VariantProperties;
 import net.minecraft.data.models.model.ModelTemplate;
 import net.minecraft.data.models.model.TextureMapping;
 import net.minecraft.data.models.model.TextureSlot;
@@ -16,6 +17,8 @@ public class PreparedStateModel
     private final ResourceLocation model;
     private final TextureSlot[] slots;
     private TextureMapping textures = new TextureMapping();
+    private VariantProperties.Rotation xRotation = VariantProperties.Rotation.R0;
+    private VariantProperties.Rotation yRotation = VariantProperties.Rotation.R0;
 
     private PreparedStateModel(String name, ResourceLocation model, TextureSlot[] slots)
     {
@@ -34,14 +37,14 @@ public class PreparedStateModel
         return this.model;
     }
 
-    public TextureMapping getTextures()
-    {
-        return this.textures;
-    }
-
     public TextureSlot[] getSlots()
     {
         return this.slots;
+    }
+
+    public TextureMapping getTextures()
+    {
+        return this.textures;
     }
 
     public PreparedStateModel setTexture(TextureSlot slot, ResourceLocation texture)
@@ -53,6 +56,28 @@ public class PreparedStateModel
     public PreparedStateModel setTextures(TextureMapping mapping)
     {
         this.textures = mapping;
+        return this;
+    }
+
+    public VariantProperties.Rotation getXRotation()
+    {
+        return this.xRotation;
+    }
+
+    public PreparedStateModel setXRotation(VariantProperties.Rotation rotation)
+    {
+        this.xRotation = rotation;
+        return this;
+    }
+
+    public VariantProperties.Rotation getYRotation()
+    {
+        return this.yRotation;
+    }
+
+    public PreparedStateModel setYRotation(VariantProperties.Rotation rotation)
+    {
+        this.yRotation = rotation;
         return this;
     }
 

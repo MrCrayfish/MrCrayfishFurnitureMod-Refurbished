@@ -30,6 +30,8 @@ public class ModelTemplate
     public static final ModelTemplate TABLE_NORTH_SOUTH = block("table_north_south", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate TABLE_EAST_WEST = block("table_east_west", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate TABLE_NORTH_EAST_SOUTH_WEST = block("table_north_east_south_west", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate CHAIR = block("chair", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate CHAIR_TUCKED = block("chair_tucked", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
 
     private static ModelTemplate block(String name, TextureSlot ... textures)
     {

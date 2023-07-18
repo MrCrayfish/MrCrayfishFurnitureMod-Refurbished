@@ -17,9 +17,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
+import java.util.Map;
 
 public abstract class FurnitureBlock extends Block
 {
@@ -29,12 +31,21 @@ public abstract class FurnitureBlock extends Block
     public static final BooleanProperty SOUTH = BlockStateProperties.SOUTH;
     public static final BooleanProperty WEST = BlockStateProperties.WEST;
 
+    protected final Map<BlockState, VoxelShape> shapes;
+
     public FurnitureBlock(Properties properties)
     {
         super(properties);
+        this.shapes = this.generateShapes(this.getStateDefinition().getPossibleStates());
     }
 
-    protected abstract ImmutableMap<BlockState, VoxelShape> generateShapes(ImmutableList<BlockState> states);
+    protected abstract Map<BlockState, VoxelShape> generateShapes(ImmutableList<BlockState> states);
+
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context)
+    {
+        return this.shapes.get(state);
+    }
 
     @Override
     public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos)

@@ -60,13 +60,12 @@ public class VoxelShapeHelper
      */
     private static VoxelShape createRotatedShape(AABB box, Direction direction)
     {
-        switch(direction)
+        return switch(direction)
         {
             case WEST -> Shapes.box(1 - box.maxX, box.minY, 1 - box.maxZ, 1 - box.minX, box.maxY, 1 - box.minZ);
             case NORTH -> Shapes.box(box.minZ, box.minY, 1 - box.maxX, box.maxZ, box.maxY, 1 - box.minX);
             case SOUTH -> Shapes.box(1 - box.maxZ, box.minY, box.minX, 1 - box.minZ, box.maxY, box.maxX);
             default -> Shapes.box(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ);
-        }
-        return Shapes.empty();
+        };
     }
 }

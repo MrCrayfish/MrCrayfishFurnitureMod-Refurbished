@@ -77,7 +77,11 @@ public class FurnitureModelProvider extends BlockStateProvider
                 for(TextureSlot slot : preparedModel.getSlots()) {
                     modelBuilder.texture(slot.getId(), textures.get(slot));
                 }
-                state.setModels(new ConfiguredModel(modelBuilder));
+                state.setModels(ConfiguredModel.builder()
+                    .modelFile(modelBuilder)
+                    .rotationX(preparedModel.getXRotation().ordinal() * 90)
+                    .rotationY(preparedModel.getYRotation().ordinal() * 90)
+                    .build());
             });
 
             // Generates an item model if the block has an item and the state builder marked a variant for the item model

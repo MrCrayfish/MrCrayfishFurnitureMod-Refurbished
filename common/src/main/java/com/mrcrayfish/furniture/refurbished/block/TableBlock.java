@@ -28,14 +28,12 @@ import java.util.List;
 public class TableBlock extends FurnitureBlock implements BlockTagSupplier
 {
     private final WoodType type;
-    private final ImmutableMap<BlockState, VoxelShape> shapes;
 
     public TableBlock(WoodType type, BlockBehaviour.Properties properties)
     {
         super(properties);
-        this.type = type;
         this.registerDefaultState(this.getStateDefinition().any().setValue(NORTH, false).setValue(EAST, false).setValue(SOUTH, false).setValue(WEST, false));
-        this.shapes = this.generateShapes(this.getStateDefinition().getPossibleStates());
+        this.type = type;
     }
 
     public WoodType getWoodType()
@@ -105,7 +103,7 @@ public class TableBlock extends FurnitureBlock implements BlockTagSupplier
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos pos, CollisionContext context)
+    public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context)
     {
         return this.shapes.get(state);
     }
