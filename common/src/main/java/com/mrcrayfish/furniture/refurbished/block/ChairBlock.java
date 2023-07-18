@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mrcrayfish.furniture.refurbished.core.ModTags;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.entity.Seat;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
@@ -119,7 +120,6 @@ public class ChairBlock extends FurnitureHorizontalBlock implements BlockTagSupp
     protected boolean canTuck(BlockState state, Level level, BlockPos pos)
     {
         BlockPos front = pos.relative(state.getValue(DIRECTION).getOpposite());
-        Block block = level.getBlockState(front).getBlock();
-        return block instanceof TableBlock || block instanceof DeskBlock;
+        return level.getBlockState(front).is(ModTags.Blocks.TUCKABLE);
     }
 }

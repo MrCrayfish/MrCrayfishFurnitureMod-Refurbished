@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mrcrayfish.furniture.refurbished.core.ModTags;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.data.tag.TagSupplier;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
@@ -138,6 +139,6 @@ public class TableBlock extends FurnitureBlock implements BlockTagSupplier
     @Override
     public List<TagKey<Block>> getTags()
     {
-        return List.of(BlockTags.MINEABLE_WITH_AXE);
+        return List.of(BlockTags.MINEABLE_WITH_AXE, ModTags.Blocks.TUCKABLE);
     }
 }
