@@ -63,16 +63,6 @@ public class Seat extends Entity
     }
 
     @Override
-    public void positionRider(Entity entity, Entity.MoveFunction function)
-    {
-        super.positionRider(entity, function);
-        if(this.hasPassenger(entity))
-        {
-            //this.clampPassengerYaw(entity);
-        }
-    }
-
-    @Override
     public void onPassengerTurned(Entity entity)
     {
         this.clampPassengerYaw(entity);
