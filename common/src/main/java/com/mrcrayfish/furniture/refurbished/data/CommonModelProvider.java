@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.data;
 
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.block.ChairBlock;
+import com.mrcrayfish.furniture.refurbished.block.DeskBlock;
 import com.mrcrayfish.furniture.refurbished.block.TableBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.data.model.ModelTemplate;
@@ -37,20 +38,30 @@ public class CommonModelProvider
         this.table(ModBlocks.TABLE_JUNGLE.get());
         this.table(ModBlocks.TABLE_ACACIA.get());
         this.table(ModBlocks.TABLE_DARK_OAK.get());
-        this.table(ModBlocks.TABLE_CRIMSON.get());
-        this.table(ModBlocks.TABLE_WARPED.get());
         this.table(ModBlocks.TABLE_MANGROVE.get());
         this.table(ModBlocks.TABLE_CHERRY.get());
+        this.table(ModBlocks.TABLE_CRIMSON.get());
+        this.table(ModBlocks.TABLE_WARPED.get());
         this.chair(ModBlocks.CHAIR_OAK.get());
         this.chair(ModBlocks.CHAIR_SPRUCE.get());
         this.chair(ModBlocks.CHAIR_BIRCH.get());
         this.chair(ModBlocks.CHAIR_JUNGLE.get());
         this.chair(ModBlocks.CHAIR_ACACIA.get());
         this.chair(ModBlocks.CHAIR_DARK_OAK.get());
-        this.chair(ModBlocks.CHAIR_CRIMSON.get());
-        this.chair(ModBlocks.CHAIR_WARPED.get());
         this.chair(ModBlocks.CHAIR_MANGROVE.get());
         this.chair(ModBlocks.CHAIR_CHERRY.get());
+        this.chair(ModBlocks.CHAIR_CRIMSON.get());
+        this.chair(ModBlocks.CHAIR_WARPED.get());
+        this.desk(ModBlocks.DESK_OAK.get());
+        this.desk(ModBlocks.DESK_SPRUCE.get());
+        this.desk(ModBlocks.DESK_BIRCH.get());
+        this.desk(ModBlocks.DESK_JUNGLE.get());
+        this.desk(ModBlocks.DESK_ACACIA.get());
+        this.desk(ModBlocks.DESK_DARK_OAK.get());
+        this.desk(ModBlocks.DESK_MANGROVE.get());
+        this.desk(ModBlocks.DESK_CHERRY.get());
+        this.desk(ModBlocks.DESK_CRIMSON.get());
+        this.desk(ModBlocks.DESK_WARPED.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -105,6 +116,32 @@ public class CommonModelProvider
         state.createVariant().prop(ChairBlock.DIRECTION, Direction.EAST).prop(ChairBlock.TUCKED, true).model(ModelTemplate.CHAIR_TUCKED.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(ChairBlock.DIRECTION, Direction.SOUTH).prop(ChairBlock.TUCKED, true).model(ModelTemplate.CHAIR_TUCKED.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(ChairBlock.DIRECTION, Direction.WEST).prop(ChairBlock.TUCKED, true).model(ModelTemplate.CHAIR_TUCKED.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        this.consumer.accept(state);
+    }
+
+    private void desk(DeskBlock block)
+    {
+        WoodType type = block.getWoodType();
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.woodParticle(type));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedBlockState state = new PreparedBlockState(block);
+        state.createVariant().prop(DeskBlock.DIRECTION, Direction.NORTH).prop(DeskBlock.LEFT, false).prop(DeskBlock.RIGHT, false).model(ModelTemplate.DESK.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(DeskBlock.DIRECTION, Direction.EAST).prop(DeskBlock.LEFT, false).prop(DeskBlock.RIGHT, false).model(ModelTemplate.DESK.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(DeskBlock.DIRECTION, Direction.SOUTH).prop(DeskBlock.LEFT, false).prop(DeskBlock.RIGHT, false).model(ModelTemplate.DESK.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(DeskBlock.DIRECTION, Direction.WEST).prop(DeskBlock.LEFT, false).prop(DeskBlock.RIGHT, false).model(ModelTemplate.DESK.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(DeskBlock.DIRECTION, Direction.NORTH).prop(DeskBlock.LEFT, false).prop(DeskBlock.RIGHT, true).model(ModelTemplate.DESK_RIGHT.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
+        state.createVariant().prop(DeskBlock.DIRECTION, Direction.EAST).prop(DeskBlock.LEFT, false).prop(DeskBlock.RIGHT, true).model(ModelTemplate.DESK_RIGHT.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(DeskBlock.DIRECTION, Direction.SOUTH).prop(DeskBlock.LEFT, false).prop(DeskBlock.RIGHT, true).model(ModelTemplate.DESK_RIGHT.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(DeskBlock.DIRECTION, Direction.WEST).prop(DeskBlock.LEFT, false).prop(DeskBlock.RIGHT, true).model(ModelTemplate.DESK_RIGHT.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(DeskBlock.DIRECTION, Direction.NORTH).prop(DeskBlock.LEFT, true).prop(DeskBlock.RIGHT, false).model(ModelTemplate.DESK_LEFT.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
+        state.createVariant().prop(DeskBlock.DIRECTION, Direction.EAST).prop(DeskBlock.LEFT, true).prop(DeskBlock.RIGHT, false).model(ModelTemplate.DESK_LEFT.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(DeskBlock.DIRECTION, Direction.SOUTH).prop(DeskBlock.LEFT, true).prop(DeskBlock.RIGHT, false).model(ModelTemplate.DESK_LEFT.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(DeskBlock.DIRECTION, Direction.WEST).prop(DeskBlock.LEFT, true).prop(DeskBlock.RIGHT, false).model(ModelTemplate.DESK_LEFT.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(DeskBlock.DIRECTION, Direction.NORTH).prop(DeskBlock.LEFT, true).prop(DeskBlock.RIGHT, true).model(ModelTemplate.DESK_MIDDLE.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
+        state.createVariant().prop(DeskBlock.DIRECTION, Direction.EAST).prop(DeskBlock.LEFT, true).prop(DeskBlock.RIGHT, true).model(ModelTemplate.DESK_MIDDLE.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(DeskBlock.DIRECTION, Direction.SOUTH).prop(DeskBlock.LEFT, true).prop(DeskBlock.RIGHT, true).model(ModelTemplate.DESK_MIDDLE.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(DeskBlock.DIRECTION, Direction.WEST).prop(DeskBlock.LEFT, true).prop(DeskBlock.RIGHT, true).model(ModelTemplate.DESK_MIDDLE.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         this.consumer.accept(state);
     }
 }

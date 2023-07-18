@@ -119,6 +119,7 @@ public class ChairBlock extends FurnitureHorizontalBlock implements BlockTagSupp
     protected boolean canTuck(BlockState state, Level level, BlockPos pos)
     {
         BlockPos front = pos.relative(state.getValue(DIRECTION).getOpposite());
-        return level.getBlockState(front).getBlock() instanceof TableBlock;
+        Block block = level.getBlockState(front).getBlock();
+        return block instanceof TableBlock || block instanceof DeskBlock;
     }
 }

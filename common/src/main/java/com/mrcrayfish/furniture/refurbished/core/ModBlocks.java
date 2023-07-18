@@ -3,15 +3,14 @@ package com.mrcrayfish.furniture.refurbished.core;
 import com.mrcrayfish.framework.api.registry.RegistryContainer;
 import com.mrcrayfish.framework.api.registry.RegistryEntry;
 import com.mrcrayfish.furniture.refurbished.block.ChairBlock;
+import com.mrcrayfish.furniture.refurbished.block.DeskBlock;
 import com.mrcrayfish.furniture.refurbished.block.TableBlock;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.block.state.properties.WoodType;
-import net.minecraft.world.level.material.MapColor;
 
 /**
  * Author: MrCrayfish
@@ -39,4 +38,14 @@ public class ModBlocks
     public static final RegistryEntry<ChairBlock> CHAIR_CHERRY = RegistryEntry.blockWithItem(Utils.resource("cherry_chair"), () -> new ChairBlock(WoodType.CHERRY, BlockBehaviour.Properties.of().mapColor(Blocks.CHERRY_PLANKS.defaultMapColor()).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava()));
     public static final RegistryEntry<ChairBlock> CHAIR_CRIMSON = RegistryEntry.blockWithItem(Utils.resource("crimson_chair"), () -> new ChairBlock(WoodType.CRIMSON, BlockBehaviour.Properties.of().mapColor(Blocks.CRIMSON_PLANKS.defaultMapColor()).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava()));
     public static final RegistryEntry<ChairBlock> CHAIR_WARPED = RegistryEntry.blockWithItem(Utils.resource("warped_chair"), () -> new ChairBlock(WoodType.WARPED, BlockBehaviour.Properties.of().mapColor(Blocks.WARPED_PLANKS.defaultMapColor()).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava()));
+    public static final RegistryEntry<DeskBlock> DESK_OAK = RegistryEntry.blockWithItem(Utils.resource("oak_desk"), () -> new DeskBlock(WoodType.OAK, BlockBehaviour.Properties.of().mapColor(Blocks.OAK_PLANKS.defaultMapColor()).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava().forceSolidOn()));
+    public static final RegistryEntry<DeskBlock> DESK_SPRUCE = RegistryEntry.blockWithItem(Utils.resource("spruce_desk"), () -> new DeskBlock(WoodType.SPRUCE, BlockBehaviour.Properties.of().mapColor(Blocks.SPRUCE_PLANKS.defaultMapColor()).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava().forceSolidOn()));
+    public static final RegistryEntry<DeskBlock> DESK_BIRCH = RegistryEntry.blockWithItem(Utils.resource("birch_desk"), () -> new DeskBlock(WoodType.BIRCH, BlockBehaviour.Properties.of().mapColor(Blocks.BIRCH_PLANKS.defaultMapColor()).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava().forceSolidOn()));
+    public static final RegistryEntry<DeskBlock> DESK_JUNGLE = RegistryEntry.blockWithItem(Utils.resource("jungle_desk"), () -> new DeskBlock(WoodType.JUNGLE, BlockBehaviour.Properties.of().mapColor(Blocks.JUNGLE_PLANKS.defaultMapColor()).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava().forceSolidOn()));
+    public static final RegistryEntry<DeskBlock> DESK_ACACIA = RegistryEntry.blockWithItem(Utils.resource("acacia_desk"), () -> new DeskBlock(WoodType.ACACIA, BlockBehaviour.Properties.of().mapColor(Blocks.ACACIA_PLANKS.defaultMapColor()).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava().forceSolidOn()));
+    public static final RegistryEntry<DeskBlock> DESK_DARK_OAK = RegistryEntry.blockWithItem(Utils.resource("dark_oak_desk"), () -> new DeskBlock(WoodType.DARK_OAK, BlockBehaviour.Properties.of().mapColor(Blocks.DARK_OAK_PLANKS.defaultMapColor()).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava().forceSolidOn()));
+    public static final RegistryEntry<DeskBlock> DESK_MANGROVE = RegistryEntry.blockWithItem(Utils.resource("mangrove_desk"), () -> new DeskBlock(WoodType.MANGROVE, BlockBehaviour.Properties.of().mapColor(Blocks.MANGROVE_PLANKS.defaultMapColor()).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava().forceSolidOn()));
+    public static final RegistryEntry<DeskBlock> DESK_CHERRY = RegistryEntry.blockWithItem(Utils.resource("cherry_desk"), () -> new DeskBlock(WoodType.CHERRY, BlockBehaviour.Properties.of().mapColor(Blocks.CHERRY_PLANKS.defaultMapColor()).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava().forceSolidOn()));
+    public static final RegistryEntry<DeskBlock> DESK_CRIMSON = RegistryEntry.blockWithItem(Utils.resource("crimson_desk"), () -> new DeskBlock(WoodType.CRIMSON, BlockBehaviour.Properties.of().mapColor(Blocks.CRIMSON_PLANKS.defaultMapColor()).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava().forceSolidOn()));
+    public static final RegistryEntry<DeskBlock> DESK_WARPED = RegistryEntry.blockWithItem(Utils.resource("warped_desk"), () -> new DeskBlock(WoodType.WARPED, BlockBehaviour.Properties.of().mapColor(Blocks.WARPED_PLANKS.defaultMapColor()).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava().forceSolidOn()));
 }
