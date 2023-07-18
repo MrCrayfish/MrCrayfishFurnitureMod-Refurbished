@@ -44,11 +44,19 @@ public class TableBlock extends FurnitureBlock implements BlockTagSupplier
     @Override
     protected ImmutableMap<BlockState, VoxelShape> generateShapes(ImmutableList<BlockState> states)
     {
-        // TODO update for new model and reduce size of top
-        VoxelShape tableTopShape = Block.box(0.0, 14.0, 0.0, 16.0, 16.0, 16.0);
-        VoxelShape middlePostShape = Block.box(6.0, 0.0, 6.0, 10.0, 14.0, 10.0);
-        VoxelShape endPostShape = Block.box(3.0, 0.0, 6.0, 7.0, 14.0, 10.0);
-        VoxelShape cornerPostShape = Block.box(3.0, 0.0, 9.0, 7.0, 14.0, 13.0);
+        VoxelShape topShape = Block.box(0, 14, 0, 16, 16, 16);
+        VoxelShape topNorthEdgeShape = Block.box(0, 14, -1, 16, 16, 0);
+        VoxelShape topEastEdgeShape = Block.box(16, 14, 0, 17, 16, 16);
+        VoxelShape topSouthEdgeShape = Block.box(0, 14, 16, 16, 16, 17);
+        VoxelShape topWestEdgeShape = Block.box(-1, 14, 0, 0, 16, 16);
+        VoxelShape northWestTopCornerShape = Block.box(-1, 14, -1, 0, 16, 0);
+        VoxelShape northEastTopCornerShape = Block.box(16, 14, -1, 17, 16, 0);
+        VoxelShape southWestTopCornerShape = Block.box(-1, 14, 16, 0, 16, 17);
+        VoxelShape southEastTopCornerShape = Block.box(16, 14, 16, 17, 16, 17);
+        VoxelShape northWestLegShape = Block.box(0, 0, 0, 2, 14, 2);
+        VoxelShape northEastLegShape = Block.box(14, 0, 0, 16, 14, 2);
+        VoxelShape southWestLegShape = Block.box(0, 0, 14, 2, 14, 16);
+        VoxelShape southEastLegShape = Block.box(14, 0, 14, 16, 14, 16);
 
         ImmutableMap.Builder<BlockState, VoxelShape> builder = new ImmutableMap.Builder<>();
         for(BlockState state : states)
@@ -59,44 +67,43 @@ public class TableBlock extends FurnitureBlock implements BlockTagSupplier
             boolean west = state.getValue(WEST);
 
             List<VoxelShape> shapes = new ArrayList<>();
-            shapes.add(tableTopShape);
-
-            /*if(!north & !east && !south && !west)
+            shapes.add(topShape);
+            if(!north)
             {
-                shapes.add(middlePostShape);
+                shapes.add(topNorthEdgeShape);
+                if(!east)
+                {
+                    shapes.add(northEastTopCornerShape);
+                    shapes.add(northEastLegShape);
+                }
+                if(!west)
+                {
+                    shapes.add(northWestTopCornerShape);
+                    shapes.add(northWestLegShape);
+                }
             }
-            else if(north & !east && !south && !west)
+            if(!east)
             {
-                shapes.add(VoxelShapeHelper.rotateHorizontally(endPostShape, Direction.NORTH));
+                shapes.add(topEastEdgeShape);
             }
-            else if(!north & east && !south && !west)
+            if(!south)
             {
-                shapes.add(VoxelShapeHelper.rotateHorizontally(endPostShape, Direction.EAST));
+                shapes.add(topSouthEdgeShape);
+                if(!east)
+                {
+                    shapes.add(southEastTopCornerShape);
+                    shapes.add(southEastLegShape);
+                }
+                if(!west)
+                {
+                    shapes.add(southWestTopCornerShape);
+                    shapes.add(southWestLegShape);
+                }
             }
-            else if(!north & !east && south && !west)
+            if(!west)
             {
-                shapes.add(VoxelShapeHelper.rotateHorizontally(endPostShape, Direction.SOUTH));
+                shapes.add(topWestEdgeShape);
             }
-            else if(!north & !east && !south && west)
-            {
-                shapes.add(VoxelShapeHelper.rotateHorizontally(endPostShape, Direction.WEST));
-            }
-            else if(north && east && !south && !west)
-            {
-                shapes.add(VoxelShapeHelper.rotateHorizontally(cornerPostShape, Direction.EAST));
-            }
-            else if(!north && east && south && !west)
-            {
-                shapes.add(VoxelShapeHelper.rotateHorizontally(cornerPostShape, Direction.SOUTH));
-            }
-            else if(!north && !east && south && west)
-            {
-                shapes.add(VoxelShapeHelper.rotateHorizontally(cornerPostShape, Direction.WEST));
-            }
-            else if(north && !east && !south && west)
-            {
-                shapes.add(VoxelShapeHelper.rotateHorizontally(cornerPostShape, Direction.NORTH));
-            }*/
             builder.put(state, VoxelShapeHelper.combine(shapes));
         }
         return builder.build();
