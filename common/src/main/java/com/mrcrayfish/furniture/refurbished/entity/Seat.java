@@ -94,6 +94,20 @@ public class Seat extends Entity
         entity.setYHeadRot(entity.getYRot());
     }
 
+    /**
+     * Attempts to create a seat at the provided block position and sit the player on it. The position
+     * of the seat begins from the bottom center of the block position and the height is offset by
+     * the provided seat height. Only one seat can exist at any given block position, as such this
+     * method will fail if a seat already exists at the provided block position. A seat only exists
+     * in the level if the seat is being ridden by an entity, otherwise it immediately despawns after
+     * the entity dismounts.
+     *
+     * @param player     the player to start riding the seat
+     * @param pos        the block position of the seat
+     * @param seatHeight the height offset from the bottom the block position
+     * @param direction  the facing direction of the seat.
+     * @return True if the player successfully starts riding the seat
+     */
     public static boolean sit(Player player, BlockPos pos, double seatHeight, Direction direction)
     {
         Level level = player.level();
@@ -106,6 +120,14 @@ public class Seat extends Entity
         return false;
     }
 
+    /**
+     * Determines if it is possible to create a seat at the given block position. A seat can be
+     * spawned if no seat exists at the provided block position.
+     *
+     * @param level the level of the position
+     * @param pos   the block position to test
+     * @return True if a seat can be spawned
+     */
     public static boolean availableAt(Level level, BlockPos pos)
     {
         return level.getEntitiesOfClass(Seat.class, new AABB(pos)).isEmpty();
