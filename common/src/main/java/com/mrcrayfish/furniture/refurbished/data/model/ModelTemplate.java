@@ -46,6 +46,11 @@ public class ModelTemplate
     public static final ModelTemplate DRAWER_MIDDLE_OPEN = block("drawer_right_open", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate CRATE_CLOSED = block("crate_closed", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate CRATE_OPEN = block("crate_open", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate KITCHEN_CABINETRY_DEFAULT = block("kitchen_cabinetry_default", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate KITCHEN_CABINETRY_INSIDE_CORNER_LEFT = block("kitchen_cabinetry_inside_corner_left", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate KITCHEN_CABINETRY_INSIDE_CORNER_RIGHT = block("kitchen_cabinetry_inside_corner_right", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate KITCHEN_CABINETRY_OUTSIDE_CORNER_LEFT = block("kitchen_cabinetry_outside_corner_left", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate KITCHEN_CABINETRY_OUTSIDE_CORNER_RIGHT = block("kitchen_cabinetry_outside_corner_right", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
 
     private static ModelTemplate block(String name, TextureSlot ... textures)
     {

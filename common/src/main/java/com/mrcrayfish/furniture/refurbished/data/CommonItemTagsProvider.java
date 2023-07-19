@@ -80,6 +80,18 @@ public class CommonItemTagsProvider
         bedroom.add(ModBlocks.DRAWER_CRIMSON.get().asItem());
         bedroom.add(ModBlocks.DRAWER_WARPED.get().asItem());
 
+        TagBuilder<Item> kitchen = builder.apply(ModTags.Items.KITCHEN);
+        kitchen.add(ModBlocks.KITCHEN_CABINETRY_OAK.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_CABINETRY_SPRUCE.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_CABINETRY_BIRCH.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_CABINETRY_JUNGLE.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_CABINETRY_ACACIA.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_CABINETRY_DARK_OAK.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_CABINETRY_MANGROVE.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_CABINETRY_CHERRY.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_CABINETRY_CRIMSON.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_CABINETRY_WARPED.get().asItem());
+
         TagBuilder<Item> outdoors = builder.apply(ModTags.Items.OUTDOORS);
         outdoors.add(ModBlocks.CRATE_OAK.get().asItem());
         outdoors.add(ModBlocks.CRATE_SPRUCE.get().asItem());

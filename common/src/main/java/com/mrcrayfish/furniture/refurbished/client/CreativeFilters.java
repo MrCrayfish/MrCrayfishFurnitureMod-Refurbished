@@ -74,7 +74,7 @@ public class CreativeFilters
         ImmutableList.Builder<FilterCategory> builder = ImmutableList.builder();
         builder.add(new FilterCategory(ModTags.Items.GENERAL, new ItemStack(ModBlocks.CHAIR_OAK.get())));
         builder.add(new FilterCategory(ModTags.Items.BEDROOM, new ItemStack(ModBlocks.DRAWER_OAK.get())));
-        builder.add(new FilterCategory(ModTags.Items.KITCHEN, new ItemStack(Items.STICK)));
+        builder.add(new FilterCategory(ModTags.Items.KITCHEN, new ItemStack(ModBlocks.KITCHEN_CABINETRY_OAK.get())));
         builder.add(new FilterCategory(ModTags.Items.OUTDOORS, new ItemStack(Items.STICK)));
         builder.add(new FilterCategory(ModTags.Items.STORAGE, new ItemStack(ModBlocks.CRATE_OAK.get())));
         builder.add(new FilterCategory(ModTags.Items.ITEMS, new ItemStack(Items.STICK)));

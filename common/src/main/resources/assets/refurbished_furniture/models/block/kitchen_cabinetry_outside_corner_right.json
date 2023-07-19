@@ -1,0 +1,45 @@
+{
+	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [14, 13, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [-64, 0, 0]},
+			"faces": {
+				"north": {"uv": [8, 6.5, 11.5, 9.75], "texture": "#texture", "cullface": "north"},
+				"east": {"uv": [11.75, 3, 15.25, 6.25], "texture": "#texture"},
+				"south": {"uv": [12, 3, 15.5, 6.25], "texture": "#texture"},
+				"west": {"uv": [8.5, 3.25, 11.75, 6.5], "texture": "#texture", "cullface": "west"},
+				"down": {"uv": [8, 0, 4, 3.5], "texture": "#texture", "cullface": "down"}
+			}
+		},
+		{
+			"from": [0, 13, 0],
+			"to": [16, 16, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [-64, 0, 0]},
+			"faces": {
+				"north": {"uv": [11.5, 0, 15.5, 0.75], "texture": "#texture", "cullface": "north"},
+				"east": {"uv": [11.5, 0.75, 15.5, 1.5], "texture": "#texture", "cullface": "east"},
+				"south": {"uv": [11.5, 1.5, 15.5, 2.25], "texture": "#texture", "cullface": "south"},
+				"west": {"uv": [11.5, 2.25, 15.5, 3], "texture": "#texture", "cullface": "west"},
+				"up": {"uv": [4, 16, 0, 12], "rotation": 90, "texture": "#texture", "cullface": "up"}
+			}
+		},
+		{
+			"from": [0, 13, 14],
+			"to": [16, 16, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [-64, 0, 0]},
+			"faces": {
+				"down": {"uv": [15.75, 6.25, 11.75, 6.75], "texture": "#texture"}
+			}
+		},
+		{
+			"from": [14, 13, 0],
+			"to": [16, 16, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [-64, 0, 0]},
+			"faces": {
+				"down": {"uv": [15.75, 6.75, 12.25, 6.25], "rotation": 270, "texture": "#texture"}
+			}
+		}
+	]
+}
