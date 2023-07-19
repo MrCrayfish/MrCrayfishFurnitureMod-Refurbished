@@ -43,6 +43,11 @@ public class DeskBlock extends FurnitureHorizontalBlock implements BlockTagSuppl
     protected Map<BlockState, VoxelShape> generateShapes(ImmutableList<BlockState> states)
     {
         VoxelShape topShape = Block.box(0, 14, 0, 16, 16, 16);
+        VoxelShape backLeftLegShape = Block.box(14, 0, 0, 16, 14, 2);
+        VoxelShape backRightLegShape = Block.box(14, 0, 14, 16, 14, 16);
+        VoxelShape frontLeftLegShape = Block.box(1, 0, 0, 3, 14, 2);
+        VoxelShape frontRightLegShape = Block.box(1, 0, 14, 3, 14, 16);
+
         ImmutableMap.Builder<BlockState, VoxelShape> builder = new ImmutableMap.Builder<>();
         for(BlockState state : states)
         {
@@ -51,6 +56,16 @@ public class DeskBlock extends FurnitureHorizontalBlock implements BlockTagSuppl
             boolean right = state.getValue(RIGHT);
             List<VoxelShape> shapes = new ArrayList<>();
             shapes.add(topShape);
+            if(!left)
+            {
+                shapes.add(VoxelShapeHelper.rotateHorizontally(backRightLegShape, direction));
+                shapes.add(VoxelShapeHelper.rotateHorizontally(frontRightLegShape, direction));
+            }
+            if(!right)
+            {
+                shapes.add(VoxelShapeHelper.rotateHorizontally(backLeftLegShape, direction));
+                shapes.add(VoxelShapeHelper.rotateHorizontally(frontLeftLegShape, direction));
+            }
             builder.put(state, VoxelShapeHelper.combine(shapes));
         }
         return builder.build();
