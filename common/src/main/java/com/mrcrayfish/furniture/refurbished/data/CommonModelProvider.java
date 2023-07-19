@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.data;
 
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.block.ChairBlock;
+import com.mrcrayfish.furniture.refurbished.block.CrateBlock;
 import com.mrcrayfish.furniture.refurbished.block.DeskBlock;
 import com.mrcrayfish.furniture.refurbished.block.DrawerBlock;
 import com.mrcrayfish.furniture.refurbished.block.TableBlock;
@@ -73,6 +74,16 @@ public class CommonModelProvider
         this.drawer(ModBlocks.DRAWER_CHERRY.get());
         this.drawer(ModBlocks.DRAWER_CRIMSON.get());
         this.drawer(ModBlocks.DRAWER_WARPED.get());
+        this.crate(ModBlocks.CRATE_OAK.get());
+        this.crate(ModBlocks.CRATE_SPRUCE.get());
+        this.crate(ModBlocks.CRATE_BIRCH.get());
+        this.crate(ModBlocks.CRATE_JUNGLE.get());
+        this.crate(ModBlocks.CRATE_ACACIA.get());
+        this.crate(ModBlocks.CRATE_DARK_OAK.get());
+        this.crate(ModBlocks.CRATE_MANGROVE.get());
+        this.crate(ModBlocks.CRATE_CHERRY.get());
+        this.crate(ModBlocks.CRATE_CRIMSON.get());
+        this.crate(ModBlocks.CRATE_WARPED.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -195,6 +206,18 @@ public class CommonModelProvider
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.EAST).prop(DrawerBlock.LEFT, true).prop(DrawerBlock.RIGHT, true).prop(DrawerBlock.OPEN, true).model(ModelTemplate.DRAWER_MIDDLE_OPEN.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.SOUTH).prop(DrawerBlock.LEFT, true).prop(DrawerBlock.RIGHT, true).prop(DrawerBlock.OPEN, true).model(ModelTemplate.DRAWER_MIDDLE_OPEN.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.WEST).prop(DrawerBlock.LEFT, true).prop(DrawerBlock.RIGHT, true).prop(DrawerBlock.OPEN, true).model(ModelTemplate.DRAWER_MIDDLE_OPEN.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        this.consumer.accept(state);
+    }
+
+    private void crate(CrateBlock block)
+    {
+        WoodType type = block.getWoodType();
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.woodParticle(type));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedBlockState state = new PreparedBlockState(block);
+        state.createVariant().prop(CrateBlock.OPEN, false).model(ModelTemplate.CRATE_CLOSED.prepared(type).setTextures(textures)).markAsItem();
+        state.createVariant().prop(CrateBlock.OPEN, true).model(ModelTemplate.CRATE_OPEN.prepared(type).setTextures(textures));
         this.consumer.accept(state);
     }
 }

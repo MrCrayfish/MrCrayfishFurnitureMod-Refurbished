@@ -80,6 +80,18 @@ public class CommonItemTagsProvider
         bedroom.add(ModBlocks.DRAWER_CRIMSON.get().asItem());
         bedroom.add(ModBlocks.DRAWER_WARPED.get().asItem());
 
+        TagBuilder<Item> outdoors = builder.apply(ModTags.Items.OUTDOORS);
+        outdoors.add(ModBlocks.CRATE_OAK.get().asItem());
+        outdoors.add(ModBlocks.CRATE_SPRUCE.get().asItem());
+        outdoors.add(ModBlocks.CRATE_BIRCH.get().asItem());
+        outdoors.add(ModBlocks.CRATE_JUNGLE.get().asItem());
+        outdoors.add(ModBlocks.CRATE_ACACIA.get().asItem());
+        outdoors.add(ModBlocks.CRATE_DARK_OAK.get().asItem());
+        outdoors.add(ModBlocks.CRATE_MANGROVE.get().asItem());
+        outdoors.add(ModBlocks.CRATE_CHERRY.get().asItem());
+        outdoors.add(ModBlocks.CRATE_CRIMSON.get().asItem());
+        outdoors.add(ModBlocks.CRATE_WARPED.get().asItem());
+
         TagBuilder<Item> storage = builder.apply(ModTags.Items.STORAGE);
         storage.add(ModBlocks.DRAWER_OAK.get().asItem());
         storage.add(ModBlocks.DRAWER_SPRUCE.get().asItem());
@@ -91,5 +103,15 @@ public class CommonItemTagsProvider
         storage.add(ModBlocks.DRAWER_CHERRY.get().asItem());
         storage.add(ModBlocks.DRAWER_CRIMSON.get().asItem());
         storage.add(ModBlocks.DRAWER_WARPED.get().asItem());
+        storage.add(ModBlocks.CRATE_OAK.get().asItem());
+        storage.add(ModBlocks.CRATE_SPRUCE.get().asItem());
+        storage.add(ModBlocks.CRATE_BIRCH.get().asItem());
+        storage.add(ModBlocks.CRATE_JUNGLE.get().asItem());
+        storage.add(ModBlocks.CRATE_ACACIA.get().asItem());
+        storage.add(ModBlocks.CRATE_DARK_OAK.get().asItem());
+        storage.add(ModBlocks.CRATE_MANGROVE.get().asItem());
+        storage.add(ModBlocks.CRATE_CHERRY.get().asItem());
+        storage.add(ModBlocks.CRATE_CRIMSON.get().asItem());
+        storage.add(ModBlocks.CRATE_WARPED.get().asItem());
     }
 }

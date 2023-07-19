@@ -76,7 +76,7 @@ public class CreativeFilters
         builder.add(new FilterCategory(ModTags.Items.BEDROOM, new ItemStack(ModBlocks.DRAWER_OAK.get())));
         builder.add(new FilterCategory(ModTags.Items.KITCHEN, new ItemStack(Items.STICK)));
         builder.add(new FilterCategory(ModTags.Items.OUTDOORS, new ItemStack(Items.STICK)));
-        builder.add(new FilterCategory(ModTags.Items.STORAGE, new ItemStack(ModBlocks.DRAWER_OAK.get())));
+        builder.add(new FilterCategory(ModTags.Items.STORAGE, new ItemStack(ModBlocks.CRATE_OAK.get())));
         builder.add(new FilterCategory(ModTags.Items.ITEMS, new ItemStack(Items.STICK)));
         this.categories = builder.build();
 

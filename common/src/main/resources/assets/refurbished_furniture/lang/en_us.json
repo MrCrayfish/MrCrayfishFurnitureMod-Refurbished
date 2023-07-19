@@ -52,5 +52,16 @@
     "block.refurbished_furniture.warped_drawer": "Warped Drawer",
     "block.refurbished_furniture.mangrove_drawer": "Mangrove Drawer",
     "block.refurbished_furniture.cherry_drawer": "Cherry Drawer",
-    "container.refurbished_furniture.drawer": "Drawer"
+    "block.refurbished_furniture.oak_crate": "Oak Crate",
+    "block.refurbished_furniture.spruce_crate": "Spruce Crate",
+    "block.refurbished_furniture.birch_crate": "Birch Crate",
+    "block.refurbished_furniture.jungle_crate": "Jungle Crate",
+    "block.refurbished_furniture.acacia_crate": "Acacia Crate",
+    "block.refurbished_furniture.dark_oak_crate": "Dark Oak Crate",
+    "block.refurbished_furniture.crimson_crate": "Crimson Crate",
+    "block.refurbished_furniture.warped_crate": "Warped Crate",
+    "block.refurbished_furniture.mangrove_crate": "Mangrove Crate",
+    "block.refurbished_furniture.cherry_crate": "Cherry Crate",
+    "container.refurbished_furniture.drawer": "Drawer",
+    "container.refurbished_furniture.crate": "Drawer"
 }

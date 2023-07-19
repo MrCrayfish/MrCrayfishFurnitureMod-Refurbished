@@ -44,6 +44,8 @@ public class ModelTemplate
     public static final ModelTemplate DRAWER_RIGHT_OPEN = block("drawer_right_open", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate DRAWER_MIDDLE_CLOSED = block("drawer_right_closed", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate DRAWER_MIDDLE_OPEN = block("drawer_right_open", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate CRATE_CLOSED = block("crate_closed", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate CRATE_OPEN = block("crate_open", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
 
     private static ModelTemplate block(String name, TextureSlot ... textures)
     {
