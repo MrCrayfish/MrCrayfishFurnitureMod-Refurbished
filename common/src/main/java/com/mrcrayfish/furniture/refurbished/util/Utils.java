@@ -1,7 +1,10 @@
 package com.mrcrayfish.furniture.refurbished.util;
 
 import com.mrcrayfish.furniture.refurbished.Constants;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.MenuType;
 
 /**
  * Author: MrCrayfish
@@ -17,5 +20,18 @@ public class Utils
     public static ResourceLocation resource(String name)
     {
         return new ResourceLocation(Constants.MOD_ID, name);
+    }
+
+    /**
+     * Creates a translatable Component specific to this mod. The translation key
+     * uses a common format of a category, followed by the mod id, and then a path.
+     *
+     * @param category the category of the translation
+     * @param path     the path of the translation
+     * @return A translatable component
+     */
+    public static Component translation(String category, String path)
+    {
+        return Component.translatable(String.format("%s.%s.%s", category, Constants.MOD_ID, path));
     }
 }

@@ -1,0 +1,64 @@
+{
+	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 14, 14],
+			"faces": {
+				"north": {"uv": [11.75, 3.5, 15.75, 7], "texture": "#texture", "cullface": "north"},
+				"east": {"uv": [8.25, 3.5, 11.75, 7], "texture": "#texture", "cullface": "east"},
+				"west": {"uv": [8, 0, 11.5, 3.5], "texture": "#texture", "cullface": "west"},
+				"down": {"uv": [4, 8.5, 0, 12], "texture": "#texture"}
+			}
+		},
+		{
+			"from": [0, 0, 14],
+			"to": [16, 7, 15],
+			"faces": {
+				"east": {"uv": [8, 5.25, 8.25, 7], "texture": "#texture", "cullface": "east"},
+				"south": {"uv": [11.75, 1.75, 15.75, 3.5], "texture": "#texture"},
+				"west": {"uv": [11.5, 1.75, 11.75, 3.5], "texture": "#texture", "cullface": "west"},
+				"down": {"uv": [4, 8.25, 0, 8.5], "texture": "#texture"}
+			}
+		},
+		{
+			"from": [0, 7, 14],
+			"to": [16, 13, 19],
+			"faces": {
+				"east": {"uv": [5.25, 8.25, 6.5, 9.75], "texture": "#texture"},
+				"south": {"uv": [11.75, 0.25, 15.75, 1.75], "texture": "#texture"},
+				"west": {"uv": [4, 8.25, 5.25, 9.75], "texture": "#texture"},
+				"up": {"uv": [10.5, 8.25, 14.5, 9.5], "texture": "#texture"},
+				"down": {"uv": [6.5, 8.25, 10.5, 9.5], "texture": "#texture"}
+			}
+		},
+		{
+			"from": [0, 13, 14],
+			"to": [16, 14, 15],
+			"faces": {
+				"east": {"uv": [8, 3.5, 8.25, 3.75], "texture": "#texture", "cullface": "east"},
+				"south": {"uv": [11.75, 0, 15.75, 0.25], "texture": "#texture"},
+				"west": {"uv": [11.5, 0, 11.75, 0.25], "texture": "#texture", "cullface": "west"}
+			}
+		},
+		{
+			"from": [0, 14, 0],
+			"to": [16, 16, 16],
+			"faces": {
+				"north": {"uv": [8, 7, 12, 7.5], "texture": "#texture", "cullface": "north"},
+				"east": {"uv": [8, 7, 12, 7.5], "texture": "#texture", "cullface": "east"},
+				"south": {"uv": [8, 7, 12, 7.5], "texture": "#texture", "cullface": "south"},
+				"west": {"uv": [8, 7, 12, 7.5], "texture": "#texture", "cullface": "west"},
+				"up": {"uv": [4, 4, 0, 0], "texture": "#texture"}
+			}
+		},
+		{
+			"from": [0, 14, 15],
+			"to": [16, 14, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, 14, 15]},
+			"faces": {
+				"down": {"uv": [0, 8, 4, 8.25], "texture": "#texture"}
+			}
+		}
+	]
+}

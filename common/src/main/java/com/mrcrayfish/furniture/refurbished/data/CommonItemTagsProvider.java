@@ -47,5 +47,49 @@ public class CommonItemTagsProvider
         general.add(ModBlocks.DESK_CHERRY.get().asItem());
         general.add(ModBlocks.DESK_CRIMSON.get().asItem());
         general.add(ModBlocks.DESK_WARPED.get().asItem());
+        general.add(ModBlocks.DRAWER_OAK.get().asItem());
+        general.add(ModBlocks.DRAWER_SPRUCE.get().asItem());
+        general.add(ModBlocks.DRAWER_BIRCH.get().asItem());
+        general.add(ModBlocks.DRAWER_JUNGLE.get().asItem());
+        general.add(ModBlocks.DRAWER_ACACIA.get().asItem());
+        general.add(ModBlocks.DRAWER_DARK_OAK.get().asItem());
+        general.add(ModBlocks.DRAWER_MANGROVE.get().asItem());
+        general.add(ModBlocks.DRAWER_CHERRY.get().asItem());
+        general.add(ModBlocks.DRAWER_CRIMSON.get().asItem());
+        general.add(ModBlocks.DRAWER_WARPED.get().asItem());
+
+        TagBuilder<Item> bedroom = builder.apply(ModTags.Items.BEDROOM);
+        bedroom.add(ModBlocks.DESK_OAK.get().asItem());
+        bedroom.add(ModBlocks.DESK_SPRUCE.get().asItem());
+        bedroom.add(ModBlocks.DESK_BIRCH.get().asItem());
+        bedroom.add(ModBlocks.DESK_JUNGLE.get().asItem());
+        bedroom.add(ModBlocks.DESK_ACACIA.get().asItem());
+        bedroom.add(ModBlocks.DESK_DARK_OAK.get().asItem());
+        bedroom.add(ModBlocks.DESK_MANGROVE.get().asItem());
+        bedroom.add(ModBlocks.DESK_CHERRY.get().asItem());
+        bedroom.add(ModBlocks.DESK_CRIMSON.get().asItem());
+        bedroom.add(ModBlocks.DESK_WARPED.get().asItem());
+        bedroom.add(ModBlocks.DRAWER_OAK.get().asItem());
+        bedroom.add(ModBlocks.DRAWER_SPRUCE.get().asItem());
+        bedroom.add(ModBlocks.DRAWER_BIRCH.get().asItem());
+        bedroom.add(ModBlocks.DRAWER_JUNGLE.get().asItem());
+        bedroom.add(ModBlocks.DRAWER_ACACIA.get().asItem());
+        bedroom.add(ModBlocks.DRAWER_DARK_OAK.get().asItem());
+        bedroom.add(ModBlocks.DRAWER_MANGROVE.get().asItem());
+        bedroom.add(ModBlocks.DRAWER_CHERRY.get().asItem());
+        bedroom.add(ModBlocks.DRAWER_CRIMSON.get().asItem());
+        bedroom.add(ModBlocks.DRAWER_WARPED.get().asItem());
+
+        TagBuilder<Item> storage = builder.apply(ModTags.Items.STORAGE);
+        storage.add(ModBlocks.DRAWER_OAK.get().asItem());
+        storage.add(ModBlocks.DRAWER_SPRUCE.get().asItem());
+        storage.add(ModBlocks.DRAWER_BIRCH.get().asItem());
+        storage.add(ModBlocks.DRAWER_JUNGLE.get().asItem());
+        storage.add(ModBlocks.DRAWER_ACACIA.get().asItem());
+        storage.add(ModBlocks.DRAWER_DARK_OAK.get().asItem());
+        storage.add(ModBlocks.DRAWER_MANGROVE.get().asItem());
+        storage.add(ModBlocks.DRAWER_CHERRY.get().asItem());
+        storage.add(ModBlocks.DRAWER_CRIMSON.get().asItem());
+        storage.add(ModBlocks.DRAWER_WARPED.get().asItem());
     }
 }

@@ -36,6 +36,14 @@ public class ModelTemplate
     public static final ModelTemplate DESK_LEFT = block("desk_left", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate DESK_RIGHT = block("desk_right", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate DESK_MIDDLE = block("desk_middle", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate DRAWER_CLOSED = block("drawer_closed", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate DRAWER_OPEN = block("drawer_open", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate DRAWER_LEFT_CLOSED = block("drawer_left_closed", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate DRAWER_LEFT_OPEN = block("drawer_left_open", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate DRAWER_RIGHT_CLOSED = block("drawer_right_closed", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate DRAWER_RIGHT_OPEN = block("drawer_right_open", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate DRAWER_MIDDLE_CLOSED = block("drawer_right_closed", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate DRAWER_MIDDLE_OPEN = block("drawer_right_open", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
 
     private static ModelTemplate block(String name, TextureSlot ... textures)
     {
