@@ -39,9 +39,11 @@ import org.joml.Matrix4f;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 
 /**
@@ -154,10 +156,14 @@ public class CreativeFilters
      */
     private void updateItems(CreativeModeInventoryScreen screen)
     {
+        Set<Item> seenItems = new HashSet<>();
         LinkedHashSet<ItemStack> categorisedItems = new LinkedHashSet<>();
         this.categories.stream().filter(FilterCategory::isEnabled).forEach(category -> {
             category.getItems().ifPresent(items -> items.forEach(item -> {
-                categorisedItems.add(new ItemStack(item)); // TODO allow items to fill (e.g. for the trampoline)
+                if(!seenItems.contains(item)) {
+                    categorisedItems.add(new ItemStack(item)); // TODO allow items to fill (e.g. for the trampoline)
+                    seenItems.add(item);
+                }
             }));
         });
         NonNullList<ItemStack> items = screen.getMenu().items;
