@@ -8,6 +8,7 @@ import com.mrcrayfish.furniture.refurbished.block.DrawerBlock;
 import com.mrcrayfish.furniture.refurbished.block.KitchenCabinetryBlock;
 import com.mrcrayfish.furniture.refurbished.block.TableBlock;
 import com.mrcrayfish.furniture.refurbished.block.WoodenKitchenCabinetryBlock;
+import com.mrcrayfish.furniture.refurbished.block.WoodenKitchenDrawerBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.data.model.ModelTemplate;
 import com.mrcrayfish.furniture.refurbished.data.model.PreparedBlockState;
@@ -96,6 +97,16 @@ public class CommonModelProvider
         this.woodenKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_CHERRY.get());
         this.woodenKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_CRIMSON.get());
         this.woodenKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_WARPED.get());
+        this.woodenKitchenDrawer(ModBlocks.KITCHEN_DRAWER_OAK.get());
+        this.woodenKitchenDrawer(ModBlocks.KITCHEN_DRAWER_SPRUCE.get());
+        this.woodenKitchenDrawer(ModBlocks.KITCHEN_DRAWER_BIRCH.get());
+        this.woodenKitchenDrawer(ModBlocks.KITCHEN_DRAWER_JUNGLE.get());
+        this.woodenKitchenDrawer(ModBlocks.KITCHEN_DRAWER_ACACIA.get());
+        this.woodenKitchenDrawer(ModBlocks.KITCHEN_DRAWER_DARK_OAK.get());
+        this.woodenKitchenDrawer(ModBlocks.KITCHEN_DRAWER_MANGROVE.get());
+        this.woodenKitchenDrawer(ModBlocks.KITCHEN_DRAWER_CHERRY.get());
+        this.woodenKitchenDrawer(ModBlocks.KITCHEN_DRAWER_CRIMSON.get());
+        this.woodenKitchenDrawer(ModBlocks.KITCHEN_DRAWER_WARPED.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -260,6 +271,24 @@ public class CommonModelProvider
         state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.WEST).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.INSIDE_CORNER_RIGHT).model(ModelTemplate.KITCHEN_CABINETRY_INSIDE_CORNER_RIGHT.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.WEST).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_LEFT).model(ModelTemplate.KITCHEN_CABINETRY_OUTSIDE_CORNER_LEFT.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.WEST).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_RIGHT).model(ModelTemplate.KITCHEN_CABINETRY_OUTSIDE_CORNER_RIGHT.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        this.consumer.accept(state);
+    }
+
+    private void woodenKitchenDrawer(WoodenKitchenDrawerBlock block)
+    {
+        WoodType type = block.getWoodType();
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.woodParticle(type));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedBlockState state = new PreparedBlockState(block);
+        state.createVariant().prop(DrawerBlock.DIRECTION, Direction.NORTH).prop(DrawerBlock.OPEN, false).model(ModelTemplate.KITCHEN_DRAWER_CLOSED.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(DrawerBlock.DIRECTION, Direction.EAST).prop(DrawerBlock.OPEN, false).model(ModelTemplate.KITCHEN_DRAWER_CLOSED.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(DrawerBlock.DIRECTION, Direction.SOUTH).prop(DrawerBlock.OPEN, false).model(ModelTemplate.KITCHEN_DRAWER_CLOSED.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(DrawerBlock.DIRECTION, Direction.WEST).prop(DrawerBlock.OPEN, false).model(ModelTemplate.KITCHEN_DRAWER_CLOSED.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(DrawerBlock.DIRECTION, Direction.NORTH).prop(DrawerBlock.OPEN, true).model(ModelTemplate.KITCHEN_DRAWER_OPEN.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
+        state.createVariant().prop(DrawerBlock.DIRECTION, Direction.EAST).prop(DrawerBlock.OPEN, true).model(ModelTemplate.KITCHEN_DRAWER_OPEN.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(DrawerBlock.DIRECTION, Direction.SOUTH).prop(DrawerBlock.OPEN, true).model(ModelTemplate.KITCHEN_DRAWER_OPEN.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(DrawerBlock.DIRECTION, Direction.WEST).prop(DrawerBlock.OPEN, true).model(ModelTemplate.KITCHEN_DRAWER_OPEN.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         this.consumer.accept(state);
     }
 }

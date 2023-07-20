@@ -4,6 +4,7 @@ import com.mrcrayfish.framework.api.registry.RegistryContainer;
 import com.mrcrayfish.framework.api.registry.RegistryEntry;
 import com.mrcrayfish.furniture.refurbished.blockentity.CrateBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.DrawerBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.KitchenDrawerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -39,5 +40,18 @@ public class ModBlockEntities
             ModBlocks.CRATE_CHERRY.get(),
             ModBlocks.CRATE_CRIMSON.get(),
             ModBlocks.CRATE_WARPED.get()
+    });
+
+    public static final RegistryEntry<BlockEntityType<KitchenDrawerBlockEntity>> KITCHEN_DRAWER = RegistryEntry.blockEntity(Utils.resource("kitchen_drawer"), KitchenDrawerBlockEntity::new, () -> new Block[]{
+            ModBlocks.KITCHEN_DRAWER_OAK.get(),
+            ModBlocks.KITCHEN_DRAWER_SPRUCE.get(),
+            ModBlocks.KITCHEN_DRAWER_BIRCH.get(),
+            ModBlocks.KITCHEN_DRAWER_JUNGLE.get(),
+            ModBlocks.KITCHEN_DRAWER_ACACIA.get(),
+            ModBlocks.KITCHEN_DRAWER_DARK_OAK.get(),
+            ModBlocks.KITCHEN_DRAWER_MANGROVE.get(),
+            ModBlocks.KITCHEN_DRAWER_CHERRY.get(),
+            ModBlocks.KITCHEN_DRAWER_CRIMSON.get(),
+            ModBlocks.KITCHEN_DRAWER_WARPED.get()
     });
 }

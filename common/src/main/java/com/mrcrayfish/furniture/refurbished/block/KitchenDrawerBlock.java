@@ -3,11 +3,10 @@ package com.mrcrayfish.furniture.refurbished.block;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.furniture.refurbished.blockentity.DrawerBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.KitchenDrawerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -16,10 +15,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
@@ -31,20 +28,20 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
-public class DrawerBlock extends DeskBlock implements EntityBlock
+public class KitchenDrawerBlock extends FurnitureHorizontalBlock implements EntityBlock, IKitchenCabinetry
 {
-    public DrawerBlock(WoodType type, BlockBehaviour.Properties properties)
+    public KitchenDrawerBlock(Properties properties)
     {
-        super(type, properties);
-        this.registerDefaultState(this.getStateDefinition().any().setValue(DIRECTION, Direction.NORTH).setValue(LEFT, false).setValue(RIGHT, false).setValue(OPEN, false));
+        super(properties);
+        this.registerDefaultState(this.getStateDefinition().any().setValue(DIRECTION, Direction.NORTH).setValue(OPEN, false));
     }
 
     @Override
     protected Map<BlockState, VoxelShape> generateShapes(ImmutableList<BlockState> states)
     {
-        VoxelShape topShape = Block.box(0, 14, 0, 16, 16, 16);
-        VoxelShape baseShape = Block.box(1, 0, 0, 16, 14, 16);
-        VoxelShape drawShape = Block.box(-3, 7, 0, 1, 13, 16);
+        VoxelShape topShape = Block.box(0, 13, 0, 16, 16, 16);
+        VoxelShape baseShape = Block.box(2, 0, 0, 16, 13, 16);
+        VoxelShape drawShape = Block.box(-3, 7, 0, 2, 13, 16);
 
         ImmutableMap.Builder<BlockState, VoxelShape> builder = new ImmutableMap.Builder<>();
         for(BlockState state : states)
@@ -68,7 +65,7 @@ public class DrawerBlock extends DeskBlock implements EntityBlock
     {
         if(state.getValue(DIRECTION).getOpposite() == result.getDirection())
         {
-            if(!level.isClientSide() && level.getBlockEntity(pos) instanceof DrawerBlockEntity drawer)
+            if(!level.isClientSide() && level.getBlockEntity(pos) instanceof KitchenDrawerBlockEntity drawer)
             {
                 player.openMenu(drawer);
                 return InteractionResult.CONSUME;
@@ -89,21 +86,21 @@ public class DrawerBlock extends DeskBlock implements EntityBlock
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
     {
-        return new DrawerBlockEntity(pos, state);
+        return new KitchenDrawerBlockEntity(pos, state);
     }
 
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random)
     {
-        if(level.getBlockEntity(pos) instanceof DrawerBlockEntity blockEntity)
+        if(level.getBlockEntity(pos) instanceof KitchenDrawerBlockEntity blockEntity)
         {
             blockEntity.updateOpenerCount();
         }
     }
 
     @Override
-    public List<TagKey<Block>> getTags()
+    public Direction getDirection(BlockState state)
     {
-        return List.of(BlockTags.MINEABLE_WITH_AXE);
+        return state.getValue(DIRECTION);
     }
 }

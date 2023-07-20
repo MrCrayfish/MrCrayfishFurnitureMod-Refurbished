@@ -72,6 +72,17 @@
     "block.refurbished_furniture.warped_kitchen_cabinetry": "Warped Kitchen Cabinetry",
     "block.refurbished_furniture.mangrove_kitchen_cabinetry": "Mangrove Kitchen Cabinetry",
     "block.refurbished_furniture.cherry_kitchen_cabinetry": "Cherry Kitchen Cabinetry",
+    "block.refurbished_furniture.oak_kitchen_drawer": "Oak Kitchen Drawer",
+    "block.refurbished_furniture.spruce_kitchen_drawer": "Spruce Kitchen Drawer",
+    "block.refurbished_furniture.birch_kitchen_drawer": "Birch Kitchen Drawer",
+    "block.refurbished_furniture.jungle_kitchen_drawer": "Jungle Kitchen Drawer",
+    "block.refurbished_furniture.acacia_kitchen_drawer": "Acacia Kitchen Drawer",
+    "block.refurbished_furniture.dark_oak_kitchen_drawer": "Dark Oak Kitchen Drawer",
+    "block.refurbished_furniture.crimson_kitchen_drawer": "Crimson Kitchen Drawer",
+    "block.refurbished_furniture.warped_kitchen_drawer": "Warped Kitchen Drawer",
+    "block.refurbished_furniture.mangrove_kitchen_drawer": "Mangrove Kitchen Drawer",
+    "block.refurbished_furniture.cherry_kitchen_drawer": "Cherry Kitchen Drawer",
     "container.refurbished_furniture.drawer": "Drawer",
-    "container.refurbished_furniture.crate": "Drawer"
+    "container.refurbished_furniture.crate": "Crate",
+    "container.refurbished_furniture.kitchen_drawer": "Kitchen Drawer"
 }
