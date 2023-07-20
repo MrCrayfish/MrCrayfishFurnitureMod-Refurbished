@@ -111,6 +111,22 @@ public class CommonItemTagsProvider
         kitchen.add(ModBlocks.KITCHEN_SINK_CHERRY.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_SINK_CRIMSON.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_SINK_WARPED.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_CABINETRY_WHITE.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_CABINETRY_ORANGE.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_CABINETRY_MAGENTA.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_CABINETRY_LIGHT_BLUE.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_CABINETRY_YELLOW.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_CABINETRY_LIME.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_CABINETRY_PINK.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_CABINETRY_GRAY.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_CABINETRY_LIGHT_GRAY.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_CABINETRY_CYAN.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_CABINETRY_PURPLE.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_CABINETRY_BLUE.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_CABINETRY_BROWN.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_CABINETRY_GREEN.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_CABINETRY_RED.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_CABINETRY_BLACK.get().asItem());
 
         TagBuilder<Item> outdoors = builder.apply(ModTags.Items.OUTDOORS);
         outdoors.add(ModBlocks.CRATE_OAK.get().asItem());

@@ -2,20 +2,15 @@ package com.mrcrayfish.furniture.refurbished.core;
 
 import com.mrcrayfish.framework.api.registry.RegistryContainer;
 import com.mrcrayfish.framework.api.registry.RegistryEntry;
-import com.mrcrayfish.furniture.refurbished.block.ChairBlock;
-import com.mrcrayfish.furniture.refurbished.block.CrateBlock;
-import com.mrcrayfish.furniture.refurbished.block.DeskBlock;
-import com.mrcrayfish.furniture.refurbished.block.DrawerBlock;
-import com.mrcrayfish.furniture.refurbished.block.TableBlock;
-import com.mrcrayfish.furniture.refurbished.block.WoodenKitchenCabinetryBlock;
-import com.mrcrayfish.furniture.refurbished.block.WoodenKitchenDrawerBlock;
-import com.mrcrayfish.furniture.refurbished.block.WoodenKitchenSinkBlock;
+import com.mrcrayfish.furniture.refurbished.block.*;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.block.state.properties.WoodType;
+import net.minecraft.world.level.material.MapColor;
 
 /**
  * Author: MrCrayfish
@@ -103,4 +98,21 @@ public class ModBlocks
     public static final RegistryEntry<WoodenKitchenSinkBlock> KITCHEN_SINK_CHERRY = RegistryEntry.blockWithItem(Utils.resource("cherry_kitchen_sink"), () -> new WoodenKitchenSinkBlock(WoodType.CHERRY, BlockBehaviour.Properties.of().mapColor(Blocks.CHERRY_PLANKS.defaultMapColor()).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava()));
     public static final RegistryEntry<WoodenKitchenSinkBlock> KITCHEN_SINK_CRIMSON = RegistryEntry.blockWithItem(Utils.resource("crimson_kitchen_sink"), () -> new WoodenKitchenSinkBlock(WoodType.CRIMSON, BlockBehaviour.Properties.of().mapColor(Blocks.CRIMSON_PLANKS.defaultMapColor()).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava()));
     public static final RegistryEntry<WoodenKitchenSinkBlock> KITCHEN_SINK_WARPED = RegistryEntry.blockWithItem(Utils.resource("warped_kitchen_sink"), () -> new WoodenKitchenSinkBlock(WoodType.WARPED, BlockBehaviour.Properties.of().mapColor(Blocks.WARPED_PLANKS.defaultMapColor()).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava()));
+    public static final RegistryEntry<ColouredKitchenCabinetryBlock> KITCHEN_CABINETRY_WHITE = RegistryEntry.blockWithItem(Utils.resource("white_kitchen_cabinetry"), () -> new ColouredKitchenCabinetryBlock(DyeColor.WHITE, BlockBehaviour.Properties.of().mapColor(MapColor.SNOW).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava().forceSolidOn()));
+    public static final RegistryEntry<ColouredKitchenCabinetryBlock> KITCHEN_CABINETRY_ORANGE = RegistryEntry.blockWithItem(Utils.resource("orange_kitchen_cabinetry"), () -> new ColouredKitchenCabinetryBlock(DyeColor.ORANGE, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava().forceSolidOn()));
+    public static final RegistryEntry<ColouredKitchenCabinetryBlock> KITCHEN_CABINETRY_MAGENTA = RegistryEntry.blockWithItem(Utils.resource("magenta_kitchen_cabinetry"), () -> new ColouredKitchenCabinetryBlock(DyeColor.MAGENTA, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_MAGENTA).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava().forceSolidOn()));
+    public static final RegistryEntry<ColouredKitchenCabinetryBlock> KITCHEN_CABINETRY_LIGHT_BLUE = RegistryEntry.blockWithItem(Utils.resource("light_blue_kitchen_cabinetry"), () -> new ColouredKitchenCabinetryBlock(DyeColor.LIGHT_BLUE, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_BLUE).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava().forceSolidOn()));
+    public static final RegistryEntry<ColouredKitchenCabinetryBlock> KITCHEN_CABINETRY_YELLOW = RegistryEntry.blockWithItem(Utils.resource("yellow_kitchen_cabinetry"), () -> new ColouredKitchenCabinetryBlock(DyeColor.YELLOW, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_YELLOW).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava().forceSolidOn()));
+    public static final RegistryEntry<ColouredKitchenCabinetryBlock> KITCHEN_CABINETRY_LIME = RegistryEntry.blockWithItem(Utils.resource("lime_kitchen_cabinetry"), () -> new ColouredKitchenCabinetryBlock(DyeColor.LIME, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GREEN).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava().forceSolidOn()));
+    public static final RegistryEntry<ColouredKitchenCabinetryBlock> KITCHEN_CABINETRY_PINK = RegistryEntry.blockWithItem(Utils.resource("pink_kitchen_cabinetry"), () -> new ColouredKitchenCabinetryBlock(DyeColor.PINK, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PINK).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava().forceSolidOn()));
+    public static final RegistryEntry<ColouredKitchenCabinetryBlock> KITCHEN_CABINETRY_GRAY = RegistryEntry.blockWithItem(Utils.resource("gray_kitchen_cabinetry"), () -> new ColouredKitchenCabinetryBlock(DyeColor.GRAY, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GRAY).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava().forceSolidOn()));
+    public static final RegistryEntry<ColouredKitchenCabinetryBlock> KITCHEN_CABINETRY_LIGHT_GRAY = RegistryEntry.blockWithItem(Utils.resource("light_gray_kitchen_cabinetry"), () -> new ColouredKitchenCabinetryBlock(DyeColor.LIGHT_GRAY, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava().forceSolidOn()));
+    public static final RegistryEntry<ColouredKitchenCabinetryBlock> KITCHEN_CABINETRY_CYAN = RegistryEntry.blockWithItem(Utils.resource("cyan_kitchen_cabinetry"), () -> new ColouredKitchenCabinetryBlock(DyeColor.CYAN, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava().forceSolidOn()));
+    public static final RegistryEntry<ColouredKitchenCabinetryBlock> KITCHEN_CABINETRY_PURPLE = RegistryEntry.blockWithItem(Utils.resource("purple_kitchen_cabinetry"), () -> new ColouredKitchenCabinetryBlock(DyeColor.PURPLE, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava().forceSolidOn()));
+    public static final RegistryEntry<ColouredKitchenCabinetryBlock> KITCHEN_CABINETRY_BLUE = RegistryEntry.blockWithItem(Utils.resource("blue_kitchen_cabinetry"), () -> new ColouredKitchenCabinetryBlock(DyeColor.BLUE, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLUE).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava().forceSolidOn()));
+    public static final RegistryEntry<ColouredKitchenCabinetryBlock> KITCHEN_CABINETRY_BROWN = RegistryEntry.blockWithItem(Utils.resource("brown_kitchen_cabinetry"), () -> new ColouredKitchenCabinetryBlock(DyeColor.BROWN, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BROWN).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava().forceSolidOn()));
+    public static final RegistryEntry<ColouredKitchenCabinetryBlock> KITCHEN_CABINETRY_GREEN = RegistryEntry.blockWithItem(Utils.resource("green_kitchen_cabinetry"), () -> new ColouredKitchenCabinetryBlock(DyeColor.GREEN, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GREEN).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava().forceSolidOn()));
+    public static final RegistryEntry<ColouredKitchenCabinetryBlock> KITCHEN_CABINETRY_RED = RegistryEntry.blockWithItem(Utils.resource("red_kitchen_cabinetry"), () -> new ColouredKitchenCabinetryBlock(DyeColor.RED, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_RED).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava().forceSolidOn()));
+    public static final RegistryEntry<ColouredKitchenCabinetryBlock> KITCHEN_CABINETRY_BLACK = RegistryEntry.blockWithItem(Utils.resource("black_kitchen_cabinetry"), () -> new ColouredKitchenCabinetryBlock(DyeColor.BLACK, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK).instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WOOD).ignitedByLava().forceSolidOn()));
+
 }

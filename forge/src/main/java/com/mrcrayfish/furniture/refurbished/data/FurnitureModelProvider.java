@@ -11,6 +11,7 @@ import net.minecraft.data.models.model.TextureMapping;
 import net.minecraft.data.models.model.TextureSlot;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -23,6 +24,7 @@ import net.minecraftforge.client.model.generators.VariantBlockStateBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -54,6 +56,11 @@ public class FurnitureModelProvider extends BlockStateProvider
         // Registers wood particle textures
         WoodType.values().forEach(type -> {
             helper.trackGenerated(new ResourceLocation(Constants.MOD_ID, "block/" + type.name() + "_particle"), TEXTURE);
+        });
+
+        // Registers coloured particle textures
+        Arrays.stream(DyeColor.values()).forEach(type -> {
+            helper.trackGenerated(new ResourceLocation(Constants.MOD_ID, "block/" + type.getName() + "_particle"), TEXTURE);
         });
     }
 

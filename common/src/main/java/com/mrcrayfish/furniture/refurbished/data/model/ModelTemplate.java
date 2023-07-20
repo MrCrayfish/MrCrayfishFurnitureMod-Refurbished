@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.data.model;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.data.models.model.TextureSlot;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.state.properties.WoodType;
 
 import java.util.HashSet;
@@ -86,5 +87,10 @@ public class ModelTemplate
     public PreparedStateModel prepared(WoodType type)
     {
         return PreparedStateModel.create(type.name() + "_" + this.path, this.location, this.textures);
+    }
+
+    public PreparedStateModel prepared(DyeColor color)
+    {
+        return PreparedStateModel.create(color.getName() + "_" + this.path, this.location, this.textures);
     }
 }

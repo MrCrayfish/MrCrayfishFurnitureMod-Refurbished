@@ -1,15 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.data;
 
 import com.mrcrayfish.furniture.refurbished.Constants;
-import com.mrcrayfish.furniture.refurbished.block.ChairBlock;
-import com.mrcrayfish.furniture.refurbished.block.CrateBlock;
-import com.mrcrayfish.furniture.refurbished.block.DeskBlock;
-import com.mrcrayfish.furniture.refurbished.block.DrawerBlock;
-import com.mrcrayfish.furniture.refurbished.block.KitchenCabinetryBlock;
-import com.mrcrayfish.furniture.refurbished.block.TableBlock;
-import com.mrcrayfish.furniture.refurbished.block.WoodenKitchenCabinetryBlock;
-import com.mrcrayfish.furniture.refurbished.block.WoodenKitchenDrawerBlock;
-import com.mrcrayfish.furniture.refurbished.block.WoodenKitchenSinkBlock;
+import com.mrcrayfish.furniture.refurbished.block.*;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.data.model.ModelTemplate;
 import com.mrcrayfish.furniture.refurbished.data.model.PreparedBlockState;
@@ -19,6 +11,7 @@ import net.minecraft.data.models.blockstates.VariantProperties;
 import net.minecraft.data.models.model.TextureMapping;
 import net.minecraft.data.models.model.TextureSlot;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.WoodType;
 
@@ -118,6 +111,22 @@ public class CommonModelProvider
         this.woodenKitchenSink(ModBlocks.KITCHEN_SINK_CHERRY.get());
         this.woodenKitchenSink(ModBlocks.KITCHEN_SINK_CRIMSON.get());
         this.woodenKitchenSink(ModBlocks.KITCHEN_SINK_WARPED.get());
+        this.colouredKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_WHITE.get());
+        this.colouredKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_ORANGE.get());
+        this.colouredKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_MAGENTA.get());
+        this.colouredKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_LIGHT_BLUE.get());
+        this.colouredKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_YELLOW.get());
+        this.colouredKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_LIME.get());
+        this.colouredKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_PINK.get());
+        this.colouredKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_GRAY.get());
+        this.colouredKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_LIGHT_GRAY.get());
+        this.colouredKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_CYAN.get());
+        this.colouredKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_PURPLE.get());
+        this.colouredKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_BLUE.get());
+        this.colouredKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_BROWN.get());
+        this.colouredKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_GREEN.get());
+        this.colouredKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_RED.get());
+        this.colouredKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_BLACK.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -129,6 +138,11 @@ public class CommonModelProvider
     private ResourceLocation woodParticle(WoodType type)
     {
         return new ResourceLocation(Constants.MOD_ID, "block/" + type.name() + "_particle");
+    }
+
+    private ResourceLocation colorParticle(DyeColor color)
+    {
+        return new ResourceLocation(Constants.MOD_ID, "block/" + color.getName() + "_particle");
     }
 
     private void table(TableBlock block)
@@ -314,6 +328,36 @@ public class CommonModelProvider
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.EAST).model(ModelTemplate.KITCHEN_SINK.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.SOUTH).model(ModelTemplate.KITCHEN_SINK.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.WEST).model(ModelTemplate.KITCHEN_SINK.prepared(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        this.consumer.accept(state);
+    }
+
+    private void colouredKitchenCabinetry(ColouredKitchenCabinetryBlock block)
+    {
+        DyeColor color = block.getDyeColor();
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.colorParticle(color));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedBlockState state = new PreparedBlockState(block);
+        state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.NORTH).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.DEFAULT).model(ModelTemplate.KITCHEN_CABINETRY_DEFAULT.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.NORTH).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.INSIDE_CORNER_LEFT).model(ModelTemplate.KITCHEN_CABINETRY_INSIDE_CORNER_LEFT.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
+        state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.NORTH).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.INSIDE_CORNER_RIGHT).model(ModelTemplate.KITCHEN_CABINETRY_INSIDE_CORNER_RIGHT.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
+        state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.NORTH).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_LEFT).model(ModelTemplate.KITCHEN_CABINETRY_OUTSIDE_CORNER_LEFT.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
+        state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.NORTH).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_RIGHT).model(ModelTemplate.KITCHEN_CABINETRY_OUTSIDE_CORNER_RIGHT.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
+        state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.EAST).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.DEFAULT).model(ModelTemplate.KITCHEN_CABINETRY_DEFAULT.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.EAST).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.INSIDE_CORNER_LEFT).model(ModelTemplate.KITCHEN_CABINETRY_INSIDE_CORNER_LEFT.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.EAST).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.INSIDE_CORNER_RIGHT).model(ModelTemplate.KITCHEN_CABINETRY_INSIDE_CORNER_RIGHT.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.EAST).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_LEFT).model(ModelTemplate.KITCHEN_CABINETRY_OUTSIDE_CORNER_LEFT.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.EAST).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_RIGHT).model(ModelTemplate.KITCHEN_CABINETRY_OUTSIDE_CORNER_RIGHT.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.SOUTH).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.DEFAULT).model(ModelTemplate.KITCHEN_CABINETRY_DEFAULT.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.SOUTH).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.INSIDE_CORNER_LEFT).model(ModelTemplate.KITCHEN_CABINETRY_INSIDE_CORNER_LEFT.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.SOUTH).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.INSIDE_CORNER_RIGHT).model(ModelTemplate.KITCHEN_CABINETRY_INSIDE_CORNER_RIGHT.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.SOUTH).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_LEFT).model(ModelTemplate.KITCHEN_CABINETRY_OUTSIDE_CORNER_LEFT.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.SOUTH).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_RIGHT).model(ModelTemplate.KITCHEN_CABINETRY_OUTSIDE_CORNER_RIGHT.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.WEST).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.DEFAULT).model(ModelTemplate.KITCHEN_CABINETRY_DEFAULT.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.WEST).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.INSIDE_CORNER_LEFT).model(ModelTemplate.KITCHEN_CABINETRY_INSIDE_CORNER_LEFT.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.WEST).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.INSIDE_CORNER_RIGHT).model(ModelTemplate.KITCHEN_CABINETRY_INSIDE_CORNER_RIGHT.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.WEST).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_LEFT).model(ModelTemplate.KITCHEN_CABINETRY_OUTSIDE_CORNER_LEFT.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.WEST).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_RIGHT).model(ModelTemplate.KITCHEN_CABINETRY_OUTSIDE_CORNER_RIGHT.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         this.consumer.accept(state);
     }
 }
