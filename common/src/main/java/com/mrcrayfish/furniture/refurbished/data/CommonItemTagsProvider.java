@@ -143,6 +143,22 @@ public class CommonItemTagsProvider
         kitchen.add(ModBlocks.KITCHEN_DRAWER_GREEN.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_DRAWER_RED.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_DRAWER_BLACK.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_SINK_WHITE.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_SINK_ORANGE.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_SINK_MAGENTA.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_SINK_LIGHT_BLUE.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_SINK_YELLOW.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_SINK_LIME.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_SINK_PINK.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_SINK_GRAY.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_SINK_LIGHT_GRAY.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_SINK_CYAN.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_SINK_PURPLE.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_SINK_BLUE.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_SINK_BROWN.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_SINK_GREEN.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_SINK_RED.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_SINK_BLACK.get().asItem());
 
         TagBuilder<Item> outdoors = builder.apply(ModTags.Items.OUTDOORS);
         outdoors.add(ModBlocks.CRATE_OAK.get().asItem());
@@ -213,5 +229,21 @@ public class CommonItemTagsProvider
         storage.add(ModBlocks.KITCHEN_DRAWER_GREEN.get().asItem());
         storage.add(ModBlocks.KITCHEN_DRAWER_RED.get().asItem());
         storage.add(ModBlocks.KITCHEN_DRAWER_BLACK.get().asItem());
+        storage.add(ModBlocks.KITCHEN_SINK_WHITE.get().asItem());
+        storage.add(ModBlocks.KITCHEN_SINK_ORANGE.get().asItem());
+        storage.add(ModBlocks.KITCHEN_SINK_MAGENTA.get().asItem());
+        storage.add(ModBlocks.KITCHEN_SINK_LIGHT_BLUE.get().asItem());
+        storage.add(ModBlocks.KITCHEN_SINK_YELLOW.get().asItem());
+        storage.add(ModBlocks.KITCHEN_SINK_LIME.get().asItem());
+        storage.add(ModBlocks.KITCHEN_SINK_PINK.get().asItem());
+        storage.add(ModBlocks.KITCHEN_SINK_GRAY.get().asItem());
+        storage.add(ModBlocks.KITCHEN_SINK_LIGHT_GRAY.get().asItem());
+        storage.add(ModBlocks.KITCHEN_SINK_CYAN.get().asItem());
+        storage.add(ModBlocks.KITCHEN_SINK_PURPLE.get().asItem());
+        storage.add(ModBlocks.KITCHEN_SINK_BLUE.get().asItem());
+        storage.add(ModBlocks.KITCHEN_SINK_BROWN.get().asItem());
+        storage.add(ModBlocks.KITCHEN_SINK_GREEN.get().asItem());
+        storage.add(ModBlocks.KITCHEN_SINK_RED.get().asItem());
+        storage.add(ModBlocks.KITCHEN_SINK_BLACK.get().asItem());
     }
 }

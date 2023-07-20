@@ -143,6 +143,22 @@ public class CommonModelProvider
         this.colouredKitchenDrawer(ModBlocks.KITCHEN_DRAWER_GREEN.get());
         this.colouredKitchenDrawer(ModBlocks.KITCHEN_DRAWER_RED.get());
         this.colouredKitchenDrawer(ModBlocks.KITCHEN_DRAWER_BLACK.get());
+        this.colouredKitchenSink(ModBlocks.KITCHEN_SINK_WHITE.get());
+        this.colouredKitchenSink(ModBlocks.KITCHEN_SINK_ORANGE.get());
+        this.colouredKitchenSink(ModBlocks.KITCHEN_SINK_MAGENTA.get());
+        this.colouredKitchenSink(ModBlocks.KITCHEN_SINK_LIGHT_BLUE.get());
+        this.colouredKitchenSink(ModBlocks.KITCHEN_SINK_YELLOW.get());
+        this.colouredKitchenSink(ModBlocks.KITCHEN_SINK_LIME.get());
+        this.colouredKitchenSink(ModBlocks.KITCHEN_SINK_PINK.get());
+        this.colouredKitchenSink(ModBlocks.KITCHEN_SINK_GRAY.get());
+        this.colouredKitchenSink(ModBlocks.KITCHEN_SINK_LIGHT_GRAY.get());
+        this.colouredKitchenSink(ModBlocks.KITCHEN_SINK_CYAN.get());
+        this.colouredKitchenSink(ModBlocks.KITCHEN_SINK_PURPLE.get());
+        this.colouredKitchenSink(ModBlocks.KITCHEN_SINK_BLUE.get());
+        this.colouredKitchenSink(ModBlocks.KITCHEN_SINK_BROWN.get());
+        this.colouredKitchenSink(ModBlocks.KITCHEN_SINK_GREEN.get());
+        this.colouredKitchenSink(ModBlocks.KITCHEN_SINK_RED.get());
+        this.colouredKitchenSink(ModBlocks.KITCHEN_SINK_BLACK.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -392,6 +408,20 @@ public class CommonModelProvider
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.EAST).prop(DrawerBlock.OPEN, true).model(ModelTemplate.KITCHEN_DRAWER_OPEN.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.SOUTH).prop(DrawerBlock.OPEN, true).model(ModelTemplate.KITCHEN_DRAWER_OPEN.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.WEST).prop(DrawerBlock.OPEN, true).model(ModelTemplate.KITCHEN_DRAWER_OPEN.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        this.consumer.accept(state);
+    }
+
+    private void colouredKitchenSink(ColouredKitchenSinkBlock block)
+    {
+        DyeColor color = block.getDyeColor();
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.colourParticle(color));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedBlockState state = new PreparedBlockState(block);
+        state.createVariant().prop(DrawerBlock.DIRECTION, Direction.NORTH).model(ModelTemplate.KITCHEN_SINK.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(DrawerBlock.DIRECTION, Direction.EAST).model(ModelTemplate.KITCHEN_SINK.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(DrawerBlock.DIRECTION, Direction.SOUTH).model(ModelTemplate.KITCHEN_SINK.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(DrawerBlock.DIRECTION, Direction.WEST).model(ModelTemplate.KITCHEN_SINK.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         this.consumer.accept(state);
     }
 }

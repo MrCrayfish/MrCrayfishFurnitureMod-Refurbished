@@ -54,7 +54,23 @@ public class ModBlockEntities
             ModBlocks.KITCHEN_DRAWER_MANGROVE.get(),
             ModBlocks.KITCHEN_DRAWER_CHERRY.get(),
             ModBlocks.KITCHEN_DRAWER_CRIMSON.get(),
-            ModBlocks.KITCHEN_DRAWER_WARPED.get()
+            ModBlocks.KITCHEN_DRAWER_WARPED.get(),
+            ModBlocks.KITCHEN_DRAWER_WHITE.get(),
+            ModBlocks.KITCHEN_DRAWER_ORANGE.get(),
+            ModBlocks.KITCHEN_DRAWER_MAGENTA.get(),
+            ModBlocks.KITCHEN_DRAWER_LIGHT_BLUE.get(),
+            ModBlocks.KITCHEN_DRAWER_YELLOW.get(),
+            ModBlocks.KITCHEN_DRAWER_LIME.get(),
+            ModBlocks.KITCHEN_DRAWER_PINK.get(),
+            ModBlocks.KITCHEN_DRAWER_GRAY.get(),
+            ModBlocks.KITCHEN_DRAWER_LIGHT_GRAY.get(),
+            ModBlocks.KITCHEN_DRAWER_CYAN.get(),
+            ModBlocks.KITCHEN_DRAWER_PURPLE.get(),
+            ModBlocks.KITCHEN_DRAWER_BLUE.get(),
+            ModBlocks.KITCHEN_DRAWER_BROWN.get(),
+            ModBlocks.KITCHEN_DRAWER_GREEN.get(),
+            ModBlocks.KITCHEN_DRAWER_RED.get(),
+            ModBlocks.KITCHEN_DRAWER_BLACK.get(),
     });
 
     public static final RegistryEntry<BlockEntityType<KitchenSinkBlockEntity>> KITCHEN_SINK = RegistryEntry.blockEntity(Utils.resource("kitchen_sink"), Services.BLOCK_ENTITY::createKitchenSinkBlockEntity, () -> new Block[]{
@@ -67,6 +83,22 @@ public class ModBlockEntities
             ModBlocks.KITCHEN_SINK_MANGROVE.get(),
             ModBlocks.KITCHEN_SINK_CHERRY.get(),
             ModBlocks.KITCHEN_SINK_CRIMSON.get(),
-            ModBlocks.KITCHEN_SINK_WARPED.get()
+            ModBlocks.KITCHEN_SINK_WARPED.get(),
+            ModBlocks.KITCHEN_SINK_WHITE.get(),
+            ModBlocks.KITCHEN_SINK_ORANGE.get(),
+            ModBlocks.KITCHEN_SINK_MAGENTA.get(),
+            ModBlocks.KITCHEN_SINK_LIGHT_BLUE.get(),
+            ModBlocks.KITCHEN_SINK_YELLOW.get(),
+            ModBlocks.KITCHEN_SINK_LIME.get(),
+            ModBlocks.KITCHEN_SINK_PINK.get(),
+            ModBlocks.KITCHEN_SINK_GRAY.get(),
+            ModBlocks.KITCHEN_SINK_LIGHT_GRAY.get(),
+            ModBlocks.KITCHEN_SINK_CYAN.get(),
+            ModBlocks.KITCHEN_SINK_PURPLE.get(),
+            ModBlocks.KITCHEN_SINK_BLUE.get(),
+            ModBlocks.KITCHEN_SINK_BROWN.get(),
+            ModBlocks.KITCHEN_SINK_GREEN.get(),
+            ModBlocks.KITCHEN_SINK_RED.get(),
+            ModBlocks.KITCHEN_SINK_BLACK.get(),
     });
 }
