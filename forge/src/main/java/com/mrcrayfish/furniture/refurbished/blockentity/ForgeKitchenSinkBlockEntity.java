@@ -52,6 +52,7 @@ public class ForgeKitchenSinkBlockEntity extends KitchenSinkBlockEntity
         @Override
         protected void onContentsChanged()
         {
+            ForgeKitchenSinkBlockEntity.this.setChanged();
             Level level = Objects.requireNonNull(ForgeKitchenSinkBlockEntity.this.level);
             if(level.getChunkSource() instanceof ServerChunkCache cache)
             {
