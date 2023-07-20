@@ -18,12 +18,18 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -94,17 +100,42 @@ public class FabricKitchenSinkBlockEntity extends KitchenSinkBlockEntity
     @Override
     public InteractionResult interact(Player player, InteractionHand hand, BlockHitResult result)
     {
-        // Fills the sink with water when interacting with an empty hand. TODO make config option to disable free water
-        if((this.tank.getAmount() <= 0 || this.tank.getResource().getFluid() == Fluids.WATER) && player.getItemInHand(hand).isEmpty() && result.getDirection() != Direction.DOWN)
+        if(player.getItemInHand(hand).isEmpty() && result.getDirection() != Direction.DOWN)
         {
-            try(Transaction transaction = Transaction.openOuter())
+            // Fills the sink with water when interacting with an empty hand. TODO make config option to disable free water
+            if((this.tank.getAmount() <= 0 || this.tank.getResource().getFluid() == Fluids.WATER))
             {
-                long filled = this.tank.insert(FluidVariant.of(Fluids.WATER), FluidConstants.BUCKET / 81, transaction);
-                if(filled > 0)
+                try(Transaction transaction = Transaction.openOuter())
                 {
-                    transaction.commit();
-                    Objects.requireNonNull(this.level).playSound(null, this.worldPosition, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS);
-                    return InteractionResult.SUCCESS;
+                    long filled = this.tank.insert(FluidVariant.of(Fluids.WATER), FluidConstants.BUCKET / 81, transaction);
+                    if(filled > 0)
+                    {
+                        transaction.commit();
+                        Objects.requireNonNull(this.level).playSound(null, this.worldPosition, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS);
+                        return InteractionResult.SUCCESS;
+                    }
+                }
+            }
+            
+            // If lava is in the sink, filling it with water will consume the lava and turn it into obsidian
+            long bucketAmount = FluidConstants.BUCKET / 81L;
+            if(this.tank.getAmount() >= bucketAmount && this.tank.getResource().getFluid() == Fluids.LAVA)
+            {
+                try(Transaction transaction = Transaction.openOuter())
+                {
+                    long drained = this.tank.extract(FluidVariant.of(Fluids.LAVA), bucketAmount, transaction);
+                    if(drained == bucketAmount)
+                    {
+                        transaction.commit();
+                        Vec3 pos = Vec3.atBottomCenterOf(this.worldPosition).add(0, 1, 0);
+                        Level level = Objects.requireNonNull(this.level);
+                        ItemEntity entity = new ItemEntity(level, pos.x, pos.y, pos.z, new ItemStack(Blocks.OBSIDIAN));
+                        entity.setDefaultPickUpDelay();
+                        level.addFreshEntity(entity);
+                        level.playSound(null, this.worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS);
+                        level.levelEvent(LevelEvent.LAVA_FIZZ, this.worldPosition, 0);
+                        return InteractionResult.SUCCESS;
+                    }
                 }
             }
         }

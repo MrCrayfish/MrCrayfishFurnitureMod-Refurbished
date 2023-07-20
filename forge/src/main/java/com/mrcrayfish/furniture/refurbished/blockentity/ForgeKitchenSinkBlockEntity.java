@@ -4,21 +4,28 @@ import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSyncFluid;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.SoundAction;
 import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.common.capabilities.Capability;
@@ -99,16 +106,37 @@ public class ForgeKitchenSinkBlockEntity extends KitchenSinkBlockEntity
     @Override
     public InteractionResult interact(Player player, InteractionHand hand, BlockHitResult result)
     {
-        // Fills the sink with water when interacting with an empty hand. TODO make config option to disable free water
-        if((this.tank.isEmpty() || this.tank.getFluid().getFluid() == Fluids.WATER) && player.getItemInHand(hand).isEmpty() && result.getDirection() != Direction.DOWN)
+        if(player.getItemInHand(hand).isEmpty() && result.getDirection() != Direction.DOWN)
         {
-            int filled = this.tank.fill(new FluidStack(Fluids.WATER, FluidType.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);
-            if(filled > 0)
+            // Fills the sink with water TODO make config option to disable free water
+            if((this.tank.isEmpty() || this.tank.getFluid().getFluid() == Fluids.WATER))
             {
-                SoundEvent event = Fluids.WATER.getFluidType().getSound(SoundActions.BUCKET_EMPTY);
-                if(event != null)
+                int filled = this.tank.fill(new FluidStack(Fluids.WATER, FluidType.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);
+                if(filled > 0)
                 {
-                    Objects.requireNonNull(this.level).playSound(null, this.worldPosition, event, SoundSource.BLOCKS);
+                    SoundEvent event = Fluids.WATER.getFluidType().getSound(SoundActions.BUCKET_EMPTY);
+                    if(event != null)
+                    {
+                        Objects.requireNonNull(this.level).playSound(null, this.worldPosition, event, SoundSource.BLOCKS);
+                        return InteractionResult.SUCCESS;
+                    }
+                }
+            }
+
+            // If lava is in the sink, filling it with water will consume the lava and turn it into obsidian
+            if(this.tank.getFluidAmount() >= FluidType.BUCKET_VOLUME && this.tank.getFluid().getFluid() == Fluids.LAVA)
+            {
+                FluidStack drained = this.tank.drain(FluidType.BUCKET_VOLUME, IFluidHandler.FluidAction.SIMULATE);
+                if(drained.getAmount() == FluidType.BUCKET_VOLUME)
+                {
+                    this.tank.drain(FluidType.BUCKET_VOLUME, IFluidHandler.FluidAction.EXECUTE);
+                    Vec3 pos = Vec3.atBottomCenterOf(this.worldPosition).add(0, 1, 0);
+                    Level level = Objects.requireNonNull(this.level);
+                    ItemEntity entity = new ItemEntity(level, pos.x, pos.y, pos.z, new ItemStack(Blocks.OBSIDIAN));
+                    entity.setDefaultPickUpDelay();
+                    level.addFreshEntity(entity);
+                    level.playSound(null, this.worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS);
+                    level.levelEvent(LevelEvent.LAVA_FIZZ, this.worldPosition, 0);
                     return InteractionResult.SUCCESS;
                 }
             }
