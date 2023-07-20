@@ -7,6 +7,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -15,7 +17,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.common.SoundAction;
+import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -94,6 +99,20 @@ public class ForgeKitchenSinkBlockEntity extends KitchenSinkBlockEntity
     @Override
     public InteractionResult interact(Player player, InteractionHand hand, BlockHitResult result)
     {
+        // Fills the sink with water when interacting with an empty hand. TODO make config option to disable free water
+        if((this.tank.isEmpty() || this.tank.getFluid().getFluid() == Fluids.WATER) && player.getItemInHand(hand).isEmpty() && result.getDirection() != Direction.DOWN)
+        {
+            int filled = this.tank.fill(new FluidStack(Fluids.WATER, FluidType.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);
+            if(filled > 0)
+            {
+                SoundEvent event = Fluids.WATER.getFluidType().getSound(SoundActions.BUCKET_EMPTY);
+                if(event != null)
+                {
+                    Objects.requireNonNull(this.level).playSound(null, this.worldPosition, event, SoundSource.BLOCKS);
+                    return InteractionResult.SUCCESS;
+                }
+            }
+        }
         return FluidUtil.interactWithFluidHandler(player, hand, this.getLevel(), this.getBlockPos(), result.getDirection()) ? InteractionResult.SUCCESS : InteractionResult.PASS;
     }
 

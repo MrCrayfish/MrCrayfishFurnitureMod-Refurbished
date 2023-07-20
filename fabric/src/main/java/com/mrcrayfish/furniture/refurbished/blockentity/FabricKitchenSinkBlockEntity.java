@@ -8,15 +8,21 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.base.SingleFluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -84,9 +90,24 @@ public class FabricKitchenSinkBlockEntity extends KitchenSinkBlockEntity
         this.tank.amount = amount;
     }
 
+    // TODO particle effect when filling
     @Override
     public InteractionResult interact(Player player, InteractionHand hand, BlockHitResult result)
     {
+        // Fills the sink with water when interacting with an empty hand. TODO make config option to disable free water
+        if((this.tank.getAmount() <= 0 || this.tank.getResource().getFluid() == Fluids.WATER) && player.getItemInHand(hand).isEmpty() && result.getDirection() != Direction.DOWN)
+        {
+            try(Transaction transaction = Transaction.openOuter())
+            {
+                long filled = this.tank.insert(FluidVariant.of(Fluids.WATER), FluidConstants.BUCKET / 81, transaction);
+                if(filled > 0)
+                {
+                    transaction.commit();
+                    Objects.requireNonNull(this.level).playSound(null, this.worldPosition, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS);
+                    return InteractionResult.SUCCESS;
+                }
+            }
+        }
         return FluidStorageUtil.interactWithFluidStorage(this.tank, player, hand) ? InteractionResult.SUCCESS : InteractionResult.PASS;
     }
 
