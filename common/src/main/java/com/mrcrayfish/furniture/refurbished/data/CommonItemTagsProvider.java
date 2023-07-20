@@ -101,6 +101,16 @@ public class CommonItemTagsProvider
         kitchen.add(ModBlocks.KITCHEN_DRAWER_CHERRY.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_DRAWER_CRIMSON.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_DRAWER_WARPED.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_SINK_OAK.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_SINK_SPRUCE.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_SINK_BIRCH.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_SINK_JUNGLE.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_SINK_ACACIA.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_SINK_DARK_OAK.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_SINK_MANGROVE.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_SINK_CHERRY.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_SINK_CRIMSON.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_SINK_WARPED.get().asItem());
 
         TagBuilder<Item> outdoors = builder.apply(ModTags.Items.OUTDOORS);
         outdoors.add(ModBlocks.CRATE_OAK.get().asItem());
@@ -145,5 +155,15 @@ public class CommonItemTagsProvider
         storage.add(ModBlocks.KITCHEN_DRAWER_CHERRY.get().asItem());
         storage.add(ModBlocks.KITCHEN_DRAWER_CRIMSON.get().asItem());
         storage.add(ModBlocks.KITCHEN_DRAWER_WARPED.get().asItem());
+        storage.add(ModBlocks.KITCHEN_SINK_OAK.get().asItem());
+        storage.add(ModBlocks.KITCHEN_SINK_SPRUCE.get().asItem());
+        storage.add(ModBlocks.KITCHEN_SINK_BIRCH.get().asItem());
+        storage.add(ModBlocks.KITCHEN_SINK_JUNGLE.get().asItem());
+        storage.add(ModBlocks.KITCHEN_SINK_ACACIA.get().asItem());
+        storage.add(ModBlocks.KITCHEN_SINK_DARK_OAK.get().asItem());
+        storage.add(ModBlocks.KITCHEN_SINK_MANGROVE.get().asItem());
+        storage.add(ModBlocks.KITCHEN_SINK_CHERRY.get().asItem());
+        storage.add(ModBlocks.KITCHEN_SINK_CRIMSON.get().asItem());
+        storage.add(ModBlocks.KITCHEN_SINK_WARPED.get().asItem());
     }
 }

@@ -1,4 +1,4 @@
-package com.mrcrayfish.furniture.refurbished.client.renderer;
+package com.mrcrayfish.furniture.refurbished.client.renderer.entity;
 
 import com.mrcrayfish.furniture.refurbished.entity.Seat;
 import net.minecraft.client.renderer.entity.EntityRenderer;

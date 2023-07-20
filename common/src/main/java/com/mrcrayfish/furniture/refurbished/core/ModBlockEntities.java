@@ -5,6 +5,8 @@ import com.mrcrayfish.framework.api.registry.RegistryEntry;
 import com.mrcrayfish.furniture.refurbished.blockentity.CrateBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.DrawerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.KitchenDrawerBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.KitchenSinkBlockEntity;
+import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -53,5 +55,18 @@ public class ModBlockEntities
             ModBlocks.KITCHEN_DRAWER_CHERRY.get(),
             ModBlocks.KITCHEN_DRAWER_CRIMSON.get(),
             ModBlocks.KITCHEN_DRAWER_WARPED.get()
+    });
+
+    public static final RegistryEntry<BlockEntityType<KitchenSinkBlockEntity>> KITCHEN_SINK = RegistryEntry.blockEntity(Utils.resource("kitchen_sink"), Services.BLOCK_ENTITY::createKitchenSinkBlockEntity, () -> new Block[]{
+            ModBlocks.KITCHEN_SINK_OAK.get(),
+            ModBlocks.KITCHEN_SINK_SPRUCE.get(),
+            ModBlocks.KITCHEN_SINK_BIRCH.get(),
+            ModBlocks.KITCHEN_SINK_JUNGLE.get(),
+            ModBlocks.KITCHEN_SINK_ACACIA.get(),
+            ModBlocks.KITCHEN_SINK_DARK_OAK.get(),
+            ModBlocks.KITCHEN_SINK_MANGROVE.get(),
+            ModBlocks.KITCHEN_SINK_CHERRY.get(),
+            ModBlocks.KITCHEN_SINK_CRIMSON.get(),
+            ModBlocks.KITCHEN_SINK_WARPED.get()
     });
 }

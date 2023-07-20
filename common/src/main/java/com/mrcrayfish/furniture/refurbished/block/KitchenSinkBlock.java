@@ -1,0 +1,84 @@
+package com.mrcrayfish.furniture.refurbished.block;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.mrcrayfish.furniture.refurbished.blockentity.KitchenSinkBlockEntity;
+import com.mrcrayfish.furniture.refurbished.platform.Services;
+import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Author: MrCrayfish
+ */
+public abstract class KitchenSinkBlock extends FurnitureHorizontalBlock implements EntityBlock, IKitchenCabinetry
+{
+    public KitchenSinkBlock(Properties properties)
+    {
+        super(properties);
+        this.registerDefaultState(this.getStateDefinition().any().setValue(DIRECTION, Direction.NORTH));
+    }
+
+    @Override
+    protected Map<BlockState, VoxelShape> generateShapes(ImmutableList<BlockState> states)
+    {
+        VoxelShape topShape = Block.box(0, 8, 0, 16, 16, 16);
+        VoxelShape baseShape = Block.box(2, 0, 0, 16, 8, 16);
+        VoxelShape sinkShape = Block.box(2, 8, 4, 14, 16, 14);
+        topShape = Shapes.joinUnoptimized(topShape, sinkShape, BooleanOp.ONLY_FIRST);
+
+        ImmutableMap.Builder<BlockState, VoxelShape> builder = new ImmutableMap.Builder<>();
+        for(BlockState state : states)
+        {
+            Direction direction = state.getValue(DIRECTION);
+            List<VoxelShape> shapes = new ArrayList<>();
+            shapes.add(topShape);
+            shapes.add(VoxelShapeHelper.rotateHorizontally(baseShape, direction));
+            builder.put(state, VoxelShapeHelper.combine(shapes));
+        }
+        return builder.build();
+    }
+
+    @Override
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+    {
+        if(!level.isClientSide())
+        {
+            if(level.getBlockEntity(pos) instanceof KitchenSinkBlockEntity sink)
+            {
+                return sink.interact(player, hand, result);
+            }
+        }
+        return InteractionResult.SUCCESS;
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
+    {
+        return Services.BLOCK_ENTITY.createKitchenSinkBlockEntity(pos, state);
+    }
+
+    @Override
+    public Direction getDirection(BlockState state)
+    {
+        return state.getValue(DIRECTION);
+    }
+}
