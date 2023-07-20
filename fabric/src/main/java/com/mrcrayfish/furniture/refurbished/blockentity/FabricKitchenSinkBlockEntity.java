@@ -2,7 +2,6 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSyncFluid;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorageUtil;
@@ -12,8 +11,6 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -30,8 +27,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -62,7 +57,6 @@ public class FabricKitchenSinkBlockEntity extends KitchenSinkBlockEntity
     {
         super(type, pos, state);
         this.setChanged();
-        FluidRenderHandlerRegistry.INSTANCE.get(this.tank.getResource().getFluid());
     }
 
     @Override
@@ -100,6 +94,7 @@ public class FabricKitchenSinkBlockEntity extends KitchenSinkBlockEntity
     @Override
     public InteractionResult interact(Player player, InteractionHand hand, BlockHitResult result)
     {
+        // TODO allow this to be triggered with redstone
         if(player.getItemInHand(hand).isEmpty() && result.getDirection() != Direction.DOWN)
         {
             // Fills the sink with water when interacting with an empty hand. TODO make config option to disable free water
@@ -116,7 +111,7 @@ public class FabricKitchenSinkBlockEntity extends KitchenSinkBlockEntity
                     }
                 }
             }
-            
+
             // If lava is in the sink, filling it with water will consume the lava and turn it into obsidian
             long bucketAmount = FluidConstants.BUCKET / 81L;
             if(this.tank.getAmount() >= bucketAmount && this.tank.getResource().getFluid() == Fluids.LAVA)
