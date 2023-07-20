@@ -1,6 +1,5 @@
 package com.mrcrayfish.furniture.refurbished.block;
 
-import com.mrcrayfish.furniture.refurbished.core.ModTags;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -12,11 +11,11 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class ColouredKitchenCabinetryBlock extends KitchenCabinetryBlock implements BlockTagSupplier
+public class ColouredKitchenDrawerBlock extends KitchenDrawerBlock implements BlockTagSupplier
 {
     private final DyeColor color;
 
-    public ColouredKitchenCabinetryBlock(DyeColor color, Properties properties)
+    public ColouredKitchenDrawerBlock(DyeColor color, Properties properties)
     {
         super(properties);
         this.color = color;

@@ -127,6 +127,22 @@ public class CommonItemTagsProvider
         kitchen.add(ModBlocks.KITCHEN_CABINETRY_GREEN.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_CABINETRY_RED.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_CABINETRY_BLACK.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_DRAWER_WHITE.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_DRAWER_ORANGE.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_DRAWER_MAGENTA.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_DRAWER_LIGHT_BLUE.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_DRAWER_YELLOW.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_DRAWER_LIME.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_DRAWER_PINK.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_DRAWER_GRAY.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_DRAWER_LIGHT_GRAY.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_DRAWER_CYAN.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_DRAWER_PURPLE.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_DRAWER_BLUE.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_DRAWER_BROWN.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_DRAWER_GREEN.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_DRAWER_RED.get().asItem());
+        kitchen.add(ModBlocks.KITCHEN_DRAWER_BLACK.get().asItem());
 
         TagBuilder<Item> outdoors = builder.apply(ModTags.Items.OUTDOORS);
         outdoors.add(ModBlocks.CRATE_OAK.get().asItem());
@@ -181,5 +197,21 @@ public class CommonItemTagsProvider
         storage.add(ModBlocks.KITCHEN_SINK_CHERRY.get().asItem());
         storage.add(ModBlocks.KITCHEN_SINK_CRIMSON.get().asItem());
         storage.add(ModBlocks.KITCHEN_SINK_WARPED.get().asItem());
+        storage.add(ModBlocks.KITCHEN_DRAWER_WHITE.get().asItem());
+        storage.add(ModBlocks.KITCHEN_DRAWER_ORANGE.get().asItem());
+        storage.add(ModBlocks.KITCHEN_DRAWER_MAGENTA.get().asItem());
+        storage.add(ModBlocks.KITCHEN_DRAWER_LIGHT_BLUE.get().asItem());
+        storage.add(ModBlocks.KITCHEN_DRAWER_YELLOW.get().asItem());
+        storage.add(ModBlocks.KITCHEN_DRAWER_LIME.get().asItem());
+        storage.add(ModBlocks.KITCHEN_DRAWER_PINK.get().asItem());
+        storage.add(ModBlocks.KITCHEN_DRAWER_GRAY.get().asItem());
+        storage.add(ModBlocks.KITCHEN_DRAWER_LIGHT_GRAY.get().asItem());
+        storage.add(ModBlocks.KITCHEN_DRAWER_CYAN.get().asItem());
+        storage.add(ModBlocks.KITCHEN_DRAWER_PURPLE.get().asItem());
+        storage.add(ModBlocks.KITCHEN_DRAWER_BLUE.get().asItem());
+        storage.add(ModBlocks.KITCHEN_DRAWER_BROWN.get().asItem());
+        storage.add(ModBlocks.KITCHEN_DRAWER_GREEN.get().asItem());
+        storage.add(ModBlocks.KITCHEN_DRAWER_RED.get().asItem());
+        storage.add(ModBlocks.KITCHEN_DRAWER_BLACK.get().asItem());
     }
 }

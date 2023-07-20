@@ -127,6 +127,22 @@ public class CommonModelProvider
         this.colouredKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_GREEN.get());
         this.colouredKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_RED.get());
         this.colouredKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_BLACK.get());
+        this.colouredKitchenDrawer(ModBlocks.KITCHEN_DRAWER_WHITE.get());
+        this.colouredKitchenDrawer(ModBlocks.KITCHEN_DRAWER_ORANGE.get());
+        this.colouredKitchenDrawer(ModBlocks.KITCHEN_DRAWER_MAGENTA.get());
+        this.colouredKitchenDrawer(ModBlocks.KITCHEN_DRAWER_LIGHT_BLUE.get());
+        this.colouredKitchenDrawer(ModBlocks.KITCHEN_DRAWER_YELLOW.get());
+        this.colouredKitchenDrawer(ModBlocks.KITCHEN_DRAWER_LIME.get());
+        this.colouredKitchenDrawer(ModBlocks.KITCHEN_DRAWER_PINK.get());
+        this.colouredKitchenDrawer(ModBlocks.KITCHEN_DRAWER_GRAY.get());
+        this.colouredKitchenDrawer(ModBlocks.KITCHEN_DRAWER_LIGHT_GRAY.get());
+        this.colouredKitchenDrawer(ModBlocks.KITCHEN_DRAWER_CYAN.get());
+        this.colouredKitchenDrawer(ModBlocks.KITCHEN_DRAWER_PURPLE.get());
+        this.colouredKitchenDrawer(ModBlocks.KITCHEN_DRAWER_BLUE.get());
+        this.colouredKitchenDrawer(ModBlocks.KITCHEN_DRAWER_BROWN.get());
+        this.colouredKitchenDrawer(ModBlocks.KITCHEN_DRAWER_GREEN.get());
+        this.colouredKitchenDrawer(ModBlocks.KITCHEN_DRAWER_RED.get());
+        this.colouredKitchenDrawer(ModBlocks.KITCHEN_DRAWER_BLACK.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -140,7 +156,7 @@ public class CommonModelProvider
         return new ResourceLocation(Constants.MOD_ID, "block/" + type.name() + "_particle");
     }
 
-    private ResourceLocation colorParticle(DyeColor color)
+    private ResourceLocation colourParticle(DyeColor color)
     {
         return new ResourceLocation(Constants.MOD_ID, "block/" + color.getName() + "_particle");
     }
@@ -335,7 +351,7 @@ public class CommonModelProvider
     {
         DyeColor color = block.getDyeColor();
         TextureMapping textures = new TextureMapping();
-        textures.put(TextureSlot.PARTICLE, this.colorParticle(color));
+        textures.put(TextureSlot.PARTICLE, this.colourParticle(color));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
         PreparedBlockState state = new PreparedBlockState(block);
         state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.NORTH).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.DEFAULT).model(ModelTemplate.KITCHEN_CABINETRY_DEFAULT.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
@@ -358,6 +374,24 @@ public class CommonModelProvider
         state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.WEST).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.INSIDE_CORNER_RIGHT).model(ModelTemplate.KITCHEN_CABINETRY_INSIDE_CORNER_RIGHT.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.WEST).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_LEFT).model(ModelTemplate.KITCHEN_CABINETRY_OUTSIDE_CORNER_LEFT.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.WEST).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_RIGHT).model(ModelTemplate.KITCHEN_CABINETRY_OUTSIDE_CORNER_RIGHT.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        this.consumer.accept(state);
+    }
+
+    private void colouredKitchenDrawer(ColouredKitchenDrawerBlock block)
+    {
+        DyeColor color = block.getDyeColor();
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.colourParticle(color));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedBlockState state = new PreparedBlockState(block);
+        state.createVariant().prop(DrawerBlock.DIRECTION, Direction.NORTH).prop(DrawerBlock.OPEN, false).model(ModelTemplate.KITCHEN_DRAWER_CLOSED.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(DrawerBlock.DIRECTION, Direction.EAST).prop(DrawerBlock.OPEN, false).model(ModelTemplate.KITCHEN_DRAWER_CLOSED.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(DrawerBlock.DIRECTION, Direction.SOUTH).prop(DrawerBlock.OPEN, false).model(ModelTemplate.KITCHEN_DRAWER_CLOSED.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(DrawerBlock.DIRECTION, Direction.WEST).prop(DrawerBlock.OPEN, false).model(ModelTemplate.KITCHEN_DRAWER_CLOSED.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(DrawerBlock.DIRECTION, Direction.NORTH).prop(DrawerBlock.OPEN, true).model(ModelTemplate.KITCHEN_DRAWER_OPEN.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
+        state.createVariant().prop(DrawerBlock.DIRECTION, Direction.EAST).prop(DrawerBlock.OPEN, true).model(ModelTemplate.KITCHEN_DRAWER_OPEN.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(DrawerBlock.DIRECTION, Direction.SOUTH).prop(DrawerBlock.OPEN, true).model(ModelTemplate.KITCHEN_DRAWER_OPEN.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(DrawerBlock.DIRECTION, Direction.WEST).prop(DrawerBlock.OPEN, true).model(ModelTemplate.KITCHEN_DRAWER_OPEN.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         this.consumer.accept(state);
     }
 }
