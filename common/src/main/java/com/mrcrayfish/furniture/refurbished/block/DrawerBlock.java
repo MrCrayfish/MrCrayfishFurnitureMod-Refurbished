@@ -95,9 +95,9 @@ public class DrawerBlock extends DeskBlock implements EntityBlock
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random)
     {
-        if(level.getBlockEntity(pos) instanceof DrawerBlockEntity blockEntity)
+        if(level.getBlockEntity(pos) instanceof DrawerBlockEntity drawer)
         {
-            blockEntity.updateOpenerCount();
+            drawer.updateOpenerCount();
         }
     }
 

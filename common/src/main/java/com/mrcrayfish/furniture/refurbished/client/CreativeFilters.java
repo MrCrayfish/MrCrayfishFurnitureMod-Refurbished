@@ -14,6 +14,7 @@ import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import com.mrcrayfish.furniture.refurbished.client.util.VanillaTextures;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModCreativeTabs;
+import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.core.ModTags;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import net.minecraft.ChatFormatting;
@@ -73,11 +74,11 @@ public class CreativeFilters
     {
         ImmutableList.Builder<FilterCategory> builder = ImmutableList.builder();
         builder.add(new FilterCategory(ModTags.Items.GENERAL, new ItemStack(ModBlocks.CHAIR_OAK.get())));
-        builder.add(new FilterCategory(ModTags.Items.BEDROOM, new ItemStack(ModBlocks.DRAWER_OAK.get())));
-        builder.add(new FilterCategory(ModTags.Items.KITCHEN, new ItemStack(ModBlocks.KITCHEN_CABINETRY_OAK.get())));
-        builder.add(new FilterCategory(ModTags.Items.OUTDOORS, new ItemStack(Items.STICK)));
-        builder.add(new FilterCategory(ModTags.Items.STORAGE, new ItemStack(ModBlocks.CRATE_OAK.get())));
-        builder.add(new FilterCategory(ModTags.Items.ITEMS, new ItemStack(Items.STICK)));
+        builder.add(new FilterCategory(ModTags.Items.BEDROOM, new ItemStack(ModBlocks.DRAWER_SPRUCE.get())));
+        builder.add(new FilterCategory(ModTags.Items.KITCHEN, new ItemStack(ModBlocks.KITCHEN_CABINETRY_GRAY.get())));
+        builder.add(new FilterCategory(ModTags.Items.OUTDOORS, new ItemStack(ModBlocks.GRILL_RED.get())));
+        builder.add(new FilterCategory(ModTags.Items.STORAGE, new ItemStack(ModBlocks.CRATE_BIRCH.get())));
+        builder.add(new FilterCategory(ModTags.Items.ITEMS, new ItemStack(ModItems.SPATULA.get())));
         this.categories = builder.build();
 
         /* Initializes and injects widgets into the creative mode screen for the filter system */

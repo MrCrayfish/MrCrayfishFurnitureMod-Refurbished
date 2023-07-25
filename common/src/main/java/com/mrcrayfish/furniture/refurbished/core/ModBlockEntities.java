@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.core;
 
 import com.mrcrayfish.framework.api.registry.RegistryContainer;
 import com.mrcrayfish.framework.api.registry.RegistryEntry;
+import com.mrcrayfish.furniture.refurbished.blockentity.CoolerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.CrateBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.DrawerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.GrillBlockEntity;
@@ -120,5 +121,24 @@ public class ModBlockEntities
             ModBlocks.GRILL_GREEN.get(),
             ModBlocks.GRILL_RED.get(),
             ModBlocks.GRILL_BLACK.get(),
+    });
+
+    public static final RegistryEntry<BlockEntityType<CoolerBlockEntity>> COOLER = RegistryEntry.blockEntity(Utils.resource("cooler"), CoolerBlockEntity::new, () -> new Block[]{
+            ModBlocks.COOLER_WHITE.get(),
+            ModBlocks.COOLER_ORANGE.get(),
+            ModBlocks.COOLER_MAGENTA.get(),
+            ModBlocks.COOLER_LIGHT_BLUE.get(),
+            ModBlocks.COOLER_YELLOW.get(),
+            ModBlocks.COOLER_LIME.get(),
+            ModBlocks.COOLER_PINK.get(),
+            ModBlocks.COOLER_GRAY.get(),
+            ModBlocks.COOLER_LIGHT_GRAY.get(),
+            ModBlocks.COOLER_CYAN.get(),
+            ModBlocks.COOLER_PURPLE.get(),
+            ModBlocks.COOLER_BLUE.get(),
+            ModBlocks.COOLER_BROWN.get(),
+            ModBlocks.COOLER_GREEN.get(),
+            ModBlocks.COOLER_RED.get(),
+            ModBlocks.COOLER_BLACK.get(),
     });
 }

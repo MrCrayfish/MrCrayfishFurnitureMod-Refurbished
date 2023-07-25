@@ -189,6 +189,22 @@ public class CommonItemTagsProvider
         outdoors.add(ModBlocks.GRILL_GREEN.get().asItem());
         outdoors.add(ModBlocks.GRILL_RED.get().asItem());
         outdoors.add(ModBlocks.GRILL_BLACK.get().asItem());
+        outdoors.add(ModBlocks.COOLER_WHITE.get().asItem());
+        outdoors.add(ModBlocks.COOLER_ORANGE.get().asItem());
+        outdoors.add(ModBlocks.COOLER_MAGENTA.get().asItem());
+        outdoors.add(ModBlocks.COOLER_LIGHT_BLUE.get().asItem());
+        outdoors.add(ModBlocks.COOLER_YELLOW.get().asItem());
+        outdoors.add(ModBlocks.COOLER_LIME.get().asItem());
+        outdoors.add(ModBlocks.COOLER_PINK.get().asItem());
+        outdoors.add(ModBlocks.COOLER_GRAY.get().asItem());
+        outdoors.add(ModBlocks.COOLER_LIGHT_GRAY.get().asItem());
+        outdoors.add(ModBlocks.COOLER_CYAN.get().asItem());
+        outdoors.add(ModBlocks.COOLER_PURPLE.get().asItem());
+        outdoors.add(ModBlocks.COOLER_BLUE.get().asItem());
+        outdoors.add(ModBlocks.COOLER_BROWN.get().asItem());
+        outdoors.add(ModBlocks.COOLER_GREEN.get().asItem());
+        outdoors.add(ModBlocks.COOLER_RED.get().asItem());
+        outdoors.add(ModBlocks.COOLER_BLACK.get().asItem());
         outdoors.add(ModItems.SPATULA.get());
 
         TagBuilder<Item> storage = builder.apply(ModTags.Items.STORAGE);
@@ -280,6 +296,22 @@ public class CommonItemTagsProvider
         storage.add(ModBlocks.GRILL_GREEN.get().asItem());
         storage.add(ModBlocks.GRILL_RED.get().asItem());
         storage.add(ModBlocks.GRILL_BLACK.get().asItem());
+        storage.add(ModBlocks.COOLER_WHITE.get().asItem());
+        storage.add(ModBlocks.COOLER_ORANGE.get().asItem());
+        storage.add(ModBlocks.COOLER_MAGENTA.get().asItem());
+        storage.add(ModBlocks.COOLER_LIGHT_BLUE.get().asItem());
+        storage.add(ModBlocks.COOLER_YELLOW.get().asItem());
+        storage.add(ModBlocks.COOLER_LIME.get().asItem());
+        storage.add(ModBlocks.COOLER_PINK.get().asItem());
+        storage.add(ModBlocks.COOLER_GRAY.get().asItem());
+        storage.add(ModBlocks.COOLER_LIGHT_GRAY.get().asItem());
+        storage.add(ModBlocks.COOLER_CYAN.get().asItem());
+        storage.add(ModBlocks.COOLER_PURPLE.get().asItem());
+        storage.add(ModBlocks.COOLER_BLUE.get().asItem());
+        storage.add(ModBlocks.COOLER_BROWN.get().asItem());
+        storage.add(ModBlocks.COOLER_GREEN.get().asItem());
+        storage.add(ModBlocks.COOLER_RED.get().asItem());
+        storage.add(ModBlocks.COOLER_BLACK.get().asItem());
 
         TagBuilder<Item> items = builder.apply(ModTags.Items.ITEMS);
         items.add(ModItems.SPATULA.get());

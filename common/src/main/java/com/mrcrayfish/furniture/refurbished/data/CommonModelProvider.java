@@ -175,6 +175,22 @@ public class CommonModelProvider
         this.grill(ModBlocks.GRILL_GREEN.get());
         this.grill(ModBlocks.GRILL_RED.get());
         this.grill(ModBlocks.GRILL_BLACK.get());
+        this.cooler(ModBlocks.COOLER_WHITE.get());
+        this.cooler(ModBlocks.COOLER_ORANGE.get());
+        this.cooler(ModBlocks.COOLER_MAGENTA.get());
+        this.cooler(ModBlocks.COOLER_LIGHT_BLUE.get());
+        this.cooler(ModBlocks.COOLER_YELLOW.get());
+        this.cooler(ModBlocks.COOLER_LIME.get());
+        this.cooler(ModBlocks.COOLER_PINK.get());
+        this.cooler(ModBlocks.COOLER_GRAY.get());
+        this.cooler(ModBlocks.COOLER_LIGHT_GRAY.get());
+        this.cooler(ModBlocks.COOLER_CYAN.get());
+        this.cooler(ModBlocks.COOLER_PURPLE.get());
+        this.cooler(ModBlocks.COOLER_BLUE.get());
+        this.cooler(ModBlocks.COOLER_BROWN.get());
+        this.cooler(ModBlocks.COOLER_GREEN.get());
+        this.cooler(ModBlocks.COOLER_RED.get());
+        this.cooler(ModBlocks.COOLER_BLACK.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -452,6 +468,24 @@ public class CommonModelProvider
         state.createVariant().prop(GrillBlock.DIRECTION, Direction.EAST).model(ModelTemplate.GRILL.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(GrillBlock.DIRECTION, Direction.SOUTH).model(ModelTemplate.GRILL.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(GrillBlock.DIRECTION, Direction.WEST).model(ModelTemplate.GRILL.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        this.consumer.accept(state);
+    }
+
+    private void cooler(CoolerBlock block)
+    {
+        DyeColor color = block.getDyeColor();
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.colourParticle(color));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedBlockState state = new PreparedBlockState(block);
+        state.createVariant().prop(CoolerBlock.DIRECTION, Direction.NORTH).prop(CoolerBlock.OPEN, false).model(ModelTemplate.COOLER_CLOSED.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(CoolerBlock.DIRECTION, Direction.EAST).prop(CoolerBlock.OPEN, false).model(ModelTemplate.COOLER_CLOSED.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(CoolerBlock.DIRECTION, Direction.SOUTH).prop(CoolerBlock.OPEN, false).model(ModelTemplate.COOLER_CLOSED.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(CoolerBlock.DIRECTION, Direction.WEST).prop(CoolerBlock.OPEN, false).model(ModelTemplate.COOLER_CLOSED.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(CoolerBlock.DIRECTION, Direction.NORTH).prop(CoolerBlock.OPEN, true).model(ModelTemplate.COOLER_OPEN.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(CoolerBlock.DIRECTION, Direction.EAST).prop(CoolerBlock.OPEN, true).model(ModelTemplate.COOLER_OPEN.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(CoolerBlock.DIRECTION, Direction.SOUTH).prop(CoolerBlock.OPEN, true).model(ModelTemplate.COOLER_OPEN.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(CoolerBlock.DIRECTION, Direction.WEST).prop(CoolerBlock.OPEN, true).model(ModelTemplate.COOLER_OPEN.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         this.consumer.accept(state);
     }
 }
