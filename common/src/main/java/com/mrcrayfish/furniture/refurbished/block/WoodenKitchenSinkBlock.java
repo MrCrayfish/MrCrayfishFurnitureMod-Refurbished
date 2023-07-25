@@ -25,7 +25,7 @@ public class WoodenKitchenSinkBlock extends KitchenSinkBlock implements BlockTag
     {
         return this.type;
     }
-    
+
     @Override
     public List<TagKey<Block>> getTags()
     {

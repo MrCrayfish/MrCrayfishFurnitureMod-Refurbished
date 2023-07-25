@@ -55,6 +55,7 @@ public class ModelTemplate
     public static final ModelTemplate KITCHEN_DRAWER_CLOSED = block("kitchen_drawer_closed", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate KITCHEN_DRAWER_OPEN = block("kitchen_drawer_open", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate KITCHEN_SINK = block("kitchen_sink", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate GRILL = block("grill", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
 
     private static ModelTemplate block(String name, TextureSlot ... textures)
     {

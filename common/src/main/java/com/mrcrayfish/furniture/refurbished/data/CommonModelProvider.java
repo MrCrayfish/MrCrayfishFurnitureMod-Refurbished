@@ -159,6 +159,22 @@ public class CommonModelProvider
         this.colouredKitchenSink(ModBlocks.KITCHEN_SINK_GREEN.get());
         this.colouredKitchenSink(ModBlocks.KITCHEN_SINK_RED.get());
         this.colouredKitchenSink(ModBlocks.KITCHEN_SINK_BLACK.get());
+        this.grill(ModBlocks.GRILL_WHITE.get());
+        this.grill(ModBlocks.GRILL_ORANGE.get());
+        this.grill(ModBlocks.GRILL_MAGENTA.get());
+        this.grill(ModBlocks.GRILL_LIGHT_BLUE.get());
+        this.grill(ModBlocks.GRILL_YELLOW.get());
+        this.grill(ModBlocks.GRILL_LIME.get());
+        this.grill(ModBlocks.GRILL_PINK.get());
+        this.grill(ModBlocks.GRILL_GRAY.get());
+        this.grill(ModBlocks.GRILL_LIGHT_GRAY.get());
+        this.grill(ModBlocks.GRILL_CYAN.get());
+        this.grill(ModBlocks.GRILL_PURPLE.get());
+        this.grill(ModBlocks.GRILL_BLUE.get());
+        this.grill(ModBlocks.GRILL_BROWN.get());
+        this.grill(ModBlocks.GRILL_GREEN.get());
+        this.grill(ModBlocks.GRILL_RED.get());
+        this.grill(ModBlocks.GRILL_BLACK.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -422,6 +438,20 @@ public class CommonModelProvider
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.EAST).model(ModelTemplate.KITCHEN_SINK.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.SOUTH).model(ModelTemplate.KITCHEN_SINK.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.WEST).model(ModelTemplate.KITCHEN_SINK.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        this.consumer.accept(state);
+    }
+
+    private void grill(GrillBlock block)
+    {
+        DyeColor color = block.getDyeColor();
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.colourParticle(color));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedBlockState state = new PreparedBlockState(block);
+        state.createVariant().prop(GrillBlock.DIRECTION, Direction.NORTH).model(ModelTemplate.GRILL.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(GrillBlock.DIRECTION, Direction.EAST).model(ModelTemplate.GRILL.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(GrillBlock.DIRECTION, Direction.SOUTH).model(ModelTemplate.GRILL.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(GrillBlock.DIRECTION, Direction.WEST).model(ModelTemplate.GRILL.prepared(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         this.consumer.accept(state);
     }
 }

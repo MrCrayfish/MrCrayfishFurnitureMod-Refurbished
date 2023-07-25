@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.data;
 
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
+import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.core.ModTags;
 import com.mrcrayfish.furniture.refurbished.data.tag.TagBuilder;
 import net.minecraft.tags.TagKey;
@@ -159,6 +160,7 @@ public class CommonItemTagsProvider
         kitchen.add(ModBlocks.KITCHEN_SINK_GREEN.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_SINK_RED.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_SINK_BLACK.get().asItem());
+        kitchen.add(ModItems.SPATULA.get());
 
         TagBuilder<Item> outdoors = builder.apply(ModTags.Items.OUTDOORS);
         outdoors.add(ModBlocks.CRATE_OAK.get().asItem());
@@ -171,6 +173,23 @@ public class CommonItemTagsProvider
         outdoors.add(ModBlocks.CRATE_CHERRY.get().asItem());
         outdoors.add(ModBlocks.CRATE_CRIMSON.get().asItem());
         outdoors.add(ModBlocks.CRATE_WARPED.get().asItem());
+        outdoors.add(ModBlocks.GRILL_WHITE.get().asItem());
+        outdoors.add(ModBlocks.GRILL_ORANGE.get().asItem());
+        outdoors.add(ModBlocks.GRILL_MAGENTA.get().asItem());
+        outdoors.add(ModBlocks.GRILL_LIGHT_BLUE.get().asItem());
+        outdoors.add(ModBlocks.GRILL_YELLOW.get().asItem());
+        outdoors.add(ModBlocks.GRILL_LIME.get().asItem());
+        outdoors.add(ModBlocks.GRILL_PINK.get().asItem());
+        outdoors.add(ModBlocks.GRILL_GRAY.get().asItem());
+        outdoors.add(ModBlocks.GRILL_LIGHT_GRAY.get().asItem());
+        outdoors.add(ModBlocks.GRILL_CYAN.get().asItem());
+        outdoors.add(ModBlocks.GRILL_PURPLE.get().asItem());
+        outdoors.add(ModBlocks.GRILL_BLUE.get().asItem());
+        outdoors.add(ModBlocks.GRILL_BROWN.get().asItem());
+        outdoors.add(ModBlocks.GRILL_GREEN.get().asItem());
+        outdoors.add(ModBlocks.GRILL_RED.get().asItem());
+        outdoors.add(ModBlocks.GRILL_BLACK.get().asItem());
+        outdoors.add(ModItems.SPATULA.get());
 
         TagBuilder<Item> storage = builder.apply(ModTags.Items.STORAGE);
         storage.add(ModBlocks.DRAWER_OAK.get().asItem());
@@ -245,5 +264,24 @@ public class CommonItemTagsProvider
         storage.add(ModBlocks.KITCHEN_SINK_GREEN.get().asItem());
         storage.add(ModBlocks.KITCHEN_SINK_RED.get().asItem());
         storage.add(ModBlocks.KITCHEN_SINK_BLACK.get().asItem());
+        storage.add(ModBlocks.GRILL_WHITE.get().asItem());
+        storage.add(ModBlocks.GRILL_ORANGE.get().asItem());
+        storage.add(ModBlocks.GRILL_MAGENTA.get().asItem());
+        storage.add(ModBlocks.GRILL_LIGHT_BLUE.get().asItem());
+        storage.add(ModBlocks.GRILL_YELLOW.get().asItem());
+        storage.add(ModBlocks.GRILL_LIME.get().asItem());
+        storage.add(ModBlocks.GRILL_PINK.get().asItem());
+        storage.add(ModBlocks.GRILL_GRAY.get().asItem());
+        storage.add(ModBlocks.GRILL_LIGHT_GRAY.get().asItem());
+        storage.add(ModBlocks.GRILL_CYAN.get().asItem());
+        storage.add(ModBlocks.GRILL_PURPLE.get().asItem());
+        storage.add(ModBlocks.GRILL_BLUE.get().asItem());
+        storage.add(ModBlocks.GRILL_BROWN.get().asItem());
+        storage.add(ModBlocks.GRILL_GREEN.get().asItem());
+        storage.add(ModBlocks.GRILL_RED.get().asItem());
+        storage.add(ModBlocks.GRILL_BLACK.get().asItem());
+
+        TagBuilder<Item> items = builder.apply(ModTags.Items.ITEMS);
+        items.add(ModItems.SPATULA.get());
     }
 }

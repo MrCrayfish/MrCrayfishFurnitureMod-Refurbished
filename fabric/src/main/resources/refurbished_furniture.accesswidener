@@ -5,3 +5,4 @@ accessible field net/minecraft/client/gui/screens/inventory/CreativeModeInventor
 accessible field net/minecraft/client/gui/components/Tooltip cachedTooltip Ljava/util/List;
 accessible method net/minecraft/data/models/blockstates/PropertyDispatch getDefinedProperties ()Ljava/util/List;
 accessible method net/minecraft/data/models/BlockModelGenerators skipAutoItemBlock (Lnet/minecraft/world/level/block/Block;)V
+accessible class net/minecraft/world/item/crafting/SimpleCookingSerializer$CookieBaker

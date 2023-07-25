@@ -11,9 +11,10 @@ version = "${minecraft_version}-${mod_version}"
 mixin {
     add(sourceSets.main, "${mod_id}.refmap.json")
     config("${mod_id}.forge.mixins.json")
-    if(file("${mod_id}.common.mixins.json").exists()) {
+    config "${mod_id}.common.mixins.json"
+    /*if(project(":common").file("${mod_id}.common.mixins.json").exists()) {
         config "${mod_id}.common.mixins.json"
-    }
+    }*/
 }
 
 minecraft {

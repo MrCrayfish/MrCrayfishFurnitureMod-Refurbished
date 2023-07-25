@@ -4,6 +4,7 @@ import com.mrcrayfish.framework.api.registry.RegistryContainer;
 import com.mrcrayfish.framework.api.registry.RegistryEntry;
 import com.mrcrayfish.furniture.refurbished.blockentity.CrateBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.DrawerBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.GrillBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.KitchenDrawerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.KitchenSinkBlockEntity;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
@@ -100,5 +101,24 @@ public class ModBlockEntities
             ModBlocks.KITCHEN_SINK_GREEN.get(),
             ModBlocks.KITCHEN_SINK_RED.get(),
             ModBlocks.KITCHEN_SINK_BLACK.get(),
+    });
+
+    public static final RegistryEntry<BlockEntityType<GrillBlockEntity>> GRILL = RegistryEntry.blockEntity(Utils.resource("grill"), GrillBlockEntity::new, () -> new Block[]{
+            ModBlocks.GRILL_WHITE.get(),
+            ModBlocks.GRILL_ORANGE.get(),
+            ModBlocks.GRILL_MAGENTA.get(),
+            ModBlocks.GRILL_LIGHT_BLUE.get(),
+            ModBlocks.GRILL_YELLOW.get(),
+            ModBlocks.GRILL_LIME.get(),
+            ModBlocks.GRILL_PINK.get(),
+            ModBlocks.GRILL_GRAY.get(),
+            ModBlocks.GRILL_LIGHT_GRAY.get(),
+            ModBlocks.GRILL_CYAN.get(),
+            ModBlocks.GRILL_PURPLE.get(),
+            ModBlocks.GRILL_BLUE.get(),
+            ModBlocks.GRILL_BROWN.get(),
+            ModBlocks.GRILL_GREEN.get(),
+            ModBlocks.GRILL_RED.get(),
+            ModBlocks.GRILL_BLACK.get(),
     });
 }

@@ -19,6 +19,6 @@ public class FurnitureRecipeProvider extends RecipeProvider
     @Override
     protected void buildRecipes(Consumer<FinishedRecipe> consumer)
     {
-        CommonRecipeProvider.accept(consumer);
+        new CommonRecipeProvider(consumer, RecipeProvider::has).run();
     }
 }

@@ -4,6 +4,7 @@ import com.mrcrayfish.framework.api.FrameworkAPI;
 import com.mrcrayfish.framework.api.network.FrameworkNetwork;
 import com.mrcrayfish.framework.api.network.MessageDirection;
 import com.mrcrayfish.furniture.refurbished.Constants;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageFlipGrillItem;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSyncFluid;
 import net.minecraft.resources.ResourceLocation;
 
@@ -15,6 +16,7 @@ public class Network
     public static final FrameworkNetwork PLAY = FrameworkAPI
             .createNetworkBuilder(new ResourceLocation(Constants.MOD_ID, "play"), 1)
             .registerPlayMessage(MessageSyncFluid.class, MessageDirection.PLAY_CLIENT_BOUND)
+            .registerPlayMessage(MessageFlipGrillItem.class, MessageDirection.PLAY_CLIENT_BOUND)
             .build();
 
     public static void init() {}
