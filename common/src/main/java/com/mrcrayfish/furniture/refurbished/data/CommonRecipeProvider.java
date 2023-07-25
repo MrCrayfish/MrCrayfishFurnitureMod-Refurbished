@@ -28,15 +28,23 @@ public class CommonRecipeProvider
 
     public void run()
     {
-        this.grillCooking(Items.BEEF, Items.COOKED_BEEF, 600);
+        this.grillCooking(Items.BEEF, Items.COOKED_BEEF, 200, 0.5F);
+        this.grillCooking(Items.CHICKEN, Items.COOKED_CHICKEN, 200, 0.5F);
+        this.grillCooking(Items.COD, Items.COOKED_COD, 200, 0.5F);
+        this.grillCooking(Items.KELP, Items.DRIED_KELP, 200, 0.25F);
+        this.grillCooking(Items.SALMON, Items.COOKED_SALMON, 200, 0.5F);
+        this.grillCooking(Items.MUTTON, Items.COOKED_MUTTON, 200, 0.5F);
+        this.grillCooking(Items.PORKCHOP, Items.COOKED_PORKCHOP, 200, 0.5F);
+        this.grillCooking(Items.POTATO, Items.BAKED_POTATO, 200, 0.5F);
+        this.grillCooking(Items.RABBIT, Items.COOKED_RABBIT, 200, 0.5F);
     }
 
-    private void grillCooking(ItemLike rawItem, ItemLike cookedItem, int cookingTime)
+    private void grillCooking(ItemLike rawItem, ItemLike cookedItem, int cookingTime, float experience)
     {
         String rawName = rawItem.asItem().toString();
         String cookedName = cookedItem.asItem().toString();
         SimpleCookingRecipeBuilder
-                .generic(Ingredient.of(rawItem), RecipeCategory.FOOD, cookedItem, 0.35F, cookingTime, ModRecipeSerializers.GRILL_RECIPE.get())
+                .generic(Ingredient.of(rawItem), RecipeCategory.FOOD, cookedItem, experience, cookingTime, ModRecipeSerializers.GRILL_RECIPE.get())
                 .unlockedBy("has_" + rawName, this.has.apply(rawItem))
                 .save(this.consumer, cookedName + "_from_grill_cooking");
     }
