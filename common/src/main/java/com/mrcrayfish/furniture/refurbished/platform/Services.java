@@ -1,9 +1,9 @@
 package com.mrcrayfish.furniture.refurbished.platform;
 
+import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.platform.services.IBlockEntityHelper;
 import com.mrcrayfish.furniture.refurbished.platform.services.IItemHelper;
 import com.mrcrayfish.furniture.refurbished.platform.services.IPlatformHelper;
-import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.platform.services.IRecipeHelper;
 
 import java.util.ServiceLoader;

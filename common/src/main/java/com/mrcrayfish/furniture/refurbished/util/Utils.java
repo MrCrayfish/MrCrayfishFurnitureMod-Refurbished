@@ -3,8 +3,6 @@ package com.mrcrayfish.furniture.refurbished.util;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.ChestMenu;
-import net.minecraft.world.inventory.MenuType;
 
 /**
  * Author: MrCrayfish

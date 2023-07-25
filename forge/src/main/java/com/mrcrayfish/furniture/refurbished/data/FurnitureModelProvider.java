@@ -2,8 +2,8 @@ package com.mrcrayfish.furniture.refurbished.data;
 
 import com.mrcrayfish.framework.Registration;
 import com.mrcrayfish.furniture.refurbished.Constants;
-import com.mrcrayfish.furniture.refurbished.data.model.PreparedBlockState;
 import com.mrcrayfish.furniture.refurbished.data.model.ModelTemplate;
+import com.mrcrayfish.furniture.refurbished.data.model.PreparedBlockState;
 import com.mrcrayfish.furniture.refurbished.data.model.PreparedStateModel;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;

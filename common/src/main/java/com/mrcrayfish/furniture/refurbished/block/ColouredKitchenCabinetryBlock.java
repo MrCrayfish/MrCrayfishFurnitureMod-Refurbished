@@ -1,6 +1,5 @@
 package com.mrcrayfish.furniture.refurbished.block;
 
-import com.mrcrayfish.furniture.refurbished.core.ModTags;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;

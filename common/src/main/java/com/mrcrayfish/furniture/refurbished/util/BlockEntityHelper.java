@@ -1,7 +1,5 @@
 package com.mrcrayfish.furniture.refurbished.util;
 
-import com.mrcrayfish.furniture.refurbished.network.Network;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageSyncFluid;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
