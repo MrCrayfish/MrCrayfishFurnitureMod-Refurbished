@@ -160,6 +160,8 @@ public class CommonItemTagsProvider
         kitchen.add(ModBlocks.KITCHEN_SINK_GREEN.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_SINK_RED.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_SINK_BLACK.get().asItem());
+        kitchen.add(ModItems.FRIDGE_LIGHT.get());
+        kitchen.add(ModItems.FRIDGE_DARK.get());
         kitchen.add(ModItems.SPATULA.get());
 
         TagBuilder<Item> outdoors = builder.apply(ModTags.Items.OUTDOORS);
@@ -312,6 +314,8 @@ public class CommonItemTagsProvider
         storage.add(ModBlocks.COOLER_GREEN.get().asItem());
         storage.add(ModBlocks.COOLER_RED.get().asItem());
         storage.add(ModBlocks.COOLER_BLACK.get().asItem());
+        storage.add(ModItems.FRIDGE_LIGHT.get());
+        storage.add(ModItems.FRIDGE_DARK.get());
 
         TagBuilder<Item> items = builder.apply(ModTags.Items.ITEMS);
         items.add(ModItems.SPATULA.get());

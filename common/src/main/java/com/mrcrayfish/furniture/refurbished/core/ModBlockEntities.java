@@ -5,6 +5,8 @@ import com.mrcrayfish.framework.api.registry.RegistryEntry;
 import com.mrcrayfish.furniture.refurbished.blockentity.CoolerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.CrateBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.DrawerBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.FreezerBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.FridgeBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.GrillBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.KitchenDrawerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.KitchenSinkBlockEntity;
@@ -140,5 +142,15 @@ public class ModBlockEntities
             ModBlocks.COOLER_GREEN.get(),
             ModBlocks.COOLER_RED.get(),
             ModBlocks.COOLER_BLACK.get(),
+    });
+
+    public static final RegistryEntry<BlockEntityType<FridgeBlockEntity>> FRIDGE = RegistryEntry.blockEntity(Utils.resource("fridge"), FridgeBlockEntity::new, () -> new Block[]{
+            ModBlocks.FRIDGE_LIGHT.get(),
+            ModBlocks.FRIDGE_DARK.get()
+    });
+
+    public static final RegistryEntry<BlockEntityType<FreezerBlockEntity>> FREEZER = RegistryEntry.blockEntity(Utils.resource("freezer"), FreezerBlockEntity::new, () -> new Block[]{
+            ModBlocks.FREEZER_LIGHT.get(),
+            ModBlocks.FREEZER_DARK.get()
     });
 }

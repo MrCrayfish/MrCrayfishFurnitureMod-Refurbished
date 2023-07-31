@@ -17,12 +17,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(SimpleCookingRecipeBuilder.class)
 public class SimpleCookingRecipeBuilderMixin
 {
+    // Fixes an issue where generating recipes would throw an error since it can't find an appropriate recipe category
     @Inject(method = "determineRecipeCategory", at = @At(value = "HEAD"), cancellable = true)
     private static void refurbishedFurnitureFixCategory(RecipeSerializer<? extends AbstractCookingRecipe> serializer, ItemLike item, CallbackInfoReturnable<CookingBookCategory> cir)
     {
         if(serializer == ModRecipeSerializers.GRILL_RECIPE.get())
         {
             cir.setReturnValue(CookingBookCategory.FOOD);
+        }
+        else if(serializer == ModRecipeSerializers.FREEZER_RECIPE.get())
+        {
+            cir.setReturnValue(CookingBookCategory.MISC);
         }
     }
 }

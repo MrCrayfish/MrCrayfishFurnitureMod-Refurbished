@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.data.model;
 
+import com.mrcrayfish.furniture.refurbished.block.MetalType;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.data.models.model.TextureSlot;
 import net.minecraft.resources.ResourceLocation;
@@ -58,10 +59,23 @@ public class ModelTemplate
     public static final ModelTemplate GRILL = block("grill", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate COOLER_CLOSED = block("cooler_closed", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate COOLER_OPEN = block("cooler_open", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate FRIDGE_CLOSED = block("fridge_closed", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate FRIDGE_OPEN = block("fridge_open", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate FREEZER_CLOSED = block("freezer_closed", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate FREEZER_OPEN = block("freezer_open", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+
+    public static final ModelTemplate FRIDGE = item("fridge", TextureSlot.TEXTURE);
 
     private static ModelTemplate block(String name, TextureSlot ... textures)
     {
         ModelTemplate model = new ModelTemplate("block", name, textures);
+        MODELS.add(model.location);
+        return model;
+    }
+
+    private static ModelTemplate item(String name, TextureSlot ... textures)
+    {
+        ModelTemplate model = new ModelTemplate("item", name, textures);
         MODELS.add(model.location);
         return model;
     }
@@ -82,18 +96,28 @@ public class ModelTemplate
         this.textures = textures;
     }
 
-    public PreparedStateModel prepared()
+    public PreparedBlockState.Model stateModel()
     {
-        return PreparedStateModel.create(this.path, this.location, this.textures);
+        return PreparedBlockState.Model.create(this.path, this.location, this.textures);
     }
 
-    public PreparedStateModel prepared(WoodType type)
+    public PreparedBlockState.Model stateModel(WoodType type)
     {
-        return PreparedStateModel.create(type.name() + "_" + this.path, this.location, this.textures);
+        return PreparedBlockState.Model.create(type.name() + "_" + this.path, this.location, this.textures);
     }
 
-    public PreparedStateModel prepared(DyeColor color)
+    public PreparedBlockState.Model stateModel(DyeColor color)
     {
-        return PreparedStateModel.create(color.getName() + "_" + this.path, this.location, this.textures);
+        return PreparedBlockState.Model.create(color.getName() + "_" + this.path, this.location, this.textures);
+    }
+
+    public PreparedBlockState.Model stateModel(MetalType type)
+    {
+        return PreparedBlockState.Model.create(type.getName() + "_" + this.path, this.location, this.textures);
+    }
+
+    public PreparedItem.Model itemModel(MetalType type)
+    {
+        return PreparedItem.Model.create(type.getName() + "_" + this.path, this.location, this.textures);
     }
 }

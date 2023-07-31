@@ -37,6 +37,7 @@ public class CommonRecipeProvider
         this.grillCooking(Items.PORKCHOP, Items.COOKED_PORKCHOP, 200, 0.5F);
         this.grillCooking(Items.POTATO, Items.BAKED_POTATO, 200, 0.5F);
         this.grillCooking(Items.RABBIT, Items.COOKED_RABBIT, 200, 0.5F);
+        this.freezerSolidifying(Items.WATER_BUCKET, Items.ICE, 300, 1.0F);
     }
 
     private void grillCooking(ItemLike rawItem, ItemLike cookedItem, int cookingTime, float experience)
@@ -47,5 +48,15 @@ public class CommonRecipeProvider
                 .generic(Ingredient.of(rawItem), RecipeCategory.FOOD, cookedItem, experience, cookingTime, ModRecipeSerializers.GRILL_RECIPE.get())
                 .unlockedBy("has_" + rawName, this.has.apply(rawItem))
                 .save(this.consumer, cookedName + "_from_grill_cooking");
+    }
+
+    private void freezerSolidifying(ItemLike baseItem, ItemLike frozenItem, int freezeTime, float experience)
+    {
+        String baseName = baseItem.asItem().toString();
+        String frozenName = frozenItem.asItem().toString();
+        SimpleCookingRecipeBuilder
+                .generic(Ingredient.of(baseItem), RecipeCategory.MISC, frozenItem, experience, freezeTime, ModRecipeSerializers.FREEZER_RECIPE.get())
+                .unlockedBy("has_" + baseName, this.has.apply(baseItem))
+                .save(this.consumer, frozenName + "_from_freezer_solidifying");
     }
 }

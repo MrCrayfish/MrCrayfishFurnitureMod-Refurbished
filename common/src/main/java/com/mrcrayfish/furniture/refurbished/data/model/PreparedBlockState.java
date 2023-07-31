@@ -2,6 +2,9 @@ package com.mrcrayfish.furniture.refurbished.data.model;
 
 import com.google.common.base.Preconditions;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.models.blockstates.VariantProperties;
+import net.minecraft.data.models.model.TextureMapping;
+import net.minecraft.data.models.model.TextureSlot;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -61,7 +64,7 @@ public class PreparedBlockState
     {
         private final Block block;
         private final Map<Property, Comparable> map = new TreeMap<>(Comparator.comparing(Property::getName));
-        private PreparedStateModel model;
+        private Model model;
         private boolean useForItem;
 
         private Entry(Block block)
@@ -76,7 +79,7 @@ public class PreparedBlockState
             return this;
         }
 
-        public Entry model(PreparedStateModel builder)
+        public Entry model(Model builder)
         {
             this.model = builder;
             return this;
@@ -87,7 +90,7 @@ public class PreparedBlockState
             this.useForItem = true;
         }
 
-        public PreparedStateModel getPreparedModel()
+        public Model getPreparedModel()
         {
             return this.model;
         }
@@ -121,6 +124,56 @@ public class PreparedBlockState
         public boolean is(BlockState state)
         {
             return this.map.entrySet().stream().allMatch(entry -> Objects.equals(state.getValue(entry.getKey()), entry.getValue()));
+        }
+    }
+
+    public static class Model extends ParentModel
+    {
+        private VariantProperties.Rotation xRotation = VariantProperties.Rotation.R0;
+        private VariantProperties.Rotation yRotation = VariantProperties.Rotation.R0;
+
+        private Model(String name, ResourceLocation model, TextureSlot[] slots)
+        {
+            super(name, model, slots);
+        }
+
+        public VariantProperties.Rotation getXRotation()
+        {
+            return this.xRotation;
+        }
+
+        public Model setXRotation(VariantProperties.Rotation rotation)
+        {
+            this.xRotation = rotation;
+            return this;
+        }
+
+        public VariantProperties.Rotation getYRotation()
+        {
+            return this.yRotation;
+        }
+
+        public Model setYRotation(VariantProperties.Rotation rotation)
+        {
+            this.yRotation = rotation;
+            return this;
+        }
+
+        @Override
+        public Model setTexture(TextureSlot slot, ResourceLocation texture)
+        {
+            return (Model) super.setTexture(slot, texture);
+        }
+
+        @Override
+        public Model setTextures(TextureMapping mapping)
+        {
+            return (Model) super.setTextures(mapping);
+        }
+
+        public static Model create(String name, ResourceLocation model, TextureSlot[] slots)
+        {
+            return new Model(name, model, slots);
         }
     }
 }

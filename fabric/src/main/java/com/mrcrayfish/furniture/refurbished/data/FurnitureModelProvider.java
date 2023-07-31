@@ -3,7 +3,6 @@ package com.mrcrayfish.furniture.refurbished.data;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.furniture.refurbished.data.model.PreparedBlockState;
-import com.mrcrayfish.furniture.refurbished.data.model.PreparedStateModel;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.data.models.BlockModelGenerators;
@@ -43,7 +42,7 @@ public class FurnitureModelProvider extends FabricModelProvider
     @Override
     public void generateBlockStateModels(BlockModelGenerators generators)
     {
-        new CommonModelProvider(builder -> {
+        new CommonBlockModelProvider(builder -> {
             Block block = builder.getBlock();
 
             // We do our own handling of item models, so skip auto generation
@@ -54,7 +53,7 @@ public class FurnitureModelProvider extends FabricModelProvider
             DynamicPropertyDispatch dispatch = DynamicPropertyDispatch.of(block);
             builder.getVariants().forEach(entry -> {
                 // Generates the blockstate
-                PreparedStateModel preparedModel = Objects.requireNonNull(entry.getPreparedModel());
+                PreparedBlockState.Model preparedModel = Objects.requireNonNull(entry.getPreparedModel());
                 ResourceLocation model = new ResourceLocation(this.output.getModId(), "block/" + preparedModel.getName());
                 Variant variant = Variant.variant().with(VariantProperties.MODEL, model);
                 if(preparedModel.getXRotation() != VariantProperties.Rotation.R0) {
@@ -85,7 +84,11 @@ public class FurnitureModelProvider extends FabricModelProvider
     @Override
     public void generateItemModels(ItemModelGenerators generators)
     {
-        // Unused
+        new CommonItemModelProvider(builder -> {
+            Item item = builder.getItem();
+            ResourceLocation itemName = ModelLocationUtils.getModelLocation(item);
+            generators.output.accept(itemName, builder.getModel());
+        }).run();
     }
 
     /**

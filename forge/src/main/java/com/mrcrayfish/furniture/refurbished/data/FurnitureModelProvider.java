@@ -2,11 +2,13 @@ package com.mrcrayfish.furniture.refurbished.data;
 
 import com.mrcrayfish.framework.Registration;
 import com.mrcrayfish.furniture.refurbished.Constants;
+import com.mrcrayfish.furniture.refurbished.block.MetalType;
 import com.mrcrayfish.furniture.refurbished.data.model.ModelTemplate;
 import com.mrcrayfish.furniture.refurbished.data.model.PreparedBlockState;
-import com.mrcrayfish.furniture.refurbished.data.model.PreparedStateModel;
+import com.mrcrayfish.furniture.refurbished.data.model.PreparedItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.models.model.ModelLocationUtils;
 import net.minecraft.data.models.model.TextureMapping;
 import net.minecraft.data.models.model.TextureSlot;
 import net.minecraft.resources.ResourceLocation;
@@ -19,6 +21,7 @@ import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
+import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.VariantBlockStateBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -62,13 +65,18 @@ public class FurnitureModelProvider extends BlockStateProvider
         Arrays.stream(DyeColor.values()).forEach(type -> {
             helper.trackGenerated(new ResourceLocation(Constants.MOD_ID, "block/" + type.getName() + "_particle"), TEXTURE);
         });
+
+        // Registers metal particle textures
+        Arrays.stream(MetalType.values()).forEach(type -> {
+            helper.trackGenerated(new ResourceLocation(Constants.MOD_ID, "block/" + type.getName() + "_particle"), TEXTURE);
+        });
     }
 
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
     protected void registerStatesAndModels()
     {
-        new CommonModelProvider(builder -> {
+        new CommonBlockModelProvider(builder -> {
             Block block = builder.getBlock();
 
             // Generates the blockstate and block models
@@ -78,7 +86,7 @@ public class FurnitureModelProvider extends BlockStateProvider
                 for(Map.Entry<Property, Comparable> entry : variant.getValueMap().entrySet()) {
                     state = state.with(entry.getKey(), entry.getValue());
                 }
-                PreparedStateModel preparedModel = Objects.requireNonNull(variant.getPreparedModel());
+                PreparedBlockState.Model preparedModel = Objects.requireNonNull(variant.getPreparedModel());
                 BlockModelBuilder modelBuilder = this.models().withExistingParent(preparedModel.getName(), preparedModel.getModel());
                 TextureMapping textures = preparedModel.getTextures();
                 for(TextureSlot slot : preparedModel.getSlots()) {
@@ -99,6 +107,18 @@ public class FurnitureModelProvider extends BlockStateProvider
                     this.itemModels().getBuilder(itemName.toString()).parent(new ModelFile.UncheckedModelFile(model));
                 });
             });
+        }).run();
+
+        new CommonItemModelProvider(prepared -> {
+            Item item = prepared.getItem();
+            ResourceLocation itemName = ModelLocationUtils.getModelLocation(item);
+            PreparedItem.Model model = prepared.getModel();
+            ItemModelBuilder builder = this.itemModels().getBuilder(itemName.toString());
+            builder.parent(new ModelFile.UncheckedModelFile(model.getModel()));
+            for(TextureSlot slot : model.getSlots())
+            {
+                builder.texture(slot.getId(), model.getTextures().get(slot));
+            }
         }).run();
     }
 }

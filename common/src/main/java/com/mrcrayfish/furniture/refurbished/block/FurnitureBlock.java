@@ -64,7 +64,7 @@ public abstract class FurnitureBlock extends Block
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving)
     {
-        if(state.getBlock() != newState.getBlock())
+        if(!state.is(newState.getBlock()))
         {
             if(level.getBlockEntity(pos) instanceof Container container)
             {

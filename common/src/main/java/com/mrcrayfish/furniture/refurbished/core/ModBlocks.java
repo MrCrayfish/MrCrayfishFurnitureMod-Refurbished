@@ -3,8 +3,10 @@ package com.mrcrayfish.furniture.refurbished.core;
 import com.mrcrayfish.framework.api.registry.RegistryContainer;
 import com.mrcrayfish.framework.api.registry.RegistryEntry;
 import com.mrcrayfish.furniture.refurbished.block.*;
+import com.mrcrayfish.furniture.refurbished.item.FridgeItem;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -178,4 +180,9 @@ public class ModBlocks
     public static final RegistryEntry<CoolerBlock> COOLER_GREEN = RegistryEntry.blockWithItem(Utils.resource("green_cooler"), () -> new CoolerBlock(DyeColor.GREEN, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GREEN).instrument(NoteBlockInstrument.IRON_XYLOPHONE).strength(3.5F).sound(SoundType.LANTERN).requiresCorrectToolForDrops()));
     public static final RegistryEntry<CoolerBlock> COOLER_RED = RegistryEntry.blockWithItem(Utils.resource("red_cooler"), () -> new CoolerBlock(DyeColor.RED, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_RED).instrument(NoteBlockInstrument.IRON_XYLOPHONE).strength(3.5F).sound(SoundType.LANTERN).requiresCorrectToolForDrops()));
     public static final RegistryEntry<CoolerBlock> COOLER_BLACK = RegistryEntry.blockWithItem(Utils.resource("black_cooler"), () -> new CoolerBlock(DyeColor.BLACK, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK).instrument(NoteBlockInstrument.IRON_XYLOPHONE).strength(3.5F).sound(SoundType.LANTERN).requiresCorrectToolForDrops()));
+    public static final RegistryEntry<FridgeBlock> FRIDGE_LIGHT = RegistryEntry.block(Utils.resource("light_fridge"), () -> new FridgeBlock(MetalType.LIGHT, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).instrument(NoteBlockInstrument.IRON_XYLOPHONE).strength(3.5F).sound(SoundType.METAL).requiresCorrectToolForDrops()));
+    public static final RegistryEntry<FridgeBlock> FRIDGE_DARK = RegistryEntry.block(Utils.resource("dark_fridge"), () -> new FridgeBlock(MetalType.DARK, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).instrument(NoteBlockInstrument.IRON_XYLOPHONE).strength(3.5F).sound(SoundType.METAL).requiresCorrectToolForDrops()));
+    public static final RegistryEntry<FreezerBlock> FREEZER_LIGHT = RegistryEntry.block(Utils.resource("light_freezer"), () -> new FreezerBlock(MetalType.LIGHT, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).instrument(NoteBlockInstrument.IRON_XYLOPHONE).strength(3.5F).sound(SoundType.METAL).requiresCorrectToolForDrops(), ModBlocks.FRIDGE_LIGHT::get));
+    public static final RegistryEntry<FreezerBlock> FREEZER_DARK = RegistryEntry.block(Utils.resource("dark_freezer"), () -> new FreezerBlock(MetalType.DARK, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).instrument(NoteBlockInstrument.IRON_XYLOPHONE).strength(3.5F).sound(SoundType.METAL).requiresCorrectToolForDrops(), ModBlocks.FRIDGE_DARK::get));
+
 }

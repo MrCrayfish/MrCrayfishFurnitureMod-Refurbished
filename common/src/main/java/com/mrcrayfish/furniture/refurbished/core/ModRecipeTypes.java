@@ -15,6 +15,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 public class ModRecipeTypes
 {
     public static final RegistryEntry<RecipeType<GrillCookingRecipe>> GRILL_COOKING = create("grill_cooking");
+    public static final RegistryEntry<RecipeType<GrillCookingRecipe>> FREEZER_SOLIDIFYING = create("freezer_solidifying");
 
     // This should just be in Framework
     private static <T extends Recipe<?>> RegistryEntry<RecipeType<T>> create(String name)

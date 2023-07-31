@@ -1,0 +1,48 @@
+{
+	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 16, 13],
+			"faces": {
+				"north": {"uv": [0, 0, 4, 4], "texture": "#texture", "cullface": "north"},
+				"east": {"uv": [8, 8, 11.25, 12], "texture": "#texture", "cullface": "east"},
+				"south": {"uv": [0, 4, 4, 8], "texture": "#texture", "cullface": "south"},
+				"west": {"uv": [11.25, 8, 14.5, 12], "texture": "#texture", "cullface": "west"},
+				"up": {"uv": [4, 15.25, 0, 12], "texture": "#texture", "cullface": "up"}
+			}
+		},
+		{
+			"from": [14, 0, 13],
+			"to": [17, 16, 29],
+			"rotation": {"angle": 0, "axis": "y", "origin": [15, 0, 14]},
+			"faces": {
+				"north": {"uv": [7.25, 12, 8, 16], "texture": "#texture"},
+				"east": {"uv": [4, 4, 8, 8], "texture": "#texture"},
+				"south": {"uv": [8, 12, 8.75, 16], "texture": "#texture"},
+				"west": {"uv": [4, 0, 8, 4], "texture": "#texture"},
+				"up": {"uv": [16, 8, 12, 7.25], "rotation": 270, "texture": "#texture"},
+				"down": {"uv": [12.75, 12, 8.75, 12.75], "rotation": 90, "texture": "#texture"}
+			}
+		},
+		{
+			"from": [17, 2, 25],
+			"to": [18, 11, 27],
+			"rotation": {"angle": 0, "axis": "y", "origin": [-64, -16, 0]},
+			"faces": {
+				"east": {"uv": [12.75, 12, 13.25, 14.25], "texture": "#texture", "cullface": "south"},
+				"up": {"uv": [15.25, 12.25, 14.75, 12], "rotation": 270, "texture": "#texture", "cullface": "south"},
+				"down": {"uv": [15.75, 12, 15.25, 12.25], "rotation": 90, "texture": "#texture", "cullface": "south"}
+			}
+		},
+		{
+			"from": [17, 11, 25],
+			"to": [18, 2, 27],
+			"rotation": {"angle": 0, "axis": "y", "origin": [-64, -16, 0]},
+			"faces": {
+				"up": {"uv": [13.75, 13.5, 13.25, 13.25], "rotation": 270, "texture": "#texture", "cullface": "south"},
+				"down": {"uv": [13.75, 13.5, 13.25, 13.75], "rotation": 90, "texture": "#texture", "cullface": "south"}
+			}
+		}
+	]
+}

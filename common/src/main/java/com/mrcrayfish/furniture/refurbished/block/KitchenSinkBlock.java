@@ -41,15 +41,14 @@ public abstract class KitchenSinkBlock extends FurnitureHorizontalBlock implemen
     {
         VoxelShape topShape = Block.box(0, 8, 0, 16, 16, 16);
         VoxelShape baseShape = Block.box(2, 0, 0, 16, 8, 16);
-        VoxelShape sinkShape = Block.box(2, 8, 4, 14, 16, 14);
-        topShape = Shapes.joinUnoptimized(topShape, sinkShape, BooleanOp.ONLY_FIRST);
+        VoxelShape sinkShape = Block.box(2, 8, 2, 12, 16, 14);
 
         ImmutableMap.Builder<BlockState, VoxelShape> builder = new ImmutableMap.Builder<>();
         for(BlockState state : states)
         {
             Direction direction = state.getValue(DIRECTION);
             List<VoxelShape> shapes = new ArrayList<>();
-            shapes.add(topShape);
+            shapes.add(Shapes.joinUnoptimized(topShape, VoxelShapeHelper.rotateHorizontally(sinkShape, direction), BooleanOp.ONLY_FIRST));
             shapes.add(VoxelShapeHelper.rotateHorizontally(baseShape, direction));
             builder.put(state, VoxelShapeHelper.combine(shapes));
         }

@@ -173,8 +173,12 @@
     "block.refurbished_furniture.red_cooler": "Red Cooler",
     "block.refurbished_furniture.black_cooler": "Black Cooler",
     "item.refurbished_furniture.spatula": "Spatula",
+    "item.refurbished_furniture.light_fridge": "Light Fridge",
+    "item.refurbished_furniture.dark_fridge": "Dark Fridge",
     "container.refurbished_furniture.drawer": "Drawer",
     "container.refurbished_furniture.crate": "Crate",
     "container.refurbished_furniture.kitchen_drawer": "Kitchen Drawer",
-    "container.refurbished_furniture.cooler": "Cooler"
+    "container.refurbished_furniture.cooler": "Cooler",
+    "container.refurbished_furniture.fridge": "Fridge",
+    "container.refurbished_furniture.freezer": "Freezer"
 }
