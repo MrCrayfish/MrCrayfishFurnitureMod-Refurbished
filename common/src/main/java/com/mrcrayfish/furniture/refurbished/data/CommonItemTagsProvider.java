@@ -162,6 +162,8 @@ public class CommonItemTagsProvider
         kitchen.add(ModBlocks.KITCHEN_SINK_BLACK.get().asItem());
         kitchen.add(ModItems.FRIDGE_LIGHT.get());
         kitchen.add(ModItems.FRIDGE_DARK.get());
+        kitchen.add(ModBlocks.TOASTER_LIGHT.get().asItem());
+        kitchen.add(ModBlocks.TOASTER_DARK.get().asItem());
         kitchen.add(ModItems.SPATULA.get());
 
         TagBuilder<Item> outdoors = builder.apply(ModTags.Items.OUTDOORS);

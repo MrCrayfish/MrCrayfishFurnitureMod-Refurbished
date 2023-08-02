@@ -7,7 +7,7 @@ public interface IPlatformHelper
      *
      * @return The name of the current platform.
      */
-    String getPlatformName();
+    Platform getPlatform();
 
     /**
      * Checks if a mod with the given id is loaded.
@@ -32,5 +32,20 @@ public interface IPlatformHelper
     default String getEnvironmentName()
     {
         return isDevelopmentEnvironment() ? "development" : "production";
+    }
+
+    enum Platform
+    {
+        FORGE, NEOFORGE, FABRIC;
+
+        public boolean isForge()
+        {
+            return this == FORGE;
+        }
+
+        public boolean isFabric()
+        {
+            return this == FABRIC;
+        }
     }
 }

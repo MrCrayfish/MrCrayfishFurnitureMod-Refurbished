@@ -6,9 +6,9 @@ import net.fabricmc.loader.api.FabricLoader;
 public class FabricPlatformHelper implements IPlatformHelper
 {
     @Override
-    public String getPlatformName()
+    public Platform getPlatform()
     {
-        return "Fabric";
+        return Platform.FABRIC;
     }
 
     @Override

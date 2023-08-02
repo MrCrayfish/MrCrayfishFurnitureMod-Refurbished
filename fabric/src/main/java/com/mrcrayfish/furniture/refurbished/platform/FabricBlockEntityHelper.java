@@ -4,6 +4,10 @@ import com.mrcrayfish.furniture.refurbished.blockentity.FabricKitchenSinkBlockEn
 import com.mrcrayfish.furniture.refurbished.blockentity.KitchenSinkBlockEntity;
 import com.mrcrayfish.furniture.refurbished.platform.services.IBlockEntityHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
@@ -15,5 +19,17 @@ public class FabricBlockEntityHelper implements IBlockEntityHelper
     public KitchenSinkBlockEntity createKitchenSinkBlockEntity(BlockPos pos, BlockState state)
     {
         return new FabricKitchenSinkBlockEntity(pos, state);
+    }
+
+    @Override
+    public <T extends BaseContainerBlockEntity & WorldlyContainer> void createForgeSidedWrapper(T container, Direction side)
+    {
+        // Ignored
+    }
+
+    @Override
+    public void reviveForgeCapabilities(BlockEntity blockEntity)
+    {
+        // Ignored
     }
 }

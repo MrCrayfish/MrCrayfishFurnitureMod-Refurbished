@@ -63,6 +63,8 @@ public class ModelTemplate
     public static final ModelTemplate FRIDGE_OPEN = block("fridge_open", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate FREEZER_CLOSED = block("freezer_closed", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate FREEZER_OPEN = block("freezer_open", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate TOASTER = block("toaster", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate TOASTER_COOKING = block("toaster_cooking", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
 
     public static final ModelTemplate FRIDGE = item("fridge", TextureSlot.TEXTURE);
 

@@ -29,5 +29,9 @@ public class SimpleCookingRecipeBuilderMixin
         {
             cir.setReturnValue(CookingBookCategory.MISC);
         }
+        else if(serializer == ModRecipeSerializers.TOASTER_RECIPE.get())
+        {
+            cir.setReturnValue(CookingBookCategory.FOOD);
+        }
     }
 }

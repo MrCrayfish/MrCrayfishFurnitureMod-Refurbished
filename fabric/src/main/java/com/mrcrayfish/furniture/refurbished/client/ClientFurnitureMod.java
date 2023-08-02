@@ -5,6 +5,7 @@ import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.block.GrillBlock;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.GrillBlockEntityRenderer;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.KitchenSinkBlockEntityRenderer;
+import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.ToasterBlockEntityRenderer;
 import com.mrcrayfish.furniture.refurbished.client.renderer.entity.SeatRenderer;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModEntities;
@@ -27,6 +28,7 @@ public class ClientFurnitureMod implements ClientModInitializer
         EntityRendererRegistry.register(ModEntities.SEAT.get(), SeatRenderer::new);
         BlockEntityRenderers.register(ModBlockEntities.KITCHEN_SINK.get(), KitchenSinkBlockEntityRenderer::new);
         BlockEntityRenderers.register(ModBlockEntities.GRILL.get(), GrillBlockEntityRenderer::new);
+        BlockEntityRenderers.register(ModBlockEntities.TOASTER.get(), ToasterBlockEntityRenderer::new);
 
         Registration.get(Registries.BLOCK).stream().filter(entry -> entry.getId().getNamespace().equals(Constants.MOD_ID)).forEach(entry -> {
             if(entry.get() instanceof GrillBlock block) {

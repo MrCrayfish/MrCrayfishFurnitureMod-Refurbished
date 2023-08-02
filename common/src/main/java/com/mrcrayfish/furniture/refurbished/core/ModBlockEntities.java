@@ -10,6 +10,7 @@ import com.mrcrayfish.furniture.refurbished.blockentity.FridgeBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.GrillBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.KitchenDrawerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.KitchenSinkBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.ToasterBlockEntity;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.world.level.block.Block;
@@ -152,5 +153,10 @@ public class ModBlockEntities
     public static final RegistryEntry<BlockEntityType<FreezerBlockEntity>> FREEZER = RegistryEntry.blockEntity(Utils.resource("freezer"), FreezerBlockEntity::new, () -> new Block[]{
             ModBlocks.FREEZER_LIGHT.get(),
             ModBlocks.FREEZER_DARK.get()
+    });
+
+    public static final RegistryEntry<BlockEntityType<ToasterBlockEntity>> TOASTER = RegistryEntry.blockEntity(Utils.resource("toaster"), ToasterBlockEntity::new, () -> new Block[]{
+            ModBlocks.TOASTER_LIGHT.get(),
+            ModBlocks.TOASTER_DARK.get()
     });
 }

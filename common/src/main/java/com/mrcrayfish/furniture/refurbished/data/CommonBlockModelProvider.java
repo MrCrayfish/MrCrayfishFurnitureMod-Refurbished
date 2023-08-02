@@ -195,6 +195,8 @@ public class CommonBlockModelProvider
         this.fridge(ModBlocks.FRIDGE_DARK.get());
         this.freezer(ModBlocks.FREEZER_LIGHT.get());
         this.freezer(ModBlocks.FREEZER_DARK.get());
+        this.toaster(ModBlocks.TOASTER_LIGHT.get());
+        this.toaster(ModBlocks.TOASTER_DARK.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -531,6 +533,24 @@ public class CommonBlockModelProvider
         state.createVariant().prop(FreezerBlock.DIRECTION, Direction.EAST).prop(FreezerBlock.OPEN, true).model(ModelTemplate.FREEZER_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(FreezerBlock.DIRECTION, Direction.SOUTH).prop(FreezerBlock.OPEN, true).model(ModelTemplate.FREEZER_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(FreezerBlock.DIRECTION, Direction.WEST).prop(FreezerBlock.OPEN, true).model(ModelTemplate.FREEZER_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        this.consumer.accept(state);
+    }
+
+    private void toaster(ToasterBlock block)
+    {
+        MetalType type = block.getMetalType();
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.metalParticle(type));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedBlockState state = new PreparedBlockState(block);
+        state.createVariant().prop(ToasterBlock.DIRECTION, Direction.NORTH).prop(ToasterBlock.POWERED, false).model(ModelTemplate.TOASTER.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(ToasterBlock.DIRECTION, Direction.EAST).prop(ToasterBlock.POWERED, false).model(ModelTemplate.TOASTER.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(ToasterBlock.DIRECTION, Direction.SOUTH).prop(ToasterBlock.POWERED, false).model(ModelTemplate.TOASTER.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(ToasterBlock.DIRECTION, Direction.WEST).prop(ToasterBlock.POWERED, false).model(ModelTemplate.TOASTER.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(ToasterBlock.DIRECTION, Direction.NORTH).prop(ToasterBlock.POWERED, true).model(ModelTemplate.TOASTER_COOKING.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
+        state.createVariant().prop(ToasterBlock.DIRECTION, Direction.EAST).prop(ToasterBlock.POWERED, true).model(ModelTemplate.TOASTER_COOKING.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(ToasterBlock.DIRECTION, Direction.SOUTH).prop(ToasterBlock.POWERED, true).model(ModelTemplate.TOASTER_COOKING.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(ToasterBlock.DIRECTION, Direction.WEST).prop(ToasterBlock.POWERED, true).model(ModelTemplate.TOASTER_COOKING.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         this.consumer.accept(state);
     }
 }

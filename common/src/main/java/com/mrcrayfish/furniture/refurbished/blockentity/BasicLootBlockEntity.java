@@ -1,9 +1,11 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.mrcrayfish.furniture.refurbished.platform.Services;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Player;
@@ -33,6 +35,7 @@ public abstract class BasicLootBlockEntity extends RandomizableContainerBlockEnt
         this.items = NonNullList.withSize(containerSize, ItemStack.EMPTY);
         this.slots = IntStream.range(0, containerSize).toArray();
         this.containerSize = containerSize;
+        this.initItemHandler();
     }
 
     public abstract boolean isMatchingContainerMenu(AbstractContainerMenu menu);
@@ -83,15 +86,35 @@ public abstract class BasicLootBlockEntity extends RandomizableContainerBlockEnt
     }
 
     @Override
+    public boolean canPlaceItem(int slotIndex, ItemStack stack)
+    {
+        return this.isSlotInsertable(slotIndex); // Additional check for container max stack size
+    }
+
+    @Override
     public boolean canPlaceItemThroughFace(int slotIndex, ItemStack stack, @Nullable Direction direction)
     {
-        return true;
+        return this.canPlaceItem(slotIndex, stack);
     }
 
     @Override
     public boolean canTakeItemThroughFace(int slotIndex, ItemStack stack, Direction direction)
     {
-        return true;
+        return this.canTakeItem(this, slotIndex, stack);
+    }
+
+    /**
+     * A utility method to check if the slot at the given index is empty or is less than it's max
+     * stack size with additional respect to the max stack size of the container; something vanilla
+     * unfortunately doesn't do.
+     *
+     * @param slotIndex the index of the slot to check
+     * @return True if the slot is available
+     */
+    protected boolean isSlotInsertable(int slotIndex)
+    {
+        ItemStack target = this.getItem(slotIndex);
+        return target.isEmpty() || target.getCount() < target.getMaxStackSize() && target.getCount() < this.getMaxStackSize();
     }
 
     @Override
@@ -123,4 +146,24 @@ public abstract class BasicLootBlockEntity extends RandomizableContainerBlockEnt
     public void onOpen(Level level, BlockPos pos, BlockState state) {}
 
     public void onClose(Level level, BlockPos pos, BlockState state) {}
+
+    // Hack for Forge capabilities
+    public void initItemHandler()
+    {
+        if(Services.PLATFORM.getPlatform().isForge())
+        {
+            Services.BLOCK_ENTITY.createForgeSidedWrapper(this, Direction.UP);
+        }
+    }
+
+    // Hack for Forge capabilities
+    // @Override
+    public void reviveCaps()
+    {
+        if(Services.PLATFORM.getPlatform().isForge())
+        {
+            Services.BLOCK_ENTITY.reviveForgeCapabilities(this);
+            Services.BLOCK_ENTITY.createForgeSidedWrapper(this, Direction.UP);
+        }
+    }
 }
