@@ -1,10 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.block;
 
 import com.mrcrayfish.furniture.refurbished.blockentity.FreezerBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.FridgeBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.GrillBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
-import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;

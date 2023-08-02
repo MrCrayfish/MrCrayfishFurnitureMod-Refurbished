@@ -2,7 +2,6 @@ package com.mrcrayfish.furniture.refurbished.platform.services;
 
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.IScreenBuilder;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
@@ -18,7 +17,6 @@ import net.minecraft.world.level.material.FluidState;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.function.BiConsumer;
 
 /**
  * Author: MrCrayfish

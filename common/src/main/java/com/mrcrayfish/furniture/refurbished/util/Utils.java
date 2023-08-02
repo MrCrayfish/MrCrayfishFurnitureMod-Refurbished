@@ -4,9 +4,6 @@ import com.mrcrayfish.furniture.refurbished.Constants;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.Arrays;
-import java.util.function.Supplier;
-
 /**
  * Author: MrCrayfish
  */
