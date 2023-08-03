@@ -164,6 +164,16 @@ public class CommonItemTagsProvider
         kitchen.add(ModItems.FRIDGE_DARK.get());
         kitchen.add(ModBlocks.TOASTER_LIGHT.get().asItem());
         kitchen.add(ModBlocks.TOASTER_DARK.get().asItem());
+        kitchen.add(ModBlocks.CUTTING_BOARD_OAK.get().asItem());
+        kitchen.add(ModBlocks.CUTTING_BOARD_SPRUCE.get().asItem());
+        kitchen.add(ModBlocks.CUTTING_BOARD_BIRCH.get().asItem());
+        kitchen.add(ModBlocks.CUTTING_BOARD_JUNGLE.get().asItem());
+        kitchen.add(ModBlocks.CUTTING_BOARD_ACACIA.get().asItem());
+        kitchen.add(ModBlocks.CUTTING_BOARD_DARK_OAK.get().asItem());
+        kitchen.add(ModBlocks.CUTTING_BOARD_MANGROVE.get().asItem());
+        kitchen.add(ModBlocks.CUTTING_BOARD_CHERRY.get().asItem());
+        kitchen.add(ModBlocks.CUTTING_BOARD_CRIMSON.get().asItem());
+        kitchen.add(ModBlocks.CUTTING_BOARD_WARPED.get().asItem());
         kitchen.add(ModItems.SPATULA.get());
         kitchen.add(ModItems.KNIFE.get());
 

@@ -25,11 +25,8 @@ public class ClientFurnitureMod implements ClientModInitializer
     public void onInitializeClient()
     {
         ClientBootstrap.init();
-        EntityRendererRegistry.register(ModEntities.SEAT.get(), SeatRenderer::new);
-        BlockEntityRenderers.register(ModBlockEntities.KITCHEN_SINK.get(), KitchenSinkBlockEntityRenderer::new);
-        BlockEntityRenderers.register(ModBlockEntities.GRILL.get(), GrillBlockEntityRenderer::new);
-        BlockEntityRenderers.register(ModBlockEntities.TOASTER.get(), ToasterBlockEntityRenderer::new);
-
+        ClientBootstrap.registerBlockEntityRenderers(BlockEntityRenderers::register);
+        ClientBootstrap.registerEntityRenderers(EntityRendererRegistry::register);
         Registration.get(Registries.BLOCK).stream().filter(entry -> entry.getId().getNamespace().equals(Constants.MOD_ID)).forEach(entry -> {
             if(entry.get() instanceof GrillBlock block) {
                 BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.cutout());

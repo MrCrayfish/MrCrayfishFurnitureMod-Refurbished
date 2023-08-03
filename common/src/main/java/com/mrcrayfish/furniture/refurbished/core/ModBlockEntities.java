@@ -2,15 +2,7 @@ package com.mrcrayfish.furniture.refurbished.core;
 
 import com.mrcrayfish.framework.api.registry.RegistryContainer;
 import com.mrcrayfish.framework.api.registry.RegistryEntry;
-import com.mrcrayfish.furniture.refurbished.blockentity.CoolerBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.CrateBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.DrawerBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.FreezerBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.FridgeBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.GrillBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.KitchenDrawerBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.KitchenSinkBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.ToasterBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.*;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.world.level.block.Block;
@@ -158,5 +150,18 @@ public class ModBlockEntities
     public static final RegistryEntry<BlockEntityType<ToasterBlockEntity>> TOASTER = RegistryEntry.blockEntity(Utils.resource("toaster"), ToasterBlockEntity::new, () -> new Block[]{
             ModBlocks.TOASTER_LIGHT.get(),
             ModBlocks.TOASTER_DARK.get()
+    });
+
+    public static final RegistryEntry<BlockEntityType<CuttingBoardBlockEntity>> CUTTING_BOARD = RegistryEntry.blockEntity(Utils.resource("cutting_board"), CuttingBoardBlockEntity::new, () -> new Block[]{
+            ModBlocks.CUTTING_BOARD_OAK.get(),
+            ModBlocks.CUTTING_BOARD_SPRUCE.get(),
+            ModBlocks.CUTTING_BOARD_BIRCH.get(),
+            ModBlocks.CUTTING_BOARD_JUNGLE.get(),
+            ModBlocks.CUTTING_BOARD_ACACIA.get(),
+            ModBlocks.CUTTING_BOARD_DARK_OAK.get(),
+            ModBlocks.CUTTING_BOARD_MANGROVE.get(),
+            ModBlocks.CUTTING_BOARD_CHERRY.get(),
+            ModBlocks.CUTTING_BOARD_CRIMSON.get(),
+            ModBlocks.CUTTING_BOARD_WARPED.get(),
     });
 }

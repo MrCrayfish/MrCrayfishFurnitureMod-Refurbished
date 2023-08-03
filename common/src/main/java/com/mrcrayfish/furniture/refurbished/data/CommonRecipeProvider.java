@@ -5,9 +5,12 @@ import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
+import net.minecraft.data.recipes.SingleItemRecipeBuilder;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -39,6 +42,8 @@ public class CommonRecipeProvider
         this.grillCooking(Items.RABBIT, Items.COOKED_RABBIT, 200, 0.5F);
         this.freezerSolidifying(Items.WATER_BUCKET, Items.ICE, 300, 1.0F);
         this.toasterHeating(Items.POTATO, Items.BAKED_POTATO, 100, 0.5F);
+        this.cuttingBoardSlicing(Blocks.MELON, Items.MELON_SLICE, 6);
+        this.cuttingBoardSlicing(Items.APPLE, Items.DIAMOND, 8);
     }
 
     private void grillCooking(ItemLike rawItem, ItemLike cookedItem, int cookingTime, float experience)
@@ -69,5 +74,13 @@ public class CommonRecipeProvider
                 .generic(Ingredient.of(baseItem), RecipeCategory.FOOD, heatedItem, experience, heatingTime, ModRecipeSerializers.TOASTER_RECIPE.get())
                 .unlockedBy("has_" + baseName, this.has.apply(baseItem))
                 .save(this.consumer, resultName + "_from_toaster_heating");
+    }
+
+    private void cuttingBoardSlicing(ItemLike baseItem, ItemLike resultItem, int resultCount)
+    {
+        String baseName = baseItem.asItem().toString();
+        String resultName = resultItem.asItem().toString();
+        SingleItemRecipeBuilder builder = new SingleItemRecipeBuilder(RecipeCategory.MISC, ModRecipeSerializers.CUTTING_BOARD_RECIPE.get(), Ingredient.of(baseItem), resultItem, resultCount);
+        builder.unlockedBy("has_" + baseName, this.has.apply(baseItem)).save(this.consumer, resultName + "_from_cutting_board_slicing");
     }
 }

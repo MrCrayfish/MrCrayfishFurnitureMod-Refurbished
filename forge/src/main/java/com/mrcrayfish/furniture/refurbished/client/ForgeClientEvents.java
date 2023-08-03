@@ -22,10 +22,8 @@ public class ForgeClientEvents
 {
     public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event)
     {
-        event.registerEntityRenderer(ModEntities.SEAT.get(), SeatRenderer::new);
-        event.registerBlockEntityRenderer(ModBlockEntities.KITCHEN_SINK.get(), KitchenSinkBlockEntityRenderer::new);
-        event.registerBlockEntityRenderer(ModBlockEntities.GRILL.get(), GrillBlockEntityRenderer::new);
-        event.registerBlockEntityRenderer(ModBlockEntities.TOASTER.get(), ToasterBlockEntityRenderer::new);
+        ClientBootstrap.registerBlockEntityRenderers(event::registerBlockEntityRenderer);
+        ClientBootstrap.registerEntityRenderers(event::registerEntityRenderer);
 
         Registration.get(Registries.BLOCK).stream().filter(entry -> entry.getId().getNamespace().equals(Constants.MOD_ID)).forEach(entry -> {
             Block block = (Block) entry.get();

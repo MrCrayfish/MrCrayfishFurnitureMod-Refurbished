@@ -197,6 +197,16 @@ public class CommonBlockModelProvider
         this.freezer(ModBlocks.FREEZER_DARK.get());
         this.toaster(ModBlocks.TOASTER_LIGHT.get());
         this.toaster(ModBlocks.TOASTER_DARK.get());
+        this.cuttingBoard(ModBlocks.CUTTING_BOARD_OAK.get());
+        this.cuttingBoard(ModBlocks.CUTTING_BOARD_SPRUCE.get());
+        this.cuttingBoard(ModBlocks.CUTTING_BOARD_BIRCH.get());
+        this.cuttingBoard(ModBlocks.CUTTING_BOARD_JUNGLE.get());
+        this.cuttingBoard(ModBlocks.CUTTING_BOARD_ACACIA.get());
+        this.cuttingBoard(ModBlocks.CUTTING_BOARD_DARK_OAK.get());
+        this.cuttingBoard(ModBlocks.CUTTING_BOARD_MANGROVE.get());
+        this.cuttingBoard(ModBlocks.CUTTING_BOARD_CHERRY.get());
+        this.cuttingBoard(ModBlocks.CUTTING_BOARD_CRIMSON.get());
+        this.cuttingBoard(ModBlocks.CUTTING_BOARD_WARPED.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -551,6 +561,20 @@ public class CommonBlockModelProvider
         state.createVariant().prop(ToasterBlock.DIRECTION, Direction.EAST).prop(ToasterBlock.POWERED, true).model(ModelTemplate.TOASTER_COOKING.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(ToasterBlock.DIRECTION, Direction.SOUTH).prop(ToasterBlock.POWERED, true).model(ModelTemplate.TOASTER_COOKING.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(ToasterBlock.DIRECTION, Direction.WEST).prop(ToasterBlock.POWERED, true).model(ModelTemplate.TOASTER_COOKING.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        this.consumer.accept(state);
+    }
+
+    private void cuttingBoard(CuttingBoardBlock block)
+    {
+        WoodType type = block.getWoodType();
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.woodParticle(type));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedBlockState state = new PreparedBlockState(block);
+        state.createVariant().prop(CuttingBoardBlock.DIRECTION, Direction.NORTH).model(ModelTemplate.CUTTING_BOARD.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(CuttingBoardBlock.DIRECTION, Direction.EAST).model(ModelTemplate.CUTTING_BOARD.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(CuttingBoardBlock.DIRECTION, Direction.SOUTH).model(ModelTemplate.CUTTING_BOARD.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(CuttingBoardBlock.DIRECTION, Direction.WEST).model(ModelTemplate.CUTTING_BOARD.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         this.consumer.accept(state);
     }
 }

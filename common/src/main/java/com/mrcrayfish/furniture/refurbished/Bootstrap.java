@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished;
 
+import com.mrcrayfish.furniture.refurbished.blockentity.CuttingBoardBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.GrillBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.network.Network;
@@ -24,6 +25,24 @@ public class Bootstrap
             if(source.getLevel().getBlockEntity(pos) instanceof GrillBlockEntity grill)
             {
                 grill.flipItems();
+            }
+            return stack;
+        });
+
+        // Allows a knife in a dispenser to slice items on the cutting board
+        DispenserBlock.registerBehavior(ModItems.KNIFE::get, (source, stack) ->
+        {
+            Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
+            BlockPos pos = source.getPos().relative(direction);
+            if(source.getLevel().getBlockEntity(pos) instanceof CuttingBoardBlockEntity cuttingBoard)
+            {
+                if(cuttingBoard.sliceItem())
+                {
+                    if(stack.hurt(1, source.getLevel().random, null))
+                    {
+                        stack.setCount(0);
+                    }
+                }
             }
             return stack;
         });
