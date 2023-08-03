@@ -165,6 +165,7 @@ public class CommonItemTagsProvider
         kitchen.add(ModBlocks.TOASTER_LIGHT.get().asItem());
         kitchen.add(ModBlocks.TOASTER_DARK.get().asItem());
         kitchen.add(ModItems.SPATULA.get());
+        kitchen.add(ModItems.KNIFE.get());
 
         TagBuilder<Item> outdoors = builder.apply(ModTags.Items.OUTDOORS);
         outdoors.add(ModBlocks.CRATE_OAK.get().asItem());
@@ -210,6 +211,7 @@ public class CommonItemTagsProvider
         outdoors.add(ModBlocks.COOLER_RED.get().asItem());
         outdoors.add(ModBlocks.COOLER_BLACK.get().asItem());
         outdoors.add(ModItems.SPATULA.get());
+        outdoors.add(ModItems.KNIFE.get());
 
         TagBuilder<Item> storage = builder.apply(ModTags.Items.STORAGE);
         storage.add(ModBlocks.DRAWER_OAK.get().asItem());
@@ -305,5 +307,6 @@ public class CommonItemTagsProvider
 
         TagBuilder<Item> items = builder.apply(ModTags.Items.ITEMS);
         items.add(ModItems.SPATULA.get());
+        items.add(ModItems.KNIFE.get());
     }
 }
