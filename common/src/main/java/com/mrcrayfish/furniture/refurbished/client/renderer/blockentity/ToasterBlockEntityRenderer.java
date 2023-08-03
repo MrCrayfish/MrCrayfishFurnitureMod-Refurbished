@@ -32,8 +32,8 @@ public class ToasterBlockEntityRenderer implements BlockEntityRenderer<ToasterBl
     {
         poseStack.pushPose();
         poseStack.translate(0.5, toaster.isHeating() ? 0.4 : 0.5, 0.5);
-        Level level = toaster.getLevel();
         Direction direction = toaster.getBlockState().getValue(ToasterBlock.DIRECTION);
+        Level level = toaster.getLevel();
         this.drawItem(toaster.getItem(0), 1, direction, level, poseStack, source, light, overlay);
         this.drawItem(toaster.getItem(1), -1, direction, level, poseStack, source, light, overlay);
         poseStack.popPose();
@@ -46,7 +46,8 @@ public class ToasterBlockEntityRenderer implements BlockEntityRenderer<ToasterBl
             poseStack.pushPose();
             Vec3i normal = direction.getNormal();
             poseStack.translate(0.095 * normal.getX() * offset, 0, 0.095 * normal.getZ() * offset);
-            poseStack.mulPose(Axis.YP.rotation(Mth.HALF_PI));
+            poseStack.mulPose(direction.getRotation());
+            poseStack.mulPose(Axis.XN.rotation(Mth.HALF_PI));
             poseStack.scale(0.5F, 0.5F, 0.5F);
             this.renderer.renderStatic(stack, ItemDisplayContext.NONE, light, overlay, poseStack, source, level, 0);
             poseStack.popPose();
