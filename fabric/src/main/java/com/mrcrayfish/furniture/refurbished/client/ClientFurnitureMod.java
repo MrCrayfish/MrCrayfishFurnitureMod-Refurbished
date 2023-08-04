@@ -1,20 +1,18 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
-import com.mrcrayfish.framework.Registration;
-import com.mrcrayfish.furniture.refurbished.Constants;
-import com.mrcrayfish.furniture.refurbished.block.GrillBlock;
-import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.GrillBlockEntityRenderer;
-import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.KitchenSinkBlockEntityRenderer;
-import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.ToasterBlockEntityRenderer;
-import com.mrcrayfish.furniture.refurbished.client.renderer.entity.SeatRenderer;
-import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
-import com.mrcrayfish.furniture.refurbished.core.ModEntities;
+import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
+import org.apache.commons.lang3.function.TriFunction;
 
 /**
  * Author: MrCrayfish
@@ -25,12 +23,14 @@ public class ClientFurnitureMod implements ClientModInitializer
     public void onInitializeClient()
     {
         ClientBootstrap.init();
-        ClientBootstrap.registerBlockEntityRenderers(BlockEntityRenderers::register);
-        ClientBootstrap.registerEntityRenderers(EntityRendererRegistry::register);
-        Registration.get(Registries.BLOCK).stream().filter(entry -> entry.getId().getNamespace().equals(Constants.MOD_ID)).forEach(entry -> {
-            if(entry.get() instanceof GrillBlock block) {
-                BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.cutout());
+        ClientBootstrap.registerScreens(new ScreenRegister() {
+            @Override
+            public <T extends AbstractContainerMenu, U extends Screen & MenuAccess<T>> void apply(MenuType<? extends T> type, TriFunction<T, Inventory, Component, U> factory) {
+                MenuScreens.register(type, factory::apply);
             }
         });
+        ClientBootstrap.registerBlockEntityRenderers(BlockEntityRenderers::register);
+        ClientBootstrap.registerEntityRenderers(EntityRendererRegistry::register);
+        ClientBootstrap.registerRenderTypes(BlockRenderLayerMap.INSTANCE::putBlock);
     }
 }

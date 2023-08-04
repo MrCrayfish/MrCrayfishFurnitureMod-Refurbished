@@ -1,0 +1,67 @@
+{
+	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
+	"elements": [
+		{
+			"from": [0, 2, 21],
+			"to": [1, 7, 20],
+			"rotation": {"angle": 0, "axis": "y", "origin": [13, 0, 11]},
+			"faces": {
+				"west": {"uv": [14, 0, 14.5, 2.5], "texture": "#texture"},
+				"up": {"uv": [15, 0.5, 14.5, 0], "rotation": 90, "texture": "#texture"},
+				"down": {"uv": [15.5, 0, 15, 0.5], "rotation": 270, "texture": "#texture"}
+			}
+		},
+		{
+			"from": [1, 0, 10],
+			"to": [11, 9, 11],
+			"faces": {
+				"south": {"uv": [10, 10, 15, 14.5], "texture": "#texture"}
+			}
+		},
+		{
+			"from": [1, 0, 3],
+			"to": [15, 9, 11],
+			"faces": {
+				"north": {"uv": [7, 0, 14, 4.5], "texture": "#texture"},
+				"east": {"uv": [6, 10, 10, 14.5], "texture": "#texture"},
+				"west": {"uv": [0, 10, 4, 14.5], "texture": "#texture"},
+				"up": {"uv": [0, 1, 7, 5], "rotation": 180, "texture": "#texture"},
+				"down": {"uv": [0, 6, 7, 10], "texture": "#texture"}
+			}
+		},
+		{
+			"from": [11, 0, 11],
+			"to": [15, 9, 13],
+			"faces": {
+				"north": {"uv": [0, 0, 2, 4.5], "texture": "#missing"},
+				"east": {"uv": [5, 10, 6, 14.5], "texture": "#texture"},
+				"south": {"uv": [12, 4.5, 14, 9], "texture": "#texture"},
+				"west": {"uv": [14, 4.5, 15, 9], "texture": "#texture"},
+				"up": {"uv": [0, 0, 2, 1], "rotation": 180, "texture": "#texture"},
+				"down": {"uv": [0, 5, 2, 6], "texture": "#texture"}
+			}
+		},
+		{
+			"from": [1, 0, 11],
+			"to": [3, 9, 21],
+			"rotation": {"angle": 0, "axis": "y", "origin": [1, 4.5, 12]},
+			"faces": {
+				"east": {"uv": [7, 4.5, 12, 9], "texture": "#texture"},
+				"south": {"uv": [15, 10, 16, 14.5], "texture": "#texture"},
+				"west": {"uv": [7, 4.5, 12, 9], "texture": "#texture"},
+				"up": {"uv": [2, 0, 7, 1], "rotation": 270, "texture": "#texture"},
+				"down": {"uv": [2, 5, 7, 6], "rotation": 90, "texture": "#texture"}
+			}
+		},
+		{
+			"from": [0, 2, 20],
+			"to": [1, 7, 21],
+			"rotation": {"angle": 0, "axis": "y", "origin": [13, 0, 11]},
+			"faces": {
+				"west": {"uv": [14, 0, 14.5, 2.5], "texture": "#texture"},
+				"up": {"uv": [15, 0.5, 14.5, 0], "rotation": 90, "texture": "#texture"},
+				"down": {"uv": [15.5, 0, 15, 0.5], "rotation": 270, "texture": "#texture"}
+			}
+		}
+	]
+}

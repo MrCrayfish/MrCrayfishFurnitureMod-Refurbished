@@ -1,7 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.platform;
 
 import com.google.common.collect.ImmutableList;
-import com.mrcrayfish.furniture.refurbished.client.gui.screen.IScreenBuilder;
+import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
 import com.mrcrayfish.furniture.refurbished.platform.services.IClientHelper;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.minecraft.client.gui.components.Tooltip;
@@ -56,11 +56,5 @@ public class FabricClientHelper implements IClientHelper
     public TextureAtlasSprite[] getFluidSprites(Fluid fluid, @Nullable BlockAndTintGetter getter, @Nullable BlockPos pos, FluidState state)
     {
         return FluidRenderHandlerRegistry.INSTANCE.get(fluid).getFluidSprites(getter, pos, state);
-    }
-
-    @Override
-    public <T extends AbstractContainerMenu, U extends Screen & MenuAccess<T>> void registerScreen(MenuType<? extends T> type, IScreenBuilder<T, U> builder)
-    {
-        MenuScreens.register(type, builder::create);
     }
 }

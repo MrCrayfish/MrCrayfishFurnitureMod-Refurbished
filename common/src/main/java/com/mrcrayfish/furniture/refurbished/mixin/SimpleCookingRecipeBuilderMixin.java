@@ -33,5 +33,9 @@ public class SimpleCookingRecipeBuilderMixin
         {
             cir.setReturnValue(CookingBookCategory.FOOD);
         }
+        else if(serializer == ModRecipeSerializers.MICROWAVE_RECIPE.get())
+        {
+            cir.setReturnValue(CookingBookCategory.MISC);
+        }
     }
 }

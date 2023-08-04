@@ -66,6 +66,8 @@ public class ModelTemplate
     public static final ModelTemplate TOASTER = block("toaster", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate TOASTER_COOKING = block("toaster_cooking", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate CUTTING_BOARD = block("cutting_board", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate MICROWAVE_CLOSED = block("microwave_closed", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate MICROWAVE_OPEN = block("microwave_open", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
 
     public static final ModelTemplate FRIDGE = item("fridge", TextureSlot.TEXTURE);
 

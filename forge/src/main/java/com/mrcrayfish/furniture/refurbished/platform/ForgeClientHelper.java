@@ -1,7 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.platform;
 
 import com.google.common.collect.ImmutableList;
-import com.mrcrayfish.furniture.refurbished.client.gui.screen.IScreenBuilder;
+import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
 import com.mrcrayfish.furniture.refurbished.platform.services.IClientHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Tooltip;
@@ -69,11 +69,5 @@ public class ForgeClientHelper implements IClientHelper
     private Function<ResourceLocation, TextureAtlasSprite> getBlockTextures()
     {
         return Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS);
-    }
-
-    @Override
-    public <T extends AbstractContainerMenu, U extends Screen & MenuAccess<T>> void registerScreen(MenuType<? extends T> type, IScreenBuilder<T, U> builder)
-    {
-        MenuScreens.register(type, builder::create);
     }
 }

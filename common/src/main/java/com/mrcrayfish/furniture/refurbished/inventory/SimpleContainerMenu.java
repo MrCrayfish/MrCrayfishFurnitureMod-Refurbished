@@ -39,6 +39,13 @@ public abstract class SimpleContainerMenu extends AbstractContainerMenu
         return this.container.stillValid(player);
     }
 
+    @Override
+    public void removed(Player player)
+    {
+        super.removed(player);
+        this.container.stopOpen(player);
+    }
+
     /**
      *
      * @param x

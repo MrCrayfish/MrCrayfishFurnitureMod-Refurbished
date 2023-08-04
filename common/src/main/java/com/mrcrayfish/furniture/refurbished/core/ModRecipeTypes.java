@@ -5,6 +5,7 @@ import com.mrcrayfish.framework.api.registry.RegistryEntry;
 import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.FreezerSolidifyingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.GrillCookingRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.MicrowaveHeatingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.ToasterHeatingRecipe;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.resources.ResourceLocation;
@@ -21,6 +22,7 @@ public class ModRecipeTypes
     public static final RegistryEntry<RecipeType<FreezerSolidifyingRecipe>> FREEZER_SOLIDIFYING = create("freezer_solidifying");
     public static final RegistryEntry<RecipeType<ToasterHeatingRecipe>> TOASTER_HEATING = create("toaster_heating");
     public static final RegistryEntry<RecipeType<CuttingBoardRecipe>> CUTTING_BOARD_SLICING = create("cutting_board_slicing");
+    public static final RegistryEntry<RecipeType<MicrowaveHeatingRecipe>> MICROWAVE_HEATING = create("microwave_heating");
 
     // This should just be in Framework
     private static <T extends Recipe<?>> RegistryEntry<RecipeType<T>> create(String name)

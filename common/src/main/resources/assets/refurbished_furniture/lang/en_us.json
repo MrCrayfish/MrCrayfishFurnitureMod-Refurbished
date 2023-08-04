@@ -176,6 +176,8 @@
     "block.refurbished_furniture.dark_fridge": "Dark Fridge",
     "block.refurbished_furniture.light_toaster": "Light Toaster",
     "block.refurbished_furniture.dark_toaster": "Dark Toaster",
+    "block.refurbished_furniture.light_microwave": "Light Microwave",
+    "block.refurbished_furniture.dark_microwave": "Dark Microwave",
     "block.refurbished_furniture.oak_cutting_board": "Oak Cutting Board",
     "block.refurbished_furniture.spruce_cutting_board": "Spruce Cutting Board",
     "block.refurbished_furniture.birch_cutting_board": "Birch Cutting Board",
@@ -195,5 +197,6 @@
     "container.refurbished_furniture.kitchen_drawer": "Kitchen Drawer",
     "container.refurbished_furniture.cooler": "Cooler",
     "container.refurbished_furniture.fridge": "Fridge",
-    "container.refurbished_furniture.freezer": "Freezer"
+    "container.refurbished_furniture.freezer": "Freezer",
+    "container.refurbished_furniture.microwave": "Microwave"
 }

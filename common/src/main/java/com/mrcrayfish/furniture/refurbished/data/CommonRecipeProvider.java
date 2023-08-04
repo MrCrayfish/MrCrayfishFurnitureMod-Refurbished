@@ -44,6 +44,7 @@ public class CommonRecipeProvider
         this.toasterHeating(Items.POTATO, Items.BAKED_POTATO, 100, 0.5F);
         this.cuttingBoardSlicing(Blocks.MELON, Items.MELON_SLICE, 6);
         this.cuttingBoardSlicing(Items.APPLE, Items.DIAMOND, 8);
+        this.microwaveHeating(Items.POTATO, Items.BAKED_POTATO, 200, 0.5F);
     }
 
     private void grillCooking(ItemLike rawItem, ItemLike cookedItem, int cookingTime, float experience)
@@ -82,5 +83,15 @@ public class CommonRecipeProvider
         String resultName = resultItem.asItem().toString();
         SingleItemRecipeBuilder builder = new SingleItemRecipeBuilder(RecipeCategory.MISC, ModRecipeSerializers.CUTTING_BOARD_RECIPE.get(), Ingredient.of(baseItem), resultItem, resultCount);
         builder.unlockedBy("has_" + baseName, this.has.apply(baseItem)).save(this.consumer, resultName + "_from_cutting_board_slicing");
+    }
+
+    private void microwaveHeating(ItemLike baseItem, ItemLike heatedItem, int heatingTime, float experience)
+    {
+        String baseName = baseItem.asItem().toString();
+        String resultName = heatedItem.asItem().toString();
+        SimpleCookingRecipeBuilder
+                .generic(Ingredient.of(baseItem), RecipeCategory.MISC, heatedItem, experience, heatingTime, ModRecipeSerializers.MICROWAVE_RECIPE.get())
+                .unlockedBy("has_" + baseName, this.has.apply(baseItem))
+                .save(this.consumer, resultName + "_from_microwave_heating");
     }
 }
