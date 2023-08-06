@@ -7,6 +7,7 @@ import com.mrcrayfish.furniture.refurbished.blockentity.ToasterBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
+import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
@@ -68,7 +69,8 @@ public class CuttingBoardBlock extends FurnitureHorizontalBlock implements Entit
             {
                 if(heldItem.is(ModItems.KNIFE.get()))
                 {
-                    if(cuttingBoard.sliceItem())
+                    boolean dropAsEntity = !Services.ENTITY.isFakePlayer(player);
+                    if(cuttingBoard.sliceItem(dropAsEntity))
                     {
                         heldItem.hurtAndBreak(1, player, (player1) -> player1.broadcastBreakEvent(hand));
                         return InteractionResult.CONSUME;

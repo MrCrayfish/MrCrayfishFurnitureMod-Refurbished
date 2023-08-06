@@ -2,9 +2,11 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
+import com.mrcrayfish.furniture.refurbished.crafting.GrillCookingRecipe;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -32,6 +34,7 @@ import java.util.Optional;
 public class CuttingBoardBlockEntity extends BasicLootBlockEntity
 {
     private final RecipeManager.CachedCheck<Container, ? extends SingleItemRecipe> inputRecipeCache;
+    private final RecipeManager.CachedCheck<Container, ? extends SingleItemRecipe> outputCache;
     protected boolean sync;
 
     public CuttingBoardBlockEntity(BlockPos pos, BlockState state)
@@ -43,6 +46,7 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
     {
         super(type, pos, state, containerSize);
         this.inputRecipeCache = RecipeManager.createCheck(recipeType);
+        this.outputCache = RecipeManager.createCheck(recipeType);
     }
 
     @Override
@@ -97,7 +101,7 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
      *
      * @return
      */
-    public boolean sliceItem()
+    public boolean sliceItem(boolean drop)
     {
         ItemStack input = this.getItem(0);
         Optional<? extends SingleItemRecipe> recipe = this.getRecipe(input);
@@ -106,11 +110,15 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
             // TODO play sound
             ItemStack result = recipe.get().getResultItem(this.level.registryAccess());
             BlockPos pos = this.worldPosition;
-            ItemEntity entity = new ItemEntity(this.level, pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5, result.copy());
-            entity.setDefaultPickUpDelay();
-            entity.setDeltaMovement(new Vec3(0, 0.15, 0));
-            this.setItem(0, ItemStack.EMPTY);
-            this.level.addFreshEntity(entity);
+            if(drop)
+            {
+                ItemEntity entity = new ItemEntity(this.level, pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5, result.copy());
+                entity.setDefaultPickUpDelay();
+                entity.setDeltaMovement(new Vec3(0, 0.15, 0));
+                this.level.addFreshEntity(entity);
+                result = ItemStack.EMPTY;
+            }
+            this.setItem(0, result.copy());
             this.sync();
             return true;
         }
@@ -124,9 +132,20 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
     }
 
     @Override
-    public int getMaxStackSize()
+    public boolean canTakeItem(Container container, int slotIndex, ItemStack stack)
     {
-        return 1;
+        if(slotIndex == 0)
+        {
+            return this.outputCache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level)).isEmpty();
+        }
+        return false;
+    }
+
+    @Override
+    protected boolean isSlotInsertable(int slotIndex)
+    {
+        ItemStack target = this.getItem(slotIndex);
+        return target.isEmpty() || target.getCount() < target.getMaxStackSize() && target.getCount() < 1;
     }
 
     /**

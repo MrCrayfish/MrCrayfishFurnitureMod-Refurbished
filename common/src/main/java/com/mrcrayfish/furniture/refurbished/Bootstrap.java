@@ -36,7 +36,7 @@ public class Bootstrap
             BlockPos pos = source.getPos().relative(direction);
             if(source.getLevel().getBlockEntity(pos) instanceof CuttingBoardBlockEntity cuttingBoard)
             {
-                if(cuttingBoard.sliceItem())
+                if(cuttingBoard.sliceItem(false))
                 {
                     if(stack.hurt(1, source.getLevel().random, null))
                     {
