@@ -31,7 +31,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class ToasterBlockEntity extends ProcessingBlockEntity
+public class ToasterBlockEntity extends ProcessingContainerBlockEntity
 {
     public static final int[] INPUT_SLOTS = new int[]{0, 1};
     public static final int[] OUTPUT_SLOTS = new int[]{0, 1};
@@ -122,15 +122,15 @@ public class ToasterBlockEntity extends ProcessingBlockEntity
     }
 
     @Override
-    protected boolean canProcess()
+    public boolean canProcess()
     {
         return this.heating && super.canProcessInput();
     }
 
     @Override
-    protected void process()
+    public void onCompleteProcess()
     {
-        super.process();
+        super.onCompleteProcess();
         this.setHeating(false);
         this.sync();
     }
@@ -147,7 +147,7 @@ public class ToasterBlockEntity extends ProcessingBlockEntity
     }
 
     @Override
-    protected void processTick()
+    public void processTick()
     {
         super.processTick();
         if(this.sync)

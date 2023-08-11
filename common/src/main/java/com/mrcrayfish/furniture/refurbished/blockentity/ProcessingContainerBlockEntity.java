@@ -21,18 +21,18 @@ import java.util.function.Supplier;
 /**
  * Author: MrCrayfish
  */
-public abstract class ProcessingBlockEntity extends BasicLootBlockEntity
+public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntity implements IProcessingBlock
 {
     protected static final int[] NO_SLOTS = new int[]{};
 
     private final RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> inputRecipeCache;
     private final RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe>[] processRecipeCache;
     private final RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> outputRecipeCache;
-    protected int maxProcessTime;
-    protected int processTime;
+    protected int totalProcessingTime;
+    protected int processingTime;
     protected int energy;
 
-    public ProcessingBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int containerSize, RecipeType<? extends AbstractCookingRecipe> recipeType)
+    public ProcessingContainerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int containerSize, RecipeType<? extends AbstractCookingRecipe> recipeType)
     {
         super(type, pos, state, containerSize);
         this.inputRecipeCache = RecipeManager.createCheck(recipeType);
@@ -43,73 +43,25 @@ public abstract class ProcessingBlockEntity extends BasicLootBlockEntity
     /**
      * @return An array of slots in the inventory used for input
      */
-    public abstract int[] getInputSlots();
+    protected abstract int[] getInputSlots();
 
     /**
      * @return An array of slots in the inventory used for output
      */
-    public abstract int[] getOutputSlots();
+    protected abstract int[] getOutputSlots();
 
     /**
      * @return An array of slots in the inventory used for energy
      */
-    public abstract int[] getEnergySlots();
+    protected abstract int[] getEnergySlots();
 
     /**
-     * Gets the entity mode for this processing block. See {@link EnergyMode} for details
+     * @return True if all input should be processed at the same time instead of one by one
      */
-    public EnergyMode getEnergyMode()
+    protected boolean shouldProcessAll()
     {
-        return EnergyMode.ONLY_WHEN_PROCESSING;
+        return false;
     }
-
-    /**
-     * Determines if this processing block requires energy. By default, a processing block
-     * assumes that if there are any energy slots, it requires energy.
-     * @return True if requires energy
-     */
-    protected boolean requiresEnergy()
-    {
-        return this.getEnergySlots().length > 0;
-    }
-
-    /**
-     * Attempts to consume an item from an energy slot. If an item in the energy slot does not
-     * provide any energy, it will be ignored. This method also has the option to simulate, which
-     * means that it can be used to check if an item in the energy slots provides energy without
-     * shrinking it.
-     *
-     * @param simulate set to true to check if energy can be provided
-     * @return the amount of energy returned from consuming an energy item
-     */
-    protected int consumeEnergy(boolean simulate)
-    {
-        int[] slots = this.getEnergySlots();
-        for(int slot : slots)
-        {
-            ItemStack stack = this.getItem(slot);
-            if(!stack.isEmpty())
-            {
-                int energy = this.getEnergyFor(stack);
-                if(energy > 0)
-                {
-                    if(!simulate)
-                    {
-                        this.onConsumeEnergy(stack);
-                        stack.shrink(1);
-                    }
-                    return energy;
-                }
-            }
-        }
-        return 0;
-    }
-
-    /**
-     * Callback method when an item from an energy slot is consumed
-     * @param stack the item stack that was consumed
-     */
-    protected void onConsumeEnergy(ItemStack stack) {}
 
     /**
      * Gets the amount of energy that the given ItemStack provides for this processing block
@@ -123,48 +75,10 @@ public abstract class ProcessingBlockEntity extends BasicLootBlockEntity
     }
 
     /**
-     * @return True if all input should be processed at the same time instead of one by one
+     * Callback method when an item from an energy slot is consumed
+     * @param stack the item stack that was consumed
      */
-    protected boolean shouldProcessAll()
-    {
-        return false;
-    }
-
-    /**
-     * Processes the input
-     */
-    protected void process()
-    {
-        int[] slots = this.getInputSlots();
-        for(int i = 0; i < slots.length; i++)
-        {
-            int slot = slots[i];
-            ItemStack stack = this.getItem(slot);
-            if(!stack.isEmpty())
-            {
-                Item remainingItem = stack.getItem().getCraftingRemainingItem();
-                Optional<? extends AbstractCookingRecipe> optional = this.getRecipe(this.processRecipeCache[i], stack);
-                ItemStack result = optional.map(recipe -> recipe.getResultItem(this.level.registryAccess())).orElse(ItemStack.EMPTY);
-                stack.shrink(1);
-                if(!result.isEmpty())
-                {
-                    ItemStack copy = result.copy();
-                    if(!this.handleProcessed(copy))
-                    {
-                        this.pushOutput(copy);
-                    }
-                    if(remainingItem != null)
-                    {
-                        this.setItem(slot, new ItemStack(remainingItem));
-                    }
-                }
-                if(!this.shouldProcessAll())
-                {
-                    return;
-                }
-            }
-        }
-    }
+    protected void onConsumeEnergy(ItemStack stack) {}
 
     /**
      * Handles the processed item. If this method returns true, it will cancel the default behaviour
@@ -179,6 +93,110 @@ public abstract class ProcessingBlockEntity extends BasicLootBlockEntity
         return false;
     }
 
+    @Override
+    public int getEnergy()
+    {
+        return this.energy;
+    }
+
+    @Override
+    public void addEnergy(int energy)
+    {
+        this.energy += energy;
+    }
+
+    /**
+     * Determines if this processing block requires energy. By default, a processing block
+     * assumes that if there are any energy slots, it requires energy. You will need to implement
+     * {@link #getEnergyFor(ItemStack)} if processing block requires energy.
+     * @return True if requires energy
+     */
+    @Override
+    public boolean requiresEnergy()
+    {
+        return this.getEnergySlots().length > 0;
+    }
+
+    /**
+     * Attempts to consume an item from an energy slot. If an item in the energy slot does not
+     * provide any energy, it will be ignored. This method also has the option to simulate, which
+     * means that it can be used to check if an item in the energy slots provides energy without
+     * shrinking it.
+     *
+     * @param consume mark as false to check if energy can be provided without consuming (simulate)
+     * @return the amount of energy returned from consuming an energy item
+     */
+    @Override
+    public int retrieveEnergy(boolean consume)
+    {
+        int[] slots = this.getEnergySlots();
+        for(int slot : slots)
+        {
+            ItemStack stack = this.getItem(slot);
+            if(!stack.isEmpty())
+            {
+                int energy = this.getEnergyFor(stack);
+                if(energy > 0)
+                {
+                    if(consume)
+                    {
+                        this.onConsumeEnergy(stack);
+                        stack.shrink(1);
+                    }
+                    return energy;
+                }
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * Gets the time required to process the input. If {@link #shouldProcessAll()} is marked as
+     * true, then the processing time is the maximum time of all the inputs.
+     *
+     * @return the time to process the inputs
+     */
+    @Override
+    public int updateAndGetTotalProcessingTime()
+    {
+        int time = 0;
+        int[] slots = this.getInputSlots();
+        for(int i = 0; i < slots.length; i++)
+        {
+            int slot = slots[i];
+            ItemStack stack = this.getItem(slot);
+            if(!stack.isEmpty())
+            {
+                Optional<? extends AbstractCookingRecipe> optional = this.getRecipe(this.processRecipeCache[i], stack);
+                if(optional.isPresent())
+                {
+                    time = Math.max(time, optional.get().getCookingTime());
+                    if(!this.shouldProcessAll())
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+        if(this.totalProcessingTime != time)
+        {
+            this.totalProcessingTime = time;
+        }
+        return this.totalProcessingTime;
+    }
+
+    @Override
+    public int getProcessingTime()
+    {
+        return this.processingTime;
+    }
+
+    @Override
+    public void setProcessingTime(int time)
+    {
+        this.processingTime = time;
+    }
+
     /**
      * A modifiable method that determines if this processing block can process. By default,
      * processing can happen if the input can be processed. See {@link ToasterBlockEntity} for an
@@ -186,7 +204,8 @@ public abstract class ProcessingBlockEntity extends BasicLootBlockEntity
      *
      * @return True if processing can happen
      */
-    protected boolean canProcess()
+    @Override
+    public boolean canProcess()
     {
         return this.canProcessInput();
     }
@@ -226,14 +245,11 @@ public abstract class ProcessingBlockEntity extends BasicLootBlockEntity
     }
 
     /**
-     * Gets the time required to process the input. If {@link #shouldProcessAll()} is marked as
-     * true, then the processing time is the maximum time of all the inputs.
-     *
-     * @return the time to process the inputs
+     * Processes the input
      */
-    protected int getMaxProcessingTime()
+    @Override
+    public void onCompleteProcess()
     {
-        int time = 0;
         int[] slots = this.getInputSlots();
         for(int i = 0; i < slots.length; i++)
         {
@@ -241,80 +257,33 @@ public abstract class ProcessingBlockEntity extends BasicLootBlockEntity
             ItemStack stack = this.getItem(slot);
             if(!stack.isEmpty())
             {
+                Item remainingItem = stack.getItem().getCraftingRemainingItem();
                 Optional<? extends AbstractCookingRecipe> optional = this.getRecipe(this.processRecipeCache[i], stack);
-                if(optional.isPresent())
+                ItemStack result = optional.map(recipe -> recipe.getResultItem(this.level.registryAccess())).orElse(ItemStack.EMPTY);
+                stack.shrink(1);
+                if(!result.isEmpty())
                 {
-                    time = Math.max(time, optional.get().getCookingTime());
-                    if(!this.shouldProcessAll())
+                    ItemStack copy = result.copy();
+                    if(!this.handleProcessed(copy))
                     {
-                        break;
+                        this.pushOutput(copy);
+                    }
+                    if(remainingItem != null)
+                    {
+                        this.setItem(slot, new ItemStack(remainingItem));
                     }
                 }
-            }
-        }
-        return time;
-    }
-
-    protected void processTick()
-    {
-        boolean processing = false;
-        if(this.canProcess())
-        {
-            // If energy is required, and no energy is left, attempt to add more energy
-            if(this.requiresEnergy() && this.energy <= 0)
-            {
-                if(this.consumeEnergy(true) > 0)
+                if(!this.shouldProcessAll())
                 {
-                    this.energy += this.consumeEnergy(false);
+                    return;
                 }
             }
-
-            if(!this.requiresEnergy() || this.energy > 0)
-            {
-                processing = true;
-
-                // Update the max process time if different
-                int inputProcessTime = this.getMaxProcessingTime();
-                if(this.maxProcessTime != inputProcessTime)
-                {
-                    this.maxProcessTime = inputProcessTime;
-                }
-
-                // Increase the process time if not yet reach the final process time and consume energy
-                if(this.processTime < this.maxProcessTime)
-                {
-                    this.processTime++;
-                    if(this.requiresEnergy() && this.getEnergyMode() == EnergyMode.ONLY_WHEN_PROCESSING)
-                    {
-                        this.energy--;
-                    }
-                }
-
-                // Finally check if the process time is finished and output the result
-                if(this.processTime >= this.maxProcessTime)
-                {
-                    this.process();
-                    this.processTime = 0;
-                    this.maxProcessTime = 0;
-                }
-            }
-        }
-
-        // Consume energy if always consuming
-        if(this.requiresEnergy() && this.getEnergyMode() == EnergyMode.ALWAYS_CONSUME && this.energy > 0)
-        {
-            this.energy--;
-        }
-
-        if(!processing)
-        {
-            this.processTime = 0;
         }
     }
 
-    public static void serverTick(Level level, BlockPos pos, BlockState state, ProcessingBlockEntity entity)
+    public static void serverTick(Level level, BlockPos pos, BlockState state, ProcessingContainerBlockEntity processor)
     {
-        entity.processTick();
+        processor.processTick();
     }
 
     /**
@@ -500,11 +469,11 @@ public abstract class ProcessingBlockEntity extends BasicLootBlockEntity
         super.load(tag);
         if(tag.contains("MaxProcessTime", Tag.TAG_INT))
         {
-            this.maxProcessTime = tag.getInt("MaxProcessTime");
+            this.totalProcessingTime = tag.getInt("MaxProcessTime");
         }
         if(tag.contains("ProcessTime", Tag.TAG_INT))
         {
-            this.processTime = tag.getInt("ProcessTime");
+            this.processingTime = tag.getInt("ProcessTime");
         }
         if(tag.contains("Energy", Tag.TAG_INT))
         {
@@ -516,23 +485,8 @@ public abstract class ProcessingBlockEntity extends BasicLootBlockEntity
     protected void saveAdditional(CompoundTag tag)
     {
         super.saveAdditional(tag);
-        tag.putInt("MaxProcessTime", this.maxProcessTime);
-        tag.putInt("ProcessTime", this.processTime);
+        tag.putInt("MaxProcessTime", this.totalProcessingTime);
+        tag.putInt("ProcessTime", this.processingTime);
         tag.putInt("Energy", this.energy);
-    }
-
-    public enum EnergyMode
-    {
-        /**
-         * Always Consume mode is similar to a furance. It was continuously drain energy but only
-         * add energy if it can process the input.
-         */
-        ALWAYS_CONSUME,
-
-        /**
-         * Only When Processing mode will only drain energy when processing the input. Energy is
-         * only added if it can process the input.
-         */
-        ONLY_WHEN_PROCESSING
     }
 }

@@ -28,12 +28,6 @@ public abstract class SimpleContainerMenu extends AbstractContainerMenu
     }
 
     @Override
-    public ItemStack quickMoveStack(Player player, int slotIndex)
-    {
-        return null;
-    }
-
-    @Override
     public boolean stillValid(Player player)
     {
         return this.container.stillValid(player);

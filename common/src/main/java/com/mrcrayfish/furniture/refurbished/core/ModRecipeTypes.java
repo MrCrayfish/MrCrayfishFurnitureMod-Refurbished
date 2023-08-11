@@ -23,6 +23,7 @@ public class ModRecipeTypes
     public static final RegistryEntry<RecipeType<ToasterHeatingRecipe>> TOASTER_HEATING = create("toaster_heating");
     public static final RegistryEntry<RecipeType<CuttingBoardRecipe>> CUTTING_BOARD_SLICING = create("cutting_board_slicing");
     public static final RegistryEntry<RecipeType<MicrowaveHeatingRecipe>> MICROWAVE_HEATING = create("microwave_heating");
+    //public static final RegistryEntry<RecipeType<MicrowaveHeatingRecipe>> STOVE_FRYING = create("stove_frying");
 
     // This should just be in Framework
     private static <T extends Recipe<?>> RegistryEntry<RecipeType<T>> create(String name)

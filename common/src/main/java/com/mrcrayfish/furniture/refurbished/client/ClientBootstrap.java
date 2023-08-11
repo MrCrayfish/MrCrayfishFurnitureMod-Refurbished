@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.client;
 
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.FreezerScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.MicrowaveScreen;
+import com.mrcrayfish.furniture.refurbished.client.gui.screen.StoveScreen;
 import com.mrcrayfish.furniture.refurbished.client.registration.BlockEntityRendererRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.EntityRendererRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.RenderTypeRegister;
@@ -33,6 +34,7 @@ public class ClientBootstrap
     {
         register.apply(ModMenuTypes.FREEZER.get(), FreezerScreen::new);
         register.apply(ModMenuTypes.MICROWAVE.get(), MicrowaveScreen::new);
+        register.apply(ModMenuTypes.STOVE.get(), StoveScreen::new);
     }
 
     public static void registerBlockEntityRenderers(BlockEntityRendererRegister register)
@@ -68,5 +70,7 @@ public class ClientBootstrap
         register.apply(ModBlocks.GRILL_BLACK.get(), RenderType.cutout());
         register.apply(ModBlocks.MICROWAVE_LIGHT.get(), RenderType.cutout());
         register.apply(ModBlocks.MICROWAVE_DARK.get(), RenderType.cutout());
+        register.apply(ModBlocks.STOVE_LIGHT.get(), RenderType.cutout());
+        register.apply(ModBlocks.STOVE_DARK.get(), RenderType.cutout());
     }
 }

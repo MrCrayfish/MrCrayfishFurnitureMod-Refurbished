@@ -76,7 +76,7 @@ public class FreezerBlock extends FridgeBlock
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving)
     {
         super.onRemove(state, level, pos, newState, isMoving);
-        if(level.getBlockState(pos.above()).getBlock() instanceof FridgeBlock)
+        if(!state.is(newState.getBlock()) && level.getBlockState(pos.above()).getBlock() instanceof FridgeBlock)
         {
             level.removeBlock(pos.above(), false);
         }

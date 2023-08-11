@@ -1,9 +1,10 @@
 package com.mrcrayfish.furniture.refurbished.inventory;
 
-import com.mrcrayfish.furniture.refurbished.blockentity.FreezerBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.StoveBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
-import com.mrcrayfish.furniture.refurbished.inventory.slot.ResultSlot;
+import com.mrcrayfish.furniture.refurbished.inventory.slot.FuelSlot;
+import com.mrcrayfish.furniture.refurbished.platform.Services;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -13,33 +14,28 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 
 /**
  * Author: MrCrayfish
  */
-public class FreezerMenu extends SimpleContainerMenu
+public class StoveMenu extends SimpleContainerMenu
 {
     private final ContainerData data;
-    private final Level level;
 
-    public FreezerMenu(int windowId, Inventory playerInventory)
+    public StoveMenu(int windowId, Inventory playerInventory)
     {
-        this(ModMenuTypes.FREEZER.get(), windowId, playerInventory, new SimpleContainer(2), new SimpleContainerData(2));
+        this(windowId, playerInventory, new SimpleContainer(1), new SimpleContainerData(2));
     }
 
-    public FreezerMenu(MenuType<?> type, int windowId, Inventory playerInventory, Container container, ContainerData data)
+    public StoveMenu(int windowId, Inventory playerInventory, Container container, ContainerData data)
     {
-        super(type, windowId, container);
-        checkContainerSize(container, 2);
+        super(ModMenuTypes.STOVE.get(), windowId, container);
+        checkContainerSize(container, 1);
         checkContainerDataCount(data, 2);
         container.startOpen(playerInventory.player);
         this.data = data;
-        this.level = playerInventory.player.level();
-        this.addSlot(new Slot(container, 0, 48, 35));
-        this.addSlot(new ResultSlot(container, 1, 108, 35));
+        this.addSlot(new FuelSlot(container, 0, 80, 42));
         this.addPlayerInventorySlots(8, 84, playerInventory);
-        this.addDataSlots(data);
     }
 
     @Override
@@ -58,7 +54,7 @@ public class FreezerMenu extends SimpleContainerMenu
                     return ItemStack.EMPTY;
                 }
             }
-            else if(this.isRecipe(slotStack))
+            else if(this.isFuel(slotStack))
             {
                 if(!this.moveItemStackTo(slotStack, 0, this.container.getContainerSize(), false))
                 {
@@ -89,18 +85,18 @@ public class FreezerMenu extends SimpleContainerMenu
         return stack;
     }
 
-    private boolean isRecipe(ItemStack stack)
+    private boolean isFuel(ItemStack stack)
     {
-        return this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.FREEZER_SOLIDIFYING.get(), new SimpleContainer(stack), this.level).isPresent();
+        return Services.ITEM.getBurnTime(stack, null) > 0;
     }
 
-    public int getProcessTime()
+    public int getEnergy()
     {
-        return this.data.get(FreezerBlockEntity.DATA_PROCESS_TIME);
+        return this.data.get(StoveBlockEntity.DATA_ENERGY);
     }
 
-    public int getMaxProcessTime()
+    public int getTotalEnergy()
     {
-        return this.data.get(FreezerBlockEntity.DATA_MAX_PROCESS_TIME);
+        return this.data.get(StoveBlockEntity.DATA_TOTAL_ENERGY);
     }
 }

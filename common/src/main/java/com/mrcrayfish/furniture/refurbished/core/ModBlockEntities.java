@@ -157,6 +157,11 @@ public class ModBlockEntities
             ModBlocks.MICROWAVE_DARK.get()
     });
 
+    public static final RegistryEntry<BlockEntityType<StoveBlockEntity>> STOVE = RegistryEntry.blockEntity(Utils.resource("stove"), StoveBlockEntity::new, () -> new Block[]{
+            ModBlocks.STOVE_LIGHT.get(),
+            ModBlocks.STOVE_DARK.get()
+    });
+
     public static final RegistryEntry<BlockEntityType<CuttingBoardBlockEntity>> CUTTING_BOARD = RegistryEntry.blockEntity(Utils.resource("cutting_board"), CuttingBoardBlockEntity::new, () -> new Block[]{
             ModBlocks.CUTTING_BOARD_OAK.get(),
             ModBlocks.CUTTING_BOARD_SPRUCE.get(),

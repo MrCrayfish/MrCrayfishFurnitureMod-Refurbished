@@ -1,6 +1,5 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
-import com.mrcrayfish.furniture.refurbished.block.FridgeBlock;
 import com.mrcrayfish.furniture.refurbished.block.MicrowaveBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
@@ -23,7 +22,7 @@ import net.minecraft.world.level.block.state.BlockState;
 /**
  * Author: MrCrayfish
  */
-public class MicrowaveBlockEntity extends ProcessingBlockEntity
+public class MicrowaveBlockEntity extends ProcessingContainerBlockEntity
 {
     public static final int[] INPUT_SLOTS = new int[]{0};
     public static final int[] OUTPUT_SLOTS = new int[]{1};
@@ -31,8 +30,8 @@ public class MicrowaveBlockEntity extends ProcessingBlockEntity
     public static final int DATA_MAX_PROCESS_TIME = 1;
 
     protected final ContainerData data = new BuildableContainerData(builder -> {
-        builder.add(DATA_PROCESS_TIME, () -> processTime, value -> processTime = value);
-        builder.add(DATA_MAX_PROCESS_TIME, () -> maxProcessTime, value -> maxProcessTime = value);
+        builder.add(DATA_PROCESS_TIME, () -> processingTime, value -> processingTime = value);
+        builder.add(DATA_MAX_PROCESS_TIME, () -> totalProcessingTime, value -> totalProcessingTime = value);
     });
 
     public MicrowaveBlockEntity(BlockPos pos, BlockState state)
