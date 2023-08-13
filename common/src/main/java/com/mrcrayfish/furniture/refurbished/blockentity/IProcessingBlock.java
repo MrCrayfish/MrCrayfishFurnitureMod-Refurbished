@@ -1,7 +1,5 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
-//TODO finish docs
-
 /**
  * Author: MrCrayfish
  */
@@ -15,8 +13,15 @@ public interface IProcessingBlock
         return EnergyMode.ONLY_WHEN_PROCESSING;
     }
 
+    /**
+     * @return The current energy available for this processing block
+     */
     int getEnergy();
 
+    /**
+     * Adds the given amount to the current energy
+     * @param energy the energy amount to add, or negative to subtract
+     */
     void addEnergy(int energy);
 
     /**
@@ -37,18 +42,42 @@ public interface IProcessingBlock
      */
     int retrieveEnergy(boolean simulate);
 
+    /**
+     * Updates and gets the total processing time required to complete a process
+     * @return The current or updated total processing time
+     */
     int updateAndGetTotalProcessingTime();
 
+    /**
+     * @return The current total processing time
+     */
     int getTotalProcessingTime();
 
+    /**
+     * @return The current time of the processing cycle
+     */
     int getProcessingTime();
 
+    /**
+     * Sets the time of the processing cycle
+     */
     void setProcessingTime(int time);
 
+    /**
+     * A callback method when the processing cycle is complete. This can be used to provide logic to
+     * create an output, such as converting an item to a "result" item. See {@link ProcessingContainerBlockEntity}
+     * for an example.
+     */
     void onCompleteProcess();
 
+    /**
+     * @return True if the process cycle can start or continue to process
+     */
     boolean canProcess();
 
+    /**
+     * The default implementation of the process cycle.
+     */
     default void processTick()
     {
         boolean processing = false;

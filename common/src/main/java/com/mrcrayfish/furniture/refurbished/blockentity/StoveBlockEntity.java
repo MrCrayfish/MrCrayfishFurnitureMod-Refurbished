@@ -250,7 +250,7 @@ public class StoveBlockEntity extends BasicLootBlockEntity implements IProcessin
     }
 
     @Override
-    public boolean isHeatingCookingBlock()
+    public boolean isHeatingAboveBlock()
     {
         return this.processing;
     }
@@ -263,7 +263,7 @@ public class StoveBlockEntity extends BasicLootBlockEntity implements IProcessin
      */
     public void onDestroyed(BlockPos pos)
     {
-        if(this.isHeatingCookingBlock())
+        if(this.isHeatingAboveBlock())
         {
             Level level = this.getLevel();
             if(level != null && level.getBlockEntity(pos.above()) instanceof ICookingBlock cooking)

@@ -5,5 +5,8 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
  */
 public interface IHeatingSource
 {
-    boolean isHeatingCookingBlock();
+    /**
+     * @return True if this heating source is currently heating the above block
+     */
+    boolean isHeatingAboveBlock();
 }

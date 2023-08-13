@@ -53,7 +53,7 @@ public interface ICookingBlock
         Level level = entity.getLevel();
         if(level != null && level.getBlockEntity(belowPos) instanceof IHeatingSource source)
         {
-            return source.isHeatingCookingBlock();
+            return source.isHeatingAboveBlock();
         }
         return false;
     }
