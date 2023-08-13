@@ -53,29 +53,32 @@ public class FurnitureModelProvider extends FabricModelProvider
             DynamicPropertyDispatch dispatch = DynamicPropertyDispatch.of(block);
             builder.getVariants().forEach(entry -> {
                 // Generates the blockstate
-                PreparedBlockState.Model preparedModel = Objects.requireNonNull(entry.getPreparedModel());
-                ResourceLocation model = new ResourceLocation(this.output.getModId(), "block/" + preparedModel.getName());
-                Variant variant = Variant.variant().with(VariantProperties.MODEL, model);
-                if(preparedModel.getXRotation() != VariantProperties.Rotation.R0) {
-                    variant.with(VariantProperties.X_ROT, preparedModel.getXRotation());
+                PreparedBlockState.Model model = Objects.requireNonNull(entry.getModel());
+                ResourceLocation modelLocation = entry.hasParentModel() ? new ResourceLocation(this.output.getModId(), "block/" + model.getName()) : model.getModel();
+                Variant variant = Variant.variant().with(VariantProperties.MODEL, modelLocation);
+                if(model.getXRotation() != VariantProperties.Rotation.R0) {
+                    variant.with(VariantProperties.X_ROT, model.getXRotation());
                 }
-                if(preparedModel.getYRotation() != VariantProperties.Rotation.R0) {
-                    variant.with(VariantProperties.Y_ROT, preparedModel.getYRotation());
+                if(model.getYRotation() != VariantProperties.Rotation.R0) {
+                    variant.with(VariantProperties.Y_ROT, model.getYRotation());
                 }
                 dispatch.register(entry.getValueMap(), variant);
 
-                // Creates and registers the block model into the model output
-                preparedModel.asTemplate().create(model, preparedModel.getTextures(), generators.modelOutput);
+                // Creates and registers the block model into the model output if a child model
+                if(entry.hasParentModel())
+                {
+                    model.asTemplate().create(modelLocation, model.getTextures(), generators.modelOutput);
+                }
             });
             generator.with(dispatch);
             generators.blockStateOutput.accept(generator);
 
             // Generates an item model if the block has an item and the state builder marked a variant for the item model
             Optional.ofNullable(Item.BY_BLOCK.get(block)).ifPresent(item -> {
-                Optional.ofNullable(builder.getVariantForItem()).map(PreparedBlockState.Entry::getPreparedModel).ifPresent(definition -> {
+                Optional.ofNullable(builder.getVariantForItem()).map(PreparedBlockState.Entry::getModel).ifPresent(model -> {
                     ResourceLocation itemName = ModelLocationUtils.getModelLocation(item);
-                    ResourceLocation model = new ResourceLocation(this.output.getModId(), "block/" + builder.getVariantForItem().getPreparedModel().getName());
-                    generators.modelOutput.accept(itemName, new DelegatedModel(model));
+                    ResourceLocation modelLocation = new ResourceLocation(this.output.getModId(), "block/" + model.getName());
+                    generators.modelOutput.accept(itemName, new DelegatedModel(modelLocation));
                 });
             });
         }).run();

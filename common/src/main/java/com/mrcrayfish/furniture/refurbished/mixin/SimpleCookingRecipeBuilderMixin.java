@@ -37,5 +37,9 @@ public class SimpleCookingRecipeBuilderMixin
         {
             cir.setReturnValue(CookingBookCategory.MISC);
         }
+        else if(serializer == ModRecipeSerializers.FRYING_PAN_RECIPE.get())
+        {
+            cir.setReturnValue(CookingBookCategory.FOOD);
+        }
     }
 }

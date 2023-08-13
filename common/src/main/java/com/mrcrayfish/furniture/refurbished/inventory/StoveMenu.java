@@ -36,6 +36,7 @@ public class StoveMenu extends SimpleContainerMenu
         this.data = data;
         this.addSlot(new FuelSlot(container, 0, 80, 42));
         this.addPlayerInventorySlots(8, 84, playerInventory);
+        this.addDataSlots(data);
     }
 
     @Override

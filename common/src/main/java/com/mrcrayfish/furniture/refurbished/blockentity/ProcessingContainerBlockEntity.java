@@ -28,6 +28,7 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
     private final RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> inputRecipeCache;
     private final RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe>[] processRecipeCache;
     private final RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> outputRecipeCache;
+    protected boolean processing;
     protected int totalProcessingTime;
     protected int processingTime;
     protected int energy;
@@ -182,6 +183,12 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
         {
             this.totalProcessingTime = time;
         }
+        return this.totalProcessingTime;
+    }
+
+    @Override
+    public int getTotalProcessingTime()
+    {
         return this.totalProcessingTime;
     }
 

@@ -70,6 +70,7 @@ public class ModelTemplate
     public static final ModelTemplate MICROWAVE_OPEN = block("microwave_open", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate STOVE_CLOSED = block("stove_closed", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate STOVE_OPEN = block("stove_open", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate FRYING_PAN = block("frying_pan", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
 
     public static final ModelTemplate FRIDGE = item("fridge", TextureSlot.TEXTURE);
 

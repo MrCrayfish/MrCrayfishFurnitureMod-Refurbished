@@ -36,8 +36,7 @@ public class StoveScreen extends AbstractContainerScreen<StoveMenu>
         {
             float normalEnergy = this.menu.getEnergy() / (float) this.menu.getTotalEnergy();
             int v = (int) Math.ceil(14 * normalEnergy);
-            int height = 14 - v;
-            graphics.blit(TEXTURE, this.leftPos + 80, this.topPos + 25, 176, v, 14, height);
+            graphics.blit(TEXTURE, this.leftPos + 80, this.topPos + 25 + 14 - v, 176, 14 - v, 14, v);
         }
     }
 }

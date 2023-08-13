@@ -9,38 +9,38 @@ import net.minecraft.network.FriendlyByteBuf;
 /**
  * Author: MrCrayfish
  */
-public class MessageFlipGrillItem extends PlayMessage<MessageFlipGrillItem>
+public class MessageFlipAnimation extends PlayMessage<MessageFlipAnimation>
 {
     private BlockPos pos;
     private int index;
 
-    public MessageFlipGrillItem() {}
+    public MessageFlipAnimation() {}
 
-    public MessageFlipGrillItem(BlockPos pos, int index)
+    public MessageFlipAnimation(BlockPos pos, int index)
     {
         this.pos = pos;
         this.index = index;
     }
 
     @Override
-    public void encode(MessageFlipGrillItem message, FriendlyByteBuf buffer)
+    public void encode(MessageFlipAnimation message, FriendlyByteBuf buffer)
     {
         buffer.writeBlockPos(message.pos);
         buffer.writeInt(message.index);
     }
 
     @Override
-    public MessageFlipGrillItem decode(FriendlyByteBuf buffer)
+    public MessageFlipAnimation decode(FriendlyByteBuf buffer)
     {
         BlockPos pos = buffer.readBlockPos();
         int index = buffer.readInt();
-        return new MessageFlipGrillItem(pos, index);
+        return new MessageFlipAnimation(pos, index);
     }
 
     @Override
-    public void handle(MessageFlipGrillItem message, MessageContext context)
+    public void handle(MessageFlipAnimation message, MessageContext context)
     {
-        context.execute(() -> ClientPlayHandler.handleMessageFlipGrillItem(message));
+        context.execute(() -> ClientPlayHandler.handleMessageFlipAnimation(message));
         context.setHandled(true);
     }
 

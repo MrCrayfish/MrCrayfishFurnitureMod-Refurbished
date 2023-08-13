@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import com.mrcrayfish.furniture.refurbished.blockentity.FlipAnimation;
 import com.mrcrayfish.furniture.refurbished.blockentity.GrillBlockEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -52,7 +53,7 @@ public class GrillBlockEntityRenderer implements BlockEntityRenderer<GrillBlockE
     {
         poseStack.pushPose();
         GrillBlockEntity.CookingSpace space = grill.getCookingSpace(quadrant);
-        GrillBlockEntity.FlipAnimation animation = space.getAnimation();
+        FlipAnimation animation = space.getAnimation();
         float time = animation.isPlaying() ? animation.getTime(partialTick) : 0;
         poseStack.translate(0, Mth.sin(Mth.PI * time), 0);
         poseStack.translate(0.3 + 0.4 * (quadrant % 2), 1.0, 0.3 + 0.4 * (quadrant / 2));

@@ -5,7 +5,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.GrillCookingRecipe;
 import com.mrcrayfish.furniture.refurbished.network.Network;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageFlipGrillItem;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageFlipAnimation;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import net.minecraft.Util;
@@ -172,7 +172,7 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
         {
             BlockPos pos = this.getBlockPos();
             List<ServerPlayer> players = cache.chunkMap.getPlayers(new ChunkPos(pos), false);
-            players.forEach(player -> Network.getPlay().sendToPlayer(() -> player, new MessageFlipGrillItem(pos, position)));
+            players.forEach(player -> Network.getPlay().sendToPlayer(() -> player, new MessageFlipAnimation(pos, position)));
         }
     }
 
@@ -906,52 +906,4 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
         }
     }
 
-    public static class FlipAnimation
-    {
-        public static final int FLIP_ANIMATION_LENGTH = 15;
-
-        private boolean flipping;
-        private int animation;
-
-        /**
-         * Plays the animation
-         */
-        public void play()
-        {
-            this.flipping = true;
-            this.animation = 0;
-        }
-
-        /**
-         * @return True if the animation is currently playing. The animation is playing if it's
-         * flipped and the animation time is less than the animation length.
-         */
-        public boolean isPlaying()
-        {
-            return this.flipping && this.animation < FLIP_ANIMATION_LENGTH;
-        }
-
-        /**
-         * @return The current animation time
-         */
-        public float getTime(float partialTick)
-        {
-            return Mth.clamp(Mth.lerp(partialTick, this.animation, this.animation + 1), 0, FLIP_ANIMATION_LENGTH) / FLIP_ANIMATION_LENGTH;
-        }
-
-        /**
-         * Handles updating the animation time and stopping when finished
-         */
-        public void tick()
-        {
-            if(this.flipping && this.animation < FLIP_ANIMATION_LENGTH)
-            {
-                this.animation++;
-                if(this.animation == FLIP_ANIMATION_LENGTH)
-                {
-                    this.flipping = false;
-                }
-            }
-        }
-    }
 }

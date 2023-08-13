@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -65,6 +66,7 @@ public class PreparedBlockState
         private final Block block;
         private final Map<Property, Comparable> map = new TreeMap<>(Comparator.comparing(Property::getName));
         private Model model;
+        private boolean hasParent;
         private boolean useForItem;
 
         private Entry(Block block)
@@ -79,9 +81,17 @@ public class PreparedBlockState
             return this;
         }
 
-        public Entry model(Model builder)
+        public Entry existingModel(Model builder)
         {
             this.model = builder;
+            this.hasParent = false;
+            return this;
+        }
+
+        public Entry parentModel(Model builder)
+        {
+            this.model = builder;
+            this.hasParent = true;
             return this;
         }
 
@@ -90,9 +100,15 @@ public class PreparedBlockState
             this.useForItem = true;
         }
 
-        public Model getPreparedModel()
+        @Nullable
+        public Model getModel()
         {
             return this.model;
+        }
+
+        public boolean hasParentModel()
+        {
+            return this.hasParent;
         }
 
         public Map<Property, Comparable> getValueMap()

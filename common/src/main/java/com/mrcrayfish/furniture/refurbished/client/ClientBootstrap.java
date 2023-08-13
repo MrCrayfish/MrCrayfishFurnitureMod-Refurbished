@@ -8,6 +8,7 @@ import com.mrcrayfish.furniture.refurbished.client.registration.EntityRendererRe
 import com.mrcrayfish.furniture.refurbished.client.registration.RenderTypeRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.CuttingBoardBlockEntityRenderer;
+import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.FryingPanBlockEntityRenderer;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.GrillBlockEntityRenderer;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.KitchenSinkBlockEntityRenderer;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.ToasterBlockEntityRenderer;
@@ -43,6 +44,7 @@ public class ClientBootstrap
         register.apply(ModBlockEntities.GRILL.get(), GrillBlockEntityRenderer::new);
         register.apply(ModBlockEntities.TOASTER.get(), ToasterBlockEntityRenderer::new);
         register.apply(ModBlockEntities.CUTTING_BOARD.get(), CuttingBoardBlockEntityRenderer::new);
+        register.apply(ModBlockEntities.FRYING_PAN.get(), FryingPanBlockEntityRenderer::new);
     }
 
     public static void registerEntityRenderers(EntityRendererRegister register)

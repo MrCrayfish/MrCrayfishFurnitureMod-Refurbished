@@ -178,6 +178,7 @@ public class CommonItemTagsProvider
         kitchen.add(ModBlocks.CUTTING_BOARD_CHERRY.get().asItem());
         kitchen.add(ModBlocks.CUTTING_BOARD_CRIMSON.get().asItem());
         kitchen.add(ModBlocks.CUTTING_BOARD_WARPED.get().asItem());
+        kitchen.add(ModBlocks.FRYING_PAN.get().asItem());
         kitchen.add(ModItems.SPATULA.get());
         kitchen.add(ModItems.KNIFE.get());
 

@@ -1,5 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+//TODO finish docs
+
 /**
  * Author: MrCrayfish
  */
@@ -36,6 +38,8 @@ public interface IProcessingBlock
     int retrieveEnergy(boolean simulate);
 
     int updateAndGetTotalProcessingTime();
+
+    int getTotalProcessingTime();
 
     int getProcessingTime();
 

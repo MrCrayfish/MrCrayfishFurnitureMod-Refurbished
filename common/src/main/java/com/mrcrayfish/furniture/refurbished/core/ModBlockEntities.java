@@ -174,4 +174,8 @@ public class ModBlockEntities
             ModBlocks.CUTTING_BOARD_CRIMSON.get(),
             ModBlocks.CUTTING_BOARD_WARPED.get(),
     });
+
+    public static final RegistryEntry<BlockEntityType<FryingPanBlockEntity>> FRYING_PAN = RegistryEntry.blockEntity(Utils.resource("frying_pan"), FryingPanBlockEntity::new, () -> new Block[]{
+            ModBlocks.FRYING_PAN.get()
+    });
 }

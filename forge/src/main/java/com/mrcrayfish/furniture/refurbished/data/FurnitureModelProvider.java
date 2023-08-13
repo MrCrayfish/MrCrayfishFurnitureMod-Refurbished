@@ -81,29 +81,25 @@ public class FurnitureModelProvider extends BlockStateProvider
 
             // Generates the blockstate and block models
             VariantBlockStateBuilder blockStateBuilder = this.getVariantBuilder(block);
-            builder.getVariants().forEach(variant -> {
+            builder.getVariants().forEach(entry -> {
                 VariantBlockStateBuilder.PartialBlockstate state = blockStateBuilder.partialState();
-                for(Map.Entry<Property, Comparable> entry : variant.getValueMap().entrySet()) {
-                    state = state.with(entry.getKey(), entry.getValue());
+                for(Map.Entry<Property, Comparable> property : entry.getValueMap().entrySet()) {
+                    state = state.with(property.getKey(), property.getValue());
                 }
-                PreparedBlockState.Model preparedModel = Objects.requireNonNull(variant.getPreparedModel());
-                BlockModelBuilder modelBuilder = this.models().withExistingParent(preparedModel.getName(), preparedModel.getModel());
-                TextureMapping textures = preparedModel.getTextures();
-                for(TextureSlot slot : preparedModel.getSlots()) {
-                    modelBuilder.texture(slot.getId(), textures.get(slot));
-                }
+                PreparedBlockState.Model model = Objects.requireNonNull(entry.getModel());
+                ModelFile file = this.createModelFileFromVariant(entry, model);
                 state.setModels(ConfiguredModel.builder()
-                    .modelFile(modelBuilder)
-                    .rotationX(preparedModel.getXRotation().ordinal() * 90)
-                    .rotationY(preparedModel.getYRotation().ordinal() * 90)
-                    .build());
+                        .modelFile(file)
+                        .rotationX(model.getXRotation().ordinal() * 90)
+                        .rotationY(model.getYRotation().ordinal() * 90)
+                        .build());
             });
 
             // Generates an item model if the block has an item and the state builder marked a variant for the item model
             Optional.ofNullable(Item.BY_BLOCK.get(block)).ifPresent(item -> {
-                Optional.ofNullable(builder.getVariantForItem()).map(PreparedBlockState.Entry::getPreparedModel).ifPresent(definition -> {
+                Optional.ofNullable(builder.getVariantForItem()).map(PreparedBlockState.Entry::getModel).ifPresent(definition -> {
                     ResourceLocation itemName = Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(item));
-                    ResourceLocation model = new ResourceLocation(Constants.MOD_ID, "block/" + builder.getVariantForItem().getPreparedModel().getName());
+                    ResourceLocation model = new ResourceLocation(Constants.MOD_ID, "block/" + definition.getName());
                     this.itemModels().getBuilder(itemName.toString()).parent(new ModelFile.UncheckedModelFile(model));
                 });
             });
@@ -120,5 +116,17 @@ public class FurnitureModelProvider extends BlockStateProvider
                 builder.texture(slot.getId(), model.getTextures().get(slot));
             }
         }).run();
+    }
+
+    private ModelFile createModelFileFromVariant(PreparedBlockState.Entry entry, PreparedBlockState.Model model)
+    {
+        if(entry.hasParentModel())
+        {
+            BlockModelBuilder modelBuilder = this.models().withExistingParent(model.getName(), model.getModel());
+            TextureMapping textures = model.getTextures();
+            Arrays.stream(model.getSlots()).forEach(slot -> modelBuilder.texture(slot.getId(), textures.get(slot)));
+            return modelBuilder;
+        }
+        return this.models().getExistingFile(model.getModel());
     }
 }
