@@ -1,7 +1,9 @@
 package com.mrcrayfish.furniture.refurbished;
 
+import com.mrcrayfish.framework.api.config.ConfigProperty;
 import com.mrcrayfish.framework.api.config.ConfigType;
 import com.mrcrayfish.framework.api.config.FrameworkConfig;
+import com.mrcrayfish.framework.api.config.IntProperty;
 
 /**
  * Author: MrCrayfish
@@ -21,6 +23,7 @@ public class Config
 
     public static class Server
     {
-
+        @ConfigProperty(name = "mailQueueSize", comment = "The maximum amount of items that can be queued for delivery for a mail box")
+        public final IntProperty mailQueueSize = IntProperty.create(18);
     }
 }

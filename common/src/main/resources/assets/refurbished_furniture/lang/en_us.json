@@ -190,6 +190,16 @@
     "block.refurbished_furniture.warped_cutting_board": "Warped Cutting Board",
     "block.refurbished_furniture.mangrove_cutting_board": "Mangrove Cutting Board",
     "block.refurbished_furniture.cherry_cutting_board": "Cherry Cutting Board",
+    "block.refurbished_furniture.oak_mail_box": "Oak Mailbox",
+    "block.refurbished_furniture.spruce_mail_box": "Spruce Mailbox",
+    "block.refurbished_furniture.birch_mail_box": "Birch Mailbox",
+    "block.refurbished_furniture.jungle_mail_box": "Jungle Mailbox",
+    "block.refurbished_furniture.acacia_mail_box": "Acacia Mailbox",
+    "block.refurbished_furniture.dark_oak_mail_box": "Dark Oak Mailbox",
+    "block.refurbished_furniture.crimson_mail_box": "Crimson Mailbox",
+    "block.refurbished_furniture.warped_mail_box": "Warped Mailbox",
+    "block.refurbished_furniture.mangrove_mail_box": "Mangrove Mailbox",
+    "block.refurbished_furniture.cherry_mail_box": "Cherry Mailbox",
     "block.refurbished_furniture.frying_pan": "Frying Pan",
     "item.refurbished_furniture.spatula": "Spatula",
     "item.refurbished_furniture.knife": "Knife",
@@ -202,5 +212,6 @@
     "container.refurbished_furniture.fridge": "Fridge",
     "container.refurbished_furniture.freezer": "Freezer",
     "container.refurbished_furniture.microwave": "Microwave",
-    "container.refurbished_furniture.stove": "Stove"
+    "container.refurbished_furniture.stove": "Stove",
+    "container.refurbished_furniture.mailbox": "Mailbox"
 }

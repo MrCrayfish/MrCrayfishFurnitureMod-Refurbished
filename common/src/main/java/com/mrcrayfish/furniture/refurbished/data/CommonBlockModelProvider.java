@@ -212,6 +212,17 @@ public class CommonBlockModelProvider
         this.cuttingBoard(ModBlocks.CUTTING_BOARD_CRIMSON.get());
         this.cuttingBoard(ModBlocks.CUTTING_BOARD_WARPED.get());
         this.fryingPan(ModBlocks.FRYING_PAN.get());
+        
+        this.mailbox(ModBlocks.MAIL_BOX_OAK.get());
+        this.mailbox(ModBlocks.MAIL_BOX_SPRUCE.get());
+        this.mailbox(ModBlocks.MAIL_BOX_BIRCH.get());
+        this.mailbox(ModBlocks.MAIL_BOX_JUNGLE.get());
+        this.mailbox(ModBlocks.MAIL_BOX_ACACIA.get());
+        this.mailbox(ModBlocks.MAIL_BOX_DARK_OAK.get());
+        this.mailbox(ModBlocks.MAIL_BOX_MANGROVE.get());
+        this.mailbox(ModBlocks.MAIL_BOX_CHERRY.get());
+        this.mailbox(ModBlocks.MAIL_BOX_CRIMSON.get());
+        this.mailbox(ModBlocks.MAIL_BOX_WARPED.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -629,6 +640,24 @@ public class CommonBlockModelProvider
         state.createVariant().prop(FryingPanBlock.DIRECTION, Direction.EAST).existingModel(ModelTemplate.FRYING_PAN.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(FryingPanBlock.DIRECTION, Direction.SOUTH).existingModel(ModelTemplate.FRYING_PAN.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(FryingPanBlock.DIRECTION, Direction.WEST).existingModel(ModelTemplate.FRYING_PAN.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        this.consumer.accept(state);
+    }
+
+    private void mailbox(MailboxBlock block)
+    {
+        WoodType type = block.getWoodType();
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.woodParticle(type));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedBlockState state = new PreparedBlockState(block);
+        state.createVariant().prop(MailboxBlock.DIRECTION, Direction.NORTH).prop(MailboxBlock.ENABLED, false).parentModel(ModelTemplate.MAIL_BOX.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(MailboxBlock.DIRECTION, Direction.EAST).prop(DrawerBlock.ENABLED, false).parentModel(ModelTemplate.MAIL_BOX.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(MailboxBlock.DIRECTION, Direction.SOUTH).prop(DrawerBlock.ENABLED, false).parentModel(ModelTemplate.MAIL_BOX.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(MailboxBlock.DIRECTION, Direction.WEST).prop(DrawerBlock.ENABLED, false).parentModel(ModelTemplate.MAIL_BOX.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(MailboxBlock.DIRECTION, Direction.NORTH).prop(DrawerBlock.ENABLED, true).parentModel(ModelTemplate.MAIL_BOX_UNCHECKED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
+        state.createVariant().prop(MailboxBlock.DIRECTION, Direction.EAST).prop(DrawerBlock.ENABLED, true).parentModel(ModelTemplate.MAIL_BOX_UNCHECKED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(MailboxBlock.DIRECTION, Direction.SOUTH).prop(DrawerBlock.ENABLED, true).parentModel(ModelTemplate.MAIL_BOX_UNCHECKED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(MailboxBlock.DIRECTION, Direction.WEST).prop(DrawerBlock.ENABLED, true).parentModel(ModelTemplate.MAIL_BOX_UNCHECKED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         this.consumer.accept(state);
     }
 }

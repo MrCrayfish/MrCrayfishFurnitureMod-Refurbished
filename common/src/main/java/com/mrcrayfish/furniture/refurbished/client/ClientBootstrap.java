@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.FreezerScreen;
+import com.mrcrayfish.furniture.refurbished.client.gui.screen.MailboxScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.MicrowaveScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.StoveScreen;
 import com.mrcrayfish.furniture.refurbished.client.registration.BlockEntityRendererRegister;
@@ -36,6 +37,7 @@ public class ClientBootstrap
         register.apply(ModMenuTypes.FREEZER.get(), FreezerScreen::new);
         register.apply(ModMenuTypes.MICROWAVE.get(), MicrowaveScreen::new);
         register.apply(ModMenuTypes.STOVE.get(), StoveScreen::new);
+        register.apply(ModMenuTypes.MAIL_BOX.get(), (menu, inventory, component) -> new MailboxScreen(menu, inventory, component));
     }
 
     public static void registerBlockEntityRenderers(BlockEntityRendererRegister register)

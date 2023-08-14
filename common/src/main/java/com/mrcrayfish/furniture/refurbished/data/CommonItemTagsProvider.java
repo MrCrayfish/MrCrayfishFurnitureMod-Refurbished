@@ -225,6 +225,16 @@ public class CommonItemTagsProvider
         outdoors.add(ModBlocks.COOLER_GREEN.get().asItem());
         outdoors.add(ModBlocks.COOLER_RED.get().asItem());
         outdoors.add(ModBlocks.COOLER_BLACK.get().asItem());
+        outdoors.add(ModBlocks.MAIL_BOX_OAK.get().asItem());
+        outdoors.add(ModBlocks.MAIL_BOX_SPRUCE.get().asItem());
+        outdoors.add(ModBlocks.MAIL_BOX_BIRCH.get().asItem());
+        outdoors.add(ModBlocks.MAIL_BOX_JUNGLE.get().asItem());
+        outdoors.add(ModBlocks.MAIL_BOX_ACACIA.get().asItem());
+        outdoors.add(ModBlocks.MAIL_BOX_DARK_OAK.get().asItem());
+        outdoors.add(ModBlocks.MAIL_BOX_MANGROVE.get().asItem());
+        outdoors.add(ModBlocks.MAIL_BOX_CHERRY.get().asItem());
+        outdoors.add(ModBlocks.MAIL_BOX_CRIMSON.get().asItem());
+        outdoors.add(ModBlocks.MAIL_BOX_WARPED.get().asItem());
         outdoors.add(ModItems.SPATULA.get());
         outdoors.add(ModItems.KNIFE.get());
 
@@ -317,6 +327,16 @@ public class CommonItemTagsProvider
         storage.add(ModBlocks.COOLER_GREEN.get().asItem());
         storage.add(ModBlocks.COOLER_RED.get().asItem());
         storage.add(ModBlocks.COOLER_BLACK.get().asItem());
+        storage.add(ModBlocks.MAIL_BOX_OAK.get().asItem());
+        storage.add(ModBlocks.MAIL_BOX_SPRUCE.get().asItem());
+        storage.add(ModBlocks.MAIL_BOX_BIRCH.get().asItem());
+        storage.add(ModBlocks.MAIL_BOX_JUNGLE.get().asItem());
+        storage.add(ModBlocks.MAIL_BOX_ACACIA.get().asItem());
+        storage.add(ModBlocks.MAIL_BOX_DARK_OAK.get().asItem());
+        storage.add(ModBlocks.MAIL_BOX_MANGROVE.get().asItem());
+        storage.add(ModBlocks.MAIL_BOX_CHERRY.get().asItem());
+        storage.add(ModBlocks.MAIL_BOX_CRIMSON.get().asItem());
+        storage.add(ModBlocks.MAIL_BOX_WARPED.get().asItem());
         storage.add(ModItems.FRIDGE_LIGHT.get());
         storage.add(ModItems.FRIDGE_DARK.get());
 

@@ -178,4 +178,17 @@ public class ModBlockEntities
     public static final RegistryEntry<BlockEntityType<FryingPanBlockEntity>> FRYING_PAN = RegistryEntry.blockEntity(Utils.resource("frying_pan"), FryingPanBlockEntity::new, () -> new Block[]{
             ModBlocks.FRYING_PAN.get()
     });
+
+    public static final RegistryEntry<BlockEntityType<MailboxBlockEntity>> MAIL_BOX = RegistryEntry.blockEntity(Utils.resource("mail_box"), MailboxBlockEntity::new, () -> new Block[]{
+            ModBlocks.MAIL_BOX_OAK.get(),
+            ModBlocks.MAIL_BOX_SPRUCE.get(),
+            ModBlocks.MAIL_BOX_BIRCH.get(),
+            ModBlocks.MAIL_BOX_JUNGLE.get(),
+            ModBlocks.MAIL_BOX_ACACIA.get(),
+            ModBlocks.MAIL_BOX_DARK_OAK.get(),
+            ModBlocks.MAIL_BOX_MANGROVE.get(),
+            ModBlocks.MAIL_BOX_CHERRY.get(),
+            ModBlocks.MAIL_BOX_CRIMSON.get(),
+            ModBlocks.MAIL_BOX_WARPED.get()
+    });
 }
