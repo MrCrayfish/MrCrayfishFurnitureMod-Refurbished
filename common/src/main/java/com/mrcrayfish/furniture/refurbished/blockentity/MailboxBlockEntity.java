@@ -13,6 +13,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
 import java.util.Optional;
@@ -97,6 +98,17 @@ public class MailboxBlockEntity extends RowedStorageBlockEntity
     protected Component getDefaultName()
     {
         return Utils.translation("container", "mailbox");
+    }
+
+    @Override
+    public Component getDisplayName()
+    {
+        Mailbox mailbox = this.getMailbox();
+        if(mailbox != null && !mailbox.customName().getValue().isBlank())
+        {
+            return Component.literal(mailbox.customName().getValue());
+        }
+        return super.getDisplayName();
     }
 
     @Override

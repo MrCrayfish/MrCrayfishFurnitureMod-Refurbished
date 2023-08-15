@@ -213,5 +213,7 @@
     "container.refurbished_furniture.freezer": "Freezer",
     "container.refurbished_furniture.microwave": "Microwave",
     "container.refurbished_furniture.stove": "Stove",
-    "container.refurbished_furniture.mailbox": "Mailbox"
+    "container.refurbished_furniture.mailbox": "Mailbox",
+    "gui.refurbished_furniture.set_mailbox_name": "Set Mailbox Name",
+    "gui.refurbished_furniture.rename_mailbox_failed": "Failed to update mailbox name"
 }

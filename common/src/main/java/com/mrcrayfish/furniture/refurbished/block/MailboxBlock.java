@@ -2,14 +2,18 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.mrcrayfish.furniture.refurbished.blockentity.DrawerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.MailboxBlockEntity;
+import com.mrcrayfish.furniture.refurbished.client.FurnitureScreens;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
-import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
+import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
+import com.mrcrayfish.furniture.refurbished.mail.Mailbox;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.Container;
+import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -30,6 +34,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -63,10 +68,36 @@ public class MailboxBlock extends FurnitureHorizontalBlock implements EntityBloc
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack)
     {
-        if(!level.isClientSide() && entity instanceof Player player && level.getBlockEntity(pos) instanceof MailboxBlockEntity mailbox)
+        if(entity instanceof Player player)
         {
-            mailbox.getMailbox().owner().setValue(player.getUUID());
+            if(!level.isClientSide())
+            {
+                if(level.getBlockEntity(pos) instanceof MailboxBlockEntity mailbox)
+                {
+                    mailbox.getMailbox().owner().setValue(player.getUUID());
+                    DeliveryService.get(((ServerLevel) level).getServer()).ifPresent(service -> {
+                        service.markMailboxAsPendingName(player, level, pos);
+                    });
+                }
+            }
+            else
+            {
+                FurnitureScreens.openMailboxNameScreen(pos);
+            }
         }
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving)
+    {
+        if(!level.isClientSide() && !state.is(newState.getBlock()))
+        {
+            if(level.getBlockEntity(pos) instanceof MailboxBlockEntity mailbox)
+            {
+                Optional.ofNullable(mailbox.getMailbox()).ifPresent(Mailbox::remove);
+            }
+        }
+        super.onRemove(state, level, pos, newState, isMoving);
     }
 
     @Override

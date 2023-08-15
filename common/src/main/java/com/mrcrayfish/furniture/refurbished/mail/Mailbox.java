@@ -21,10 +21,25 @@ import java.util.UUID;
 /**
  * Author: MrCrayfish
  */
-public record Mailbox(UUID id, ResourceKey<Level> levelKey, BlockPos pos, MutableObject<UUID> owner, Queue<ItemStack> queue, MutableBoolean removed, DeliveryService service)
+public record Mailbox(UUID id, ResourceKey<Level> levelKey, BlockPos pos, MutableObject<UUID> owner, MutableObject<String> customName, Queue<ItemStack> queue, MutableBoolean removed, DeliveryService service)
 {
+    public static final int MAX_NAME_LENGTH = 32;
+
+    public boolean rename(String customName)
+    {
+        if(!customName.isBlank() && customName.length() <= 32)
+        {
+            this.customName.setValue(customName);
+            return true;
+        }
+        return false;
+    }
+
     void tick()
     {
+        if(this.removed.booleanValue())
+            return;
+
         if(this.queue.isEmpty())
             return;
 
