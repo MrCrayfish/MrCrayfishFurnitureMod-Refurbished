@@ -73,6 +73,7 @@ public class ModelTemplate
     public static final ModelTemplate FRYING_PAN = block("frying_pan", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate MAIL_BOX = block("mail_box", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate MAIL_BOX_UNCHECKED = block("mail_box_unchecked", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate POST_BOX = block("post_box", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
 
     public static final ModelTemplate FRIDGE = item("fridge", TextureSlot.TEXTURE);
 

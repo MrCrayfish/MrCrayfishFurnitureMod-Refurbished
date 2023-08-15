@@ -201,6 +201,7 @@
     "block.refurbished_furniture.mangrove_mail_box": "Mangrove Mailbox",
     "block.refurbished_furniture.cherry_mail_box": "Cherry Mailbox",
     "block.refurbished_furniture.frying_pan": "Frying Pan",
+    "block.refurbished_furniture.post_box": "Post Box",
     "item.refurbished_furniture.spatula": "Spatula",
     "item.refurbished_furniture.knife": "Knife",
     "item.refurbished_furniture.light_fridge": "Light Fridge",
@@ -214,6 +215,7 @@
     "container.refurbished_furniture.microwave": "Microwave",
     "container.refurbished_furniture.stove": "Stove",
     "container.refurbished_furniture.mailbox": "Mailbox",
+    "container.refurbished_furniture.post_box": "Post Box",
     "gui.refurbished_furniture.set_mailbox_name": "Set Mailbox Name",
     "gui.refurbished_furniture.rename_mailbox_failed": "Failed to update mailbox name"
 }

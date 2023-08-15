@@ -27,7 +27,7 @@ public record Mailbox(UUID id, ResourceKey<Level> levelKey, BlockPos pos, Mutabl
 
     public boolean rename(String customName)
     {
-        if(!customName.isBlank() && customName.length() <= 32)
+        if(!customName.isBlank() && customName.length() <= MAX_NAME_LENGTH)
         {
             this.customName.setValue(customName);
             return true;

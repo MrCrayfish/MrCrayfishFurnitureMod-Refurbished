@@ -212,7 +212,6 @@ public class CommonBlockModelProvider
         this.cuttingBoard(ModBlocks.CUTTING_BOARD_CRIMSON.get());
         this.cuttingBoard(ModBlocks.CUTTING_BOARD_WARPED.get());
         this.fryingPan(ModBlocks.FRYING_PAN.get());
-        
         this.mailbox(ModBlocks.MAIL_BOX_OAK.get());
         this.mailbox(ModBlocks.MAIL_BOX_SPRUCE.get());
         this.mailbox(ModBlocks.MAIL_BOX_BIRCH.get());
@@ -223,6 +222,7 @@ public class CommonBlockModelProvider
         this.mailbox(ModBlocks.MAIL_BOX_CHERRY.get());
         this.mailbox(ModBlocks.MAIL_BOX_CRIMSON.get());
         this.mailbox(ModBlocks.MAIL_BOX_WARPED.get());
+        this.postBox(ModBlocks.POST_BOX.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -658,6 +658,19 @@ public class CommonBlockModelProvider
         state.createVariant().prop(MailboxBlock.DIRECTION, Direction.EAST).prop(DrawerBlock.ENABLED, true).parentModel(ModelTemplate.MAIL_BOX_UNCHECKED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(MailboxBlock.DIRECTION, Direction.SOUTH).prop(DrawerBlock.ENABLED, true).parentModel(ModelTemplate.MAIL_BOX_UNCHECKED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(MailboxBlock.DIRECTION, Direction.WEST).prop(DrawerBlock.ENABLED, true).parentModel(ModelTemplate.MAIL_BOX_UNCHECKED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        this.consumer.accept(state);
+    }
+
+    private void postBox(PostBoxBlock block)
+    {
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.metalParticle(MetalType.LIGHT));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedBlockState state = new PreparedBlockState(block);
+        state.createVariant().prop(PostBoxBlock.DIRECTION, Direction.NORTH).existingModel(ModelTemplate.POST_BOX.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(PostBoxBlock.DIRECTION, Direction.EAST).existingModel(ModelTemplate.POST_BOX.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(PostBoxBlock.DIRECTION, Direction.SOUTH).existingModel(ModelTemplate.POST_BOX.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(PostBoxBlock.DIRECTION, Direction.WEST).existingModel(ModelTemplate.POST_BOX.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         this.consumer.accept(state);
     }
 }
