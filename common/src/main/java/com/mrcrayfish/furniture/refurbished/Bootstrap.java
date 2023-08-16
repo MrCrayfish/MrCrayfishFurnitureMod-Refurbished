@@ -49,6 +49,8 @@ public class Bootstrap
             return stack;
         });
 
+        //TODO add dispenser behaviour to open mail and spawn items
+
         TickEvents.START_SERVER.register(server -> DeliveryService.get(server).ifPresent(DeliveryService::serverTick));
     }
 }

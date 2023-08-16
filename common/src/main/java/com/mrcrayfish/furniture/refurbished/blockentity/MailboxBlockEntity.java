@@ -104,9 +104,13 @@ public class MailboxBlockEntity extends RowedStorageBlockEntity
     public Component getDisplayName()
     {
         Mailbox mailbox = this.getMailbox();
-        if(mailbox != null && !mailbox.customName().getValue().isBlank())
+        if(mailbox != null)
         {
-            return Component.literal(mailbox.customName().getValue());
+            String customName = mailbox.customName().getValue();
+            if(customName != null && !customName.isBlank())
+            {
+                return Component.literal(customName);
+            }
         }
         return super.getDisplayName();
     }

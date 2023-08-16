@@ -1,27 +1,32 @@
 package com.mrcrayfish.furniture.refurbished.mail;
 
+import com.mojang.authlib.GameProfile;
 import com.mrcrayfish.furniture.refurbished.blockentity.MailboxBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.players.GameProfileCache;
 import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.commons.lang3.mutable.MutableObject;
 
+import javax.annotation.Nullable;
 import java.util.ArrayDeque;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.UUID;
 
 /**
  * Author: MrCrayfish
  */
-public record Mailbox(UUID id, ResourceKey<Level> levelKey, BlockPos pos, MutableObject<UUID> owner, MutableObject<String> customName, Queue<ItemStack> queue, MutableBoolean removed, DeliveryService service)
+public record Mailbox(UUID id, ResourceKey<Level> levelKey, BlockPos pos, MutableObject<UUID> owner, MutableObject<String> customName, Queue<ItemStack> queue, MutableBoolean removed, DeliveryService service) implements IMailbox
 {
     public static final int MAX_NAME_LENGTH = 32;
 
@@ -40,9 +45,6 @@ public record Mailbox(UUID id, ResourceKey<Level> levelKey, BlockPos pos, Mutabl
         if(this.removed.booleanValue())
             return;
 
-        if(this.queue.isEmpty())
-            return;
-
         MinecraftServer server = this.service.getServer();
         ServerLevel level = server.getLevel(this.levelKey);
         if(level == null || !level.isLoaded(this.pos))
@@ -56,11 +58,18 @@ public record Mailbox(UUID id, ResourceKey<Level> levelKey, BlockPos pos, Mutabl
                 return;
             }
 
+            if(this.queue.isEmpty())
+                return;
+
             ItemStack stack = this.queue.peek();
             if(blockEntity.deliverItem(stack))
             {
                 this.queue.remove();
             }
+        }
+        else
+        {
+            this.remove();
         }
     }
 
@@ -116,5 +125,32 @@ public record Mailbox(UUID id, ResourceKey<Level> levelKey, BlockPos pos, Mutabl
         if(obj == null || this.getClass() != obj.getClass()) return false;
         Mailbox mailbox = (Mailbox) obj;
         return this.id.equals(mailbox.id);
+    }
+
+    @Override
+    public UUID getId()
+    {
+        return this.id;
+    }
+
+    @Override
+    public Optional<GameProfile> getOwner()
+    {
+        UUID ownerId = this.owner.getValue();
+        if(ownerId != null)
+        {
+            GameProfileCache cache = this.service.getServer().getProfileCache();
+            if(cache != null)
+            {
+                return cache.get(ownerId);
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<String> getCustomName()
+    {
+        return Optional.ofNullable(this.customName.getValue());
     }
 }

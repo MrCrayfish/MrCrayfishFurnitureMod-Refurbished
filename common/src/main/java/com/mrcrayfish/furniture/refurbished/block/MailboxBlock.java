@@ -105,6 +105,11 @@ public class MailboxBlock extends FurnitureHorizontalBlock implements EntityBloc
     {
         if(!level.isClientSide() && level.getBlockEntity(pos) instanceof MailboxBlockEntity mailbox)
         {
+            // Remove the little flag once the player open the mailbox
+            if(state.getValue(ENABLED))
+            {
+                level.setBlock(pos, state.setValue(ENABLED, false), Block.UPDATE_ALL);
+            }
             player.openMenu(mailbox);
             return InteractionResult.CONSUME;
         }

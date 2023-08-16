@@ -1,0 +1,359 @@
+package com.mrcrayfish.furniture.refurbished.client.gui.screen;
+
+import com.mojang.authlib.GameProfile;
+import com.mrcrayfish.furniture.refurbished.client.gui.widget.IconButton;
+import com.mrcrayfish.furniture.refurbished.inventory.PostBoxMenu;
+import com.mrcrayfish.furniture.refurbished.mail.IMailbox;
+import com.mrcrayfish.furniture.refurbished.network.Network;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageSendMail;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.MultiLineEditBox;
+import net.minecraft.client.gui.components.PlayerFaceRenderer;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Inventory;
+import org.apache.commons.lang3.StringUtils;
+import org.lwjgl.glfw.GLFW;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
+/**
+ * Author: MrCrayfish
+ */
+public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
+{
+    private static final ResourceLocation POST_BOX_TEXTURE = Utils.resource("textures/gui/container/post_box.png");
+    private static final ResourceLocation VILLAGER_TEXTURE = new ResourceLocation("textures/gui/container/villager2.png");
+    private static final List<IMailbox> MAILBOX_CACHE = new ArrayList<>();
+    private static final Map<UUID, PlayerInfo> PLAYER_INFO_CACHE = new HashMap<>();
+
+    private static final int SCROLL_BAR_WIDTH = 6;
+    private static final int SCROLL_BAR_HEIGHT = 27;
+    private static final int MAILBOX_ENTRY_WIDTH = 85;
+    private static final int MAILBOX_ENTRY_HEIGHT = 14;
+    private static final int CONTAINER_HEIGHT = 135;
+    private static final int MAX_VISIBLE_ITEMS = Mth.ceil((double) CONTAINER_HEIGHT / MAILBOX_ENTRY_HEIGHT) + 1;
+
+    protected List<IMailbox> mailboxes = new ArrayList<>();
+    protected IMailbox selected;
+    protected EditBox searchEditBox;
+    protected String query = "";
+    protected MultiLineEditBox messageEditBox;
+    protected Button sendButton;
+    protected String message = "";
+    protected int scroll;
+    protected int clickedY = -1;
+
+    public PostBoxScreen(PostBoxMenu menu, Inventory playerInventory, Component title)
+    {
+        super(menu, playerInventory, Component.empty());
+        this.imageWidth = 276;
+        this.imageHeight = 167;
+        this.inventoryLabelX = 108;
+        this.inventoryLabelY = this.imageHeight - 93;
+        this.updateSearchFilter();
+    }
+
+    @Override
+    protected void init()
+    {
+        super.init();
+
+        this.addRenderableWidget(this.searchEditBox = new EditBox(this.font, this.leftPos + 8, this.topPos + 8, 92, 12, Utils.translation("gui", "search_mailboxes")));
+        this.searchEditBox.setHint(Utils.translation("gui", "search"));
+        this.searchEditBox.setResponder(s -> {
+            this.query = s;
+            this.updateSearchFilter();
+            this.scroll(0);
+        });
+        if(!this.query.isBlank())
+        {
+            this.searchEditBox.setValue(this.query);
+        }
+
+        this.addRenderableWidget(this.messageEditBox = new MultiLineEditBox(this.font, this.leftPos + 109, this.topPos + 12, 120, 54, Utils.translation("gui", "enter_message"), Utils.translation("gui", "package_message")) {
+            @Override
+            protected void renderBorder(GuiGraphics graphics, int x, int y, int width, int height) {}
+
+            @Override
+            protected boolean scrollbarVisible()
+            {
+                return false;
+            }
+        });
+        this.messageEditBox.setValueListener(s -> this.message = s);
+        if(!this.message.isBlank())
+        {
+            this.messageEditBox.setValue(this.message);
+        }
+
+        this.addRenderableWidget(this.sendButton = new IconButton(this.leftPos + 277, this.topPos + 21, 20, 0, btn -> {
+            if(this.selected != null) {
+                Network.getPlay().sendToServer(new MessageSendMail(this.selected.getId(), this.message));
+            }
+        }));
+    }
+
+    @Override
+    protected void containerTick()
+    {
+        this.searchEditBox.tick();
+        this.messageEditBox.tick();
+    }
+
+    @Override
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    {
+        this.sendButton.active = this.selected != null && !this.menu.getContainer().isEmpty();
+        this.searchEditBox.setTextColor(this.searchEditBox.getValue().isEmpty() && !this.searchEditBox.isFocused() ? 0x707070 : 0xE0E0E0);
+        this.renderBackground(graphics);
+        super.render(graphics, mouseX, mouseY, partialTick);
+        this.renderTooltip(graphics, mouseX, mouseY);
+    }
+
+    @Override
+    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
+    {
+        graphics.blit(POST_BOX_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth + 25, this.imageHeight, 512, 256);
+        graphics.enableScissor(this.leftPos + 8, this.topPos + 24, this.leftPos + 93, this.topPos + 159);
+        int scroll = this.clampScroll(this.scroll + this.getDeltaScroll(mouseY));
+        int startIndex = Mth.clamp(scroll / MAILBOX_ENTRY_HEIGHT, 0, Math.max(0, this.mailboxes.size() - 1 - MAX_VISIBLE_ITEMS));
+        int maxItems = Math.min(MAX_VISIBLE_ITEMS, this.mailboxes.size());
+        for(int i = 0; i < maxItems; i++)
+        {
+            int entryIndex = startIndex + i;
+            int entryX = this.leftPos + 8;
+            int entryY = this.topPos + 24 + entryIndex * MAILBOX_ENTRY_HEIGHT - scroll;
+            IMailbox mailbox = this.mailboxes.get(entryIndex);
+            boolean selected = this.selected == mailbox;
+
+            // Draw the background of the mailbox entry
+            graphics.blit(POST_BOX_TEXTURE, entryX, entryY, 0, selected ? 167 : 181, MAILBOX_ENTRY_WIDTH, MAILBOX_ENTRY_HEIGHT, 512, 256);
+
+            // Draw the face of the player's skin
+            Optional<GameProfile> optional = mailbox.getOwner();
+            if(optional.isPresent())
+            {
+                PlayerInfo info = this.getPlayerInfo(optional.get());
+                PlayerFaceRenderer.draw(graphics, info.getSkinLocation(), entryX + 3, entryY + 3, 8);
+            }
+
+            // Draw the name of the mailbox
+            String mailboxName = mailbox.getCustomName().orElse("Mailbox");
+            graphics.drawString(this.font, mailboxName, entryX + 15, entryY + 3, selected ? 0xFFFFFF55 : 0xFFFFFFFF);
+
+            // Create a tooltip of the owners username if the cursor hovers the face image
+            if(this.isHovering((entryX - this.leftPos) + 3, (entryY - this.topPos) + 3, 8, 8, mouseX, mouseY))
+            {
+                String ownerName = mailbox.getOwner().map(GameProfile::getName).orElse("Unknown Player");
+                this.setTooltipForNextRenderPass(Component.literal(ownerName));
+            }
+        }
+        graphics.disableScissor();
+
+        // Draw scroll bar
+        graphics.blit(VILLAGER_TEXTURE, this.leftPos + 94, this.topPos + 24 + this.getScrollBarOffset(mouseY), 0, 199, SCROLL_BAR_WIDTH, SCROLL_BAR_HEIGHT, 512, 256);
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button)
+    {
+        if(button == GLFW.GLFW_MOUSE_BUTTON_1)
+        {
+            this.setFocused(null);
+            if(this.isHovering(8, 24, 85, 135, mouseX, mouseY))
+            {
+                int relativeMouseY = (int) (mouseY - this.topPos - 24);
+                int clickedIndex = (this.scroll + relativeMouseY) / MAILBOX_ENTRY_HEIGHT;
+                if(clickedIndex >= 0 && clickedIndex < this.mailboxes.size())
+                {
+                    IMailbox mailbox = this.mailboxes.get(clickedIndex);
+                    this.selected = this.selected != mailbox ? mailbox : null;
+                    this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.BOOK_PUT, 1.0F, 1.0F));
+                    this.sendButton.active = this.selected != null;
+                    return true;
+                }
+            }
+            // Record the mouse position when clicking on the scroll bar
+            if(this.isHovering(94, 24 + this.getScrollBarOffset((int) mouseY), 6, 27, mouseX, mouseY))
+            {
+                this.clickedY = (int) mouseY;
+                return true;
+            }
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button)
+    {
+        if(button == GLFW.GLFW_MOUSE_BUTTON_1)
+        {
+            if(this.clickedY >= 0)
+            {
+                this.scroll(this.getDeltaScroll((int) mouseY));
+                this.clickedY = -1;
+            }
+        }
+        return super.mouseReleased(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean keyPressed(int key, int scanCode, int modifiers)
+    {
+        if(this.searchEditBox.isFocused())
+        {
+            return this.searchEditBox.keyPressed(key, scanCode, modifiers);
+        }
+        if(this.messageEditBox.isFocused())
+        {
+            return this.messageEditBox.keyPressed(key, scanCode, modifiers);
+        }
+        return super.keyPressed(key, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double amount)
+    {
+        if(this.isHovering(8, 24, 85, 135, mouseX, mouseY))
+        {
+            this.scroll((int) (-5 * amount));
+            return true;
+        }
+        return super.mouseScrolled(mouseX, mouseY, amount);
+    }
+
+    /**
+     * Applies the given amount to scroll. This method will automatically
+     * clamp to prevent over scrolling.
+     *
+     * @param amount the amount to scroll
+     */
+    private void scroll(int amount)
+    {
+        this.scroll = this.clampScroll(this.scroll + amount);
+    }
+
+    /**
+     * Clamps the scroll between zero and the maximum scroll value
+     * @param scroll the current scroll
+     * @return the clamped scroll
+     */
+    private int clampScroll(int scroll)
+    {
+        return Mth.clamp(scroll, 0, this.getMaxScroll());
+    }
+
+    /**
+     * @return The maximum value that can be scrolled
+     */
+    private int getMaxScroll()
+    {
+        return Math.max((this.mailboxes.size() - 1) * MAILBOX_ENTRY_HEIGHT - CONTAINER_HEIGHT, 0);
+    }
+
+    /**
+     * Gets the scroll bar offset with consideration to the delta scroll.
+     *
+     * @param mouseY the y position of the mouse
+     * @return the y scroll bar offset
+     */
+    private int getScrollBarOffset(int mouseY)
+    {
+        int scroll = this.clampScroll(this.scroll + this.getDeltaScroll(mouseY));
+        return (int) ((CONTAINER_HEIGHT - SCROLL_BAR_HEIGHT) * (scroll / (double) this.getMaxScroll()));
+    }
+
+    /**
+     * Gets the delta scroll amount when the cursor is dragging the scroll bar. If not dragging
+     * the scroll bar, zero will simply be returned.
+     *
+     * @param mouseY the y position of the mouse
+     * @return the delta scroll amount
+     */
+    private int getDeltaScroll(int mouseY)
+    {
+        if(this.clickedY != -1)
+        {
+            double pixelsPerScroll = (double) (CONTAINER_HEIGHT - SCROLL_BAR_HEIGHT) / this.getMaxScroll();
+            return (int) ((mouseY - this.clickedY) / pixelsPerScroll);
+        }
+        return 0;
+    }
+
+    /**
+     * Updates the mailboxes based on the search query. There is a special case where if the query
+     * starts with "@" that it will instead search the owner name instead of the mailbox name. The
+     * mailboxes are then sorted by the owner name followed by the mailbox name; this makes it
+     * easier for players to identify mailboxes from other players.
+     */
+    private void updateSearchFilter()
+    {
+        List<IMailbox> filteredMailboxes = MAILBOX_CACHE.stream().filter(mailbox -> {
+            if(this.query.startsWith("@")) {
+                String ownerName = mailbox.getOwner().map(GameProfile::getName).orElse("Unknown");
+                return StringUtils.containsIgnoreCase(ownerName, this.query.substring(1));
+            }
+            String mailboxName = mailbox.getCustomName().orElse("Mailbox");
+            return StringUtils.containsIgnoreCase(mailboxName, this.query);
+        }).sorted(Comparator.comparing((IMailbox mailbox) -> {
+            return mailbox.getOwner().map(GameProfile::getName).orElse("Unknown");
+        }).thenComparing(mailbox -> {
+            return mailbox.getCustomName().orElse("Mailbox");
+        })).toList();
+        this.mailboxes.clear();
+        this.mailboxes.addAll(filteredMailboxes);
+    }
+
+    /**
+     * Gets the player info for the given game profile. Player info is first retrieved from the
+     * current connection cache, since it may already exist. If the game profile is of a player that
+     * is offline, a new player info is created and moved into a special cache. The connection cache
+     * is prioritised first.
+     *
+     * @param profile the game profile of the player
+     * @return a non-null player info
+     */
+    private PlayerInfo getPlayerInfo(GameProfile profile)
+    {
+        if(this.minecraft != null)
+        {
+            ClientPacketListener listener = this.minecraft.getConnection();
+            if(listener != null)
+            {
+                PlayerInfo info = listener.getPlayerInfo(profile.getId());
+                if(info != null)
+                {
+                    return info;
+                }
+            }
+        }
+        return PLAYER_INFO_CACHE.computeIfAbsent(profile.getId(), uuid -> new PlayerInfo(profile, false));
+    }
+
+    /**
+     * Updates the mailbox cache from the server
+     * @param mailboxes the list of new mailboxes
+     */
+    public static void updateMailboxes(Collection<? extends IMailbox> mailboxes)
+    {
+        MAILBOX_CACHE.clear();
+        MAILBOX_CACHE.addAll(mailboxes);
+    }
+}

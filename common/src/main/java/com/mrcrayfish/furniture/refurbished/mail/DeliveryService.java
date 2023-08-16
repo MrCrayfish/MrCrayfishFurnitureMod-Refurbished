@@ -1,17 +1,22 @@
 package com.mrcrayfish.furniture.refurbished.mail;
 
+import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.blockentity.MailboxBlockEntity;
+import com.mrcrayfish.furniture.refurbished.network.Network;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageUpdateMailboxes;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -23,11 +28,14 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.annotation.Nullable;
 import java.util.ArrayDeque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Queue;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Author: MrCrayfish
@@ -48,9 +56,10 @@ public class DeliveryService extends SavedData
 
     private final MinecraftServer server;
     private final Map<Pair<ResourceLocation, BlockPos>, Mailbox> locator = new HashMap<>();
-    private final Map<UUID, Mailbox> mailboxes = new HashMap<>();
+    private final Map<UUID, Mailbox> mailboxes = new ConcurrentHashMap<>();
     private final Queue<Mailbox> removal = new ArrayDeque<>();
     private final Map<UUID, Pair<ResourceLocation, BlockPos>> pendingNames = new HashMap<>();
+    private final Set<UUID> playerRequests = new HashSet<>();
 
     public DeliveryService(MinecraftServer server)
     {
@@ -85,6 +94,15 @@ public class DeliveryService extends SavedData
 
         // Try to deliver mail from queues to the block entity in the level
         this.mailboxes.forEach((uuid, mailbox) -> mailbox.tick());
+    }
+
+    public void sendMail(UUID id, String message, String sender, ItemStack stack)
+    {
+        Mailbox mailbox = this.mailboxes.get(id);
+        if(mailbox != null)
+        {
+            mailbox.queue().offer(stack);
+        }
     }
 
     /**
@@ -174,6 +192,26 @@ public class DeliveryService extends SavedData
         }).orElse(false);
     }
 
+    /**
+     *
+     * @param player
+     */
+    public void sendMailboxesToPlayer(ServerPlayer player)
+    {
+        if(!this.playerRequests.contains(player.getUUID()))
+        {
+            Network.getPlay().sendToPlayer(() -> player, new MessageUpdateMailboxes(this.mailboxes.values()));
+            this.playerRequests.add(player.getUUID());
+        }
+    }
+
+    @Override
+    public void setDirty()
+    {
+        super.setDirty();
+        this.playerRequests.clear();
+    }
+
     private void load(CompoundTag compound)
     {
         if(compound.contains("Mailboxes", Tag.TAG_LIST))
@@ -225,6 +263,7 @@ public class DeliveryService extends SavedData
                 mailboxTag.putString("Level", mailbox.levelKey().location().toString());
                 mailboxTag.putLong("BlockPosition", mailbox.pos().asLong());
                 Optional.ofNullable(mailbox.owner().getValue()).ifPresent(id -> mailboxTag.putUUID("Owner", id));
+                Optional.ofNullable(mailbox.customName().getValue()).ifPresent(name -> mailboxTag.putString("CustomName", name));
                 mailbox.writeQueue(mailboxTag);
                 list.add(mailboxTag);
             }

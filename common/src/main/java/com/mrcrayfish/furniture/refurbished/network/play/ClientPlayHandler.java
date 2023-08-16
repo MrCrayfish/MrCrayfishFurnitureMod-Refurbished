@@ -3,8 +3,10 @@ package com.mrcrayfish.furniture.refurbished.network.play;
 import com.mrcrayfish.furniture.refurbished.blockentity.FryingPanBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.GrillBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.KitchenSinkBlockEntity;
+import com.mrcrayfish.furniture.refurbished.client.gui.screen.PostBoxScreen;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageFlipAnimation;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSyncFluid;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageUpdateMailboxes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.level.Level;
 
@@ -39,5 +41,10 @@ public class ClientPlayHandler
         {
             fryingPan.playFlipAnimation(message.getIndex());
         }
+    }
+
+    public static void handleMessageUpdateMailboxes(MessageUpdateMailboxes message)
+    {
+        PostBoxScreen.updateMailboxes(message.getMailboxes());
     }
 }

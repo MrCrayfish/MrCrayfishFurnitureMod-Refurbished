@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.client;
 
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.FreezerScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.MicrowaveScreen;
+import com.mrcrayfish.furniture.refurbished.client.gui.screen.PostBoxScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.StoveScreen;
 import com.mrcrayfish.furniture.refurbished.client.registration.BlockEntityRendererRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.EntityRendererRegister;
@@ -34,6 +35,7 @@ public class ClientBootstrap
         register.apply(ModMenuTypes.FREEZER.get(), FreezerScreen::new);
         register.apply(ModMenuTypes.MICROWAVE.get(), MicrowaveScreen::new);
         register.apply(ModMenuTypes.STOVE.get(), StoveScreen::new);
+        register.apply(ModMenuTypes.POST_BOX.get(), PostBoxScreen::new);
     }
 
     public static void registerBlockEntityRenderers(BlockEntityRendererRegister register)
@@ -72,5 +74,15 @@ public class ClientBootstrap
         register.apply(ModBlocks.MICROWAVE_DARK.get(), RenderType.cutout());
         register.apply(ModBlocks.STOVE_LIGHT.get(), RenderType.cutout());
         register.apply(ModBlocks.STOVE_DARK.get(), RenderType.cutout());
+        register.apply(ModBlocks.MAIL_BOX_OAK.get(), RenderType.cutout());
+        register.apply(ModBlocks.MAIL_BOX_SPRUCE.get(), RenderType.cutout());
+        register.apply(ModBlocks.MAIL_BOX_BIRCH.get(), RenderType.cutout());
+        register.apply(ModBlocks.MAIL_BOX_JUNGLE.get(), RenderType.cutout());
+        register.apply(ModBlocks.MAIL_BOX_ACACIA.get(), RenderType.cutout());
+        register.apply(ModBlocks.MAIL_BOX_DARK_OAK.get(), RenderType.cutout());
+        register.apply(ModBlocks.MAIL_BOX_MANGROVE.get(), RenderType.cutout());
+        register.apply(ModBlocks.MAIL_BOX_CHERRY.get(), RenderType.cutout());
+        register.apply(ModBlocks.MAIL_BOX_CRIMSON.get(), RenderType.cutout());
+        register.apply(ModBlocks.MAIL_BOX_WARPED.get(), RenderType.cutout());
     }
 }
