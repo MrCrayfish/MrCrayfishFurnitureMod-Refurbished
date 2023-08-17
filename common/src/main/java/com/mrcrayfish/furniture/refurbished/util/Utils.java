@@ -29,8 +29,8 @@ public class Utils
      * @param path     the path of the translation
      * @return A translatable component
      */
-    public static MutableComponent translation(String category, String path)
+    public static MutableComponent translation(String category, String path, Object ... params)
     {
-        return Component.translatable(String.format("%s.%s.%s", category, Constants.MOD_ID, path));
+        return Component.translatable(String.format("%s.%s.%s", category, Constants.MOD_ID, path), params);
     }
 }

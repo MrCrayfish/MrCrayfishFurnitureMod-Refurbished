@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.mail;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
+import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.blockentity.MailboxBlockEntity;
 import com.mrcrayfish.furniture.refurbished.network.Network;
@@ -96,13 +97,15 @@ public class DeliveryService extends SavedData
         this.mailboxes.forEach((uuid, mailbox) -> mailbox.tick());
     }
 
-    public void sendMail(UUID id, String message, String sender, ItemStack stack)
+    public boolean sendMail(UUID id, ItemStack stack)
     {
         Mailbox mailbox = this.mailboxes.get(id);
-        if(mailbox != null)
+        if(mailbox != null && mailbox.queue().size() < Config.SERVER.mailQueueSize.get())
         {
             mailbox.queue().offer(stack);
+            return true;
         }
+        return false;
     }
 
     /**

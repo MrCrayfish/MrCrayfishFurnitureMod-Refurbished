@@ -5,6 +5,7 @@ import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.mrcrayfish.furniture.refurbished.network.play.ServerPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 /**
@@ -48,8 +49,9 @@ public class MessageSendPackage extends PlayMessage<MessageSendPackage>
         return this.mailboxId;
     }
 
+    @Nullable
     public String getMessage()
     {
-        return this.message;
+        return !this.message.isBlank() ? this.message : null;
     }
 }

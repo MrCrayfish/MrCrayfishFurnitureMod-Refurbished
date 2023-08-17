@@ -302,7 +302,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
      */
     private int getMaxScroll()
     {
-        return Math.max((this.mailboxes.size()) * MAILBOX_ENTRY_HEIGHT - CONTAINER_HEIGHT, 0);
+        return Math.max(this.mailboxes.size() * MAILBOX_ENTRY_HEIGHT - CONTAINER_HEIGHT, 0);
     }
 
     /**

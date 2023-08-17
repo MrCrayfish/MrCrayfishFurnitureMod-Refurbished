@@ -204,6 +204,7 @@
     "block.refurbished_furniture.post_box": "Post Box",
     "item.refurbished_furniture.spatula": "Spatula",
     "item.refurbished_furniture.knife": "Knife",
+    "item.refurbished_furniture.package": "Package",
     "item.refurbished_furniture.light_fridge": "Light Fridge",
     "item.refurbished_furniture.dark_fridge": "Dark Fridge",
     "container.refurbished_furniture.drawer": "Drawer",
@@ -225,5 +226,7 @@
     "gui.refurbished_furniture.package_message": "Package message",
     "gui.refurbished_furniture.send": "Send",
     "gui.refurbished_furniture.how_to": "How To",
-    "gui.refurbished_furniture.post_box_info": "Select a mailbox from the list. You can search for a mailbox by name, or a player by prefixing with @. Place items in package slots and optionally include a message. Click the send button to deliver the package."
+    "gui.refurbished_furniture.post_box_info": "Select a mailbox from the list. You can search for a mailbox by name, or a player by prefixing with @. Place items in package slots and optionally include a message. Click the send button to deliver the package.",
+    "tooltip.refurbished_furniture.package_sent_by": "Sent by %s",
+    "tooltip.refurbished_furniture.package_open": "Right Click to Open"
 }

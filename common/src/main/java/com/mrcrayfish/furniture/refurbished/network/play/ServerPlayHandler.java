@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.network.play;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.furniture.refurbished.inventory.PostBoxMenu;
+import com.mrcrayfish.furniture.refurbished.item.PackageItem;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageClearMessage;
@@ -38,23 +39,16 @@ public class ServerPlayHandler
         if(player != null && player.containerMenu instanceof PostBoxMenu postBox)
         {
             Container container = postBox.getContainer();
-            if(!container.isEmpty())
-            {
-                DeliveryService.get(player.server).ifPresent(service ->
-                {
-                    // TODO create envelope item to contain all the items
-                    for(int i = 0; i < container.getContainerSize(); i++)
-                    {
-                        ItemStack stack = container.getItem(i);
-                        if(!stack.isEmpty())
-                        {
-                            container.setItem(i, ItemStack.EMPTY);
-                            service.sendMail(message.getMailboxId(), message.getMessage(), player.getGameProfile().getName(), stack);
-                        }
-                    }
+            if(container.isEmpty())
+                return;
+
+            DeliveryService.get(player.server).ifPresent(service -> {
+                ItemStack stack = PackageItem.create(container, message.getMessage(), player.getGameProfile().getName());
+                if(service.sendMail(message.getMailboxId(), stack)) {
+                    container.clearContent();
                     Network.getPlay().sendToPlayer(() -> player, new MessageClearMessage());
-                });
-            }
+                }
+            });
         }
     }
 }

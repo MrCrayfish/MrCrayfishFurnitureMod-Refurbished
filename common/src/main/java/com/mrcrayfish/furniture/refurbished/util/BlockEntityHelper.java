@@ -8,6 +8,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -70,5 +71,16 @@ public class BlockEntityHelper
                 }
             });
         }
+    }
+
+    public static NonNullList<ItemStack> nonNullListFromContainer(Container container)
+    {
+        int size = container.getContainerSize();
+        NonNullList<ItemStack> items = NonNullList.withSize(size, ItemStack.EMPTY);
+        for(int i = 0; i < size; i++)
+        {
+            items.set(i, container.getItem(i));
+        }
+        return items;
     }
 }
