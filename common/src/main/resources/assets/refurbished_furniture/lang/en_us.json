@@ -218,8 +218,12 @@
     "container.refurbished_furniture.post_box": "Post Box",
     "gui.refurbished_furniture.set_mailbox_name": "Set Mailbox Name",
     "gui.refurbished_furniture.rename_mailbox_failed": "Failed to update mailbox name",
+    "gui.refurbished_furniture.mailboxes": "Mailboxes",
     "gui.refurbished_furniture.search": "Search...",
     "gui.refurbished_furniture.search_mailboxes": "Search mailboxes",
     "gui.refurbished_furniture.enter_message": "Enter message...",
-    "gui.refurbished_furniture.package_message": "Package message"
+    "gui.refurbished_furniture.package_message": "Package message",
+    "gui.refurbished_furniture.send": "Send",
+    "gui.refurbished_furniture.how_to": "How To",
+    "gui.refurbished_furniture.post_box_info": "Select a mailbox from the list. You can search for a mailbox or a player by prefixing with @. Place items in package slots and optionally include a message. Click the send button to deliver the package."
 }

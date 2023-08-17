@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.util;
 
 import com.mrcrayfish.furniture.refurbished.Constants;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -28,7 +29,7 @@ public class Utils
      * @param path     the path of the translation
      * @return A translatable component
      */
-    public static Component translation(String category, String path)
+    public static MutableComponent translation(String category, String path)
     {
         return Component.translatable(String.format("%s.%s.%s", category, Constants.MOD_ID, path));
     }

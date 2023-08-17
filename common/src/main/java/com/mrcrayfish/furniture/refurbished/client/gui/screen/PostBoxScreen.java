@@ -2,16 +2,19 @@ package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 
 import com.mojang.authlib.GameProfile;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.IconButton;
+import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import com.mrcrayfish.furniture.refurbished.inventory.PostBoxMenu;
 import com.mrcrayfish.furniture.refurbished.mail.IMailbox;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSendMail;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.MultiLineEditBox;
 import net.minecraft.client.gui.components.PlayerFaceRenderer;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.PlayerInfo;
@@ -38,6 +41,7 @@ import java.util.UUID;
  */
 public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
 {
+    private static final Component MAILBOXES_LABEL = Utils.translation("gui", "mailboxes");
     private static final ResourceLocation POST_BOX_TEXTURE = Utils.resource("textures/gui/container/post_box.png");
     private static final ResourceLocation VILLAGER_TEXTURE = new ResourceLocation("textures/gui/container/villager2.png");
     private static final List<IMailbox> MAILBOX_CACHE = new ArrayList<>();
@@ -49,8 +53,8 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
     private static final int MAILBOX_ENTRY_WIDTH = 85;
     private static final int MAILBOX_ENTRY_HEIGHT = 14;
     private static final int CONTAINER_LEFT = 8;
-    private static final int CONTAINER_TOP = 24;
-    private static final int CONTAINER_HEIGHT = 135;
+    private static final int CONTAINER_TOP = 34;
+    private static final int CONTAINER_HEIGHT = 140;
     private static final int CONTAINER_WIDTH = 85;
     private static final int MAX_VISIBLE_ITEMS = Mth.ceil((double) CONTAINER_HEIGHT / MAILBOX_ENTRY_HEIGHT) + 1;
 
@@ -67,9 +71,9 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
     public PostBoxScreen(PostBoxMenu menu, Inventory playerInventory, Component title)
     {
         super(menu, playerInventory, Component.empty());
-        this.imageWidth = 276;
-        this.imageHeight = 167;
-        this.inventoryLabelX = 108;
+        this.imageWidth = 283;
+        this.imageHeight = 172;
+        this.inventoryLabelX = 113;
         this.inventoryLabelY = this.imageHeight - 93;
         this.updateSearchFilter();
     }
@@ -79,7 +83,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
     {
         super.init();
 
-        this.addRenderableWidget(this.searchEditBox = new EditBox(this.font, this.leftPos + 8, this.topPos + 8, 92, 12, Utils.translation("gui", "search_mailboxes")));
+        this.addRenderableWidget(this.searchEditBox = new EditBox(this.font, this.leftPos + 8, this.topPos + 18, 92, 12, Utils.translation("gui", "search_mailboxes")));
         this.searchEditBox.setHint(Utils.translation("gui", "search"));
         this.searchEditBox.setResponder(s -> {
             this.query = s;
@@ -91,7 +95,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
             this.searchEditBox.setValue(this.query);
         }
 
-        this.addRenderableWidget(this.messageEditBox = new MultiLineEditBox(this.font, this.leftPos + 109, this.topPos + 12, 120, 54, Utils.translation("gui", "enter_message"), Utils.translation("gui", "package_message")) {
+        this.addRenderableWidget(this.messageEditBox = new MultiLineEditBox(this.font, this.leftPos + 118, this.topPos + 12, 116, 54, Utils.translation("gui", "enter_message"), Utils.translation("gui", "package_message")) {
             @Override
             protected void renderBorder(GuiGraphics graphics, int x, int y, int width, int height) {}
 
@@ -112,6 +116,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
                 Network.getPlay().sendToServer(new MessageSendMail(this.selected.getId(), this.message));
             }
         }));
+        this.sendButton.setTooltip(Tooltip.create(Utils.translation("gui", "send")));
     }
 
     @Override
@@ -129,6 +134,13 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
         this.renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTick);
         this.renderTooltip(graphics, mouseX, mouseY);
+    }
+
+    @Override
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY)
+    {
+        super.renderLabels(graphics, mouseX, mouseY);
+        graphics.drawString(this.font, MAILBOXES_LABEL, this.titleLabelX, this.titleLabelY, 0xFFE0E0E0, false);
     }
 
     @Override
@@ -150,7 +162,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
             boolean selected = this.selected == mailbox;
 
             // Draw the background of the mailbox entry
-            graphics.blit(POST_BOX_TEXTURE, entryX, entryY, 0, selected ? 167 : 181, MAILBOX_ENTRY_WIDTH, MAILBOX_ENTRY_HEIGHT, 512, 256);
+            graphics.blit(POST_BOX_TEXTURE, entryX, entryY, 0, selected ? 172 : 186, MAILBOX_ENTRY_WIDTH, MAILBOX_ENTRY_HEIGHT, 512, 256);
 
             // Draw the face of the player's skin
             Optional<GameProfile> optional = mailbox.getOwner();
@@ -175,6 +187,11 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
 
         // Draw scroll bar
         graphics.blit(VILLAGER_TEXTURE, this.leftPos + CONTAINER_LEFT + CONTAINER_WIDTH + 1, this.topPos + CONTAINER_TOP + this.getScrollBarOffset(mouseY), this.canScroll() ? 0 : SCROLL_BAR_WIDTH, 199, SCROLL_BAR_WIDTH, SCROLL_BAR_HEIGHT, 512, 256);
+
+        if(this.isHovering(91, 5, 10, 10, mouseX, mouseY))
+        {
+            this.setTooltipForNextRenderPass(ScreenHelper.createMultilineTooltip(List.of(Utils.translation("gui", "how_to").withStyle(ChatFormatting.GOLD), Utils.translation("gui", "post_box_info"))).toCharSequence(this.minecraft));
+        }
     }
 
     @Override
