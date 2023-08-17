@@ -66,7 +66,7 @@ public class PackageItem extends Item
         ItemStack stack = player.getItemInHand(hand);
         if(!level.isClientSide())
         {
-            this.getPackagedItems(stack).forEach(s -> Containers.dropItemStack(level, player.getX(), player.getY(), player.getZ(), s));
+            getPackagedItems(stack).forEach(s -> Containers.dropItemStack(level, player.getX(), player.getY(), player.getZ(), s));
         }
         stack.shrink(1);
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
@@ -78,7 +78,7 @@ public class PackageItem extends Item
      * @param stack teh stack to get the items from
      * @return a list of items
      */
-    private List<ItemStack> getPackagedItems(ItemStack stack)
+    public static List<ItemStack> getPackagedItems(ItemStack stack)
     {
         NonNullList<ItemStack> items = NonNullList.withSize(6, ItemStack.EMPTY);
         CompoundTag tag = stack.getOrCreateTag();
