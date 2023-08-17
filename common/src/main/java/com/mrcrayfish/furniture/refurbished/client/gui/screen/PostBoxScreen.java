@@ -135,6 +135,8 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
     {
         graphics.blit(POST_BOX_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth + 25, this.imageHeight, 512, 256);
+
+        // Draw mailboxes list
         graphics.enableScissor(this.leftPos + CONTAINER_LEFT, this.topPos + CONTAINER_TOP, this.leftPos + CONTAINER_LEFT + CONTAINER_WIDTH, this.topPos + CONTAINER_TOP + CONTAINER_HEIGHT);
         int scroll = this.clampScroll(this.scroll + this.getDeltaScroll(mouseY));
         int startIndex = Mth.clamp(scroll / MAILBOX_ENTRY_HEIGHT, 0, Math.max(0, this.mailboxes.size() - 1 - MAX_VISIBLE_ITEMS));
@@ -172,7 +174,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
         graphics.disableScissor();
 
         // Draw scroll bar
-        graphics.blit(VILLAGER_TEXTURE, this.leftPos + CONTAINER_LEFT + CONTAINER_WIDTH + 1, this.topPos + CONTAINER_TOP + this.getScrollBarOffset(mouseY), 0, 199, SCROLL_BAR_WIDTH, SCROLL_BAR_HEIGHT, 512, 256);
+        graphics.blit(VILLAGER_TEXTURE, this.leftPos + CONTAINER_LEFT + CONTAINER_WIDTH + 1, this.topPos + CONTAINER_TOP + this.getScrollBarOffset(mouseY), this.canScroll() ? 0 : SCROLL_BAR_WIDTH, 199, SCROLL_BAR_WIDTH, SCROLL_BAR_HEIGHT, 512, 256);
     }
 
     @Override
@@ -270,6 +272,14 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
     private int getMaxScroll()
     {
         return Math.max((this.mailboxes.size() - 1) * MAILBOX_ENTRY_HEIGHT - CONTAINER_HEIGHT, 0);
+    }
+
+    /**
+     * @return True if the scroll bar can be used
+     */
+    private boolean canScroll()
+    {
+        return this.getMaxScroll() > 0;
     }
 
     /**
