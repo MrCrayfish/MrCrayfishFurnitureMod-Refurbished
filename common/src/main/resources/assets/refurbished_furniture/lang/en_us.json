@@ -217,5 +217,9 @@
     "container.refurbished_furniture.mailbox": "Mailbox",
     "container.refurbished_furniture.post_box": "Post Box",
     "gui.refurbished_furniture.set_mailbox_name": "Set Mailbox Name",
-    "gui.refurbished_furniture.rename_mailbox_failed": "Failed to update mailbox name"
+    "gui.refurbished_furniture.rename_mailbox_failed": "Failed to update mailbox name",
+    "gui.refurbished_furniture.search": "Search...",
+    "gui.refurbished_furniture.search_mailboxes": "Search mailboxes",
+    "gui.refurbished_furniture.enter_message": "Enter message...",
+    "gui.refurbished_furniture.package_message": "Package message"
 }
