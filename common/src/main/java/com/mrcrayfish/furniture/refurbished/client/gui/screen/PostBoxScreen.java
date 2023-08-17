@@ -43,11 +43,15 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
     private static final List<IMailbox> MAILBOX_CACHE = new ArrayList<>();
     private static final Map<UUID, PlayerInfo> PLAYER_INFO_CACHE = new HashMap<>();
 
+    private static final int SCROLL_SPEED = 5;
     private static final int SCROLL_BAR_WIDTH = 6;
     private static final int SCROLL_BAR_HEIGHT = 27;
     private static final int MAILBOX_ENTRY_WIDTH = 85;
     private static final int MAILBOX_ENTRY_HEIGHT = 14;
+    private static final int CONTAINER_LEFT = 8;
+    private static final int CONTAINER_TOP = 24;
     private static final int CONTAINER_HEIGHT = 135;
+    private static final int CONTAINER_WIDTH = 85;
     private static final int MAX_VISIBLE_ITEMS = Mth.ceil((double) CONTAINER_HEIGHT / MAILBOX_ENTRY_HEIGHT) + 1;
 
     protected List<IMailbox> mailboxes = new ArrayList<>();
@@ -131,15 +135,15 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
     {
         graphics.blit(POST_BOX_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth + 25, this.imageHeight, 512, 256);
-        graphics.enableScissor(this.leftPos + 8, this.topPos + 24, this.leftPos + 93, this.topPos + 159);
+        graphics.enableScissor(this.leftPos + CONTAINER_LEFT, this.topPos + CONTAINER_TOP, this.leftPos + CONTAINER_LEFT + CONTAINER_WIDTH, this.topPos + CONTAINER_TOP + CONTAINER_HEIGHT);
         int scroll = this.clampScroll(this.scroll + this.getDeltaScroll(mouseY));
         int startIndex = Mth.clamp(scroll / MAILBOX_ENTRY_HEIGHT, 0, Math.max(0, this.mailboxes.size() - 1 - MAX_VISIBLE_ITEMS));
         int maxItems = Math.min(MAX_VISIBLE_ITEMS, this.mailboxes.size());
         for(int i = 0; i < maxItems; i++)
         {
             int entryIndex = startIndex + i;
-            int entryX = this.leftPos + 8;
-            int entryY = this.topPos + 24 + entryIndex * MAILBOX_ENTRY_HEIGHT - scroll;
+            int entryX = this.leftPos + CONTAINER_LEFT;
+            int entryY = this.topPos + CONTAINER_TOP + entryIndex * MAILBOX_ENTRY_HEIGHT - scroll;
             IMailbox mailbox = this.mailboxes.get(entryIndex);
             boolean selected = this.selected == mailbox;
 
@@ -168,7 +172,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
         graphics.disableScissor();
 
         // Draw scroll bar
-        graphics.blit(VILLAGER_TEXTURE, this.leftPos + 94, this.topPos + 24 + this.getScrollBarOffset(mouseY), 0, 199, SCROLL_BAR_WIDTH, SCROLL_BAR_HEIGHT, 512, 256);
+        graphics.blit(VILLAGER_TEXTURE, this.leftPos + CONTAINER_LEFT + CONTAINER_WIDTH + 1, this.topPos + CONTAINER_TOP + this.getScrollBarOffset(mouseY), 0, 199, SCROLL_BAR_WIDTH, SCROLL_BAR_HEIGHT, 512, 256);
     }
 
     @Override
@@ -177,9 +181,9 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
         if(button == GLFW.GLFW_MOUSE_BUTTON_1)
         {
             this.setFocused(null);
-            if(this.isHovering(8, 24, 85, 135, mouseX, mouseY))
+            if(this.isHovering(CONTAINER_LEFT, CONTAINER_TOP, CONTAINER_WIDTH, CONTAINER_HEIGHT, mouseX, mouseY))
             {
-                int relativeMouseY = (int) (mouseY - this.topPos - 24);
+                int relativeMouseY = (int) (mouseY - this.topPos - CONTAINER_TOP);
                 int clickedIndex = (this.scroll + relativeMouseY) / MAILBOX_ENTRY_HEIGHT;
                 if(clickedIndex >= 0 && clickedIndex < this.mailboxes.size())
                 {
@@ -191,7 +195,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
                 }
             }
             // Record the mouse position when clicking on the scroll bar
-            if(this.isHovering(94, 24 + this.getScrollBarOffset((int) mouseY), 6, 27, mouseX, mouseY))
+            if(this.isHovering(CONTAINER_LEFT + CONTAINER_WIDTH + 1, CONTAINER_TOP + this.getScrollBarOffset((int) mouseY), SCROLL_BAR_WIDTH, SCROLL_BAR_HEIGHT, mouseX, mouseY))
             {
                 this.clickedY = (int) mouseY;
                 return true;
@@ -231,9 +235,9 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double amount)
     {
-        if(this.isHovering(8, 24, 85, 135, mouseX, mouseY))
+        if(this.isHovering(CONTAINER_LEFT, CONTAINER_TOP, CONTAINER_WIDTH, CONTAINER_HEIGHT, mouseX, mouseY))
         {
-            this.scroll((int) (-5 * amount));
+            this.scroll((int) (-SCROLL_SPEED * amount));
             return true;
         }
         return super.mouseScrolled(mouseX, mouseY, amount);
