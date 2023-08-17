@@ -1,8 +1,11 @@
 package com.mrcrayfish.furniture.refurbished.network.play;
 
+import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.furniture.refurbished.inventory.PostBoxMenu;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageSendMail;
+import com.mrcrayfish.furniture.refurbished.network.Network;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageClearMessage;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageSendPackage;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSetMailboxName;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.server.level.ServerPlayer;
@@ -30,9 +33,9 @@ public class ServerPlayHandler
         });
     }
 
-    public static void handleMessageSendMail(MessageSendMail message, ServerPlayer player)
+    public static void handleMessageSendPackage(MessageSendPackage message, @Nullable ServerPlayer player, MessageContext context)
     {
-        if(player.containerMenu instanceof PostBoxMenu postBox)
+        if(player != null && player.containerMenu instanceof PostBoxMenu postBox)
         {
             Container container = postBox.getContainer();
             if(!container.isEmpty())
@@ -49,6 +52,7 @@ public class ServerPlayHandler
                             service.sendMail(message.getMailboxId(), message.getMessage(), player.getGameProfile().getName(), stack);
                         }
                     }
+                    Network.getPlay().sendToPlayer(() -> player, new MessageClearMessage());
                 });
             }
         }

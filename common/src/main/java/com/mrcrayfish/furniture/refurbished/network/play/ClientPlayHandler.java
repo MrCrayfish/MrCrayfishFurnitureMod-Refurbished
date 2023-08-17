@@ -5,6 +5,7 @@ import com.mrcrayfish.furniture.refurbished.blockentity.GrillBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.KitchenSinkBlockEntity;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.PostBoxScreen;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageFlipAnimation;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageClearMessage;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSyncFluid;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageUpdateMailboxes;
 import net.minecraft.client.Minecraft;
@@ -46,5 +47,14 @@ public class ClientPlayHandler
     public static void handleMessageUpdateMailboxes(MessageUpdateMailboxes message)
     {
         PostBoxScreen.updateMailboxes(message.getMailboxes());
+    }
+
+    public static void handleMessageClearMessage(MessageClearMessage message)
+    {
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.screen instanceof PostBoxScreen postBox)
+        {
+            postBox.clearMessage();
+        }
     }
 }

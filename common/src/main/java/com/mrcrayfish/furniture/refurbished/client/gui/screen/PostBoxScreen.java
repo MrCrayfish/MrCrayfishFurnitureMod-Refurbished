@@ -393,6 +393,14 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
     }
 
     /**
+     * Resets the text in the message edit box
+     */
+    public void clearMessage()
+    {
+        this.messageEditBox.setValue("");
+    }
+
+    /**
      * Updates the mailbox cache from the server
      * @param mailboxes the list of new mailboxes
      */

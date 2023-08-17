@@ -10,36 +10,36 @@ import java.util.UUID;
 /**
  * Author: MrCrayfish
  */
-public class MessageSendMail extends PlayMessage<MessageSendMail>
+public class MessageSendPackage extends PlayMessage<MessageSendPackage>
 {
     private UUID mailboxId;
     private String message;
 
-    public MessageSendMail() {}
+    public MessageSendPackage() {}
 
-    public MessageSendMail(UUID mailboxId, String message)
+    public MessageSendPackage(UUID mailboxId, String message)
     {
         this.mailboxId = mailboxId;
         this.message = message;
     }
 
     @Override
-    public void encode(MessageSendMail message, FriendlyByteBuf buffer)
+    public void encode(MessageSendPackage message, FriendlyByteBuf buffer)
     {
         buffer.writeUUID(message.mailboxId);
         buffer.writeUtf(message.message);
     }
 
     @Override
-    public MessageSendMail decode(FriendlyByteBuf buffer)
+    public MessageSendPackage decode(FriendlyByteBuf buffer)
     {
-        return new MessageSendMail(buffer.readUUID(), buffer.readUtf());
+        return new MessageSendPackage(buffer.readUUID(), buffer.readUtf());
     }
 
     @Override
-    public void handle(MessageSendMail message, MessageContext context)
+    public void handle(MessageSendPackage message, MessageContext context)
     {
-        context.execute(() -> ServerPlayHandler.handleMessageSendMail(message, context.getPlayer()));
+        context.execute(() -> ServerPlayHandler.handleMessageSendPackage(message, context.getPlayer(), context));
         context.setHandled(true);
     }
 
