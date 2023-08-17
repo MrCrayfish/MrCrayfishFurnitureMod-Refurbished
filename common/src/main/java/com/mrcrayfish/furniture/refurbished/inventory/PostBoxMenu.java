@@ -28,7 +28,7 @@ public class PostBoxMenu extends SimpleContainerMenu
         {
             for(int i = 0; i < 2; i++)
             {
-                this.addSlot(new Slot(container, j * 2 + i, 235 + i * 18, 13 + j * 18));
+                this.addSlot(new Slot(container, j * 2 + i, 235 + i * 18, 14 + j * 18));
             }
         }
         this.addPlayerInventorySlots(114, 90, playerInventory);

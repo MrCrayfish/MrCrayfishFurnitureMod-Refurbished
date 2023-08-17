@@ -6,7 +6,7 @@ import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import com.mrcrayfish.furniture.refurbished.inventory.PostBoxMenu;
 import com.mrcrayfish.furniture.refurbished.mail.IMailbox;
 import com.mrcrayfish.furniture.refurbished.network.Network;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageSendMail;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageSendPackage;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
@@ -19,6 +19,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -54,7 +55,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
     private static final int MAILBOX_ENTRY_HEIGHT = 14;
     private static final int CONTAINER_LEFT = 8;
     private static final int CONTAINER_TOP = 34;
-    private static final int CONTAINER_HEIGHT = 140;
+    private static final int CONTAINER_HEIGHT = 130;
     private static final int CONTAINER_WIDTH = 85;
     private static final int MAX_VISIBLE_ITEMS = Mth.ceil((double) CONTAINER_HEIGHT / MAILBOX_ENTRY_HEIGHT) + 1;
 
@@ -95,7 +96,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
             this.searchEditBox.setValue(this.query);
         }
 
-        this.addRenderableWidget(this.messageEditBox = new MultiLineEditBox(this.font, this.leftPos + 118, this.topPos + 12, 116, 54, Utils.translation("gui", "enter_message"), Utils.translation("gui", "package_message")) {
+        this.addRenderableWidget(this.messageEditBox = new MultiLineEditBox(this.font, this.leftPos + 118, this.topPos + 13, 116, 54, Utils.translation("gui", "enter_message"), Utils.translation("gui", "package_message")) {
             @Override
             protected void renderBorder(GuiGraphics graphics, int x, int y, int width, int height) {}
 
@@ -111,9 +112,10 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
             this.messageEditBox.setValue(this.message);
         }
 
-        this.addRenderableWidget(this.sendButton = new IconButton(this.leftPos + 277, this.topPos + 21, 20, 0, btn -> {
+        this.addRenderableWidget(this.sendButton = new IconButton(this.leftPos + 284, this.topPos + 22, 20, 0, 18, 18, CommonComponents.EMPTY, btn -> {
             if(this.selected != null) {
-                Network.getPlay().sendToServer(new MessageSendMail(this.selected.getId(), this.message));
+                Network.getPlay().sendToServer(new MessageSendPackage(this.selected.getId(), this.message));
+                this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.BOOK_PAGE_TURN, 1.0F));
             }
         }));
         this.sendButton.setTooltip(Tooltip.create(Utils.translation("gui", "send")));
@@ -187,6 +189,18 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
 
         // Draw scroll bar
         graphics.blit(VILLAGER_TEXTURE, this.leftPos + CONTAINER_LEFT + CONTAINER_WIDTH + 1, this.topPos + CONTAINER_TOP + this.getScrollBarOffset(mouseY), this.canScroll() ? 0 : SCROLL_BAR_WIDTH, 199, SCROLL_BAR_WIDTH, SCROLL_BAR_HEIGHT, 512, 256);
+
+        // Draw icons in item slots
+        for(int j = 0; j < 3; j++)
+        {
+            for(int i = 0; i < 2; i++)
+            {
+                if(this.menu.getContainer().getItem(j * 2 + i).isEmpty())
+                {
+                    graphics.blit(POST_BOX_TEXTURE, this.leftPos + 235 + i * 18, this.topPos + 14 + j * 18, 85, 172, 16, 16, 512, 256);
+                }
+            }
+        }
 
         if(this.isHovering(91, 5, 10, 10, mouseX, mouseY))
         {
@@ -288,7 +302,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
      */
     private int getMaxScroll()
     {
-        return Math.max((this.mailboxes.size() - 1) * MAILBOX_ENTRY_HEIGHT - CONTAINER_HEIGHT, 0);
+        return Math.max((this.mailboxes.size()) * MAILBOX_ENTRY_HEIGHT - CONTAINER_HEIGHT, 0);
     }
 
     /**
