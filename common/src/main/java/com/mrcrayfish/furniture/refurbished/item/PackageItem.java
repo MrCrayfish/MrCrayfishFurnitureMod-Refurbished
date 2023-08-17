@@ -50,14 +50,14 @@ public class PackageItem extends Item
             return;
 
         this.loadString(stack, "Sender", s -> {
-            lines.add(Utils.translation("tooltip", "package_sent_by", s).withStyle(ChatFormatting.AQUA));
+            lines.add(Utils.translation("gui", "package_sent_by", s).withStyle(ChatFormatting.AQUA));
         });
         this.loadString(stack, "Message", s -> {
             EnvironmentHelper.runOn(Environment.CLIENT, () -> () -> {
                 ScreenHelper.splitText(s, 170).forEach(component -> lines.add(component.withStyle(ChatFormatting.GRAY)));
             });
         });
-        lines.add(Utils.translation("tooltip", "package_open").withStyle(ChatFormatting.YELLOW));
+        lines.add(Utils.translation("gui", "package_open").withStyle(ChatFormatting.YELLOW));
     }
 
     @Override
