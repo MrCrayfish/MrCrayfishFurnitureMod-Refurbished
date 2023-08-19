@@ -1,15 +1,18 @@
 package com.mrcrayfish.furniture.refurbished.data;
 
+import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeSerializers;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.data.recipes.SingleItemRecipeBuilder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
 import java.util.function.Consumer;
@@ -31,6 +34,17 @@ public class CommonRecipeProvider
 
     public void run()
     {
+        this.mailbox(Blocks.OAK_SLAB, Blocks.OAK_PLANKS, Blocks.OAK_FENCE, ModBlocks.MAIL_BOX_OAK.get());
+        this.mailbox(Blocks.SPRUCE_SLAB, Blocks.SPRUCE_PLANKS, Blocks.SPRUCE_FENCE, ModBlocks.MAIL_BOX_SPRUCE.get());
+        this.mailbox(Blocks.BIRCH_SLAB, Blocks.BIRCH_PLANKS, Blocks.BIRCH_FENCE, ModBlocks.MAIL_BOX_BIRCH.get());
+        this.mailbox(Blocks.JUNGLE_SLAB, Blocks.JUNGLE_PLANKS, Blocks.JUNGLE_FENCE, ModBlocks.MAIL_BOX_JUNGLE.get());
+        this.mailbox(Blocks.ACACIA_SLAB, Blocks.ACACIA_PLANKS, Blocks.ACACIA_FENCE, ModBlocks.MAIL_BOX_ACACIA.get());
+        this.mailbox(Blocks.DARK_OAK_SLAB, Blocks.DARK_OAK_PLANKS, Blocks.DARK_OAK_FENCE, ModBlocks.MAIL_BOX_DARK_OAK.get());
+        this.mailbox(Blocks.MANGROVE_SLAB, Blocks.MANGROVE_PLANKS, Blocks.MANGROVE_FENCE, ModBlocks.MAIL_BOX_MANGROVE.get());
+        this.mailbox(Blocks.CHERRY_SLAB, Blocks.CHERRY_PLANKS, Blocks.CHERRY_FENCE, ModBlocks.MAIL_BOX_CHERRY.get());
+        this.mailbox(Blocks.CRIMSON_SLAB, Blocks.CRIMSON_PLANKS, Blocks.CRIMSON_FENCE, ModBlocks.MAIL_BOX_CRIMSON.get());
+        this.mailbox(Blocks.WARPED_SLAB, Blocks.WARPED_PLANKS, Blocks.WARPED_FENCE, ModBlocks.MAIL_BOX_WARPED.get());
+        this.postBox(ModBlocks.POST_BOX.get());
         this.grillCooking(Items.BEEF, Items.COOKED_BEEF, 200, 0.5F);
         this.grillCooking(Items.CHICKEN, Items.COOKED_CHICKEN, 200, 0.5F);
         this.grillCooking(Items.COD, Items.COOKED_COD, 200, 0.5F);
@@ -46,6 +60,34 @@ public class CommonRecipeProvider
         this.cuttingBoardSlicing(Items.APPLE, Items.DIAMOND, 8);
         this.microwaveHeating(Items.POTATO, Items.BAKED_POTATO, 200, 0.5F);
         this.fryingPanCooking(Items.BEEF, Items.COOKED_BEEF, 200, 0.5F);
+    }
+    
+    private void mailbox(Block slab, Block plank, Block fence, Block result)
+    {
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
+                .pattern("SSS")
+                .pattern("PCP")
+                .pattern(" F ")
+                .define('S', slab)
+                .define('P', plank)
+                .define('C', Blocks.CHEST)
+                .define('F', fence)
+                .unlockedBy("has_planks", this.has.apply(plank))
+                .save(this.consumer);
+    }
+
+    private void postBox(Block result)
+    {
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
+                .pattern("DID")
+                .pattern("ICI")
+                .pattern("IBI")
+                .define('D', Items.BLUE_DYE)
+                .define('I', Items.IRON_INGOT)
+                .define('B', Blocks.IRON_BLOCK)
+                .define('C', Blocks.CHEST)
+                .unlockedBy("has_ingots", this.has.apply(Items.IRON_INGOT))
+                .save(this.consumer);
     }
 
     private void grillCooking(ItemLike rawItem, ItemLike cookedItem, int cookingTime, float experience)
