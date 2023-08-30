@@ -30,6 +30,13 @@ public record Mailbox(UUID id, ResourceKey<Level> levelKey, BlockPos pos, Mutabl
 {
     public static final int MAX_NAME_LENGTH = 32;
 
+    /**
+     * Renames the mailbox with the given custom name. If the name is blank or the length is greater
+     * than the allowed limit (See {@link Mailbox#MAX_NAME_LENGTH}), then the rename will be rejected.
+     *
+     * @param customName the new name for the mailbox
+     * @return True if the rename was successful
+     */
     public boolean rename(String customName)
     {
         if(!customName.isBlank() && customName.length() <= MAX_NAME_LENGTH)
@@ -93,12 +100,21 @@ public record Mailbox(UUID id, ResourceKey<Level> levelKey, BlockPos pos, Mutabl
         }
     }
 
+    /**
+     * Marks the mailbox as removed. The next tick of {@link DeliveryService} will unregister
+     * this mailbox.
+     */
     public void remove()
     {
         this.service.removeMailbox(this);
         this.removed.setValue(true);
     }
 
+    /**
+     * Writes the queue to the given compound tag.
+     *
+     * @param compound the compound tag to save the data into
+     */
     public void writeQueue(CompoundTag compound)
     {
         ListTag list = new ListTag();
@@ -106,6 +122,12 @@ public record Mailbox(UUID id, ResourceKey<Level> levelKey, BlockPos pos, Mutabl
         compound.put("Queue", list);
     }
 
+    /**
+     * Creates a Queue from the given compound tag containing ItemStack to be delivered
+     *
+     * @param compound the compound tag to read the data from
+     * @return a new ItemStack Queue
+     */
     public static Queue<ItemStack> readQueueListTag(CompoundTag compound)
     {
         if(compound.contains("Queue", Tag.TAG_LIST))
@@ -118,6 +140,10 @@ public record Mailbox(UUID id, ResourceKey<Level> levelKey, BlockPos pos, Mutabl
         return new ArrayDeque<>();
     }
 
+    /**
+     * Spawns all the ItemStacks in the queue into the level. This is called when the mailbox
+     * is destroyed to prevent lost items.
+     */
     void spawnQueueIntoLevel()
     {
         ServerLevel level = this.service.getServer().getLevel(this.levelKey);

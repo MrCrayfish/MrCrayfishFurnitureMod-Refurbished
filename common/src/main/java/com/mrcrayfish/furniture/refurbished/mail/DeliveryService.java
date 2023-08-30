@@ -97,6 +97,13 @@ public class DeliveryService extends SavedData
         this.mailboxes.forEach((uuid, mailbox) -> mailbox.tick());
     }
 
+    /**
+     * Adds an ItemStack to the queue of the mailbox matching the given id.
+     *
+     * @param id the identifier of the mailbox
+     * @param stack the ItemStack to send
+     * @return True if added to the queue, otherwise false if mailbox doesn't exist or queue is full
+     */
     public boolean sendMail(UUID id, ItemStack stack)
     {
         Mailbox mailbox = this.mailboxes.get(id);
@@ -192,8 +199,9 @@ public class DeliveryService extends SavedData
     }
 
     /**
+     * Sends the registered mailboxes to the given player
      *
-     * @param player
+     * @param player the player to recieve the mailboxes update
      */
     public void sendMailboxesToPlayer(ServerPlayer player)
     {
