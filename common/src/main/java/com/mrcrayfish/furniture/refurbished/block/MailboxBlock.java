@@ -103,14 +103,22 @@ public class MailboxBlock extends FurnitureHorizontalBlock implements EntityBloc
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
     {
-        if(!level.isClientSide() && level.getBlockEntity(pos) instanceof MailboxBlockEntity mailbox)
+        if(!level.isClientSide() && level.getBlockEntity(pos) instanceof MailboxBlockEntity blockEntity)
         {
             // Remove the little flag once the player open the mailbox
             if(state.getValue(ENABLED))
             {
                 level.setBlock(pos, state.setValue(ENABLED, false), Block.UPDATE_ALL);
             }
-            player.openMenu(mailbox);
+
+            // Claim the mailbox if the mailbox is not owned.
+            Mailbox mailbox = blockEntity.getMailbox();
+            if(mailbox != null && mailbox.owner().getValue() == null)
+            {
+                mailbox.owner().setValue(player.getUUID());
+            }
+
+            player.openMenu(blockEntity);
             return InteractionResult.CONSUME;
         }
         return InteractionResult.SUCCESS;
