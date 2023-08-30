@@ -1,6 +1,5 @@
 package com.mrcrayfish.furniture.refurbished.mail;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.blockentity.MailboxBlockEntity;
@@ -12,7 +11,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -107,7 +105,7 @@ public class DeliveryService extends SavedData
     public boolean sendMail(UUID id, ItemStack stack)
     {
         Mailbox mailbox = this.mailboxes.get(id);
-        if(mailbox != null && mailbox.queue().size() < Config.SERVER.mailbox.queueSize.get())
+        if(mailbox != null && mailbox.queue().size() < Config.SERVER.mailing.deliveryQueueSize.get())
         {
             mailbox.queue().offer(stack);
             return true;
@@ -296,5 +294,31 @@ public class DeliveryService extends SavedData
             case "minecraft:the_end" -> Level.END;
             default -> ResourceKey.create(Registries.DIMENSION, new ResourceLocation(levelKey));
         };
+    }
+
+    /**
+     * Determines if the given ItemStack is an item that can't be sent through mail. By default,
+     * items that have inventory are banned (such as Shulker Boxes) unless explicitly disabled in
+     * mod's configuration. An item is also blocked if the item id is contained in the banned items
+     * list, which again is defined in the mod's configuration. Banned items are mainly to prevent
+     * creating large NBT on a single item, which can affect servers/world saves.
+     * <p>
+     * This method can only be called while in a game/server since it depends on a configuration
+     * sent from the server.
+     *
+     * @param stack the ItemStack to check if it is banned
+     * @return True if the ItemStack is banned
+     */
+    public static boolean isBannedItem(ItemStack stack)
+    {
+        // Check if the item can fit inside container items
+        if(Config.SERVER.mailing.banSendingItemsWithInventories.get() && !stack.getItem().canFitInsideContainerItems())
+        {
+            return true;
+        }
+
+        // Check if the item is not on the banned item list
+        String name = stack.getItem().getDescriptionId();
+        return Config.SERVER.mailing.bannedItems.get().contains(name);
     }
 }

@@ -1,6 +1,9 @@
 package com.mrcrayfish.furniture.refurbished.inventory;
 
+import com.mrcrayfish.furniture.refurbished.blockentity.PostBoxBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
+import com.mrcrayfish.furniture.refurbished.inventory.slot.PostBoxSlot;
+import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -16,7 +19,7 @@ public class PostBoxMenu extends SimpleContainerMenu
 {
     public PostBoxMenu(int windowId, Inventory playerInventory)
     {
-        this(windowId, playerInventory, new SimpleContainer(9));
+        this(windowId, playerInventory, new SimpleContainer(PostBoxBlockEntity.CONTAINER_SIZE));
     }
 
     public PostBoxMenu(int windowId, Inventory playerInventory, Container container)
@@ -28,7 +31,7 @@ public class PostBoxMenu extends SimpleContainerMenu
         {
             for(int i = 0; i < 2; i++)
             {
-                this.addSlot(new Slot(container, j * 2 + i, 235 + i * 18, 14 + j * 18));
+                this.addSlot(new PostBoxSlot(container, j * 2 + i, 235 + i * 18, 14 + j * 18));
             }
         }
         this.addPlayerInventorySlots(114, 90, playerInventory);
@@ -50,7 +53,21 @@ public class PostBoxMenu extends SimpleContainerMenu
                     return ItemStack.EMPTY;
                 }
             }
-            else if(!this.moveItemStackTo(slotStack, 0, this.container.getContainerSize(), false))
+            else if(!DeliveryService.isBannedItem(slotStack))
+            {
+                if(!this.moveItemStackTo(slotStack, 0, this.container.getContainerSize(), false))
+                {
+                    return ItemStack.EMPTY;
+                }
+            }
+            else if(slotIndex < this.slots.size() - 9)
+            {
+                if(!this.moveItemStackTo(slotStack, this.slots.size() - 9, this.slots.size(), true))
+                {
+                    return ItemStack.EMPTY;
+                }
+            }
+            else if(!this.moveItemStackTo(slotStack, this.container.getContainerSize(), this.slots.size() - 9, false))
             {
                 return ItemStack.EMPTY;
             }

@@ -42,6 +42,16 @@ public class ServerPlayHandler
             if(container.isEmpty())
                 return;
 
+            // Check if all items in the container can be sent
+            for(int i = 0; i < container.getContainerSize(); i++)
+            {
+                ItemStack stack = container.getItem(i);
+                if(!stack.isEmpty() && DeliveryService.isBannedItem(stack))
+                {
+                    return;
+                }
+            }
+
             DeliveryService.get(player.server).ifPresent(service -> {
                 ItemStack stack = PackageItem.create(container, message.getMessage(), player.getGameProfile().getName());
                 if(service.sendMail(message.getMailboxId(), stack)) {

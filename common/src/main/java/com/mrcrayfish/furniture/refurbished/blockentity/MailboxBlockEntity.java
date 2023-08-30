@@ -14,7 +14,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
 import java.util.Optional;
@@ -30,7 +29,7 @@ public class MailboxBlockEntity extends RowedStorageBlockEntity
 
     public MailboxBlockEntity(BlockPos pos, BlockState state)
     {
-        super(ModBlockEntities.MAIL_BOX.get(), pos, state, Config.SERVER.mailbox.inventoryRows.get());
+        super(ModBlockEntities.MAIL_BOX.get(), pos, state, Config.SERVER.mailing.mailboxInventoryRows.get());
     }
 
     public UUID getId()
