@@ -35,6 +35,9 @@
         "java": ">=17",
         "framework": ">=${framework_version}"
     },
+    "conflicts": {
+        "mighty_mail": "*"
+    },
     "custom": {
         "configured": {
             "configs": [],
