@@ -1,0 +1,9 @@
+{
+    "item.package.open": {
+        "subtitle": "subtitle.refurbished_furniture.package_open",
+        "sounds": [
+            "refurbished_furniture:item/package/open1",
+            "refurbished_furniture:item/package/open2"
+        ]
+    }
+}
