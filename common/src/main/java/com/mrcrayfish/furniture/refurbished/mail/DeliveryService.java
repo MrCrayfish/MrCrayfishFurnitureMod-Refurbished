@@ -184,14 +184,10 @@ public class DeliveryService extends SavedData
     {
         Pair<ResourceLocation, BlockPos> pendingLocation = this.pendingNames.remove(player.getUUID());
         return this.getMailboxAtPosition(level, pos).map(mailbox -> {
-            if(Objects.equals(mailbox.owner().getValue(), player.getUUID())) {
-                Pair<ResourceLocation, BlockPos> location = Pair.of(level.dimension().location(), pos);
-                if(Objects.equals(location, pendingLocation) && mailbox.rename(customName)) {
-                    this.setDirty();
-                    return true;
-                }
-            }
-            return false;
+            if(!Objects.equals(mailbox.owner().getValue(), player.getUUID()))
+                return false;
+            Pair<ResourceLocation, BlockPos> location = Pair.of(level.dimension().location(), pos);
+            return Objects.equals(location, pendingLocation) && mailbox.rename(customName);
         }).orElse(false);
     }
 

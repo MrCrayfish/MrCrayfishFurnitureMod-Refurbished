@@ -35,6 +35,7 @@ public record Mailbox(UUID id, ResourceKey<Level> levelKey, BlockPos pos, Mutabl
         if(!customName.isBlank() && customName.length() <= MAX_NAME_LENGTH)
         {
             this.customName.setValue(customName);
+            this.service.setDirty();
             return true;
         }
         return false;
