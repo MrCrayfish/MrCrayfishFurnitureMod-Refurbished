@@ -40,6 +40,25 @@ public record Mailbox(UUID id, ResourceKey<Level> levelKey, BlockPos pos, Mutabl
         return false;
     }
 
+    /**
+     * @return True if this mailbox has an owner
+     */
+    public boolean hasOwner()
+    {
+        return this.owner.getValue() != null;
+    }
+
+    /**
+     * Sets the owner of the mailbox
+     *
+     * @param uuid the uuid of the new player owner
+     */
+    public void setOwner(UUID uuid)
+    {
+        this.owner.setValue(uuid);
+        this.service.setDirty();
+    }
+
     void tick()
     {
         if(this.removed.booleanValue())

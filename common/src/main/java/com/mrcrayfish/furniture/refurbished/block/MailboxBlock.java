@@ -113,9 +113,9 @@ public class MailboxBlock extends FurnitureHorizontalBlock implements EntityBloc
 
             // Claim the mailbox if the mailbox is not owned.
             Mailbox mailbox = blockEntity.getMailbox();
-            if(mailbox != null && mailbox.owner().getValue() == null)
+            if(mailbox != null && !mailbox.hasOwner())
             {
-                mailbox.owner().setValue(player.getUUID());
+                mailbox.setOwner(player.getUUID());
             }
 
             player.openMenu(blockEntity);
