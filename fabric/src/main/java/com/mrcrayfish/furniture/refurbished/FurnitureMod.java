@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished;
 
+import com.mrcrayfish.framework.FrameworkSetup;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureBlockTagsProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureItemTagsProvider;
@@ -19,6 +20,7 @@ public class FurnitureMod implements ModInitializer, DataGeneratorEntrypoint
     @Override
     public void onInitialize()
     {
+        FrameworkSetup.run();
         Bootstrap.init();
         FluidStorage.SIDED.registerForBlockEntity((sink, direction) -> {
             return direction != Direction.UP ? (SingleFluidStorage) sink.getTank() : null;
