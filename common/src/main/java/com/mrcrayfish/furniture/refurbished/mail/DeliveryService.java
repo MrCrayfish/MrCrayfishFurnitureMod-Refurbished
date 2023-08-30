@@ -100,7 +100,7 @@ public class DeliveryService extends SavedData
     public boolean sendMail(UUID id, ItemStack stack)
     {
         Mailbox mailbox = this.mailboxes.get(id);
-        if(mailbox != null && mailbox.queue().size() < Config.SERVER.mailQueueSize.get())
+        if(mailbox != null && mailbox.queue().size() < Config.SERVER.mailbox.queueSize.get())
         {
             mailbox.queue().offer(stack);
             return true;

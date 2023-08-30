@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.block.MailboxBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
@@ -29,7 +30,7 @@ public class MailboxBlockEntity extends RowedStorageBlockEntity
 
     public MailboxBlockEntity(BlockPos pos, BlockState state)
     {
-        super(ModBlockEntities.MAIL_BOX.get(), pos, state, 1);
+        super(ModBlockEntities.MAIL_BOX.get(), pos, state, Config.SERVER.mailbox.inventoryRows.get());
     }
 
     public UUID getId()
