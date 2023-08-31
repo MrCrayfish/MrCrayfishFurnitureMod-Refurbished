@@ -223,6 +223,22 @@ public class CommonBlockModelProvider
         this.mailbox(ModBlocks.MAIL_BOX_CRIMSON.get());
         this.mailbox(ModBlocks.MAIL_BOX_WARPED.get());
         this.postBox(ModBlocks.POST_BOX.get());
+        this.sofa(ModBlocks.SOFA_WHITE.get());
+        this.sofa(ModBlocks.SOFA_ORANGE.get());
+        this.sofa(ModBlocks.SOFA_MAGENTA.get());
+        this.sofa(ModBlocks.SOFA_LIGHT_BLUE.get());
+        this.sofa(ModBlocks.SOFA_YELLOW.get());
+        this.sofa(ModBlocks.SOFA_LIME.get());
+        this.sofa(ModBlocks.SOFA_PINK.get());
+        this.sofa(ModBlocks.SOFA_GRAY.get());
+        this.sofa(ModBlocks.SOFA_LIGHT_GRAY.get());
+        this.sofa(ModBlocks.SOFA_CYAN.get());
+        this.sofa(ModBlocks.SOFA_PURPLE.get());
+        this.sofa(ModBlocks.SOFA_BLUE.get());
+        this.sofa(ModBlocks.SOFA_BROWN.get());
+        this.sofa(ModBlocks.SOFA_GREEN.get());
+        this.sofa(ModBlocks.SOFA_RED.get());
+        this.sofa(ModBlocks.SOFA_BLACK.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -671,6 +687,40 @@ public class CommonBlockModelProvider
         state.createVariant().prop(PostBoxBlock.DIRECTION, Direction.EAST).existingModel(ModelTemplate.POST_BOX.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(PostBoxBlock.DIRECTION, Direction.SOUTH).existingModel(ModelTemplate.POST_BOX.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(PostBoxBlock.DIRECTION, Direction.WEST).existingModel(ModelTemplate.POST_BOX.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        this.consumer.accept(state);
+    }
+
+    private void sofa(SofaBlock block)
+    {
+        DyeColor color = block.getDyeColor();
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.colourParticle(color));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedBlockState state = new PreparedBlockState(block);
+        state.createVariant().prop(SofaBlock.DIRECTION, Direction.NORTH).prop(SofaBlock.SHAPE, SofaBlock.Shape.DEFAULT).parentModel(ModelTemplate.SOFA.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(SofaBlock.DIRECTION, Direction.EAST).prop(SofaBlock.SHAPE, SofaBlock.Shape.DEFAULT).parentModel(ModelTemplate.SOFA.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(SofaBlock.DIRECTION, Direction.SOUTH).prop(SofaBlock.SHAPE, SofaBlock.Shape.DEFAULT).parentModel(ModelTemplate.SOFA.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(SofaBlock.DIRECTION, Direction.WEST).prop(SofaBlock.SHAPE, SofaBlock.Shape.DEFAULT).parentModel(ModelTemplate.SOFA.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(SofaBlock.DIRECTION, Direction.NORTH).prop(SofaBlock.SHAPE, SofaBlock.Shape.LEFT).parentModel(ModelTemplate.SOFA_LEFT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(SofaBlock.DIRECTION, Direction.EAST).prop(SofaBlock.SHAPE, SofaBlock.Shape.LEFT).parentModel(ModelTemplate.SOFA_LEFT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(SofaBlock.DIRECTION, Direction.SOUTH).prop(SofaBlock.SHAPE, SofaBlock.Shape.LEFT).parentModel(ModelTemplate.SOFA_LEFT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(SofaBlock.DIRECTION, Direction.WEST).prop(SofaBlock.SHAPE, SofaBlock.Shape.LEFT).parentModel(ModelTemplate.SOFA_LEFT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(SofaBlock.DIRECTION, Direction.NORTH).prop(SofaBlock.SHAPE, SofaBlock.Shape.RIGHT).parentModel(ModelTemplate.SOFA_RIGHT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(SofaBlock.DIRECTION, Direction.EAST).prop(SofaBlock.SHAPE, SofaBlock.Shape.RIGHT).parentModel(ModelTemplate.SOFA_RIGHT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(SofaBlock.DIRECTION, Direction.SOUTH).prop(SofaBlock.SHAPE, SofaBlock.Shape.RIGHT).parentModel(ModelTemplate.SOFA_RIGHT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(SofaBlock.DIRECTION, Direction.WEST).prop(SofaBlock.SHAPE, SofaBlock.Shape.RIGHT).parentModel(ModelTemplate.SOFA_RIGHT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(SofaBlock.DIRECTION, Direction.NORTH).prop(SofaBlock.SHAPE, SofaBlock.Shape.MIDDLE).parentModel(ModelTemplate.SOFA_MIDDLE.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(SofaBlock.DIRECTION, Direction.EAST).prop(SofaBlock.SHAPE, SofaBlock.Shape.MIDDLE).parentModel(ModelTemplate.SOFA_MIDDLE.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(SofaBlock.DIRECTION, Direction.SOUTH).prop(SofaBlock.SHAPE, SofaBlock.Shape.MIDDLE).parentModel(ModelTemplate.SOFA_MIDDLE.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(SofaBlock.DIRECTION, Direction.WEST).prop(SofaBlock.SHAPE, SofaBlock.Shape.MIDDLE).parentModel(ModelTemplate.SOFA_MIDDLE.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(SofaBlock.DIRECTION, Direction.NORTH).prop(SofaBlock.SHAPE, SofaBlock.Shape.CORNER_LEFT).parentModel(ModelTemplate.SOFA_CORNER_LEFT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(SofaBlock.DIRECTION, Direction.EAST).prop(SofaBlock.SHAPE, SofaBlock.Shape.CORNER_LEFT).parentModel(ModelTemplate.SOFA_CORNER_LEFT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(SofaBlock.DIRECTION, Direction.SOUTH).prop(SofaBlock.SHAPE, SofaBlock.Shape.CORNER_LEFT).parentModel(ModelTemplate.SOFA_CORNER_LEFT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(SofaBlock.DIRECTION, Direction.WEST).prop(SofaBlock.SHAPE, SofaBlock.Shape.CORNER_LEFT).parentModel(ModelTemplate.SOFA_CORNER_LEFT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(SofaBlock.DIRECTION, Direction.NORTH).prop(SofaBlock.SHAPE, SofaBlock.Shape.CORNER_RIGHT).parentModel(ModelTemplate.SOFA_CORNER_RIGHT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(SofaBlock.DIRECTION, Direction.EAST).prop(SofaBlock.SHAPE, SofaBlock.Shape.CORNER_RIGHT).parentModel(ModelTemplate.SOFA_CORNER_RIGHT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(SofaBlock.DIRECTION, Direction.SOUTH).prop(SofaBlock.SHAPE, SofaBlock.Shape.CORNER_RIGHT).parentModel(ModelTemplate.SOFA_CORNER_RIGHT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(SofaBlock.DIRECTION, Direction.WEST).prop(SofaBlock.SHAPE, SofaBlock.Shape.CORNER_RIGHT).parentModel(ModelTemplate.SOFA_CORNER_RIGHT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         this.consumer.accept(state);
     }
 }

@@ -74,6 +74,12 @@ public class ModelTemplate
     public static final ModelTemplate MAIL_BOX = block("mail_box", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate MAIL_BOX_UNCHECKED = block("mail_box_unchecked", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate POST_BOX = block("post_box", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate SOFA = block("sofa", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate SOFA_LEFT = block("sofa_left", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate SOFA_RIGHT = block("sofa_right", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate SOFA_MIDDLE = block("sofa_middle", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate SOFA_CORNER_LEFT = block("sofa_corner_left", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate SOFA_CORNER_RIGHT = block("sofa_corner_right", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
 
     public static final ModelTemplate FRIDGE = item("fridge", TextureSlot.TEXTURE);
 

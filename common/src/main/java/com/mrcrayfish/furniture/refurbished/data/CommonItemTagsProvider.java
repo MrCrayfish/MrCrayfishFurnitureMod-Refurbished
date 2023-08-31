@@ -58,6 +58,22 @@ public class CommonItemTagsProvider
         general.add(ModBlocks.DRAWER_CHERRY.get().asItem());
         general.add(ModBlocks.DRAWER_CRIMSON.get().asItem());
         general.add(ModBlocks.DRAWER_WARPED.get().asItem());
+        general.add(ModBlocks.SOFA_WHITE.get().asItem());
+        general.add(ModBlocks.SOFA_ORANGE.get().asItem());
+        general.add(ModBlocks.SOFA_MAGENTA.get().asItem());
+        general.add(ModBlocks.SOFA_LIGHT_BLUE.get().asItem());
+        general.add(ModBlocks.SOFA_YELLOW.get().asItem());
+        general.add(ModBlocks.SOFA_LIME.get().asItem());
+        general.add(ModBlocks.SOFA_PINK.get().asItem());
+        general.add(ModBlocks.SOFA_GRAY.get().asItem());
+        general.add(ModBlocks.SOFA_LIGHT_GRAY.get().asItem());
+        general.add(ModBlocks.SOFA_CYAN.get().asItem());
+        general.add(ModBlocks.SOFA_PURPLE.get().asItem());
+        general.add(ModBlocks.SOFA_BLUE.get().asItem());
+        general.add(ModBlocks.SOFA_BROWN.get().asItem());
+        general.add(ModBlocks.SOFA_GREEN.get().asItem());
+        general.add(ModBlocks.SOFA_RED.get().asItem());
+        general.add(ModBlocks.SOFA_BLACK.get().asItem());
 
         TagBuilder<Item> bedroom = builder.apply(ModTags.Items.BEDROOM);
         bedroom.add(ModBlocks.DESK_OAK.get().asItem());
