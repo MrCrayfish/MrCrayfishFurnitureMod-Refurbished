@@ -1,4 +1,10 @@
 {
+    "block.doorbell.chime": {
+        "subtitle": "subtitle.refurbished_furniture.doorbell_chime",
+        "sounds": [
+            "refurbished_furniture:block/doorbell/chime"
+        ]
+    },
     "item.package.open": {
         "subtitle": "subtitle.refurbished_furniture.package_open",
         "sounds": [

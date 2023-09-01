@@ -239,6 +239,7 @@ public class CommonBlockModelProvider
         this.sofa(ModBlocks.SOFA_GREEN.get());
         this.sofa(ModBlocks.SOFA_RED.get());
         this.sofa(ModBlocks.SOFA_BLACK.get());
+        this.doorbell(ModBlocks.DOORBELL.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -721,6 +722,23 @@ public class CommonBlockModelProvider
         state.createVariant().prop(SofaBlock.DIRECTION, Direction.EAST).prop(SofaBlock.SHAPE, SofaBlock.Shape.CORNER_RIGHT).parentModel(ModelTemplate.SOFA_CORNER_RIGHT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(SofaBlock.DIRECTION, Direction.SOUTH).prop(SofaBlock.SHAPE, SofaBlock.Shape.CORNER_RIGHT).parentModel(ModelTemplate.SOFA_CORNER_RIGHT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(SofaBlock.DIRECTION, Direction.WEST).prop(SofaBlock.SHAPE, SofaBlock.Shape.CORNER_RIGHT).parentModel(ModelTemplate.SOFA_CORNER_RIGHT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        this.consumer.accept(state);
+    }
+
+    private void doorbell(DoorbellBlock block)
+    {
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.metalParticle(MetalType.LIGHT));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedBlockState state = new PreparedBlockState(block);
+        state.createVariant().prop(DoorbellBlock.DIRECTION, Direction.NORTH).prop(DoorbellBlock.ENABLED, false).existingModel(ModelTemplate.DOORBELL.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(DoorbellBlock.DIRECTION, Direction.EAST).prop(DoorbellBlock.ENABLED, false).existingModel(ModelTemplate.DOORBELL.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(DoorbellBlock.DIRECTION, Direction.SOUTH).prop(DoorbellBlock.ENABLED, false).existingModel(ModelTemplate.DOORBELL.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(DoorbellBlock.DIRECTION, Direction.WEST).prop(DoorbellBlock.ENABLED, false).existingModel(ModelTemplate.DOORBELL.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(DoorbellBlock.DIRECTION, Direction.NORTH).prop(DoorbellBlock.ENABLED, true).existingModel(ModelTemplate.DOORBELL_PRESSED.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
+        state.createVariant().prop(DoorbellBlock.DIRECTION, Direction.EAST).prop(DoorbellBlock.ENABLED, true).existingModel(ModelTemplate.DOORBELL_PRESSED.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(DoorbellBlock.DIRECTION, Direction.SOUTH).prop(DoorbellBlock.ENABLED, true).existingModel(ModelTemplate.DOORBELL_PRESSED.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(DoorbellBlock.DIRECTION, Direction.WEST).prop(DoorbellBlock.ENABLED, true).existingModel(ModelTemplate.DOORBELL_PRESSED.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         this.consumer.accept(state);
     }
 }

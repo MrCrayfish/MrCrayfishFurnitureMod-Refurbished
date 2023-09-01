@@ -1,19 +1,20 @@
 {
 	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
 	"textures": {
-		"texture": "refurbished_furniture:block/doorbell"
+		"1": "refurbished_furniture:block/doorbell"
 	},
 	"elements": [
 		{
-			"from": [6, 4, 1],
-			"to": [10, 10, 3],
+			"from": [5, 4, 0],
+			"to": [11, 12, 2],
+			"rotation": {"angle": 0, "axis": "y", "origin": [-16, 0, 0]},
 			"faces": {
-				"north": {"uv": [0, 8, 4, 14], "texture": "#texture"},
-				"east": {"uv": [4, 0, 6, 6], "texture": "#texture"},
-				"south": {"uv": [10, 0, 14, 6], "texture": "#texture"},
-				"west": {"uv": [14, 0, 16, 6], "texture": "#texture"},
-				"up": {"uv": [10, 2, 6, 0], "texture": "#texture"},
-				"down": {"uv": [6, 6, 2, 8], "texture": "#texture"}
+				"north": {"uv": [0, 0, 6, 8], "texture": "#1"},
+				"east": {"uv": [0, 8, 2, 16], "texture": "#1"},
+				"south": {"uv": [10, 8, 16, 16], "texture": "#1"},
+				"west": {"uv": [2, 8, 4, 16], "texture": "#1"},
+				"up": {"uv": [10, 10, 4, 8], "texture": "#1"},
+				"down": {"uv": [10, 10, 4, 12], "texture": "#1"}
 			}
 		}
 	]

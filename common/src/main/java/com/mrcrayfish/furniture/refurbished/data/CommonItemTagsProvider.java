@@ -252,6 +252,7 @@ public class CommonItemTagsProvider
         outdoors.add(ModBlocks.MAIL_BOX_CRIMSON.get().asItem());
         outdoors.add(ModBlocks.MAIL_BOX_WARPED.get().asItem());
         outdoors.add(ModBlocks.POST_BOX.get().asItem());
+        outdoors.add(ModBlocks.DOORBELL.get().asItem());
         outdoors.add(ModItems.SPATULA.get());
         outdoors.add(ModItems.KNIFE.get());
 

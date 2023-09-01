@@ -80,6 +80,8 @@ public class ModelTemplate
     public static final ModelTemplate SOFA_MIDDLE = block("sofa_middle", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate SOFA_CORNER_LEFT = block("sofa_corner_left", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate SOFA_CORNER_RIGHT = block("sofa_corner_right", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate DOORBELL = block("doorbell", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate DOORBELL_PRESSED = block("doorbell_pressed", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
 
     public static final ModelTemplate FRIDGE = item("fridge", TextureSlot.TEXTURE);
 
