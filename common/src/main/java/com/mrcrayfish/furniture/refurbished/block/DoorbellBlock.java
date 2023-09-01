@@ -48,6 +48,18 @@ public class DoorbellBlock extends FurnitureHorizontalBlock
     }
 
     @Override
+    public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos)
+    {
+        return state.getValue(ENABLED) ? 16 : 0;
+    }
+
+    @Override
+    public boolean hasAnalogOutputSignal(BlockState state)
+    {
+        return true;
+    }
+
+    @Override
     public boolean canSurvive(BlockState state, LevelReader reader, BlockPos pos)
     {
         Direction facing = state.getValue(DIRECTION);
@@ -82,6 +94,7 @@ public class DoorbellBlock extends FurnitureHorizontalBlock
         level.setBlock(pos, state.setValue(ENABLED, true), Block.UPDATE_ALL);
         level.scheduleTick(pos, this, 20);
         level.playSound(null, pos, ModSounds.BLOCK_DOORBELL_CHIME.get(), SoundSource.BLOCKS);
+        level.updateNeighbourForOutputSignal(pos, this);
         return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
@@ -91,6 +104,7 @@ public class DoorbellBlock extends FurnitureHorizontalBlock
         if(state.getValue(ENABLED))
         {
             level.setBlock(pos, state.setValue(ENABLED, false), Block.UPDATE_ALL);
+            level.updateNeighbourForOutputSignal(pos, this);
         }
     }
 
