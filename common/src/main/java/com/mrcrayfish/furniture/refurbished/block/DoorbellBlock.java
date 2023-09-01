@@ -64,7 +64,12 @@ public class DoorbellBlock extends FurnitureHorizontalBlock
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context)
     {
-        return this.defaultBlockState().setValue(DIRECTION, context.getClickedFace().getOpposite());
+        Direction face = context.getClickedFace();
+        if(face.getAxis().isHorizontal())
+        {
+            return this.defaultBlockState().setValue(DIRECTION, face.getOpposite());
+        }
+        return null;
     }
 
     @Override
