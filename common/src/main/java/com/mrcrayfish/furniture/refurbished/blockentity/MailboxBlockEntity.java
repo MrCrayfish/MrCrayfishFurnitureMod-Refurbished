@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.mojang.authlib.GameProfile;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.block.MailboxBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
@@ -11,10 +12,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
+import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,7 +26,7 @@ import java.util.UUID;
 /**
  * Author: MrCrayfish
  */
-public class MailboxBlockEntity extends RowedStorageBlockEntity
+public class MailboxBlockEntity extends RowedStorageBlockEntity implements INameable
 {
     protected UUID uuid = UUID.randomUUID();
     protected WeakReference<Mailbox> mailboxRef;
@@ -35,6 +39,19 @@ public class MailboxBlockEntity extends RowedStorageBlockEntity
     public UUID getId()
     {
         return this.uuid;
+    }
+
+    @Override
+    public void setName(@Nullable ServerPlayer player, String name)
+    {
+        if(player == null)
+            return;
+
+        DeliveryService.get(player.server).ifPresent(service -> {
+            if(!service.renameMailbox(player, player.level(), this.worldPosition, name)) {
+                player.sendSystemMessage(Utils.translation("gui", "rename_mailbox_failed"));
+            }
+        });
     }
 
     public boolean deliverItem(ItemStack mail)

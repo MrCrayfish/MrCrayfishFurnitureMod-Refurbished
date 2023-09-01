@@ -1,14 +1,21 @@
 package com.mrcrayfish.furniture.refurbished.network.play;
 
+import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.blockentity.FryingPanBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.GrillBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.KitchenSinkBlockEntity;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.PostBoxScreen;
+import com.mrcrayfish.furniture.refurbished.client.gui.toast.ItemToast;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageDoorbellNotification;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageFlipAnimation;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageClearMessage;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSyncFluid;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageUpdateMailboxes;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
 import java.util.Objects;
@@ -55,6 +62,17 @@ public class ClientPlayHandler
         if(mc.screen instanceof PostBoxScreen postBox)
         {
             postBox.clearMessage();
+        }
+    }
+
+    public static void handleMessageDoorbell(MessageDoorbellNotification message)
+    {
+        if(Config.CLIENT.doorbellNotification.get())
+        {
+            Minecraft mc = Minecraft.getInstance();
+            Component title = Utils.translation("gui", "doorbell_rang");
+            Component description = Component.literal(message.getName());
+            mc.getToasts().addToast(new ItemToast(title, description, new ItemStack(Items.BELL)));
         }
     }
 }

@@ -2,35 +2,46 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mrcrayfish.furniture.refurbished.blockentity.DoorbellBlockEntity;
+import com.mrcrayfish.furniture.refurbished.client.FurnitureScreens;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
-import com.mrcrayfish.furniture.refurbished.entity.Seat;
+import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish
  */
-public class DoorbellBlock extends FurnitureHorizontalBlock
+public class DoorbellBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
 {
     public DoorbellBlock(Properties properties)
     {
@@ -74,6 +85,25 @@ public class DoorbellBlock extends FurnitureHorizontalBlock
     }
 
     @Override
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack)
+    {
+        if(entity instanceof Player)
+        {
+            if(!level.isClientSide())
+            {
+                if(level.getBlockEntity(pos) instanceof DoorbellBlockEntity doorbell)
+                {
+                    doorbell.setOwner(entity.getUUID());
+                }
+            }
+            else
+            {
+                FurnitureScreens.openNameableScreen(pos, Utils.translation("gui", "set_doorbell_name"), DoorbellBlockEntity.MAX_NAME_LENGTH);
+            }
+        }
+    }
+
+    @Override
     public BlockState getStateForPlacement(BlockPlaceContext context)
     {
         Direction face = context.getClickedFace();
@@ -91,6 +121,13 @@ public class DoorbellBlock extends FurnitureHorizontalBlock
         {
             return InteractionResult.CONSUME;
         }
+
+        // Send notification to owner
+        if(level.getBlockEntity(pos) instanceof DoorbellBlockEntity doorbell)
+        {
+            doorbell.sendNotificationToOwner(player);
+        }
+
         level.setBlock(pos, state.setValue(ENABLED, true), Block.UPDATE_ALL);
         level.scheduleTick(pos, this, 20);
         level.playSound(null, pos, ModSounds.BLOCK_DOORBELL_CHIME.get(), SoundSource.BLOCKS);
@@ -113,5 +150,18 @@ public class DoorbellBlock extends FurnitureHorizontalBlock
     {
         super.createBlockStateDefinition(builder);
         builder.add(ENABLED);
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
+    {
+        return new DoorbellBlockEntity(pos, state);
+    }
+
+    @Override
+    public List<TagKey<Block>> getTags()
+    {
+        return List.of(BlockTags.MINEABLE_WITH_PICKAXE);
     }
 }

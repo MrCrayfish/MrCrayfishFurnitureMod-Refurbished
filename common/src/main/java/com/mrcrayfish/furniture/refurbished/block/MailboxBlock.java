@@ -7,13 +7,12 @@ import com.mrcrayfish.furniture.refurbished.client.FurnitureScreens;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
 import com.mrcrayfish.furniture.refurbished.mail.Mailbox;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.Container;
-import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -82,7 +81,7 @@ public class MailboxBlock extends FurnitureHorizontalBlock implements EntityBloc
             }
             else
             {
-                FurnitureScreens.openMailboxNameScreen(pos);
+                FurnitureScreens.openNameableScreen(pos, Utils.translation("gui", "set_mailbox_name"), Mailbox.MAX_NAME_LENGTH);
             }
         }
     }

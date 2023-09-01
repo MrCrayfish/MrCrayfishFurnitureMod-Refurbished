@@ -20,7 +20,9 @@ public class Config
 
     public static class Client
     {
-
+        @ConfigProperty(name = "doorbellNotification", comment = """
+            If enabled, displays a toast notification when another player rings one of your doorbells.""")
+        public final BoolProperty doorbellNotification = BoolProperty.create(true);
     }
 
     public static class Server

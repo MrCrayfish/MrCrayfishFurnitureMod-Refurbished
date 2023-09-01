@@ -246,5 +246,7 @@
     "gui.refurbished_furniture.post_box_info": "Select a mailbox from the list. You can search for a mailbox by name, or a player by prefixing with @. Place items in package slots and optionally include a message. Click the send button to deliver the package.",
     "gui.refurbished_furniture.package_sent_by": "Sent by %s",
     "gui.refurbished_furniture.package_open": "Right Click to Open",
+    "gui.refurbished_furniture.set_doorbell_name": "Set Doorbell Name",
+    "gui.refurbished_furniture.doorbell_rang": "Doorbell Rang",
     "subtitle.refurbished_furniture.package_open": "Package Opening"
 }

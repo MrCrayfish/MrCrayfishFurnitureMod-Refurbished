@@ -4,10 +4,11 @@ import com.mrcrayfish.framework.api.FrameworkAPI;
 import com.mrcrayfish.framework.api.network.FrameworkNetwork;
 import com.mrcrayfish.framework.api.network.MessageDirection;
 import com.mrcrayfish.furniture.refurbished.Constants;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageDoorbellNotification;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageFlipAnimation;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageClearMessage;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSendPackage;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageSetMailboxName;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageSetName;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSyncFluid;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageUpdateMailboxes;
 import net.minecraft.resources.ResourceLocation;
@@ -21,10 +22,11 @@ public class Network
             .createNetworkBuilder(new ResourceLocation(Constants.MOD_ID, "play"), 1)
             .registerPlayMessage(MessageSyncFluid.class, MessageDirection.PLAY_CLIENT_BOUND)
             .registerPlayMessage(MessageFlipAnimation.class, MessageDirection.PLAY_CLIENT_BOUND)
-            .registerPlayMessage(MessageSetMailboxName.class, MessageDirection.PLAY_SERVER_BOUND)
+            .registerPlayMessage(MessageSetName.class, MessageDirection.PLAY_SERVER_BOUND)
             .registerPlayMessage(MessageUpdateMailboxes.class, MessageDirection.PLAY_CLIENT_BOUND)
             .registerPlayMessage(MessageSendPackage.class, MessageDirection.PLAY_SERVER_BOUND)
             .registerPlayMessage(MessageClearMessage.class, MessageDirection.PLAY_CLIENT_BOUND)
+            .registerPlayMessage(MessageDoorbellNotification.class, MessageDirection.PLAY_CLIENT_BOUND)
             .build();
 
     public static void init() {}

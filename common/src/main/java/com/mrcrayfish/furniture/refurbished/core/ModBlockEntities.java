@@ -195,4 +195,8 @@ public class ModBlockEntities
     public static final RegistryEntry<BlockEntityType<PostBoxBlockEntity>> POST_BOX = RegistryEntry.blockEntity(Utils.resource("post_box"), PostBoxBlockEntity::new, () -> new Block[]{
             ModBlocks.POST_BOX.get()
     });
+
+    public static final RegistryEntry<BlockEntityType<DoorbellBlockEntity>> DOORBELL = RegistryEntry.blockEntity(Utils.resource("doorbell"), DoorbellBlockEntity::new, () -> new Block[]{
+            ModBlocks.DOORBELL.get(),
+    });
 }
