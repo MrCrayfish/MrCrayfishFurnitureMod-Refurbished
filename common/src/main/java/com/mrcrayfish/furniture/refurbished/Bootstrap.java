@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished;
 
+import com.mrcrayfish.framework.api.event.PlayerEvents;
 import com.mrcrayfish.framework.api.event.TickEvents;
 import com.mrcrayfish.furniture.refurbished.blockentity.CuttingBoardBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.GrillBlockEntity;
@@ -9,6 +10,7 @@ import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.DispenserBlock;
@@ -57,6 +59,12 @@ public class Bootstrap
             return ItemStack.EMPTY;
         });
 
+        // Delivery service events
         TickEvents.START_SERVER.register(server -> DeliveryService.get(server).ifPresent(DeliveryService::serverTick));
+        PlayerEvents.LOGGED_OUT.register(player -> {
+            if(player instanceof ServerPlayer serverPlayer) {
+                DeliveryService.get(serverPlayer.server).ifPresent(service -> service.playerLoggedOut(serverPlayer));
+            }
+        });
     }
 }

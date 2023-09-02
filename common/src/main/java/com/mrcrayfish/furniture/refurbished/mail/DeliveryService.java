@@ -79,6 +79,9 @@ public class DeliveryService extends SavedData
         return this.server;
     }
 
+    /**
+     * Called every tick on the logical server
+     */
     public void serverTick()
     {
         // Checks for mailboxes that need to be removed and spawn their queue into the level
@@ -93,6 +96,20 @@ public class DeliveryService extends SavedData
 
         // Try to deliver mail from queues to the block entity in the level
         this.mailboxes.forEach((uuid, mailbox) -> mailbox.tick());
+    }
+
+    /**
+     * Called when a player logs out of the server. Since {@link #playerRequests} is persistent,
+     * if a player logged out and closed their client, the server still thinks they have already
+     * requested the mailboxes and won't send it again if they start the client and join the server.
+     * To solve this issue, their player id is simply removed from {@link #playerRequests} when they
+     * log out.
+     *
+     * @param player the player that logged out
+     */
+    public void playerLoggedOut(ServerPlayer player)
+    {
+        this.playerRequests.remove(player.getUUID());
     }
 
     /**
