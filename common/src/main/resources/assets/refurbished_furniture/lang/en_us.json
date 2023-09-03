@@ -219,6 +219,8 @@
     "block.refurbished_furniture.red_sofa": "Red Sofa",
     "block.refurbished_furniture.black_sofa": "Black Sofa",
     "block.refurbished_furniture.doorbell": "Doorbell",
+    "block.refurbished_furniture.light_lightswitch": "Light Lightswitch",
+    "block.refurbished_furniture.dark_lightswitch": "Dark Lightswitch",
     "item.refurbished_furniture.spatula": "Spatula",
     "item.refurbished_furniture.knife": "Knife",
     "item.refurbished_furniture.package": "Package",

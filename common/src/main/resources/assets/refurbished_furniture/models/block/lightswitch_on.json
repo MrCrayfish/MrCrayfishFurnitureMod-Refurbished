@@ -1,0 +1,18 @@
+{
+	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
+	"elements": [
+		{
+			"from": [5, 4, 0],
+			"to": [11, 12, 2],
+			"rotation": {"angle": 0, "axis": "y", "origin": [-16, 0, 0]},
+			"faces": {
+				"north": {"uv": [0, 0, 6, 8], "texture": "#texture", "cullface": "north"},
+				"east": {"uv": [0, 8, 2, 16], "texture": "#texture"},
+				"south": {"uv": [10, 8, 16, 16], "texture": "#texture"},
+				"west": {"uv": [2, 8, 4, 16], "texture": "#texture"},
+				"up": {"uv": [10, 10, 4, 8], "texture": "#texture"},
+				"down": {"uv": [10, 10, 4, 12], "texture": "#texture"}
+			}
+		}
+	]
+}
