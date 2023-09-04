@@ -2,17 +2,27 @@ package com.mrcrayfish.furniture.refurbished;
 
 import com.mrcrayfish.framework.FrameworkSetup;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
+import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureBlockTagsProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureItemTagsProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureLootTableProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureModelProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureRecipeProvider;
+import com.mrcrayfish.furniture.refurbished.item.WrenchItem;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.base.SingleFluidStorage;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.item.ItemStack;
 
 @SuppressWarnings("UnstableApiUsage")
 public class FurnitureMod implements ModInitializer, DataGeneratorEntrypoint
@@ -25,6 +35,23 @@ public class FurnitureMod implements ModInitializer, DataGeneratorEntrypoint
         FluidStorage.SIDED.registerForBlockEntity((sink, direction) -> {
             return direction != Direction.UP ? (SingleFluidStorage) sink.getTank() : null;
         }, ModBlockEntities.KITCHEN_SINK.get());
+
+        UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+            ItemStack heldItem = player.getItemInHand(hand);
+            if(heldItem.is(ModItems.WRENCH.get())) {
+                return InteractionResult.FAIL;
+            }
+            return InteractionResult.PASS;
+        });
+
+        WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((context, hitResult) -> {
+            Minecraft mc = Minecraft.getInstance();
+            if(mc.player != null) {
+                ItemStack stack = mc.player.getItemInHand(InteractionHand.MAIN_HAND);
+                return !stack.is(ModItems.WRENCH.get());
+            }
+            return true;
+        });
     }
 
     @Override

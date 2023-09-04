@@ -2,17 +2,24 @@ package com.mrcrayfish.furniture.refurbished;
 
 import com.mrcrayfish.furniture.refurbished.client.ClientBootstrap;
 import com.mrcrayfish.furniture.refurbished.client.ForgeClientEvents;
+import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureBlockTagsProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureItemTagsProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureLootTableProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureModelProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureRecipeProvider;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RenderHighlightEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
@@ -34,6 +41,8 @@ public class FurnitureMod
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             bus.addListener(ForgeClientEvents::onRegisterRenderers);
         });
+        MinecraftForge.EVENT_BUS.addListener(this::onRightClickBlock);
+        MinecraftForge.EVENT_BUS.addListener(this::onDrawHighlight);
     }
 
     private void onCommonSetup(FMLCommonSetupEvent event)
@@ -57,5 +66,26 @@ public class FurnitureMod
         generator.addProvider(event.includeServer(), new FurnitureLootTableProvider(output));
         generator.addProvider(event.includeServer(), new FurnitureRecipeProvider(output));
         generator.addProvider(event.includeClient(), new FurnitureModelProvider(output, helper));
+    }
+
+    private void onRightClickBlock(PlayerInteractEvent.RightClickBlock event)
+    {
+        if(event.getItemStack().is(ModItems.WRENCH.get()))
+        {
+            event.setCanceled(true);
+        }
+    }
+
+    private void onDrawHighlight(RenderHighlightEvent.Block event)
+    {
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.player != null)
+        {
+            ItemStack stack = mc.player.getItemInHand(InteractionHand.MAIN_HAND);
+            if(stack.is(ModItems.WRENCH.get()))
+            {
+                event.setCanceled(true);
+            }
+        }
     }
 }

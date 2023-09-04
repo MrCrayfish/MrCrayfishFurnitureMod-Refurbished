@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
+import com.mrcrayfish.framework.api.event.TickEvents;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.FreezerScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.MicrowaveScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.PostBoxScreen;
@@ -9,6 +10,7 @@ import com.mrcrayfish.furniture.refurbished.client.registration.EntityRendererRe
 import com.mrcrayfish.furniture.refurbished.client.registration.RenderTypeRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.CuttingBoardBlockEntityRenderer;
+import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.ElectricBlockEntityRenderer;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.FryingPanBlockEntityRenderer;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.GrillBlockEntityRenderer;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.KitchenSinkBlockEntityRenderer;
@@ -28,6 +30,7 @@ public class ClientBootstrap
     public static void init()
     {
         CreativeFilters.init();
+        TickEvents.START_RENDER.register(partialTick -> ElectricBlockEntityRenderer.clearDrawn());
     }
 
     public static void registerScreens(ScreenRegister register)
@@ -45,6 +48,8 @@ public class ClientBootstrap
         register.apply(ModBlockEntities.TOASTER.get(), ToasterBlockEntityRenderer::new);
         register.apply(ModBlockEntities.CUTTING_BOARD.get(), CuttingBoardBlockEntityRenderer::new);
         register.apply(ModBlockEntities.FRYING_PAN.get(), FryingPanBlockEntityRenderer::new);
+        register.apply(ModBlockEntities.LIGHTSWITCH.get(), ElectricBlockEntityRenderer::new);
+        register.apply(ModBlockEntities.CEILING_LIGHT.get(), ElectricBlockEntityRenderer::new);
     }
 
     public static void registerEntityRenderers(EntityRendererRegister register)

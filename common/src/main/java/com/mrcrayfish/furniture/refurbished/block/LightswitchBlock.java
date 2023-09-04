@@ -2,6 +2,8 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mrcrayfish.furniture.refurbished.blockentity.ElectricBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.LightswitchBlockEntity;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -12,22 +14,24 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish
  */
-public class LightswitchBlock extends FurnitureAttachedFaceBlock
+public class LightswitchBlock extends FurnitureAttachedFaceBlock implements EntityBlock
 {
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
@@ -68,7 +72,27 @@ public class LightswitchBlock extends FurnitureAttachedFaceBlock
         boolean powered = !state.getValue(POWERED);
         level.setBlock(pos, state.setValue(POWERED, powered), Block.UPDATE_ALL);
         level.playSound(null, pos, SoundEvents.LEVER_CLICK, SoundSource.BLOCKS, 0.3F, powered ? 0.6F : 0.5F);
+        if(!level.isClientSide())
+        {
+            if(level.getBlockEntity(pos) instanceof LightswitchBlockEntity lightswitch)
+            {
+                lightswitch.onPowered(powered);
+            }
+        }
         return InteractionResult.sidedSuccess(level.isClientSide());
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving)
+    {
+        if(!state.is(newState.getBlock()))
+        {
+            if(level.getBlockEntity(pos) instanceof ElectricBlockEntity electric)
+            {
+                electric.onDestroyed();
+            }
+        }
+        super.onRemove(state, level, pos, newState, isMoving);
     }
 
     @Override
@@ -76,5 +100,12 @@ public class LightswitchBlock extends FurnitureAttachedFaceBlock
     {
         super.createBlockStateDefinition(builder);
         builder.add(POWERED);
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
+    {
+        return new LightswitchBlockEntity(pos, state);
     }
 }

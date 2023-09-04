@@ -229,4 +229,5 @@ public class ModBlocks
     public static final RegistryEntry<SofaBlock> SOFA_GREEN = RegistryEntry.blockWithItem(Utils.resource("green_sofa"), () -> new SofaBlock(DyeColor.GREEN, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GREEN).strength(3.5F).sound(SoundType.WOOD)));
     public static final RegistryEntry<SofaBlock> SOFA_RED = RegistryEntry.blockWithItem(Utils.resource("red_sofa"), () -> new SofaBlock(DyeColor.RED, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_RED).strength(3.5F).sound(SoundType.WOOD)));
     public static final RegistryEntry<SofaBlock> SOFA_BLACK = RegistryEntry.blockWithItem(Utils.resource("black_sofa"), () -> new SofaBlock(DyeColor.BLACK, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK).strength(3.5F).sound(SoundType.WOOD)));
+    public static final RegistryEntry<CeilingLightBlock> CEILING_LIGHT = RegistryEntry.blockWithItem(Utils.resource("test_electric"), () -> new CeilingLightBlock(BlockBehaviour.Properties.of().lightLevel(state -> state.getValue(CeilingLightBlock.POWERED) ? 15 : 0)));
 }

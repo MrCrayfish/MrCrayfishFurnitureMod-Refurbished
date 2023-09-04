@@ -199,4 +199,13 @@ public class ModBlockEntities
     public static final RegistryEntry<BlockEntityType<DoorbellBlockEntity>> DOORBELL = RegistryEntry.blockEntity(Utils.resource("doorbell"), DoorbellBlockEntity::new, () -> new Block[]{
             ModBlocks.DOORBELL.get(),
     });
+
+    public static final RegistryEntry<BlockEntityType<LightswitchBlockEntity>> LIGHTSWITCH = RegistryEntry.blockEntity(Utils.resource("lightswitch"), LightswitchBlockEntity::new, () -> new Block[]{
+            ModBlocks.LIGHTSWITCH_LIGHT.get(),
+            ModBlocks.LIGHTSWITCH_DARK.get()
+    });
+
+    public static final RegistryEntry<BlockEntityType<CeilingLightBlockEntity>> CEILING_LIGHT = RegistryEntry.blockEntity(Utils.resource("ceiling_light"), CeilingLightBlockEntity::new, () -> new Block[]{
+            ModBlocks.CEILING_LIGHT.get()
+    });
 }
