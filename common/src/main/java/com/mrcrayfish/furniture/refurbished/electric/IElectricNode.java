@@ -28,5 +28,7 @@ public interface IElectricNode
 
     boolean connectTo(IElectricNode other);
 
+    AABB getPositionedInteractBox();
+
     AABB getInteractBox();
 }

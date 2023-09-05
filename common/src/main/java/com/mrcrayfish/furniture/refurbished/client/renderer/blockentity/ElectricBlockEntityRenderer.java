@@ -25,7 +25,9 @@ import java.util.Set;
 public class ElectricBlockEntityRenderer implements BlockEntityRenderer<ElectricBlockEntity>
 {
     private static final Set<Connection> DRAWN_CONNECTIONS = new HashSet<>();
+    private static final int DEFAULT_COLOUR = 0xFFFFFFFF;
     private static final int HIGHLIGHT_COLOUR = 0xFFAAFFAA;
+    private static final int ERROR_COLOUR = 0xFFFFAAAA;
 
     public ElectricBlockEntityRenderer(BlockEntityRendererProvider.Context context) {}
 
@@ -36,14 +38,16 @@ public class ElectricBlockEntityRenderer implements BlockEntityRenderer<Electric
         if(mc.player == null || !mc.player.getItemInHand(InteractionHand.MAIN_HAND).is(ModItems.WRENCH.get()))
             return;
 
-        AABB box = electric.getInteractBox().move(electric.getPosition().multiply(-1));
-        boolean maxed = electric.getConnections().size() >= 5; // TODO config
+        // Draw interaction box
+        AABB box = electric.getInteractBox();
         boolean isLookingAt = this.isLookingAtNode(electric, partialTick);
-        int color = isLookingAt ? HIGHLIGHT_COLOUR : 0xFFFFFFFF;
+        int color = this.getBoxColor(electric, isLookingAt);
         float red = FastColor.ARGB32.red(color) / 255F;
         float green = FastColor.ARGB32.green(color) / 255F;
         float blue = FastColor.ARGB32.blue(color) / 255F;
-        DebugRenderer.renderFilledBox(poseStack, source, box.inflate(isLookingAt ? 0.03125 : 0), red, green, blue, 1.0F);
+        DebugRenderer.renderFilledBox(poseStack, source, isLookingAt ? box.inflate(0.03125) : box, red, green, blue, 1.0F);
+
+        // Draw connections
         poseStack.pushPose();
         poseStack.translate(0.5F, 0.5F, 0.5F);
         for(Connection connection : electric.getConnections())
@@ -73,10 +77,16 @@ public class ElectricBlockEntityRenderer implements BlockEntityRenderer<Electric
             Vec3 start = mc.player.getEyePosition(partialTick);
             Vec3 look = mc.player.getViewVector(partialTick);
             Vec3 end = start.add(look.x * entityReach, look.y * entityReach, look.z * entityReach);
-            AABB nodeBox = electric.getInteractBox().move(electric.getPosition());
+            AABB nodeBox = electric.getPositionedInteractBox();
             return nodeBox.clip(start, end).isPresent();
         }
         return false;
+    }
+
+    private int getBoxColor(ElectricBlockEntity electric, boolean hover)
+    {
+        boolean maxed = electric.getConnections().size() >= 5;
+        return hover ? (maxed ? ERROR_COLOUR : HIGHLIGHT_COLOUR) : DEFAULT_COLOUR;
     }
 
     @Override

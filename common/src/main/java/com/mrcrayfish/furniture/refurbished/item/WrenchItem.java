@@ -67,7 +67,7 @@ public class WrenchItem extends Item
         Vec3 end = start.add(look.x * 10, look.y * 10, look.z * 10);
         NodeHitResult result = BlockGetter.traverseBlocks(start, end, null, (o, pos) -> {
             if(level.getBlockEntity(pos) instanceof IElectricNode found) {
-                Optional<Vec3> hit = found.getInteractBox().clip(start, end);
+                Optional<Vec3> hit = found.getPositionedInteractBox().clip(start, end);
                 if(hit.isPresent()) {
                     return new NodeHitResult(hit.get(), pos, found);
                 }

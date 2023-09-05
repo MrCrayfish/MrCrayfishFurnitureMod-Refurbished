@@ -143,9 +143,15 @@ public abstract class ElectricBlockEntity extends BlockEntity implements IElectr
     }
 
     @Override
-    public AABB getInteractBox()
+    public AABB getPositionedInteractBox()
     {
         return NODE_BOX.move(this.worldPosition);
+    }
+
+    @Override
+    public AABB getInteractBox()
+    {
+        return NODE_BOX;
     }
 
     protected void searchNode(IElectricNode node, Set<IElectricNode> found, int depth, Predicate<IElectricNode> predicate)
