@@ -206,6 +206,7 @@ public class ModBlockEntities
     });
 
     public static final RegistryEntry<BlockEntityType<CeilingLightBlockEntity>> CEILING_LIGHT = RegistryEntry.blockEntity(Utils.resource("ceiling_light"), CeilingLightBlockEntity::new, () -> new Block[]{
-            ModBlocks.CEILING_LIGHT.get()
+            ModBlocks.CEILING_LIGHT_LIGHT.get(),
+            ModBlocks.CEILING_LIGHT_DARK.get()
     });
 }

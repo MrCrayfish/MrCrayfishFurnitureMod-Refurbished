@@ -98,6 +98,8 @@ public class CommonItemTagsProvider
         bedroom.add(ModBlocks.DRAWER_WARPED.get().asItem());
         bedroom.add(ModBlocks.LIGHTSWITCH_LIGHT.get().asItem());
         bedroom.add(ModBlocks.LIGHTSWITCH_DARK.get().asItem());
+        bedroom.add(ModBlocks.CEILING_LIGHT_LIGHT.get().asItem());
+        bedroom.add(ModBlocks.CEILING_LIGHT_DARK.get().asItem());
 
         TagBuilder<Item> kitchen = builder.apply(ModTags.Items.KITCHEN);
         kitchen.add(ModBlocks.KITCHEN_CABINETRY_OAK.get().asItem());

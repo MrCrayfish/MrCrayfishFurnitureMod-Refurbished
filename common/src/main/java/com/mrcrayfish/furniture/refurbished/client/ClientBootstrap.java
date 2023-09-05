@@ -89,5 +89,7 @@ public class ClientBootstrap
         register.apply(ModBlocks.MAIL_BOX_CHERRY.get(), RenderType.cutout());
         register.apply(ModBlocks.MAIL_BOX_CRIMSON.get(), RenderType.cutout());
         register.apply(ModBlocks.MAIL_BOX_WARPED.get(), RenderType.cutout());
+        register.apply(ModBlocks.CEILING_LIGHT_LIGHT.get(), RenderType.translucent());
+        register.apply(ModBlocks.CEILING_LIGHT_DARK.get(), RenderType.translucent());
     }
 }

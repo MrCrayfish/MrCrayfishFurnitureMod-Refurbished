@@ -84,6 +84,8 @@ public class ModelTemplate
     public static final ModelTemplate DOORBELL_PRESSED = block("doorbell_pressed", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate LIGHTSWITCH_OFF = block("lightswitch_off", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate LIGHTSWITCH_ON = block("lightswitch_on", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate CEILING_LIGHT_OFF = block("ceiling_light_off", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate CEILING_LIGHT_ON = block("ceiling_light_on", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
 
     public static final ModelTemplate FRIDGE = item("fridge", TextureSlot.TEXTURE);
 

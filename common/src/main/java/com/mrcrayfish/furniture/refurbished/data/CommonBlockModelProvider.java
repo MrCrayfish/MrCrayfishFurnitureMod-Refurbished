@@ -243,6 +243,8 @@ public class CommonBlockModelProvider
         this.doorbell(ModBlocks.DOORBELL.get());
         this.lightswitch(ModBlocks.LIGHTSWITCH_LIGHT.get());
         this.lightswitch(ModBlocks.LIGHTSWITCH_DARK.get());
+        this.ceilingLight(ModBlocks.CEILING_LIGHT_LIGHT.get());
+        this.ceilingLight(ModBlocks.CEILING_LIGHT_DARK.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -776,6 +778,40 @@ public class CommonBlockModelProvider
         state.createVariant().prop(LightswitchBlock.FACING, Direction.EAST).prop(LightswitchBlock.FACE, AttachFace.CEILING).prop(LightswitchBlock.POWERED, true).parentModel(ModelTemplate.LIGHTSWITCH_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90).setXRotation(VariantProperties.Rotation.R270));
         state.createVariant().prop(LightswitchBlock.FACING, Direction.SOUTH).prop(LightswitchBlock.FACE, AttachFace.CEILING).prop(LightswitchBlock.POWERED, true).parentModel(ModelTemplate.LIGHTSWITCH_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180).setXRotation(VariantProperties.Rotation.R270));
         state.createVariant().prop(LightswitchBlock.FACING, Direction.WEST).prop(LightswitchBlock.FACE, AttachFace.CEILING).prop(LightswitchBlock.POWERED, true).parentModel(ModelTemplate.LIGHTSWITCH_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270).setXRotation(VariantProperties.Rotation.R270));
+        this.consumer.accept(state);
+    }
+
+    private void ceilingLight(CeilingLightBlock block)
+    {
+        MetalType type = block.getMetalType();
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.metalParticle(type));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedBlockState state = new PreparedBlockState(block);
+        state.createVariant().prop(CeilingLightBlock.FACING, Direction.NORTH).prop(CeilingLightBlock.FACE, AttachFace.WALL).prop(CeilingLightBlock.POWERED, false).parentModel(ModelTemplate.CEILING_LIGHT_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180)).markAsItem();
+        state.createVariant().prop(CeilingLightBlock.FACING, Direction.EAST).prop(CeilingLightBlock.FACE, AttachFace.WALL).prop(CeilingLightBlock.POWERED, false).parentModel(ModelTemplate.CEILING_LIGHT_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(CeilingLightBlock.FACING, Direction.SOUTH).prop(CeilingLightBlock.FACE, AttachFace.WALL).prop(CeilingLightBlock.POWERED, false).parentModel(ModelTemplate.CEILING_LIGHT_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
+        state.createVariant().prop(CeilingLightBlock.FACING, Direction.WEST).prop(CeilingLightBlock.FACE, AttachFace.WALL).prop(CeilingLightBlock.POWERED, false).parentModel(ModelTemplate.CEILING_LIGHT_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(CeilingLightBlock.FACING, Direction.NORTH).prop(CeilingLightBlock.FACE, AttachFace.FLOOR).prop(CeilingLightBlock.POWERED, false).parentModel(ModelTemplate.CEILING_LIGHT_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0).setXRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(CeilingLightBlock.FACING, Direction.EAST).prop(CeilingLightBlock.FACE, AttachFace.FLOOR).prop(CeilingLightBlock.POWERED, false).parentModel(ModelTemplate.CEILING_LIGHT_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90).setXRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(CeilingLightBlock.FACING, Direction.SOUTH).prop(CeilingLightBlock.FACE, AttachFace.FLOOR).prop(CeilingLightBlock.POWERED, false).parentModel(ModelTemplate.CEILING_LIGHT_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180).setXRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(CeilingLightBlock.FACING, Direction.WEST).prop(CeilingLightBlock.FACE, AttachFace.FLOOR).prop(CeilingLightBlock.POWERED, false).parentModel(ModelTemplate.CEILING_LIGHT_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270).setXRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(CeilingLightBlock.FACING, Direction.NORTH).prop(CeilingLightBlock.FACE, AttachFace.CEILING).prop(CeilingLightBlock.POWERED, false).parentModel(ModelTemplate.CEILING_LIGHT_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0).setXRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(CeilingLightBlock.FACING, Direction.EAST).prop(CeilingLightBlock.FACE, AttachFace.CEILING).prop(CeilingLightBlock.POWERED, false).parentModel(ModelTemplate.CEILING_LIGHT_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90).setXRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(CeilingLightBlock.FACING, Direction.SOUTH).prop(CeilingLightBlock.FACE, AttachFace.CEILING).prop(CeilingLightBlock.POWERED, false).parentModel(ModelTemplate.CEILING_LIGHT_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180).setXRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(CeilingLightBlock.FACING, Direction.WEST).prop(CeilingLightBlock.FACE, AttachFace.CEILING).prop(CeilingLightBlock.POWERED, false).parentModel(ModelTemplate.CEILING_LIGHT_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270).setXRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(CeilingLightBlock.FACING, Direction.NORTH).prop(CeilingLightBlock.FACE, AttachFace.WALL).prop(CeilingLightBlock.POWERED, true).parentModel(ModelTemplate.CEILING_LIGHT_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(CeilingLightBlock.FACING, Direction.EAST).prop(CeilingLightBlock.FACE, AttachFace.WALL).prop(CeilingLightBlock.POWERED, true).parentModel(ModelTemplate.CEILING_LIGHT_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(CeilingLightBlock.FACING, Direction.SOUTH).prop(CeilingLightBlock.FACE, AttachFace.WALL).prop(CeilingLightBlock.POWERED, true).parentModel(ModelTemplate.CEILING_LIGHT_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
+        state.createVariant().prop(CeilingLightBlock.FACING, Direction.WEST).prop(CeilingLightBlock.FACE, AttachFace.WALL).prop(CeilingLightBlock.POWERED, true).parentModel(ModelTemplate.CEILING_LIGHT_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(CeilingLightBlock.FACING, Direction.NORTH).prop(CeilingLightBlock.FACE, AttachFace.FLOOR).prop(CeilingLightBlock.POWERED, true).parentModel(ModelTemplate.CEILING_LIGHT_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0).setXRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(CeilingLightBlock.FACING, Direction.EAST).prop(CeilingLightBlock.FACE, AttachFace.FLOOR).prop(CeilingLightBlock.POWERED, true).parentModel(ModelTemplate.CEILING_LIGHT_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90).setXRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(CeilingLightBlock.FACING, Direction.SOUTH).prop(CeilingLightBlock.FACE, AttachFace.FLOOR).prop(CeilingLightBlock.POWERED, true).parentModel(ModelTemplate.CEILING_LIGHT_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180).setXRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(CeilingLightBlock.FACING, Direction.WEST).prop(CeilingLightBlock.FACE, AttachFace.FLOOR).prop(CeilingLightBlock.POWERED, true).parentModel(ModelTemplate.CEILING_LIGHT_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270).setXRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(CeilingLightBlock.FACING, Direction.NORTH).prop(CeilingLightBlock.FACE, AttachFace.CEILING).prop(CeilingLightBlock.POWERED, true).parentModel(ModelTemplate.CEILING_LIGHT_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0).setXRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(CeilingLightBlock.FACING, Direction.EAST).prop(CeilingLightBlock.FACE, AttachFace.CEILING).prop(CeilingLightBlock.POWERED, true).parentModel(ModelTemplate.CEILING_LIGHT_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90).setXRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(CeilingLightBlock.FACING, Direction.SOUTH).prop(CeilingLightBlock.FACE, AttachFace.CEILING).prop(CeilingLightBlock.POWERED, true).parentModel(ModelTemplate.CEILING_LIGHT_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180).setXRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(CeilingLightBlock.FACING, Direction.WEST).prop(CeilingLightBlock.FACE, AttachFace.CEILING).prop(CeilingLightBlock.POWERED, true).parentModel(ModelTemplate.CEILING_LIGHT_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270).setXRotation(VariantProperties.Rotation.R270));
         this.consumer.accept(state);
     }
 }

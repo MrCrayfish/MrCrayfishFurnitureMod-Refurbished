@@ -6,13 +6,18 @@ import com.mrcrayfish.furniture.refurbished.blockentity.CeilingLightBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.ElectricBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.ElectricModuleBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.LightswitchBlockEntity;
+import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.AttachFace;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -23,18 +28,39 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class CeilingLightBlock extends FurnitureBlock implements EntityBlock
+public class CeilingLightBlock extends FurnitureAttachedFaceBlock implements EntityBlock
 {
-    public CeilingLightBlock(Properties properties)
+    public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
+
+    private final MetalType type;
+
+    public CeilingLightBlock(MetalType type, Properties properties)
     {
         super(properties);
         this.registerDefaultState(this.getStateDefinition().any().setValue(POWERED, false));
+        this.type = type;
+    }
+
+    public MetalType getMetalType()
+    {
+        return this.type;
     }
 
     @Override
     protected Map<BlockState, VoxelShape> generateShapes(ImmutableList<BlockState> states)
     {
-        return ImmutableMap.copyOf(states.stream().collect(Collectors.toMap(state -> state, o -> Shapes.block())));
+        VoxelShape wallShape = Block.box(13, 5, 5, 16, 11, 11);
+        VoxelShape ceilingShape = Block.box(5, 13, 5, 11, 16, 11);
+        VoxelShape floorShape = Block.box(5, 0, 5, 11, 3, 11);
+        return ImmutableMap.copyOf(states.stream().collect(Collectors.toMap(state -> state, state -> {
+            Direction facing = state.getValue(FACING);
+            AttachFace face = state.getValue(FACE);
+            return switch(face) {
+                case FLOOR -> VoxelShapeHelper.rotateHorizontally(floorShape, facing.getOpposite());
+                case WALL -> VoxelShapeHelper.rotateHorizontally(wallShape, facing.getOpposite());
+                case CEILING -> VoxelShapeHelper.rotateHorizontally(ceilingShape, facing.getOpposite());
+            };
+        })));
     }
 
     @Override

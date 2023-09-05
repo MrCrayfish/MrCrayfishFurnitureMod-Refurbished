@@ -28,7 +28,10 @@ public class CeilingLightBlockEntity extends ElectricModuleBlockEntity
     @Override
     public void setPowered(boolean powered)
     {
-        BlockState state = ModBlocks.CEILING_LIGHT.get().defaultBlockState();
-        this.level.setBlock(this.worldPosition, state.setValue(CeilingLightBlock.POWERED, powered), Block.UPDATE_ALL);
+        BlockState state = this.getBlockState();
+        if(state.hasProperty(CeilingLightBlock.POWERED))
+        {
+            this.level.setBlock(this.worldPosition, state.setValue(CeilingLightBlock.POWERED, powered), Block.UPDATE_ALL);
+        }
     }
 }
