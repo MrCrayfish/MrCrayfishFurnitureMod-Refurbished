@@ -165,11 +165,19 @@ public abstract class ElectricBlockEntity extends BlockEntity implements IElectr
             IElectricNode connectedNode = connection.getNodeB(this.level);
             if(connectedNode == null || found.contains(connectedNode))
                 continue;
+
             if(!connectedNode.isAlive())
                 continue;
+
             if(!predicate.test(connectedNode))
                 continue;
+
             found.add(connectedNode);
+
+            // Searching stops when a source is reached
+            if(connectedNode.isSource())
+                continue;
+
             this.searchNode(connectedNode, found, depth - 1, predicate);
         }
     }
