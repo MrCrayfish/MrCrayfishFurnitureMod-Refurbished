@@ -83,6 +83,7 @@ public abstract class ElectricBlockEntity extends BlockEntity implements IElectr
                 node.removeConnection(c);
             }
         });
+        this.connections.clear();
     }
 
     public void onDestroyed()
