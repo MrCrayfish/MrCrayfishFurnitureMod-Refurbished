@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.Shapes;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
@@ -23,6 +24,7 @@ import java.util.function.Predicate;
 public abstract class ElectricBlockEntity extends BlockEntity implements IElectricNode
 {
     public static final int MAX_SEARCH_DEPTH = 5;
+    public static final AABB RENDER_BOX = Shapes.INFINITY.bounds();
     public static final AABB NODE_BOX = new AABB(0.375, 0.375, 0.375, 0.625, 0.625, 0.625);
 
     protected final Set<Connection> connections = new HashSet<>();
@@ -180,5 +182,13 @@ public abstract class ElectricBlockEntity extends BlockEntity implements IElectr
 
             this.searchNode(connectedNode, found, depth - 1, predicate);
         }
+    }
+
+    // Forge method
+    // @Override
+    @SuppressWarnings("unused")
+    public AABB getRenderBoundingBox()
+    {
+        return RENDER_BOX;
     }
 }
