@@ -2,13 +2,11 @@ package com.mrcrayfish.furniture.refurbished.electric;
 
 import com.google.common.base.Objects;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Author: MrCrayfish
@@ -142,14 +140,14 @@ public class Connection
         private void updateStatus(Level level)
         {
             IElectricNode node = this.ref.get();
-            if(node != null && node.isAlive())
+            if(node != null && node.isValid())
             {
                 this.status = Status.ACTIVE;
             }
 
             if(level.isLoaded(this.pos))
             {
-                if(level.getBlockEntity(this.pos) instanceof IElectricNode found && found.isAlive())
+                if(level.getBlockEntity(this.pos) instanceof IElectricNode found && found.isValid())
                 {
                     this.ref = new WeakReference<>(found);
                     this.status = Status.ACTIVE;

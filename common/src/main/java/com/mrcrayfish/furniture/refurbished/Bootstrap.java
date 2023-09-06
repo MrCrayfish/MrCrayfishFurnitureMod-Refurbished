@@ -5,12 +5,13 @@ import com.mrcrayfish.framework.api.event.TickEvents;
 import com.mrcrayfish.furniture.refurbished.blockentity.CuttingBoardBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.GrillBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
+import com.mrcrayfish.furniture.refurbished.electric.LinkManager;
 import com.mrcrayfish.furniture.refurbished.item.PackageItem;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.DispenserBlock;
@@ -59,11 +60,21 @@ public class Bootstrap
             return ItemStack.EMPTY;
         });
 
-        // Delivery service events
-        TickEvents.START_SERVER.register(server -> DeliveryService.get(server).ifPresent(DeliveryService::serverTick));
+        // Link Manager and Delivery Service events
+        TickEvents.START_SERVER.register(server -> {
+            DeliveryService.get(server).ifPresent(DeliveryService::serverTick);
+        });
+        TickEvents.END_PLAYER.register(player -> {
+            MinecraftServer server = player.getServer();
+            if(server != null) {
+                LinkManager.get(server).ifPresent(manager -> manager.onPlayerTick(player));
+            }
+        });
         PlayerEvents.LOGGED_OUT.register(player -> {
-            if(player instanceof ServerPlayer serverPlayer) {
-                DeliveryService.get(serverPlayer.server).ifPresent(service -> service.playerLoggedOut(serverPlayer));
+            MinecraftServer server = player.getServer();
+            if(server != null) {
+                DeliveryService.get(server).ifPresent(service -> service.playerLoggedOut(player));
+                LinkManager.get(server).ifPresent(manager -> manager.onPlayerLoggedOut(player));
             }
         });
     }

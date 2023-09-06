@@ -10,6 +10,7 @@ import com.mrcrayfish.furniture.refurbished.network.message.MessageClearMessage;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSendPackage;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSetName;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSyncFluid;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageSyncLink;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageUpdateMailboxes;
 import net.minecraft.resources.ResourceLocation;
 
@@ -27,6 +28,7 @@ public class Network
             .registerPlayMessage(MessageSendPackage.class, MessageDirection.PLAY_SERVER_BOUND)
             .registerPlayMessage(MessageClearMessage.class, MessageDirection.PLAY_CLIENT_BOUND)
             .registerPlayMessage(MessageDoorbellNotification.class, MessageDirection.PLAY_CLIENT_BOUND)
+            .registerPlayMessage(MessageSyncLink.class, MessageDirection.PLAY_CLIENT_BOUND)
             .build();
 
     public static void init() {}

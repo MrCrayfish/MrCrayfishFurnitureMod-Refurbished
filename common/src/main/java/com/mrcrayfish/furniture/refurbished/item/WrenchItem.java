@@ -45,14 +45,14 @@ public class WrenchItem extends Item
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand)
     {
-        Optional<NodeHitResult> optional = this.performRaycast(level, player);
-        if(optional.isPresent())
+        float range = player.isCreative() ? 5.0F : 4.5F;
+        NodeHitResult result = performRaycast(level, player, range, 1F);
+        if(result.getType() != HitResult.Type.MISS)
         {
             if(!level.isClientSide() && level instanceof ServerLevel serverLevel)
             {
-                NodeHitResult result = optional.get();
                 LinkManager.get(serverLevel.getServer()).ifPresent(manager -> {
-                    manager.onNodeInteract(level, player, result.getNode(), result.getLocation(), result.getPos());
+                    manager.onNodeInteract(level, player, result.getNode());
                 });
             }
             return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());
@@ -60,12 +60,12 @@ public class WrenchItem extends Item
         return InteractionResultHolder.fail(player.getItemInHand(hand));
     }
 
-    private Optional<NodeHitResult> performRaycast(Level level, Player player)
+    public static NodeHitResult performRaycast(Level level, Player player, float range, float partialTick)
     {
-        Vec3 start = player.getEyePosition(1F);
-        Vec3 look = player.getViewVector(1F);
-        Vec3 end = start.add(look.x * 10, look.y * 10, look.z * 10);
-        NodeHitResult result = BlockGetter.traverseBlocks(start, end, null, (o, pos) -> {
+        Vec3 start = player.getEyePosition(partialTick);
+        Vec3 look = player.getViewVector(partialTick);
+        Vec3 end = start.add(look.x * range, look.y * range, look.z * range);
+        return BlockGetter.traverseBlocks(start, end, null, (o, pos) -> {
             if(level.getBlockEntity(pos) instanceof IElectricNode found) {
                 Optional<Vec3> hit = found.getPositionedInteractBox().clip(start, end);
                 if(hit.isPresent()) {
@@ -74,6 +74,5 @@ public class WrenchItem extends Item
             }
             return null;
         }, o -> new NodeHitResult(end, null, null));
-        return result.getType() != HitResult.Type.MISS ? Optional.of(result) : Optional.empty();
     }
 }

@@ -10,7 +10,7 @@ import java.util.Set;
  */
 public interface IElectricNode
 {
-    boolean isAlive();
+    boolean isValid();
 
     boolean isSource();
 
@@ -24,9 +24,9 @@ public interface IElectricNode
 
     void removeConnection(Connection connection);
 
-    BlockPos getPosition();
-
     boolean connectTo(IElectricNode other);
+
+    BlockPos getPosition();
 
     AABB getPositionedInteractBox();
 

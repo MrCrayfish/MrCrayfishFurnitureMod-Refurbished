@@ -107,7 +107,7 @@ public class DeliveryService extends SavedData
      *
      * @param player the player that logged out
      */
-    public void playerLoggedOut(ServerPlayer player)
+    public void playerLoggedOut(Player player)
     {
         this.playerRequests.remove(player.getUUID());
     }

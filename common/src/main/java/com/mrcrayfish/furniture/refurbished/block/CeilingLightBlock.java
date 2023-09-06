@@ -6,9 +6,12 @@ import com.mrcrayfish.furniture.refurbished.blockentity.CeilingLightBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.ElectricBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.ElectricModuleBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.LightswitchBlockEntity;
+import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -22,13 +25,14 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish
  */
-public class CeilingLightBlock extends FurnitureAttachedFaceBlock implements EntityBlock
+public class CeilingLightBlock extends FurnitureAttachedFaceBlock implements EntityBlock, BlockTagSupplier
 {
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
@@ -88,5 +92,11 @@ public class CeilingLightBlock extends FurnitureAttachedFaceBlock implements Ent
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
     {
         return new CeilingLightBlockEntity(pos, state);
+    }
+
+    @Override
+    public List<TagKey<Block>> getTags()
+    {
+        return List.of(BlockTags.MINEABLE_WITH_PICKAXE);
     }
 }

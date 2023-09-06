@@ -94,7 +94,7 @@ public abstract class ElectricBlockEntity extends BlockEntity implements IElectr
     }
 
     @Override
-    public boolean isAlive()
+    public boolean isValid()
     {
         return !this.isRemoved();
     }
@@ -168,7 +168,7 @@ public abstract class ElectricBlockEntity extends BlockEntity implements IElectr
             if(connectedNode == null || found.contains(connectedNode))
                 continue;
 
-            if(!connectedNode.isAlive())
+            if(!connectedNode.isValid())
                 continue;
 
             if(!predicate.test(connectedNode))

@@ -4,12 +4,14 @@ import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.blockentity.FryingPanBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.GrillBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.KitchenSinkBlockEntity;
+import com.mrcrayfish.furniture.refurbished.client.LinkRenderer;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.PostBoxScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.toast.ItemToast;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageDoorbellNotification;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageFlipAnimation;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageClearMessage;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSyncFluid;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageSyncLink;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageUpdateMailboxes;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
@@ -74,5 +76,10 @@ public class ClientPlayHandler
             Component description = Component.literal(message.getName());
             mc.getToasts().addToast(new ItemToast(title, description, new ItemStack(Items.BELL)));
         }
+    }
+
+    public static void handleMessageSyncLink(MessageSyncLink message)
+    {
+        LinkRenderer.get().setLastNodePos(message.getPos());
     }
 }

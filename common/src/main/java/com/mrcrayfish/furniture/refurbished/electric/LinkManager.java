@@ -1,14 +1,17 @@
 package com.mrcrayfish.furniture.refurbished.electric;
 
+import com.mrcrayfish.furniture.refurbished.core.ModItems;
+import com.mrcrayfish.furniture.refurbished.network.Network;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageSyncLink;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.phys.Vec3;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +19,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
+ * Class to handle creating links between electric nodes
+ * <p>
  * Author: MrCrayfish
  */
 public class LinkManager extends SavedData
@@ -32,7 +37,7 @@ public class LinkManager extends SavedData
         return Optional.empty();
     }
 
-    private final Map<UUID, BlockPos> playerToNode = new HashMap<>();
+    private final Map<UUID, BlockPos> lastNodeMap = new HashMap<>();
 
     @Override
     public CompoundTag save(CompoundTag tag)
@@ -40,20 +45,67 @@ public class LinkManager extends SavedData
         return new CompoundTag();
     }
 
-    public void onNodeInteract(Level level, Player player, IElectricNode node, Vec3 location, BlockPos pos)
+    @Override
+    public boolean isDirty()
     {
-        if(!this.playerToNode.containsKey(player.getUUID()))
+        // Ensure this never saves
+        return false;
+    }
+
+    /**
+     * Called when a player interacts with an electric node. This handles creating a link between
+     * two different electric nodes. On the first call to this method, it will simply store the
+     * block position of the interacted node. On the second call, this method will attempt to
+     * retrieve the electric node from block position stored on the first call and connect it to the
+     * node just interacted.
+     *
+     * @param level          the level where the interacted happened
+     * @param player         the player interacting with the node
+     * @param interactedNode the node that was interacted
+     */
+    public void onNodeInteract(Level level, Player player, IElectricNode interactedNode)
+    {
+        if(!this.lastNodeMap.containsKey(player.getUUID()))
         {
-            this.playerToNode.put(player.getUUID(), pos);
+            BlockPos pos = interactedNode.getPosition();
+            this.lastNodeMap.put(player.getUUID(), pos);
+            Network.getPlay().sendToPlayer(() -> (ServerPlayer) player, new MessageSyncLink(pos));
             return;
         }
 
-        BlockPos previousPos = this.playerToNode.remove(player.getUUID());
-        IElectricNode firstNode = level.getBlockEntity(previousPos) instanceof IElectricNode n1 ? n1 : null;
-        IElectricNode secondNode = level.getBlockEntity(pos) instanceof IElectricNode n2 ? n2 : null;
-        if(firstNode != null && secondNode != null)
+        Network.getPlay().sendToPlayer(() -> (ServerPlayer) player, new MessageSyncLink(null));
+        BlockPos previousPos = this.lastNodeMap.remove(player.getUUID());
+        IElectricNode lastNode = level.getBlockEntity(previousPos) instanceof IElectricNode node ? node : null;
+        if(lastNode != null && lastNode != interactedNode)
         {
-            firstNode.connectTo(secondNode);
+            lastNode.connectTo(interactedNode);
         }
+    }
+
+    /**
+     * Called at the end of a player tick. This method ensures that half completed links are reset
+     * if the player is no longer holding the wrench in their main hand.
+     *
+     * @param player the ticking player
+     */
+    public void onPlayerTick(Player player)
+    {
+        UUID id = player.getUUID();
+        if(this.lastNodeMap.containsKey(id) && !player.getMainHandItem().is(ModItems.WRENCH.get()))
+        {
+            this.lastNodeMap.remove(id);
+            Network.getPlay().sendToPlayer(() -> (ServerPlayer) player, new MessageSyncLink(null));
+        }
+    }
+
+    /**
+     * Called when a player logged out of the server. This handler ensure that half completed links
+     * are reset if the player is no longer in the server.
+     *
+     * @param player the player that logged out
+     */
+    public void onPlayerLoggedOut(Player player)
+    {
+        this.lastNodeMap.remove(player.getUUID());
     }
 }

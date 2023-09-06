@@ -40,6 +40,7 @@ public class FurnitureMod
         bus.addListener(this::onGatherData);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             bus.addListener(ForgeClientEvents::onRegisterRenderers);
+            MinecraftForge.EVENT_BUS.addListener(ForgeClientEvents::onRenderLevelStage);
         });
         MinecraftForge.EVENT_BUS.addListener(this::onRightClickBlock);
         MinecraftForge.EVENT_BUS.addListener(this::onDrawHighlight);

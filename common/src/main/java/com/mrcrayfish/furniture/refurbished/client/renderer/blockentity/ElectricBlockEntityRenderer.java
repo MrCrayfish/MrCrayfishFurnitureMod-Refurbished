@@ -3,8 +3,10 @@ package com.mrcrayfish.furniture.refurbished.client.renderer.blockentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.mrcrayfish.furniture.refurbished.blockentity.ElectricBlockEntity;
+import com.mrcrayfish.furniture.refurbished.client.LinkRenderer;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.electric.Connection;
+import com.mrcrayfish.furniture.refurbished.electric.NodeHitResult;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -40,7 +42,7 @@ public class ElectricBlockEntityRenderer implements BlockEntityRenderer<Electric
 
         // Draw interaction box
         AABB box = electric.getInteractBox();
-        boolean isLookingAt = this.isLookingAtNode(electric, partialTick);
+        boolean isLookingAt = LinkRenderer.get().isLookingAtNode(electric);
         int color = this.getBoxColor(electric, isLookingAt);
         float red = FastColor.ARGB32.red(color) / 255F;
         float green = FastColor.ARGB32.green(color) / 255F;
@@ -66,21 +68,6 @@ public class ElectricBlockEntityRenderer implements BlockEntityRenderer<Electric
             }
         }
         poseStack.popPose();
-    }
-
-    private boolean isLookingAtNode(ElectricBlockEntity electric, float partialTick)
-    {
-        Minecraft mc = Minecraft.getInstance();
-        if(mc.player != null && mc.gameMode != null)
-        {
-            double entityReach = mc.gameMode.getPickRange();
-            Vec3 start = mc.player.getEyePosition(partialTick);
-            Vec3 look = mc.player.getViewVector(partialTick);
-            Vec3 end = start.add(look.x * entityReach, look.y * entityReach, look.z * entityReach);
-            AABB nodeBox = electric.getPositionedInteractBox();
-            return nodeBox.clip(start, end).isPresent();
-        }
-        return false;
     }
 
     private int getBoxColor(ElectricBlockEntity electric, boolean hover)

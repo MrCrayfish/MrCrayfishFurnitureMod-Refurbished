@@ -30,7 +30,10 @@ public class ClientBootstrap
     public static void init()
     {
         CreativeFilters.init();
-        TickEvents.START_RENDER.register(partialTick -> ElectricBlockEntityRenderer.clearDrawn());
+        TickEvents.START_RENDER.register(partialTick -> {
+            ElectricBlockEntityRenderer.clearDrawn();
+            LinkRenderer.get().renderTick(partialTick);
+        });
     }
 
     public static void registerScreens(ScreenRegister register)
