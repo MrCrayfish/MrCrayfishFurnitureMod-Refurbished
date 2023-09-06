@@ -50,6 +50,13 @@ public class Connection
         return this.a.isValid(level) && this.b.isValid(level);
     }
 
+    public boolean isPowered(Level level)
+    {
+        IElectricNode a = this.a.getElectricNode(level);
+        IElectricNode b = this.b.getElectricNode(level);
+        return a != null && a.isPowered() && b != null && b.isPowered();
+    }
+
     public Optional<BlockPos> getOtherPos(BlockPos pos)
     {
         if(this.a.pos.equals(pos))

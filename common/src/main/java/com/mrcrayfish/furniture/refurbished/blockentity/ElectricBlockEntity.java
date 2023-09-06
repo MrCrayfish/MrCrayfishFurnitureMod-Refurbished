@@ -54,6 +54,12 @@ public abstract class ElectricBlockEntity extends BlockEntity implements IElectr
         return false;
     }
 
+    @Override
+    public boolean isConnectedTo(IElectricNode node)
+    {
+        return this.connections.stream().anyMatch(c -> c.getPosB().equals(node.getPosition()));
+    }
+
     private void updateConnections()
     {
         this.connections.removeIf(c -> !c.isConnected(this.level));

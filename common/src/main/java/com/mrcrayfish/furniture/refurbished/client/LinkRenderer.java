@@ -10,10 +10,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.debug.DebugRenderer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
@@ -23,6 +24,9 @@ import javax.annotation.Nullable;
  */
 public class LinkRenderer
 {
+    private static final int DEFAULT_LINK_COLOUR = 0xFFFFFFFF;
+    private static final int SUCCESS_LINK_COLOUR = 0xFFB5FF4C;
+
     private static LinkRenderer instance;
 
     public static LinkRenderer get()
@@ -45,9 +49,27 @@ public class LinkRenderer
      *
      * @param pos the block position of the electric node
      */
-    public void setLastNodePos(BlockPos pos)
+    public void setLinkingNode(BlockPos pos)
     {
         this.lastNodePos = pos;
+    }
+
+    /**
+     *
+     * @param node
+     * @return
+     */
+    public boolean isLinkingNode(IElectricNode node)
+    {
+        return this.lastNodePos != null && this.lastNodePos.equals(node.getPosition());
+    }
+
+    /**
+     * @return True if currently creating a link
+     */
+    public boolean isLinking()
+    {
+        return this.lastNodePos != null;
     }
 
     /**
@@ -77,9 +99,15 @@ public class LinkRenderer
      * @param node the node to test
      * @return True if looking at the node
      */
-    public boolean isLookingAtNode(IElectricNode node)
+    public boolean isTargetNode(IElectricNode node)
     {
         return this.result != null && this.result.getNode() == node;
+    }
+
+    @Nullable
+    public IElectricNode getTargetNode()
+    {
+        return this.result != null ? this.result.getNode() : null;
     }
 
     /**
@@ -98,11 +126,8 @@ public class LinkRenderer
         if(this.lastNodePos == null)
             return;
 
-        if(!player.isAlive())
-            return;
-
-        if(!player.getMainHandItem().is(ModItems.WRENCH.get())) {
-            this.lastNodePos = null; // The server also resets this in LinkManager
+        if(!player.isAlive() || !player.getMainHandItem().is(ModItems.WRENCH.get())) {
+            this.lastNodePos = null;
             return;
         }
 
@@ -114,7 +139,11 @@ public class LinkRenderer
         poseStack.translate(start.x, start.y, start.z);
         poseStack.mulPose(Axis.YP.rotation((float) yaw));
         poseStack.mulPose(Axis.ZP.rotation((float) pitch));
-        DebugRenderer.renderFilledBox(poseStack, source, new AABB(0, -0.03125, -0.03125, delta.length(), 0.03125, 0.03125), 1.0F, 1.0F, 1.0F, 0.5F);
+        int color = this.getLinkColour(player.level());
+        float red = FastColor.ARGB32.red(color) / 255F;
+        float green = FastColor.ARGB32.green(color) / 255F;
+        float blue = FastColor.ARGB32.blue(color) / 255F;
+        DebugRenderer.renderFilledBox(poseStack, source, new AABB(0, -0.03125, -0.03125, delta.length(), 0.03125, 0.03125), red, green, blue, 0.5F);
     }
 
     /**
@@ -127,10 +156,48 @@ public class LinkRenderer
      */
     private Vec3 getLinkEnd(Player player, float partialTick)
     {
-        if(this.result != null && this.result.getType() != HitResult.Type.MISS)
+        IElectricNode node = this.getTargetNode();
+        if(node != null && !this.isLinkingNode(node) && this.canLinkToNode(player.level(), node))
         {
             return this.result.getPos().getCenter();
         }
         return player.getViewVector(partialTick).add(player.getEyePosition(partialTick));
+    }
+
+    /**
+     * Gets the colour for the current link
+     *
+     * @param level the level of the player making the link
+     * @return an integer colour
+     */
+    public int getLinkColour(Level level)
+    {
+        IElectricNode node = this.getTargetNode();
+        if(node != null && !this.isLinkingNode(node) && this.canLinkToNode(level, node))
+        {
+            return SUCCESS_LINK_COLOUR;
+        }
+        return DEFAULT_LINK_COLOUR;
+    }
+
+    /**
+     * Determines if a link can be made to the given electric node. This method will always return
+     * false if there isn't currently no last node position stored.
+     *
+     * @param level  the level of the node
+     * @param target the node to test
+     * @return True if a link can be made to the target node
+     */
+    public boolean canLinkToNode(Level level, IElectricNode target)
+    {
+        if(this.lastNodePos != null)
+        {
+            IElectricNode lastNode = level.getBlockEntity(this.lastNodePos) instanceof IElectricNode node ? node : null;
+            if(lastNode != null && target != null && lastNode != target)
+            {
+                return !lastNode.isConnectedTo(target);
+            }
+        }
+        return false;
     }
 }

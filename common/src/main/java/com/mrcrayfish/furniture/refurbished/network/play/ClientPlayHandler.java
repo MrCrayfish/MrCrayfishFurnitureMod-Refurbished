@@ -80,6 +80,6 @@ public class ClientPlayHandler
 
     public static void handleMessageSyncLink(MessageSyncLink message)
     {
-        LinkRenderer.get().setLastNodePos(message.getPos());
+        LinkRenderer.get().setLinkingNode(message.getPos());
     }
 }

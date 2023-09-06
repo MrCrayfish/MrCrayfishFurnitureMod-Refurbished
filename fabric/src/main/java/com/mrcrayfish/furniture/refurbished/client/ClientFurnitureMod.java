@@ -1,8 +1,10 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
@@ -32,5 +34,6 @@ public class ClientFurnitureMod implements ClientModInitializer
         ClientBootstrap.registerBlockEntityRenderers(BlockEntityRenderers::register);
         ClientBootstrap.registerEntityRenderers(EntityRendererRegistry::register);
         ClientBootstrap.registerRenderTypes(BlockRenderLayerMap.INSTANCE::putBlock);
+        ModelLoadingRegistry.INSTANCE.registerModelProvider((manager, out) -> ExtraModels.register(out));
     }
 }

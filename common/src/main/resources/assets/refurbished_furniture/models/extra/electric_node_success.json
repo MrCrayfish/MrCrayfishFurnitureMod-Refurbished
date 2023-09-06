@@ -1,0 +1,20 @@
+{
+	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
+	"textures": {
+		"texture": "refurbished_furniture:block/electric_node"
+	},
+	"elements": [
+		{
+			"from": [-2, -2, -2],
+			"to": [2, 2, 2],
+			"faces": {
+				"north": {"uv": [8, 0, 12, 4], "texture": "#texture"},
+				"east": {"uv": [8, 0, 12, 4], "texture": "#texture"},
+				"south": {"uv": [8, 0, 12, 4], "texture": "#texture"},
+				"west": {"uv": [8, 0, 12, 4], "texture": "#texture"},
+				"up": {"uv": [8, 0, 12, 4], "texture": "#texture"},
+				"down": {"uv": [8, 0, 12, 4], "texture": "#texture"}
+			}
+		}
+	]
+}

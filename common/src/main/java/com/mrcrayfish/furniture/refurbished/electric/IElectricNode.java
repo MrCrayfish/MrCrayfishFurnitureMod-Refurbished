@@ -26,6 +26,8 @@ public interface IElectricNode
 
     boolean connectTo(IElectricNode other);
 
+    boolean isConnectedTo(IElectricNode node);
+
     BlockPos getPosition();
 
     AABB getPositionedInteractBox();
