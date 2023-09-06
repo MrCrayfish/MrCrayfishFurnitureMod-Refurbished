@@ -61,7 +61,7 @@ public abstract class ElectricModuleBlockEntity extends ElectricBlockEntity
         // Next, search for powered electric source nodes in the network.
         // Again if this electric node is being removed, prevent it from being searched
         Set<IElectricNode> sourceNodes = new HashSet<>();
-        this.searchNode(this, sourceNodes, MAX_SEARCH_DEPTH, node -> (!removed || node != this));
+        this.searchNode(this, sourceNodes, MAX_SEARCH_DEPTH * 2, node -> (!removed || node != this));
         sourceNodes.removeIf(node -> !node.isSource() || !node.isPowered());
 
         // For each powered source nodes, find all the nodes that it can connect to. Again, if this
