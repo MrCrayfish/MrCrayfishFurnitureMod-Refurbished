@@ -2,7 +2,7 @@
     "credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
     "parent": "minecraft:item/handheld",
     "textures": {
-        "layer0": "refurbished_furniture:item/spatula"
+        "layer0": "refurbished_furniture:item/wrench"
     },
     "display": {
         "thirdperson_righthand": {
