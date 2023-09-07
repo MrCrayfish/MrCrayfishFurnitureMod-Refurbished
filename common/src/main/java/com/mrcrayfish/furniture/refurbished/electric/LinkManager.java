@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.electric;
 
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
+import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSyncLink;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
@@ -10,6 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -74,6 +76,7 @@ public class LinkManager extends SavedData
         {
             BlockPos pos = interactedNode.getPosition();
             this.lastNodeMap.put(player.getUUID(), pos);
+            level.playSound(null, interactedNode.getPosition(), ModSounds.ITEM_WRENCH_SELECTED_NODE.get(), SoundSource.BLOCKS);
             Network.getPlay().sendToPlayer(() -> (ServerPlayer) player, new MessageSyncLink(pos));
             return;
         }
@@ -87,6 +90,7 @@ public class LinkManager extends SavedData
             if(distance <= Config.SERVER.electricity.maximumLinkDistance.get())
             {
                 lastNode.connectTo(interactedNode);
+                level.playSound(null, interactedNode.getPosition(), ModSounds.ITEM_WRENCH_CONNECTED_LINK.get(), SoundSource.BLOCKS);
             }
         }
 

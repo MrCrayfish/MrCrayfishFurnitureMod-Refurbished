@@ -11,5 +11,23 @@
             "refurbished_furniture:item/package/open1",
             "refurbished_furniture:item/package/open2"
         ]
+    },
+    "item.wrench.selected_node": {
+        "subtitle": "subtitle.refurbished_furniture.wrench_selected_node",
+        "sounds": [
+            "refurbished_furniture:item/wrench/selected_node"
+        ]
+    },
+    "item.wrench.remove_link": {
+        "subtitle": "subtitle.refurbished_furniture.wrench_remove_link",
+        "sounds": [
+            "refurbished_furniture:item/wrench/remove_link"
+        ]
+    },
+    "item.wrench.connected_link": {
+        "subtitle": "subtitle.refurbished_furniture.wrench_connected_link",
+        "sounds": [
+            "refurbished_furniture:item/wrench/connected_link"
+        ]
     }
 }
