@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.electric.Connection;
 import com.mrcrayfish.furniture.refurbished.electric.IElectricNode;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
@@ -26,8 +27,6 @@ import java.util.function.Predicate;
  */
 public abstract class ElectricBlockEntity extends BlockEntity implements IElectricNode
 {
-    public static final int MAX_SEARCH_DEPTH = 5;
-    public static final AABB RENDER_BOX = Shapes.INFINITY.bounds();
     public static final AABB NODE_BOX = new AABB(0.375, 0.375, 0.375, 0.625, 0.625, 0.625);
 
     protected final Set<Connection> connections = new HashSet<>();
@@ -84,6 +83,12 @@ public abstract class ElectricBlockEntity extends BlockEntity implements IElectr
     {
         this.connections.remove(connection);
         this.syncConnections();
+    }
+
+    @Override
+    public boolean isConnectionLimit()
+    {
+        return this.connections.size() >= Config.SERVER.electricity.maximumLinksPerElectricityNode.get();
     }
 
     public void removeAllConnections()

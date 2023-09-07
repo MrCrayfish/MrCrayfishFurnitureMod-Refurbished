@@ -218,7 +218,7 @@ public class LinkHandler
             IElectricNode lastNode = level.getBlockEntity(this.lastNodePos) instanceof IElectricNode node ? node : null;
             if(lastNode != null && target != null && lastNode != target)
             {
-                return !lastNode.isConnectedTo(target);
+                return !target.isConnectionLimit() && !lastNode.isConnectedTo(target);
             }
         }
         return false;

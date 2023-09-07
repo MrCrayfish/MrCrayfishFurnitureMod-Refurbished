@@ -65,6 +65,12 @@ public class LinkManager extends SavedData
      */
     public void onNodeInteract(Level level, Player player, IElectricNode interactedNode)
     {
+        // Prevent interaction if reached connection limit
+        if(interactedNode.isConnectionLimit())
+        {
+            return;
+        }
+
         if(!this.lastNodeMap.containsKey(player.getUUID()))
         {
             BlockPos pos = interactedNode.getPosition();

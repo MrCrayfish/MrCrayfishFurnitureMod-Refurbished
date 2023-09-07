@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished;
 import com.mrcrayfish.framework.api.config.BoolProperty;
 import com.mrcrayfish.framework.api.config.ConfigProperty;
 import com.mrcrayfish.framework.api.config.ConfigType;
+import com.mrcrayfish.framework.api.config.DoubleProperty;
 import com.mrcrayfish.framework.api.config.FrameworkConfig;
 import com.mrcrayfish.framework.api.config.IntProperty;
 import com.mrcrayfish.framework.api.config.ListProperty;
@@ -29,6 +30,9 @@ public class Config
     {
         @ConfigProperty(name = "mailing", comment = "Mailing related properties")
         public final Mailing mailing = new Mailing();
+
+        @ConfigProperty(name = "electricity", comment = "Electricity related properties")
+        public final Electricity electricity = new Electricity();
 
         public static class Mailing
         {
@@ -60,6 +64,27 @@ public class Config
                 ]
                 ^ Note: This is just an example. Write your list below.""")
             public final ListProperty<String> bannedItems = ListProperty.create(ListProperty.STRING);
+        }
+
+        public static class Electricity
+        {
+            @ConfigProperty(name = "maximumDaisyChain", comment = """
+                The maximum daisy chain that electricity can travel from a power source. A daisy chain
+                is electricity nodes connected one after the other to one or more other electricity
+                nodes. The larger this value is, the more processing time is required for updating
+                the power in an electricity network.""")
+            public final IntProperty maximumDaisyChain = IntProperty.create(5, 1, 32);
+
+            @ConfigProperty(name = "maximumLinkDistance", comment = """
+                The maximum distance from one electricity node to another that a link can be made.
+                If this value is increased to a large value, it may result in an electricity node
+                being in an unloaded chunk. Electricity nodes in unloaded chunks won't be updated
+                even if the power does reach according to the maximumDaisyChain property.""")
+            public final DoubleProperty maximumLinkDistance = DoubleProperty.create(8, 1, 64);
+
+            @ConfigProperty(name = "maximumLinksPerElectricityNode", comment = """
+                The maximum amount of links that can be connected to a single electricity node.""")
+            public final IntProperty maximumLinksPerElectricityNode = IntProperty.create(4, 1, 16);
         }
     }
 }

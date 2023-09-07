@@ -26,6 +26,8 @@ public interface IElectricNode
 
     void removeConnection(Connection connection);
 
+    boolean isConnectionLimit();
+
     boolean connectTo(IElectricNode other);
 
     boolean isConnectedTo(IElectricNode node);

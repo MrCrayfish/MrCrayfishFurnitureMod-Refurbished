@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.client.renderer.blockentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.blockentity.ElectricBlockEntity;
 import com.mrcrayfish.furniture.refurbished.client.ExtraModels;
 import com.mrcrayfish.furniture.refurbished.client.LinkHandler;
@@ -64,7 +65,7 @@ public class ElectricBlockEntityRenderer implements BlockEntityRenderer<Electric
         // Draw highlight colour
         LinkHandler handler = LinkHandler.get();
         boolean isLookingAt = handler.isTargetNode(electric);
-        if((isLookingAt && !handler.isLinking()) || handler.isLinkingNode(electric) || handler.canLinkToNode(electric.getLevel(), electric) && handler.isTargetNode(electric))
+        if((isLookingAt && !handler.isLinking() && !electric.isConnectionLimit()) || handler.isLinkingNode(electric) || handler.canLinkToNode(electric.getLevel(), electric) && handler.isTargetNode(electric))
         {
             AABB box = electric.getInteractBox();
             int color = handler.getLinkColour(electric.getLevel());
@@ -106,7 +107,7 @@ public class ElectricBlockEntityRenderer implements BlockEntityRenderer<Electric
     private BakedModel getNodeModel(ElectricBlockEntity node)
     {
         // TODO make sure link can't connect to
-        if(node.getConnections().size() >= 5) //TODO config
+        if(node.isConnectionLimit())
         {
             return ExtraModels.ELECTRIC_NODE_ERROR.getModel();
         }
