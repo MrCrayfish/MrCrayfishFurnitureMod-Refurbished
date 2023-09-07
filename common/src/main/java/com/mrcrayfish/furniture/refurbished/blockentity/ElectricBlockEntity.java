@@ -12,9 +12,12 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.Shapes;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
+import java.util.ArrayDeque;
 import java.util.HashSet;
+import java.util.Queue;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -163,30 +166,33 @@ public abstract class ElectricBlockEntity extends BlockEntity implements IElectr
         return NODE_BOX;
     }
 
-    protected void searchNode(IElectricNode node, Set<IElectricNode> found, int depth, Predicate<IElectricNode> predicate)
+    protected void searchNode(IElectricNode start, Set<IElectricNode> found, int maxDepth, Predicate<IElectricNode> predicate)
     {
-        if(depth <= 0)
-            return;
-
-        for(Connection connection : node.getConnections())
+        // Queue representing nodes to search and their depth from the start
+        Queue<Pair<IElectricNode, Integer>> queue = new ArrayDeque<>();
+        queue.add(Pair.of(start, 0));
+        while(!queue.isEmpty())
         {
-            IElectricNode connectedNode = connection.getNodeB(this.level);
-            if(connectedNode == null || found.contains(connectedNode))
-                continue;
+            Pair<IElectricNode, Integer> pair = queue.poll();
+            IElectricNode node = pair.getLeft();
+            int currentDepth = pair.getRight();
+            for(Connection connection : node.getConnections())
+            {
+                IElectricNode other = connection.getNodeB(this.level);
+                if(other == null || !other.isValid() || found.contains(other))
+                    continue;
 
-            if(!connectedNode.isValid())
-                continue;
+                if(!predicate.test(other))
+                    continue;
 
-            if(!predicate.test(connectedNode))
-                continue;
+                found.add(other);
 
-            found.add(connectedNode);
+                int nextDepth = currentDepth + 1;
+                if(other.isSource() || nextDepth >= maxDepth)
+                    continue;
 
-            // Searching stops when a source is reached
-            if(connectedNode.isSource())
-                continue;
-
-            this.searchNode(connectedNode, found, depth - 1, predicate);
+                queue.add(Pair.of(other, nextDepth));
+            }
         }
     }
 
