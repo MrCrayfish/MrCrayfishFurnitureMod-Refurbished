@@ -31,8 +31,8 @@ public class ClientBootstrap
     {
         CreativeFilters.init();
         TickEvents.START_RENDER.register(partialTick -> {
+            LinkHandler.get().beforeRender(partialTick);
             ElectricBlockEntityRenderer.clearDrawn();
-            LinkRenderer.get().renderTick(partialTick);
         });
     }
 

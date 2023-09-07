@@ -46,7 +46,7 @@ public class WrenchItem extends Item
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand)
     {
         float range = player.isCreative() ? 5.0F : 4.5F;
-        NodeHitResult result = performRaycast(level, player, range, 1F);
+        NodeHitResult result = performNodeRaycast(level, player, range, 1F);
         if(result.getType() != HitResult.Type.MISS)
         {
             if(!level.isClientSide() && level instanceof ServerLevel serverLevel)
@@ -57,10 +57,10 @@ public class WrenchItem extends Item
             }
             return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());
         }
-        return InteractionResultHolder.fail(player.getItemInHand(hand));
+        return InteractionResultHolder.success(player.getItemInHand(hand));
     }
 
-    public static NodeHitResult performRaycast(Level level, Player player, float range, float partialTick)
+    public static NodeHitResult performNodeRaycast(Level level, Player player, float range, float partialTick)
     {
         Vec3 start = player.getEyePosition(partialTick);
         Vec3 look = player.getViewVector(partialTick);

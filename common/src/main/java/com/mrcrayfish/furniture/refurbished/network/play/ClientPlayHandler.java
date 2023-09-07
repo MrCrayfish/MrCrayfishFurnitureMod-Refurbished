@@ -4,7 +4,7 @@ import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.blockentity.FryingPanBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.GrillBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.KitchenSinkBlockEntity;
-import com.mrcrayfish.furniture.refurbished.client.LinkRenderer;
+import com.mrcrayfish.furniture.refurbished.client.LinkHandler;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.PostBoxScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.toast.ItemToast;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageDoorbellNotification;
@@ -80,6 +80,6 @@ public class ClientPlayHandler
 
     public static void handleMessageSyncLink(MessageSyncLink message)
     {
-        LinkRenderer.get().setLinkingNode(message.getPos());
+        LinkHandler.get().setLinkingNode(message.getPos());
     }
 }

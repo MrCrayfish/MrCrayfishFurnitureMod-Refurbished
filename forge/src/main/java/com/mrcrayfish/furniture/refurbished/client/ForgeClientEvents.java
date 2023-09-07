@@ -2,18 +2,20 @@ package com.mrcrayfish.furniture.refurbished.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
-import com.mrcrayfish.furniture.refurbished.util.Utils;
+import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import org.apache.commons.lang3.function.TriFunction;
@@ -55,9 +57,25 @@ public class ForgeClientEvents
             Minecraft mc = Minecraft.getInstance();
             if(mc.player != null)
             {
-                LinkRenderer.get().drawLink(mc.player, stack, mc.renderBuffers().bufferSource(), event.getPartialTick());
+                LinkHandler.get().render(mc.player, stack, mc.renderBuffers().bufferSource(), event.getPartialTick());
             }
         }
         stack.popPose();
+    }
+
+    // TODO fabric
+    public static void onKeyTriggered(InputEvent.InteractionKeyMappingTriggered event)
+    {
+        Minecraft mc = Minecraft.getInstance();
+        if(event.getKeyMapping() == mc.options.keyAttack && mc.player != null && mc.level != null)
+        {
+            if(mc.player.getMainHandItem().is(ModItems.WRENCH.get()))
+            {
+                if(LinkHandler.get().onWrenchLeftClick(mc.level))
+                {
+                    event.setCanceled(true);
+                }
+            }
+        }
     }
 }

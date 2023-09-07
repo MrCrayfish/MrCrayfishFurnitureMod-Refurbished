@@ -2,47 +2,58 @@ package com.mrcrayfish.furniture.refurbished.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.ElectricBlockEntityRenderer;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
+import com.mrcrayfish.furniture.refurbished.electric.Connection;
 import com.mrcrayfish.furniture.refurbished.electric.IElectricNode;
+import com.mrcrayfish.furniture.refurbished.electric.LinkHitResult;
 import com.mrcrayfish.furniture.refurbished.electric.NodeHitResult;
 import com.mrcrayfish.furniture.refurbished.item.WrenchItem;
+import com.mrcrayfish.furniture.refurbished.network.Network;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageDeleteLink;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.debug.DebugRenderer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Intersectiond;
+import org.joml.Vector3d;
 
 import javax.annotation.Nullable;
+import java.util.Set;
 
 /**
  * Author: MrCrayfish
  */
-public class LinkRenderer
+public class LinkHandler
 {
     private static final int DEFAULT_LINK_COLOUR = 0xFFFFFFFF;
     private static final int SUCCESS_LINK_COLOUR = 0xFFB5FF4C;
 
-    private static LinkRenderer instance;
+    private static LinkHandler instance;
 
-    public static LinkRenderer get()
+    public static LinkHandler get()
     {
         if(instance == null)
         {
-            instance = new LinkRenderer();
+            instance = new LinkHandler();
         }
         return instance;
     }
 
     @Nullable
     private BlockPos lastNodePos;
-    private NodeHitResult result;
+    private HitResult result;
 
-    private LinkRenderer() {}
+    private LinkHandler() {}
 
     /**
      * Sets the last node position interacted by player. Used for rendering the link
@@ -77,7 +88,7 @@ public class LinkRenderer
      *
      * @param partialTick the current partial tick
      */
-    public void renderTick(float partialTick)
+    public void beforeRender(float partialTick)
     {
         Minecraft mc = Minecraft.getInstance();
         if(mc.player != null && mc.level != null && mc.gameMode != null)
@@ -86,7 +97,13 @@ public class LinkRenderer
             if(mc.player.getMainHandItem().is(ModItems.WRENCH.get()))
             {
                 float range = mc.gameMode.getPickRange();
-                this.result = WrenchItem.performRaycast(mc.level, mc.player, range, partialTick);
+                this.result = WrenchItem.performNodeRaycast(mc.level, mc.player, range, partialTick);
+
+                // If missed, try to raycast for links
+                if(this.result.getType() == HitResult.Type.MISS)
+                {
+                    this.result = performLinkRaycast(mc.player, partialTick, range);
+                }
                 return;
             }
         }
@@ -101,13 +118,19 @@ public class LinkRenderer
      */
     public boolean isTargetNode(IElectricNode node)
     {
-        return this.result != null && this.result.getNode() == node;
+        return this.result instanceof NodeHitResult nodeResult && nodeResult.getNode() == node;
     }
 
     @Nullable
     public IElectricNode getTargetNode()
     {
-        return this.result != null ? this.result.getNode() : null;
+        return this.result instanceof NodeHitResult nodeResult ? nodeResult.getNode() : null;
+    }
+
+    @Nullable
+    public Connection getTargetLink()
+    {
+        return this.result instanceof LinkHitResult linkResult ? linkResult.getConnection() : null;
     }
 
     /**
@@ -121,7 +144,7 @@ public class LinkRenderer
      * @param source      a buffer source instance
      * @param partialTick the current partial tick
      */
-    public void drawLink(Player player, PoseStack poseStack, MultiBufferSource.BufferSource source, float partialTick)
+    public void render(Player player, PoseStack poseStack, MultiBufferSource.BufferSource source, float partialTick)
     {
         if(this.lastNodePos == null)
             return;
@@ -159,7 +182,7 @@ public class LinkRenderer
         IElectricNode node = this.getTargetNode();
         if(node != null && !this.isLinkingNode(node) && this.canLinkToNode(player.level(), node))
         {
-            return this.result.getPos().getCenter();
+            return node.getPosition().getCenter();
         }
         return player.getViewVector(partialTick).add(player.getEyePosition(partialTick));
     }
@@ -196,6 +219,62 @@ public class LinkRenderer
             if(lastNode != null && target != null && lastNode != target)
             {
                 return !lastNode.isConnectedTo(target);
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Attempts to find the link (connection) that is nearest to the player's look ray and
+     * within the player's reach distance.
+     *
+     * @param player      the player performing the raycast
+     * @param partialTick the current partial tick
+     * @param range       the reach of the player
+     * @return a hit result with a link or miss if no link was found
+     */
+    private HitResult performLinkRaycast(Player player, float partialTick, float range)
+    {
+        double closestDistance = Double.POSITIVE_INFINITY;
+        Connection closestConnection = null;
+        Vec3 hit = Vec3.ZERO;
+        Set<Connection> connections = ElectricBlockEntityRenderer.getDrawnConnections();
+        for(Connection connection : connections)
+        {
+            Vec3 rayStart = player.getEyePosition(partialTick);
+            Vec3 rayEnd = rayStart.add(player.getViewVector(partialTick).normalize().scale(range));
+            Vec3 linkStart = connection.getPosA().getCenter();
+            Vec3 linkEnd = connection.getPosB().getCenter();
+            Vector3d result =  new Vector3d();
+            double squareDistance = Intersectiond.findClosestPointsLineSegments(rayStart.x, rayStart.y, rayStart.z, rayEnd.x, rayEnd.y, rayEnd.z, linkStart.x, linkStart.y, linkStart.z, linkEnd.x, linkEnd.y, linkEnd.z, new Vector3d(), result);
+            double distance = Math.sqrt(squareDistance);
+            if(distance < 0.125 && distance < closestDistance)
+            {
+                closestDistance = distance;
+                closestConnection = connection;
+                hit = new Vec3(result.x, result.y, result.z);
+            }
+        }
+        return new LinkHitResult(hit, closestConnection);
+    }
+
+    /**
+     * Called when a player left clicks while holding a wrench. Since Item doesn't have a method to
+     * handle this, this event is captured with modloader specific event/injections.
+     *
+     * @return True if an action was performed
+     */
+    public boolean onWrenchLeftClick(Level level)
+    {
+        if(!this.isLinking() && this.result instanceof LinkHitResult linkResult)
+        {
+            Connection connection = linkResult.getConnection();
+            if(connection != null)
+            {
+                Vec3 hit = linkResult.getLocation();
+                level.playLocalSound(hit.x, hit.y, hit.z, SoundEvents.ITEM_BREAK, SoundSource.BLOCKS, 0.5F, 1.5F, false);
+                Network.getPlay().sendToServer(new MessageDeleteLink(connection.getPosA(), connection.getPosB()));
+                return true;
             }
         }
         return false;

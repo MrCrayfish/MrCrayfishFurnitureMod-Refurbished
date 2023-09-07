@@ -2,15 +2,21 @@ package com.mrcrayfish.furniture.refurbished.network.play;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.furniture.refurbished.blockentity.INameable;
+import com.mrcrayfish.furniture.refurbished.core.ModItems;
+import com.mrcrayfish.furniture.refurbished.electric.Connection;
+import com.mrcrayfish.furniture.refurbished.electric.IElectricNode;
 import com.mrcrayfish.furniture.refurbished.inventory.PostBoxMenu;
 import com.mrcrayfish.furniture.refurbished.item.PackageItem;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageClearMessage;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageDeleteLink;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSendPackage;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSetName;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -61,6 +67,27 @@ public class ServerPlayHandler
                     Network.getPlay().sendToPlayer(() -> player, new MessageClearMessage());
                 }
             });
+        }
+    }
+
+    public static void handleMessageDeleteLink(MessageDeleteLink message, @Nullable ServerPlayer player)
+    {
+        if(player != null && player.getMainHandItem().is(ModItems.WRENCH.get()))
+        {
+            Level level = player.level();
+            Connection c = Connection.of(message.getPosA(), message.getPosB());
+            if(level.isLoaded(c.getPosA()) && level.isLoaded(c.getPosB()))
+            {
+                // TODO check distance to nodes based on max connection length
+
+                IElectricNode nodeA = c.getNodeA(level);
+                IElectricNode nodeB = c.getNodeB(level);
+                if(nodeA != null && nodeB != null)
+                {
+                    nodeA.removeConnection(c);
+                    nodeB.removeConnection(c);
+                }
+            }
         }
     }
 }

@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.mrcrayfish.furniture.refurbished.blockentity.ElectricBlockEntity;
 import com.mrcrayfish.furniture.refurbished.client.ExtraModels;
-import com.mrcrayfish.furniture.refurbished.client.LinkRenderer;
+import com.mrcrayfish.furniture.refurbished.client.LinkHandler;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.electric.Connection;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
@@ -36,7 +36,7 @@ public class ElectricBlockEntityRenderer implements BlockEntityRenderer<Electric
     private static final int DEFAULT_COLOUR = 0xFFFFFFFF;
     private static final int HIGHLIGHT_COLOUR = 0xFFFFB64C;
     private static final int SUCCESS_COLOUR = 0xFFAAFFAA;
-    private static final int ERROR_COLOUR = 0xFFFFAAAA;
+    private static final int ERROR_COLOUR = 0xFFC33636;
     private static final int CONNECTION_COLOUR = 0xFFFFC54C;
 
     private final ItemRenderer renderer;
@@ -62,12 +62,12 @@ public class ElectricBlockEntityRenderer implements BlockEntityRenderer<Electric
         poseStack.popPose();
 
         // Draw highlight colour
-        LinkRenderer renderer = LinkRenderer.get();
-        boolean isLookingAt = LinkRenderer.get().isTargetNode(electric);
-        if((isLookingAt && !renderer.isLinking()) || renderer.isLinkingNode(electric) || renderer.canLinkToNode(electric.getLevel(), electric) && renderer.isTargetNode(electric))
+        LinkHandler handler = LinkHandler.get();
+        boolean isLookingAt = handler.isTargetNode(electric);
+        if((isLookingAt && !handler.isLinking()) || handler.isLinkingNode(electric) || handler.canLinkToNode(electric.getLevel(), electric) && handler.isTargetNode(electric))
         {
             AABB box = electric.getInteractBox();
-            int color = renderer.getLinkColour(electric.getLevel());
+            int color = handler.getLinkColour(electric.getLevel());
             float red = FastColor.ARGB32.red(color) / 255F;
             float green = FastColor.ARGB32.green(color) / 255F;
             float blue = FastColor.ARGB32.blue(color) / 255F;
@@ -88,7 +88,8 @@ public class ElectricBlockEntityRenderer implements BlockEntityRenderer<Electric
                 poseStack.mulPose(Axis.YP.rotation((float) yaw));
                 poseStack.mulPose(Axis.ZP.rotation((float) pitch));
                 AABB connectionBox = new AABB(0, -0.03125, -0.03125, delta.length(), 0.03125, 0.03125);
-                int color = connection.isPowered(electric.getLevel()) ? CONNECTION_COLOUR : DEFAULT_COLOUR;
+                boolean selected = !handler.isLinking() && connection.equals(handler.getTargetLink());
+                int color = selected ? ERROR_COLOUR : connection.isPowered(electric.getLevel()) ? CONNECTION_COLOUR : DEFAULT_COLOUR;
                 float red = FastColor.ARGB32.red(color) / 255F;
                 float green = FastColor.ARGB32.green(color) / 255F;
                 float blue = FastColor.ARGB32.blue(color) / 255F;
@@ -110,10 +111,10 @@ public class ElectricBlockEntityRenderer implements BlockEntityRenderer<Electric
             return ExtraModels.ELECTRIC_NODE_ERROR.getModel();
         }
 
-        LinkRenderer renderer = LinkRenderer.get();
-        if(renderer.isLinking() && !renderer.isLinkingNode(node))
+        LinkHandler handler = LinkHandler.get();
+        if(handler.isLinking() && !handler.isLinkingNode(node))
         {
-            if(renderer.canLinkToNode(node.getLevel(), node))
+            if(handler.canLinkToNode(node.getLevel(), node))
             {
                 return ExtraModels.ELECTRIC_NODE_SUCCESS.getModel();
             }
@@ -143,5 +144,10 @@ public class ElectricBlockEntityRenderer implements BlockEntityRenderer<Electric
     public static void clearDrawn()
     {
         DRAWN_CONNECTIONS.clear();
+    }
+
+    public static Set<Connection> getDrawnConnections()
+    {
+        return DRAWN_CONNECTIONS;
     }
 }
