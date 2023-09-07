@@ -18,6 +18,8 @@ public interface IElectricNode
 
     void setPowered(boolean powered);
 
+    void updatePower();
+
     Set<Connection> getConnections();
 
     void syncConnections();

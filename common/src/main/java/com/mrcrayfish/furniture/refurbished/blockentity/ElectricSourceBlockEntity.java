@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.mrcrayfish.furniture.refurbished.electric.Connection;
 import com.mrcrayfish.furniture.refurbished.electric.IElectricNode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -41,6 +42,15 @@ public abstract class ElectricSourceBlockEntity extends ElectricBlockEntity
             return;
 
         this.updatePowerInNetwork(true);
+    }
+
+    @Override
+    public void updatePower()
+    {
+        if(this.isPowered())
+        {
+            this.updatePowerInNetwork(true);
+        }
     }
 
     protected void updatePowerInNetwork(boolean powered)

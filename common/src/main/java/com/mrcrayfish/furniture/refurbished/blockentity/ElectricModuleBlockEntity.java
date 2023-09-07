@@ -7,6 +7,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * Author: MrCrayfish
@@ -45,45 +46,48 @@ public abstract class ElectricModuleBlockEntity extends ElectricBlockEntity
         this.updatePowerInNetwork(false);
     }
 
+    @Override
+    public void updatePower()
+    {
+        this.updatePowerInNetwork(false);
+    }
+
     protected void updatePowerInNetwork(boolean removed)
     {
-        // First find all the available nodes that we can connect to.
-        // If this electric node is being removed, prevent it from being searched
-        Set<IElectricNode> availableNodes = new HashSet<>();
-        this.searchNode(this, availableNodes, MAX_SEARCH_DEPTH, node -> !node.isSource() && (!removed || node != this));
+        // Test to check this node is a valid traversal node. On removed, it shouldn't be.
+        Predicate<IElectricNode> includeSelf = node -> (!removed || node != this);
 
-        // Removes available nodes based on if this node is being removed. If being removed, the
-        // power is potentially being disconnected so the only nodes to deal with are ones that are
-        // powered. If the node is not being removed, only deal with unpowered nodes since a new
-        // connection may have been made to this node and the unpowered nodes may become powered.
-        availableNodes.removeIf(node -> node.isPowered() != removed);
+        // First find all the available nodes that we can connect to.
+        Set<IElectricNode> availableNodes = new HashSet<>();
+        this.searchNode(this, availableNodes, MAX_SEARCH_DEPTH, node -> !node.isSource() && includeSelf.test(node));
 
         // Next, search for powered electric source nodes in the network.
         // Again if this electric node is being removed, prevent it from being searched
         Set<IElectricNode> sourceNodes = new HashSet<>();
-        this.searchNode(this, sourceNodes, MAX_SEARCH_DEPTH * 2, node -> (!removed || node != this));
+        this.searchNode(this, sourceNodes, MAX_SEARCH_DEPTH * 2, node -> includeSelf.test(node));
         sourceNodes.removeIf(node -> !node.isSource() || !node.isPowered());
 
         // For each powered source nodes, find all the nodes that it can connect to. Again, if this
         // node is being removed, ensure that it is ignored as a valid connection path.
+        Set<IElectricNode> foundNodes = new HashSet<>();
         sourceNodes.forEach(source -> {
-            Set<IElectricNode> foundNodes = new HashSet<>();
-            this.searchNode(source, foundNodes, MAX_SEARCH_DEPTH, node -> !node.isSource() && (!removed || node != this));
-            // For the nodes found from each powered source node, remove the nodes based on the removed flag:
-            // 1. If true, we remove available nodes that are found by powered source nodes.
-            // 2. If false, we remove available nodes that don't reach a power source
-            availableNodes.removeIf(node -> removed == foundNodes.contains(node));
+            Set<IElectricNode> searchedNodes = new HashSet<>();
+            this.searchNode(source, searchedNodes, MAX_SEARCH_DEPTH, node -> !node.isSource() && includeSelf.test(node));
+            foundNodes.addAll(searchedNodes);
         });
 
-        // The nodes remaining in the available nodes are the one that need their power updated.
-        // In the case the removed flag is true, the power state of each remaining node is turned off.
-        // Otherwise, the remaining nodes have their power state turned on. Nodes that were removed
-        // during the above logic are already in their correct power state and didn't need an update.
-        availableNodes.forEach(node -> node.setPowered(!removed));
-
-        // Further reading, this method also ensures that an electric node won't receive update to
-        // its power that matches its current power. In other words, a node's power state will not
-        // be set to true if it is already true. This comes in handy when you want to play sounds
-        // when an electric module is turned on or off.
+        // Update the power state of available nodes. Only the nodes where their power is different
+        // will be updated. This comes in handy when you want to play sounds when an electric module
+        // is turned on or off.
+        availableNodes.forEach(node -> {
+            if(foundNodes.contains(node)) {
+                if(!node.isPowered()) {
+                    node.setPowered(true);
+                }
+            }
+            else if(node.isPowered()) {
+                node.setPowered(false);
+            }
+        });
     }
 }

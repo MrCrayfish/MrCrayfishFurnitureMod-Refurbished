@@ -168,6 +168,12 @@ public abstract class ElectricBlockEntity extends BlockEntity implements IElectr
 
     protected void searchNode(IElectricNode start, Set<IElectricNode> found, int maxDepth, Predicate<IElectricNode> predicate)
     {
+        // Add start to found if predicate matches
+        if(predicate.test(start))
+        {
+            found.add(start);
+        }
+
         // Queue representing nodes to search and their depth from the start
         Queue<Pair<IElectricNode, Integer>> queue = new ArrayDeque<>();
         queue.add(Pair.of(start, 0));

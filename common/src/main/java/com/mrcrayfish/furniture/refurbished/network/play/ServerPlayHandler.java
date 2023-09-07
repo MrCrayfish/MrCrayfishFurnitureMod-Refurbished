@@ -86,6 +86,8 @@ public class ServerPlayHandler
                 {
                     nodeA.removeConnection(c);
                     nodeB.removeConnection(c);
+                    nodeA.updatePower();
+                    nodeB.updatePower();
                 }
             }
         }
