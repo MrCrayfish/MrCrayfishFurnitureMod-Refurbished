@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.electric.Connection;
 import com.mrcrayfish.furniture.refurbished.electric.IElectricNode;
 import net.minecraft.core.BlockPos;
@@ -55,9 +56,11 @@ public abstract class ElectricSourceBlockEntity extends ElectricBlockEntity
 
     protected void updatePowerInNetwork(boolean powered)
     {
+        int maxSearchDepth = Config.SERVER.electricity.maximumDaisyChain.get();
+
         // First find all the nodes that we can power
         Set<IElectricNode> availableNodes = new HashSet<>();
-        this.searchNode(this, availableNodes, MAX_SEARCH_DEPTH, node -> !node.isSource());
+        this.searchNode(this, availableNodes, maxSearchDepth, node -> !node.isSource());
 
         // Removes available nodes that already match the target power state
         availableNodes.removeIf(node -> node.isPowered() == powered);
@@ -65,13 +68,13 @@ public abstract class ElectricSourceBlockEntity extends ElectricBlockEntity
         // Next, search for power sources in the network. We double the search depth since the furthest
         // power source could be connected to the furthest node we can find from this lightswitch.
         Set<IElectricNode> sourceNodes = new HashSet<>();
-        this.searchNode(this, sourceNodes, MAX_SEARCH_DEPTH * 2, node -> node != this);
+        this.searchNode(this, sourceNodes, maxSearchDepth * 2, node -> node != this);
         sourceNodes.removeIf(node -> !node.isSource() || !node.isPowered());
 
         // Find nodes each source is currently powering and remove them from the available nodes
         sourceNodes.forEach(source -> {
             Set<IElectricNode> foundNodes = new HashSet<>();
-            this.searchNode(source, foundNodes, MAX_SEARCH_DEPTH, node -> !node.isSource());
+            this.searchNode(source, foundNodes, maxSearchDepth, node -> !node.isSource());
             availableNodes.removeAll(foundNodes);
         });
 

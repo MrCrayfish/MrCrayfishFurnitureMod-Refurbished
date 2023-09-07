@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.electric.IElectricNode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -56,15 +57,16 @@ public abstract class ElectricModuleBlockEntity extends ElectricBlockEntity
     {
         // Test to check this node is a valid traversal node. On removed, it shouldn't be.
         Predicate<IElectricNode> includeSelf = node -> (!removed || node != this);
+        int maxSearchDepth = Config.SERVER.electricity.maximumDaisyChain.get();
 
         // First find all the available nodes that we can connect to.
         Set<IElectricNode> availableNodes = new HashSet<>();
-        this.searchNode(this, availableNodes, MAX_SEARCH_DEPTH, node -> !node.isSource() && includeSelf.test(node));
+        this.searchNode(this, availableNodes, maxSearchDepth, node -> !node.isSource() && includeSelf.test(node));
 
         // Next, search for powered electric source nodes in the network.
         // Again if this electric node is being removed, prevent it from being searched
         Set<IElectricNode> sourceNodes = new HashSet<>();
-        this.searchNode(this, sourceNodes, MAX_SEARCH_DEPTH * 2, node -> includeSelf.test(node));
+        this.searchNode(this, sourceNodes, maxSearchDepth * 2, node -> includeSelf.test(node));
         sourceNodes.removeIf(node -> !node.isSource() || !node.isPowered());
 
         // For each powered source nodes, find all the nodes that it can connect to. Again, if this
@@ -72,7 +74,7 @@ public abstract class ElectricModuleBlockEntity extends ElectricBlockEntity
         Set<IElectricNode> foundNodes = new HashSet<>();
         sourceNodes.forEach(source -> {
             Set<IElectricNode> searchedNodes = new HashSet<>();
-            this.searchNode(source, searchedNodes, MAX_SEARCH_DEPTH, node -> !node.isSource() && includeSelf.test(node));
+            this.searchNode(source, searchedNodes, maxSearchDepth, node -> !node.isSource() && includeSelf.test(node));
             foundNodes.addAll(searchedNodes);
         });
 
