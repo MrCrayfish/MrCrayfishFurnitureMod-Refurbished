@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.electric;
 
+import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSyncLink;
@@ -67,9 +68,7 @@ public class LinkManager extends SavedData
     {
         // Prevent interaction if reached connection limit
         if(interactedNode.isConnectionLimit())
-        {
             return;
-        }
 
         if(!this.lastNodeMap.containsKey(player.getUUID()))
         {
@@ -79,13 +78,20 @@ public class LinkManager extends SavedData
             return;
         }
 
-        Network.getPlay().sendToPlayer(() -> (ServerPlayer) player, new MessageSyncLink(null));
+        // Attempt to connect the two nodes together
         BlockPos previousPos = this.lastNodeMap.remove(player.getUUID());
         IElectricNode lastNode = level.getBlockEntity(previousPos) instanceof IElectricNode node ? node : null;
         if(lastNode != null && lastNode != interactedNode)
         {
-            lastNode.connectTo(interactedNode);
+            double distance = lastNode.getPosition().getCenter().distanceTo(interactedNode.getPosition().getCenter());
+            if(distance <= Config.SERVER.electricity.maximumLinkDistance.get())
+            {
+                lastNode.connectTo(interactedNode);
+            }
         }
+
+        // Update the client that the linking should stop
+        Network.getPlay().sendToPlayer(() -> (ServerPlayer) player, new MessageSyncLink(null));
     }
 
     /**

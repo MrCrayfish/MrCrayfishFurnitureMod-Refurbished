@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.ElectricBlockEntityRenderer;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.electric.Connection;
@@ -37,6 +38,7 @@ public class LinkHandler
 {
     private static final int DEFAULT_LINK_COLOUR = 0xFFFFFFFF;
     private static final int SUCCESS_LINK_COLOUR = 0xFFB5FF4C;
+    private static final int ERROR_LINK_COLOUR = 0xFFC33636;
 
     private static LinkHandler instance;
 
@@ -52,6 +54,7 @@ public class LinkHandler
     @Nullable
     private BlockPos lastNodePos;
     private HitResult result;
+    private double distance;
 
     private LinkHandler() {}
 
@@ -146,6 +149,8 @@ public class LinkHandler
      */
     public void render(Player player, PoseStack poseStack, MultiBufferSource.BufferSource source, float partialTick)
     {
+        this.distance = 0;
+
         if(this.lastNodePos == null)
             return;
 
@@ -157,6 +162,7 @@ public class LinkHandler
         Vec3 start = Vec3.atCenterOf(this.lastNodePos);
         Vec3 end = this.getLinkEnd(player, partialTick);
         Vec3 delta = end.subtract(start);
+        this.distance = delta.length();
         double yaw = Math.atan2(-delta.z, delta.x) + Math.PI;
         double pitch = Math.atan2(delta.horizontalDistance(), delta.y) + Mth.HALF_PI;
         poseStack.translate(start.x, start.y, start.z);
@@ -195,6 +201,12 @@ public class LinkHandler
      */
     public int getLinkColour(Level level)
     {
+        // TODO show text on screen if too long
+        if(this.distance > Config.SERVER.electricity.maximumLinkDistance.get())
+        {
+            return ERROR_LINK_COLOUR;
+        }
+
         IElectricNode node = this.getTargetNode();
         if(node != null && !this.isLinkingNode(node) && this.canLinkToNode(level, node))
         {
@@ -218,7 +230,11 @@ public class LinkHandler
             IElectricNode lastNode = level.getBlockEntity(this.lastNodePos) instanceof IElectricNode node ? node : null;
             if(lastNode != null && target != null && lastNode != target)
             {
-                return !target.isConnectionLimit() && !lastNode.isConnectedTo(target);
+                double distance = this.lastNodePos.getCenter().distanceTo(target.getPosition().getCenter());
+                if(distance <= Config.SERVER.electricity.maximumLinkDistance.get())
+                {
+                    return !target.isConnectionLimit() && !lastNode.isConnectedTo(target);
+                }
             }
         }
         return false;
