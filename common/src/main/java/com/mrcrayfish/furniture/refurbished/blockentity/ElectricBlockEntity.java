@@ -212,6 +212,6 @@ public abstract class ElectricBlockEntity extends BlockEntity implements IElectr
     @SuppressWarnings("unused")
     public AABB getRenderBoundingBox()
     {
-        return new AABB(this.worldPosition).inflate(32); // TODO config the render distance of connections
+        return new AABB(this.worldPosition).inflate(Config.CLIENT.electricityViewDistance.get());
     }
 }

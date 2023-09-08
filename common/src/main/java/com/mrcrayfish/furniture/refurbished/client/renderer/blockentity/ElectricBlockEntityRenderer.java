@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.client.renderer.blockentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.blockentity.ElectricBlockEntity;
 import com.mrcrayfish.furniture.refurbished.client.ExtraModels;
 import com.mrcrayfish.furniture.refurbished.client.LinkHandler;
@@ -100,7 +101,6 @@ public class ElectricBlockEntityRenderer implements BlockEntityRenderer<Electric
 
     private BakedModel getNodeModel(ElectricBlockEntity node)
     {
-        // TODO make sure link can't connect to
         if(node.isConnectionLimit())
         {
             return ExtraModels.ELECTRIC_NODE_ERROR.getModel();
@@ -127,13 +127,7 @@ public class ElectricBlockEntityRenderer implements BlockEntityRenderer<Electric
     @Override
     public int getViewDistance()
     {
-        return 128;
-    }
-
-    @Override
-    public boolean shouldRender(ElectricBlockEntity $$0, Vec3 $$1)
-    {
-        return true;
+        return Config.CLIENT.electricityViewDistance.get();
     }
 
     public static void clearDrawn()

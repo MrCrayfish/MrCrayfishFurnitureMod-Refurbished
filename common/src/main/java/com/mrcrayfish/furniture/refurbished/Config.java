@@ -24,6 +24,10 @@ public class Config
         @ConfigProperty(name = "doorbellNotification", comment = """
             If enabled, displays a toast notification when another player rings one of your doorbells.""")
         public final BoolProperty doorbellNotification = BoolProperty.create(true);
+
+        @ConfigProperty(name = "electricityViewDistance", comment = """
+            The maximum distance that electricity nodes and connections can be seen by the camera.""")
+        public final IntProperty electricityViewDistance = IntProperty.create(48, 1, 128);
     }
 
     public static class Server
