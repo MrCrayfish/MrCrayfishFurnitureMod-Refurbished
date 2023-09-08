@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.network.play;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
+import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.blockentity.INameable;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.electric.Connection;
@@ -17,9 +18,11 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 
@@ -78,11 +81,16 @@ public class ServerPlayHandler
             Connection c = Connection.of(message.getPosA(), message.getPosB());
             if(level.isLoaded(c.getPosA()) && level.isLoaded(c.getPosB()))
             {
-                // TODO check distance to nodes based on max connection length
+                // Check if the player is near the nodes that are being disconnected
+                double maxDistance = Mth.square(Config.SERVER.electricity.maximumLinkDistance.get());
+                Vec3 a = c.getPosA().getCenter();
+                Vec3 b = c.getPosB().getCenter();
+                if(player.distanceToSqr(a) > maxDistance && player.distanceToSqr(b) > maxDistance)
+                    return;
 
                 IElectricNode nodeA = c.getNodeA(level);
                 IElectricNode nodeB = c.getNodeB(level);
-                if(nodeA != null && nodeB != null)
+                if(nodeA != null && nodeB != null && nodeA.isConnectedTo(nodeB))
                 {
                     nodeA.removeConnection(c);
                     nodeB.removeConnection(c);
