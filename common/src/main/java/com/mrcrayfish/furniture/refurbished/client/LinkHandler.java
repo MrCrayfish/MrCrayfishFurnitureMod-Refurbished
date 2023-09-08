@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.ElectricBlockEntityRenderer;
@@ -13,10 +14,10 @@ import com.mrcrayfish.furniture.refurbished.electric.NodeHitResult;
 import com.mrcrayfish.furniture.refurbished.item.WrenchItem;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageDeleteLink;
+import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.debug.DebugRenderer;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.FastColor;
@@ -173,7 +174,7 @@ public class LinkHandler
         float red = FastColor.ARGB32.red(color) / 255F;
         float green = FastColor.ARGB32.green(color) / 255F;
         float blue = FastColor.ARGB32.blue(color) / 255F;
-        DebugRenderer.renderFilledBox(poseStack, source, new AABB(0, -0.03125, -0.03125, delta.length(), 0.03125, 0.03125), red, green, blue, 0.5F);
+        drawColouredBox(poseStack, source, new AABB(0, -0.03125, -0.03125, delta.length(), 0.03125, 0.03125), color, 0.75F);
     }
 
     /**
@@ -295,5 +296,24 @@ public class LinkHandler
             }
         }
         return false;
+    }
+
+    /**
+     * Draws a coloured box with the given colour. This method is specific to drawing links, as it
+     * will use the electricity connection render type. This will make the box be seen through walls.
+     *
+     * @param poseStack the current posestack
+     * @param source    a multi buffer source
+     * @param box       the aabb box to draw
+     * @param colour    the colour of the box in decimal
+     * @param alpha     the alpha value from 0 to 1
+     */
+    public static void drawColouredBox(PoseStack poseStack, MultiBufferSource source, AABB box, int colour, float alpha)
+    {
+        float red = FastColor.ARGB32.red(colour) / 255F;
+        float green = FastColor.ARGB32.green(colour) / 255F;
+        float blue = FastColor.ARGB32.blue(colour) / 255F;
+        VertexConsumer consumer = source.getBuffer(ClientServices.PLATFORM.getElectricityConnectionRenderType());
+        LevelRenderer.addChainedFilledBoxVertices(poseStack, consumer, box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ, red, green, blue, alpha);
     }
 }

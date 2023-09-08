@@ -3,23 +3,19 @@ package com.mrcrayfish.furniture.refurbished.platform;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
+import com.mrcrayfish.furniture.refurbished.client.ForgeRenderType;
 import com.mrcrayfish.furniture.refurbished.platform.services.IClientHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
-import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -80,6 +76,18 @@ public class ForgeClientHelper implements IClientHelper
     public BakedModel getBakedModel(ResourceLocation location)
     {
         return Minecraft.getInstance().getModelManager().getModel(location);
+    }
+
+    @Override
+    public RenderType getElectrictyNodeRenderType()
+    {
+        return ForgeRenderType.ELECTRICITY_NODE;
+    }
+
+    @Override
+    public RenderType getElectricityConnectionRenderType()
+    {
+        return ForgeRenderType.COLOURED_BOX;
     }
 
     private Function<ResourceLocation, TextureAtlasSprite> getBlockTextures()

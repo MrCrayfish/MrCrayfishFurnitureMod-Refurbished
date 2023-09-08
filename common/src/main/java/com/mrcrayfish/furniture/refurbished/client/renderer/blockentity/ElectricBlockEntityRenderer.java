@@ -3,7 +3,6 @@ package com.mrcrayfish.furniture.refurbished.client.renderer.blockentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.blockentity.ElectricBlockEntity;
 import com.mrcrayfish.furniture.refurbished.client.ExtraModels;
 import com.mrcrayfish.furniture.refurbished.client.LinkHandler;
@@ -12,6 +11,7 @@ import com.mrcrayfish.furniture.refurbished.electric.Connection;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -57,7 +57,7 @@ public class ElectricBlockEntityRenderer implements BlockEntityRenderer<Electric
         // Draw node model
         poseStack.pushPose();
         poseStack.translate(0.5F, 0.5F, 0.5F);
-        VertexConsumer consumer = source.getBuffer(RenderType.translucent());
+        VertexConsumer consumer = source.getBuffer(ClientServices.PLATFORM.getElectrictyNodeRenderType());
         BakedModel model = this.getNodeModel(electric);
         ClientServices.PLATFORM.drawBakedModel(model, poseStack, consumer, 15728880, overlay);
         poseStack.popPose();
@@ -69,10 +69,7 @@ public class ElectricBlockEntityRenderer implements BlockEntityRenderer<Electric
         {
             AABB box = electric.getInteractBox();
             int color = handler.getLinkColour(electric.getLevel());
-            float red = FastColor.ARGB32.red(color) / 255F;
-            float green = FastColor.ARGB32.green(color) / 255F;
-            float blue = FastColor.ARGB32.blue(color) / 255F;
-            DebugRenderer.renderFilledBox(poseStack, source, box.inflate(0.03125), red, green, blue, 0.35F);
+            LinkHandler.drawColouredBox(poseStack, source, box.inflate(0.03125), color, 0.75F);
         }
 
         // Draw connections
@@ -91,12 +88,9 @@ public class ElectricBlockEntityRenderer implements BlockEntityRenderer<Electric
                 AABB connectionBox = new AABB(0, -0.03125, -0.03125, delta.length(), 0.03125, 0.03125);
                 boolean selected = !handler.isLinking() && connection.equals(handler.getTargetLink());
                 int color = selected ? ERROR_COLOUR : connection.isPowered(electric.getLevel()) ? CONNECTION_COLOUR : DEFAULT_COLOUR;
-                float red = FastColor.ARGB32.red(color) / 255F;
-                float green = FastColor.ARGB32.green(color) / 255F;
-                float blue = FastColor.ARGB32.blue(color) / 255F;
-                float offset = (float) (Math.sin(Util.getMillis() / 500.0) + 1.0F) / 2.0F * 0.3F;
-                DebugRenderer.renderFilledBox(poseStack, source, connectionBox, red, green, blue, 0.5F + offset);
-                DebugRenderer.renderFilledBox(poseStack, source, connectionBox.inflate(0.03125), red, green, blue, 0.1F + offset);
+                float offset = (float) (Math.sin(Util.getMillis() / 500.0) + 1.0F) / 2.0F * 0.2F;
+                LinkHandler.drawColouredBox(poseStack, source, connectionBox, color, 0.6F + offset);
+                LinkHandler.drawColouredBox(poseStack, source, connectionBox.inflate(0.03125), color, 0.4F + offset);
                 poseStack.popPose();
                 DRAWN_CONNECTIONS.add(connection);
             }
