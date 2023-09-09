@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
 import com.mrcrayfish.framework.api.event.TickEvents;
+import com.mrcrayfish.furniture.refurbished.client.gui.screen.ElectricityGeneratorScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.FreezerScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.MicrowaveScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.PostBoxScreen;
@@ -42,6 +43,7 @@ public class ClientBootstrap
         register.apply(ModMenuTypes.MICROWAVE.get(), MicrowaveScreen::new);
         register.apply(ModMenuTypes.STOVE.get(), StoveScreen::new);
         register.apply(ModMenuTypes.POST_BOX.get(), PostBoxScreen::new);
+        register.apply(ModMenuTypes.ELECTRICITY_GENERATOR.get(), ElectricityGeneratorScreen::new);
     }
 
     public static void registerBlockEntityRenderers(BlockEntityRendererRegister register)
@@ -53,6 +55,7 @@ public class ClientBootstrap
         register.apply(ModBlockEntities.FRYING_PAN.get(), FryingPanBlockEntityRenderer::new);
         register.apply(ModBlockEntities.LIGHTSWITCH.get(), ElectricBlockEntityRenderer::new);
         register.apply(ModBlockEntities.CEILING_LIGHT.get(), ElectricBlockEntityRenderer::new);
+        register.apply(ModBlockEntities.ELECTRICITY_GENERATOR.get(), ElectricBlockEntityRenderer::new);
     }
 
     public static void registerEntityRenderers(EntityRendererRegister register)
@@ -94,5 +97,7 @@ public class ClientBootstrap
         register.apply(ModBlocks.MAIL_BOX_WARPED.get(), RenderType.cutout());
         register.apply(ModBlocks.CEILING_LIGHT_LIGHT.get(), RenderType.translucent());
         register.apply(ModBlocks.CEILING_LIGHT_DARK.get(), RenderType.translucent());
+        register.apply(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get(), RenderType.cutout());
+        register.apply(ModBlocks.ELECTRICITY_GENERATOR_DARK.get(), RenderType.cutout());
     }
 }

@@ -4,25 +4,21 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.mrcrayfish.furniture.refurbished.Config;
-import com.mrcrayfish.furniture.refurbished.blockentity.ElectricBlockEntity;
 import com.mrcrayfish.furniture.refurbished.client.ExtraModels;
 import com.mrcrayfish.furniture.refurbished.client.LinkHandler;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.electric.Connection;
+import com.mrcrayfish.furniture.refurbished.electric.IElectricNode;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.debug.DebugRenderer;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -32,24 +28,17 @@ import java.util.Set;
 /**
  * Author: MrCrayfish
  */
-public class ElectricBlockEntityRenderer implements BlockEntityRenderer<ElectricBlockEntity>
+public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricNode> implements BlockEntityRenderer<T>
 {
     private static final Set<Connection> DRAWN_CONNECTIONS = new HashSet<>();
     private static final int DEFAULT_COLOUR = 0xFFFFFFFF;
-    private static final int HIGHLIGHT_COLOUR = 0xFFFFB64C;
-    private static final int SUCCESS_COLOUR = 0xFFAAFFAA;
     private static final int ERROR_COLOUR = 0xFFC33636;
     private static final int CONNECTION_COLOUR = 0xFFFFC54C;
 
-    private final ItemRenderer renderer;
-
-    public ElectricBlockEntityRenderer(BlockEntityRendererProvider.Context context)
-    {
-        this.renderer = context.getItemRenderer();
-    }
+    public ElectricBlockEntityRenderer(BlockEntityRendererProvider.Context context) {}
 
     @Override
-    public void render(ElectricBlockEntity electric, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay)
+    public void render(T node, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay)
     {
         Minecraft mc = Minecraft.getInstance();
         if(mc.player == null || !mc.player.getItemInHand(InteractionHand.MAIN_HAND).is(ModItems.WRENCH.get()))
@@ -59,24 +48,24 @@ public class ElectricBlockEntityRenderer implements BlockEntityRenderer<Electric
         poseStack.pushPose();
         poseStack.translate(0.5F, 0.5F, 0.5F);
         VertexConsumer consumer = source.getBuffer(ClientServices.PLATFORM.getElectrictyNodeRenderType());
-        BakedModel model = this.getNodeModel(electric);
+        BakedModel model = this.getNodeModel(node);
         ClientServices.PLATFORM.drawBakedModel(model, poseStack, consumer, 15728880, overlay);
         poseStack.popPose();
 
         // Draw highlight colour
         LinkHandler handler = LinkHandler.get();
-        boolean isLookingAt = handler.isTargetNode(electric);
-        if((isLookingAt && !handler.isLinking() && !electric.isConnectionLimit()) || handler.isLinkingNode(electric) || handler.canLinkToNode(electric.getLevel(), electric) && handler.isTargetNode(electric))
+        boolean isLookingAt = handler.isTargetNode(node);
+        if((isLookingAt && !handler.isLinking() && !node.isConnectionLimit()) || handler.isLinkingNode(node) || handler.canLinkToNode(node.getLevel(), node) && handler.isTargetNode(node))
         {
-            AABB box = electric.getInteractBox();
-            int color = handler.getLinkColour(electric.getLevel());
+            AABB box = node.getInteractBox();
+            int color = handler.getLinkColour(node.getLevel());
             LinkHandler.drawColouredBox(poseStack, source, box.inflate(0.03125), color, 0.75F);
         }
 
         // Draw connections
         poseStack.pushPose();
         poseStack.translate(0.5F, 0.5F, 0.5F);
-        for(Connection connection : electric.getConnections())
+        for(Connection connection : node.getConnections())
         {
             if(!DRAWN_CONNECTIONS.contains(connection))
             {
@@ -86,10 +75,10 @@ public class ElectricBlockEntityRenderer implements BlockEntityRenderer<Electric
                 double pitch = Math.atan2(delta.horizontalDistance(), delta.y) + Mth.HALF_PI;
                 poseStack.mulPose(Axis.YP.rotation((float) yaw));
                 poseStack.mulPose(Axis.ZP.rotation((float) pitch));
-                AABB connectionBox = new AABB(0, -0.03125, -0.03125, delta.length(), 0.03125, 0.03125);
                 boolean selected = !handler.isLinking() && connection.equals(handler.getTargetLink());
-                int color = selected ? ERROR_COLOUR : connection.isPowered(electric.getLevel()) ? CONNECTION_COLOUR : DEFAULT_COLOUR;
+                int color = selected ? ERROR_COLOUR : connection.isPowered(node.getLevel()) ? CONNECTION_COLOUR : DEFAULT_COLOUR;
                 float offset = (float) (Math.sin(Util.getMillis() / 500.0) + 1.0F) / 2.0F * 0.2F;
+                AABB connectionBox = new AABB(0, -0.03125, -0.03125, delta.length(), 0.03125, 0.03125);
                 LinkHandler.drawColouredBox(poseStack, source, connectionBox, color, 0.6F + offset);
                 LinkHandler.drawColouredBox(poseStack, source, connectionBox.inflate(0.03125), color, 0.4F + offset);
                 poseStack.popPose();
@@ -99,7 +88,7 @@ public class ElectricBlockEntityRenderer implements BlockEntityRenderer<Electric
         poseStack.popPose();
     }
 
-    private BakedModel getNodeModel(ElectricBlockEntity node)
+    private BakedModel getNodeModel(IElectricNode node)
     {
         if(node.isConnectionLimit())
         {
@@ -119,7 +108,7 @@ public class ElectricBlockEntityRenderer implements BlockEntityRenderer<Electric
     }
 
     @Override
-    public boolean shouldRenderOffScreen(ElectricBlockEntity entity)
+    public boolean shouldRenderOffScreen(T node)
     {
         return true;
     }

@@ -245,6 +245,8 @@ public class CommonBlockModelProvider
         this.lightswitch(ModBlocks.LIGHTSWITCH_DARK.get());
         this.ceilingLight(ModBlocks.CEILING_LIGHT_LIGHT.get());
         this.ceilingLight(ModBlocks.CEILING_LIGHT_DARK.get());
+        this.electricityGenerator(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get());
+        this.electricityGenerator(ModBlocks.ELECTRICITY_GENERATOR_DARK.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -812,6 +814,24 @@ public class CommonBlockModelProvider
         state.createVariant().prop(CeilingLightBlock.FACING, Direction.EAST).prop(CeilingLightBlock.FACE, AttachFace.CEILING).prop(CeilingLightBlock.POWERED, true).parentModel(ModelTemplate.CEILING_LIGHT_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90).setXRotation(VariantProperties.Rotation.R270));
         state.createVariant().prop(CeilingLightBlock.FACING, Direction.SOUTH).prop(CeilingLightBlock.FACE, AttachFace.CEILING).prop(CeilingLightBlock.POWERED, true).parentModel(ModelTemplate.CEILING_LIGHT_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180).setXRotation(VariantProperties.Rotation.R270));
         state.createVariant().prop(CeilingLightBlock.FACING, Direction.WEST).prop(CeilingLightBlock.FACE, AttachFace.CEILING).prop(CeilingLightBlock.POWERED, true).parentModel(ModelTemplate.CEILING_LIGHT_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270).setXRotation(VariantProperties.Rotation.R270));
+        this.consumer.accept(state);
+    }
+
+    private void electricityGenerator(ElectricityGeneratorBlock block)
+    {
+        MetalType type = block.getMetalType();
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.metalParticle(type));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedBlockState state = new PreparedBlockState(block);
+        state.createVariant().prop(ElectricityGeneratorBlock.DIRECTION, Direction.NORTH).prop(ElectricityGeneratorBlock.POWERED, false).parentModel(ModelTemplate.ELECTRICITY_GENERATOR_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(ElectricityGeneratorBlock.DIRECTION, Direction.EAST).prop(ElectricityGeneratorBlock.POWERED, false).parentModel(ModelTemplate.ELECTRICITY_GENERATOR_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(ElectricityGeneratorBlock.DIRECTION, Direction.SOUTH).prop(ElectricityGeneratorBlock.POWERED, false).parentModel(ModelTemplate.ELECTRICITY_GENERATOR_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(ElectricityGeneratorBlock.DIRECTION, Direction.WEST).prop(ElectricityGeneratorBlock.POWERED, false).parentModel(ModelTemplate.ELECTRICITY_GENERATOR_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(ElectricityGeneratorBlock.DIRECTION, Direction.NORTH).prop(ElectricityGeneratorBlock.POWERED, true).parentModel(ModelTemplate.ELECTRICITY_GENERATOR_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
+        state.createVariant().prop(ElectricityGeneratorBlock.DIRECTION, Direction.EAST).prop(ElectricityGeneratorBlock.POWERED, true).parentModel(ModelTemplate.ELECTRICITY_GENERATOR_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(ElectricityGeneratorBlock.DIRECTION, Direction.SOUTH).prop(ElectricityGeneratorBlock.POWERED, true).parentModel(ModelTemplate.ELECTRICITY_GENERATOR_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(ElectricityGeneratorBlock.DIRECTION, Direction.WEST).prop(ElectricityGeneratorBlock.POWERED, true).parentModel(ModelTemplate.ELECTRICITY_GENERATOR_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         this.consumer.accept(state);
     }
 }

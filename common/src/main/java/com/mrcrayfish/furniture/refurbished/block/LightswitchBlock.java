@@ -2,8 +2,8 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.mrcrayfish.furniture.refurbished.blockentity.ElectricBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.LightswitchBlockEntity;
+import com.mrcrayfish.furniture.refurbished.electric.IElectricNode;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -87,9 +87,9 @@ public class LightswitchBlock extends FurnitureAttachedFaceBlock implements Enti
     {
         if(!state.is(newState.getBlock()))
         {
-            if(level.getBlockEntity(pos) instanceof ElectricBlockEntity electric)
+            if(level.getBlockEntity(pos) instanceof IElectricNode node)
             {
-                electric.onDestroyed();
+                node.onDestroyed();
             }
         }
         super.onRemove(state, level, pos, newState, isMoving);

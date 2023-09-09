@@ -3,10 +3,8 @@ package com.mrcrayfish.furniture.refurbished.block;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.furniture.refurbished.blockentity.CeilingLightBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.ElectricBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.ElectricModuleBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.LightswitchBlockEntity;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
+import com.mrcrayfish.furniture.refurbished.electric.IElectricNode;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -21,7 +19,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
@@ -72,9 +69,9 @@ public class CeilingLightBlock extends FurnitureAttachedFaceBlock implements Ent
     {
         if(!state.is(newState.getBlock()))
         {
-            if(level.getBlockEntity(pos) instanceof ElectricBlockEntity electric)
+            if(level.getBlockEntity(pos) instanceof IElectricNode node)
             {
-                electric.onDestroyed();
+                node.onDestroyed();
             }
         }
         super.onRemove(state, level, pos, newState, isMoving);

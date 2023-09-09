@@ -260,6 +260,19 @@ public class CommonItemTagsProvider
         outdoors.add(ModItems.SPATULA.get());
         outdoors.add(ModItems.KNIFE.get());
 
+        TagBuilder<Item> electronics = builder.apply(ModTags.Items.ELECTRONICS);
+        electronics.add(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get().asItem());
+        electronics.add(ModBlocks.ELECTRICITY_GENERATOR_DARK.get().asItem());
+        electronics.add(ModBlocks.DOORBELL.get().asItem());
+        electronics.add(ModBlocks.CEILING_LIGHT_LIGHT.get().asItem());
+        electronics.add(ModBlocks.CEILING_LIGHT_DARK.get().asItem());
+        electronics.add(ModItems.FRIDGE_LIGHT.get());
+        electronics.add(ModItems.FRIDGE_DARK.get());
+        electronics.add(ModBlocks.TOASTER_LIGHT.get().asItem());
+        electronics.add(ModBlocks.TOASTER_DARK.get().asItem());
+        electronics.add(ModBlocks.MICROWAVE_LIGHT.get().asItem());
+        electronics.add(ModBlocks.MICROWAVE_DARK.get().asItem());
+
         TagBuilder<Item> storage = builder.apply(ModTags.Items.STORAGE);
         storage.add(ModBlocks.DRAWER_OAK.get().asItem());
         storage.add(ModBlocks.DRAWER_SPRUCE.get().asItem());

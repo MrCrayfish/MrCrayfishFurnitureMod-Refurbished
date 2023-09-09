@@ -2,83 +2,79 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.electric.Connection;
-import com.mrcrayfish.furniture.refurbished.electric.IElectricNode;
+import com.mrcrayfish.furniture.refurbished.electric.ISourceNode;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
+import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * Author: MrCrayfish
  */
-public abstract class ElectricSourceBlockEntity extends ElectricBlockEntity
+public abstract class ElectricSourceBlockEntity extends BlockEntity implements ISourceNode
 {
+    protected final Set<Connection> connections = new HashSet<>();
+
     public ElectricSourceBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
     {
         super(type, pos, state);
     }
 
     @Override
-    public boolean isSource()
+    public BlockPos getPosition()
     {
-        return true;
+        return this.worldPosition;
     }
 
     @Override
-    public void onDestroyed()
+    public BlockEntity getBlockEntity()
     {
-        this.updatePowerInNetwork(false);
-        super.onDestroyed();
+        return this;
     }
 
     @Override
-    protected void onConnectedTo(IElectricNode other)
+    public Set<Connection> getConnections()
     {
-        if(other.isSource())
-            return;
-
-        if(!this.isPowered())
-            return;
-
-        this.updatePowerInNetwork(true);
+        return this.connections;
     }
 
     @Override
-    public void updatePower()
+    public void load(CompoundTag tag)
     {
-        if(this.isPowered())
-        {
-            this.updatePowerInNetwork(true);
-        }
+        super.load(tag);
+        this.readConnections(tag);
     }
 
-    protected void updatePowerInNetwork(boolean powered)
+    @Override
+    protected void saveAdditional(CompoundTag tag)
     {
-        int maxSearchDepth = Config.SERVER.electricity.maximumDaisyChain.get();
+        super.saveAdditional(tag);
+        this.writeConnections(tag);
+    }
 
-        // First find all the nodes that we can power
-        Set<IElectricNode> availableNodes = new HashSet<>();
-        this.searchNode(this, availableNodes, maxSearchDepth, node -> !node.isSource());
+    @Nullable
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket()
+    {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
 
-        // Removes available nodes that already match the target power state
-        availableNodes.removeIf(node -> node.isPowered() == powered);
+    @Override
+    public CompoundTag getUpdateTag()
+    {
+        return this.saveWithoutMetadata();
+    }
 
-        // Next, search for power sources in the network. We double the search depth since the furthest
-        // power source could be connected to the furthest node we can find from this lightswitch.
-        Set<IElectricNode> sourceNodes = new HashSet<>();
-        this.searchNode(this, sourceNodes, maxSearchDepth * 2, node -> node != this);
-        sourceNodes.removeIf(node -> !node.isSource() || !node.isPowered());
-
-        // Find nodes each source is currently powering and remove them from the available nodes
-        sourceNodes.forEach(source -> {
-            Set<IElectricNode> foundNodes = new HashSet<>();
-            this.searchNode(source, foundNodes, maxSearchDepth, node -> !node.isSource());
-            availableNodes.removeAll(foundNodes);
-        });
-
-        // The remaining nodes are considered unpowered and need to be updated
-        availableNodes.forEach(node -> node.setPowered(powered));
+    @SuppressWarnings("unused")
+    public AABB getRenderBoundingBox()
+    {
+        return new AABB(this.worldPosition).inflate(Config.CLIENT.electricityViewDistance.get());
     }
 }

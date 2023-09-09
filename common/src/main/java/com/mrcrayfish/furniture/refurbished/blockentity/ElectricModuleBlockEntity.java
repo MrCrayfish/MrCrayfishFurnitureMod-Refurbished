@@ -1,23 +1,42 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.mrcrayfish.furniture.refurbished.Config;
+import com.mrcrayfish.furniture.refurbished.electric.Connection;
 import com.mrcrayfish.furniture.refurbished.electric.IElectricNode;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
+import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Predicate;
 
 /**
  * Author: MrCrayfish
  */
-public abstract class ElectricModuleBlockEntity extends ElectricBlockEntity
+public abstract class ElectricModuleBlockEntity extends BlockEntity implements IElectricNode
 {
+    protected final Set<Connection> connections = new HashSet<>();
+
     public ElectricModuleBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
     {
         super(type, pos, state);
+    }
+
+    @Override
+    public BlockPos getPosition()
+    {
+        return this.worldPosition;
+    }
+
+    @Override
+    public BlockEntity getBlockEntity()
+    {
+        return this;
     }
 
     @Override
@@ -27,69 +46,41 @@ public abstract class ElectricModuleBlockEntity extends ElectricBlockEntity
     }
 
     @Override
-    public void onDestroyed()
+    public Set<Connection> getConnections()
     {
-        this.updatePowerInNetwork(true);
-        super.onDestroyed();
+        return this.connections;
     }
 
     @Override
-    protected void onConnectedTo(IElectricNode other)
+    public void load(CompoundTag tag)
     {
-        // Don't handle power update is other is a source
-        if(other.isSource())
-            return;
-
-        // If connected node is not powered, don't bother performing an update
-        if(!this.isPowered() && !other.isPowered())
-            return;
-
-        this.updatePowerInNetwork(false);
+        super.load(tag);
+        this.readConnections(tag);
     }
 
     @Override
-    public void updatePower()
+    protected void saveAdditional(CompoundTag tag)
     {
-        this.updatePowerInNetwork(false);
+        super.saveAdditional(tag);
+        this.writeConnections(tag);
     }
 
-    protected void updatePowerInNetwork(boolean removed)
+    @Nullable
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket()
     {
-        // Test to check this node is a valid traversal node. On removed, it shouldn't be.
-        Predicate<IElectricNode> includeSelf = node -> (!removed || node != this);
-        int maxSearchDepth = Config.SERVER.electricity.maximumDaisyChain.get();
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
 
-        // First find all the available nodes that we can connect to.
-        Set<IElectricNode> availableNodes = new HashSet<>();
-        this.searchNode(this, availableNodes, maxSearchDepth, node -> !node.isSource() && includeSelf.test(node));
+    @Override
+    public CompoundTag getUpdateTag()
+    {
+        return this.saveWithoutMetadata();
+    }
 
-        // Next, search for powered electric source nodes in the network.
-        // Again if this electric node is being removed, prevent it from being searched
-        Set<IElectricNode> sourceNodes = new HashSet<>();
-        this.searchNode(this, sourceNodes, maxSearchDepth * 2, node -> includeSelf.test(node));
-        sourceNodes.removeIf(node -> !node.isSource() || !node.isPowered());
-
-        // For each powered source nodes, find all the nodes that it can connect to. Again, if this
-        // node is being removed, ensure that it is ignored as a valid connection path.
-        Set<IElectricNode> foundNodes = new HashSet<>();
-        sourceNodes.forEach(source -> {
-            Set<IElectricNode> searchedNodes = new HashSet<>();
-            this.searchNode(source, searchedNodes, maxSearchDepth, node -> !node.isSource() && includeSelf.test(node));
-            foundNodes.addAll(searchedNodes);
-        });
-
-        // Update the power state of available nodes. Only the nodes where their power is different
-        // will be updated. This comes in handy when you want to play sounds when an electric module
-        // is turned on or off.
-        availableNodes.forEach(node -> {
-            if(foundNodes.contains(node)) {
-                if(!node.isPowered()) {
-                    node.setPowered(true);
-                }
-            }
-            else if(node.isPowered()) {
-                node.setPowered(false);
-            }
-        });
+    @SuppressWarnings("unused")
+    public AABB getRenderBoundingBox()
+    {
+        return new AABB(this.worldPosition).inflate(Config.CLIENT.electricityViewDistance.get());
     }
 }

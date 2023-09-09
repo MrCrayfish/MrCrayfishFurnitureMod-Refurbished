@@ -209,4 +209,9 @@ public class ModBlockEntities
             ModBlocks.CEILING_LIGHT_LIGHT.get(),
             ModBlocks.CEILING_LIGHT_DARK.get()
     });
+
+    public static final RegistryEntry<BlockEntityType<ElectricityGeneratorBlockEntity>> ELECTRICITY_GENERATOR = RegistryEntry.blockEntity(Utils.resource("electricity_generator"), ElectricityGeneratorBlockEntity::new, () -> new Block[]{
+            ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get(),
+            ModBlocks.ELECTRICITY_GENERATOR_DARK.get()
+    });
 }
