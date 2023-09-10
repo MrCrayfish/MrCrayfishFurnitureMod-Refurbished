@@ -16,7 +16,8 @@ public enum ExtraModels
 {
     ELECTRIC_NODE_NEUTRAL(Utils.resource("extra/electric_node_neutral")),
     ELECTRIC_NODE_ERROR(Utils.resource("extra/electric_node_error")),
-    ELECTRIC_NODE_SUCCESS(Utils.resource("extra/electric_node_success"));
+    ELECTRIC_NODE_SUCCESS(Utils.resource("extra/electric_node_success")),
+    ELECTRIC_NODE_POWER(Utils.resource("extra/electric_node_power"));
 
     private final ResourceLocation location;
 

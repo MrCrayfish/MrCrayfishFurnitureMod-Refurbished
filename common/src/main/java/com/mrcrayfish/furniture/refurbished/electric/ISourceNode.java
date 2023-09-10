@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.electric;
 
 import com.mrcrayfish.furniture.refurbished.Config;
+import net.minecraft.world.phys.AABB;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayDeque;
@@ -14,6 +15,8 @@ import java.util.function.Predicate;
  */
 public interface ISourceNode extends IElectricNode
 {
+    AABB DEFAULT_NODE_BOX = new AABB(0.3125, 0.3125, 0.3125, 0.6875, 0.6875, 0.6875);
+
     @Override
     default boolean isSource()
     {
@@ -43,6 +46,12 @@ public interface ISourceNode extends IElectricNode
     default void updatePower()
     {
         this.updatePowerInNetwork(this.isPowered());
+    }
+
+    @Override
+    default AABB getInteractBox()
+    {
+        return DEFAULT_NODE_BOX;
     }
 
     @Override

@@ -34,6 +34,7 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricNode> 
     private static final int DEFAULT_COLOUR = 0xFFFFFFFF;
     private static final int ERROR_COLOUR = 0xFFC33636;
     private static final int CONNECTION_COLOUR = 0xFFFFC54C;
+    private static final float POWER_NODE_SCALE = 1.5F;
 
     public ElectricBlockEntityRenderer(BlockEntityRendererProvider.Context context) {}
 
@@ -47,6 +48,8 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricNode> 
         // Draw node model
         poseStack.pushPose();
         poseStack.translate(0.5F, 0.5F, 0.5F);
+        float scale = node.isSource() ? POWER_NODE_SCALE : 1.0F;
+        poseStack.scale(scale, scale, scale);
         VertexConsumer consumer = source.getBuffer(ClientServices.PLATFORM.getElectrictyNodeRenderType());
         BakedModel model = this.getNodeModel(node);
         ClientServices.PLATFORM.drawBakedModel(model, poseStack, consumer, 15728880, overlay);
@@ -104,6 +107,12 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricNode> 
             }
             return ExtraModels.ELECTRIC_NODE_ERROR.getModel();
         }
+
+        if(node.isSource())
+        {
+            return ExtraModels.ELECTRIC_NODE_POWER.getModel();
+        }
+
         return ExtraModels.ELECTRIC_NODE_NEUTRAL.getModel();
     }
 
