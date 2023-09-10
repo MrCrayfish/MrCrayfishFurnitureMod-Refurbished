@@ -37,6 +37,7 @@ public class ToasterBlockEntityRenderer implements BlockEntityRenderer<ToasterBl
         this.drawItem(toaster.getItem(0), 1, direction, level, poseStack, source, light, overlay);
         this.drawItem(toaster.getItem(1), -1, direction, level, poseStack, source, light, overlay);
         poseStack.popPose();
+        ElectricBlockEntityRenderer.drawNodeAndConnections(toaster, poseStack, source, overlay);
     }
 
     private void drawItem(ItemStack stack, int offset, Direction direction, Level level, PoseStack poseStack, MultiBufferSource source, int light, int overlay)

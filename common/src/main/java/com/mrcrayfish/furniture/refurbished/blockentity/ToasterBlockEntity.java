@@ -3,6 +3,8 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 import com.mrcrayfish.furniture.refurbished.block.ToasterBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
+import com.mrcrayfish.furniture.refurbished.electric.Connection;
+import com.mrcrayfish.furniture.refurbished.electric.IElectricNode;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
@@ -22,22 +24,27 @@ import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Author: MrCrayfish
  */
-public class ToasterBlockEntity extends ProcessingContainerBlockEntity
+public class ToasterBlockEntity extends ProcessingContainerBlockEntity implements IElectricNode
 {
     public static final int[] INPUT_SLOTS = new int[]{0, 1};
     public static final int[] OUTPUT_SLOTS = new int[]{0, 1};
 
+    protected final Set<Connection> connections = new HashSet<>();
     protected boolean heating;
     protected boolean sync;
+    protected boolean powered;
 
     public ToasterBlockEntity(BlockPos pos, BlockState state)
     {
@@ -124,7 +131,7 @@ public class ToasterBlockEntity extends ProcessingContainerBlockEntity
     @Override
     public boolean canProcess()
     {
-        return this.heating && super.canProcessInput();
+        return this.powered && this.heating && super.canProcessInput();
     }
 
     @Override
@@ -293,9 +300,14 @@ public class ToasterBlockEntity extends ProcessingContainerBlockEntity
     public void load(CompoundTag tag)
     {
         super.load(tag);
+        this.readConnections(tag);
         if(tag.contains("Heating", Tag.TAG_BYTE))
         {
             this.heating = tag.getBoolean("Heating");
+        }
+        if(tag.contains("Powered", Tag.TAG_BYTE))
+        {
+            this.powered = tag.getBoolean("Powered");
         }
     }
 
@@ -303,7 +315,9 @@ public class ToasterBlockEntity extends ProcessingContainerBlockEntity
     protected void saveAdditional(CompoundTag tag)
     {
         super.saveAdditional(tag);
+        this.writeConnections(tag);
         tag.putBoolean("Heating", this.heating);
+        tag.putBoolean("Powered", this.powered);
     }
 
     @Nullable
@@ -325,5 +339,53 @@ public class ToasterBlockEntity extends ProcessingContainerBlockEntity
         {
             level.addParticle(ParticleTypes.SMOKE, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 0.0, 0.1 * level.random.nextDouble(), 0.0);
         }
+    }
+
+    @Override
+    public BlockPos getPosition()
+    {
+        return this.worldPosition;
+    }
+
+    @Override
+    public BlockEntity getBlockEntity()
+    {
+        return this;
+    }
+
+    @Override
+    public boolean isSource()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isPowered()
+    {
+        return this.powered;
+    }
+
+    @Override
+    public void setPowered(boolean powered)
+    {
+        this.powered = powered;
+        if(!powered && this.isHeating())
+        {
+            this.setHeating(false);
+        }
+        this.setChanged();
+    }
+
+    @Override
+    public Set<Connection> getConnections()
+    {
+        return this.connections;
+    }
+
+    @Override
+    public void syncConnections()
+    {
+        this.updateConnections();
+        BlockEntityHelper.sendCustomUpdate(this, this.getUpdateTag());
     }
 }

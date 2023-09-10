@@ -41,6 +41,11 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricNode> 
     @Override
     public void render(T node, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay)
     {
+        drawNodeAndConnections(node, poseStack, source, overlay);
+    }
+
+    public static void drawNodeAndConnections(IElectricNode node, PoseStack poseStack, MultiBufferSource source, int overlay)
+    {
         Minecraft mc = Minecraft.getInstance();
         if(mc.player == null || !mc.player.getItemInHand(InteractionHand.MAIN_HAND).is(ModItems.WRENCH.get()))
             return;
@@ -51,7 +56,7 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricNode> 
         float scale = node.isSource() ? POWER_NODE_SCALE : 1.0F;
         poseStack.scale(scale, scale, scale);
         VertexConsumer consumer = source.getBuffer(ClientServices.PLATFORM.getElectrictyNodeRenderType());
-        BakedModel model = this.getNodeModel(node);
+        BakedModel model = getNodeModel(node);
         ClientServices.PLATFORM.drawBakedModel(model, poseStack, consumer, 15728880, overlay);
         poseStack.popPose();
 
@@ -91,7 +96,7 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricNode> 
         poseStack.popPose();
     }
 
-    private BakedModel getNodeModel(IElectricNode node)
+    private static BakedModel getNodeModel(IElectricNode node)
     {
         if(node.isConnectionLimit())
         {
