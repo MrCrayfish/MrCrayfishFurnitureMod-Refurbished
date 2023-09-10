@@ -82,7 +82,7 @@ public class StoveBlockEntity extends BasicLootBlockEntity implements IProcessin
     }
 
     @Override
-    public int retrieveEnergy(boolean consume)
+    public int retrieveEnergy(boolean simulate)
     {
         ItemStack stack = this.getItem(0);
         if(!stack.isEmpty())
@@ -90,7 +90,7 @@ public class StoveBlockEntity extends BasicLootBlockEntity implements IProcessin
             int energy = Services.ITEM.getBurnTime(stack, null);
             if(energy > 0)
             {
-                if(consume)
+                if(!simulate)
                 {
                     stack.shrink(1);
                     this.totalEnergy = energy;
