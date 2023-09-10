@@ -84,11 +84,11 @@ public class Config
                 If this value is increased to a large value, it may result in an electricity node
                 being in an unloaded chunk. Electricity nodes in unloaded chunks won't be updated
                 even if the power does reach according to the maximumDaisyChain property.""")
-            public final DoubleProperty maximumLinkDistance = DoubleProperty.create(10, 1, 64);
+            public final DoubleProperty maximumLinkDistance = DoubleProperty.create(16, 1, 64);
 
             @ConfigProperty(name = "maximumLinksPerElectricityNode", comment = """
                 The maximum amount of links that can be connected to a single electricity node.""")
-            public final IntProperty maximumLinksPerElectricityNode = IntProperty.create(4, 1, 16);
+            public final IntProperty maximumLinksPerElectricityNode = IntProperty.create(3, 1, 16);
         }
     }
 }
