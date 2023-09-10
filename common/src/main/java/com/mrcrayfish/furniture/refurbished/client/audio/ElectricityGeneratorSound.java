@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.client.audio;
 
+import com.mrcrayfish.furniture.refurbished.blockentity.ElectricityGeneratorBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
@@ -8,6 +9,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 
+import java.lang.ref.WeakReference;
+
 /**
  * Author: MrCrayfish
  */
@@ -15,9 +18,12 @@ public class ElectricityGeneratorSound extends AbstractTickableSoundInstance
 {
     public static final double MAX_DISTANCE = Mth.square(5);
 
-    public ElectricityGeneratorSound(BlockPos pos)
+    private final WeakReference<ElectricityGeneratorBlockEntity> generatorRef;
+
+    public ElectricityGeneratorSound(BlockPos pos, ElectricityGeneratorBlockEntity generator)
     {
         super(ModSounds.BLOCK_ELECTRICITY_GENERATOR_ENGINE.get(), SoundSource.BLOCKS, SoundInstance.createUnseededRandom());
+        this.generatorRef = new WeakReference<>(generator);
         this.volume = 0F;
         this.looping = true;
         this.delay = 0;
@@ -35,6 +41,13 @@ public class ElectricityGeneratorSound extends AbstractTickableSoundInstance
     @Override
     public void tick()
     {
+        ElectricityGeneratorBlockEntity generator = this.generatorRef.get();
+        if(generator == null || !generator.isPowered() || generator.isRemoved())
+        {
+            this.stop();
+            return;
+        }
+
         Minecraft mc = Minecraft.getInstance();
         if(mc.player != null)
         {

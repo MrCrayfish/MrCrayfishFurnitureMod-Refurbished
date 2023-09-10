@@ -1,5 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.client.audio;
 
+import com.mrcrayfish.furniture.refurbished.blockentity.ElectricityGeneratorBlockEntity;
+import com.mrcrayfish.furniture.refurbished.electric.IElectricNode;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.TickableSoundInstance;
 import net.minecraft.core.BlockPos;
@@ -42,13 +44,16 @@ public class AudioManager
         }
 
         Minecraft mc = Minecraft.getInstance();
-        if(mc.player != null)
+        if(mc.player != null && mc.level != null)
         {
             Vec3 center = pos.getCenter();
             Vec3 eye = mc.player.getEyePosition();
-            if(eye.distanceToSqr(center) <= ElectricityGeneratorSound.MAX_DISTANCE)
+            if(eye.distanceToSqr(center) > ElectricityGeneratorSound.MAX_DISTANCE)
+                return;
+
+            if(mc.level.getBlockEntity(pos) instanceof ElectricityGeneratorBlockEntity generator)
             {
-                TickableSoundInstance sound = new ElectricityGeneratorSound(pos);
+                TickableSoundInstance sound = new ElectricityGeneratorSound(pos, generator);
                 mc.getSoundManager().play(sound);
                 this.playingSounds.put(pos, new WeakReference<>(sound));
             }
