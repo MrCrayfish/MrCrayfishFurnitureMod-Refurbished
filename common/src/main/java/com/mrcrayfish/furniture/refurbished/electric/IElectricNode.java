@@ -61,6 +61,11 @@ public interface IElectricNode
         this.updatePowerInNetwork(false);
     }
 
+    default boolean canPowerTraverse()
+    {
+        return true;
+    }
+
     default void updatePower()
     {
         this.updatePowerInNetwork(false);
@@ -103,7 +108,7 @@ public interface IElectricNode
 
     default void removeConnection(Connection connection)
     {
-        this.getConnections().remove(connection);
+        this.updateAndGetConnections().remove(connection);
         this.syncConnections();
     }
 
@@ -229,7 +234,7 @@ public interface IElectricNode
                 found.add(other);
 
                 int nextDepth = currentDepth + 1;
-                if(other.isSource() || nextDepth >= maxDepth)
+                if(other.isSource() || !other.canPowerTraverse() || nextDepth >= maxDepth)
                     continue;
 
                 queue.add(Pair.of(other, nextDepth));

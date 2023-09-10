@@ -65,7 +65,7 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricNode> 
         // Draw connections
         poseStack.pushPose();
         poseStack.translate(0.5F, 0.5F, 0.5F);
-        for(Connection connection : node.getConnections())
+        for(Connection connection : node.updateAndGetConnections())
         {
             if(!DRAWN_CONNECTIONS.contains(connection))
             {

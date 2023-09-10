@@ -3,22 +3,30 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 import com.mrcrayfish.furniture.refurbished.block.LightswitchBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Author: MrCrayfish
  */
-public class LightswitchBlockEntity extends ElectricSourceBlockEntity
+public class LightswitchBlockEntity extends ElectricModuleBlockEntity
 {
     public LightswitchBlockEntity(BlockPos pos, BlockState state)
     {
         super(ModBlockEntities.LIGHTSWITCH.get(), pos, state);
     }
 
-    public void onPowered(boolean powered)
+    public void onStateChange()
     {
-        this.updatePowerInNetwork(powered);
+        this.updatePowerInNetwork(false);
+    }
+
+    @Override
+    public boolean canPowerTraverse()
+    {
+        BlockState state = this.getBlockState();
+        return state.hasProperty(LightswitchBlock.ENABLED) && state.getValue(LightswitchBlock.ENABLED);
     }
 
     @Override
@@ -36,11 +44,5 @@ public class LightswitchBlockEntity extends ElectricSourceBlockEntity
         {
             this.level.setBlock(this.worldPosition, state.setValue(LightswitchBlock.POWERED, powered), Block.UPDATE_ALL);
         }
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return this.worldPosition.hashCode();
     }
 }

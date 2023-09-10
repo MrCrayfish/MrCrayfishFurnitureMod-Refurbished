@@ -239,4 +239,10 @@ public class ElectricityGeneratorBlockEntity extends BasicLootBlockEntity implem
     {
         return new AABB(this.worldPosition).inflate(Config.CLIENT.electricityViewDistance.get());
     }
+
+    @Override
+    public int hashCode()
+    {
+        return this.worldPosition.hashCode();
+    }
 }

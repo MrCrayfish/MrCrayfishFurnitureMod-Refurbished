@@ -83,4 +83,10 @@ public abstract class ElectricModuleBlockEntity extends BlockEntity implements I
     {
         return new AABB(this.worldPosition).inflate(Config.CLIENT.electricityViewDistance.get());
     }
+
+    @Override
+    public int hashCode()
+    {
+        return this.worldPosition.hashCode();
+    }
 }

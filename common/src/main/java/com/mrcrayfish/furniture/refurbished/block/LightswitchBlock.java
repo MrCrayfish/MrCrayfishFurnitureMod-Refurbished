@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
  */
 public class LightswitchBlock extends FurnitureAttachedFaceBlock implements EntityBlock
 {
+    public static final BooleanProperty ENABLED = BlockStateProperties.ENABLED;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
     protected final MetalType type;
@@ -40,7 +41,7 @@ public class LightswitchBlock extends FurnitureAttachedFaceBlock implements Enti
     public LightswitchBlock(MetalType type, Properties properties)
     {
         super(properties);
-        this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH).setValue(FACE, AttachFace.WALL).setValue(POWERED, false));
+        this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH).setValue(FACE, AttachFace.WALL).setValue(ENABLED, false).setValue(POWERED, false));
         this.type = type;
     }
 
@@ -69,14 +70,14 @@ public class LightswitchBlock extends FurnitureAttachedFaceBlock implements Enti
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
     {
-        boolean powered = !state.getValue(POWERED);
-        level.setBlock(pos, state.setValue(POWERED, powered), Block.UPDATE_ALL);
-        level.playSound(null, pos, SoundEvents.LEVER_CLICK, SoundSource.BLOCKS, 0.3F, powered ? 0.6F : 0.5F);
+        boolean enabled = !state.getValue(ENABLED);
+        level.setBlock(pos, state.setValue(ENABLED, enabled), Block.UPDATE_ALL);
+        level.playSound(null, pos, SoundEvents.LEVER_CLICK, SoundSource.BLOCKS, 0.3F, enabled ? 0.6F : 0.5F);
         if(!level.isClientSide())
         {
             if(level.getBlockEntity(pos) instanceof LightswitchBlockEntity lightswitch)
             {
-                lightswitch.onPowered(powered);
+                lightswitch.onStateChange();
             }
         }
         return InteractionResult.sidedSuccess(level.isClientSide());
@@ -99,6 +100,7 @@ public class LightswitchBlock extends FurnitureAttachedFaceBlock implements Enti
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
     {
         super.createBlockStateDefinition(builder);
+        builder.add(ENABLED);
         builder.add(POWERED);
     }
 
