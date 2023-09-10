@@ -67,6 +67,7 @@ public class ClientBootstrap
         register.apply(ModBlockEntities.ELECTRICITY_GENERATOR.get(), ElectricBlockEntityRenderer::new);
         register.apply(ModBlockEntities.DOORBELL.get(), ElectricBlockEntityRenderer::new);
         register.apply(ModBlockEntities.FREEZER.get(), ElectricBlockEntityRenderer::new);
+        register.apply(ModBlockEntities.MICROWAVE.get(), ElectricBlockEntityRenderer::new);
     }
 
     public static void registerEntityRenderers(EntityRendererRegister register)
