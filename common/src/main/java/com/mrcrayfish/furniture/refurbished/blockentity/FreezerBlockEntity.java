@@ -158,9 +158,7 @@ public class FreezerBlockEntity extends ProcessingContainerBlockEntity implement
         // Sync the state to the client
         if(!this.level.isClientSide())
         {
-            CompoundTag compound = new CompoundTag();
-            compound.putBoolean("Powered", powered);
-            BlockEntityHelper.sendCustomUpdate(this, compound);
+            this.syncConnections();
         }
     }
 
@@ -187,5 +185,15 @@ public class FreezerBlockEntity extends ProcessingContainerBlockEntity implement
         super.saveAdditional(tag);
         this.writeConnections(tag);
         tag.putBoolean("Powered", this.powered);
+    }
+
+    @Override
+    public void syncConnections()
+    {
+        this.updateConnections();
+        CompoundTag compound = new CompoundTag();
+        this.writeConnections(compound);
+        compound.putBoolean("Powered", powered);
+        BlockEntityHelper.sendCustomUpdate(this.getBlockEntity(), compound);
     }
 }
