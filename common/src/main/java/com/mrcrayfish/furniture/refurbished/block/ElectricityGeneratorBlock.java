@@ -105,13 +105,13 @@ public class ElectricityGeneratorBlock extends FurnitureHorizontalBlock implemen
     }
 
     @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends ElectricityGeneratorBlockEntity> cuttingBoard)
+    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends ElectricityGeneratorBlockEntity> generator)
     {
         if(!level.isClientSide())
         {
-            return createTickerHelper(type, cuttingBoard, ElectricityGeneratorBlockEntity::serverTick);
+            return createTickerHelper(type, generator, ElectricityGeneratorBlockEntity::serverTick);
         }
-        return null;
+        return createTickerHelper(type, generator, ElectricityGeneratorBlockEntity::clientTick);
     }
 
     @Override

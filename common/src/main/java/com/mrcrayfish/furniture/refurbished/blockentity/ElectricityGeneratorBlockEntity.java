@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.block.ElectricityGeneratorBlock;
+import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.electric.Connection;
 import com.mrcrayfish.furniture.refurbished.electric.ISourceNode;
@@ -117,6 +118,11 @@ public class ElectricityGeneratorBlockEntity extends BasicLootBlockEntity implem
     public static void serverTick(Level level, BlockPos pos, BlockState state, ElectricityGeneratorBlockEntity generator)
     {
         generator.processTick();
+    }
+
+    public static void clientTick(Level level, BlockPos pos, BlockState state, ElectricityGeneratorBlockEntity generator)
+    {
+        AudioManager.get().playElectricityGeneratorSound(pos);
     }
 
     @Override

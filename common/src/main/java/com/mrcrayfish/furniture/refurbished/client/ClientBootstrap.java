@@ -1,6 +1,9 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
+import com.mrcrayfish.framework.api.event.ClientConnectionEvents;
+import com.mrcrayfish.framework.api.event.PlayerEvents;
 import com.mrcrayfish.framework.api.event.TickEvents;
+import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.ElectricityGeneratorScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.FreezerScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.MicrowaveScreen;
@@ -34,6 +37,12 @@ public class ClientBootstrap
         TickEvents.START_RENDER.register(partialTick -> {
             LinkHandler.get().beforeRender(partialTick);
             ElectricBlockEntityRenderer.clearDrawn();
+        });
+        ClientConnectionEvents.LOGGING_OUT.register(connection -> {
+            AudioManager.get().resetSounds();
+        });
+        PlayerEvents.CHANGE_DIMENSION.register((player, oldDimension, newDimension) -> {
+            AudioManager.get().resetSounds();
         });
     }
 

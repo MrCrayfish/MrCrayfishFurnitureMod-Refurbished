@@ -5,6 +5,12 @@
             "refurbished_furniture:block/doorbell/chime"
         ]
     },
+    "block.electricity_generator.engine": {
+        "subtitle": "subtitle.refurbished_furniture.electricity_generator_engine",
+        "sounds": [
+            "refurbished_furniture:block/electricity_generator/engine"
+        ]
+    },
     "item.package.open": {
         "subtitle": "subtitle.refurbished_furniture.package_open",
         "sounds": [
