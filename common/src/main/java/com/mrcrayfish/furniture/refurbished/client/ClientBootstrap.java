@@ -65,6 +65,7 @@ public class ClientBootstrap
         register.apply(ModBlockEntities.LIGHTSWITCH.get(), ElectricBlockEntityRenderer::new);
         register.apply(ModBlockEntities.CEILING_LIGHT.get(), ElectricBlockEntityRenderer::new);
         register.apply(ModBlockEntities.ELECTRICITY_GENERATOR.get(), ElectricBlockEntityRenderer::new);
+        register.apply(ModBlockEntities.DOORBELL.get(), ElectricBlockEntityRenderer::new);
     }
 
     public static void registerEntityRenderers(EntityRendererRegister register)

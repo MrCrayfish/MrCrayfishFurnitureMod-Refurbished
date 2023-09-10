@@ -121,18 +121,16 @@ public class DoorbellBlock extends FurnitureHorizontalBlock implements EntityBlo
         {
             return InteractionResult.CONSUME;
         }
-
-        // Send notification to owner
-        if(level.getBlockEntity(pos) instanceof DoorbellBlockEntity doorbell)
+        if(level.getBlockEntity(pos) instanceof DoorbellBlockEntity doorbell && doorbell.isPowered())
         {
+            level.setBlock(pos, state.setValue(ENABLED, true), Block.UPDATE_ALL);
+            level.scheduleTick(pos, this, 20);
+            level.playSound(null, pos, ModSounds.BLOCK_DOORBELL_CHIME.get(), SoundSource.BLOCKS);
+            level.updateNeighbourForOutputSignal(pos, this);
             doorbell.sendNotificationToOwner(player);
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
-
-        level.setBlock(pos, state.setValue(ENABLED, true), Block.UPDATE_ALL);
-        level.scheduleTick(pos, this, 20);
-        level.playSound(null, pos, ModSounds.BLOCK_DOORBELL_CHIME.get(), SoundSource.BLOCKS);
-        level.updateNeighbourForOutputSignal(pos, this);
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.FAIL;
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageDoorbellNotification;
+import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -19,13 +20,14 @@ import java.util.UUID;
 /**
  * Author: MrCrayfish
  */
-public class DoorbellBlockEntity extends BlockEntity implements INameable
+public class DoorbellBlockEntity extends ElectricModuleBlockEntity implements INameable
 {
     public static final int MAX_NAME_LENGTH = 32;
 
     protected UUID owner;
     protected String customName = "";
     protected long lastPressedTime;
+    protected boolean powered;
 
     public DoorbellBlockEntity(BlockPos pos, BlockState state)
     {
@@ -36,6 +38,27 @@ public class DoorbellBlockEntity extends BlockEntity implements INameable
     {
         this.owner = owner;
         this.setChanged();
+    }
+
+    @Override
+    public boolean isPowered()
+    {
+        return this.powered;
+    }
+
+    @Override
+    public void setPowered(boolean powered)
+    {
+        this.powered = powered;
+        this.setChanged();
+
+        // Sync the state to the client
+        if(!this.level.isClientSide())
+        {
+            CompoundTag compound = new CompoundTag();
+            compound.putBoolean("Powered", powered);
+            BlockEntityHelper.sendCustomUpdate(this, compound);
+        }
     }
 
     @Override
@@ -83,6 +106,10 @@ public class DoorbellBlockEntity extends BlockEntity implements INameable
         {
             this.customName = tag.getString("CustomName");
         }
+        if(tag.contains("Powered", Tag.TAG_BYTE))
+        {
+            this.powered = tag.getBoolean("Powered");
+        }
     }
 
     @Override
@@ -93,6 +120,7 @@ public class DoorbellBlockEntity extends BlockEntity implements INameable
         {
             tag.putUUID("Owner", this.owner);
         }
+        tag.putBoolean("Powered", this.powered);
         tag.putString("CustomName", this.customName);
     }
 }
