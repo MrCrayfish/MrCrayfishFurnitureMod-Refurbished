@@ -3,6 +3,8 @@ package com.mrcrayfish.furniture.refurbished.block;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.furniture.refurbished.blockentity.CeilingLightBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.ElectricityGeneratorBlockEntity;
+import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.electric.IElectricNode;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
@@ -14,6 +16,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.AttachFace;
@@ -89,6 +93,22 @@ public class CeilingLightBlock extends FurnitureAttachedFaceBlock implements Ent
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
     {
         return new CeilingLightBlockEntity(pos, state);
+    }
+
+    @Nullable
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
+    {
+        return createTicker(level, type, ModBlockEntities.CEILING_LIGHT.get());
+    }
+
+    @Nullable
+    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends CeilingLightBlockEntity> ceilingLight)
+    {
+        if(!level.isClientSide())
+        {
+            return createTickerHelper(type, ceilingLight, CeilingLightBlockEntity::serverTick);
+        }
+        return null;
     }
 
     @Override

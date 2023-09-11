@@ -11,7 +11,6 @@ import net.minecraft.world.phys.AABB;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayDeque;
-import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -37,6 +36,10 @@ public interface IElectricNode
 
     Set<Connection> getConnections();
 
+    void setReceivingPower(boolean power);
+
+    boolean isReceivingPower();
+
     default boolean isValid()
     {
         return !this.getBlockEntity().isRemoved();
@@ -44,31 +47,14 @@ public interface IElectricNode
 
     default void onDestroyed()
     {
-        this.updatePowerInNetwork(true);
         this.removeAllConnections();
     }
 
-    default void onConnectedTo(IElectricNode other)
-    {
-        // Don't handle power update is other is a source
-        if(other.isSource())
-            return;
-
-        // If connected node is not powered, don't bother performing an update
-        if(!this.isPowered() && !other.isPowered())
-            return;
-
-        this.updatePowerInNetwork(false);
-    }
+    default void onConnectedTo(IElectricNode other) {}
 
     default boolean canPowerTraverse()
     {
         return true;
-    }
-
-    default void updatePower()
-    {
-        this.updatePowerInNetwork(false);
     }
 
     default Set<Connection> updateAndGetConnections()
@@ -77,7 +63,22 @@ public interface IElectricNode
         return this.getConnections();
     }
 
-    default void syncConnections()
+    default void updatePoweredState()
+    {
+        if(!this.isReceivingPower())
+        {
+            if(this.isPowered())
+            {
+                this.setPowered(false);
+            }
+        }
+        else if(!this.isPowered())
+        {
+            this.setPowered(true);
+        }
+    }
+
+    default void syncNodeData()
     {
         this.updateConnections();
         CompoundTag compound = new CompoundTag();
@@ -109,7 +110,7 @@ public interface IElectricNode
     default void removeConnection(Connection connection)
     {
         this.updateAndGetConnections().remove(connection);
-        this.syncConnections();
+        this.syncNodeData();
     }
 
     default void removeAllConnections()
@@ -144,7 +145,7 @@ public interface IElectricNode
         {
             other.connectTo(this);
             this.onConnectedTo(other);
-            this.syncConnections();
+            this.syncNodeData();
             return true;
         }
         return false;
@@ -166,45 +167,7 @@ public interface IElectricNode
         return DEFAULT_NODE_BOX;
     }
 
-    default void updatePowerInNetwork(boolean removed)
-    {
-        // Test to check this node is a valid traversal node. On removed, it shouldn't be.
-        Predicate<IElectricNode> includeSelf = node -> (!removed || node != this);
-        int maxSearchDepth = Config.SERVER.electricity.maximumDaisyChain.get();
-
-        // First find all the available nodes that we can connect to.
-        Set<IElectricNode> availableNodes = new HashSet<>();
-        searchNodes(this, availableNodes, maxSearchDepth, node -> !node.isSource() && includeSelf.test(node));
-
-        // Next, search for powered electric source nodes in the network.
-        // Again if this electric node is being removed, prevent it from being searched
-        Set<IElectricNode> sourceNodes = new HashSet<>();
-        searchNodes(this, sourceNodes, maxSearchDepth * 2, node -> includeSelf.test(node));
-        sourceNodes.removeIf(node -> !node.isSource() || !node.isPowered());
-
-        // For each powered source nodes, find all the nodes that it can connect to. Again, if this
-        // node is being removed, ensure that it is ignored as a valid connection path.
-        Set<IElectricNode> foundNodes = new HashSet<>();
-        sourceNodes.forEach(source -> {
-            Set<IElectricNode> searchedNodes = new HashSet<>();
-            searchNodes(source, searchedNodes, maxSearchDepth, node -> !node.isSource() && includeSelf.test(node));
-            foundNodes.addAll(searchedNodes);
-        });
-
-        // Update the power state of available nodes. Only the nodes where their power is different
-        // will be updated. This comes in handy when you want to play sounds when an electric module
-        // is turned on or off.
-        availableNodes.forEach(node -> {
-            if(foundNodes.contains(node)) {
-                if(!node.isPowered()) {
-                    node.setPowered(true);
-                }
-            }
-            else if(node.isPowered()) {
-                node.setPowered(false);
-            }
-        });
-    }
+    default void invalidateCache() {}
 
     static void searchNodes(IElectricNode start, Set<IElectricNode> found, int maxDepth, Predicate<IElectricNode> predicate)
     {

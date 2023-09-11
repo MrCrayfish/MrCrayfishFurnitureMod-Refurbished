@@ -2,10 +2,13 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.electric.Connection;
+import com.mrcrayfish.furniture.refurbished.electric.ElectricitySources;
 import com.mrcrayfish.furniture.refurbished.electric.ISourceNode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -46,6 +49,13 @@ public abstract class ElectricSourceBlockEntity extends BlockEntity implements I
     }
 
     @Override
+    public void setLevel(Level level)
+    {
+        super.setLevel(level);
+        ISourceNode.register(this, level);
+    }
+
+    @Override
     public void load(CompoundTag tag)
     {
         super.load(tag);
@@ -72,15 +82,17 @@ public abstract class ElectricSourceBlockEntity extends BlockEntity implements I
         return this.saveWithoutMetadata();
     }
 
-    @SuppressWarnings("unused")
-    public AABB getRenderBoundingBox()
-    {
-        return new AABB(this.worldPosition).inflate(Config.CLIENT.electricityViewDistance.get());
-    }
-
     @Override
     public int hashCode()
     {
         return this.worldPosition.hashCode();
+    }
+
+    // Forge method
+    // @Override
+    @SuppressWarnings("unused")
+    public AABB getRenderBoundingBox()
+    {
+        return new AABB(this.worldPosition).inflate(Config.CLIENT.electricityViewDistance.get());
     }
 }

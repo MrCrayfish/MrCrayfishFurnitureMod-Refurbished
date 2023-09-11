@@ -31,19 +31,17 @@ import java.util.Set;
 /**
  * Author: MrCrayfish
  */
-public class MicrowaveBlockEntity extends ProcessingContainerBlockEntity implements IElectricNode
+public class MicrowaveBlockEntity extends ElectricModuleProcessingContainerBlockEntity
 {
     public static final int[] INPUT_SLOTS = new int[]{0};
     public static final int[] OUTPUT_SLOTS = new int[]{1};
     public static final int DATA_PROCESS_TIME = 0;
     public static final int DATA_MAX_PROCESS_TIME = 1;
 
-    protected final Set<Connection> connections = new HashSet<>();
     protected final ContainerData data = new BuildableContainerData(builder -> {
         builder.add(DATA_PROCESS_TIME, () -> processingTime, value -> processingTime = value);
         builder.add(DATA_MAX_PROCESS_TIME, () -> totalProcessingTime, value -> totalProcessingTime = value);
     });
-    protected boolean powered;
 
     public MicrowaveBlockEntity(BlockPos pos, BlockState state)
     {
@@ -92,12 +90,6 @@ public class MicrowaveBlockEntity extends ProcessingContainerBlockEntity impleme
     }
 
     @Override
-    public boolean canProcess()
-    {
-        return this.powered && super.canProcess();
-    }
-
-    @Override
     public void onOpen(Level level, BlockPos pos, BlockState state)
     {
         // TODO sounds
@@ -117,77 +109,5 @@ public class MicrowaveBlockEntity extends ProcessingContainerBlockEntity impleme
         {
             level.setBlock(this.getBlockPos(), state.setValue(MicrowaveBlock.OPEN, open), Block.UPDATE_ALL);
         }
-    }
-
-    @Override
-    public BlockPos getPosition()
-    {
-        return this.worldPosition;
-    }
-
-    @Override
-    public BlockEntity getBlockEntity()
-    {
-        return this;
-    }
-
-    @Override
-    public boolean isSource()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isPowered()
-    {
-        return this.powered;
-    }
-
-    @Override
-    public void setPowered(boolean powered)
-    {
-        this.powered = powered;
-        this.setChanged();
-
-        // Sync the state to the client
-        if(!this.level.isClientSide())
-        {
-            this.syncConnections();
-        }
-    }
-
-    @Override
-    public Set<Connection> getConnections()
-    {
-        return this.connections;
-    }
-
-    @Override
-    public void load(CompoundTag tag)
-    {
-        super.load(tag);
-        this.readConnections(tag);
-        if(tag.contains("Powered", Tag.TAG_BYTE))
-        {
-            this.powered = tag.getBoolean("Powered");
-        }
-    }
-
-    @Override
-    protected void saveAdditional(CompoundTag tag)
-    {
-        super.saveAdditional(tag);
-        this.writeConnections(tag);
-        tag.putBoolean("Powered", this.powered);
-    }
-
-    @Override
-    public void syncConnections()
-    {
-        this.updateConnections();
-        CompoundTag compound = new CompoundTag();
-        this.writeConnections(compound);
-        compound.putBoolean("Powered", this.powered);
-        BlockEntityHelper.sendCustomUpdate(this.getBlockEntity(), compound);
     }
 }

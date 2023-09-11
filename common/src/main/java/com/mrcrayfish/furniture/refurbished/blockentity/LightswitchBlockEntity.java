@@ -4,6 +4,7 @@ import com.mrcrayfish.furniture.refurbished.block.LightswitchBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -15,11 +16,6 @@ public class LightswitchBlockEntity extends ElectricModuleBlockEntity
     public LightswitchBlockEntity(BlockPos pos, BlockState state)
     {
         super(ModBlockEntities.LIGHTSWITCH.get(), pos, state);
-    }
-
-    public void onStateChange()
-    {
-        this.updatePowerInNetwork(false);
     }
 
     @Override
@@ -44,5 +40,11 @@ public class LightswitchBlockEntity extends ElectricModuleBlockEntity
         {
             this.level.setBlock(this.worldPosition, state.setValue(LightswitchBlock.POWERED, powered), Block.UPDATE_ALL);
         }
+    }
+
+    public static void serverTick(Level level, BlockPos pos, BlockState state, LightswitchBlockEntity lightSwitch)
+    {
+        lightSwitch.updatePoweredState();
+        lightSwitch.setReceivingPower(false);
     }
 }

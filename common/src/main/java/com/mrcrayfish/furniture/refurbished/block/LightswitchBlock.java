@@ -2,7 +2,9 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mrcrayfish.furniture.refurbished.blockentity.CeilingLightBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.LightswitchBlockEntity;
+import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.electric.IElectricNode;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
@@ -16,6 +18,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.AttachFace;
@@ -73,13 +77,6 @@ public class LightswitchBlock extends FurnitureAttachedFaceBlock implements Enti
         boolean enabled = !state.getValue(ENABLED);
         level.setBlock(pos, state.setValue(ENABLED, enabled), Block.UPDATE_ALL);
         level.playSound(null, pos, SoundEvents.LEVER_CLICK, SoundSource.BLOCKS, 0.3F, enabled ? 0.6F : 0.5F);
-        if(!level.isClientSide())
-        {
-            if(level.getBlockEntity(pos) instanceof LightswitchBlockEntity lightswitch)
-            {
-                lightswitch.onStateChange();
-            }
-        }
         return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
@@ -109,5 +106,21 @@ public class LightswitchBlock extends FurnitureAttachedFaceBlock implements Enti
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
     {
         return new LightswitchBlockEntity(pos, state);
+    }
+
+    @Nullable
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
+    {
+        return createTicker(level, type, ModBlockEntities.LIGHTSWITCH.get());
+    }
+
+    @Nullable
+    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends LightswitchBlockEntity> lightSwitch)
+    {
+        if(!level.isClientSide())
+        {
+            return createTickerHelper(type, lightSwitch, LightswitchBlockEntity::serverTick);
+        }
+        return null;
     }
 }

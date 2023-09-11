@@ -3,7 +3,6 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 import com.mrcrayfish.furniture.refurbished.block.ToasterBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
-import com.mrcrayfish.furniture.refurbished.electric.Connection;
 import com.mrcrayfish.furniture.refurbished.electric.IElectricNode;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
@@ -24,27 +23,22 @@ import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Author: MrCrayfish
  */
-public class ToasterBlockEntity extends ProcessingContainerBlockEntity implements IElectricNode
+public class ToasterBlockEntity extends ElectricModuleProcessingContainerBlockEntity
 {
     public static final int[] INPUT_SLOTS = new int[]{0, 1};
     public static final int[] OUTPUT_SLOTS = new int[]{0, 1};
 
-    protected final Set<Connection> connections = new HashSet<>();
     protected boolean heating;
     protected boolean sync;
-    protected boolean powered;
 
     public ToasterBlockEntity(BlockPos pos, BlockState state)
     {
@@ -54,6 +48,16 @@ public class ToasterBlockEntity extends ProcessingContainerBlockEntity implement
     public ToasterBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int containerSize, RecipeType<? extends AbstractCookingRecipe> recipeType)
     {
         super(type, pos, state, containerSize, recipeType);
+    }
+
+    @Override
+    public void setPowered(boolean powered)
+    {
+        super.setPowered(powered);
+        if(!powered && this.isHeating())
+        {
+            this.setHeating(false);
+        }
     }
 
     /**
@@ -131,7 +135,7 @@ public class ToasterBlockEntity extends ProcessingContainerBlockEntity implement
     @Override
     public boolean canProcess()
     {
-        return this.powered && this.heating && super.canProcessInput();
+        return this.heating && super.canProcessInput();
     }
 
     @Override
@@ -296,43 +300,6 @@ public class ToasterBlockEntity extends ProcessingContainerBlockEntity implement
         return true;
     }
 
-    @Override
-    public void load(CompoundTag tag)
-    {
-        super.load(tag);
-        this.readConnections(tag);
-        if(tag.contains("Heating", Tag.TAG_BYTE))
-        {
-            this.heating = tag.getBoolean("Heating");
-        }
-        if(tag.contains("Powered", Tag.TAG_BYTE))
-        {
-            this.powered = tag.getBoolean("Powered");
-        }
-    }
-
-    @Override
-    protected void saveAdditional(CompoundTag tag)
-    {
-        super.saveAdditional(tag);
-        this.writeConnections(tag);
-        tag.putBoolean("Heating", this.heating);
-        tag.putBoolean("Powered", this.powered);
-    }
-
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket()
-    {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @Override
-    public CompoundTag getUpdateTag()
-    {
-        return this.saveWithoutMetadata();
-    }
-
     public static void clientTick(Level level, BlockPos pos, BlockState state, ToasterBlockEntity entity)
     {
         if(state.getValue(ToasterBlock.POWERED))
@@ -342,50 +309,25 @@ public class ToasterBlockEntity extends ProcessingContainerBlockEntity implement
     }
 
     @Override
-    public BlockPos getPosition()
+    public void load(CompoundTag tag)
     {
-        return this.worldPosition;
-    }
-
-    @Override
-    public BlockEntity getBlockEntity()
-    {
-        return this;
-    }
-
-    @Override
-    public boolean isSource()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isPowered()
-    {
-        return this.powered;
-    }
-
-    @Override
-    public void setPowered(boolean powered)
-    {
-        this.powered = powered;
-        if(!powered && this.isHeating())
+        super.load(tag);
+        if(tag.contains("Heating", Tag.TAG_BYTE))
         {
-            this.setHeating(false);
+            this.heating = tag.getBoolean("Heating");
         }
-        this.setChanged();
     }
 
     @Override
-    public Set<Connection> getConnections()
+    protected void saveAdditional(CompoundTag tag)
     {
-        return this.connections;
+        super.saveAdditional(tag);
+        tag.putBoolean("Heating", this.heating);
     }
 
     @Override
-    public void syncConnections()
+    public CompoundTag getUpdateTag()
     {
-        this.updateConnections();
-        BlockEntityHelper.sendCustomUpdate(this, this.getUpdateTag());
+        return this.saveWithoutMetadata();
     }
 }

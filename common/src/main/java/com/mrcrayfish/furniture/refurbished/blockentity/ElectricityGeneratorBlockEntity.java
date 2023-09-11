@@ -4,41 +4,29 @@ import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.block.ElectricityGeneratorBlock;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
-import com.mrcrayfish.furniture.refurbished.electric.Connection;
-import com.mrcrayfish.furniture.refurbished.electric.ISourceNode;
 import com.mrcrayfish.furniture.refurbished.inventory.BuildableContainerData;
 import com.mrcrayfish.furniture.refurbished.inventory.ElectricityGeneratorMenu;
-import com.mrcrayfish.furniture.refurbished.inventory.StoveMenu;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
-
-import javax.annotation.Nullable;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Author: MrCrayfish
  */
-public class ElectricityGeneratorBlockEntity extends BasicLootBlockEntity implements ISourceNode, IProcessingBlock
+public class ElectricityGeneratorBlockEntity extends ElectricSourceLootBlockEntity implements IProcessingBlock
 {
     public static final int DATA_ENERGY = 0;
     public static final int DATA_TOTAL_ENERGY = 1;
 
-    protected final Set<Connection> connections = new HashSet<>();
     protected int totalEnergy;
     protected int energy;
 
@@ -58,24 +46,6 @@ public class ElectricityGeneratorBlockEntity extends BasicLootBlockEntity implem
     }
 
     @Override
-    public BlockEntity getBlockEntity()
-    {
-        return this;
-    }
-
-    @Override
-    public BlockPos getPosition()
-    {
-        return this.worldPosition;
-    }
-
-    @Override
-    public Set<Connection> getConnections()
-    {
-        return this.connections;
-    }
-
-    @Override
     protected Component getDefaultName()
     {
         return Utils.translation("container", "electricity_generator");
@@ -90,7 +60,7 @@ public class ElectricityGeneratorBlockEntity extends BasicLootBlockEntity implem
     @Override
     public boolean isMatchingContainerMenu(AbstractContainerMenu menu)
     {
-        return menu instanceof StoveMenu stove && stove.getContainer() == this;
+        return menu instanceof ElectricityGeneratorMenu generator && generator.getContainer() == this;
     }
 
     @Override
@@ -111,13 +81,14 @@ public class ElectricityGeneratorBlockEntity extends BasicLootBlockEntity implem
         if(state.hasProperty(ElectricityGeneratorBlock.POWERED))
         {
             this.level.setBlock(this.worldPosition, state.setValue(ElectricityGeneratorBlock.POWERED, powered), Block.UPDATE_ALL);
-            this.updatePowerInNetwork(powered);
         }
     }
 
-    public static void serverTick(Level level, BlockPos pos, BlockState state, ElectricityGeneratorBlockEntity generator)
+    @Override
+    public void earlyLevelTick()
     {
-        generator.processTick();
+        this.processTick();
+        super.earlyLevelTick();
     }
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, ElectricityGeneratorBlockEntity generator)
@@ -155,7 +126,7 @@ public class ElectricityGeneratorBlockEntity extends BasicLootBlockEntity implem
         ItemStack stack = this.getItem(0);
         if(!stack.isEmpty())
         {
-            int energy = Services.ITEM.getBurnTime(stack, null) * 10; // TODO Config
+            int energy = Services.ITEM.getBurnTime(stack, null) * Config.SERVER.electricity.fuelToPowerRatio.get();
             if(energy > 0)
             {
                 if(!simulate)
@@ -211,44 +182,5 @@ public class ElectricityGeneratorBlockEntity extends BasicLootBlockEntity implem
     {
         // TODO only if connected to nodes
         return true;
-    }
-
-    @Override
-    public void load(CompoundTag tag)
-    {
-        super.load(tag);
-        this.readConnections(tag);
-    }
-
-    @Override
-    protected void saveAdditional(CompoundTag tag)
-    {
-        super.saveAdditional(tag);
-        this.writeConnections(tag);
-    }
-
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket()
-    {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @Override
-    public CompoundTag getUpdateTag()
-    {
-        return this.saveWithoutMetadata();
-    }
-
-    @SuppressWarnings("unused")
-    public AABB getRenderBoundingBox()
-    {
-        return new AABB(this.worldPosition).inflate(Config.CLIENT.electricityViewDistance.get());
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return this.worldPosition.hashCode();
     }
 }
