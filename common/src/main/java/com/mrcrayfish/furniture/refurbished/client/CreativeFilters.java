@@ -21,6 +21,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
@@ -132,7 +133,12 @@ public class CreativeFilters
     {
         this.categories.forEach(category -> {
             FilterTab tab = new FilterTab(this.guiLeft - 28, this.guiTop, category, btn -> {
-                category.setEnabled(!category.isEnabled());
+                if(Screen.hasControlDown()) {
+                    this.categories.forEach(c -> c.setEnabled(false));
+                    category.setEnabled(true);
+                } else {
+                    category.setEnabled(!category.isEnabled());
+                }
                 this.updateItems(screen);
             });
             tab.visible = false;
