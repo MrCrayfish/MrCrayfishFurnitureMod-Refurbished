@@ -140,4 +140,10 @@ public abstract class ElectricModuleProcessingContainerBlockEntity extends Proce
         tag.putBoolean("Powered", powered);
         return tag;
     }
+
+    @Override
+    public int hashCode()
+    {
+        return this.worldPosition.hashCode();
+    }
 }
