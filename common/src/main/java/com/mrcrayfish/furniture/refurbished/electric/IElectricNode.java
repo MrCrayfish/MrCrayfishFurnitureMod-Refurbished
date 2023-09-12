@@ -177,8 +177,10 @@ public interface IElectricNode
             found.add(start);
         }
 
-        // Queue representing nodes to search and their depth from the start
-        Queue<Pair<IElectricNode, Integer>> queue = new ArrayDeque<>();
+        // Creating the queue with an initial size equal to the maximum nodes in a network
+        // prevents expensive calls to grow the capacity.
+        int maxSize = Config.SERVER.electricity.maximumNodesInNetwork.get();
+        Queue<Pair<IElectricNode, Integer>> queue = new ArrayDeque<>(maxSize);
         queue.add(Pair.of(start, 0));
         while(!queue.isEmpty())
         {
@@ -188,16 +190,19 @@ public interface IElectricNode
             for(Connection connection : node.getConnections())
             {
                 IElectricNode other = connection.getNodeB(node.getLevel());
-                if(other == null || !other.isValid() || found.contains(other))
+                if(other == null || found.contains(other))
                     continue;
 
                 if(!predicate.test(other))
                     continue;
 
+                if(found.size() == maxSize)
+                    return;
+
                 found.add(other);
 
                 int nextDepth = currentDepth + 1;
-                if(other.isSource() || !other.canPowerTraverse() || nextDepth >= maxDepth)
+                if(nextDepth >= maxDepth || !other.canPowerTraverse())
                     continue;
 
                 queue.add(Pair.of(other, nextDepth));

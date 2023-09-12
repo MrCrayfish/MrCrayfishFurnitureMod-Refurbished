@@ -96,6 +96,11 @@ public class Config
                 6400 units of power. The default value of 8 means that the electricity generator
                 would consume almost 2 coal per in-game day.""")
             public final IntProperty fuelToPowerRatio = IntProperty.create(8, 1, 128);
+
+            @ConfigProperty(name = "maximumNodesInNetwork", comment = """
+                The maximum amount of nodes in a network that can be powered by an electricity
+                source, like the electricity generator.""")
+            public final IntProperty maximumNodesInNetwork = IntProperty.create(24);
         }
     }
 }

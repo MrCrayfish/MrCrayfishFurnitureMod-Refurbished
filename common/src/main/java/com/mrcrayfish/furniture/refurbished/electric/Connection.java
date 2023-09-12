@@ -150,11 +150,12 @@ public class Connection
             if(node != null && node.isValid())
             {
                 this.status = Status.ACTIVE;
+                return;
             }
 
             if(level.isLoaded(this.pos))
             {
-                if(level.getBlockEntity(this.pos) instanceof IElectricNode found && found.isValid())
+                if(level.getBlockEntity(this.pos) instanceof IElectricNode found)
                 {
                     this.ref = new WeakReference<>(found);
                     this.status = Status.ACTIVE;

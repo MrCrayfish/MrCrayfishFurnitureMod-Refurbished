@@ -22,6 +22,12 @@ public interface ISourceNode extends IElectricNode
     }
 
     @Override
+    default boolean canPowerTraverse()
+    {
+        return false;
+    }
+
+    @Override
     default void setReceivingPower(boolean power) {}
 
     @Override
