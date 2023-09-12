@@ -12,6 +12,8 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -247,5 +249,22 @@ public class ElectricityGeneratorBlockEntity extends ElectricSourceLootBlockEnti
     public static void clientTick(Level level, BlockPos pos, BlockState state, ElectricityGeneratorBlockEntity generator)
     {
         AudioManager.get().playElectricityGeneratorSound(pos);
+    }
+
+    @Override
+    public void load(CompoundTag tag)
+    {
+        super.load(tag);
+        if(tag.contains("Enabled", Tag.TAG_BYTE))
+        {
+            this.enabled = tag.getBoolean("Enabled");
+        }
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag tag)
+    {
+        super.saveAdditional(tag);
+        tag.putBoolean("Enabled", this.enabled);
     }
 }
