@@ -6,6 +6,7 @@ import com.mrcrayfish.furniture.refurbished.blockentity.INameable;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.electric.Connection;
 import com.mrcrayfish.furniture.refurbished.electric.IElectricNode;
+import com.mrcrayfish.furniture.refurbished.inventory.IPowerSwitchMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.PostBoxMenu;
 import com.mrcrayfish.furniture.refurbished.item.PackageItem;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
@@ -14,10 +15,8 @@ import com.mrcrayfish.furniture.refurbished.network.message.MessageClearMessage;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageDeleteLink;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSendPackage;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSetName;
-import com.mrcrayfish.furniture.refurbished.util.Utils;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageTogglePower;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -96,6 +95,14 @@ public class ServerPlayHandler
                     nodeB.removeConnection(c);
                 }
             }
+        }
+    }
+
+    public static void handleMessageToggleSwitch(MessageTogglePower message, ServerPlayer player)
+    {
+        if(player != null && player.containerMenu instanceof IPowerSwitchMenu menu)
+        {
+            menu.toggle();
         }
     }
 }

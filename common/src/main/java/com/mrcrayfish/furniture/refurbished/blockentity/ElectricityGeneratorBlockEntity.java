@@ -4,10 +4,13 @@ import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.block.ElectricityGeneratorBlock;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
+import com.mrcrayfish.furniture.refurbished.electric.IElectricNode;
 import com.mrcrayfish.furniture.refurbished.inventory.BuildableContainerData;
 import com.mrcrayfish.furniture.refurbished.inventory.ElectricityGeneratorMenu;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
+import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -19,20 +22,32 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.Set;
+
 /**
  * Author: MrCrayfish
  */
-public class ElectricityGeneratorBlockEntity extends ElectricSourceLootBlockEntity implements IProcessingBlock
+public class ElectricityGeneratorBlockEntity extends ElectricSourceLootBlockEntity implements IProcessingBlock, IPowerSwitch
 {
     public static final int DATA_ENERGY = 0;
     public static final int DATA_TOTAL_ENERGY = 1;
+    public static final int DATA_ENABLED = 2;
+    public static final int DATA_OVERLOADED = 3;
+    public static final int DATA_POWERED = 4;
+    public static final int DATA_NODE_COUNT = 5;
 
     protected int totalEnergy;
     protected int energy;
+    protected boolean enabled;
+    protected int nodeCount;
 
     protected final ContainerData data = new BuildableContainerData(builder -> {
-        builder.add(DATA_ENERGY, () -> energy, value -> energy = value);
-        builder.add(DATA_TOTAL_ENERGY, () -> totalEnergy, value -> totalEnergy = value);
+        builder.add(DATA_ENERGY, () -> energy, value -> {});
+        builder.add(DATA_TOTAL_ENERGY, () -> totalEnergy, value -> {});
+        builder.add(DATA_ENABLED, () -> enabled ? 1 : 0, value -> {});
+        builder.add(DATA_OVERLOADED, () -> overloaded ? 1 : 0, value -> {});
+        builder.add(DATA_POWERED, () -> this.isPowered() ? 1 : 0, value -> {});
+        builder.add(DATA_NODE_COUNT, () -> nodeCount, value -> {});
     });
 
     public ElectricityGeneratorBlockEntity(BlockPos pos, BlockState state)
@@ -54,6 +69,10 @@ public class ElectricityGeneratorBlockEntity extends ElectricSourceLootBlockEnti
     @Override
     protected AbstractContainerMenu createMenu(int windowId, Inventory playerInventory)
     {
+        if(!this.enabled)
+        {
+            this.search();
+        }
         return new ElectricityGeneratorMenu(windowId, playerInventory, this, this.data);
     }
 
@@ -85,15 +104,57 @@ public class ElectricityGeneratorBlockEntity extends ElectricSourceLootBlockEnti
     }
 
     @Override
+    public void toggle()
+    {
+        this.enabled = !this.enabled;
+        if(this.enabled)
+        {
+            Pair<SearchResult, Set<IElectricNode>> result = this.search();
+            if(result.left() == SearchResult.SUCCESS)
+            {
+                if(this.overloaded)
+                {
+                    this.overloaded = false;
+                }
+            }
+            else
+            {
+                this.enabled = false;
+            }
+        }
+        this.setChanged();
+    }
+
+    @Override
+    public void onOverloaded()
+    {
+        this.enabled = false;
+        this.setChanged();
+    }
+
+    private Pair<SearchResult, Set<IElectricNode>> search()
+    {
+        Set<IElectricNode> nodes = new ObjectOpenHashSet<>();
+        SearchResult result = IElectricNode.searchNodes(this, nodes, Config.SERVER.electricity.maximumDaisyChain.get(), node -> !node.isSource());
+        this.nodeCount = nodes.size();
+        return Pair.of(result, nodes);
+    }
+
+    @Override
     public void earlyLevelTick()
     {
         this.processTick();
-        super.earlyLevelTick();
-    }
-
-    public static void clientTick(Level level, BlockPos pos, BlockState state, ElectricityGeneratorBlockEntity generator)
-    {
-        AudioManager.get().playElectricityGeneratorSound(pos);
+        if(this.isPowered() && !this.isOverloaded())
+        {
+            Pair<SearchResult, Set<IElectricNode>> result = this.search();
+            if(result.left() == SearchResult.OVERLOADED)
+            {
+                this.setOverloaded(true);
+                this.onOverloaded();
+                return;
+            }
+            result.right().forEach(node -> node.setReceivingPower(true));
+        }
     }
 
     @Override
@@ -180,7 +241,11 @@ public class ElectricityGeneratorBlockEntity extends ElectricSourceLootBlockEnti
     @Override
     public boolean canProcess()
     {
-        // TODO only if connected to nodes
-        return true;
+        return this.enabled && !this.isOverloaded();
+    }
+
+    public static void clientTick(Level level, BlockPos pos, BlockState state, ElectricityGeneratorBlockEntity generator)
+    {
+        AudioManager.get().playElectricityGeneratorSound(pos);
     }
 }

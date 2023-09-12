@@ -17,7 +17,7 @@ import net.minecraft.util.Mth;
  */
 public class IconButton extends Button
 {
-    private static final ResourceLocation ICON_TEXTURES = new ResourceLocation(Constants.MOD_ID, "textures/gui/icons.png");
+    public static final ResourceLocation ICON_TEXTURES = new ResourceLocation(Constants.MOD_ID, "textures/gui/icons.png");
 
     private final Component label;
     private final int u, v;

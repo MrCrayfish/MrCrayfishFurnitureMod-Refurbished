@@ -75,14 +75,14 @@ public abstract class ElectricModuleBlockEntity extends BlockEntity implements I
     public void load(CompoundTag tag)
     {
         super.load(tag);
-        this.readConnections(tag);
+        this.readNodeNbt(tag);
     }
 
     @Override
     protected void saveAdditional(CompoundTag tag)
     {
         super.saveAdditional(tag);
-        this.writeConnections(tag);
+        this.writeNodeNbt(tag);
     }
 
     @Nullable

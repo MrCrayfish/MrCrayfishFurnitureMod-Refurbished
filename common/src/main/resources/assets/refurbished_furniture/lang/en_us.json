@@ -258,5 +258,10 @@
     "gui.refurbished_furniture.package_open": "Right Click to Open",
     "gui.refurbished_furniture.set_doorbell_name": "Set Doorbell Name",
     "gui.refurbished_furniture.doorbell_rang": "Doorbell Rang",
+    "gui.refurbished_furniture.status.online": "Online",
+    "gui.refurbished_furniture.status.offline": "Offline",
+    "gui.refurbished_furniture.status.overloaded": "Overloaded",
+    "gui.refurbished_furniture.status.no_fuel": "Fuel Empty",
+    "gui.refurbished_furniture.node_count": "%s / %s",
     "subtitle.refurbished_furniture.package_open": "Package Opening"
 }

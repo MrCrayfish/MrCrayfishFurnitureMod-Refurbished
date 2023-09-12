@@ -82,11 +82,11 @@ public interface IElectricNode
     {
         this.updateConnections();
         CompoundTag compound = new CompoundTag();
-        this.writeConnections(compound);
+        this.writeNodeNbt(compound);
         BlockEntityHelper.sendCustomUpdate(this.getBlockEntity(), compound);
     }
 
-    default void readConnections(CompoundTag tag)
+    default void readNodeNbt(CompoundTag tag)
     {
         if(tag.contains("Connections", Tag.TAG_LONG_ARRAY))
         {
@@ -101,7 +101,7 @@ public interface IElectricNode
         }
     }
 
-    default void writeConnections(CompoundTag tag)
+    default void writeNodeNbt(CompoundTag tag)
     {
         Set<Connection> connections = this.getConnections();
         tag.putLongArray("Connections", connections.stream().map(Connection::getPosB).map(BlockPos::asLong).toList());
@@ -167,9 +167,7 @@ public interface IElectricNode
         return DEFAULT_NODE_BOX;
     }
 
-    default void invalidateCache() {}
-
-    static void searchNodes(IElectricNode start, Set<IElectricNode> found, int maxDepth, Predicate<IElectricNode> predicate)
+    static SearchResult searchNodes(IElectricNode start, Set<IElectricNode> found, int maxDepth, Predicate<IElectricNode> predicate)
     {
         // Add start to found if predicate matches
         if(predicate.test(start))
@@ -196,9 +194,6 @@ public interface IElectricNode
                 if(!predicate.test(other))
                     continue;
 
-                if(found.size() == maxSize)
-                    return;
-
                 found.add(other);
 
                 int nextDepth = currentDepth + 1;
@@ -208,5 +203,11 @@ public interface IElectricNode
                 queue.add(Pair.of(other, nextDepth));
             }
         }
+        return found.size() > maxSize ? SearchResult.OVERLOADED : SearchResult.SUCCESS;
+    }
+
+    enum SearchResult
+    {
+        SUCCESS, OVERLOADED
     }
 }

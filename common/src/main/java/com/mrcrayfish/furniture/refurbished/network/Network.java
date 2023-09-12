@@ -4,15 +4,7 @@ import com.mrcrayfish.framework.api.FrameworkAPI;
 import com.mrcrayfish.framework.api.network.FrameworkNetwork;
 import com.mrcrayfish.framework.api.network.MessageDirection;
 import com.mrcrayfish.furniture.refurbished.Constants;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageDeleteLink;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageDoorbellNotification;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageFlipAnimation;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageClearMessage;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageSendPackage;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageSetName;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageSyncFluid;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageSyncLink;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageUpdateMailboxes;
+import com.mrcrayfish.furniture.refurbished.network.message.*;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -31,6 +23,7 @@ public class Network
             .registerPlayMessage(MessageDoorbellNotification.class, MessageDirection.PLAY_CLIENT_BOUND)
             .registerPlayMessage(MessageSyncLink.class, MessageDirection.PLAY_CLIENT_BOUND)
             .registerPlayMessage(MessageDeleteLink.class, MessageDirection.PLAY_SERVER_BOUND)
+            .registerPlayMessage(MessageTogglePower.class, MessageDirection.PLAY_SERVER_BOUND)
             .build();
 
     public static void init() {}

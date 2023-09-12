@@ -103,7 +103,7 @@ public abstract class ElectricModuleProcessingContainerBlockEntity extends Proce
     public void load(CompoundTag tag)
     {
         super.load(tag);
-        this.readConnections(tag);
+        this.readNodeNbt(tag);
         if(tag.contains("Powered", Tag.TAG_BYTE))
         {
             this.powered = tag.getBoolean("Powered");
@@ -114,7 +114,7 @@ public abstract class ElectricModuleProcessingContainerBlockEntity extends Proce
     protected void saveAdditional(CompoundTag tag)
     {
         super.saveAdditional(tag);
-        this.writeConnections(tag);
+        this.writeNodeNbt(tag);
         tag.putBoolean("Powered", this.powered);
     }
 
@@ -136,7 +136,7 @@ public abstract class ElectricModuleProcessingContainerBlockEntity extends Proce
     public CompoundTag getUpdateTag()
     {
         CompoundTag tag = new CompoundTag();
-        this.writeConnections(tag);
+        this.writeNodeNbt(tag);
         tag.putBoolean("Powered", powered);
         return tag;
     }
