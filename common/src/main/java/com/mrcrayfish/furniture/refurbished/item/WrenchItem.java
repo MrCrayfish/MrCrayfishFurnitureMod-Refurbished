@@ -1,8 +1,8 @@
 package com.mrcrayfish.furniture.refurbished.item;
 
-import com.mrcrayfish.furniture.refurbished.electric.IElectricNode;
-import com.mrcrayfish.furniture.refurbished.electric.LinkManager;
-import com.mrcrayfish.furniture.refurbished.electric.NodeHitResult;
+import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
+import com.mrcrayfish.furniture.refurbished.electricity.LinkManager;
+import com.mrcrayfish.furniture.refurbished.electricity.NodeHitResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -66,7 +66,7 @@ public class WrenchItem extends Item
         Vec3 look = player.getViewVector(partialTick);
         Vec3 end = start.add(look.x * range, look.y * range, look.z * range);
         return BlockGetter.traverseBlocks(start, end, null, (o, pos) -> {
-            if(level.getBlockEntity(pos) instanceof IElectricNode found) {
+            if(level.getBlockEntity(pos) instanceof IElectricityNode found) {
                 Optional<Vec3> hit = found.getPositionedInteractBox().clip(start, end);
                 if(hit.isPresent()) {
                     return new NodeHitResult(hit.get(), pos, found);

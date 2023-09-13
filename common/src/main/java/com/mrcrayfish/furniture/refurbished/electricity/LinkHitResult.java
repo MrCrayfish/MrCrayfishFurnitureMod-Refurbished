@@ -1,4 +1,4 @@
-package com.mrcrayfish.furniture.refurbished.electric;
+package com.mrcrayfish.furniture.refurbished.electricity;
 
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -18,6 +18,9 @@ public class LinkHitResult extends HitResult
         this.connection = connection;
     }
 
+    /**
+     * @return The connection (link) that was hit or null is missed
+     */
     public Connection getConnection()
     {
         return this.connection;

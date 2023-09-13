@@ -1,7 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.client.audio;
 
 import com.mrcrayfish.furniture.refurbished.blockentity.ElectricityGeneratorBlockEntity;
-import com.mrcrayfish.furniture.refurbished.electric.IElectricNode;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.TickableSoundInstance;
 import net.minecraft.core.BlockPos;

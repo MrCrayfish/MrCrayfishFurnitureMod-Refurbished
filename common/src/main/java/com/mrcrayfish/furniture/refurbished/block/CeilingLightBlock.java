@@ -3,10 +3,9 @@ package com.mrcrayfish.furniture.refurbished.block;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.furniture.refurbished.blockentity.CeilingLightBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.ElectricityGeneratorBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
-import com.mrcrayfish.furniture.refurbished.electric.IElectricNode;
+import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -73,7 +72,7 @@ public class CeilingLightBlock extends FurnitureAttachedFaceBlock implements Ent
     {
         if(!state.is(newState.getBlock()))
         {
-            if(level.getBlockEntity(pos) instanceof IElectricNode node)
+            if(level.getBlockEntity(pos) instanceof IElectricityNode node)
             {
                 node.onDestroyed();
             }

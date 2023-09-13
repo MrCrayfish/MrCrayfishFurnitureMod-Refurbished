@@ -1,8 +1,8 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.mrcrayfish.furniture.refurbished.Config;
-import com.mrcrayfish.furniture.refurbished.electric.Connection;
-import com.mrcrayfish.furniture.refurbished.electric.IElectricNode;
+import com.mrcrayfish.furniture.refurbished.electricity.Connection;
+import com.mrcrayfish.furniture.refurbished.electricity.ISourceNode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -19,14 +19,14 @@ import java.util.Set;
 /**
  * Author: MrCrayfish
  */
-public abstract class ElectricModuleBlockEntity extends BlockEntity implements IElectricNode
+public abstract class ElectricitySourceLootBlockEntity extends BasicLootBlockEntity implements ISourceNode
 {
     protected final Set<Connection> connections = new HashSet<>();
-    protected boolean receivingPower;
+    protected boolean overloaded;
 
-    public ElectricModuleBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
+    public ElectricitySourceLootBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int containerSize)
     {
-        super(type, pos, state);
+        super(type, pos, state, containerSize);
     }
 
     @Override
@@ -42,33 +42,28 @@ public abstract class ElectricModuleBlockEntity extends BlockEntity implements I
     }
 
     @Override
-    public boolean isSource()
-    {
-        return false;
-    }
-
-    @Override
     public Set<Connection> getConnections()
     {
         return this.connections;
     }
 
     @Override
-    public void setReceivingPower(boolean power)
+    public void setOverloaded(boolean overloaded)
     {
-        this.receivingPower = power;
+        this.overloaded = overloaded;
     }
 
     @Override
-    public boolean isReceivingPower()
+    public boolean isOverloaded()
     {
-        return this.receivingPower;
+        return this.overloaded;
     }
 
-    public static void serverTick(Level level, BlockPos pos, BlockState state, ElectricModuleBlockEntity module)
+    @Override
+    public void setLevel(Level level)
     {
-        module.updatePoweredState();
-        module.setReceivingPower(false);
+        super.setLevel(level);
+        this.registerTicker(level);
     }
 
     @Override
@@ -98,15 +93,17 @@ public abstract class ElectricModuleBlockEntity extends BlockEntity implements I
         return this.saveWithoutMetadata();
     }
 
-    @SuppressWarnings("unused")
-    public AABB getRenderBoundingBox()
-    {
-        return new AABB(this.worldPosition).inflate(Config.CLIENT.electricityViewDistance.get());
-    }
-
     @Override
     public int hashCode()
     {
         return this.worldPosition.hashCode();
+    }
+
+    // Forge method
+    // @Override
+    @SuppressWarnings("unused")
+    public AABB getRenderBoundingBox()
+    {
+        return new AABB(this.worldPosition).inflate(Config.CLIENT.electricityViewDistance.get());
     }
 }

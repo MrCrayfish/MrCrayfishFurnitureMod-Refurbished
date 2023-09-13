@@ -1,11 +1,10 @@
-package com.mrcrayfish.furniture.refurbished.electric;
+package com.mrcrayfish.furniture.refurbished.electricity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
 
 /**
  * Author: MrCrayfish
@@ -13,21 +12,29 @@ import java.util.Optional;
 public class NodeHitResult extends HitResult
 {
     private final BlockPos pos;
-    private final IElectricNode node;
+    private final IElectricityNode node;
 
-    public NodeHitResult(Vec3 hit, @Nullable BlockPos pos, @Nullable IElectricNode node)
+    public NodeHitResult(Vec3 hit, @Nullable BlockPos pos, @Nullable IElectricityNode node)
     {
         super(hit);
         this.pos = pos;
         this.node = node;
     }
 
+    /**
+     * @return The block position of the electricity node or null if missed
+     */
+    @Nullable
     public BlockPos getPos()
     {
         return this.pos;
     }
 
-    public IElectricNode getNode()
+    /**
+     * @return The electricity node that was hit or null if missed
+     */
+    @Nullable
+    public IElectricityNode getNode()
     {
         return this.node;
     }

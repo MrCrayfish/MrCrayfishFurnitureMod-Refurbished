@@ -4,8 +4,8 @@ import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.blockentity.INameable;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
-import com.mrcrayfish.furniture.refurbished.electric.Connection;
-import com.mrcrayfish.furniture.refurbished.electric.IElectricNode;
+import com.mrcrayfish.furniture.refurbished.electricity.Connection;
+import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
 import com.mrcrayfish.furniture.refurbished.inventory.IPowerSwitchMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.PostBoxMenu;
 import com.mrcrayfish.furniture.refurbished.item.PackageItem;
@@ -87,8 +87,8 @@ public class ServerPlayHandler
                 if(player.distanceToSqr(a) > maxDistance && player.distanceToSqr(b) > maxDistance)
                     return;
 
-                IElectricNode nodeA = c.getNodeA(level);
-                IElectricNode nodeB = c.getNodeB(level);
+                IElectricityNode nodeA = c.getNodeA(level);
+                IElectricityNode nodeB = c.getNodeB(level);
                 if(nodeA != null && nodeB != null && nodeA.isConnectedTo(nodeB))
                 {
                     nodeA.removeConnection(c);

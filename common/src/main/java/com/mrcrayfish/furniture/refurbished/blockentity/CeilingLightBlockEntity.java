@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.state.BlockState;
 /**
  * Author: MrCrayfish
  */
-public class CeilingLightBlockEntity extends ElectricModuleBlockEntity
+public class CeilingLightBlockEntity extends ElectricityModuleBlockEntity
 {
     public CeilingLightBlockEntity(BlockPos pos, BlockState state)
     {

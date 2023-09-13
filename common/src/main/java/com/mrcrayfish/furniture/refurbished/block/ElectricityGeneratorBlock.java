@@ -3,10 +3,9 @@ package com.mrcrayfish.furniture.refurbished.block;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.furniture.refurbished.blockentity.ElectricityGeneratorBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.StoveBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
-import com.mrcrayfish.furniture.refurbished.electric.IElectricNode;
+import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -76,7 +75,7 @@ public class ElectricityGeneratorBlock extends FurnitureHorizontalBlock implemen
     {
         if(!state.is(newState.getBlock()))
         {
-            if(level.getBlockEntity(pos) instanceof IElectricNode node)
+            if(level.getBlockEntity(pos) instanceof IElectricityNode node)
             {
                 node.onDestroyed();
             }

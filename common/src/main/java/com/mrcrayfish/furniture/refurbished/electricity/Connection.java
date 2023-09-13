@@ -1,4 +1,4 @@
-package com.mrcrayfish.furniture.refurbished.electric;
+package com.mrcrayfish.furniture.refurbished.electricity;
 
 import com.google.common.base.Objects;
 import net.minecraft.core.BlockPos;
@@ -23,37 +23,69 @@ public class Connection
         this.b = new Node(b);
     }
 
+    /**
+     * @return The block position of the first node
+     */
     public BlockPos getPosA()
     {
         return this.a.pos;
     }
 
+    /**
+     * @return The block position of the second node
+     */
     public BlockPos getPosB()
     {
         return this.b.pos;
     }
 
+    /**
+     * Gets the electricity node instance of the first node
+     *
+     * @param level the level which the connection exists
+     * @return An electricity node instance or null if connection node is invalid/undetermined status.
+     */
     @Nullable
-    public IElectricNode getNodeA(Level level)
+    public IElectricityNode getNodeA(Level level)
     {
         return this.a.getElectricNode(level);
     }
 
+    /**
+     * Gets the electricity node instance of the second node
+     *
+     * @param level the level which the connection exists
+     * @return An electricity node instance or null if connection node is invalid/undetermined status.
+     */
     @Nullable
-    public IElectricNode getNodeB(Level level)
+    public IElectricityNode getNodeB(Level level)
     {
         return this.b.getElectricNode(level);
     }
 
+    /**
+     * Determines if this connection is connected. A connection is considered connected when
+     * the nodes in this connection are both valid.
+     *
+     * @param level the level which the connection exists
+     * @return True if connected
+     */
     public boolean isConnected(Level level)
     {
         return this.a.isValid(level) && this.b.isValid(level);
     }
 
+    /**
+     * Determines if this connection is powered. A connection is considered powered if the
+     * nodes this connection is linking together are both powered.
+     *
+     * @param level the level which the connection exists
+     * @return True if the nodes of this connection are both powered
+     */
     public boolean isPowered(Level level)
     {
-        IElectricNode a = this.a.getElectricNode(level);
-        IElectricNode b = this.b.getElectricNode(level);
+        IElectricityNode a = this.a.getElectricNode(level);
+        IElectricityNode b = this.b.getElectricNode(level);
         return a != null && a.isPowered() && b != null && b.isPowered();
     }
 
@@ -92,7 +124,7 @@ public class Connection
 
     /**
      * Calculates the hash for this connection. The calculated hash will be exactly the same even if
-     * the positions are switched. This ensures connections from two different positions are
+     * the connection nodes are switched.
      */
     private void calculateHash()
     {
@@ -102,18 +134,32 @@ public class Connection
         }
     }
 
+    /**
+     * @return The minimum block position in the connection
+     */
     private BlockPos getMinPos()
     {
         int c = this.a.pos.compareTo(this.b.pos);
         return c > 0 ? this.a.pos : this.b.pos;
     }
 
+    /**
+     * @return The maximum block position in the connection
+     */
     private BlockPos getMaxPos()
     {
         int c = this.a.pos.compareTo(this.b.pos);
         return c > 0 ? this.b.pos : this.a.pos;
     }
 
+    /**
+     * Creates a new Connection with the given block positions. This does not create an actual
+     * connection between the two positions, it just represents the link.
+     *
+     * @param a the block position of the first node
+     * @param b the block position of the second node
+     * @return a connection instance
+     */
     public static Connection of(BlockPos a, BlockPos b)
     {
         return new Connection(a, b);
@@ -122,7 +168,7 @@ public class Connection
     private static class Node
     {
         private final BlockPos pos;
-        private WeakReference<IElectricNode> ref;
+        private WeakReference<IElectricityNode> ref;
         private Status status = Status.ACTIVE;
 
         private Node(BlockPos pos)
@@ -131,22 +177,39 @@ public class Connection
             this.ref = new WeakReference<>(null);
         }
 
+        /**
+         * Determines if this connection node is valid.
+         *
+         * @param level the level where the connection exists
+         * @return True if the connection node status is active or undetermined
+         */
         public boolean isValid(Level level)
         {
             this.updateStatus(level);
             return this.status.valid;
         }
 
+        /**
+         * Gets the electricity node instance of this connection node
+         *
+         * @param level the level where the connection exists
+         * @return An electricity node instance or null if invalid/undetermined status
+         */
         @Nullable
-        public IElectricNode getElectricNode(Level level)
+        public IElectricityNode getElectricNode(Level level)
         {
             this.updateStatus(level);
             return this.ref.get();
         }
 
+        /**
+         * Updates the status of this connection node
+         *
+         * @param level the level where the connection exists
+         */
         private void updateStatus(Level level)
         {
-            IElectricNode node = this.ref.get();
+            IElectricityNode node = this.ref.get();
             if(node != null && node.isValid())
             {
                 this.status = Status.ACTIVE;
@@ -155,7 +218,7 @@ public class Connection
 
             if(level.isLoaded(this.pos))
             {
-                if(level.getBlockEntity(this.pos) instanceof IElectricNode found)
+                if(level.getBlockEntity(this.pos) instanceof IElectricityNode found)
                 {
                     this.ref = new WeakReference<>(found);
                     this.status = Status.ACTIVE;
@@ -173,8 +236,20 @@ public class Connection
 
         public enum Status
         {
+            /**
+             * An active connection node means that an electricity node exists at the block position.
+             */
             ACTIVE(true),
+
+            /**
+             * An undetermined connection node means that it was not possible to access to the
+             * electricity node in the level, but it may still exist due to being in an unloaded chunk.
+             */
             UNDETERMINED(true),
+
+            /**
+             * An invalid connection node means that no electricity node exists at the block position.
+             */
             INVALID(false);
 
             final boolean valid;

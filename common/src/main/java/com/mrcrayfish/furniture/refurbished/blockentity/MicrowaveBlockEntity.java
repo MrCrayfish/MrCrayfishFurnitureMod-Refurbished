@@ -4,15 +4,10 @@ import com.mrcrayfish.furniture.refurbished.block.MicrowaveBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
-import com.mrcrayfish.furniture.refurbished.electric.Connection;
-import com.mrcrayfish.furniture.refurbished.electric.IElectricNode;
 import com.mrcrayfish.furniture.refurbished.inventory.BuildableContainerData;
 import com.mrcrayfish.furniture.refurbished.inventory.MicrowaveMenu;
-import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -21,17 +16,13 @@ import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Author: MrCrayfish
  */
-public class MicrowaveBlockEntity extends ElectricModuleProcessingContainerBlockEntity
+public class MicrowaveBlockEntity extends ElectricityModuleProcessingContainerBlockEntity
 {
     public static final int[] INPUT_SLOTS = new int[]{0};
     public static final int[] OUTPUT_SLOTS = new int[]{1};

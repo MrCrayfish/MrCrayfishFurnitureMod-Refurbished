@@ -4,7 +4,7 @@ import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.block.ElectricityGeneratorBlock;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
-import com.mrcrayfish.furniture.refurbished.electric.IElectricNode;
+import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
 import com.mrcrayfish.furniture.refurbished.inventory.BuildableContainerData;
 import com.mrcrayfish.furniture.refurbished.inventory.ElectricityGeneratorMenu;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
@@ -29,7 +29,7 @@ import java.util.Set;
 /**
  * Author: MrCrayfish
  */
-public class ElectricityGeneratorBlockEntity extends ElectricSourceLootBlockEntity implements IProcessingBlock, IPowerSwitch
+public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockEntity implements IProcessingBlock, IPowerSwitch
 {
     public static final int DATA_ENERGY = 0;
     public static final int DATA_TOTAL_ENERGY = 1;
@@ -111,7 +111,7 @@ public class ElectricityGeneratorBlockEntity extends ElectricSourceLootBlockEnti
         this.enabled = !this.enabled;
         if(this.enabled)
         {
-            Pair<SearchResult, Set<IElectricNode>> result = this.search();
+            Pair<SearchResult, Set<IElectricityNode>> result = this.search();
             if(result.left() == SearchResult.SUCCESS)
             {
                 if(this.overloaded)
@@ -134,10 +134,10 @@ public class ElectricityGeneratorBlockEntity extends ElectricSourceLootBlockEnti
         this.setChanged();
     }
 
-    private Pair<SearchResult, Set<IElectricNode>> search()
+    private Pair<SearchResult, Set<IElectricityNode>> search()
     {
-        Set<IElectricNode> nodes = new ObjectOpenHashSet<>();
-        SearchResult result = IElectricNode.searchNodes(this, nodes, Config.SERVER.electricity.maximumDaisyChain.get(), node -> !node.isSource());
+        Set<IElectricityNode> nodes = new ObjectOpenHashSet<>();
+        SearchResult result = IElectricityNode.searchNodes(this, nodes, Config.SERVER.electricity.maximumDaisyChain.get(), node -> !node.isSource());
         this.nodeCount = nodes.size();
         return Pair.of(result, nodes);
     }
@@ -148,7 +148,7 @@ public class ElectricityGeneratorBlockEntity extends ElectricSourceLootBlockEnti
         this.processTick();
         if(this.isPowered() && !this.isOverloaded())
         {
-            Pair<SearchResult, Set<IElectricNode>> result = this.search();
+            Pair<SearchResult, Set<IElectricityNode>> result = this.search();
             if(result.left() == SearchResult.OVERLOADED)
             {
                 this.setOverloaded(true);

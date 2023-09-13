@@ -7,8 +7,8 @@ import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.client.ExtraModels;
 import com.mrcrayfish.furniture.refurbished.client.LinkHandler;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
-import com.mrcrayfish.furniture.refurbished.electric.Connection;
-import com.mrcrayfish.furniture.refurbished.electric.IElectricNode;
+import com.mrcrayfish.furniture.refurbished.electricity.Connection;
+import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -28,7 +28,7 @@ import java.util.Set;
 /**
  * Author: MrCrayfish
  */
-public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricNode> implements BlockEntityRenderer<T>
+public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNode> implements BlockEntityRenderer<T>
 {
     private static final Set<Connection> DRAWN_CONNECTIONS = new HashSet<>();
     private static final int DEFAULT_COLOUR = 0xFFFFFFFF;
@@ -44,7 +44,7 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricNode> 
         drawNodeAndConnections(node, poseStack, source, overlay);
     }
 
-    public static void drawNodeAndConnections(IElectricNode node, PoseStack poseStack, MultiBufferSource source, int overlay)
+    public static void drawNodeAndConnections(IElectricityNode node, PoseStack poseStack, MultiBufferSource source, int overlay)
     {
         Minecraft mc = Minecraft.getInstance();
         if(mc.player == null || !mc.player.getItemInHand(InteractionHand.MAIN_HAND).is(ModItems.WRENCH.get()))
@@ -96,7 +96,7 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricNode> 
         poseStack.popPose();
     }
 
-    private static BakedModel getNodeModel(IElectricNode node)
+    private static BakedModel getNodeModel(IElectricityNode node)
     {
         if(node.isConnectionLimit())
         {

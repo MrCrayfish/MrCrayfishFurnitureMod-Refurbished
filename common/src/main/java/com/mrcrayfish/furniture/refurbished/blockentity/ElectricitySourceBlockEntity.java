@@ -1,8 +1,8 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.mrcrayfish.furniture.refurbished.Config;
-import com.mrcrayfish.furniture.refurbished.electric.Connection;
-import com.mrcrayfish.furniture.refurbished.electric.ISourceNode;
+import com.mrcrayfish.furniture.refurbished.electricity.Connection;
+import com.mrcrayfish.furniture.refurbished.electricity.ISourceNode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -19,14 +19,14 @@ import java.util.Set;
 /**
  * Author: MrCrayfish
  */
-public abstract class ElectricSourceLootBlockEntity extends BasicLootBlockEntity implements ISourceNode
+public abstract class ElectricitySourceBlockEntity extends BlockEntity implements ISourceNode
 {
     protected final Set<Connection> connections = new HashSet<>();
     protected boolean overloaded;
 
-    public ElectricSourceLootBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int containerSize)
+    public ElectricitySourceBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
     {
-        super(type, pos, state, containerSize);
+        super(type, pos, state);
     }
 
     @Override
@@ -63,7 +63,7 @@ public abstract class ElectricSourceLootBlockEntity extends BasicLootBlockEntity
     public void setLevel(Level level)
     {
         super.setLevel(level);
-        ISourceNode.register(this, level);
+        this.registerTicker(level);
     }
 
     @Override

@@ -7,10 +7,10 @@ import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.ElectricBlockEntityRenderer;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
-import com.mrcrayfish.furniture.refurbished.electric.Connection;
-import com.mrcrayfish.furniture.refurbished.electric.IElectricNode;
-import com.mrcrayfish.furniture.refurbished.electric.LinkHitResult;
-import com.mrcrayfish.furniture.refurbished.electric.NodeHitResult;
+import com.mrcrayfish.furniture.refurbished.electricity.Connection;
+import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
+import com.mrcrayfish.furniture.refurbished.electricity.LinkHitResult;
+import com.mrcrayfish.furniture.refurbished.electricity.NodeHitResult;
 import com.mrcrayfish.furniture.refurbished.item.WrenchItem;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageDeleteLink;
@@ -75,7 +75,7 @@ public class LinkHandler
      * @param node
      * @return
      */
-    public boolean isLinkingNode(IElectricNode node)
+    public boolean isLinkingNode(IElectricityNode node)
     {
         return this.lastNodePos != null && this.lastNodePos.equals(node.getPosition());
     }
@@ -121,13 +121,13 @@ public class LinkHandler
      * @param node the node to test
      * @return True if looking at the node
      */
-    public boolean isTargetNode(IElectricNode node)
+    public boolean isTargetNode(IElectricityNode node)
     {
         return this.result instanceof NodeHitResult nodeResult && nodeResult.getNode() == node;
     }
 
     @Nullable
-    public IElectricNode getTargetNode()
+    public IElectricityNode getTargetNode()
     {
         return this.result instanceof NodeHitResult nodeResult ? nodeResult.getNode() : null;
     }
@@ -187,7 +187,7 @@ public class LinkHandler
      */
     private Vec3 getLinkEnd(Player player, float partialTick)
     {
-        IElectricNode node = this.getTargetNode();
+        IElectricityNode node = this.getTargetNode();
         if(node != null && !this.isLinkingNode(node) && this.canLinkToNode(player.level(), node))
         {
             return node.getPosition().getCenter();
@@ -209,7 +209,7 @@ public class LinkHandler
             return ERROR_LINK_COLOUR;
         }
 
-        IElectricNode node = this.getTargetNode();
+        IElectricityNode node = this.getTargetNode();
         if(node != null && !this.isLinkingNode(node) && this.canLinkToNode(level, node))
         {
             return SUCCESS_LINK_COLOUR;
@@ -225,11 +225,11 @@ public class LinkHandler
      * @param target the node to test
      * @return True if a link can be made to the target node
      */
-    public boolean canLinkToNode(Level level, IElectricNode target)
+    public boolean canLinkToNode(Level level, IElectricityNode target)
     {
         if(this.lastNodePos != null)
         {
-            IElectricNode lastNode = level.getBlockEntity(this.lastNodePos) instanceof IElectricNode node ? node : null;
+            IElectricityNode lastNode = level.getBlockEntity(this.lastNodePos) instanceof IElectricityNode node ? node : null;
             if(lastNode != null && target != null && lastNode != target)
             {
                 double distance = this.lastNodePos.getCenter().distanceTo(target.getPosition().getCenter());

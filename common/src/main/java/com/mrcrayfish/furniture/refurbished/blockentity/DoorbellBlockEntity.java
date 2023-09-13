@@ -11,7 +11,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
@@ -20,7 +19,7 @@ import java.util.UUID;
 /**
  * Author: MrCrayfish
  */
-public class DoorbellBlockEntity extends ElectricModuleBlockEntity implements INameable
+public class DoorbellBlockEntity extends ElectricityModuleBlockEntity implements INameable
 {
     public static final int MAX_NAME_LENGTH = 32;
 

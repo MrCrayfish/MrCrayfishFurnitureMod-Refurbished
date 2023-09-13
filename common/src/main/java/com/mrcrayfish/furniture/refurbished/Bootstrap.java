@@ -5,8 +5,8 @@ import com.mrcrayfish.framework.api.event.TickEvents;
 import com.mrcrayfish.furniture.refurbished.blockentity.CuttingBoardBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.GrillBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
-import com.mrcrayfish.furniture.refurbished.electric.ElectricitySources;
-import com.mrcrayfish.furniture.refurbished.electric.LinkManager;
+import com.mrcrayfish.furniture.refurbished.electricity.ElectricityTicker;
+import com.mrcrayfish.furniture.refurbished.electricity.LinkManager;
 import com.mrcrayfish.furniture.refurbished.item.PackageItem;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
 import com.mrcrayfish.furniture.refurbished.network.Network;
@@ -68,7 +68,7 @@ public class Bootstrap
         });
         TickEvents.START_LEVEL.register(level -> {
             if(level instanceof ServerLevel serverLevel) {
-                ElectricitySources.get(serverLevel).levelTick();
+                ElectricityTicker.get(serverLevel).startLevelTick();
             }
         });
         TickEvents.END_PLAYER.register(player -> {

@@ -3,7 +3,6 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 import com.mrcrayfish.furniture.refurbished.block.ToasterBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
-import com.mrcrayfish.furniture.refurbished.electric.IElectricNode;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
@@ -11,7 +10,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
@@ -27,12 +25,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nullable;
-
 /**
  * Author: MrCrayfish
  */
-public class ToasterBlockEntity extends ElectricModuleProcessingContainerBlockEntity
+public class ToasterBlockEntity extends ElectricityModuleProcessingContainerBlockEntity
 {
     public static final int[] INPUT_SLOTS = new int[]{0, 1};
     public static final int[] OUTPUT_SLOTS = new int[]{0, 1};

@@ -1,4 +1,4 @@
-package com.mrcrayfish.furniture.refurbished.electric;
+package com.mrcrayfish.furniture.refurbished.electricity;
 
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
@@ -28,7 +28,7 @@ import java.util.UUID;
  */
 public class LinkManager extends SavedData
 {
-    private static final String STORAGE_ID = Utils.resource("link_manager").toString();
+    private static final String STORAGE_ID = "refurbished_furniture_link_manager";
 
     public static Optional<LinkManager> get(MinecraftServer server)
     {
@@ -66,7 +66,7 @@ public class LinkManager extends SavedData
      * @param player         the player interacting with the node
      * @param interactedNode the node that was interacted
      */
-    public void onNodeInteract(Level level, Player player, IElectricNode interactedNode)
+    public void onNodeInteract(Level level, Player player, IElectricityNode interactedNode)
     {
         // Prevent interaction if reached connection limit
         if(interactedNode.isConnectionLimit())
@@ -83,7 +83,7 @@ public class LinkManager extends SavedData
 
         // Attempt to connect the two nodes together
         BlockPos previousPos = this.lastNodeMap.remove(player.getUUID());
-        IElectricNode lastNode = level.getBlockEntity(previousPos) instanceof IElectricNode node ? node : null;
+        IElectricityNode lastNode = level.getBlockEntity(previousPos) instanceof IElectricityNode node ? node : null;
         if(lastNode != null && lastNode != interactedNode)
         {
             double distance = lastNode.getPosition().getCenter().distanceTo(interactedNode.getPosition().getCenter());
