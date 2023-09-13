@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ElectricitySources extends SavedData
 {
-    private static final String STORAGE_ID = Utils.resource("electricity_network").toString();
+    private static final String STORAGE_ID = "refurbished_furniture_electricity_sources";
 
     public static ElectricitySources get(ServerLevel level)
     {
