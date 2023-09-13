@@ -5,7 +5,6 @@ import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.blockentity.MailboxBlockEntity;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageUpdateMailboxes;
-import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;

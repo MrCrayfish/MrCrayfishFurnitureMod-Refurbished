@@ -5,7 +5,6 @@ import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSyncLink;
-import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;

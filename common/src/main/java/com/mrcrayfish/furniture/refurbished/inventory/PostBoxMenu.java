@@ -4,7 +4,6 @@ import com.mrcrayfish.furniture.refurbished.blockentity.PostBoxBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.inventory.slot.PostBoxSlot;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;

@@ -2,7 +2,6 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.mrcrayfish.furniture.refurbished.blockentity.CeilingLightBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.DoorbellBlockEntity;
 import com.mrcrayfish.furniture.refurbished.client.FurnitureScreens;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;

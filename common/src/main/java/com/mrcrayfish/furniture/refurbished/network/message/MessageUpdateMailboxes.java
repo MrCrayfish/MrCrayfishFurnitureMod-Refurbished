@@ -7,7 +7,6 @@ import com.mrcrayfish.furniture.refurbished.client.ClientMailbox;
 import com.mrcrayfish.furniture.refurbished.mail.IMailbox;
 import com.mrcrayfish.furniture.refurbished.network.play.ClientPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.Collection;

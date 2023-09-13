@@ -3,7 +3,6 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 import com.mrcrayfish.furniture.refurbished.block.LightswitchBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 

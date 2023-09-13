@@ -2,7 +2,6 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.electricity.Connection;
-import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
 import com.mrcrayfish.furniture.refurbished.electricity.IModuleNode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;

@@ -4,7 +4,6 @@ import com.mrcrayfish.furniture.refurbished.platform.services.IItemHelper;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;

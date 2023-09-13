@@ -2,11 +2,9 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.mrcrayfish.furniture.refurbished.blockentity.DrawerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.PostBoxBlockEntity;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
-import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

@@ -3,7 +3,6 @@ package com.mrcrayfish.furniture.refurbished.block;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.furniture.refurbished.blockentity.CuttingBoardBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.ToasterBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;

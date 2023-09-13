@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.mrcrayfish.furniture.refurbished.blockentity.FlipAnimation;
 import com.mrcrayfish.furniture.refurbished.blockentity.FryingPanBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.GrillBlockEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;

@@ -1,7 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
-import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;

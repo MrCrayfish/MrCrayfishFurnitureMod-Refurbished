@@ -3,7 +3,6 @@ package com.mrcrayfish.furniture.refurbished.client;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.TextInputScreen;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSetName;
-import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;

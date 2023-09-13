@@ -3,7 +3,6 @@ package com.mrcrayfish.furniture.refurbished.client.renderer.blockentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.mrcrayfish.furniture.refurbished.block.CuttingBoardBlock;
-import com.mrcrayfish.furniture.refurbished.block.ToasterBlock;
 import com.mrcrayfish.furniture.refurbished.blockentity.CuttingBoardBlockEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;

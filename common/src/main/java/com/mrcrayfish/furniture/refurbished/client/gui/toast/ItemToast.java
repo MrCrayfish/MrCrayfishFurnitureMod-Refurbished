@@ -1,6 +1,5 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.toast;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
