@@ -43,32 +43,28 @@ public class ForgeClientEvents
         ExtraModels.register(event::register);
     }
 
-    // TODO fabric
     public static void onRenderLevelStage(RenderLevelStageEvent event)
     {
         if(event.getStage() != RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES)
             return;
 
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.player == null)
+            return;
+
+        // Draw active link
         PoseStack stack = event.getPoseStack();
         stack.pushPose();
-        {
-            Vec3 view = event.getCamera().getPosition();
-            stack.translate(-view.x(), -view.y(), -view.z());
-            Minecraft mc = Minecraft.getInstance();
-            if(mc.player != null)
-            {
-                LinkHandler.get().render(mc.player, stack, mc.renderBuffers().bufferSource(), event.getPartialTick());
-            }
-        }
+        Vec3 view = event.getCamera().getPosition();
+        stack.translate(-view.x(), -view.y(), -view.z());
+        LinkHandler.get().render(mc.player, stack, mc.renderBuffers().bufferSource(), event.getPartialTick());
         stack.popPose();
 
-        // End this
-        Minecraft mc = Minecraft.getInstance();
+        // End render types
         mc.renderBuffers().bufferSource().endBatch(ClientServices.PLATFORM.getElectrictyNodeRenderType());
         mc.renderBuffers().bufferSource().endBatch(ClientServices.PLATFORM.getElectricityConnectionRenderType());
     }
 
-    // TODO fabric
     public static void onKeyTriggered(InputEvent.InteractionKeyMappingTriggered event)
     {
         Minecraft mc = Minecraft.getInstance();

@@ -35,7 +35,8 @@ public class FurnitureMod implements ModInitializer, DataGeneratorEntrypoint
 
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
             ItemStack heldItem = player.getItemInHand(hand);
-            if(heldItem.is(ModItems.WRENCH.get())) {
+            if(!world.isClientSide() && heldItem.is(ModItems.WRENCH.get())) {
+                heldItem.use(world, player, hand);
                 return InteractionResult.FAIL;
             }
             return InteractionResult.PASS;
