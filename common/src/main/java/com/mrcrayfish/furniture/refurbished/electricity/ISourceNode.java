@@ -53,6 +53,15 @@ public interface ISourceNode extends IElectricityNode
         return DEFAULT_NODE_BOX;
     }
 
+    @Override
+    default void setReceivingPower(boolean power) {}
+
+    @Override
+    default boolean isReceivingPower()
+    {
+        return false;
+    }
+
     /**
      * An early tick called at the start of the level tick before other block entities are ticked
      */
