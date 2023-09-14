@@ -9,15 +9,12 @@ import com.mrcrayfish.furniture.refurbished.data.FurnitureLootTableProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureModelProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureRecipeProvider;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.base.SingleFluidStorage;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 
@@ -29,6 +26,7 @@ public class FurnitureMod implements ModInitializer, DataGeneratorEntrypoint
     {
         FrameworkSetup.run();
         Bootstrap.init();
+
         FluidStorage.SIDED.registerForBlockEntity((sink, direction) -> {
             return direction != Direction.UP ? (SingleFluidStorage) sink.getTank() : null;
         }, ModBlockEntities.KITCHEN_SINK.get());
@@ -40,15 +38,6 @@ public class FurnitureMod implements ModInitializer, DataGeneratorEntrypoint
                 return InteractionResult.FAIL;
             }
             return InteractionResult.PASS;
-        });
-
-        WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((context, hitResult) -> {
-            Minecraft mc = Minecraft.getInstance();
-            if(mc.player != null) {
-                ItemStack stack = mc.player.getItemInHand(InteractionHand.MAIN_HAND);
-                return !stack.is(ModItems.WRENCH.get());
-            }
-            return true;
         });
     }
 

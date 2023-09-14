@@ -16,9 +16,11 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.function.TriFunction;
 
@@ -68,6 +70,15 @@ public class ClientFurnitureMod implements ClientModInitializer
                 }
             }
             return false;
+        });
+
+        WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((context, hitResult) -> {
+            Minecraft mc = Minecraft.getInstance();
+            if(mc.player != null) {
+                ItemStack stack = mc.player.getItemInHand(InteractionHand.MAIN_HAND);
+                return !stack.is(ModItems.WRENCH.get());
+            }
+            return true;
         });
     }
 }

@@ -8,14 +8,10 @@ import com.mrcrayfish.furniture.refurbished.data.FurnitureItemTagsProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureLootTableProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureModelProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureRecipeProvider;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderHighlightEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
@@ -43,9 +39,9 @@ public class FurnitureMod
             bus.addListener(ForgeClientEvents::onRegisterAdditional);
             MinecraftForge.EVENT_BUS.addListener(ForgeClientEvents::onKeyTriggered);
             MinecraftForge.EVENT_BUS.addListener(ForgeClientEvents::onRenderLevelStage);
+            MinecraftForge.EVENT_BUS.addListener(ForgeClientEvents::onDrawHighlight);
         });
         MinecraftForge.EVENT_BUS.addListener(this::onRightClickBlock);
-        MinecraftForge.EVENT_BUS.addListener(this::onDrawHighlight);
     }
 
     private void onCommonSetup(FMLCommonSetupEvent event)
@@ -76,19 +72,6 @@ public class FurnitureMod
         if(event.getItemStack().is(ModItems.WRENCH.get()))
         {
             event.setCanceled(true);
-        }
-    }
-
-    private void onDrawHighlight(RenderHighlightEvent.Block event)
-    {
-        Minecraft mc = Minecraft.getInstance();
-        if(mc.player != null)
-        {
-            ItemStack stack = mc.player.getItemInHand(InteractionHand.MAIN_HAND);
-            if(stack.is(ModItems.WRENCH.get()))
-            {
-                event.setCanceled(true);
-            }
         }
     }
 }

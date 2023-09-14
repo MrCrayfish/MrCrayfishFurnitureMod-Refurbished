@@ -10,13 +10,16 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.client.event.RenderHighlightEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import org.apache.commons.lang3.function.TriFunction;
 
@@ -76,6 +79,19 @@ public class ForgeClientEvents
                 {
                     event.setCanceled(true);
                 }
+            }
+        }
+    }
+
+    public static void onDrawHighlight(RenderHighlightEvent.Block event)
+    {
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.player != null)
+        {
+            ItemStack stack = mc.player.getItemInHand(InteractionHand.MAIN_HAND);
+            if(stack.is(ModItems.WRENCH.get()))
+            {
+                event.setCanceled(true);
             }
         }
     }
