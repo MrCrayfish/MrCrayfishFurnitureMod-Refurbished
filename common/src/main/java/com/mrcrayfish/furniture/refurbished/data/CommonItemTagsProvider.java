@@ -378,5 +378,6 @@ public class CommonItemTagsProvider
         TagBuilder<Item> items = builder.apply(ModTags.Items.ITEMS);
         items.add(ModItems.SPATULA.get());
         items.add(ModItems.KNIFE.get());
+        items.add(ModItems.WRENCH.get());
     }
 }
