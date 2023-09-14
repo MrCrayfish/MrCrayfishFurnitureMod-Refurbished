@@ -21,10 +21,12 @@ import net.minecraft.world.level.block.state.properties.Property;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Author: MrCrayfish
@@ -42,6 +44,7 @@ public class FurnitureModelProvider extends FabricModelProvider
     @Override
     public void generateBlockStateModels(BlockModelGenerators generators)
     {
+        Set<ResourceLocation> createdModels = new HashSet<>();
         new CommonBlockModelProvider(builder -> {
             Block block = builder.getBlock();
 
@@ -65,9 +68,10 @@ public class FurnitureModelProvider extends FabricModelProvider
                 dispatch.register(entry.getValueMap(), variant);
 
                 // Creates and registers the block model into the model output if a child model
-                if(entry.hasParentModel())
+                if(entry.hasParentModel() && !createdModels.contains(modelLocation))
                 {
                     model.asTemplate().create(modelLocation, model.getTextures(), generators.modelOutput);
+                    createdModels.add(modelLocation);
                 }
             });
             generator.with(dispatch);
