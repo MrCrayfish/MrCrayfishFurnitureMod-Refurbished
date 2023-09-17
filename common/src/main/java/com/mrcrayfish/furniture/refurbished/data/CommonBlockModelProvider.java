@@ -873,7 +873,7 @@ public class CommonBlockModelProvider
     {
         WoodType type = block.getWoodType();
         TextureMapping textures = new TextureMapping();
-        textures.put(TextureSlot.PARTICLE, this.woodParticle(type));
+        textures.put(TextureSlot.PARTICLE, new ResourceLocation("block/glass"));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
         PreparedBlockState state = new PreparedBlockState(block);
         state.createVariant().prop(StorageJarBlock.DIRECTION, Direction.NORTH).parentModel(ModelTemplate.STORAGE_JAR.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
