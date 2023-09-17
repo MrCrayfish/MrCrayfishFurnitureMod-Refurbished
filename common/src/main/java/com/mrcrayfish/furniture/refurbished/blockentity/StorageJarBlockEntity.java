@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
  */
 public class StorageJarBlockEntity extends BasicLootBlockEntity
 {
-    private int head = -1;
+    private int headIndex = -1;
 
     public StorageJarBlockEntity(BlockPos pos, BlockState state)
     {
@@ -39,11 +39,11 @@ public class StorageJarBlockEntity extends BasicLootBlockEntity
 
     private int getHeadIndex()
     {
-        if(this.head == -1 || this.head >= 0 && this.head < this.getContainerSize() && !this.getItem(this.head).isEmpty())
+        if(this.headIndex == -1 || this.headIndex >= 0 && this.headIndex < this.getContainerSize() && !this.getItem(this.headIndex).isEmpty())
         {
             this.recalculateHeadIndex();
         }
-        return this.head;
+        return this.headIndex;
     }
 
     private void recalculateHeadIndex()
@@ -52,11 +52,11 @@ public class StorageJarBlockEntity extends BasicLootBlockEntity
         {
             if(this.getItem(i).isEmpty())
             {
-                this.head = i;
+                this.headIndex = i;
                 return;
             }
         }
-        this.head = this.getContainerSize();
+        this.headIndex = this.getContainerSize();
     }
 
     @Override
@@ -81,7 +81,7 @@ public class StorageJarBlockEntity extends BasicLootBlockEntity
             copy.setCount(1);
             stack.shrink(1);
             this.setItem(head, copy);
-            float percent = (float) this.head / this.getContainerSize();
+            float percent = (float) this.headIndex / this.getContainerSize();
             float pitch = 0.9F + 0.3F * percent;
             this.level.playSound(null, this.worldPosition, ModSounds.BLOCK_STORAGE_JAR_INSERT_ITEM.get(), SoundSource.BLOCKS, 1.0F, pitch);
             return true;
@@ -104,12 +104,12 @@ public class StorageJarBlockEntity extends BasicLootBlockEntity
                 ItemEntity entity = new ItemEntity(this.level, x, y, z, stack.copy());
                 this.level.addFreshEntity(entity);
 
-                float percent = (float) this.head / this.getContainerSize();
+                float percent = (float) this.headIndex / this.getContainerSize();
                 float pitch = 0.9F + 0.3F * percent;
                 this.level.playSound(null, pos, ModSounds.BLOCK_STORAGE_JAR_INSERT_ITEM.get(), SoundSource.BLOCKS, 1.0F, pitch);
 
                 stack.setCount(0);
-                this.head = index;
+                this.headIndex = index;
                 this.setChanged();
             }
         }
@@ -155,12 +155,12 @@ public class StorageJarBlockEntity extends BasicLootBlockEntity
             {
                 if(slotIndex == headIndex)
                 {
-                    this.head++;
+                    this.headIndex++;
                 }
             }
             else if(slotIndex == headIndex - 1)
             {
-                this.head--;
+                this.headIndex--;
             }
         }
     }
@@ -173,7 +173,7 @@ public class StorageJarBlockEntity extends BasicLootBlockEntity
             ItemStack result = super.removeItem(slotIndex, count);
             if(this.getItem(slotIndex).isEmpty())
             {
-                this.head--;
+                this.headIndex--;
             }
             return result;
         }
