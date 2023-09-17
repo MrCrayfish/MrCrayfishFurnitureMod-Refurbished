@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished;
 
+import com.mrcrayfish.furniture.refurbished.block.StorageJarBlock;
 import com.mrcrayfish.furniture.refurbished.client.ClientBootstrap;
 import com.mrcrayfish.furniture.refurbished.client.ForgeClientEvents;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
@@ -8,9 +9,13 @@ import com.mrcrayfish.furniture.refurbished.data.FurnitureItemTagsProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureLootTableProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureModelProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureRecipeProvider;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -42,6 +47,7 @@ public class FurnitureMod
             MinecraftForge.EVENT_BUS.addListener(ForgeClientEvents::onDrawHighlight);
         });
         MinecraftForge.EVENT_BUS.addListener(this::onRightClickBlock);
+        MinecraftForge.EVENT_BUS.addListener(this::onLeftClickBlock);
     }
 
     private void onCommonSetup(FMLCommonSetupEvent event)
@@ -71,6 +77,26 @@ public class FurnitureMod
     {
         if(event.getItemStack().is(ModItems.WRENCH.get()))
         {
+            event.setCanceled(true);
+        }
+    }
+
+    private void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event)
+    {
+        Level level = event.getLevel();
+        BlockPos pos = event.getPos();
+        BlockState state = level.getBlockState(pos);
+        Player player = event.getEntity();
+        
+        if(!player.isCreative())
+            return;
+
+        if(player.isCrouching())
+            return;
+
+        if(state.getBlock() instanceof StorageJarBlock storageJar)
+        {
+            storageJar.attack(state, level, pos, event.getEntity());
             event.setCanceled(true);
         }
     }

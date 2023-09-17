@@ -13,6 +13,7 @@ import com.mrcrayfish.furniture.refurbished.client.registration.BlockEntityRende
 import com.mrcrayfish.furniture.refurbished.client.registration.EntityRendererRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.RenderTypeRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
+import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.StorageJarRenderer;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.CuttingBoardBlockEntityRenderer;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.ElectricBlockEntityRenderer;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.FryingPanBlockEntityRenderer;
@@ -68,6 +69,7 @@ public class ClientBootstrap
         register.apply(ModBlockEntities.DOORBELL.get(), ElectricBlockEntityRenderer::new);
         register.apply(ModBlockEntities.FREEZER.get(), ElectricBlockEntityRenderer::new);
         register.apply(ModBlockEntities.MICROWAVE.get(), ElectricBlockEntityRenderer::new);
+        register.apply(ModBlockEntities.STORAGE_JAR.get(), StorageJarRenderer::new);
     }
 
     public static void registerEntityRenderers(EntityRendererRegister register)
@@ -111,5 +113,15 @@ public class ClientBootstrap
         register.apply(ModBlocks.CEILING_LIGHT_DARK.get(), RenderType.translucent());
         register.apply(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get(), RenderType.cutout());
         register.apply(ModBlocks.ELECTRICITY_GENERATOR_DARK.get(), RenderType.cutout());
+        register.apply(ModBlocks.STORAGE_JAR_OAK.get(), RenderType.cutout());
+        register.apply(ModBlocks.STORAGE_JAR_SPRUCE.get(), RenderType.cutout());
+        register.apply(ModBlocks.STORAGE_JAR_BIRCH.get(), RenderType.cutout());
+        register.apply(ModBlocks.STORAGE_JAR_JUNGLE.get(), RenderType.cutout());
+        register.apply(ModBlocks.STORAGE_JAR_ACACIA.get(), RenderType.cutout());
+        register.apply(ModBlocks.STORAGE_JAR_DARK_OAK.get(), RenderType.cutout());
+        register.apply(ModBlocks.STORAGE_JAR_MANGROVE.get(), RenderType.cutout());
+        register.apply(ModBlocks.STORAGE_JAR_CHERRY.get(), RenderType.cutout());
+        register.apply(ModBlocks.STORAGE_JAR_CRIMSON.get(), RenderType.cutout());
+        register.apply(ModBlocks.STORAGE_JAR_WARPED.get(), RenderType.cutout());
     }
 }

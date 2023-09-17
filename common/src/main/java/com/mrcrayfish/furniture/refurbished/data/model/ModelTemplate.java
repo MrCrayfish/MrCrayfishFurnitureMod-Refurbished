@@ -88,6 +88,7 @@ public class ModelTemplate
     public static final ModelTemplate CEILING_LIGHT_ON = block("ceiling_light_on", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate ELECTRICITY_GENERATOR_OFF = block("electricity_generator_off", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate ELECTRICITY_GENERATOR_ON = block("electricity_generator_on", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate STORAGE_JAR = block("storage_jar", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
 
     public static final ModelTemplate FRIDGE = item("fridge", TextureSlot.TEXTURE);
 

@@ -199,6 +199,16 @@ public class CommonItemTagsProvider
         kitchen.add(ModBlocks.CUTTING_BOARD_CRIMSON.get().asItem());
         kitchen.add(ModBlocks.CUTTING_BOARD_WARPED.get().asItem());
         kitchen.add(ModBlocks.FRYING_PAN.get().asItem());
+        kitchen.add(ModBlocks.STORAGE_JAR_OAK.get().asItem());
+        kitchen.add(ModBlocks.STORAGE_JAR_SPRUCE.get().asItem());
+        kitchen.add(ModBlocks.STORAGE_JAR_BIRCH.get().asItem());
+        kitchen.add(ModBlocks.STORAGE_JAR_JUNGLE.get().asItem());
+        kitchen.add(ModBlocks.STORAGE_JAR_ACACIA.get().asItem());
+        kitchen.add(ModBlocks.STORAGE_JAR_DARK_OAK.get().asItem());
+        kitchen.add(ModBlocks.STORAGE_JAR_MANGROVE.get().asItem());
+        kitchen.add(ModBlocks.STORAGE_JAR_CHERRY.get().asItem());
+        kitchen.add(ModBlocks.STORAGE_JAR_CRIMSON.get().asItem());
+        kitchen.add(ModBlocks.STORAGE_JAR_WARPED.get().asItem());
         kitchen.add(ModItems.SPATULA.get());
         kitchen.add(ModItems.KNIFE.get());
 
@@ -374,6 +384,16 @@ public class CommonItemTagsProvider
         storage.add(ModBlocks.MAIL_BOX_WARPED.get().asItem());
         storage.add(ModItems.FRIDGE_LIGHT.get());
         storage.add(ModItems.FRIDGE_DARK.get());
+        storage.add(ModBlocks.STORAGE_JAR_OAK.get().asItem());
+        storage.add(ModBlocks.STORAGE_JAR_SPRUCE.get().asItem());
+        storage.add(ModBlocks.STORAGE_JAR_BIRCH.get().asItem());
+        storage.add(ModBlocks.STORAGE_JAR_JUNGLE.get().asItem());
+        storage.add(ModBlocks.STORAGE_JAR_ACACIA.get().asItem());
+        storage.add(ModBlocks.STORAGE_JAR_DARK_OAK.get().asItem());
+        storage.add(ModBlocks.STORAGE_JAR_MANGROVE.get().asItem());
+        storage.add(ModBlocks.STORAGE_JAR_CHERRY.get().asItem());
+        storage.add(ModBlocks.STORAGE_JAR_CRIMSON.get().asItem());
+        storage.add(ModBlocks.STORAGE_JAR_WARPED.get().asItem());
 
         TagBuilder<Item> items = builder.apply(ModTags.Items.ITEMS);
         items.add(ModItems.SPATULA.get());

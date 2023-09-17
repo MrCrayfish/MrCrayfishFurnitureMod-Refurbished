@@ -11,6 +11,12 @@
             "refurbished_furniture:block/electricity_generator/engine"
         ]
     },
+    "block.storage_jar.insert_item": {
+        "subtitle": "subtitle.refurbished_furniture.storage_jar_insert_item",
+        "sounds": [
+            "refurbished_furniture:block/storage_jar/insert_item"
+        ]
+    },
     "item.package.open": {
         "subtitle": "subtitle.refurbished_furniture.package_open",
         "sounds": [

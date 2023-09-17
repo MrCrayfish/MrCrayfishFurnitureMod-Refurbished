@@ -247,6 +247,16 @@ public class CommonBlockModelProvider
         this.ceilingLight(ModBlocks.CEILING_LIGHT_DARK.get());
         this.electricityGenerator(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get());
         this.electricityGenerator(ModBlocks.ELECTRICITY_GENERATOR_DARK.get());
+        this.storageJar(ModBlocks.STORAGE_JAR_OAK.get());
+        this.storageJar(ModBlocks.STORAGE_JAR_SPRUCE.get());
+        this.storageJar(ModBlocks.STORAGE_JAR_BIRCH.get());
+        this.storageJar(ModBlocks.STORAGE_JAR_JUNGLE.get());
+        this.storageJar(ModBlocks.STORAGE_JAR_ACACIA.get());
+        this.storageJar(ModBlocks.STORAGE_JAR_DARK_OAK.get());
+        this.storageJar(ModBlocks.STORAGE_JAR_MANGROVE.get());
+        this.storageJar(ModBlocks.STORAGE_JAR_CHERRY.get());
+        this.storageJar(ModBlocks.STORAGE_JAR_CRIMSON.get());
+        this.storageJar(ModBlocks.STORAGE_JAR_WARPED.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -856,6 +866,20 @@ public class CommonBlockModelProvider
         state.createVariant().prop(ElectricityGeneratorBlock.DIRECTION, Direction.EAST).prop(ElectricityGeneratorBlock.POWERED, true).parentModel(ModelTemplate.ELECTRICITY_GENERATOR_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(ElectricityGeneratorBlock.DIRECTION, Direction.SOUTH).prop(ElectricityGeneratorBlock.POWERED, true).parentModel(ModelTemplate.ELECTRICITY_GENERATOR_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(ElectricityGeneratorBlock.DIRECTION, Direction.WEST).prop(ElectricityGeneratorBlock.POWERED, true).parentModel(ModelTemplate.ELECTRICITY_GENERATOR_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        this.consumer.accept(state);
+    }
+
+    private void storageJar(StorageJarBlock block)
+    {
+        WoodType type = block.getWoodType();
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.woodParticle(type));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedBlockState state = new PreparedBlockState(block);
+        state.createVariant().prop(StorageJarBlock.DIRECTION, Direction.NORTH).parentModel(ModelTemplate.STORAGE_JAR.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(StorageJarBlock.DIRECTION, Direction.EAST).parentModel(ModelTemplate.STORAGE_JAR.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(StorageJarBlock.DIRECTION, Direction.SOUTH).parentModel(ModelTemplate.STORAGE_JAR.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(StorageJarBlock.DIRECTION, Direction.WEST).parentModel(ModelTemplate.STORAGE_JAR.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         this.consumer.accept(state);
     }
 }

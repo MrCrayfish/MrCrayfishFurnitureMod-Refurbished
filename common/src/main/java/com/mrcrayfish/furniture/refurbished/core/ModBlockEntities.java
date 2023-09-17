@@ -214,4 +214,17 @@ public class ModBlockEntities
             ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get(),
             ModBlocks.ELECTRICITY_GENERATOR_DARK.get()
     });
+
+    public static final RegistryEntry<BlockEntityType<StorageJarBlockEntity>> STORAGE_JAR = RegistryEntry.blockEntity(Utils.resource("storage_jar"), StorageJarBlockEntity::new, () -> new Block[]{
+            ModBlocks.STORAGE_JAR_OAK.get(),
+            ModBlocks.STORAGE_JAR_SPRUCE.get(),
+            ModBlocks.STORAGE_JAR_BIRCH.get(),
+            ModBlocks.STORAGE_JAR_JUNGLE.get(),
+            ModBlocks.STORAGE_JAR_ACACIA.get(),
+            ModBlocks.STORAGE_JAR_DARK_OAK.get(),
+            ModBlocks.STORAGE_JAR_MANGROVE.get(),
+            ModBlocks.STORAGE_JAR_CHERRY.get(),
+            ModBlocks.STORAGE_JAR_CRIMSON.get(),
+            ModBlocks.STORAGE_JAR_WARPED.get()
+    });
 }
