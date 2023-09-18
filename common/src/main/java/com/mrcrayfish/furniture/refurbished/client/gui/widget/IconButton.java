@@ -49,7 +49,7 @@ public class IconButton extends Button
         int contentWidth = 10 + mc.font.width(this.label) + (!this.label.getString().isEmpty() ? 4 : 0);
         int contentLeft = (this.width - contentWidth) / 2;
         int iconX = this.getX() + contentLeft;
-        int iconY = this.getY() + 5;
+        int iconY = this.getY() + 4;
         float brightness = this.active ? 1.0F : 0.5F;
         RenderSystem.enableBlend();
         graphics.setColor(brightness, brightness, brightness, this.alpha);

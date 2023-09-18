@@ -39,6 +39,25 @@ public abstract class SimpleContainerMenu extends AbstractContainerMenu
         this.container.stopOpen(player);
     }
 
+    protected void addContainerSlots(int x, int y, int width, int height, int startIndex)
+    {
+        this.addContainerSlots(x, y, width, height, startIndex, Slot::new);
+    }
+
+    protected void addContainerSlots(int x, int y, int width, int height, int startIndex, SlotBuilder builder)
+    {
+        for(int j = 0; j < height; j++)
+        {
+            for(int i = 0; i < width; i++)
+            {
+                int slotIndex = startIndex + i + j * height;
+                int slotX = x + i * 18;
+                int slotY = y + j * 18;
+                this.addSlot(builder.apply(this.container, slotIndex, slotX, slotY));
+            }
+        }
+    }
+
     /**
      *
      * @param x
@@ -63,5 +82,11 @@ public abstract class SimpleContainerMenu extends AbstractContainerMenu
             int slotY = y + 58;
             this.addSlot(new Slot(playerInventory, i, slotX, slotY));
         }
+    }
+
+    @FunctionalInterface
+    public interface SlotBuilder
+    {
+        Slot apply(Container container, int index, int x, int y);
     }
 }

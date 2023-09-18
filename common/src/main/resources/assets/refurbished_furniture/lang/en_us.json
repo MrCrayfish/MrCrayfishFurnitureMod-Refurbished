@@ -254,6 +254,7 @@
     "container.refurbished_furniture.mailbox": "Mailbox",
     "container.refurbished_furniture.post_box": "Post Box",
     "container.refurbished_furniture.electricity_generator": "Electricity Generator",
+    "container.refurbished_furniture.recycling_bin": "Recycling Bin",
     "gui.refurbished_furniture.set_mailbox_name": "Set Mailbox Name",
     "gui.refurbished_furniture.rename_mailbox_failed": "Failed to update mailbox name",
     "gui.refurbished_furniture.mailboxes": "Mailboxes",
@@ -273,5 +274,6 @@
     "gui.refurbished_furniture.status.overloaded": "Overloaded",
     "gui.refurbished_furniture.status.no_fuel": "Fuel Empty",
     "gui.refurbished_furniture.node_count": "%s / %s",
+    "gui.refurbished_furniture.recycle": "Recycle",
     "subtitle.refurbished_furniture.package_open": "Package Opening"
 }

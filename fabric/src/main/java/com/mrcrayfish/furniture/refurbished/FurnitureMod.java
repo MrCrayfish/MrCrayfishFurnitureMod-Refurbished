@@ -9,19 +9,18 @@ import com.mrcrayfish.furniture.refurbished.data.FurnitureItemTagsProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureLootTableProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureModelProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureRecipeProvider;
+import com.mrcrayfish.furniture.refurbished.inventory.RecyclingBinMenu;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.base.SingleFluidStorage;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 @SuppressWarnings("UnstableApiUsage")
@@ -55,6 +54,10 @@ public class FurnitureMod implements ModInitializer, DataGeneratorEntrypoint
                 }
             }
             return InteractionResult.PASS;
+        });
+
+        ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> {
+            RecyclingBinMenu.clearRecipeLookup();
         });
     }
 

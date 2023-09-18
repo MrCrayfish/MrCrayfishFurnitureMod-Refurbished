@@ -8,6 +8,7 @@ import com.mrcrayfish.furniture.refurbished.client.gui.screen.ElectricityGenerat
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.FreezerScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.MicrowaveScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.PostBoxScreen;
+import com.mrcrayfish.furniture.refurbished.client.gui.screen.RecyclingBinScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.StoveScreen;
 import com.mrcrayfish.furniture.refurbished.client.registration.BlockEntityRendererRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.EntityRendererRegister;
@@ -54,6 +55,7 @@ public class ClientBootstrap
         register.apply(ModMenuTypes.STOVE.get(), StoveScreen::new);
         register.apply(ModMenuTypes.POST_BOX.get(), PostBoxScreen::new);
         register.apply(ModMenuTypes.ELECTRICITY_GENERATOR.get(), ElectricityGeneratorScreen::new);
+        register.apply(ModMenuTypes.RECYCLING_BIN.get(), RecyclingBinScreen::new);
     }
 
     public static void registerBlockEntityRenderers(BlockEntityRendererRegister register)

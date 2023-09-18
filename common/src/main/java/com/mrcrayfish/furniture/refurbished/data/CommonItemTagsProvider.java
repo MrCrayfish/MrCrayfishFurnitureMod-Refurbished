@@ -209,6 +209,7 @@ public class CommonItemTagsProvider
         kitchen.add(ModBlocks.STORAGE_JAR_CHERRY.get().asItem());
         kitchen.add(ModBlocks.STORAGE_JAR_CRIMSON.get().asItem());
         kitchen.add(ModBlocks.STORAGE_JAR_WARPED.get().asItem());
+        kitchen.add(ModBlocks.RECYCLING_BIN.get().asItem());
         kitchen.add(ModItems.SPATULA.get());
         kitchen.add(ModItems.KNIFE.get());
 
@@ -267,6 +268,7 @@ public class CommonItemTagsProvider
         outdoors.add(ModBlocks.MAIL_BOX_WARPED.get().asItem());
         outdoors.add(ModBlocks.POST_BOX.get().asItem());
         outdoors.add(ModBlocks.DOORBELL.get().asItem());
+        outdoors.add(ModBlocks.RECYCLING_BIN.get().asItem());
         outdoors.add(ModItems.SPATULA.get());
         outdoors.add(ModItems.KNIFE.get());
 
@@ -394,6 +396,7 @@ public class CommonItemTagsProvider
         storage.add(ModBlocks.STORAGE_JAR_CHERRY.get().asItem());
         storage.add(ModBlocks.STORAGE_JAR_CRIMSON.get().asItem());
         storage.add(ModBlocks.STORAGE_JAR_WARPED.get().asItem());
+        storage.add(ModBlocks.RECYCLING_BIN.get().asItem());
 
         TagBuilder<Item> items = builder.apply(ModTags.Items.ITEMS);
         items.add(ModItems.SPATULA.get());
