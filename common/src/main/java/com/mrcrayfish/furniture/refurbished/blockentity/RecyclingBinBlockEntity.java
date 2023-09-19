@@ -9,6 +9,8 @@ import com.mrcrayfish.furniture.refurbished.inventory.BuildableContainerData;
 import com.mrcrayfish.furniture.refurbished.inventory.RecyclingBinMenu;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -52,6 +54,7 @@ import java.util.Set;
 // TODO forge version with capabilities
 public class RecyclingBinBlockEntity extends ElectricityModuleLootBlockEntity implements IProcessingBlock, IPowerSwitch, IAudioBlock
 {
+    private static Map<ResourceLocation, List<WeakReference<CraftingRecipe>>> recipeLookup;
     private static final Set<ItemLike> INVALID_ITEMS = Util.make(() -> {
         ImmutableSet.Builder<ItemLike> builder = ImmutableSet.builder();
         builder.add(Items.KNOWLEDGE_BOOK);
@@ -90,9 +93,6 @@ public class RecyclingBinBlockEntity extends ElectricityModuleLootBlockEntity im
     public static final int DATA_POWERED = 0;
     public static final int DATA_ENABLED = 1;
     public static final int DATA_PROCESSING_TIME = 2;
-
-    // TODO Convert value to list
-    private static Map<ResourceLocation, WeakReference<CraftingRecipe>> recipeLookup;
 
     protected RandomSource random = RandomSource.create();
     protected SimpleContainer output = new SimpleContainer(9);
@@ -451,7 +451,11 @@ public class RecyclingBinBlockEntity extends ElectricityModuleLootBlockEntity im
             return null;
 
         ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
-        WeakReference<CraftingRecipe> recipeRef = recipeLookup.get(id);
+        List<WeakReference<CraftingRecipe>> list = recipeLookup.get(id);
+        if(list == null || list.isEmpty())
+            return null;
+
+        WeakReference<CraftingRecipe> recipeRef = list.get(this.random.nextInt(list.size()));
         if(recipeRef == null)
             return null;
 
@@ -460,8 +464,7 @@ public class RecyclingBinBlockEntity extends ElectricityModuleLootBlockEntity im
             return recipe;
 
         refreshRecipeLookup(this.level, true);
-        recipeRef = recipeLookup.get(id);
-        return recipeRef != null ? recipeRef.get() : null;
+        return this.getRecipe(item); // TODO might be dangerous
     }
 
     private boolean isInvalidItem(ItemStack stack)
@@ -505,7 +508,8 @@ public class RecyclingBinBlockEntity extends ElectricityModuleLootBlockEntity im
                 if(!recipe.isSpecial() && !recipe.isIncomplete()) {
                     ItemStack result = recipe.getResultItem(level.registryAccess());
                     ResourceLocation id = BuiltInRegistries.ITEM.getKey(result.getItem());
-                    recipeLookup.putIfAbsent(id, new WeakReference<>(recipe));
+                    List<WeakReference<CraftingRecipe>> list = recipeLookup.computeIfAbsent(id, id2 -> new ObjectArrayList<>());
+                    list.add(new WeakReference<>(recipe));
                 }
             });
         }
