@@ -1,7 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.client.audio;
 
-import com.mrcrayfish.furniture.refurbished.blockentity.ElectricityGeneratorBlockEntity;
-import com.mrcrayfish.furniture.refurbished.core.ModSounds;
+import com.mrcrayfish.furniture.refurbished.blockentity.IAudioBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
@@ -14,19 +13,18 @@ import java.lang.ref.WeakReference;
 /**
  * Author: MrCrayfish
  */
-public class ElectricityGeneratorSound extends AbstractTickableSoundInstance
+public class AudioBlockSound extends AbstractTickableSoundInstance
 {
-    public static final double MAX_DISTANCE = Mth.square(5);
+    private final WeakReference<IAudioBlock> audioBlockRef;
 
-    private final WeakReference<ElectricityGeneratorBlockEntity> generatorRef;
-
-    public ElectricityGeneratorSound(BlockPos pos, ElectricityGeneratorBlockEntity generator)
+    public AudioBlockSound(IAudioBlock block)
     {
-        super(ModSounds.BLOCK_ELECTRICITY_GENERATOR_ENGINE.get(), SoundSource.BLOCKS, SoundInstance.createUnseededRandom());
-        this.generatorRef = new WeakReference<>(generator);
+        super(block.getSound(), SoundSource.BLOCKS, SoundInstance.createUnseededRandom());
+        this.audioBlockRef = new WeakReference<>(block);
         this.volume = 0F;
         this.looping = true;
         this.delay = 0;
+        BlockPos pos = block.getAudioPosition();
         this.x = pos.getX() + 0.5;
         this.y = pos.getY() + 0.5;
         this.z = pos.getZ() + 0.5;
@@ -41,8 +39,8 @@ public class ElectricityGeneratorSound extends AbstractTickableSoundInstance
     @Override
     public void tick()
     {
-        ElectricityGeneratorBlockEntity generator = this.generatorRef.get();
-        if(generator == null || !generator.isPowered() || generator.isRemoved())
+        IAudioBlock block = this.audioBlockRef.get();
+        if(block == null || !block.canPlayAudio())
         {
             this.stop();
             return;
@@ -52,12 +50,12 @@ public class ElectricityGeneratorSound extends AbstractTickableSoundInstance
         if(mc.player != null)
         {
             double distanceSquared = mc.player.getEyePosition().distanceToSqr(this.x, this.y, this.z);
-            if(distanceSquared > MAX_DISTANCE)
+            if(distanceSquared > block.getAudioRadiusSqr())
             {
                 this.stop();
                 return;
             }
-            this.volume = 1.0F - (float) Mth.clamp(distanceSquared / MAX_DISTANCE, 0.0, 1.0);
+            this.volume = 1.0F - (float) Mth.clamp(distanceSquared / block.getAudioRadiusSqr(), 0.0, 1.0);
         }
         else
         {

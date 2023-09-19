@@ -1,6 +1,8 @@
 package com.mrcrayfish.furniture.refurbished.client.audio;
 
-import com.mrcrayfish.furniture.refurbished.blockentity.ElectricityGeneratorBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.IAudioBlock;
+import com.mrcrayfish.furniture.refurbished.blockentity.RecyclingBinBlockEntity;
+import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.TickableSoundInstance;
 import net.minecraft.core.BlockPos;
@@ -30,32 +32,37 @@ public class AudioManager
 
     private AudioManager() {}
 
-    public void playElectricityGeneratorSound(BlockPos pos)
+    private boolean isPlayingAtPos(BlockPos pos)
     {
         WeakReference<TickableSoundInstance> soundRef = this.playingSounds.get(pos);
         if(soundRef != null)
         {
             TickableSoundInstance sound = soundRef.get();
-            if(sound != null && !sound.isStopped())
-            {
-                return;
-            }
+            return sound != null && !sound.isStopped();
         }
+        return false;
+    }
+
+    public void playAudioBlock(IAudioBlock block)
+    {
+        if(!block.canPlayAudio())
+            return;
+
+        if(this.isPlayingAtPos(block.getAudioPosition()))
+            return;
 
         Minecraft mc = Minecraft.getInstance();
         if(mc.player != null && mc.level != null)
         {
+            BlockPos pos = block.getAudioPosition();
             Vec3 center = pos.getCenter();
             Vec3 eye = mc.player.getEyePosition();
-            if(eye.distanceToSqr(center) > ElectricityGeneratorSound.MAX_DISTANCE)
+            if(eye.distanceToSqr(center) > block.getAudioRadiusSqr())
                 return;
 
-            if(mc.level.getBlockEntity(pos) instanceof ElectricityGeneratorBlockEntity generator)
-            {
-                TickableSoundInstance sound = new ElectricityGeneratorSound(pos, generator);
-                mc.getSoundManager().play(sound);
-                this.playingSounds.put(pos, new WeakReference<>(sound));
-            }
+            TickableSoundInstance sound = new AudioBlockSound(block);
+            mc.getSoundManager().play(sound);
+            this.playingSounds.put(pos, new WeakReference<>(sound));
         }
     }
 

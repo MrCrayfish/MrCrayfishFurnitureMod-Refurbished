@@ -97,7 +97,7 @@ public class RecyclingBinBlock extends FurnitureHorizontalBlock implements Entit
         {
             return createTickerHelper(type, recyclingBin, RecyclingBinBlockEntity::serverTick);
         }
-        return null;
+        return createTickerHelper(type, recyclingBin, RecyclingBinBlockEntity::clientTick);
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.block.ElectricityGeneratorBlock;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
+import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
 import com.mrcrayfish.furniture.refurbished.inventory.BuildableContainerData;
 import com.mrcrayfish.furniture.refurbished.inventory.ElectricityGeneratorMenu;
@@ -15,6 +16,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
@@ -29,7 +31,7 @@ import java.util.Set;
 /**
  * Author: MrCrayfish
  */
-public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockEntity implements IProcessingBlock, IPowerSwitch
+public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockEntity implements IProcessingBlock, IPowerSwitch, IAudioBlock
 {
     public static final int DATA_ENERGY = 0;
     public static final int DATA_TOTAL_ENERGY = 1;
@@ -82,6 +84,24 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
     public boolean isMatchingContainerMenu(AbstractContainerMenu menu)
     {
         return menu instanceof ElectricityGeneratorMenu generator && generator.getContainer() == this;
+    }
+
+    @Override
+    public SoundEvent getSound()
+    {
+        return ModSounds.BLOCK_ELECTRICITY_GENERATOR_ENGINE.get();
+    }
+
+    @Override
+    public BlockPos getAudioPosition()
+    {
+        return this.worldPosition;
+    }
+
+    @Override
+    public boolean canPlayAudio()
+    {
+        return this.isPowered() && !this.isRemoved();
     }
 
     @Override
@@ -248,7 +268,7 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, ElectricityGeneratorBlockEntity generator)
     {
-        AudioManager.get().playElectricityGeneratorSound(pos);
+        AudioManager.get().playAudioBlock(generator);
     }
 
     @Override

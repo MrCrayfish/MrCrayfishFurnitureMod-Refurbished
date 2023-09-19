@@ -78,7 +78,7 @@ public interface IProcessingBlock
     /**
      * The default implementation of the process cycle.
      */
-    default void processTick()
+    default boolean processTick()
     {
         boolean processing = false;
         if(this.canProcess())
@@ -130,6 +130,8 @@ public interface IProcessingBlock
         {
             this.setProcessingTime(0);
         }
+
+        return processing;
     }
 
     enum EnergyMode

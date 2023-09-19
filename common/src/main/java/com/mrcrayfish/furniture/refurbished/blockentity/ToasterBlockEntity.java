@@ -154,14 +154,15 @@ public class ToasterBlockEntity extends ElectricityModuleProcessingContainerBloc
     }
 
     @Override
-    public void processTick()
+    public boolean processTick()
     {
-        super.processTick();
+        boolean result = super.processTick();
         if(this.sync)
         {
             BlockEntityHelper.sendCustomUpdate(this, this.getUpdateTag());
             this.sync = false;
         }
+        return result;
     }
 
     @Override

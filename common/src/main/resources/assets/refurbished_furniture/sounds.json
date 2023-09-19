@@ -17,6 +17,12 @@
             "refurbished_furniture:block/storage_jar/insert_item"
         ]
     },
+    "block.recycling_bin.engine": {
+        "subtitle": "subtitle.refurbished_furniture.recycling_bin_engine",
+        "sounds": [
+            "refurbished_furniture:block/recycling_bin/engine"
+        ]
+    },
     "item.package.open": {
         "subtitle": "subtitle.refurbished_furniture.package_open",
         "sounds": [

@@ -2,9 +2,12 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.google.common.collect.ImmutableSet;
 import com.mrcrayfish.furniture.refurbished.Config;
+import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
+import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.inventory.BuildableContainerData;
 import com.mrcrayfish.furniture.refurbished.inventory.RecyclingBinMenu;
+import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -15,6 +18,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.SimpleContainer;
@@ -46,7 +50,7 @@ import java.util.Set;
  * Author: MrCrayfish
  */
 // TODO forge version with capabilities
-public class RecyclingBinBlockEntity extends ElectricityModuleLootBlockEntity implements IProcessingBlock, IPowerSwitch
+public class RecyclingBinBlockEntity extends ElectricityModuleLootBlockEntity implements IProcessingBlock, IPowerSwitch, IAudioBlock
 {
     private static final Set<ItemLike> INVALID_ITEMS = Util.make(() -> {
         ImmutableSet.Builder<ItemLike> builder = ImmutableSet.builder();
@@ -93,6 +97,7 @@ public class RecyclingBinBlockEntity extends ElectricityModuleLootBlockEntity im
     protected RandomSource random = RandomSource.create();
     protected SimpleContainer output = new SimpleContainer(9);
     protected boolean powered;
+    protected boolean processing;
     protected int processingTime;
     protected boolean enabled;
     protected boolean full;
@@ -141,6 +146,24 @@ public class RecyclingBinBlockEntity extends ElectricityModuleLootBlockEntity im
     }
 
     @Override
+    public SoundEvent getSound()
+    {
+        return ModSounds.BLOCK_RECYCLING_BIN_ENGINE.get();
+    }
+
+    @Override
+    public BlockPos getAudioPosition()
+    {
+        return this.worldPosition;
+    }
+
+    @Override
+    public boolean canPlayAudio()
+    {
+        return this.isPowered() && this.processing && this.enabled && !this.isRemoved();
+    }
+
+    @Override
     public boolean isPowered()
     {
         return this.powered;
@@ -151,6 +174,7 @@ public class RecyclingBinBlockEntity extends ElectricityModuleLootBlockEntity im
     {
         this.powered = powered;
         this.setChanged();
+        this.sync();
     }
 
     @Override
@@ -232,7 +256,6 @@ public class RecyclingBinBlockEntity extends ElectricityModuleLootBlockEntity im
                     return false;
                 }
             }
-
             return true;
         }
         return false;
@@ -268,6 +291,7 @@ public class RecyclingBinBlockEntity extends ElectricityModuleLootBlockEntity im
     {
         this.enabled = !this.enabled;
         this.setChanged();
+        this.sync();
     }
 
     private void updateOutputContainer()
@@ -310,7 +334,18 @@ public class RecyclingBinBlockEntity extends ElectricityModuleLootBlockEntity im
     {
         recyclingBin.updatePoweredState();
         recyclingBin.setReceivingPower(false);
-        recyclingBin.processTick();
+
+        boolean processing = recyclingBin.processTick();
+        if(recyclingBin.processing != processing)
+        {
+            recyclingBin.processing = processing;
+            recyclingBin.sync();
+        }
+    }
+
+    public static void clientTick(Level level, BlockPos pos, BlockState state, RecyclingBinBlockEntity recyclingBin)
+    {
+        AudioManager.get().playAudioBlock(recyclingBin);
     }
 
     @Override
@@ -334,6 +369,10 @@ public class RecyclingBinBlockEntity extends ElectricityModuleLootBlockEntity im
         {
             this.seed = tag.getLong("Seed");
         }
+        if(tag.contains("Processing", CompoundTag.TAG_BYTE))
+        {
+            this.processing = tag.getBoolean("Processing");
+        }
     }
 
     @Override
@@ -351,7 +390,18 @@ public class RecyclingBinBlockEntity extends ElectricityModuleLootBlockEntity im
     {
         CompoundTag tag = new CompoundTag();
         this.writeNodeNbt(tag);
+        tag.putBoolean("Powered", this.powered);
+        tag.putBoolean("Enabled", this.enabled);
+        tag.putBoolean("Processing", this.processing);
         return tag;
+    }
+
+    private void sync()
+    {
+        if(!this.level.isClientSide())
+        {
+            BlockEntityHelper.sendCustomUpdate(this, this.getUpdateTag());
+        }
     }
 
     private List<ItemStack> getRandomItems(@Nullable CraftingRecipe recipe, ItemStack input)
