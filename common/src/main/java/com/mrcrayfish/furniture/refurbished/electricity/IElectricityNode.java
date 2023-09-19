@@ -163,7 +163,7 @@ public interface IElectricityNode
      */
     default void removeConnection(Connection connection)
     {
-        this.updateAndGetConnections().remove(connection);
+        this.getConnections().remove(connection);
         this.syncNodeData();
     }
 

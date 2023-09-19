@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished;
 
 import com.mrcrayfish.furniture.refurbished.block.StorageJarBlock;
+import com.mrcrayfish.furniture.refurbished.blockentity.RecyclingBinBlockEntity;
 import com.mrcrayfish.furniture.refurbished.client.ClientBootstrap;
 import com.mrcrayfish.furniture.refurbished.client.ForgeClientEvents;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
@@ -108,7 +109,7 @@ public class FurnitureMod
     {
         if(event.getPlayer() == null)
         {
-            RecyclingBinMenu.clearRecipeLookup();
+            RecyclingBinBlockEntity.clearRecipeLookup();
         }
     }
 }

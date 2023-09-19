@@ -38,6 +38,9 @@ public class Config
         @ConfigProperty(name = "electricity", comment = "Electricity related properties")
         public final Electricity electricity = new Electricity();
 
+        @ConfigProperty(name = "recyclingBin", comment = "Recycling Bin related properties")
+        public final RecyclingBin recyclingBin = new RecyclingBin();
+
         public static class Mailing
         {
             @ConfigProperty(name = "mailboxInventoryRows", comment = """
@@ -101,6 +104,13 @@ public class Config
                 The maximum amount of nodes in a network that can be powered by an electricity
                 source, like the electricity generator.""")
             public final IntProperty maximumNodesInNetwork = IntProperty.create(50);
+        }
+
+        public static class RecyclingBin
+        {
+            @ConfigProperty(name = "processingTime", comment = """
+                The amount of time in ticks that it takes to perform one cycle of recycling""")
+            public final IntProperty processingTime = IntProperty.create(100, 1, Integer.MAX_VALUE);
         }
     }
 }

@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished;
 
 import com.mrcrayfish.framework.FrameworkSetup;
 import com.mrcrayfish.furniture.refurbished.block.StorageJarBlock;
+import com.mrcrayfish.furniture.refurbished.blockentity.RecyclingBinBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureBlockTagsProvider;
@@ -57,7 +58,7 @@ public class FurnitureMod implements ModInitializer, DataGeneratorEntrypoint
         });
 
         ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> {
-            RecyclingBinMenu.clearRecipeLookup();
+            RecyclingBinBlockEntity.clearRecipeLookup();
         });
     }
 

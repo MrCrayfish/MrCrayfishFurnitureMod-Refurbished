@@ -8,13 +8,11 @@ import com.mrcrayfish.furniture.refurbished.electricity.Connection;
 import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
 import com.mrcrayfish.furniture.refurbished.inventory.IPowerSwitchMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.PostBoxMenu;
-import com.mrcrayfish.furniture.refurbished.inventory.RecyclingBinMenu;
 import com.mrcrayfish.furniture.refurbished.item.PackageItem;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageClearMessage;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageDeleteLink;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageRecycleItems;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSendPackage;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSetName;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageTogglePower;
@@ -105,14 +103,6 @@ public class ServerPlayHandler
         if(player != null && player.containerMenu instanceof IPowerSwitchMenu menu)
         {
             menu.toggle();
-        }
-    }
-
-    public static void handleMessageRecycleItems(MessageRecycleItems message, ServerPlayer player)
-    {
-        if(player != null && player.containerMenu instanceof RecyclingBinMenu recyclingBin)
-        {
-            recyclingBin.recycleItems();
         }
     }
 }

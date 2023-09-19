@@ -2,8 +2,11 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mrcrayfish.furniture.refurbished.blockentity.CeilingLightBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.DrawerBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.ElectricityModuleLootBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.RecyclingBinBlockEntity;
+import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -23,6 +26,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
@@ -77,6 +82,22 @@ public class RecyclingBinBlock extends FurnitureHorizontalBlock implements Entit
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
     {
         return new RecyclingBinBlockEntity(pos, state);
+    }
+
+    @Nullable
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
+    {
+        return createTicker(level, type, ModBlockEntities.RECYCLING_BIN.get());
+    }
+
+    @Nullable
+    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends RecyclingBinBlockEntity> recyclingBin)
+    {
+        if(!level.isClientSide())
+        {
+            return createTickerHelper(type, recyclingBin, RecyclingBinBlockEntity::serverTick);
+        }
+        return null;
     }
 
     @Override
