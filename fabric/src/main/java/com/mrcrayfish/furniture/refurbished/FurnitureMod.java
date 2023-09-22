@@ -56,10 +56,6 @@ public class FurnitureMod implements ModInitializer, DataGeneratorEntrypoint
             }
             return InteractionResult.PASS;
         });
-
-        ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> {
-            RecyclingBinBlockEntity.clearRecipeLookup();
-        });
     }
 
     @Override

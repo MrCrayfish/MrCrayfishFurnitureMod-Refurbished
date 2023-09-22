@@ -51,7 +51,6 @@ public class FurnitureMod
         });
         MinecraftForge.EVENT_BUS.addListener(this::onRightClickBlock);
         MinecraftForge.EVENT_BUS.addListener(this::onLeftClickBlock);
-        MinecraftForge.EVENT_BUS.addListener(this::onDatapackReload);
     }
 
     private void onCommonSetup(FMLCommonSetupEvent event)
@@ -102,14 +101,6 @@ public class FurnitureMod
         {
             storageJar.attack(state, level, pos, event.getEntity());
             event.setCanceled(true);
-        }
-    }
-
-    private void onDatapackReload(OnDatapackSyncEvent event)
-    {
-        if(event.getPlayer() == null)
-        {
-            RecyclingBinBlockEntity.clearRecipeLookup();
         }
     }
 }

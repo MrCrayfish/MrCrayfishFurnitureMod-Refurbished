@@ -110,7 +110,7 @@ public class Config
         {
             @ConfigProperty(name = "processingTime", comment = """
                 The amount of time in ticks that it takes to perform one cycle of recycling""")
-            public final IntProperty processingTime = IntProperty.create(100, 1, Integer.MAX_VALUE);
+            public final IntProperty processingTime = IntProperty.create(10, 1, Integer.MAX_VALUE);
         }
     }
 }
