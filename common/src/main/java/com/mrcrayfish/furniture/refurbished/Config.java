@@ -122,6 +122,12 @@ public class Config
             @ConfigProperty(name = "recycleEveryItem", comment = """
                 When enabled, the recycle bin will recycle every item even if the item doesn't recycle into anything.""")
             public final BoolProperty recycleEveryItem = BoolProperty.create(true);
+
+            @ConfigProperty(name = "randomizeOutputCount", comment = """
+                If enabled, the count of an item created from recycling will be randomized based on
+                the count defined in the recipe. For example, if the recipe is outputting 5 iron ingots,
+                a randomized output count will be a random number from 1 to 5""")
+            public final BoolProperty randomizeOutputCount = BoolProperty.create(false);
         }
     }
 }

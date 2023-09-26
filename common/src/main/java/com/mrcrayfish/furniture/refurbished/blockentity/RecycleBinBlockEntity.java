@@ -409,17 +409,26 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
         // Items that are more damaged should yield a lower chance of returning an item
         if(input.isDamageableItem())
         {
-            float damaged = Mth.clamp((float) input.getDamageValue() / (float) input.getMaxDamage(), 0.0F, 1.0F);
+            float damaged = (float) input.getDamageValue() / (float) input.getMaxDamage();
             damaged = 1.0F - Mth.square(1.0F - damaged); // Ramp the damage for balancing
             damaged = 1.0F - damaged; // Invert since the higher the damage, the less chance to recycle
-            chance *= damaged; // Finally multiply the chance
+            chance *= Mth.clamp(damaged, 0.0F, 1.0F);; // Finally multiply the chance
         }
 
         // Create an output if lucky
         if(this.random.nextFloat() < chance)
         {
-            // Add the cached item to the output container
-            this.output.addItem(this.outputCache.copy());
+            // Create a copy of the output item
+            ItemStack copy = this.outputCache.copy();
+
+            // If enabled, randomize the count of the stack
+            if(Config.SERVER.recycleBin.randomizeOutputCount.get())
+            {
+                copy.setCount(this.random.nextIntBetweenInclusive(1, copy.getCount()));
+            }
+
+            // Finally add the item to the output container
+            this.output.addItem(copy);
 
             // Update the output slots from the output container
             for(int i = 0; i < 9; i++)
