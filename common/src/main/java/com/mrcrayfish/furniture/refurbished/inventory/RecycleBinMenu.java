@@ -1,7 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.inventory;
 
 import com.mrcrayfish.furniture.refurbished.blockentity.IPowerSwitch;
-import com.mrcrayfish.furniture.refurbished.blockentity.RecyclingBinBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.RecycleBinBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.inventory.slot.ResultSlot;
 import net.minecraft.world.Container;
@@ -16,18 +16,18 @@ import net.minecraft.world.item.ItemStack;
 /**
  * Author: MrCrayfish
  */
-public class RecyclingBinMenu extends SimpleContainerMenu implements IPowerSwitchMenu
+public class RecycleBinMenu extends SimpleContainerMenu implements IPowerSwitchMenu
 {
     private final ContainerData data;
 
-    public RecyclingBinMenu(int windowId, Inventory playerInventory)
+    public RecycleBinMenu(int windowId, Inventory playerInventory)
     {
         this(windowId, playerInventory, new SimpleContainer(10), new SimpleContainerData(3));
     }
 
-    public RecyclingBinMenu(int windowId, Inventory playerInventory, Container container, ContainerData data)
+    public RecycleBinMenu(int windowId, Inventory playerInventory, Container container, ContainerData data)
     {
-        super(ModMenuTypes.RECYCLING_BIN.get(), windowId, container);
+        super(ModMenuTypes.RECYCLE_BIN.get(), windowId, container);
         checkContainerSize(container, 10);
         checkContainerDataCount(data, 3);
         container.startOpen(playerInventory.player);
@@ -81,16 +81,16 @@ public class RecyclingBinMenu extends SimpleContainerMenu implements IPowerSwitc
 
     public boolean isEnabled()
     {
-        return this.data.get(RecyclingBinBlockEntity.DATA_ENABLED) != 0;
+        return this.data.get(RecycleBinBlockEntity.DATA_ENABLED) != 0;
     }
 
     public boolean isPowered()
     {
-        return this.data.get(RecyclingBinBlockEntity.DATA_POWERED) != 0;
+        return this.data.get(RecycleBinBlockEntity.DATA_POWERED) != 0;
     }
 
     public int getProcessTime()
     {
-        return this.data.get(RecyclingBinBlockEntity.DATA_PROCESSING_TIME);
+        return this.data.get(RecycleBinBlockEntity.DATA_PROCESSING_TIME);
     }
 }

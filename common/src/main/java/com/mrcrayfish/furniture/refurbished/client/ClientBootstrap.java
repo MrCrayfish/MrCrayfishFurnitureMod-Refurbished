@@ -55,7 +55,7 @@ public class ClientBootstrap
         register.apply(ModMenuTypes.STOVE.get(), StoveScreen::new);
         register.apply(ModMenuTypes.POST_BOX.get(), PostBoxScreen::new);
         register.apply(ModMenuTypes.ELECTRICITY_GENERATOR.get(), ElectricityGeneratorScreen::new);
-        register.apply(ModMenuTypes.RECYCLING_BIN.get(), RecyclingBinScreen::new);
+        register.apply(ModMenuTypes.RECYCLE_BIN.get(), RecyclingBinScreen::new);
     }
 
     public static void registerBlockEntityRenderers(BlockEntityRendererRegister register)
@@ -72,7 +72,7 @@ public class ClientBootstrap
         register.apply(ModBlockEntities.FREEZER.get(), ElectricBlockEntityRenderer::new);
         register.apply(ModBlockEntities.MICROWAVE.get(), ElectricBlockEntityRenderer::new);
         register.apply(ModBlockEntities.STORAGE_JAR.get(), StorageJarRenderer::new);
-        register.apply(ModBlockEntities.RECYCLING_BIN.get(), ElectricBlockEntityRenderer::new);
+        register.apply(ModBlockEntities.RECYCLE_BIN.get(), ElectricBlockEntityRenderer::new);
     }
 
     public static void registerEntityRenderers(EntityRendererRegister register)

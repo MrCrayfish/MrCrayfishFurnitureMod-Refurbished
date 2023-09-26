@@ -8,6 +8,7 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.data.recipes.SingleItemRecipeBuilder;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
@@ -59,6 +60,7 @@ public class CommonRecipeProvider
         this.cuttingBoardSlicing(Items.APPLE, Items.DIAMOND, 8);
         this.microwaveHeating(Items.POTATO, Items.BAKED_POTATO, 200, 0.5F);
         this.fryingPanCooking(Items.BEEF, Items.COOKED_BEEF, 200, 0.5F);
+        this.recycleBinSalvaging(Items.OAK_DOOR, Items.OAK_PLANKS, 2);
     }
     
     private void mailbox(Block slab, Block plank, Block fence, Block result)
@@ -145,5 +147,13 @@ public class CommonRecipeProvider
                 .generic(Ingredient.of(baseItem), RecipeCategory.FOOD, heatedItem, experience, heatingTime, ModRecipeSerializers.FRYING_PAN_RECIPE.get())
                 .unlockedBy("has_" + baseName, this.has.apply(baseItem))
                 .save(this.consumer, resultName + "_from_frying_pan_cooking");
+    }
+
+    private void recycleBinSalvaging(ItemLike baseItem, ItemLike resultItem, int resultCount)
+    {
+        String baseName = baseItem.asItem().toString();
+        String resultName = resultItem.asItem().toString();
+        SingleItemRecipeBuilder builder = new SingleItemRecipeBuilder(RecipeCategory.MISC, ModRecipeSerializers.RECYCLE_BIN_RECIPE.get(), Ingredient.of(baseItem), resultItem, resultCount);
+        builder.unlockedBy("has_" + baseName, this.has.apply(baseItem)).save(this.consumer, resultName + "_from_recycling_" + baseName);
     }
 }

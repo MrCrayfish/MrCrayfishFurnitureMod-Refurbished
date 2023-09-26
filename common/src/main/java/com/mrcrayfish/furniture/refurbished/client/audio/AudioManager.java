@@ -1,8 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.client.audio;
 
 import com.mrcrayfish.furniture.refurbished.blockentity.IAudioBlock;
-import com.mrcrayfish.furniture.refurbished.blockentity.RecyclingBinBlockEntity;
-import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.TickableSoundInstance;
 import net.minecraft.core.BlockPos;

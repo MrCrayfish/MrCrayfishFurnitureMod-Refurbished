@@ -2,7 +2,7 @@ package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.OnOffSlider;
-import com.mrcrayfish.furniture.refurbished.inventory.RecyclingBinMenu;
+import com.mrcrayfish.furniture.refurbished.inventory.RecycleBinMenu;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageTogglePower;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
@@ -15,13 +15,13 @@ import net.minecraft.world.entity.player.Inventory;
 /**
  * Author: MrCrayfish
  */
-public class RecyclingBinScreen extends AbstractContainerScreen<RecyclingBinMenu>
+public class RecyclingBinScreen extends AbstractContainerScreen<RecycleBinMenu>
 {
-    private static final ResourceLocation RECYCLING_BIN_TEXTURE = Utils.resource("textures/gui/container/recycling_bin.png");
+    private static final ResourceLocation RECYCLING_BIN_TEXTURE = Utils.resource("textures/gui/container/recycle_bin.png");
 
     private OnOffSlider slider;
 
-    public RecyclingBinScreen(RecyclingBinMenu menu, Inventory playerInventory, Component title)
+    public RecyclingBinScreen(RecycleBinMenu menu, Inventory playerInventory, Component title)
     {
         super(menu, playerInventory, title);
         this.imageHeight = 172;
@@ -52,7 +52,7 @@ public class RecyclingBinScreen extends AbstractContainerScreen<RecyclingBinMenu
         graphics.blit(RECYCLING_BIN_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
         if(this.menu.getProcessTime() >= 0)
         {
-            int maxProcessTime = Config.SERVER.recyclingBin.processingTime.get();
+            int maxProcessTime = Config.SERVER.recycleBin.processingTime.get();
             int width = (int) Math.ceil(25 * (this.menu.getProcessTime() / (float) maxProcessTime));
             graphics.blit(RECYCLING_BIN_TEXTURE, this.leftPos + 58, this.topPos + 37, 176, 0, width, 17);
         }

@@ -38,8 +38,8 @@ public class Config
         @ConfigProperty(name = "electricity", comment = "Electricity related properties")
         public final Electricity electricity = new Electricity();
 
-        @ConfigProperty(name = "recyclingBin", comment = "Recycling Bin related properties")
-        public final RecyclingBin recyclingBin = new RecyclingBin();
+        @ConfigProperty(name = "recycleBin", comment = "Recycle Bin related properties")
+        public final RecycleBin recycleBin = new RecycleBin();
 
         public static class Mailing
         {
@@ -106,11 +106,22 @@ public class Config
             public final IntProperty maximumNodesInNetwork = IntProperty.create(50);
         }
 
-        public static class RecyclingBin
+        public static class RecycleBin
         {
             @ConfigProperty(name = "processingTime", comment = """
                 The amount of time in ticks that it takes to perform one cycle of recycling""")
             public final IntProperty processingTime = IntProperty.create(10, 1, Integer.MAX_VALUE);
+
+            @ConfigProperty(name = "baseOutputChance", comment = """
+                The base chance for the items created from recycling an item to be added to the output.
+                Recycled items are still consumed even if no items were added to the output. This value
+                is seen as the base value, however it is further affected for items that are damaged,
+                which greatly reduce the chance of an output. The value must be between 0 and 1 (inclusive)""")
+            public final DoubleProperty baseOutputChance = DoubleProperty.create(0.5, 0.0, 1.0);
+
+            @ConfigProperty(name = "recycleEveryItem", comment = """
+                When enabled, the recycle bin will recycle every item even if the item doesn't recycle into anything.""")
+            public final BoolProperty recycleEveryItem = BoolProperty.create(true);
         }
     }
 }

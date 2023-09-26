@@ -89,8 +89,8 @@ public class ModelTemplate
     public static final ModelTemplate ELECTRICITY_GENERATOR_OFF = block("electricity_generator_off", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate ELECTRICITY_GENERATOR_ON = block("electricity_generator_on", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate STORAGE_JAR = block("storage_jar", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
-    public static final ModelTemplate RECYCLING_BIN_CLOSED = block("recycling_bin_closed", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
-    public static final ModelTemplate RECYCLING_BIN_OPEN = block("recycling_bin_open", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate RECYCLE_BIN_CLOSED = block("recycle_bin_closed", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate RECYCLE_BIN_OPEN = block("recycle_bin_open", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
 
     public static final ModelTemplate FRIDGE = item("fridge", TextureSlot.TEXTURE);
 

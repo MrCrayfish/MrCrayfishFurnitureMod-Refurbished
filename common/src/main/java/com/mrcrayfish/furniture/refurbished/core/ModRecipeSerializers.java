@@ -7,6 +7,7 @@ import com.mrcrayfish.furniture.refurbished.crafting.FreezerSolidifyingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.FryingPanCookingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.GrillCookingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.MicrowaveHeatingRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.RecycleBinRecyclingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.ToasterHeatingRecipe;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
@@ -25,4 +26,5 @@ public class ModRecipeSerializers
     public static final RegistryEntry<SingleItemRecipe.Serializer<CuttingBoardRecipe>> CUTTING_BOARD_RECIPE = RegistryEntry.recipeSerializer(Utils.resource("cutting_board_slicing"), () -> Services.RECIPE.createSingleItemSerializer(CuttingBoardRecipe::new));
     public static final RegistryEntry<SimpleCookingSerializer<MicrowaveHeatingRecipe>> MICROWAVE_RECIPE = RegistryEntry.recipeSerializer(Utils.resource("microwave_heating"), () -> Services.RECIPE.createSimpleCookingSerializer(MicrowaveHeatingRecipe::new, 200));
     public static final RegistryEntry<SimpleCookingSerializer<FryingPanCookingRecipe>> FRYING_PAN_RECIPE = RegistryEntry.recipeSerializer(Utils.resource("frying_pan_cooking"), () -> Services.RECIPE.createSimpleCookingSerializer(FryingPanCookingRecipe::new, 200));
+    public static final RegistryEntry<SingleItemRecipe.Serializer<RecycleBinRecyclingRecipe>> RECYCLE_BIN_RECIPE = RegistryEntry.recipeSerializer(Utils.resource("recycle_bin_recycling"), () -> Services.RECIPE.createSingleItemSerializer(RecycleBinRecyclingRecipe::new));
 }

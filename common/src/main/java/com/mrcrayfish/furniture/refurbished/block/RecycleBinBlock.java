@@ -2,26 +2,16 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.mrcrayfish.furniture.refurbished.blockentity.CeilingLightBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.DrawerBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.ElectricityModuleLootBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.RecyclingBinBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.RecycleBinBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -31,12 +21,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -44,9 +31,9 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class RecyclingBinBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
+public class RecycleBinBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
 {
-    public RecyclingBinBlock(Properties properties)
+    public RecycleBinBlock(Properties properties)
     {
         super(properties);
         this.registerDefaultState(this.getStateDefinition().any().setValue(DIRECTION, Direction.NORTH).setValue(OPEN, false));
@@ -62,9 +49,9 @@ public class RecyclingBinBlock extends FurnitureHorizontalBlock implements Entit
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
     {
-        if(!level.isClientSide() && level.getBlockEntity(pos) instanceof RecyclingBinBlockEntity recyclingBin)
+        if(!level.isClientSide() && level.getBlockEntity(pos) instanceof RecycleBinBlockEntity recycleBin)
         {
-            player.openMenu(recyclingBin);
+            player.openMenu(recycleBin);
             return InteractionResult.CONSUME;
         }
         return InteractionResult.SUCCESS;
@@ -81,23 +68,23 @@ public class RecyclingBinBlock extends FurnitureHorizontalBlock implements Entit
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
     {
-        return new RecyclingBinBlockEntity(pos, state);
+        return new RecycleBinBlockEntity(pos, state);
     }
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
     {
-        return createTicker(level, type, ModBlockEntities.RECYCLING_BIN.get());
+        return createTicker(level, type, ModBlockEntities.RECYCLE_BIN.get());
     }
 
     @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends RecyclingBinBlockEntity> recyclingBin)
+    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends RecycleBinBlockEntity> recycleBin)
     {
         if(!level.isClientSide())
         {
-            return createTickerHelper(type, recyclingBin, RecyclingBinBlockEntity::serverTick);
+            return createTickerHelper(type, recycleBin, RecycleBinBlockEntity::serverTick);
         }
-        return createTickerHelper(type, recyclingBin, RecyclingBinBlockEntity::clientTick);
+        return createTickerHelper(type, recycleBin, RecycleBinBlockEntity::clientTick);
     }
 
     @Override
