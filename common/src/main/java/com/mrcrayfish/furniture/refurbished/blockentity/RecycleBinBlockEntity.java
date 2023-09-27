@@ -529,6 +529,7 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
         return INVALID_ITEMS.contains(stack.getItem());
     }
 
+    // TODO update docs
     /**
      * Performs a simulation if the given item stack can be added to the output slots.
      * This method creates a temporary container and uses a built-in utility method that
