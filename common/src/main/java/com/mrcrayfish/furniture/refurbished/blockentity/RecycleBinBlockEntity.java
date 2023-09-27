@@ -40,6 +40,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -101,7 +103,7 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
     protected boolean stopped;
     protected long seed = this.random.nextLong();
     protected @Nullable Item inputCache;
-    protected @Nullable ItemStack outputCache;
+    protected @Nullable List<ItemStack> outputCache;
 
     protected final ContainerData data = new BuildableContainerData(builder -> {
         builder.add(DATA_ENABLED, () -> enabled ? 1 : 0, value -> {});
@@ -254,8 +256,8 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
             if(this.inputCache == null || this.inputCache != input.getItem() || this.outputCache == null)
             {
                 this.inputCache = input.getItem();
-                this.outputCache = this.getRecycledItem(input);
-                if(!this.canAddItemToOutput(this.outputCache))
+                this.outputCache = this.getRecycledItems(input);
+                if(!this.canAddItemsToOutput(this.outputCache))
                 {
                     this.stopped = true;
                     return false;
@@ -401,27 +403,15 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
 
         input.shrink(1);
 
-        // Don't add the item if invalid
-        if(this.isInvalidItem(this.outputCache))
-            return;
-
-        // Create a copy of the output item
-        ItemStack copy = this.outputCache.copy();
-
-        // If enabled, randomize the count of the stack
-        if(Config.SERVER.recycleBin.randomizeOutputCount.get())
+        for(ItemStack stack : this.outputCache)
         {
-            copy.setCount(this.random.nextIntBetweenInclusive(1, copy.getCount()));
+            this.output.addItem(stack);
         }
-
-        // Finally add the item to the output container
-        this.output.addItem(copy);
 
         // Update the output slots from the output container
         for(int i = 0; i < 9; i++)
         {
-            ItemStack stack = this.output.getItem(i);
-            this.setItem(i + 1, stack);
+            this.setItem(i + 1, this.output.getItem(i));
         }
     }
 
@@ -433,42 +423,54 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
      * @param input the input item stack to get the item stack for
      * @return An item stack or empty if no recipe found for the input
      */
-    private ItemStack getRecycledItem(ItemStack input)
+    private List<ItemStack> getRecycledItems(ItemStack input)
     {
-        RecycleBinRecyclingRecipe recipe = this.getRecyclingRecipe(input.getItem());
-        if(recipe != null)
+        List<RecycleBinRecyclingRecipe> recipes = this.getRecyclingRecipes(input.getItem());
+        if(recipes == null || recipes.isEmpty())
+            return Collections.emptyList();
+
+        Utils.shuffle(recipes, this.random);
+        recipes = recipes.subList(0, Math.min(recipes.size(), this.output.getContainerSize()));
+
+        // Create an initial chance based on the config property
+        float chance = Config.SERVER.recycleBin.baseOutputChance.get().floatValue();
+
+        // Items that are more damaged should yield a lower chance of returning an item
+        if(input.isDamageableItem())
+        {
+            float damaged = (float) input.getDamageValue() / (float) input.getMaxDamage();
+            damaged = 1.0F - Mth.square(1.0F - damaged); // Ramp the damage for balancing
+            damaged = 1.0F - damaged; // Invert since the higher the damage, the less chance to recycle
+            chance *= Mth.clamp(damaged, 0.0F, 1.0F);; // Finally multiply the chance
+        }
+
+        List<ItemStack> items = new ArrayList<>();
+        for(RecycleBinRecyclingRecipe recipe : recipes)
         {
             NonNullList<Ingredient> ingredients = recipe.getIngredients();
-            if(!ingredients.isEmpty())
+            if(ingredients.isEmpty())
+                continue;
+
+            Ingredient randomIngredient = ingredients.get(this.random.nextInt(ingredients.size()));
+            ItemStack[] stacks = randomIngredient.getItems();
+            if(stacks.length == 0)
+                continue;
+
+            ItemStack randomItem = stacks[this.random.nextInt(stacks.length)];
+            if(this.isInvalidItem(randomItem))
+                continue;
+
+            // Return an output if lucky
+            if(this.random.nextFloat() < chance)
             {
-                Ingredient randomIngredient = ingredients.get(this.random.nextInt(ingredients.size()));
-                ItemStack[] stacks = randomIngredient.getItems();
-                if(stacks.length > 0)
-                {
-                    // Create an initial chance based on the config property
-                    float chance = Config.SERVER.recycleBin.baseOutputChance.get().floatValue();
-
-                    // Items that are more damaged should yield a lower chance of returning an item
-                    if(input.isDamageableItem())
-                    {
-                        float damaged = (float) input.getDamageValue() / (float) input.getMaxDamage();
-                        damaged = 1.0F - Mth.square(1.0F - damaged); // Ramp the damage for balancing
-                        damaged = 1.0F - damaged; // Invert since the higher the damage, the less chance to recycle
-                        chance *= Mth.clamp(damaged, 0.0F, 1.0F);; // Finally multiply the chance
-                    }
-
-                    // Return an output if lucky
-                    if(this.random.nextFloat() < chance)
-                    {
-                        int count = recipe.getResultItem(this.level.registryAccess()).getCount();
-                        ItemStack copy = stacks[this.random.nextInt(stacks.length)].copy();
-                        copy.setCount(count);
-                        return copy;
-                    }
-                }
+                ItemStack copy = randomItem.copy();
+                int count = recipe.getResultItem(this.level.registryAccess()).getCount();
+                boolean randomCount = Config.SERVER.recycleBin.randomizeOutputCount.get();
+                copy.setCount(!randomCount ? count : this.random.nextIntBetweenInclusive(1, count));
+                items.add(copy);
             }
         }
-        return ItemStack.EMPTY;
+        return items;
     }
 
     /**
@@ -478,7 +480,7 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
      * @return The recycling recipe for the item or null if none
      */
     @Nullable
-    private RecycleBinRecyclingRecipe getRecyclingRecipe(Item item)
+    private List<RecycleBinRecyclingRecipe> getRecyclingRecipes(Item item)
     {
         if(this.level == null || recipeLookup == null)
             return null;
@@ -488,16 +490,18 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
         if(list == null || list.isEmpty())
             return null;
 
-        WeakReference<RecycleBinRecyclingRecipe> recipeRef = list.get(this.random.nextInt(list.size()));
-        if(recipeRef == null)
-            return null;
-
-        RecycleBinRecyclingRecipe recipe = recipeRef.get();
-        if(recipe != null)
-            return recipe;
-
-        refreshRecipeLookup(this.level, true);
-        return this.getRecyclingRecipe(item); // TODO might be dangerous
+        List<RecycleBinRecyclingRecipe> recipes = new ObjectArrayList<>();
+        for(WeakReference<RecycleBinRecyclingRecipe> recipeRef : list)
+        {
+            RecycleBinRecyclingRecipe recipe = recipeRef.get();
+            if(recipe == null)
+            {
+                refreshRecipeLookup(this.level, true);
+                return this.getRecyclingRecipes(item);
+            }
+            recipes.add(recipe);
+        }
+        return recipes;
     }
 
     /**
@@ -530,17 +534,24 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
      * This method creates a temporary container and uses a built-in utility method that
      * adds an item, which the result is the remaining item if any. If empty, it can be added.
      *
-     * @param stack the item stack for the simulation
+     * @param items the item stack for the simulation
      * @return True if can be added to the output
      */
-    private boolean canAddItemToOutput(ItemStack stack)
+    private boolean canAddItemsToOutput(List<ItemStack> items)
     {
         SimpleContainer copy = new SimpleContainer(this.output.getContainerSize());
         for(int i = 0; i < this.output.getContainerSize(); i++)
         {
             copy.setItem(i, this.output.getItem(i).copy());
         }
-        return copy.addItem(stack.copy()).isEmpty();
+        for(ItemStack stack : items)
+        {
+            if(!copy.addItem(stack.copy()).isEmpty())
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
