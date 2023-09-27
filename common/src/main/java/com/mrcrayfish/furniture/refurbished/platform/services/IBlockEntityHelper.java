@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.platform.services;
 
 import com.mrcrayfish.furniture.refurbished.blockentity.KitchenSinkBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.RecycleBinBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.WorldlyContainer;
@@ -15,6 +16,8 @@ import org.jetbrains.annotations.Nullable;
 public interface IBlockEntityHelper
 {
     KitchenSinkBlockEntity createKitchenSinkBlockEntity(BlockPos pos, BlockState state);
+
+    RecycleBinBlockEntity createRecycleBinBlockEntity(BlockPos pos, BlockState state);
 
     <T extends BaseContainerBlockEntity & WorldlyContainer> void createForgeSidedWrapper(T container, @Nullable Direction side);
 

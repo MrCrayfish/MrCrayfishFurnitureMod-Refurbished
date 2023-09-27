@@ -50,7 +50,6 @@ import java.util.Set;
 /**
  * Author: MrCrayfish
  */
-// TODO forge version with capabilities
 public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity implements IProcessingBlock, IPowerSwitch, IAudioBlock
 {
     private static Map<ResourceLocation, List<WeakReference<RecycleBinRecyclingRecipe>>> recipeLookup;

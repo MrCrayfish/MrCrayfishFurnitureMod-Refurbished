@@ -228,7 +228,7 @@ public class ModBlockEntities
             ModBlocks.STORAGE_JAR_WARPED.get()
     });
 
-    public static final RegistryEntry<BlockEntityType<RecycleBinBlockEntity>> RECYCLE_BIN = RegistryEntry.blockEntity(Utils.resource("recycle_bin"), RecycleBinBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<RecycleBinBlockEntity>> RECYCLE_BIN = RegistryEntry.blockEntity(Utils.resource("recycle_bin"), Services.BLOCK_ENTITY::createRecycleBinBlockEntity, () -> new Block[]{
             ModBlocks.RECYCLE_BIN.get()
     });
 }
