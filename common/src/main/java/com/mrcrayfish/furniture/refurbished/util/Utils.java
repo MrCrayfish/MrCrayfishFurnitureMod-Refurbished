@@ -37,6 +37,13 @@ public class Utils
         return Component.translatable(String.format("%s.%s.%s", category, Constants.MOD_ID, path), params);
     }
 
+    /**
+     * A Fisher–Yates shuffle implementation that uses Minecraft's RandomSource.
+     *
+     * @param list   a list
+     * @param random a random source instance
+     * @param <T>    any object type
+     */
     public static <T> void shuffle(List<T> list, RandomSource random)
     {
         for(int i = list.size() - 1; i > 0; i--)
