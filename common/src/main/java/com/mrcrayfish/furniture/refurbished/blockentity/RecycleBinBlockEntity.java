@@ -15,6 +15,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -31,6 +32,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -403,39 +405,23 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
         if(this.isInvalidItem(this.outputCache))
             return;
 
-        // Create an initial chance based on the config property
-        float chance = Config.SERVER.recycleBin.baseOutputChance.get().floatValue();
+        // Create a copy of the output item
+        ItemStack copy = this.outputCache.copy();
 
-        // Items that are more damaged should yield a lower chance of returning an item
-        if(input.isDamageableItem())
+        // If enabled, randomize the count of the stack
+        if(Config.SERVER.recycleBin.randomizeOutputCount.get())
         {
-            float damaged = (float) input.getDamageValue() / (float) input.getMaxDamage();
-            damaged = 1.0F - Mth.square(1.0F - damaged); // Ramp the damage for balancing
-            damaged = 1.0F - damaged; // Invert since the higher the damage, the less chance to recycle
-            chance *= Mth.clamp(damaged, 0.0F, 1.0F);; // Finally multiply the chance
+            copy.setCount(this.random.nextIntBetweenInclusive(1, copy.getCount()));
         }
 
-        // Create an output if lucky
-        if(this.random.nextFloat() < chance)
+        // Finally add the item to the output container
+        this.output.addItem(copy);
+
+        // Update the output slots from the output container
+        for(int i = 0; i < 9; i++)
         {
-            // Create a copy of the output item
-            ItemStack copy = this.outputCache.copy();
-
-            // If enabled, randomize the count of the stack
-            if(Config.SERVER.recycleBin.randomizeOutputCount.get())
-            {
-                copy.setCount(this.random.nextIntBetweenInclusive(1, copy.getCount()));
-            }
-
-            // Finally add the item to the output container
-            this.output.addItem(copy);
-
-            // Update the output slots from the output container
-            for(int i = 0; i < 9; i++)
-            {
-                ItemStack stack = this.output.getItem(i);
-                this.setItem(i + 1, stack);
-            }
+            ItemStack stack = this.output.getItem(i);
+            this.setItem(i + 1, stack);
         }
     }
 
@@ -450,7 +436,39 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
     private ItemStack getRecycledItem(ItemStack input)
     {
         RecycleBinRecyclingRecipe recipe = this.getRecyclingRecipe(input.getItem());
-        return recipe != null ? recipe.getResultItem(this.level.registryAccess()) : ItemStack.EMPTY;
+        if(recipe != null)
+        {
+            NonNullList<Ingredient> ingredients = recipe.getIngredients();
+            if(!ingredients.isEmpty())
+            {
+                Ingredient randomIngredient = ingredients.get(this.random.nextInt(ingredients.size()));
+                ItemStack[] stacks = randomIngredient.getItems();
+                if(stacks.length > 0)
+                {
+                    // Create an initial chance based on the config property
+                    float chance = Config.SERVER.recycleBin.baseOutputChance.get().floatValue();
+
+                    // Items that are more damaged should yield a lower chance of returning an item
+                    if(input.isDamageableItem())
+                    {
+                        float damaged = (float) input.getDamageValue() / (float) input.getMaxDamage();
+                        damaged = 1.0F - Mth.square(1.0F - damaged); // Ramp the damage for balancing
+                        damaged = 1.0F - damaged; // Invert since the higher the damage, the less chance to recycle
+                        chance *= Mth.clamp(damaged, 0.0F, 1.0F);; // Finally multiply the chance
+                    }
+
+                    // Return an output if lucky
+                    if(this.random.nextFloat() < chance)
+                    {
+                        int count = recipe.getResultItem(this.level.registryAccess()).getCount();
+                        ItemStack copy = stacks[this.random.nextInt(stacks.length)].copy();
+                        copy.setCount(count);
+                        return copy;
+                    }
+                }
+            }
+        }
+        return ItemStack.EMPTY;
     }
 
     /**
@@ -541,13 +559,10 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
             recipes.forEach(recipe -> {
                 if(recipe.isSpecial() || recipe.isIncomplete())
                     return;
-                recipe.getIngredients().forEach(ingredient -> {
-                    for(ItemStack input : ingredient.getItems()) {
-                        ResourceLocation id = BuiltInRegistries.ITEM.getKey(input.getItem());
-                        List<WeakReference<RecycleBinRecyclingRecipe>> list = recipeLookup.computeIfAbsent(id, id2 -> new ObjectArrayList<>());
-                        list.add(new WeakReference<>(recipe));
-                    }
-                });
+                ItemStack input = recipe.getResultItem(level.registryAccess());
+                ResourceLocation id = BuiltInRegistries.ITEM.getKey(input.getItem());
+                List<WeakReference<RecycleBinRecyclingRecipe>> list = recipeLookup.computeIfAbsent(id, id2 -> new ObjectArrayList<>());
+                list.add(new WeakReference<>(recipe));
             });
         }
     }
