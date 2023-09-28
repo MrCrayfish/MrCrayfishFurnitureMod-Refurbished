@@ -91,6 +91,8 @@ public class ModelTemplate
     public static final ModelTemplate STORAGE_JAR = block("storage_jar", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate RECYCLE_BIN_CLOSED = block("recycle_bin_closed", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate RECYCLE_BIN_OPEN = block("recycle_bin_open", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate LAMP_OFF = block("lamp_off", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate LAMP_ON = block("lamp_on", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
 
     public static final ModelTemplate FRIDGE = item("fridge", TextureSlot.TEXTURE);
 

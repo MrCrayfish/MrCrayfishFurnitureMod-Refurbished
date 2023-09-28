@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -32,39 +33,31 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class CeilingLightBlock extends FurnitureAttachedFaceBlock implements EntityBlock, BlockTagSupplier
+public class LampBlock extends FurnitureBlock implements EntityBlock, BlockTagSupplier
 {
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
-    private final MetalType type;
+    private final DyeColor color;
 
-    public CeilingLightBlock(MetalType type, Properties properties)
+    public LampBlock(DyeColor color, Properties properties)
     {
         super(properties);
         this.registerDefaultState(this.getStateDefinition().any().setValue(POWERED, false));
-        this.type = type;
+        this.color = color;
     }
 
-    public MetalType getMetalType()
+    public DyeColor getDyeColor()
     {
-        return this.type;
+        return this.color;
     }
 
     @Override
     protected Map<BlockState, VoxelShape> generateShapes(ImmutableList<BlockState> states)
     {
-        VoxelShape wallShape = Block.box(13, 5, 5, 16, 11, 11);
-        VoxelShape ceilingShape = Block.box(5, 13, 5, 11, 16, 11);
-        VoxelShape floorShape = Block.box(5, 0, 5, 11, 3, 11);
-        return ImmutableMap.copyOf(states.stream().collect(Collectors.toMap(state -> state, state -> {
-            Direction facing = state.getValue(FACING);
-            AttachFace face = state.getValue(FACE);
-            return switch(face) {
-                case FLOOR -> VoxelShapeHelper.rotateHorizontally(floorShape, facing.getOpposite());
-                case WALL -> VoxelShapeHelper.rotateHorizontally(wallShape, facing.getOpposite());
-                case CEILING -> VoxelShapeHelper.rotateHorizontally(ceilingShape, facing.getOpposite());
-            };
-        })));
+        VoxelShape baseShape = Block.box(5, 0, 5, 11, 6, 11);
+        VoxelShape shadeShape = Block.box(3, 5, 3, 13, 14, 13);
+        VoxelShape lampShape = VoxelShapeHelper.combine(List.of(baseShape, shadeShape));
+        return ImmutableMap.copyOf(states.stream().collect(Collectors.toMap(state -> state, state -> lampShape)));
     }
 
     @Override
@@ -114,5 +107,10 @@ public class CeilingLightBlock extends FurnitureAttachedFaceBlock implements Ent
     public List<TagKey<Block>> getTags()
     {
         return List.of(BlockTags.MINEABLE_WITH_PICKAXE);
+    }
+
+    public static int light(BlockState state)
+    {
+        return state.getValue(POWERED) ? 8 : 0;
     }
 }

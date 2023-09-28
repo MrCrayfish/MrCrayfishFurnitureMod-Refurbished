@@ -258,6 +258,22 @@ public class CommonBlockModelProvider
         this.storageJar(ModBlocks.STORAGE_JAR_CRIMSON.get());
         this.storageJar(ModBlocks.STORAGE_JAR_WARPED.get());
         this.recycleBin(ModBlocks.RECYCLE_BIN.get());
+        this.lamp(ModBlocks.LAMP_WHITE.get());
+        this.lamp(ModBlocks.LAMP_ORANGE.get());
+        this.lamp(ModBlocks.LAMP_MAGENTA.get());
+        this.lamp(ModBlocks.LAMP_LIGHT_BLUE.get());
+        this.lamp(ModBlocks.LAMP_YELLOW.get());
+        this.lamp(ModBlocks.LAMP_LIME.get());
+        this.lamp(ModBlocks.LAMP_PINK.get());
+        this.lamp(ModBlocks.LAMP_GRAY.get());
+        this.lamp(ModBlocks.LAMP_LIGHT_GRAY.get());
+        this.lamp(ModBlocks.LAMP_CYAN.get());
+        this.lamp(ModBlocks.LAMP_PURPLE.get());
+        this.lamp(ModBlocks.LAMP_BLUE.get());
+        this.lamp(ModBlocks.LAMP_BROWN.get());
+        this.lamp(ModBlocks.LAMP_GREEN.get());
+        this.lamp(ModBlocks.LAMP_RED.get());
+        this.lamp(ModBlocks.LAMP_BLACK.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -898,6 +914,18 @@ public class CommonBlockModelProvider
         state.createVariant().prop(RecycleBinBlock.DIRECTION, Direction.EAST).prop(RecycleBinBlock.OPEN, true).existingModel(ModelTemplate.RECYCLE_BIN_OPEN.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(RecycleBinBlock.DIRECTION, Direction.SOUTH).prop(RecycleBinBlock.OPEN, true).existingModel(ModelTemplate.RECYCLE_BIN_OPEN.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(RecycleBinBlock.DIRECTION, Direction.WEST).prop(RecycleBinBlock.OPEN, true).existingModel(ModelTemplate.RECYCLE_BIN_OPEN.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        this.consumer.accept(state);
+    }
+
+    private void lamp(LampBlock block)
+    {
+        DyeColor type = block.getDyeColor();
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.colourParticle(type));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedBlockState state = new PreparedBlockState(block);
+        state.createVariant().prop(LampBlock.POWERED, false).parentModel(ModelTemplate.LAMP_OFF.stateModel(type).setTextures(textures)).markAsItem();
+        state.createVariant().prop(LampBlock.POWERED, true).parentModel(ModelTemplate.LAMP_ON.stateModel(type).setTextures(textures));
         this.consumer.accept(state);
     }
 }

@@ -205,9 +205,25 @@ public class ModBlockEntities
             ModBlocks.LIGHTSWITCH_DARK.get()
     });
 
-    public static final RegistryEntry<BlockEntityType<CeilingLightBlockEntity>> CEILING_LIGHT = RegistryEntry.blockEntity(Utils.resource("ceiling_light"), CeilingLightBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<LightingBlockEntity>> LIGHTING = RegistryEntry.blockEntity(Utils.resource("ceiling_light"), LightingBlockEntity::new, () -> new Block[]{
             ModBlocks.CEILING_LIGHT_LIGHT.get(),
-            ModBlocks.CEILING_LIGHT_DARK.get()
+            ModBlocks.CEILING_LIGHT_DARK.get(),
+            ModBlocks.LAMP_WHITE.get(),
+            ModBlocks.LAMP_ORANGE.get(),
+            ModBlocks.LAMP_MAGENTA.get(),
+            ModBlocks.LAMP_LIGHT_BLUE.get(),
+            ModBlocks.LAMP_YELLOW.get(),
+            ModBlocks.LAMP_LIME.get(),
+            ModBlocks.LAMP_PINK.get(),
+            ModBlocks.LAMP_GRAY.get(),
+            ModBlocks.LAMP_LIGHT_GRAY.get(),
+            ModBlocks.LAMP_CYAN.get(),
+            ModBlocks.LAMP_PURPLE.get(),
+            ModBlocks.LAMP_BLUE.get(),
+            ModBlocks.LAMP_BROWN.get(),
+            ModBlocks.LAMP_GREEN.get(),
+            ModBlocks.LAMP_RED.get(),
+            ModBlocks.LAMP_BLACK.get()
     });
 
     public static final RegistryEntry<BlockEntityType<ElectricityGeneratorBlockEntity>> ELECTRICITY_GENERATOR = RegistryEntry.blockEntity(Utils.resource("electricity_generator"), ElectricityGeneratorBlockEntity::new, () -> new Block[]{
