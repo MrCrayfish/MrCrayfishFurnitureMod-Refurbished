@@ -37,7 +37,7 @@ public class PreparedItem
         return this.model;
     }
 
-    public static class Model extends ParentModel implements Supplier<JsonElement>
+    public static class Model extends ParentModel<Model> implements Supplier<JsonElement>
     {
         private Model(String name, ResourceLocation model, TextureSlot[] slots)
         {
@@ -50,15 +50,9 @@ public class PreparedItem
         }
 
         @Override
-        public PreparedItem.Model setTexture(TextureSlot slot, ResourceLocation texture)
+        public Model self()
         {
-            return (PreparedItem.Model) super.setTexture(slot, texture);
-        }
-
-        @Override
-        public PreparedItem.Model setTextures(TextureMapping mapping)
-        {
-            return (PreparedItem.Model) super.setTextures(mapping);
+            return this;
         }
 
         @Override

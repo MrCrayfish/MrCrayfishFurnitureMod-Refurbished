@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.data;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.block.*;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
+import com.mrcrayfish.furniture.refurbished.data.model.ExtraModel;
 import com.mrcrayfish.furniture.refurbished.data.model.ModelTemplate;
 import com.mrcrayfish.furniture.refurbished.data.model.PreparedBlockState;
 import net.minecraft.core.Direction;
@@ -23,11 +24,13 @@ import java.util.function.Consumer;
  */
 public class CommonBlockModelProvider
 {
-    private final Consumer<PreparedBlockState> consumer;
+    private final Consumer<PreparedBlockState> stateConsumer;
+    private final Consumer<ExtraModel> extraModelConsumer;
 
-    public CommonBlockModelProvider(Consumer<PreparedBlockState> consumer)
+    public CommonBlockModelProvider(Consumer<PreparedBlockState> stateConsumer, Consumer<ExtraModel> extraModelConsumer)
     {
-        this.consumer = consumer;
+        this.stateConsumer = stateConsumer;
+        this.extraModelConsumer = extraModelConsumer;
     }
 
     public void run()

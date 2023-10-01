@@ -143,7 +143,7 @@ public class PreparedBlockState
         }
     }
 
-    public static class Model extends ParentModel
+    public static class Model extends ParentModel<Model>
     {
         private VariantProperties.Rotation xRotation = VariantProperties.Rotation.R0;
         private VariantProperties.Rotation yRotation = VariantProperties.Rotation.R0;
@@ -151,6 +151,12 @@ public class PreparedBlockState
         private Model(String name, ResourceLocation model, TextureSlot[] slots)
         {
             super(name, model, slots);
+        }
+
+        @Override
+        public Model self()
+        {
+            return this;
         }
 
         public VariantProperties.Rotation getXRotation()
@@ -173,18 +179,6 @@ public class PreparedBlockState
         {
             this.yRotation = rotation;
             return this;
-        }
-
-        @Override
-        public Model setTexture(TextureSlot slot, ResourceLocation texture)
-        {
-            return (Model) super.setTexture(slot, texture);
-        }
-
-        @Override
-        public Model setTextures(TextureMapping mapping)
-        {
-            return (Model) super.setTextures(mapping);
         }
 
         public static Model create(String name, ResourceLocation model, TextureSlot[] slots)

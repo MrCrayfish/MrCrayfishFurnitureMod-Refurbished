@@ -7,6 +7,7 @@ import com.mrcrayfish.furniture.refurbished.data.model.ModelTemplate;
 import com.mrcrayfish.furniture.refurbished.data.model.PreparedBlockState;
 import com.mrcrayfish.furniture.refurbished.data.model.PreparedItem;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.models.model.ModelLocationUtils;
 import net.minecraft.data.models.model.TextureMapping;
@@ -31,6 +32,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Author: MrCrayfish
@@ -40,10 +42,13 @@ public class FurnitureModelProvider extends BlockStateProvider
     public static final ExistingFileHelper.ResourceType TEXTURE = new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".png", "textures");
     public static final ExistingFileHelper.ResourceType MODEL = new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".json", "models");
 
+    private final ExtraModelProvider extraModelProvider;
+
     public FurnitureModelProvider(PackOutput output, ExistingFileHelper helper)
     {
         super(output, Constants.MOD_ID, helper);
         this.registerExistingResources(helper);
+        this.extraModelProvider = new ExtraModelProvider(output, Constants.MOD_ID, helper);
     }
 
     private void registerExistingResources(ExistingFileHelper helper)
@@ -103,6 +108,9 @@ public class FurnitureModelProvider extends BlockStateProvider
                     this.itemModels().getBuilder(itemName.toString()).parent(new ModelFile.UncheckedModelFile(model));
                 });
             });
+        }, model -> {
+            BlockModelBuilder modelBuilder = this.extraModelProvider.withExistingParent(model.getName(), model.getModel());
+            Arrays.stream(model.getSlots()).forEach(slot -> modelBuilder.texture(slot.getId(), model.getTextures().get(slot)));
         }).run();
 
         new CommonItemModelProvider(prepared -> {
@@ -128,5 +136,12 @@ public class FurnitureModelProvider extends BlockStateProvider
             return modelBuilder;
         }
         return this.models().getExistingFile(model.getModel());
+    }
+
+    @Override
+    public CompletableFuture<?> run(CachedOutput cache)
+    {
+        this.extraModelProvider.clear();
+        return CompletableFuture.allOf(super.run(cache), this.extraModelProvider.generateAll(cache));
     }
 }
