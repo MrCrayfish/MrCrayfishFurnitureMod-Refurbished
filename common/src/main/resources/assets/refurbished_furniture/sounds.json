@@ -29,6 +29,12 @@
             "refurbished_furniture:block/ceiling_fan/spin"
         ]
     },
+    "block.lightswitch.flick": {
+        "subtitle": "subtitle.refurbished_furniture.lightswitch_flick",
+        "sounds": [
+            "refurbished_furniture:block/lightswitch/flick"
+        ]
+    },
     "item.package.open": {
         "subtitle": "subtitle.refurbished_furniture.package_open",
         "sounds": [

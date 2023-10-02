@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.furniture.refurbished.blockentity.LightswitchBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
+import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
@@ -25,6 +26,7 @@ import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
@@ -75,8 +77,25 @@ public class LightswitchBlock extends FurnitureAttachedFaceBlock implements Enti
     {
         boolean enabled = !state.getValue(ENABLED);
         level.setBlock(pos, state.setValue(ENABLED, enabled), Block.UPDATE_ALL);
-        level.playSound(null, pos, SoundEvents.LEVER_CLICK, SoundSource.BLOCKS, 0.3F, enabled ? 0.6F : 0.5F);
+        Vec3 sound = this.getPositionForSound(state, pos);
+        level.playSound(null, sound.x, sound.y, sound.z, ModSounds.BLOCK_LIGHTSWITCH_FLICK.get(), SoundSource.BLOCKS, 0.7F, enabled ? 1.0F : 0.8F);
         return InteractionResult.sidedSuccess(level.isClientSide());
+    }
+
+    private Vec3 getPositionForSound(BlockState state, BlockPos pos)
+    {
+        Vec3 center = pos.getCenter();
+        AttachFace face = state.getValue(FACE);
+        if(face == AttachFace.FLOOR)
+        {
+            return center.subtract(0, 0.5, 0);
+        }
+        if(face == AttachFace.CEILING)
+        {
+            return center.add(0, 0.5, 0);
+        }
+        Direction dir = state.getValue(FACING).getOpposite();
+        return center.add(dir.getStepX() * 0.5, 0, dir.getStepZ() * 0.5);
     }
 
     @Override
