@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.client;
 import com.mrcrayfish.framework.api.event.ClientConnectionEvents;
 import com.mrcrayfish.framework.api.event.PlayerEvents;
 import com.mrcrayfish.framework.api.event.TickEvents;
+import com.mrcrayfish.furniture.refurbished.block.MetalType;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.ElectricityGeneratorScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.FreezerScreen;
@@ -14,6 +15,7 @@ import com.mrcrayfish.furniture.refurbished.client.registration.BlockEntityRende
 import com.mrcrayfish.furniture.refurbished.client.registration.EntityRendererRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.RenderTypeRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
+import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.CeilingFanBlockEntityRenderer;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.StorageJarRenderer;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.CuttingBoardBlockEntityRenderer;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.ElectricBlockEntityRenderer;
@@ -27,6 +29,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.level.block.state.properties.WoodType;
 
 /**
  * Author: MrCrayfish
@@ -46,6 +49,26 @@ public class ClientBootstrap
         PlayerEvents.CHANGE_DIMENSION.register((player, oldDimension, newDimension) -> {
             AudioManager.get().resetSounds();
         });
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_OAK_LIGHT.get(), ExtraModels.OAK_LIGHT_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_SPRUCE_LIGHT.get(), ExtraModels.SPRUCE_LIGHT_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_BIRCH_LIGHT.get(), ExtraModels.BIRCH_LIGHT_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_JUNGLE_LIGHT.get(), ExtraModels.JUNGLE_LIGHT_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_ACACIA_LIGHT.get(), ExtraModels.ACACIA_LIGHT_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_DARK_OAK_LIGHT.get(), ExtraModels.DARK_OAK_LIGHT_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_CHERRY_LIGHT.get(), ExtraModels.CHERRY_LIGHT_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_MANGROVE_LIGHT.get(), ExtraModels.MANGROVE_LIGHT_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_CRIMSON_LIGHT.get(), ExtraModels.CRIMSON_LIGHT_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_WARPED_LIGHT.get(), ExtraModels.WARPED_LIGHT_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_OAK_DARK.get(), ExtraModels.OAK_DARK_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_SPRUCE_DARK.get(), ExtraModels.SPRUCE_DARK_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_BIRCH_DARK.get(), ExtraModels.BIRCH_DARK_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_JUNGLE_DARK.get(), ExtraModels.JUNGLE_DARK_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_ACACIA_DARK.get(), ExtraModels.ACACIA_DARK_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_DARK_OAK_DARK.get(), ExtraModels.DARK_OAK_DARK_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_CHERRY_DARK.get(), ExtraModels.CHERRY_DARK_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_MANGROVE_DARK.get(), ExtraModels.MANGROVE_DARK_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_CRIMSON_DARK.get(), ExtraModels.CRIMSON_DARK_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_WARPED_DARK.get(), ExtraModels.WARPED_DARK_CEILING_FAN_BLADE::getModel);
     }
 
     public static void registerScreens(ScreenRegister register)
@@ -73,6 +96,7 @@ public class ClientBootstrap
         register.apply(ModBlockEntities.MICROWAVE.get(), ElectricBlockEntityRenderer::new);
         register.apply(ModBlockEntities.STORAGE_JAR.get(), StorageJarRenderer::new);
         register.apply(ModBlockEntities.RECYCLE_BIN.get(), ElectricBlockEntityRenderer::new);
+        register.apply(ModBlockEntities.CEILING_FAN.get(), CeilingFanBlockEntityRenderer::new);
     }
 
     public static void registerEntityRenderers(EntityRendererRegister register)
@@ -142,5 +166,25 @@ public class ClientBootstrap
         register.apply(ModBlocks.STORAGE_JAR_CHERRY.get(), RenderType.cutout());
         register.apply(ModBlocks.STORAGE_JAR_CRIMSON.get(), RenderType.cutout());
         register.apply(ModBlocks.STORAGE_JAR_WARPED.get(), RenderType.cutout());
+        register.apply(ModBlocks.CEILING_FAN_OAK_LIGHT.get(), RenderType.translucent());
+        register.apply(ModBlocks.CEILING_FAN_SPRUCE_LIGHT.get(), RenderType.translucent());
+        register.apply(ModBlocks.CEILING_FAN_BIRCH_LIGHT.get(), RenderType.translucent());
+        register.apply(ModBlocks.CEILING_FAN_JUNGLE_LIGHT.get(), RenderType.translucent());
+        register.apply(ModBlocks.CEILING_FAN_ACACIA_LIGHT.get(), RenderType.translucent());
+        register.apply(ModBlocks.CEILING_FAN_DARK_OAK_LIGHT.get(), RenderType.translucent());
+        register.apply(ModBlocks.CEILING_FAN_MANGROVE_LIGHT.get(), RenderType.translucent());
+        register.apply(ModBlocks.CEILING_FAN_CHERRY_LIGHT.get(), RenderType.translucent());
+        register.apply(ModBlocks.CEILING_FAN_CRIMSON_LIGHT.get(), RenderType.translucent());
+        register.apply(ModBlocks.CEILING_FAN_WARPED_LIGHT.get(), RenderType.translucent());
+        register.apply(ModBlocks.CEILING_FAN_OAK_DARK.get(), RenderType.translucent());
+        register.apply(ModBlocks.CEILING_FAN_SPRUCE_DARK.get(), RenderType.translucent());
+        register.apply(ModBlocks.CEILING_FAN_BIRCH_DARK.get(), RenderType.translucent());
+        register.apply(ModBlocks.CEILING_FAN_JUNGLE_DARK.get(), RenderType.translucent());
+        register.apply(ModBlocks.CEILING_FAN_ACACIA_DARK.get(), RenderType.translucent());
+        register.apply(ModBlocks.CEILING_FAN_DARK_OAK_DARK.get(), RenderType.translucent());
+        register.apply(ModBlocks.CEILING_FAN_MANGROVE_DARK.get(), RenderType.translucent());
+        register.apply(ModBlocks.CEILING_FAN_CHERRY_DARK.get(), RenderType.translucent());
+        register.apply(ModBlocks.CEILING_FAN_CRIMSON_DARK.get(), RenderType.translucent());
+        register.apply(ModBlocks.CEILING_FAN_WARPED_DARK.get(), RenderType.translucent());
     }
 }

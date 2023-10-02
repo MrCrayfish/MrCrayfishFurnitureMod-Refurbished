@@ -1,6 +1,7 @@
 {
 	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
-	"elements": [
+	"loader": "framework:open_model",
+	"components": [
 		{
 			"from": [5, 5, 2.5],
 			"to": [11, 11, 2.5],

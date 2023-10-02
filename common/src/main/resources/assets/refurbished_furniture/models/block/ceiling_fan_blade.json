@@ -1,0 +1,42 @@
+{
+	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
+	"loader": "framework:open_model",
+	"components": [
+		{
+			"from": [5.5, 9, 10.5],
+			"to": [10.5, 9, 26.5],
+			"rotation": {"angle": 8, "axis": "z", "origin": [8, 9, 8]},
+			"faces": {
+				"up": {"uv": [5, 0, 2.5, 16], "texture": "#texture"},
+				"down": {"uv": [2.5, 16, 0, 0], "texture": "#texture"}
+			}
+		},
+		{
+			"from": [-10.5, 9, 5.5],
+			"to": [5.5, 9, 10.5],
+			"rotation": {"angle": -8, "axis": "x", "origin": [8, 9, 8]},
+			"faces": {
+				"up": {"uv": [5, 0, 2.5, 16], "rotation": 90, "texture": "#texture"},
+				"down": {"uv": [2.5, 16, 0, 0], "rotation": 270, "texture": "#texture"}
+			}
+		},
+		{
+			"from": [5.5, 9, -10.5],
+			"to": [10.5, 9, 5.5],
+			"rotation": {"angle": -8, "axis": "z", "origin": [8, 9, 8]},
+			"faces": {
+				"up": {"uv": [5, 0, 2.5, 16], "rotation": 180, "texture": "#texture"},
+				"down": {"uv": [2.5, 16, 0, 0], "rotation": 180, "texture": "#texture"}
+			}
+		},
+		{
+			"from": [10.5, 9, 5.5],
+			"to": [26.5, 9, 10.5],
+			"rotation": {"angle": 8, "axis": "x", "origin": [8, 9, 8]},
+			"faces": {
+				"up": {"uv": [5, 0, 2.5, 16], "rotation": 270, "texture": "#texture"},
+				"down": {"uv": [2.5, 16, 0, 0], "rotation": 90, "texture": "#texture"}
+			}
+		}
+	]
+}

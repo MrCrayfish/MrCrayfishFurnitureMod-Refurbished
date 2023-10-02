@@ -13,8 +13,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -34,6 +37,8 @@ public abstract class FurnitureBlock extends Block
     public static final BooleanProperty RIGHT = BooleanProperty.create("right");
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static final BooleanProperty ENABLED = BlockStateProperties.ENABLED;
+    public static final DirectionProperty FACING = BlockStateProperties.FACING;
+    public static final BooleanProperty LIT = BlockStateProperties.LIT;
 
     protected final Map<BlockState, VoxelShape> shapes;
 

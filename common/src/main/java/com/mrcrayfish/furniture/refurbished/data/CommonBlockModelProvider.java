@@ -277,6 +277,26 @@ public class CommonBlockModelProvider
         this.lamp(ModBlocks.LAMP_GREEN.get());
         this.lamp(ModBlocks.LAMP_RED.get());
         this.lamp(ModBlocks.LAMP_BLACK.get());
+        this.ceilingFan(ModBlocks.CEILING_FAN_OAK_LIGHT.get());
+        this.ceilingFan(ModBlocks.CEILING_FAN_SPRUCE_LIGHT.get());
+        this.ceilingFan(ModBlocks.CEILING_FAN_BIRCH_LIGHT.get());
+        this.ceilingFan(ModBlocks.CEILING_FAN_JUNGLE_LIGHT.get());
+        this.ceilingFan(ModBlocks.CEILING_FAN_ACACIA_LIGHT.get());
+        this.ceilingFan(ModBlocks.CEILING_FAN_DARK_OAK_LIGHT.get());
+        this.ceilingFan(ModBlocks.CEILING_FAN_MANGROVE_LIGHT.get());
+        this.ceilingFan(ModBlocks.CEILING_FAN_CHERRY_LIGHT.get());
+        this.ceilingFan(ModBlocks.CEILING_FAN_CRIMSON_LIGHT.get());
+        this.ceilingFan(ModBlocks.CEILING_FAN_WARPED_LIGHT.get());
+        this.ceilingFan(ModBlocks.CEILING_FAN_OAK_DARK.get());
+        this.ceilingFan(ModBlocks.CEILING_FAN_SPRUCE_DARK.get());
+        this.ceilingFan(ModBlocks.CEILING_FAN_BIRCH_DARK.get());
+        this.ceilingFan(ModBlocks.CEILING_FAN_JUNGLE_DARK.get());
+        this.ceilingFan(ModBlocks.CEILING_FAN_ACACIA_DARK.get());
+        this.ceilingFan(ModBlocks.CEILING_FAN_DARK_OAK_DARK.get());
+        this.ceilingFan(ModBlocks.CEILING_FAN_MANGROVE_DARK.get());
+        this.ceilingFan(ModBlocks.CEILING_FAN_CHERRY_DARK.get());
+        this.ceilingFan(ModBlocks.CEILING_FAN_CRIMSON_DARK.get());
+        this.ceilingFan(ModBlocks.CEILING_FAN_WARPED_DARK.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -323,7 +343,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(TableBlock.NORTH, true).prop(TableBlock.EAST, false).prop(TableBlock.SOUTH, true).prop(TableBlock.WEST, false).parentModel(ModelTemplate.TABLE_NORTH_SOUTH.stateModel(type).setTextures(textures));
         state.createVariant().prop(TableBlock.NORTH, false).prop(TableBlock.EAST, true).prop(TableBlock.SOUTH, false).prop(TableBlock.WEST, true).parentModel(ModelTemplate.TABLE_EAST_WEST.stateModel(type).setTextures(textures));
         state.createVariant().prop(TableBlock.NORTH, true).prop(TableBlock.EAST, true).prop(TableBlock.SOUTH, true).prop(TableBlock.WEST, true).parentModel(ModelTemplate.TABLE_NORTH_EAST_SOUTH_WEST.stateModel(type).setTextures(textures));
-        this.consumer.accept(state);
+        this.stateConsumer.accept(state);
     }
 
     private void chair(ChairBlock block)
@@ -341,7 +361,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(ChairBlock.DIRECTION, Direction.EAST).prop(ChairBlock.TUCKED, true).parentModel(ModelTemplate.CHAIR_TUCKED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(ChairBlock.DIRECTION, Direction.SOUTH).prop(ChairBlock.TUCKED, true).parentModel(ModelTemplate.CHAIR_TUCKED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(ChairBlock.DIRECTION, Direction.WEST).prop(ChairBlock.TUCKED, true).parentModel(ModelTemplate.CHAIR_TUCKED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.consumer.accept(state);
+        this.stateConsumer.accept(state);
     }
 
     private void desk(DeskBlock block)
@@ -367,7 +387,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(DeskBlock.DIRECTION, Direction.EAST).prop(DeskBlock.LEFT, true).prop(DeskBlock.RIGHT, true).parentModel(ModelTemplate.DESK_MIDDLE.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(DeskBlock.DIRECTION, Direction.SOUTH).prop(DeskBlock.LEFT, true).prop(DeskBlock.RIGHT, true).parentModel(ModelTemplate.DESK_MIDDLE.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(DeskBlock.DIRECTION, Direction.WEST).prop(DeskBlock.LEFT, true).prop(DeskBlock.RIGHT, true).parentModel(ModelTemplate.DESK_MIDDLE.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.consumer.accept(state);
+        this.stateConsumer.accept(state);
     }
 
     private void drawer(DrawerBlock block)
@@ -409,7 +429,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.EAST).prop(DrawerBlock.LEFT, true).prop(DrawerBlock.RIGHT, true).prop(DrawerBlock.OPEN, true).parentModel(ModelTemplate.DRAWER_MIDDLE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.SOUTH).prop(DrawerBlock.LEFT, true).prop(DrawerBlock.RIGHT, true).prop(DrawerBlock.OPEN, true).parentModel(ModelTemplate.DRAWER_MIDDLE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.WEST).prop(DrawerBlock.LEFT, true).prop(DrawerBlock.RIGHT, true).prop(DrawerBlock.OPEN, true).parentModel(ModelTemplate.DRAWER_MIDDLE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.consumer.accept(state);
+        this.stateConsumer.accept(state);
     }
 
     private void crate(CrateBlock block)
@@ -421,7 +441,7 @@ public class CommonBlockModelProvider
         PreparedBlockState state = new PreparedBlockState(block);
         state.createVariant().prop(CrateBlock.OPEN, false).parentModel(ModelTemplate.CRATE_CLOSED.stateModel(type).setTextures(textures)).markAsItem();
         state.createVariant().prop(CrateBlock.OPEN, true).parentModel(ModelTemplate.CRATE_OPEN.stateModel(type).setTextures(textures));
-        this.consumer.accept(state);
+        this.stateConsumer.accept(state);
     }
 
     private void woodenKitchenCabinetry(WoodenKitchenCabinetryBlock block)
@@ -451,7 +471,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.WEST).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.INSIDE_CORNER_RIGHT).parentModel(ModelTemplate.KITCHEN_CABINETRY_INSIDE_CORNER_RIGHT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.WEST).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_LEFT).parentModel(ModelTemplate.KITCHEN_CABINETRY_OUTSIDE_CORNER_LEFT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.WEST).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_RIGHT).parentModel(ModelTemplate.KITCHEN_CABINETRY_OUTSIDE_CORNER_RIGHT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.consumer.accept(state);
+        this.stateConsumer.accept(state);
     }
 
     private void woodenKitchenDrawer(WoodenKitchenDrawerBlock block)
@@ -469,7 +489,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.EAST).prop(DrawerBlock.OPEN, true).parentModel(ModelTemplate.KITCHEN_DRAWER_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.SOUTH).prop(DrawerBlock.OPEN, true).parentModel(ModelTemplate.KITCHEN_DRAWER_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.WEST).prop(DrawerBlock.OPEN, true).parentModel(ModelTemplate.KITCHEN_DRAWER_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.consumer.accept(state);
+        this.stateConsumer.accept(state);
     }
 
     private void woodenKitchenSink(WoodenKitchenSinkBlock block)
@@ -483,7 +503,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.EAST).parentModel(ModelTemplate.KITCHEN_SINK.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.SOUTH).parentModel(ModelTemplate.KITCHEN_SINK.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.WEST).parentModel(ModelTemplate.KITCHEN_SINK.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.consumer.accept(state);
+        this.stateConsumer.accept(state);
     }
 
     private void colouredKitchenCabinetry(ColouredKitchenCabinetryBlock block)
@@ -513,7 +533,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.WEST).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.INSIDE_CORNER_RIGHT).parentModel(ModelTemplate.KITCHEN_CABINETRY_INSIDE_CORNER_RIGHT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.WEST).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_LEFT).parentModel(ModelTemplate.KITCHEN_CABINETRY_OUTSIDE_CORNER_LEFT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.WEST).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_RIGHT).parentModel(ModelTemplate.KITCHEN_CABINETRY_OUTSIDE_CORNER_RIGHT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.consumer.accept(state);
+        this.stateConsumer.accept(state);
     }
 
     private void colouredKitchenDrawer(ColouredKitchenDrawerBlock block)
@@ -531,7 +551,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.EAST).prop(DrawerBlock.OPEN, true).parentModel(ModelTemplate.KITCHEN_DRAWER_OPEN.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.SOUTH).prop(DrawerBlock.OPEN, true).parentModel(ModelTemplate.KITCHEN_DRAWER_OPEN.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.WEST).prop(DrawerBlock.OPEN, true).parentModel(ModelTemplate.KITCHEN_DRAWER_OPEN.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.consumer.accept(state);
+        this.stateConsumer.accept(state);
     }
 
     private void colouredKitchenSink(ColouredKitchenSinkBlock block)
@@ -545,7 +565,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.EAST).parentModel(ModelTemplate.KITCHEN_SINK.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.SOUTH).parentModel(ModelTemplate.KITCHEN_SINK.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.WEST).parentModel(ModelTemplate.KITCHEN_SINK.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.consumer.accept(state);
+        this.stateConsumer.accept(state);
     }
 
     private void grill(GrillBlock block)
@@ -559,7 +579,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(GrillBlock.DIRECTION, Direction.EAST).parentModel(ModelTemplate.GRILL.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(GrillBlock.DIRECTION, Direction.SOUTH).parentModel(ModelTemplate.GRILL.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(GrillBlock.DIRECTION, Direction.WEST).parentModel(ModelTemplate.GRILL.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.consumer.accept(state);
+        this.stateConsumer.accept(state);
     }
 
     private void cooler(CoolerBlock block)
@@ -577,7 +597,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(CoolerBlock.DIRECTION, Direction.EAST).prop(CoolerBlock.OPEN, true).parentModel(ModelTemplate.COOLER_OPEN.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(CoolerBlock.DIRECTION, Direction.SOUTH).prop(CoolerBlock.OPEN, true).parentModel(ModelTemplate.COOLER_OPEN.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(CoolerBlock.DIRECTION, Direction.WEST).prop(CoolerBlock.OPEN, true).parentModel(ModelTemplate.COOLER_OPEN.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.consumer.accept(state);
+        this.stateConsumer.accept(state);
     }
     
     private void fridge(FridgeBlock block)
@@ -595,7 +615,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(FridgeBlock.DIRECTION, Direction.EAST).prop(FridgeBlock.OPEN, true).parentModel(ModelTemplate.FRIDGE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(FridgeBlock.DIRECTION, Direction.SOUTH).prop(FridgeBlock.OPEN, true).parentModel(ModelTemplate.FRIDGE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(FridgeBlock.DIRECTION, Direction.WEST).prop(FridgeBlock.OPEN, true).parentModel(ModelTemplate.FRIDGE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.consumer.accept(state);
+        this.stateConsumer.accept(state);
     }
 
     private void freezer(FreezerBlock block)
@@ -613,7 +633,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(FreezerBlock.DIRECTION, Direction.EAST).prop(FreezerBlock.OPEN, true).parentModel(ModelTemplate.FREEZER_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(FreezerBlock.DIRECTION, Direction.SOUTH).prop(FreezerBlock.OPEN, true).parentModel(ModelTemplate.FREEZER_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(FreezerBlock.DIRECTION, Direction.WEST).prop(FreezerBlock.OPEN, true).parentModel(ModelTemplate.FREEZER_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.consumer.accept(state);
+        this.stateConsumer.accept(state);
     }
 
     private void toaster(ToasterBlock block)
@@ -631,7 +651,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(ToasterBlock.DIRECTION, Direction.EAST).prop(ToasterBlock.POWERED, true).parentModel(ModelTemplate.TOASTER_COOKING.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(ToasterBlock.DIRECTION, Direction.SOUTH).prop(ToasterBlock.POWERED, true).parentModel(ModelTemplate.TOASTER_COOKING.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(ToasterBlock.DIRECTION, Direction.WEST).prop(ToasterBlock.POWERED, true).parentModel(ModelTemplate.TOASTER_COOKING.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.consumer.accept(state);
+        this.stateConsumer.accept(state);
     }
 
     private void microwave(MicrowaveBlock block)
@@ -649,7 +669,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(MicrowaveBlock.DIRECTION, Direction.EAST).prop(MicrowaveBlock.OPEN, true).parentModel(ModelTemplate.MICROWAVE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(MicrowaveBlock.DIRECTION, Direction.SOUTH).prop(MicrowaveBlock.OPEN, true).parentModel(ModelTemplate.MICROWAVE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(MicrowaveBlock.DIRECTION, Direction.WEST).prop(MicrowaveBlock.OPEN, true).parentModel(ModelTemplate.MICROWAVE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.consumer.accept(state);
+        this.stateConsumer.accept(state);
     }
 
     private void stove(StoveBlock block)
@@ -667,7 +687,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(StoveBlock.DIRECTION, Direction.EAST).prop(StoveBlock.OPEN, true).parentModel(ModelTemplate.STOVE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(StoveBlock.DIRECTION, Direction.SOUTH).prop(StoveBlock.OPEN, true).parentModel(ModelTemplate.STOVE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(StoveBlock.DIRECTION, Direction.WEST).prop(StoveBlock.OPEN, true).parentModel(ModelTemplate.STOVE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.consumer.accept(state);
+        this.stateConsumer.accept(state);
     }
 
     private void cuttingBoard(CuttingBoardBlock block)
@@ -681,7 +701,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(CuttingBoardBlock.DIRECTION, Direction.EAST).parentModel(ModelTemplate.CUTTING_BOARD.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(CuttingBoardBlock.DIRECTION, Direction.SOUTH).parentModel(ModelTemplate.CUTTING_BOARD.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(CuttingBoardBlock.DIRECTION, Direction.WEST).parentModel(ModelTemplate.CUTTING_BOARD.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.consumer.accept(state);
+        this.stateConsumer.accept(state);
     }
 
     private void fryingPan(FryingPanBlock block)
@@ -694,7 +714,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(FryingPanBlock.DIRECTION, Direction.EAST).existingModel(ModelTemplate.FRYING_PAN.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(FryingPanBlock.DIRECTION, Direction.SOUTH).existingModel(ModelTemplate.FRYING_PAN.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(FryingPanBlock.DIRECTION, Direction.WEST).existingModel(ModelTemplate.FRYING_PAN.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.consumer.accept(state);
+        this.stateConsumer.accept(state);
     }
 
     private void mailbox(MailboxBlock block)
@@ -712,7 +732,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(MailboxBlock.DIRECTION, Direction.EAST).prop(DrawerBlock.ENABLED, true).parentModel(ModelTemplate.MAIL_BOX_UNCHECKED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(MailboxBlock.DIRECTION, Direction.SOUTH).prop(DrawerBlock.ENABLED, true).parentModel(ModelTemplate.MAIL_BOX_UNCHECKED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(MailboxBlock.DIRECTION, Direction.WEST).prop(DrawerBlock.ENABLED, true).parentModel(ModelTemplate.MAIL_BOX_UNCHECKED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.consumer.accept(state);
+        this.stateConsumer.accept(state);
     }
 
     private void postBox(PostBoxBlock block)
@@ -725,7 +745,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(PostBoxBlock.DIRECTION, Direction.EAST).existingModel(ModelTemplate.POST_BOX.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(PostBoxBlock.DIRECTION, Direction.SOUTH).existingModel(ModelTemplate.POST_BOX.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(PostBoxBlock.DIRECTION, Direction.WEST).existingModel(ModelTemplate.POST_BOX.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.consumer.accept(state);
+        this.stateConsumer.accept(state);
     }
 
     private void sofa(SofaBlock block)
@@ -759,7 +779,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(SofaBlock.DIRECTION, Direction.EAST).prop(SofaBlock.SHAPE, SofaBlock.Shape.CORNER_RIGHT).parentModel(ModelTemplate.SOFA_CORNER_RIGHT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(SofaBlock.DIRECTION, Direction.SOUTH).prop(SofaBlock.SHAPE, SofaBlock.Shape.CORNER_RIGHT).parentModel(ModelTemplate.SOFA_CORNER_RIGHT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(SofaBlock.DIRECTION, Direction.WEST).prop(SofaBlock.SHAPE, SofaBlock.Shape.CORNER_RIGHT).parentModel(ModelTemplate.SOFA_CORNER_RIGHT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.consumer.accept(state);
+        this.stateConsumer.accept(state);
     }
 
     private void doorbell(DoorbellBlock block)
@@ -776,7 +796,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(DoorbellBlock.DIRECTION, Direction.EAST).prop(DoorbellBlock.ENABLED, true).existingModel(ModelTemplate.DOORBELL_PRESSED.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(DoorbellBlock.DIRECTION, Direction.SOUTH).prop(DoorbellBlock.ENABLED, true).existingModel(ModelTemplate.DOORBELL_PRESSED.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(DoorbellBlock.DIRECTION, Direction.WEST).prop(DoorbellBlock.ENABLED, true).existingModel(ModelTemplate.DOORBELL_PRESSED.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.consumer.accept(state);
+        this.stateConsumer.accept(state);
     }
 
     private void lightswitch(LightswitchBlock block)
@@ -834,7 +854,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(LightswitchBlock.FACING, Direction.EAST).prop(LightswitchBlock.FACE, AttachFace.CEILING).prop(LightswitchBlock.ENABLED, true).prop(LightswitchBlock.POWERED, true).parentModel(ModelTemplate.LIGHTSWITCH_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90).setXRotation(VariantProperties.Rotation.R270));
         state.createVariant().prop(LightswitchBlock.FACING, Direction.SOUTH).prop(LightswitchBlock.FACE, AttachFace.CEILING).prop(LightswitchBlock.ENABLED, true).prop(LightswitchBlock.POWERED, true).parentModel(ModelTemplate.LIGHTSWITCH_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180).setXRotation(VariantProperties.Rotation.R270));
         state.createVariant().prop(LightswitchBlock.FACING, Direction.WEST).prop(LightswitchBlock.FACE, AttachFace.CEILING).prop(LightswitchBlock.ENABLED, true).prop(LightswitchBlock.POWERED, true).parentModel(ModelTemplate.LIGHTSWITCH_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270).setXRotation(VariantProperties.Rotation.R270));
-        this.consumer.accept(state);
+        this.stateConsumer.accept(state);
     }
 
     private void ceilingLight(CeilingLightBlock block)
@@ -868,7 +888,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(CeilingLightBlock.FACING, Direction.EAST).prop(CeilingLightBlock.FACE, AttachFace.CEILING).prop(CeilingLightBlock.POWERED, true).parentModel(ModelTemplate.CEILING_LIGHT_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90).setXRotation(VariantProperties.Rotation.R270));
         state.createVariant().prop(CeilingLightBlock.FACING, Direction.SOUTH).prop(CeilingLightBlock.FACE, AttachFace.CEILING).prop(CeilingLightBlock.POWERED, true).parentModel(ModelTemplate.CEILING_LIGHT_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180).setXRotation(VariantProperties.Rotation.R270));
         state.createVariant().prop(CeilingLightBlock.FACING, Direction.WEST).prop(CeilingLightBlock.FACE, AttachFace.CEILING).prop(CeilingLightBlock.POWERED, true).parentModel(ModelTemplate.CEILING_LIGHT_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270).setXRotation(VariantProperties.Rotation.R270));
-        this.consumer.accept(state);
+        this.stateConsumer.accept(state);
     }
 
     private void electricityGenerator(ElectricityGeneratorBlock block)
@@ -886,7 +906,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(ElectricityGeneratorBlock.DIRECTION, Direction.EAST).prop(ElectricityGeneratorBlock.POWERED, true).parentModel(ModelTemplate.ELECTRICITY_GENERATOR_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(ElectricityGeneratorBlock.DIRECTION, Direction.SOUTH).prop(ElectricityGeneratorBlock.POWERED, true).parentModel(ModelTemplate.ELECTRICITY_GENERATOR_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(ElectricityGeneratorBlock.DIRECTION, Direction.WEST).prop(ElectricityGeneratorBlock.POWERED, true).parentModel(ModelTemplate.ELECTRICITY_GENERATOR_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.consumer.accept(state);
+        this.stateConsumer.accept(state);
     }
 
     private void storageJar(StorageJarBlock block)
@@ -900,7 +920,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(StorageJarBlock.DIRECTION, Direction.EAST).parentModel(ModelTemplate.STORAGE_JAR.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(StorageJarBlock.DIRECTION, Direction.SOUTH).parentModel(ModelTemplate.STORAGE_JAR.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(StorageJarBlock.DIRECTION, Direction.WEST).parentModel(ModelTemplate.STORAGE_JAR.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.consumer.accept(state);
+        this.stateConsumer.accept(state);
     }
 
     private void recycleBin(RecycleBinBlock block)
@@ -917,7 +937,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(RecycleBinBlock.DIRECTION, Direction.EAST).prop(RecycleBinBlock.OPEN, true).existingModel(ModelTemplate.RECYCLE_BIN_OPEN.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(RecycleBinBlock.DIRECTION, Direction.SOUTH).prop(RecycleBinBlock.OPEN, true).existingModel(ModelTemplate.RECYCLE_BIN_OPEN.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(RecycleBinBlock.DIRECTION, Direction.WEST).prop(RecycleBinBlock.OPEN, true).existingModel(ModelTemplate.RECYCLE_BIN_OPEN.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.consumer.accept(state);
+        this.stateConsumer.accept(state);
     }
 
     private void lamp(LampBlock block)
@@ -929,6 +949,46 @@ public class CommonBlockModelProvider
         PreparedBlockState state = new PreparedBlockState(block);
         state.createVariant().prop(LampBlock.POWERED, false).parentModel(ModelTemplate.LAMP_OFF.stateModel(type).setTextures(textures)).markAsItem();
         state.createVariant().prop(LampBlock.POWERED, true).parentModel(ModelTemplate.LAMP_ON.stateModel(type).setTextures(textures));
-        this.consumer.accept(state);
+        this.stateConsumer.accept(state);
+    }
+
+    private void ceilingFan(CeilingFanBlock block)
+    {
+        WoodType woodType = block.getWoodType();
+        MetalType metalType = block.getMetalType();
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.metalParticle(metalType));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedBlockState state = new PreparedBlockState(block);
+        state.createVariant().prop(CeilingFanBlock.FACING, Direction.NORTH).prop(CeilingFanBlock.POWERED, false).prop(CeilingFanBlock.LIT, false).parentModel(ModelTemplate.CEILING_FAN_BASE_OFF.stateModel(woodType, metalType).setTextures(textures).setXRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(CeilingFanBlock.FACING, Direction.EAST).prop(CeilingFanBlock.POWERED, false).prop(CeilingFanBlock.LIT, false).parentModel(ModelTemplate.CEILING_FAN_BASE_OFF.stateModel(woodType, metalType).setTextures(textures).setXRotation(VariantProperties.Rotation.R90).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(CeilingFanBlock.FACING, Direction.SOUTH).prop(CeilingFanBlock.POWERED, false).prop(CeilingFanBlock.LIT, false).parentModel(ModelTemplate.CEILING_FAN_BASE_OFF.stateModel(woodType, metalType).setTextures(textures).setXRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(CeilingFanBlock.FACING, Direction.WEST).prop(CeilingFanBlock.POWERED, false).prop(CeilingFanBlock.LIT, false).parentModel(ModelTemplate.CEILING_FAN_BASE_OFF.stateModel(woodType, metalType).setTextures(textures).setXRotation(VariantProperties.Rotation.R270).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(CeilingFanBlock.FACING, Direction.UP).prop(CeilingFanBlock.POWERED, false).prop(CeilingFanBlock.LIT, false).parentModel(ModelTemplate.CEILING_FAN_BASE_OFF.stateModel(woodType, metalType).setTextures(textures));
+        state.createVariant().prop(CeilingFanBlock.FACING, Direction.DOWN).prop(CeilingFanBlock.POWERED, false).prop(CeilingFanBlock.LIT, false).parentModel(ModelTemplate.CEILING_FAN_BASE_OFF.stateModel(woodType, metalType).setTextures(textures).setXRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(CeilingFanBlock.FACING, Direction.NORTH).prop(CeilingFanBlock.POWERED, false).prop(CeilingFanBlock.LIT, true).parentModel(ModelTemplate.CEILING_FAN_BASE_OFF.stateModel(woodType, metalType).setTextures(textures).setXRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(CeilingFanBlock.FACING, Direction.EAST).prop(CeilingFanBlock.POWERED, false).prop(CeilingFanBlock.LIT, true).parentModel(ModelTemplate.CEILING_FAN_BASE_OFF.stateModel(woodType, metalType).setTextures(textures).setXRotation(VariantProperties.Rotation.R90).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(CeilingFanBlock.FACING, Direction.SOUTH).prop(CeilingFanBlock.POWERED, false).prop(CeilingFanBlock.LIT, true).parentModel(ModelTemplate.CEILING_FAN_BASE_OFF.stateModel(woodType, metalType).setTextures(textures).setXRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(CeilingFanBlock.FACING, Direction.WEST).prop(CeilingFanBlock.POWERED, false).prop(CeilingFanBlock.LIT, true).parentModel(ModelTemplate.CEILING_FAN_BASE_OFF.stateModel(woodType, metalType).setTextures(textures).setXRotation(VariantProperties.Rotation.R270).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(CeilingFanBlock.FACING, Direction.UP).prop(CeilingFanBlock.POWERED, false).prop(CeilingFanBlock.LIT, true).parentModel(ModelTemplate.CEILING_FAN_BASE_OFF.stateModel(woodType, metalType).setTextures(textures));
+        state.createVariant().prop(CeilingFanBlock.FACING, Direction.DOWN).prop(CeilingFanBlock.POWERED, false).prop(CeilingFanBlock.LIT, true).parentModel(ModelTemplate.CEILING_FAN_BASE_OFF.stateModel(woodType, metalType).setTextures(textures).setXRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(CeilingFanBlock.FACING, Direction.NORTH).prop(CeilingFanBlock.POWERED, true).prop(CeilingFanBlock.LIT, false).parentModel(ModelTemplate.CEILING_FAN_BASE_OFF.stateModel(woodType, metalType).setTextures(textures).setXRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(CeilingFanBlock.FACING, Direction.EAST).prop(CeilingFanBlock.POWERED, true).prop(CeilingFanBlock.LIT, false).parentModel(ModelTemplate.CEILING_FAN_BASE_OFF.stateModel(woodType, metalType).setTextures(textures).setXRotation(VariantProperties.Rotation.R90).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(CeilingFanBlock.FACING, Direction.SOUTH).prop(CeilingFanBlock.POWERED, true).prop(CeilingFanBlock.LIT, false).parentModel(ModelTemplate.CEILING_FAN_BASE_OFF.stateModel(woodType, metalType).setTextures(textures).setXRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(CeilingFanBlock.FACING, Direction.WEST).prop(CeilingFanBlock.POWERED, true).prop(CeilingFanBlock.LIT, false).parentModel(ModelTemplate.CEILING_FAN_BASE_OFF.stateModel(woodType, metalType).setTextures(textures).setXRotation(VariantProperties.Rotation.R270).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(CeilingFanBlock.FACING, Direction.UP).prop(CeilingFanBlock.POWERED, true).prop(CeilingFanBlock.LIT, false).parentModel(ModelTemplate.CEILING_FAN_BASE_OFF.stateModel(woodType, metalType).setTextures(textures));
+        state.createVariant().prop(CeilingFanBlock.FACING, Direction.DOWN).prop(CeilingFanBlock.POWERED, true).prop(CeilingFanBlock.LIT, false).parentModel(ModelTemplate.CEILING_FAN_BASE_OFF.stateModel(woodType, metalType).setTextures(textures).setXRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(CeilingFanBlock.FACING, Direction.NORTH).prop(CeilingFanBlock.POWERED, true).prop(CeilingFanBlock.LIT, true).parentModel(ModelTemplate.CEILING_FAN_BASE_ON.stateModel(woodType, metalType).setTextures(textures).setXRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(CeilingFanBlock.FACING, Direction.EAST).prop(CeilingFanBlock.POWERED, true).prop(CeilingFanBlock.LIT, true).parentModel(ModelTemplate.CEILING_FAN_BASE_ON.stateModel(woodType, metalType).setTextures(textures).setXRotation(VariantProperties.Rotation.R90).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(CeilingFanBlock.FACING, Direction.SOUTH).prop(CeilingFanBlock.POWERED, true).prop(CeilingFanBlock.LIT, true).parentModel(ModelTemplate.CEILING_FAN_BASE_ON.stateModel(woodType, metalType).setTextures(textures).setXRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(CeilingFanBlock.FACING, Direction.WEST).prop(CeilingFanBlock.POWERED, true).prop(CeilingFanBlock.LIT, true).parentModel(ModelTemplate.CEILING_FAN_BASE_ON.stateModel(woodType, metalType).setTextures(textures).setXRotation(VariantProperties.Rotation.R270).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(CeilingFanBlock.FACING, Direction.UP).prop(CeilingFanBlock.POWERED, true).prop(CeilingFanBlock.LIT, true).parentModel(ModelTemplate.CEILING_FAN_BASE_ON.stateModel(woodType, metalType).setTextures(textures));
+        state.createVariant().prop(CeilingFanBlock.FACING, Direction.DOWN).prop(CeilingFanBlock.POWERED, true).prop(CeilingFanBlock.LIT, true).parentModel(ModelTemplate.CEILING_FAN_BASE_ON.stateModel(woodType, metalType).setTextures(textures).setXRotation(VariantProperties.Rotation.R180));
+        this.stateConsumer.accept(state);
+
+        // Creates the extra models used for animating the blades
+        TextureMapping extraTextures = new TextureMapping();
+        extraTextures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        this.extraModelConsumer.accept(ModelTemplate.CEILING_FAN_BLADE.extraModel(woodType, metalType).setTextures(extraTextures));
     }
 }

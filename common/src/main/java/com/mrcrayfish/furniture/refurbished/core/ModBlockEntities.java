@@ -247,4 +247,27 @@ public class ModBlockEntities
     public static final RegistryEntry<BlockEntityType<RecycleBinBlockEntity>> RECYCLE_BIN = RegistryEntry.blockEntity(Utils.resource("recycle_bin"), Services.BLOCK_ENTITY::createRecycleBinBlockEntity, () -> new Block[]{
             ModBlocks.RECYCLE_BIN.get()
     });
+
+    public static final RegistryEntry<BlockEntityType<CeilingFanBlockEntity>> CEILING_FAN = RegistryEntry.blockEntity(Utils.resource("ceiling_fan"), CeilingFanBlockEntity::new, () -> new Block[]{
+            ModBlocks.CEILING_FAN_OAK_LIGHT.get(),
+            ModBlocks.CEILING_FAN_SPRUCE_LIGHT.get(),
+            ModBlocks.CEILING_FAN_BIRCH_LIGHT.get(),
+            ModBlocks.CEILING_FAN_JUNGLE_LIGHT.get(),
+            ModBlocks.CEILING_FAN_ACACIA_LIGHT.get(),
+            ModBlocks.CEILING_FAN_DARK_OAK_LIGHT.get(),
+            ModBlocks.CEILING_FAN_MANGROVE_LIGHT.get(),
+            ModBlocks.CEILING_FAN_CHERRY_LIGHT.get(),
+            ModBlocks.CEILING_FAN_CRIMSON_LIGHT.get(),
+            ModBlocks.CEILING_FAN_WARPED_LIGHT.get(),
+            ModBlocks.CEILING_FAN_OAK_DARK.get(),
+            ModBlocks.CEILING_FAN_SPRUCE_DARK.get(),
+            ModBlocks.CEILING_FAN_BIRCH_DARK.get(),
+            ModBlocks.CEILING_FAN_JUNGLE_DARK.get(),
+            ModBlocks.CEILING_FAN_ACACIA_DARK.get(),
+            ModBlocks.CEILING_FAN_DARK_OAK_DARK.get(),
+            ModBlocks.CEILING_FAN_MANGROVE_DARK.get(),
+            ModBlocks.CEILING_FAN_CHERRY_DARK.get(),
+            ModBlocks.CEILING_FAN_CRIMSON_DARK.get(),
+            ModBlocks.CEILING_FAN_WARPED_DARK.get()
+    });
 }

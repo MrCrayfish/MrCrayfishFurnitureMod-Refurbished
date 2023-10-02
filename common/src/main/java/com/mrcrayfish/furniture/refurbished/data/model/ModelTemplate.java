@@ -93,8 +93,12 @@ public class ModelTemplate
     public static final ModelTemplate RECYCLE_BIN_OPEN = block("recycle_bin_open", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate LAMP_OFF = block("lamp_off", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate LAMP_ON = block("lamp_on", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate CEILING_FAN_BASE_OFF = block("ceiling_fan_base_off", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate CEILING_FAN_BASE_ON = block("ceiling_fan_base_on", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate CEILING_FAN_BLADE = block("ceiling_fan_blade", TextureSlot.TEXTURE);
 
     public static final ModelTemplate FRIDGE = item("fridge", TextureSlot.TEXTURE);
+    public static final ModelTemplate CEILING_FAN = item("ceiling_fan", TextureSlot.TEXTURE);
 
     private static ModelTemplate block(String name, TextureSlot ... textures)
     {
@@ -146,8 +150,33 @@ public class ModelTemplate
         return PreparedBlockState.Model.create(type.getName() + "_" + this.path, this.location, this.textures);
     }
 
+    public PreparedBlockState.Model stateModel(WoodType woodType, MetalType metalType)
+    {
+        return PreparedBlockState.Model.create(woodType.name() + "_" + metalType.getName() + "_" + this.path, this.location, this.textures);
+    }
+
+    public PreparedItem.Model itemModel(WoodType type)
+    {
+        return PreparedItem.Model.create(type.name() + "_" + this.path, this.location, this.textures);
+    }
+
     public PreparedItem.Model itemModel(MetalType type)
     {
         return PreparedItem.Model.create(type.getName() + "_" + this.path, this.location, this.textures);
+    }
+
+    public PreparedItem.Model itemModel(WoodType woodType, MetalType metalType)
+    {
+        return PreparedItem.Model.create(woodType.name() + "_" + metalType.getName() + "_" + this.path, this.location, this.textures);
+    }
+
+    public ExtraModel extraModel(WoodType type)
+    {
+        return new ExtraModel(type.name() + "_" + this.path, this.location, this.textures);
+    }
+
+    public ExtraModel extraModel(WoodType woodType, MetalType metalType)
+    {
+        return new ExtraModel(woodType.name() + "_" + metalType.getName() + "_" + this.path, this.location, this.textures);
     }
 }
