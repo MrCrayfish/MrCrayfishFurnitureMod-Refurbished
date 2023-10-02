@@ -39,4 +39,20 @@ public interface IAudioBlock
     {
         return MAX_DISTANCE;
     }
+
+    /**
+     * @return The volume of the audio
+     */
+    default float getAudioVolume()
+    {
+        return 1.0F;
+    }
+
+    /**
+     * @return The volume of the audio
+     */
+    default float getAudioPitch()
+    {
+        return 1.0F;
+    }
 }

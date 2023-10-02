@@ -21,7 +21,8 @@ public class AudioBlockSound extends AbstractTickableSoundInstance
     {
         super(block.getSound(), SoundSource.BLOCKS, SoundInstance.createUnseededRandom());
         this.audioBlockRef = new WeakReference<>(block);
-        this.volume = 0F;
+        this.volume = block.getAudioVolume();
+        this.pitch = block.getAudioPitch();
         this.looping = true;
         this.delay = 0;
         BlockPos pos = block.getAudioPosition();
@@ -46,6 +47,8 @@ public class AudioBlockSound extends AbstractTickableSoundInstance
             return;
         }
 
+        this.pitch = block.getAudioPitch();
+
         Minecraft mc = Minecraft.getInstance();
         if(mc.player != null)
         {
@@ -56,6 +59,7 @@ public class AudioBlockSound extends AbstractTickableSoundInstance
                 return;
             }
             this.volume = 1.0F - (float) Mth.clamp(distanceSquared / block.getAudioRadiusSqr(), 0.0, 1.0);
+            this.volume *= block.getAudioVolume();
         }
         else
         {

@@ -1,10 +1,14 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.mrcrayfish.furniture.refurbished.block.CeilingFanBlock;
+import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
+import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageSources;
@@ -20,7 +24,7 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity
+public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implements IAudioBlock
 {
     private static final float MAX_SPEED = 50F;
     private static final float ACCELERATION = 1.25F;
@@ -86,6 +90,7 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity
     public static void clientTick(Level level, BlockPos pos, BlockState state, CeilingFanBlockEntity ceilingFan)
     {
         ceilingFan.updateAnimation();
+        AudioManager.get().playAudioBlock(ceilingFan);
     }
 
     private void performDamage(Level level)
@@ -118,5 +123,53 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity
     {
         ElectricityModuleBlockEntity.serverTick(level, pos, state, ceilingFan);
         ceilingFan.performDamage(level);
+    }
+
+    @Override
+    public SoundEvent getSound()
+    {
+        return ModSounds.BLOCK_CEILING_FAN_SPIN.get();
+    }
+
+    @Override
+    public BlockPos getAudioPosition()
+    {
+        return this.worldPosition;
+    }
+
+    @Override
+    public boolean canPlayAudio()
+    {
+        return this.speed > 5.0F;
+    }
+
+    @Override
+    public float getAudioVolume()
+    {
+        return this.speed / MAX_SPEED;
+    }
+
+    @Override
+    public float getAudioPitch()
+    {
+        return 0.5F + this.speed / MAX_SPEED;
+    }
+
+    @Override
+    public double getAudioRadiusSqr()
+    {
+        return 16;
+    }
+
+    @Override
+    public void setLevel(Level level)
+    {
+        super.setLevel(level);
+
+        // Sets the initial speed on load
+        if(level.isClientSide() && this.isPowered())
+        {
+            this.speed = MAX_SPEED;
+        }
     }
 }

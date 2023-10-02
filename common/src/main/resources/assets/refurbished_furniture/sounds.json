@@ -23,6 +23,12 @@
             "refurbished_furniture:block/recycle_bin/engine"
         ]
     },
+    "block.ceiling_fan.spin": {
+        "subtitle": "subtitle.refurbished_furniture.ceiling_fan_spin",
+        "sounds": [
+            "refurbished_furniture:block/ceiling_fan/spin"
+        ]
+    },
     "item.package.open": {
         "subtitle": "subtitle.refurbished_furniture.package_open",
         "sounds": [
