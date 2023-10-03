@@ -96,6 +96,10 @@ public class ModelTemplate
     public static final ModelTemplate CEILING_FAN_BASE_OFF = block("ceiling_fan_base_off", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate CEILING_FAN_BASE_ON = block("ceiling_fan_base_on", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate CEILING_FAN_BLADE = block("ceiling_fan_blade", TextureSlot.TEXTURE);
+    public static final ModelTemplate CABINET_CLOSED_HINGE_LEFT = block("cabinet_closed_hinge_left", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate CABINET_OPEN_HINGE_LEFT = block("cabinet_open_hinge_left", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate CABINET_CLOSED_HINGE_RIGHT = block("cabinet_closed_hinge_right", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate CABINET_OPEN_HINGE_RIGHT = block("cabinet_open_hinge_right", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
 
     public static final ModelTemplate FRIDGE = item("fridge", TextureSlot.TEXTURE);
     public static final ModelTemplate CEILING_FAN = item("ceiling_fan", TextureSlot.TEXTURE);

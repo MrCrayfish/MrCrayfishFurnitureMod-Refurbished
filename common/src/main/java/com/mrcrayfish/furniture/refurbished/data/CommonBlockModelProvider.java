@@ -15,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.AttachFace;
+import net.minecraft.world.level.block.state.properties.DoorHingeSide;
 import net.minecraft.world.level.block.state.properties.WoodType;
 
 import java.util.function.Consumer;
@@ -297,6 +298,16 @@ public class CommonBlockModelProvider
         this.ceilingFan(ModBlocks.CEILING_FAN_CHERRY_DARK.get());
         this.ceilingFan(ModBlocks.CEILING_FAN_CRIMSON_DARK.get());
         this.ceilingFan(ModBlocks.CEILING_FAN_WARPED_DARK.get());
+        this.storageCabinet(ModBlocks.STORAGE_CABINET_OAK.get());
+        this.storageCabinet(ModBlocks.STORAGE_CABINET_SPRUCE.get());
+        this.storageCabinet(ModBlocks.STORAGE_CABINET_BIRCH.get());
+        this.storageCabinet(ModBlocks.STORAGE_CABINET_JUNGLE.get());
+        this.storageCabinet(ModBlocks.STORAGE_CABINET_ACACIA.get());
+        this.storageCabinet(ModBlocks.STORAGE_CABINET_DARK_OAK.get());
+        this.storageCabinet(ModBlocks.STORAGE_CABINET_MANGROVE.get());
+        this.storageCabinet(ModBlocks.STORAGE_CABINET_CHERRY.get());
+        this.storageCabinet(ModBlocks.STORAGE_CABINET_CRIMSON.get());
+        this.storageCabinet(ModBlocks.STORAGE_CABINET_WARPED.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -990,5 +1001,31 @@ public class CommonBlockModelProvider
         TextureMapping extraTextures = new TextureMapping();
         extraTextures.put(TextureSlot.TEXTURE, this.blockTexture(block));
         this.extraModelConsumer.accept(ModelTemplate.CEILING_FAN_BLADE.extraModel(woodType, metalType).setTextures(extraTextures));
+    }
+
+    private void storageCabinet(StorageCabinetBlock block)
+    {
+        WoodType type = block.getWoodType();
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.woodParticle(type));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedBlockState state = new PreparedBlockState(block);
+        state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.NORTH).prop(StorageCabinetBlock.OPEN, false).prop(StorageCabinetBlock.HINGE, DoorHingeSide.LEFT).parentModel(ModelTemplate.CABINET_CLOSED_HINGE_LEFT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.EAST).prop(StorageCabinetBlock.OPEN, false).prop(StorageCabinetBlock.HINGE, DoorHingeSide.LEFT).parentModel(ModelTemplate.CABINET_CLOSED_HINGE_LEFT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.SOUTH).prop(StorageCabinetBlock.OPEN, false).prop(StorageCabinetBlock.HINGE, DoorHingeSide.LEFT).parentModel(ModelTemplate.CABINET_CLOSED_HINGE_LEFT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.WEST).prop(StorageCabinetBlock.OPEN, false).prop(StorageCabinetBlock.HINGE, DoorHingeSide.LEFT).parentModel(ModelTemplate.CABINET_CLOSED_HINGE_LEFT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.NORTH).prop(StorageCabinetBlock.OPEN, true).prop(StorageCabinetBlock.HINGE, DoorHingeSide.LEFT).parentModel(ModelTemplate.CABINET_OPEN_HINGE_LEFT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
+        state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.EAST).prop(StorageCabinetBlock.OPEN, true).prop(StorageCabinetBlock.HINGE, DoorHingeSide.LEFT).parentModel(ModelTemplate.CABINET_OPEN_HINGE_LEFT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.SOUTH).prop(StorageCabinetBlock.OPEN, true).prop(StorageCabinetBlock.HINGE, DoorHingeSide.LEFT).parentModel(ModelTemplate.CABINET_OPEN_HINGE_LEFT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.WEST).prop(StorageCabinetBlock.OPEN, true).prop(StorageCabinetBlock.HINGE, DoorHingeSide.LEFT).parentModel(ModelTemplate.CABINET_OPEN_HINGE_LEFT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.NORTH).prop(StorageCabinetBlock.OPEN, false).prop(StorageCabinetBlock.HINGE, DoorHingeSide.RIGHT).parentModel(ModelTemplate.CABINET_CLOSED_HINGE_RIGHT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
+        state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.EAST).prop(StorageCabinetBlock.OPEN, false).prop(StorageCabinetBlock.HINGE, DoorHingeSide.RIGHT).parentModel(ModelTemplate.CABINET_CLOSED_HINGE_RIGHT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.SOUTH).prop(StorageCabinetBlock.OPEN, false).prop(StorageCabinetBlock.HINGE, DoorHingeSide.RIGHT).parentModel(ModelTemplate.CABINET_CLOSED_HINGE_RIGHT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.WEST).prop(StorageCabinetBlock.OPEN, false).prop(StorageCabinetBlock.HINGE, DoorHingeSide.RIGHT).parentModel(ModelTemplate.CABINET_CLOSED_HINGE_RIGHT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.NORTH).prop(StorageCabinetBlock.OPEN, true).prop(StorageCabinetBlock.HINGE, DoorHingeSide.RIGHT).parentModel(ModelTemplate.CABINET_OPEN_HINGE_RIGHT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
+        state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.EAST).prop(StorageCabinetBlock.OPEN, true).prop(StorageCabinetBlock.HINGE, DoorHingeSide.RIGHT).parentModel(ModelTemplate.CABINET_OPEN_HINGE_RIGHT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.SOUTH).prop(StorageCabinetBlock.OPEN, true).prop(StorageCabinetBlock.HINGE, DoorHingeSide.RIGHT).parentModel(ModelTemplate.CABINET_OPEN_HINGE_RIGHT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.WEST).prop(StorageCabinetBlock.OPEN, true).prop(StorageCabinetBlock.HINGE, DoorHingeSide.RIGHT).parentModel(ModelTemplate.CABINET_OPEN_HINGE_RIGHT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        this.stateConsumer.accept(state);
     }
 }

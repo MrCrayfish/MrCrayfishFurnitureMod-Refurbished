@@ -74,6 +74,16 @@ public class CommonItemTagsProvider
         general.add(ModBlocks.SOFA_GREEN.get().asItem());
         general.add(ModBlocks.SOFA_RED.get().asItem());
         general.add(ModBlocks.SOFA_BLACK.get().asItem());
+        general.add(ModBlocks.STORAGE_CABINET_OAK.get().asItem());
+        general.add(ModBlocks.STORAGE_CABINET_SPRUCE.get().asItem());
+        general.add(ModBlocks.STORAGE_CABINET_BIRCH.get().asItem());
+        general.add(ModBlocks.STORAGE_CABINET_JUNGLE.get().asItem());
+        general.add(ModBlocks.STORAGE_CABINET_ACACIA.get().asItem());
+        general.add(ModBlocks.STORAGE_CABINET_DARK_OAK.get().asItem());
+        general.add(ModBlocks.STORAGE_CABINET_MANGROVE.get().asItem());
+        general.add(ModBlocks.STORAGE_CABINET_CHERRY.get().asItem());
+        general.add(ModBlocks.STORAGE_CABINET_CRIMSON.get().asItem());
+        general.add(ModBlocks.STORAGE_CABINET_WARPED.get().asItem());
 
         TagBuilder<Item> bedroom = builder.apply(ModTags.Items.BEDROOM);
         bedroom.add(ModBlocks.DESK_OAK.get().asItem());
@@ -136,6 +146,16 @@ public class CommonItemTagsProvider
         bedroom.add(ModBlocks.CEILING_FAN_CHERRY_DARK.get().asItem());
         bedroom.add(ModBlocks.CEILING_FAN_CRIMSON_DARK.get().asItem());
         bedroom.add(ModBlocks.CEILING_FAN_WARPED_DARK.get().asItem());
+        bedroom.add(ModBlocks.STORAGE_CABINET_OAK.get().asItem());
+        bedroom.add(ModBlocks.STORAGE_CABINET_SPRUCE.get().asItem());
+        bedroom.add(ModBlocks.STORAGE_CABINET_BIRCH.get().asItem());
+        bedroom.add(ModBlocks.STORAGE_CABINET_JUNGLE.get().asItem());
+        bedroom.add(ModBlocks.STORAGE_CABINET_ACACIA.get().asItem());
+        bedroom.add(ModBlocks.STORAGE_CABINET_DARK_OAK.get().asItem());
+        bedroom.add(ModBlocks.STORAGE_CABINET_MANGROVE.get().asItem());
+        bedroom.add(ModBlocks.STORAGE_CABINET_CHERRY.get().asItem());
+        bedroom.add(ModBlocks.STORAGE_CABINET_CRIMSON.get().asItem());
+        bedroom.add(ModBlocks.STORAGE_CABINET_WARPED.get().asItem());
 
         TagBuilder<Item> kitchen = builder.apply(ModTags.Items.KITCHEN);
         kitchen.add(ModBlocks.KITCHEN_CABINETRY_OAK.get().asItem());
@@ -246,6 +266,16 @@ public class CommonItemTagsProvider
         kitchen.add(ModBlocks.STORAGE_JAR_CRIMSON.get().asItem());
         kitchen.add(ModBlocks.STORAGE_JAR_WARPED.get().asItem());
         kitchen.add(ModBlocks.RECYCLE_BIN.get().asItem());
+        kitchen.add(ModBlocks.STORAGE_CABINET_OAK.get().asItem());
+        kitchen.add(ModBlocks.STORAGE_CABINET_SPRUCE.get().asItem());
+        kitchen.add(ModBlocks.STORAGE_CABINET_BIRCH.get().asItem());
+        kitchen.add(ModBlocks.STORAGE_CABINET_JUNGLE.get().asItem());
+        kitchen.add(ModBlocks.STORAGE_CABINET_ACACIA.get().asItem());
+        kitchen.add(ModBlocks.STORAGE_CABINET_DARK_OAK.get().asItem());
+        kitchen.add(ModBlocks.STORAGE_CABINET_MANGROVE.get().asItem());
+        kitchen.add(ModBlocks.STORAGE_CABINET_CHERRY.get().asItem());
+        kitchen.add(ModBlocks.STORAGE_CABINET_CRIMSON.get().asItem());
+        kitchen.add(ModBlocks.STORAGE_CABINET_WARPED.get().asItem());
         kitchen.add(ModItems.SPATULA.get());
         kitchen.add(ModItems.KNIFE.get());
 
@@ -469,6 +499,16 @@ public class CommonItemTagsProvider
         storage.add(ModBlocks.STORAGE_JAR_CRIMSON.get().asItem());
         storage.add(ModBlocks.STORAGE_JAR_WARPED.get().asItem());
         storage.add(ModBlocks.RECYCLE_BIN.get().asItem());
+        storage.add(ModBlocks.STORAGE_CABINET_OAK.get().asItem());
+        storage.add(ModBlocks.STORAGE_CABINET_SPRUCE.get().asItem());
+        storage.add(ModBlocks.STORAGE_CABINET_BIRCH.get().asItem());
+        storage.add(ModBlocks.STORAGE_CABINET_JUNGLE.get().asItem());
+        storage.add(ModBlocks.STORAGE_CABINET_ACACIA.get().asItem());
+        storage.add(ModBlocks.STORAGE_CABINET_DARK_OAK.get().asItem());
+        storage.add(ModBlocks.STORAGE_CABINET_MANGROVE.get().asItem());
+        storage.add(ModBlocks.STORAGE_CABINET_CHERRY.get().asItem());
+        storage.add(ModBlocks.STORAGE_CABINET_CRIMSON.get().asItem());
+        storage.add(ModBlocks.STORAGE_CABINET_WARPED.get().asItem());
 
         TagBuilder<Item> items = builder.apply(ModTags.Items.ITEMS);
         items.add(ModItems.SPATULA.get());
