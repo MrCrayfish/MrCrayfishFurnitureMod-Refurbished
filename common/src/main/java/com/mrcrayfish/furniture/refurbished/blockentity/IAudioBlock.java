@@ -49,7 +49,7 @@ public interface IAudioBlock
     }
 
     /**
-     * @return The volume of the audio
+     * @return The pitch of the audio
      */
     default float getAudioPitch()
     {

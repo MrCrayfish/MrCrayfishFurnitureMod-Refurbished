@@ -7,11 +7,8 @@ import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -40,9 +37,9 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implemen
         return boxes;
     });
 
-    private float speed;
-    private float lastRotation;
-    private float rotation;
+    private float bladeSpeed;
+    private float bladeRotation;
+    private float lastBladeRotation;
 
     public CeilingFanBlockEntity(BlockPos pos, BlockState state)
     {
@@ -66,25 +63,35 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implemen
         }
     }
 
+    /**
+     * Updates the rotation
+     */
     private void updateAnimation()
     {
-        this.lastRotation = this.rotation;
+        this.lastBladeRotation = this.bladeRotation;
         if(this.isPowered())
         {
-            this.speed = Math.min(this.speed + ACCELERATION, MAX_SPEED);
+            this.bladeSpeed = Math.min(this.bladeSpeed + ACCELERATION, MAX_SPEED);
         }
-        this.speed *= RESISTANCE;
-        this.rotation += this.speed;
-        if(this.rotation > 360F)
+        this.bladeSpeed *= RESISTANCE;
+        this.bladeRotation += this.bladeSpeed;
+        if(this.bladeRotation > 360F)
         {
-            this.rotation -= 360F;
-            this.lastRotation -= 360F;
+            this.bladeRotation -= 360F;
+            this.lastBladeRotation -= 360F;
         }
     }
 
+    /**
+     * Gets the exact rotation of the blades at the given partial tick. This allows the blades
+     * to be drawn with a smooth rotation.
+     *
+     * @param partialTick the current partial tick
+     * @return the rotation of the blades
+     */
     public float getRotation(float partialTick)
     {
-        return Mth.lerp(partialTick, this.lastRotation, this.rotation);
+        return Mth.lerp(partialTick, this.lastBladeRotation, this.bladeRotation);
     }
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, CeilingFanBlockEntity ceilingFan)
@@ -93,6 +100,12 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implemen
         AudioManager.get().playAudioBlock(ceilingFan);
     }
 
+    /**
+     * Causes damage to entities that are colliding with the blades of the fan. The ceiling fan
+     * will not cause any damage if it is not powered.
+     *
+     * @param level the level containing the ceiling fan
+     */
     private void performDamage(Level level)
     {
         if(this.isPowered())
@@ -104,11 +117,20 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implemen
         }
     }
 
+    /**
+     * Gets the collision box used for determining if an entity can be damaged by the fan
+     *
+     * @param direction the facing direction of the ceiling fan
+     * @return an aabb of the damage box
+     */
     public AABB getDamageBox(Direction direction)
     {
         return DAMAGE_BOXES[direction.get3DDataValue()];
     }
 
+    /**
+     * @return The direction the ceiling fan is facing
+     */
     public Direction getDirection()
     {
         BlockState state = this.getBlockState();
@@ -140,19 +162,19 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implemen
     @Override
     public boolean canPlayAudio()
     {
-        return this.speed > 5.0F;
+        return this.bladeSpeed > 5.0F;
     }
 
     @Override
     public float getAudioVolume()
     {
-        return this.speed / MAX_SPEED;
+        return this.bladeSpeed / MAX_SPEED;
     }
 
     @Override
     public float getAudioPitch()
     {
-        return 0.5F + this.speed / MAX_SPEED;
+        return 0.5F + this.bladeSpeed / MAX_SPEED;
     }
 
     @Override
@@ -169,7 +191,7 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implemen
         // Sets the initial speed on load
         if(level.isClientSide() && this.isPowered())
         {
-            this.speed = MAX_SPEED;
+            this.bladeSpeed = MAX_SPEED;
         }
     }
 }

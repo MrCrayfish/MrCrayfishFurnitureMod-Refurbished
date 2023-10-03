@@ -82,20 +82,25 @@ public class LightswitchBlock extends FurnitureAttachedFaceBlock implements Enti
         return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
+    /**
+     * Gets the position to play sounds from the lightswitch in the level
+     *
+     * @param state the blockstate of the lightswitch
+     * @param pos   the block position of the lightswitch
+     * @return a vec3 containing the precise position to play sounds
+     */
     private Vec3 getPositionForSound(BlockState state, BlockPos pos)
     {
         Vec3 center = pos.getCenter();
         AttachFace face = state.getValue(FACE);
-        if(face == AttachFace.FLOOR)
-        {
-            return center.subtract(0, 0.5, 0);
-        }
-        if(face == AttachFace.CEILING)
-        {
-            return center.add(0, 0.5, 0);
-        }
-        Direction dir = state.getValue(FACING).getOpposite();
-        return center.add(dir.getStepX() * 0.5, 0, dir.getStepZ() * 0.5);
+        return switch(face) {
+            case FLOOR -> center.subtract(0, 0.5, 0);
+            case CEILING -> center.add(0, 0.5, 0);
+            case WALL -> {
+                Direction dir = state.getValue(FACING).getOpposite();
+                yield center.add(dir.getStepX() * 0.5, 0, dir.getStepZ() * 0.5);
+            }
+        };
     }
 
     @Override
