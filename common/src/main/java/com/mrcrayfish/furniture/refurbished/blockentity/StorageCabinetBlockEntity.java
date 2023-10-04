@@ -1,7 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
-import com.mrcrayfish.furniture.refurbished.block.DrawerBlock;
-import com.mrcrayfish.furniture.refurbished.block.StorageCabinetBlock;
+import com.mrcrayfish.furniture.refurbished.block.WoodenStorageCabinetBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
@@ -52,7 +51,7 @@ public class StorageCabinetBlockEntity extends RowedStorageBlockEntity
         Level level = this.getLevel();
         if(level != null)
         {
-            level.setBlock(this.getBlockPos(), state.setValue(StorageCabinetBlock.OPEN, open), Block.UPDATE_ALL);
+            level.setBlock(this.getBlockPos(), state.setValue(WoodenStorageCabinetBlock.OPEN, open), Block.UPDATE_ALL);
         }
     }
 }

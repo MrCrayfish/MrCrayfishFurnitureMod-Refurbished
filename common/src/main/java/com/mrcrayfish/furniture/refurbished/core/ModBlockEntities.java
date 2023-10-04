@@ -271,7 +271,7 @@ public class ModBlockEntities
             ModBlocks.CEILING_FAN_WARPED_DARK.get()
     });
 
-    public static final RegistryEntry<BlockEntityType<StorageCabinetBlockEntity>> STORAGE_CABINET = RegistryEntry.blockEntity(Utils.resource("storage_cabinet"), StorageCabinetBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<StorageCabinetBlockEntity>> STORAGE_CABINET = RegistryEntry.blockEntity(Utils.resource("cabinet"), StorageCabinetBlockEntity::new, () -> new Block[]{
             ModBlocks.STORAGE_CABINET_OAK.get(),
             ModBlocks.STORAGE_CABINET_SPRUCE.get(),
             ModBlocks.STORAGE_CABINET_BIRCH.get(),
@@ -281,6 +281,16 @@ public class ModBlockEntities
             ModBlocks.STORAGE_CABINET_MANGROVE.get(),
             ModBlocks.STORAGE_CABINET_CHERRY.get(),
             ModBlocks.STORAGE_CABINET_CRIMSON.get(),
-            ModBlocks.STORAGE_CABINET_WARPED.get()
+            ModBlocks.STORAGE_CABINET_WARPED.get(),
+            ModBlocks.KITCHEN_STORAGE_CABINET_OAK.get(),
+            ModBlocks.KITCHEN_STORAGE_CABINET_SPRUCE.get(),
+            ModBlocks.KITCHEN_STORAGE_CABINET_BIRCH.get(),
+            ModBlocks.KITCHEN_STORAGE_CABINET_JUNGLE.get(),
+            ModBlocks.KITCHEN_STORAGE_CABINET_ACACIA.get(),
+            ModBlocks.KITCHEN_STORAGE_CABINET_DARK_OAK.get(),
+            ModBlocks.KITCHEN_STORAGE_CABINET_MANGROVE.get(),
+            ModBlocks.KITCHEN_STORAGE_CABINET_CHERRY.get(),
+            ModBlocks.KITCHEN_STORAGE_CABINET_CRIMSON.get(),
+            ModBlocks.KITCHEN_STORAGE_CABINET_WARPED.get()
     });
 }

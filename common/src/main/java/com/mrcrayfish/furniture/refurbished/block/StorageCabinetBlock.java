@@ -1,13 +1,8 @@
 package com.mrcrayfish.furniture.refurbished.block;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.furniture.refurbished.blockentity.StorageCabinetBlockEntity;
-import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -22,42 +17,21 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoorHingeSide;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish
  */
-public class StorageCabinetBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
+public abstract class StorageCabinetBlock extends FurnitureHorizontalBlock implements EntityBlock
 {
     public static final EnumProperty<DoorHingeSide> HINGE = BlockStateProperties.DOOR_HINGE;
 
-    private final WoodType type;
-
-    public StorageCabinetBlock(WoodType type, Properties properties)
+    public StorageCabinetBlock(Properties properties)
     {
         super(properties);
         this.registerDefaultState(this.getStateDefinition().any().setValue(DIRECTION, Direction.NORTH).setValue(OPEN, false).setValue(HINGE, DoorHingeSide.LEFT));
-        this.type = type;
-    }
-
-    public WoodType getWoodType()
-    {
-        return this.type;
-    }
-
-    @Override
-    protected Map<BlockState, VoxelShape> generateShapes(ImmutableList<BlockState> states)
-    {
-        return ImmutableMap.copyOf(states.stream().collect(Collectors.toMap(state -> state, o -> Shapes.block())));
     }
 
     @Override
@@ -110,11 +84,5 @@ public class StorageCabinetBlock extends FurnitureHorizontalBlock implements Ent
         {
             storageCabinet.updateOpenerCount();
         }
-    }
-
-    @Override
-    public List<TagKey<Block>> getTags()
-    {
-        return List.of(BlockTags.MINEABLE_WITH_AXE);
     }
 }
