@@ -361,6 +361,22 @@ public class CommonItemTagsProvider
         outdoors.add(ModBlocks.POST_BOX.get().asItem());
         outdoors.add(ModBlocks.DOORBELL.get().asItem());
         outdoors.add(ModBlocks.RECYCLE_BIN.get().asItem());
+        outdoors.add(ModBlocks.TRAMPOLINE_WHITE.get().asItem());
+        outdoors.add(ModBlocks.TRAMPOLINE_ORANGE.get().asItem());
+        outdoors.add(ModBlocks.TRAMPOLINE_MAGENTA.get().asItem());
+        outdoors.add(ModBlocks.TRAMPOLINE_LIGHT_BLUE.get().asItem());
+        outdoors.add(ModBlocks.TRAMPOLINE_YELLOW.get().asItem());
+        outdoors.add(ModBlocks.TRAMPOLINE_LIME.get().asItem());
+        outdoors.add(ModBlocks.TRAMPOLINE_PINK.get().asItem());
+        outdoors.add(ModBlocks.TRAMPOLINE_GRAY.get().asItem());
+        outdoors.add(ModBlocks.TRAMPOLINE_LIGHT_GRAY.get().asItem());
+        outdoors.add(ModBlocks.TRAMPOLINE_CYAN.get().asItem());
+        outdoors.add(ModBlocks.TRAMPOLINE_PURPLE.get().asItem());
+        outdoors.add(ModBlocks.TRAMPOLINE_BLUE.get().asItem());
+        outdoors.add(ModBlocks.TRAMPOLINE_BROWN.get().asItem());
+        outdoors.add(ModBlocks.TRAMPOLINE_GREEN.get().asItem());
+        outdoors.add(ModBlocks.TRAMPOLINE_RED.get().asItem());
+        outdoors.add(ModBlocks.TRAMPOLINE_BLACK.get().asItem());
         outdoors.add(ModItems.SPATULA.get());
         outdoors.add(ModItems.KNIFE.get());
 

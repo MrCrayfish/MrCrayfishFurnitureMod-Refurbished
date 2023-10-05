@@ -334,6 +334,22 @@ public class CommonBlockModelProvider
         this.colouredKitchenCabinet(ModBlocks.KITCHEN_STORAGE_CABINET_GREEN.get());
         this.colouredKitchenCabinet(ModBlocks.KITCHEN_STORAGE_CABINET_RED.get());
         this.colouredKitchenCabinet(ModBlocks.KITCHEN_STORAGE_CABINET_BLACK.get());
+        this.trampoline(ModBlocks.TRAMPOLINE_WHITE.get());
+        this.trampoline(ModBlocks.TRAMPOLINE_ORANGE.get());
+        this.trampoline(ModBlocks.TRAMPOLINE_MAGENTA.get());
+        this.trampoline(ModBlocks.TRAMPOLINE_LIGHT_BLUE.get());
+        this.trampoline(ModBlocks.TRAMPOLINE_YELLOW.get());
+        this.trampoline(ModBlocks.TRAMPOLINE_LIME.get());
+        this.trampoline(ModBlocks.TRAMPOLINE_PINK.get());
+        this.trampoline(ModBlocks.TRAMPOLINE_GRAY.get());
+        this.trampoline(ModBlocks.TRAMPOLINE_LIGHT_GRAY.get());
+        this.trampoline(ModBlocks.TRAMPOLINE_CYAN.get());
+        this.trampoline(ModBlocks.TRAMPOLINE_PURPLE.get());
+        this.trampoline(ModBlocks.TRAMPOLINE_BLUE.get());
+        this.trampoline(ModBlocks.TRAMPOLINE_BROWN.get());
+        this.trampoline(ModBlocks.TRAMPOLINE_GREEN.get());
+        this.trampoline(ModBlocks.TRAMPOLINE_RED.get());
+        this.trampoline(ModBlocks.TRAMPOLINE_BLACK.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -1104,6 +1120,63 @@ public class CommonBlockModelProvider
         state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.EAST).prop(StorageCabinetBlock.OPEN, true).prop(StorageCabinetBlock.HINGE, DoorHingeSide.RIGHT).parentModel(ModelTemplate.KITCHEN_STORAGE_CABINET_OPEN_HINGE_RIGHT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.SOUTH).prop(StorageCabinetBlock.OPEN, true).prop(StorageCabinetBlock.HINGE, DoorHingeSide.RIGHT).parentModel(ModelTemplate.KITCHEN_STORAGE_CABINET_OPEN_HINGE_RIGHT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.WEST).prop(StorageCabinetBlock.OPEN, true).prop(StorageCabinetBlock.HINGE, DoorHingeSide.RIGHT).parentModel(ModelTemplate.KITCHEN_STORAGE_CABINET_OPEN_HINGE_RIGHT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        this.stateConsumer.accept(state);
+    }
+
+    private void trampoline(TrampolineBlock block)
+    {
+        DyeColor type = block.getDyeColor();
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.colourParticle(type));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedBlockState state = new PreparedBlockState(block);
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.DEFAULT).parentModel(ModelTemplate.TRAMPOLINE_DEFAULT.stateModel(type).setTextures(textures)).markAsItem();
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.NORTH).parentModel(ModelTemplate.TRAMPOLINE_NORTH.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.EAST).parentModel(ModelTemplate.TRAMPOLINE_EAST.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.SOUTH).parentModel(ModelTemplate.TRAMPOLINE_SOUTH.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.WEST).parentModel(ModelTemplate.TRAMPOLINE_WEST.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.NORTH_SOUTH).parentModel(ModelTemplate.TRAMPOLINE_NORTH_SOUTH.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.EAST_WEST).parentModel(ModelTemplate.TRAMPOLINE_EAST_WEST.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.NORTH_EAST).parentModel(ModelTemplate.TRAMPOLINE_NORTH_EAST.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.EAST_SOUTH).parentModel(ModelTemplate.TRAMPOLINE_EAST_SOUTH.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.SOUTH_WEST).parentModel(ModelTemplate.TRAMPOLINE_SOUTH_WEST.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.WEST_NORTH).parentModel(ModelTemplate.TRAMPOLINE_WEST_NORTH.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.NORTH_EAST_WITH_LEG).parentModel(ModelTemplate.TRAMPOLINE_NORTH_EAST_WITH_LEG.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.EAST_SOUTH_WITH_LEG).parentModel(ModelTemplate.TRAMPOLINE_EAST_SOUTH_WITH_LEG.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.SOUTH_WEST_WITH_LEG).parentModel(ModelTemplate.TRAMPOLINE_SOUTH_WEST_WITH_LEG.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.WEST_NORTH_WITH_LEG).parentModel(ModelTemplate.TRAMPOLINE_WEST_NORTH_WITH_LEG.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.NORTH_EAST_SOUTH).parentModel(ModelTemplate.TRAMPOLINE_NORTH_EAST_SOUTH.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.EAST_SOUTH_WEST).parentModel(ModelTemplate.TRAMPOLINE_EAST_SOUTH_WEST.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.SOUTH_WEST_NORTH).parentModel(ModelTemplate.TRAMPOLINE_SOUTH_WEST_NORTH.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.WEST_NORTH_EAST).parentModel(ModelTemplate.TRAMPOLINE_WEST_NORTH_EAST.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.NORTH_EAST_SOUTH_WITH_LEG_NORTHEAST).parentModel(ModelTemplate.TRAMPOLINE_NORTH_EAST_SOUTH_WITH_LEG_NORTHEAST.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.NORTH_EAST_SOUTH_WITH_LEG_EASTSOUTH).parentModel(ModelTemplate.TRAMPOLINE_NORTH_EAST_SOUTH_WITH_LEG_EASTSOUTH.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.NORTH_EAST_SOUTH_WITH_LEG_NORTHEAST_EASTSOUTH).parentModel(ModelTemplate.TRAMPOLINE_NORTH_EAST_SOUTH_WITH_LEG_NORTHEAST_EASTSOUTH.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.EAST_SOUTH_WEST_WITH_LEG_EASTSOUTH).parentModel(ModelTemplate.TRAMPOLINE_EAST_SOUTH_WEST_WITH_LEG_EASTSOUTH.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.EAST_SOUTH_WEST_WITH_LEG_SOUTHWEST).parentModel(ModelTemplate.TRAMPOLINE_EAST_SOUTH_WEST_WITH_LEG_SOUTHWEST.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.EAST_SOUTH_WEST_WITH_LEG_EASTSOUTH_SOUTHWEST).parentModel(ModelTemplate.TRAMPOLINE_EAST_SOUTH_WEST_WITH_LEG_EASTSOUTH_SOUTHWEST.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.SOUTH_WEST_NORTH_WITH_LEG_WESTNORTH).parentModel(ModelTemplate.TRAMPOLINE_SOUTH_WEST_NORTH_WITH_LEG_WESTNORTH.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.SOUTH_WEST_NORTH_WITH_LEG_SOUTHWEST).parentModel(ModelTemplate.TRAMPOLINE_SOUTH_WEST_NORTH_WITH_LEG_SOUTHWEST.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.SOUTH_WEST_NORTH_WITH_LEG_WESTNORTH_SOUTHWEST).parentModel(ModelTemplate.TRAMPOLINE_SOUTH_WEST_NORTH_WITH_LEG_WESTNORTH_SOUTHWEST.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.WEST_NORTH_EAST_WITH_LEG_NORTHEAST).parentModel(ModelTemplate.TRAMPOLINE_WEST_NORTH_EAST_WITH_LEG_NORTHEAST.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.WEST_NORTH_EAST_WITH_LEG_WESTNORTH).parentModel(ModelTemplate.TRAMPOLINE_WEST_NORTH_EAST_WITH_LEG_WESTNORTH.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.WEST_NORTH_EAST_WITH_LEG_NORTHEAST_WESTNORTH).parentModel(ModelTemplate.TRAMPOLINE_WEST_NORTH_EAST_WITH_LEG_NORTHEAST_WESTNORTH.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.ALL).parentModel(ModelTemplate.TRAMPOLINE_ALL.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.ALL_WITH_LEG_ALL).parentModel(ModelTemplate.TRAMPOLINE_ALL_WITH_LEG_ALL.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.ALL_WITH_LEG_NORTHEAST).parentModel(ModelTemplate.TRAMPOLINE_ALL_WITH_LEG_NORTHEAST.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.ALL_WITH_LEG_NORTHEAST_EASTSOUTH).parentModel(ModelTemplate.TRAMPOLINE_ALL_WITH_LEG_NORTHEAST_EASTSOUTH.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.ALL_WITH_LEG_NORTHEAST_EASTSOUTH_SOUTHWEST).parentModel(ModelTemplate.TRAMPOLINE_ALL_WITH_LEG_NORTHEAST_EASTSOUTH_SOUTHWEST.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.ALL_WITH_LEG_EASTSOUTH).parentModel(ModelTemplate.TRAMPOLINE_ALL_WITH_LEG_EASTSOUTH.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.ALL_WITH_LEG_EASTSOUTH_SOUTHWEST).parentModel(ModelTemplate.TRAMPOLINE_ALL_WITH_LEG_EASTSOUTH_SOUTHWEST.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.ALL_WITH_LEG_EASTSOUTH_SOUTHWEST_WESTNORTH).parentModel(ModelTemplate.TRAMPOLINE_ALL_WITH_LEG_EASTSOUTH_SOUTHWEST_WESTNORTH.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.ALL_WITH_LEG_SOUTHWEST).parentModel(ModelTemplate.TRAMPOLINE_ALL_WITH_LEG_SOUTHWEST.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.ALL_WITH_LEG_SOUTHWEST_WESTNORTH).parentModel(ModelTemplate.TRAMPOLINE_ALL_WITH_LEG_SOUTHWEST_WESTNORTH.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.ALL_WITH_LEG_SOUTHWEST_WESTNORTH_NORTHEAST).parentModel(ModelTemplate.TRAMPOLINE_ALL_WITH_LEG_SOUTHWEST_WESTNORTH_NORTHEAST.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.ALL_WITH_LEG_WESTNORTH).parentModel(ModelTemplate.TRAMPOLINE_ALL_WITH_LEG_WESTNORTH.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.ALL_WITH_LEG_WESTNORTH_NORTHEAST).parentModel(ModelTemplate.TRAMPOLINE_ALL_WITH_LEG_WESTNORTH_NORTHEAST.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.ALL_WITH_LEG_WESTNORTH_NORTHEAST_EASTSOUTH).parentModel(ModelTemplate.TRAMPOLINE_ALL_WITH_LEG_WESTNORTH_NORTHEAST_EASTSOUTH.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.ALL_WITH_LEG_NORTHEAST_SOUTHWEST).parentModel(ModelTemplate.TRAMPOLINE_ALL_WITH_LEG_NORTHEAST_SOUTHWEST.stateModel(type).setTextures(textures));
+        state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.ALL_WITH_LEG_EASTSOUTH_WESTNORTH).parentModel(ModelTemplate.TRAMPOLINE_ALL_WITH_LEG_EASTSOUTH_WESTNORTH.stateModel(type).setTextures(textures));
         this.stateConsumer.accept(state);
     }
 }

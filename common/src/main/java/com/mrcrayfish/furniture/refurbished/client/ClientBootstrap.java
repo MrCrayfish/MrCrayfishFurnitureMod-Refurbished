@@ -186,5 +186,21 @@ public class ClientBootstrap
         register.apply(ModBlocks.CEILING_FAN_CHERRY_DARK.get(), RenderType.translucent());
         register.apply(ModBlocks.CEILING_FAN_CRIMSON_DARK.get(), RenderType.translucent());
         register.apply(ModBlocks.CEILING_FAN_WARPED_DARK.get(), RenderType.translucent());
+        register.apply(ModBlocks.TRAMPOLINE_WHITE.get(), RenderType.cutout());
+        register.apply(ModBlocks.TRAMPOLINE_ORANGE.get(), RenderType.cutout());
+        register.apply(ModBlocks.TRAMPOLINE_MAGENTA.get(), RenderType.cutout());
+        register.apply(ModBlocks.TRAMPOLINE_LIGHT_BLUE.get(), RenderType.cutout());
+        register.apply(ModBlocks.TRAMPOLINE_YELLOW.get(), RenderType.cutout());
+        register.apply(ModBlocks.TRAMPOLINE_LIME.get(), RenderType.cutout());
+        register.apply(ModBlocks.TRAMPOLINE_PINK.get(), RenderType.cutout());
+        register.apply(ModBlocks.TRAMPOLINE_GRAY.get(), RenderType.cutout());
+        register.apply(ModBlocks.TRAMPOLINE_LIGHT_GRAY.get(), RenderType.cutout());
+        register.apply(ModBlocks.TRAMPOLINE_CYAN.get(), RenderType.cutout());
+        register.apply(ModBlocks.TRAMPOLINE_PURPLE.get(), RenderType.cutout());
+        register.apply(ModBlocks.TRAMPOLINE_BLUE.get(), RenderType.cutout());
+        register.apply(ModBlocks.TRAMPOLINE_BROWN.get(), RenderType.cutout());
+        register.apply(ModBlocks.TRAMPOLINE_GREEN.get(), RenderType.cutout());
+        register.apply(ModBlocks.TRAMPOLINE_RED.get(), RenderType.cutout());
+        register.apply(ModBlocks.TRAMPOLINE_BLACK.get(), RenderType.cutout());
     }
 }
