@@ -291,6 +291,22 @@ public class ModBlockEntities
             ModBlocks.KITCHEN_STORAGE_CABINET_MANGROVE.get(),
             ModBlocks.KITCHEN_STORAGE_CABINET_CHERRY.get(),
             ModBlocks.KITCHEN_STORAGE_CABINET_CRIMSON.get(),
-            ModBlocks.KITCHEN_STORAGE_CABINET_WARPED.get()
+            ModBlocks.KITCHEN_STORAGE_CABINET_WARPED.get(),
+            ModBlocks.KITCHEN_STORAGE_CABINET_WHITE.get(),
+            ModBlocks.KITCHEN_STORAGE_CABINET_ORANGE.get(),
+            ModBlocks.KITCHEN_STORAGE_CABINET_MAGENTA.get(),
+            ModBlocks.KITCHEN_STORAGE_CABINET_LIGHT_BLUE.get(),
+            ModBlocks.KITCHEN_STORAGE_CABINET_YELLOW.get(),
+            ModBlocks.KITCHEN_STORAGE_CABINET_LIME.get(),
+            ModBlocks.KITCHEN_STORAGE_CABINET_PINK.get(),
+            ModBlocks.KITCHEN_STORAGE_CABINET_GRAY.get(),
+            ModBlocks.KITCHEN_STORAGE_CABINET_LIGHT_GRAY.get(),
+            ModBlocks.KITCHEN_STORAGE_CABINET_CYAN.get(),
+            ModBlocks.KITCHEN_STORAGE_CABINET_PURPLE.get(),
+            ModBlocks.KITCHEN_STORAGE_CABINET_BLUE.get(),
+            ModBlocks.KITCHEN_STORAGE_CABINET_BROWN.get(),
+            ModBlocks.KITCHEN_STORAGE_CABINET_GREEN.get(),
+            ModBlocks.KITCHEN_STORAGE_CABINET_RED.get(),
+            ModBlocks.KITCHEN_STORAGE_CABINET_BLACK.get()
     });
 }
