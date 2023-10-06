@@ -5,24 +5,21 @@ import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.apache.commons.lang3.BooleanUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -130,78 +127,64 @@ public class TrampolineBlock extends FurnitureBlock implements BlockTagSupplier
     // This took down the original 256 states to 47. This doesn't work in all cases.
     public enum Shape implements StringRepresentable
     {
-        // No connections
-        DEFAULT("default", 0),
-
-        // Single connections
-        NORTH("north", 1),
-        EAST("east", 2),
-        SOUTH("south", 4),
-        WEST("west", 8),
-
-        // Axis connections
-        NORTH_SOUTH("north_south", 5),
-        EAST_WEST("east_west", 10),
-
-        // csw, cse, cne, cnw, w, s, e, n
-
-        // Corner connections with leg variants
-        NORTH_EAST("north_east", 3),
-        EAST_SOUTH("east_south", 6),
-        SOUTH_WEST("south_west", 12),
-        WEST_NORTH("west_north", 9),
-        NORTH_EAST_WITH_LEG("north_east_with_leg", 35),
-        EAST_SOUTH_WITH_LEG("east_south_with_leg", 70),
-        SOUTH_WEST_WITH_LEG("south_west_with_leg", 140),
-        WEST_NORTH_WITH_LEG("west_north_with_leg", 25),
-
-        // Triple connections with leg variants
-        NORTH_EAST_SOUTH("north_east_south", 7),
-        EAST_SOUTH_WEST("east_south_west", 14),
-        SOUTH_WEST_NORTH("south_west_north", 13),
-        WEST_NORTH_EAST("west_north_east", 11),
-        NORTH_EAST_SOUTH_WITH_LEG_NORTHEAST("north_east_south_with_leg_northeast", 39),
-        NORTH_EAST_SOUTH_WITH_LEG_EASTSOUTH("north_east_south_with_leg_eastsouth", 71),
-        NORTH_EAST_SOUTH_WITH_LEG_NORTHEAST_EASTSOUTH("north_east_south_with_leg_northeast_eastsouth", 103),
-        EAST_SOUTH_WEST_WITH_LEG_EASTSOUTH("east_south_west_with_leg_eastsouth", 78),
-        EAST_SOUTH_WEST_WITH_LEG_SOUTHWEST("east_south_west_with_leg_southwest", 142),
-        EAST_SOUTH_WEST_WITH_LEG_EASTSOUTH_SOUTHWEST("east_south_west_with_leg_eastsouth_southwest", 206),
-        SOUTH_WEST_NORTH_WITH_LEG_WESTNORTH("south_west_north_with_leg_westnorth", 29),
-        SOUTH_WEST_NORTH_WITH_LEG_SOUTHWEST("south_west_north_with_leg_southwest", 141),
-        SOUTH_WEST_NORTH_WITH_LEG_WESTNORTH_SOUTHWEST("south_west_north_with_leg_westnorth_southwest", 157),
-        WEST_NORTH_EAST_WITH_LEG_NORTHEAST("west_north_east_with_leg_northeast", 43),
-        WEST_NORTH_EAST_WITH_LEG_WESTNORTH("west_north_east_with_leg_westnorth", 27),
-        WEST_NORTH_EAST_WITH_LEG_NORTHEAST_WESTNORTH("west_north_east_with_leg_northeast_westnorth", 59),
-
-        // Four connections with leg variants
-        ALL("all", 15),
-        ALL_WITH_LEG_ALL("all_with_leg_all", 255),
-        ALL_WITH_LEG_NORTHEAST("all_with_leg_northeast", 47),
-        ALL_WITH_LEG_NORTHEAST_EASTSOUTH("all_with_leg_northeast_eastsouth", 111),
-        ALL_WITH_LEG_NORTHEAST_EASTSOUTH_SOUTHWEST("all_with_leg_northeast_eastsouth_southwest", 239),
-        ALL_WITH_LEG_EASTSOUTH("all_with_leg_eastsouth", 79),
-        ALL_WITH_LEG_EASTSOUTH_SOUTHWEST("all_with_leg_eastsouth_southwest", 207),
-        ALL_WITH_LEG_EASTSOUTH_SOUTHWEST_WESTNORTH("all_with_leg_eastsouth_southwest_westnorth", 223),
-        ALL_WITH_LEG_SOUTHWEST("all_with_leg_southwest", 143),
-        ALL_WITH_LEG_SOUTHWEST_WESTNORTH("all_with_leg_southwest_westnorth", 159),
-        ALL_WITH_LEG_SOUTHWEST_WESTNORTH_NORTHEAST("all_with_leg_southwest_westnorth_northeast", 191),
-        ALL_WITH_LEG_WESTNORTH("all_with_leg_westnorth", 31),
-        ALL_WITH_LEG_WESTNORTH_NORTHEAST("all_with_leg_westnorth_northeast", 63),
-        ALL_WITH_LEG_WESTNORTH_NORTHEAST_EASTSOUTH("all_with_leg_westnorth_northeast_eastsouth", 127),
-        ALL_WITH_LEG_NORTHEAST_SOUTHWEST("all_with_leg_northeast_southwest", 175),
-        ALL_WITH_LEG_EASTSOUTH_WESTNORTH("all_with_leg_eastsouth_westnorth", 95);
+        DEFAULT("default"),
+        NORTH("north"),
+        EAST("east"),
+        SOUTH("south"),
+        WEST("west"),
+        NORTH_SOUTH("north_south"),
+        EAST_WEST("east_west"),
+        NORTH_EAST("north_east"),
+        EAST_SOUTH("east_south"),
+        SOUTH_WEST("south_west"),
+        WEST_NORTH("west_north"),
+        NORTH_EAST_WITH_LEG("north_east_with_leg_northeast"),
+        EAST_SOUTH_WITH_LEG("east_south_with_leg_eastsouth"),
+        SOUTH_WEST_WITH_LEG("south_west_with_leg_southwest"),
+        WEST_NORTH_WITH_LEG("west_north_with_leg_westnorth"),
+        NORTH_EAST_SOUTH("north_east_south"),
+        EAST_SOUTH_WEST("east_south_west"),
+        SOUTH_WEST_NORTH("south_west_north"),
+        WEST_NORTH_EAST("west_north_east"),
+        NORTH_EAST_SOUTH_WITH_LEG_NORTHEAST("north_east_south_with_leg_northeast"),
+        NORTH_EAST_SOUTH_WITH_LEG_EASTSOUTH("north_east_south_with_leg_eastsouth"),
+        NORTH_EAST_SOUTH_WITH_LEG_NORTHEAST_EASTSOUTH("north_east_south_with_leg_northeast_eastsouth"),
+        EAST_SOUTH_WEST_WITH_LEG_EASTSOUTH("east_south_west_with_leg_eastsouth"),
+        EAST_SOUTH_WEST_WITH_LEG_SOUTHWEST("east_south_west_with_leg_southwest"),
+        EAST_SOUTH_WEST_WITH_LEG_EASTSOUTH_SOUTHWEST("east_south_west_with_leg_eastsouth_southwest"),
+        SOUTH_WEST_NORTH_WITH_LEG_WESTNORTH("south_west_north_with_leg_westnorth"),
+        SOUTH_WEST_NORTH_WITH_LEG_SOUTHWEST("south_west_north_with_leg_southwest"),
+        SOUTH_WEST_NORTH_WITH_LEG_WESTNORTH_SOUTHWEST("south_west_north_with_leg_westnorth_southwest"),
+        WEST_NORTH_EAST_WITH_LEG_NORTHEAST("west_north_east_with_leg_northeast"),
+        WEST_NORTH_EAST_WITH_LEG_WESTNORTH("west_north_east_with_leg_westnorth"),
+        WEST_NORTH_EAST_WITH_LEG_NORTHEAST_WESTNORTH("west_north_east_with_leg_northeast_westnorth"),
+        ALL("north_east_south_west"),
+        ALL_WITH_LEG_ALL("north_east_south_west_with_leg_northeast_eastsouth_southwest_westnorth"),
+        ALL_WITH_LEG_NORTHEAST("north_east_south_west_with_leg_northeast"),
+        ALL_WITH_LEG_NORTHEAST_EASTSOUTH("north_east_south_west_with_leg_northeast_eastsouth"),
+        ALL_WITH_LEG_NORTHEAST_EASTSOUTH_SOUTHWEST("north_east_south_west_with_leg_northeast_eastsouth_southwest"),
+        ALL_WITH_LEG_EASTSOUTH("north_east_south_west_with_leg_eastsouth"),
+        ALL_WITH_LEG_EASTSOUTH_SOUTHWEST("north_east_south_west_with_leg_eastsouth_southwest"),
+        ALL_WITH_LEG_EASTSOUTH_SOUTHWEST_WESTNORTH("north_east_south_west_with_leg_eastsouth_southwest_westnorth"),
+        ALL_WITH_LEG_SOUTHWEST("north_east_south_west_with_leg_southwest"),
+        ALL_WITH_LEG_SOUTHWEST_WESTNORTH("north_east_south_west_with_leg_southwest_westnorth"),
+        ALL_WITH_LEG_SOUTHWEST_WESTNORTH_NORTHEAST("north_east_south_west_with_leg_southwest_westnorth_northeast"),
+        ALL_WITH_LEG_WESTNORTH("north_east_south_west_with_leg_westnorth"),
+        ALL_WITH_LEG_WESTNORTH_NORTHEAST("north_east_south_west_with_leg_westnorth_northeast"),
+        ALL_WITH_LEG_WESTNORTH_NORTHEAST_EASTSOUTH("north_east_south_west_with_leg_westnorth_northeast_eastsouth"),
+        ALL_WITH_LEG_NORTHEAST_SOUTHWEST("north_east_south_west_with_leg_northeast_southwest"),
+        ALL_WITH_LEG_EASTSOUTH_WESTNORTH("north_east_south_west_with_leg_eastsouth_westnorth");
 
         public static final Map<Integer, Shape> PACKED_VALUE_TO_SHAPE = Arrays.stream(values())
                 .collect(Collectors.toMap(shape -> shape.packedValue, shape -> shape));
 
         private final String name;
-        private final int packedValue; // csw, cse, cne, cnw, w, s, e, n
+        private final int packedValue;
 
-        // TODO convert to boolean
-        Shape(String name, int packedValue)
+        Shape(String name)
         {
             this.name = name;
-            this.packedValue = packedValue;
+            this.packedValue = createPackedValue(name);
         }
 
         @Override
@@ -213,6 +196,20 @@ public class TrampolineBlock extends FurnitureBlock implements BlockTagSupplier
         public static Shape fromPackedValue(int packedValue)
         {
             return PACKED_VALUE_TO_SHAPE.getOrDefault(packedValue, DEFAULT);
+        }
+
+        private static int createPackedValue(String name)
+        {
+            List<String> values = Arrays.asList(name.split("_"));
+            boolean north = values.contains("north");   // connected north
+            boolean east = values.contains("east");     // connected east
+            boolean south = values.contains("south");   // connected south
+            boolean west = values.contains("west");     // connected west
+            boolean lnw = values.contains("westnorth"); // leg north-west
+            boolean lne = values.contains("northeast"); // leg north-east
+            boolean lse = values.contains("eastsouth"); // leg south-east
+            boolean lsw = values.contains("southwest"); // leg south-west
+            return createPackedValue(north, east, south, west, lnw, lne, lse, lsw);
         }
   
         public static int createPackedValue(boolean n, boolean e, boolean s, boolean w, boolean cnw, boolean cne, boolean cse, boolean csw)
