@@ -140,7 +140,7 @@ public class Config
                 height is affected the shape of the trampoline, the center trampoline in a 3x3 will
                 be able to reach the maximum bounce height, while a single trampoline will only reach
                 half.""")
-            public final DoubleProperty maxBounceHeight = DoubleProperty.create(5.0, 0.0, 64.0);
+            public final DoubleProperty maxBounceHeight = DoubleProperty.create(8.0, 0.0, 64.0);
         }
     }
 }
