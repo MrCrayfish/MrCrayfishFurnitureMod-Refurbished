@@ -130,7 +130,7 @@ public class Config
                 If enabled, the count of an item created from recycling will be randomized based on
                 the count defined in the recipe. For example, if the recipe is outputting 5 iron ingots,
                 a randomized output count will be a random number from 1 to 5""")
-            public final BoolProperty randomizeOutputCount = BoolProperty.create(false);
+            public final BoolProperty randomizeOutputCount = BoolProperty.create(true);
         }
 
         public static class Trampoline
