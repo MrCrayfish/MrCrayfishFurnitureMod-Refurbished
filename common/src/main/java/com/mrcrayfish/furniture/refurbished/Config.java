@@ -41,6 +41,9 @@ public class Config
         @ConfigProperty(name = "recycleBin", comment = "Recycle Bin related properties")
         public final RecycleBin recycleBin = new RecycleBin();
 
+        @ConfigProperty(name = "trampoline", comment = "Trampoline related properties")
+        public final Trampoline trampoline = new Trampoline();
+
         public static class Mailing
         {
             @ConfigProperty(name = "mailboxInventoryRows", comment = """
@@ -128,6 +131,16 @@ public class Config
                 the count defined in the recipe. For example, if the recipe is outputting 5 iron ingots,
                 a randomized output count will be a random number from 1 to 5""")
             public final BoolProperty randomizeOutputCount = BoolProperty.create(false);
+        }
+
+        public static class Trampoline
+        {
+            @ConfigProperty(name = "maxBounceHeight", comment = """
+                The maximum height that can be achieved from bouncing on the trampoline. The maximum
+                height is affected the shape of the trampoline, the center trampoline in a 3x3 will
+                be able to reach the maximum bounce height, while a single trampoline will only reach
+                half.""")
+            public final DoubleProperty maxBounceHeight = DoubleProperty.create(5.0, 0.0, 64.0);
         }
     }
 }

@@ -2,24 +2,35 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mrcrayfish.furniture.refurbished.Config;
+import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.apache.commons.lang3.BooleanUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -87,6 +98,17 @@ public class TrampolineBlock extends FurnitureBlock implements BlockTagSupplier
         return this.getTrampolineState(state, level, pos);
     }
 
+    /**
+     * Determines the state of a trampoline if it were to be placed at the given block position.
+     * The trampoline model connects to surrounding trampolines, which affects the shape. The shape
+     * determines how "bouncy" the trampoline is. This method checks if the block neighboring the
+     * given position are trampolines, and also if the trampoline needs to draw the corner legs.
+     *
+     * @param state any block state of the trampoline
+     * @param level the level where the trampoline exists or will after placing
+     * @param pos   the block position of the trampoline or where it's going to be placed
+     * @return an updated trampoline blockstate
+     */
     private BlockState getTrampolineState(BlockState state, LevelAccessor level, BlockPos pos)
     {
         boolean connectedNorth = this.isTrampoline(level, pos.north());
@@ -102,13 +124,56 @@ public class TrampolineBlock extends FurnitureBlock implements BlockTagSupplier
         return state.setValue(SHAPE, shape);
     }
 
+    /**
+     * Tests if the block at the given block position in the level is a trampoline
+     *
+     * @param level a level instance
+     * @param pos   the block position to check
+     * @return true if a trampoline at the block position
+     */
     private boolean isTrampoline(LevelAccessor level, BlockPos pos)
     {
         return level.getBlockState(pos).getBlock() instanceof TrampolineBlock;
     }
 
     @Override
-    public void updateEntityAfterFallOn(BlockGetter worldIn, Entity entityIn) {}
+    public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, float fallDistance)
+    {
+        if(entity.isSuppressingBounce())
+            return;
+
+        Vec3 movement = entity.getDeltaMovement();
+        if(movement.y > 0)
+            return;
+
+        float bounceForce = 2.0F;
+        float maxBounceHeight = Config.SERVER.trampoline.maxBounceHeight.get().floatValue() * state.getValue(SHAPE).bounceScale * 0.75F;
+        float bounceHeight = Math.min(entity.fallDistance * bounceForce, maxBounceHeight - 0.25F);
+        entity.setDeltaMovement(entity.getDeltaMovement().multiply(1.5, 0, 1.5));
+        entity.push(0, Math.sqrt(0.22 * (bounceHeight + 0.25F)), 0);
+        entity.resetFallDistance();
+        this.spawnBounceParticle(level, entity, false);
+        if(!level.isClientSide())
+        {
+            level.playSound(null, pos, ModSounds.BLOCK_TRAMPOLINE_BOUNCE.get(), SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.2F + 0.9F);
+        }
+    }
+
+    @Override
+    public void updateEntityAfterFallOn(BlockGetter getter, Entity entity)
+    {
+        Vec3 velocity = entity.getDeltaMovement();
+        if(velocity.y < 0)
+        {
+            // Special case for boats since they don't trigger the above method
+            if(entity instanceof Boat boat && -velocity.y > 0.1)
+            {
+                this.bounceBoat(boat, velocity);
+                return;
+            }
+            super.updateEntityAfterFallOn(getter, entity);
+        }
+    }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
@@ -123,68 +188,144 @@ public class TrampolineBlock extends FurnitureBlock implements BlockTagSupplier
         return List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL);
     }
 
+    /**
+     * Determines the jump factor of the trampoline with more fine control, including the level,
+     * blockstate and block position of the trampoline.
+     *
+     * @param level the current level
+     * @param state the block state of the trampoline
+     * @param pos   the block position of the trampoline
+     * @return a factor that modifies the jump height of an entity
+     */
+    public float getJumpModifier(Level level, BlockState state, BlockPos pos)
+    {
+        Shape shape = state.getValue(SHAPE);
+        float bounceHeight = Config.SERVER.trampoline.maxBounceHeight.get().floatValue() * shape.bounceScale;
+        return Mth.sqrt(0.22F * bounceHeight) * 2.3F;
+    }
+
+    /**
+     * Called after an entity living performs a jump on the trampoline.
+     *
+     * @param entity the entity that just jumped
+     * @param level the level of the entity
+     * @param state the blockstate of the trampoline
+     * @param pos the block position of the trampoline
+     */
+    public void onLivingEntityJump(LivingEntity entity, Level level, BlockState state, BlockPos pos)
+    {
+        if(level.isClientSide())
+        {
+            level.playLocalSound(pos, ModSounds.BLOCK_TRAMPOLINE_SUPER_BOUNCE.get(), SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.1F + 0.75F, false);
+            this.spawnBounceParticle(level, entity, true);
+        }
+    }
+
+    /**
+     * Spawns particles at the position of the given entity for indicating a bounce. The particle
+     * will be different if it was a super bounce.
+     *
+     * @param level          the level containing the trampoline
+     * @param bouncingEntity the entity who is bouncing
+     * @param superBounce    true if should be a super bounce particle
+     */
+    private void spawnBounceParticle(Level level, Entity bouncingEntity, boolean superBounce)
+    {
+        if(!level.isClientSide())
+            return;
+
+        for(int i = 0; i < 5; i++)
+        {
+            level.addParticle(ParticleTypes.ENTITY_EFFECT, bouncingEntity.xo, bouncingEntity.yo, bouncingEntity.zo, 1.0, 1.0, 1.0);
+        }
+
+        // TODO super bounce particle
+    }
+
+    /**
+     * Handles logic for bouncing boat
+     *
+     * @param boat the boat that landed on the trampoline
+     * @param velocity the current velocity of the boat
+     */
+    private void bounceBoat(Boat boat, Vec3 velocity)
+    {
+        Level level = boat.level();
+        boat.setDeltaMovement(velocity.x, -velocity.y, velocity.z);
+        if(boat.isControlledByLocalInstance() && !boat.isEffectiveAi())
+        {
+            level.playLocalSound(boat.blockPosition(), ModSounds.BLOCK_TRAMPOLINE_BOUNCE.get(), SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.2F + 0.9F, false);
+        }
+        else
+        {
+            level.playSound(null, boat.blockPosition(), ModSounds.BLOCK_TRAMPOLINE_BOUNCE.get(), SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.2F + 0.9F);
+        }
+    }
+
     // To reduce the number of block states, an enum is being used to define only valid shapes.
     // This took down the original 256 states to 47. This doesn't work in all cases.
     public enum Shape implements StringRepresentable
     {
-        DEFAULT("default"),
-        NORTH("north"),
-        EAST("east"),
-        SOUTH("south"),
-        WEST("west"),
-        NORTH_SOUTH("north_south"),
-        EAST_WEST("east_west"),
-        NORTH_EAST("north_east"),
-        EAST_SOUTH("east_south"),
-        SOUTH_WEST("south_west"),
-        WEST_NORTH("west_north"),
-        NORTH_EAST_WITH_LEG("north_east_with_leg_northeast"),
-        EAST_SOUTH_WITH_LEG("east_south_with_leg_eastsouth"),
-        SOUTH_WEST_WITH_LEG("south_west_with_leg_southwest"),
-        WEST_NORTH_WITH_LEG("west_north_with_leg_westnorth"),
-        NORTH_EAST_SOUTH("north_east_south"),
-        EAST_SOUTH_WEST("east_south_west"),
-        SOUTH_WEST_NORTH("south_west_north"),
-        WEST_NORTH_EAST("west_north_east"),
-        NORTH_EAST_SOUTH_WITH_LEG_NORTHEAST("north_east_south_with_leg_northeast"),
-        NORTH_EAST_SOUTH_WITH_LEG_EASTSOUTH("north_east_south_with_leg_eastsouth"),
-        NORTH_EAST_SOUTH_WITH_LEG_NORTHEAST_EASTSOUTH("north_east_south_with_leg_northeast_eastsouth"),
-        EAST_SOUTH_WEST_WITH_LEG_EASTSOUTH("east_south_west_with_leg_eastsouth"),
-        EAST_SOUTH_WEST_WITH_LEG_SOUTHWEST("east_south_west_with_leg_southwest"),
-        EAST_SOUTH_WEST_WITH_LEG_EASTSOUTH_SOUTHWEST("east_south_west_with_leg_eastsouth_southwest"),
-        SOUTH_WEST_NORTH_WITH_LEG_WESTNORTH("south_west_north_with_leg_westnorth"),
-        SOUTH_WEST_NORTH_WITH_LEG_SOUTHWEST("south_west_north_with_leg_southwest"),
-        SOUTH_WEST_NORTH_WITH_LEG_WESTNORTH_SOUTHWEST("south_west_north_with_leg_westnorth_southwest"),
-        WEST_NORTH_EAST_WITH_LEG_NORTHEAST("west_north_east_with_leg_northeast"),
-        WEST_NORTH_EAST_WITH_LEG_WESTNORTH("west_north_east_with_leg_westnorth"),
-        WEST_NORTH_EAST_WITH_LEG_NORTHEAST_WESTNORTH("west_north_east_with_leg_northeast_westnorth"),
-        ALL("north_east_south_west"),
-        ALL_WITH_LEG_ALL("north_east_south_west_with_leg_northeast_eastsouth_southwest_westnorth"),
-        ALL_WITH_LEG_NORTHEAST("north_east_south_west_with_leg_northeast"),
-        ALL_WITH_LEG_NORTHEAST_EASTSOUTH("north_east_south_west_with_leg_northeast_eastsouth"),
-        ALL_WITH_LEG_NORTHEAST_EASTSOUTH_SOUTHWEST("north_east_south_west_with_leg_northeast_eastsouth_southwest"),
-        ALL_WITH_LEG_EASTSOUTH("north_east_south_west_with_leg_eastsouth"),
-        ALL_WITH_LEG_EASTSOUTH_SOUTHWEST("north_east_south_west_with_leg_eastsouth_southwest"),
-        ALL_WITH_LEG_EASTSOUTH_SOUTHWEST_WESTNORTH("north_east_south_west_with_leg_eastsouth_southwest_westnorth"),
-        ALL_WITH_LEG_SOUTHWEST("north_east_south_west_with_leg_southwest"),
-        ALL_WITH_LEG_SOUTHWEST_WESTNORTH("north_east_south_west_with_leg_southwest_westnorth"),
-        ALL_WITH_LEG_SOUTHWEST_WESTNORTH_NORTHEAST("north_east_south_west_with_leg_southwest_westnorth_northeast"),
-        ALL_WITH_LEG_WESTNORTH("north_east_south_west_with_leg_westnorth"),
-        ALL_WITH_LEG_WESTNORTH_NORTHEAST("north_east_south_west_with_leg_westnorth_northeast"),
-        ALL_WITH_LEG_WESTNORTH_NORTHEAST_EASTSOUTH("north_east_south_west_with_leg_westnorth_northeast_eastsouth"),
-        ALL_WITH_LEG_NORTHEAST_SOUTHWEST("north_east_south_west_with_leg_northeast_southwest"),
-        ALL_WITH_LEG_EASTSOUTH_WESTNORTH("north_east_south_west_with_leg_eastsouth_westnorth");
+        DEFAULT("default", 0.4F),
+        NORTH("north", 0.4F),
+        EAST("east", 0.4F),
+        SOUTH("south", 0.4F),
+        WEST("west", 0.4F),
+        NORTH_SOUTH("north_south", 0.4F),
+        EAST_WEST("east_west", 0.4F),
+        NORTH_EAST("north_east", 0.8F),
+        EAST_SOUTH("east_south", 0.8F),
+        SOUTH_WEST("south_west", 0.8F),
+        WEST_NORTH("west_north", 0.8F),
+        NORTH_EAST_WITH_LEG("north_east_with_leg_northeast", 0.4F),
+        EAST_SOUTH_WITH_LEG("east_south_with_leg_eastsouth", 0.4F),
+        SOUTH_WEST_WITH_LEG("south_west_with_leg_southwest", 0.4F),
+        WEST_NORTH_WITH_LEG("west_north_with_leg_westnorth", 0.4F),
+        NORTH_EAST_SOUTH("north_east_south", 0.8F),
+        EAST_SOUTH_WEST("east_south_west", 0.8F),
+        SOUTH_WEST_NORTH("south_west_north", 0.8F),
+        WEST_NORTH_EAST("west_north_east", 0.8F),
+        NORTH_EAST_SOUTH_WITH_LEG_NORTHEAST("north_east_south_with_leg_northeast", 0.8F),
+        NORTH_EAST_SOUTH_WITH_LEG_EASTSOUTH("north_east_south_with_leg_eastsouth", 0.8F),
+        NORTH_EAST_SOUTH_WITH_LEG_NORTHEAST_EASTSOUTH("north_east_south_with_leg_northeast_eastsouth", 0.4F),
+        EAST_SOUTH_WEST_WITH_LEG_EASTSOUTH("east_south_west_with_leg_eastsouth", 0.8F),
+        EAST_SOUTH_WEST_WITH_LEG_SOUTHWEST("east_south_west_with_leg_southwest", 0.8F),
+        EAST_SOUTH_WEST_WITH_LEG_EASTSOUTH_SOUTHWEST("east_south_west_with_leg_eastsouth_southwest", 0.4F),
+        SOUTH_WEST_NORTH_WITH_LEG_WESTNORTH("south_west_north_with_leg_westnorth", 0.8F),
+        SOUTH_WEST_NORTH_WITH_LEG_SOUTHWEST("south_west_north_with_leg_southwest", 0.8F),
+        SOUTH_WEST_NORTH_WITH_LEG_WESTNORTH_SOUTHWEST("south_west_north_with_leg_westnorth_southwest", 0.4F),
+        WEST_NORTH_EAST_WITH_LEG_NORTHEAST("west_north_east_with_leg_northeast", 0.8F),
+        WEST_NORTH_EAST_WITH_LEG_WESTNORTH("west_north_east_with_leg_westnorth", 0.8F),
+        WEST_NORTH_EAST_WITH_LEG_NORTHEAST_WESTNORTH("west_north_east_with_leg_northeast_westnorth", 0.4F),
+        ALL("north_east_south_west", 1.0F),
+        ALL_WITH_LEG_ALL("north_east_south_west_with_leg_northeast_eastsouth_southwest_westnorth", 0.4F),
+        ALL_WITH_LEG_NORTHEAST("north_east_south_west_with_leg_northeast", 0.8F),
+        ALL_WITH_LEG_NORTHEAST_EASTSOUTH("north_east_south_west_with_leg_northeast_eastsouth", 0.8F),
+        ALL_WITH_LEG_NORTHEAST_EASTSOUTH_SOUTHWEST("north_east_south_west_with_leg_northeast_eastsouth_southwest", 0.8F),
+        ALL_WITH_LEG_EASTSOUTH("north_east_south_west_with_leg_eastsouth", 0.8F),
+        ALL_WITH_LEG_EASTSOUTH_SOUTHWEST("north_east_south_west_with_leg_eastsouth_southwest", 0.8F),
+        ALL_WITH_LEG_EASTSOUTH_SOUTHWEST_WESTNORTH("north_east_south_west_with_leg_eastsouth_southwest_westnorth", 0.8F),
+        ALL_WITH_LEG_SOUTHWEST("north_east_south_west_with_leg_southwest", 0.8F),
+        ALL_WITH_LEG_SOUTHWEST_WESTNORTH("north_east_south_west_with_leg_southwest_westnorth", 0.8F),
+        ALL_WITH_LEG_SOUTHWEST_WESTNORTH_NORTHEAST("north_east_south_west_with_leg_southwest_westnorth_northeast", 0.8F),
+        ALL_WITH_LEG_WESTNORTH("north_east_south_west_with_leg_westnorth", 0.8F),
+        ALL_WITH_LEG_WESTNORTH_NORTHEAST("north_east_south_west_with_leg_westnorth_northeast", 0.8F),
+        ALL_WITH_LEG_WESTNORTH_NORTHEAST_EASTSOUTH("north_east_south_west_with_leg_westnorth_northeast_eastsouth", 0.8F),
+        ALL_WITH_LEG_NORTHEAST_SOUTHWEST("north_east_south_west_with_leg_northeast_southwest", 0.8F),
+        ALL_WITH_LEG_EASTSOUTH_WESTNORTH("north_east_south_west_with_leg_eastsouth_westnorth", 0.8F);
 
         public static final Map<Integer, Shape> PACKED_VALUE_TO_SHAPE = Arrays.stream(values())
                 .collect(Collectors.toMap(shape -> shape.packedValue, shape -> shape));
 
         private final String name;
         private final int packedValue;
+        private final float bounceScale;
 
-        Shape(String name)
+        Shape(String name, float bounceScale)
         {
             this.name = name;
             this.packedValue = createPackedValue(name);
+            this.bounceScale = bounceScale;
         }
 
         @Override

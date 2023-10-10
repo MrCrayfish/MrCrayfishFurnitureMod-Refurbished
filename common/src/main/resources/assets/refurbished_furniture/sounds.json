@@ -35,6 +35,18 @@
             "refurbished_furniture:block/lightswitch/flick"
         ]
     },
+    "block.trampoline.bounce": {
+        "subtitle": "subtitle.refurbished_furniture.trampoline_bounce",
+        "sounds": [
+            "refurbished_furniture:block/trampoline/bounce"
+        ]
+    },
+    "block.trampoline.super_bounce": {
+        "subtitle": "subtitle.refurbished_furniture.trampoline_super_bounce",
+        "sounds": [
+            "refurbished_furniture:block/trampoline/super_bounce"
+        ]
+    },
     "item.package.open": {
         "subtitle": "subtitle.refurbished_furniture.package_open",
         "sounds": [
