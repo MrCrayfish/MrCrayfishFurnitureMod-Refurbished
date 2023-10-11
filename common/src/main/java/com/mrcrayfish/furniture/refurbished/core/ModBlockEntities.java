@@ -162,6 +162,11 @@ public class ModBlockEntities
             ModBlocks.STOVE_DARK.get()
     });
 
+    public static final RegistryEntry<BlockEntityType<RangeHoodBlockEntity>> RANGE_HOOD = RegistryEntry.blockEntity(Utils.resource("range_hood"), RangeHoodBlockEntity::new, () -> new Block[]{
+            ModBlocks.RANGE_HOOD_LIGHT.get(),
+            ModBlocks.RANGE_HOOD_DARK.get()
+    });
+
     public static final RegistryEntry<BlockEntityType<CuttingBoardBlockEntity>> CUTTING_BOARD = RegistryEntry.blockEntity(Utils.resource("cutting_board"), CuttingBoardBlockEntity::new, () -> new Block[]{
             ModBlocks.CUTTING_BOARD_OAK.get(),
             ModBlocks.CUTTING_BOARD_SPRUCE.get(),

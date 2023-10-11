@@ -326,6 +326,8 @@
     "block.refurbished_furniture.green_trampoline": "Green Trampoline",
     "block.refurbished_furniture.red_trampoline": "Red Trampoline",
     "block.refurbished_furniture.black_trampoline": "Black Trampoline",
+    "block.refurbished_furniture.light_range_hood": "Light Range Hood",
+    "block.refurbished_furniture.dark_range_hood": "Dark Range Hood",
     "item.refurbished_furniture.spatula": "Spatula",
     "item.refurbished_furniture.knife": "Knife",
     "item.refurbished_furniture.package": "Package",

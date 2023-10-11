@@ -97,6 +97,7 @@ public class ClientBootstrap
         register.apply(ModBlockEntities.STORAGE_JAR.get(), StorageJarRenderer::new);
         register.apply(ModBlockEntities.RECYCLE_BIN.get(), ElectricBlockEntityRenderer::new);
         register.apply(ModBlockEntities.CEILING_FAN.get(), CeilingFanBlockEntityRenderer::new);
+        register.apply(ModBlockEntities.RANGE_HOOD.get(), ElectricBlockEntityRenderer::new);
     }
 
     public static void registerEntityRenderers(EntityRendererRegister register)
@@ -202,5 +203,7 @@ public class ClientBootstrap
         register.apply(ModBlocks.TRAMPOLINE_GREEN.get(), RenderType.cutout());
         register.apply(ModBlocks.TRAMPOLINE_RED.get(), RenderType.cutout());
         register.apply(ModBlocks.TRAMPOLINE_BLACK.get(), RenderType.cutout());
+        register.apply(ModBlocks.RANGE_HOOD_LIGHT.get(), RenderType.cutout());
+        register.apply(ModBlocks.RANGE_HOOD_DARK.get(), RenderType.cutout());
     }
 }

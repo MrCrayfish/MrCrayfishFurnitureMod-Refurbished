@@ -1,0 +1,86 @@
+{
+	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
+	"loader": "framework:open_model",
+	"components": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 3, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, -24, 8]},
+			"faces": {
+				"north": {"uv": [0, 10, 8, 11.5], "texture": "#texture"},
+				"east": {"uv": [8, 8.5, 16, 10], "texture": "#texture"},
+				"south": {"uv": [0, 13, 8, 14.5], "texture": "#texture"},
+				"west": {"uv": [0, 11.5, 8, 13], "texture": "#texture"}
+			}
+		},
+		{
+			"from": [0, 0, 0],
+			"to": [16, 0, 11],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, -24, 8]},
+			"faces": {
+				"down": {"uv": [8, 2.5, 0, 8], "texture": "#texture"}
+			}
+		},
+		{
+			"from": [0, 0, 11],
+			"to": [16, 0, 15],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, -24, 8]},
+			"faces": {
+				"down": {"uv": [8, 0.5, 0, 2.5], "texture": "#texture"}
+			}
+		},
+		{
+			"from": [0, 0, 15],
+			"to": [16, 0, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, -24, 8]},
+			"faces": {
+				"down": {"uv": [8, 0, 0, 0.5], "texture": "#texture"}
+			}
+		},
+		{
+			"from": [0, 3, 0],
+			"to": [16, 7, 3],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, -24, 8]},
+			"faces": {
+				"north": {"uv": [0, 8, 8, 10], "texture": "#texture"},
+				"east": {"uv": [0, 14.5, 2, 16], "rotation": 90, "texture": "#texture"},
+				"west": {"uv": [2, 14.5, 4, 16], "rotation": 90, "texture": "#texture"},
+				"up": {"uv": [16, 8.5, 8, 7], "texture": "#texture"}
+			}
+		},
+		{
+			"from": [-0.01, 2, 2.39853],
+			"to": [16.01, 3, 16],
+			"rotation": {"angle": 17.103, "axis": "x", "origin": [8, 3, 16]},
+			"faces": {
+				"east": {"uv": [8, 12, 15, 12.5], "texture": "#texture"},
+				"west": {"uv": [8, 12.5, 15, 13], "texture": "#texture"},
+				"up": {"uv": [16, 7, 8, 0], "texture": "#texture"}
+			}
+		},
+		{
+			"from": [0, 3, 3],
+			"to": [16, 4, 12.575],
+			"faces": {
+				"east": {"uv": [8, 13, 12.875, 13.5], "texture": "#texture"},
+				"west": {"uv": [8, 13, 12.875, 13.5], "texture": "#texture"}
+			}
+		},
+		{
+			"from": [0, 4, 3],
+			"to": [16, 5, 9.35],
+			"faces": {
+				"east": {"uv": [11.25, 13.5, 8, 14], "texture": "#texture"},
+				"west": {"uv": [8, 13.5, 11.25, 14], "texture": "#texture"}
+			}
+		},
+		{
+			"from": [0, 5, 3],
+			"to": [16, 6, 6.1],
+			"faces": {
+				"east": {"uv": [8, 14, 9.625, 14.5], "texture": "#texture"},
+				"west": {"uv": [8, 14, 9.625, 14.5], "texture": "#texture"}
+			}
+		}
+	]
+}

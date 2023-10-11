@@ -270,6 +270,8 @@ public class CommonItemTagsProvider
         kitchen.add(ModBlocks.MICROWAVE_DARK.get().asItem());
         kitchen.add(ModBlocks.STOVE_LIGHT.get().asItem());
         kitchen.add(ModBlocks.STOVE_DARK.get().asItem());
+        kitchen.add(ModBlocks.RANGE_HOOD_LIGHT.get().asItem());
+        kitchen.add(ModBlocks.RANGE_HOOD_DARK.get().asItem());
         kitchen.add(ModBlocks.CUTTING_BOARD_OAK.get().asItem());
         kitchen.add(ModBlocks.CUTTING_BOARD_SPRUCE.get().asItem());
         kitchen.add(ModBlocks.CUTTING_BOARD_BIRCH.get().asItem());

@@ -70,6 +70,8 @@ public class ModelTemplate
     public static final ModelTemplate MICROWAVE_OPEN = block("microwave_open", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate STOVE_CLOSED = block("stove_closed", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate STOVE_OPEN = block("stove_open", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate RANGE_HOOD_OFF = block("range_hood_off", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate RANGE_HOOD_ON = block("range_hood_on", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate FRYING_PAN = block("frying_pan", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate MAIL_BOX = block("mail_box", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate MAIL_BOX_UNCHECKED = block("mail_box_unchecked", TextureSlot.PARTICLE, TextureSlot.TEXTURE);

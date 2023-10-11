@@ -206,6 +206,8 @@ public class CommonBlockModelProvider
         this.microwave(ModBlocks.MICROWAVE_DARK.get());
         this.stove(ModBlocks.STOVE_LIGHT.get());
         this.stove(ModBlocks.STOVE_DARK.get());
+        this.rangeHood(ModBlocks.RANGE_HOOD_LIGHT.get());
+        this.rangeHood(ModBlocks.RANGE_HOOD_DARK.get());
         this.cuttingBoard(ModBlocks.CUTTING_BOARD_OAK.get());
         this.cuttingBoard(ModBlocks.CUTTING_BOARD_SPRUCE.get());
         this.cuttingBoard(ModBlocks.CUTTING_BOARD_BIRCH.get());
@@ -740,6 +742,24 @@ public class CommonBlockModelProvider
         state.createVariant().prop(StoveBlock.DIRECTION, Direction.EAST).prop(StoveBlock.OPEN, true).parentModel(ModelTemplate.STOVE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(StoveBlock.DIRECTION, Direction.SOUTH).prop(StoveBlock.OPEN, true).parentModel(ModelTemplate.STOVE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(StoveBlock.DIRECTION, Direction.WEST).prop(StoveBlock.OPEN, true).parentModel(ModelTemplate.STOVE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        this.stateConsumer.accept(state);
+    }
+
+    private void rangeHood(RangeHoodBlock block)
+    {
+        MetalType type = block.getMetalType();
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.metalParticle(type));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedBlockState state = new PreparedBlockState(block);
+        state.createVariant().prop(RangeHoodBlock.DIRECTION, Direction.NORTH).prop(RangeHoodBlock.POWERED, false).parentModel(ModelTemplate.RANGE_HOOD_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(RangeHoodBlock.DIRECTION, Direction.EAST).prop(RangeHoodBlock.POWERED, false).parentModel(ModelTemplate.RANGE_HOOD_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(RangeHoodBlock.DIRECTION, Direction.SOUTH).prop(RangeHoodBlock.POWERED, false).parentModel(ModelTemplate.RANGE_HOOD_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(RangeHoodBlock.DIRECTION, Direction.WEST).prop(RangeHoodBlock.POWERED, false).parentModel(ModelTemplate.RANGE_HOOD_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(RangeHoodBlock.DIRECTION, Direction.NORTH).prop(RangeHoodBlock.POWERED, true).parentModel(ModelTemplate.RANGE_HOOD_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
+        state.createVariant().prop(RangeHoodBlock.DIRECTION, Direction.EAST).prop(RangeHoodBlock.POWERED, true).parentModel(ModelTemplate.RANGE_HOOD_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(RangeHoodBlock.DIRECTION, Direction.SOUTH).prop(RangeHoodBlock.POWERED, true).parentModel(ModelTemplate.RANGE_HOOD_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(RangeHoodBlock.DIRECTION, Direction.WEST).prop(RangeHoodBlock.POWERED, true).parentModel(ModelTemplate.RANGE_HOOD_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         this.stateConsumer.accept(state);
     }
 
