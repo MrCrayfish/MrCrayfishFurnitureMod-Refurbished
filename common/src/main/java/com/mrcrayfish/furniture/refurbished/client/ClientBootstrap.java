@@ -3,7 +3,6 @@ package com.mrcrayfish.furniture.refurbished.client;
 import com.mrcrayfish.framework.api.event.ClientConnectionEvents;
 import com.mrcrayfish.framework.api.event.PlayerEvents;
 import com.mrcrayfish.framework.api.event.TickEvents;
-import com.mrcrayfish.furniture.refurbished.block.MetalType;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.ElectricityGeneratorScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.FreezerScreen;
@@ -11,8 +10,12 @@ import com.mrcrayfish.furniture.refurbished.client.gui.screen.MicrowaveScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.PostBoxScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.RecyclingBinScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.StoveScreen;
+import com.mrcrayfish.furniture.refurbished.client.particle.BounceParticle;
+import com.mrcrayfish.furniture.refurbished.client.particle.FlatParticle;
+import com.mrcrayfish.furniture.refurbished.client.particle.SuperBounceParticle;
 import com.mrcrayfish.furniture.refurbished.client.registration.BlockEntityRendererRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.EntityRendererRegister;
+import com.mrcrayfish.furniture.refurbished.client.registration.ParticleProviderRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.RenderTypeRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.CeilingFanBlockEntityRenderer;
@@ -28,8 +31,8 @@ import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
+import com.mrcrayfish.furniture.refurbished.core.ModParticleTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.world.level.block.state.properties.WoodType;
 
 /**
  * Author: MrCrayfish
@@ -205,5 +208,11 @@ public class ClientBootstrap
         register.apply(ModBlocks.TRAMPOLINE_BLACK.get(), RenderType.cutout());
         register.apply(ModBlocks.RANGE_HOOD_LIGHT.get(), RenderType.cutout());
         register.apply(ModBlocks.RANGE_HOOD_DARK.get(), RenderType.cutout());
+    }
+
+    public static void registerParticleProviders(ParticleProviderRegister register)
+    {
+        register.apply(ModParticleTypes.BOUNCE.get(), BounceParticle.Provider::new);
+        register.apply(ModParticleTypes.SUPER_BOUNCE.get(), SuperBounceParticle.Provider::new);
     }
 }

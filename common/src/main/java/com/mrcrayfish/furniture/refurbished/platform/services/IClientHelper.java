@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.CreativeModeTab;
@@ -40,4 +41,6 @@ public interface IClientHelper
     RenderType getElectrictyNodeRenderType();
 
     RenderType getElectricityConnectionRenderType();
+
+    SimpleParticleType createSimpleParticleType(boolean ignoreLimit);
 }

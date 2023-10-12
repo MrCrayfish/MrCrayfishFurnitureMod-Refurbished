@@ -3,12 +3,12 @@ package com.mrcrayfish.furniture.refurbished.block;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.furniture.refurbished.Config;
+import com.mrcrayfish.furniture.refurbished.core.ModParticleTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -16,7 +16,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -27,7 +26,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -152,7 +150,7 @@ public class TrampolineBlock extends FurnitureBlock implements BlockTagSupplier
         entity.setDeltaMovement(entity.getDeltaMovement().multiply(1.5, 0, 1.5));
         entity.push(0, Math.sqrt(0.22 * (bounceHeight + 0.25F)), 0);
         entity.resetFallDistance();
-        this.spawnBounceParticle(level, entity, false);
+        this.spawnBounceParticle(level, entity, pos, false);
         if(!level.isClientSide())
         {
             level.playSound(null, pos, ModSounds.BLOCK_TRAMPOLINE_BOUNCE.get(), SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.2F + 0.9F);
@@ -217,7 +215,7 @@ public class TrampolineBlock extends FurnitureBlock implements BlockTagSupplier
         if(level.isClientSide())
         {
             level.playLocalSound(pos, ModSounds.BLOCK_TRAMPOLINE_SUPER_BOUNCE.get(), SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.1F + 0.75F, false);
-            this.spawnBounceParticle(level, entity, true);
+            this.spawnBounceParticle(level, entity, pos, true);
         }
     }
 
@@ -227,19 +225,17 @@ public class TrampolineBlock extends FurnitureBlock implements BlockTagSupplier
      *
      * @param level          the level containing the trampoline
      * @param bouncingEntity the entity who is bouncing
+     * @param pos
      * @param superBounce    true if should be a super bounce particle
      */
-    private void spawnBounceParticle(Level level, Entity bouncingEntity, boolean superBounce)
+    private void spawnBounceParticle(Level level, Entity bouncingEntity, BlockPos pos, boolean superBounce)
     {
         if(!level.isClientSide())
             return;
 
-        for(int i = 0; i < 5; i++)
-        {
-            level.addParticle(ParticleTypes.ENTITY_EFFECT, bouncingEntity.xo, bouncingEntity.yo, bouncingEntity.zo, 1.0, 1.0, 1.0);
-        }
-
-        // TODO super bounce particle
+        ParticleOptions particle = superBounce ? ModParticleTypes.SUPER_BOUNCE.get() : ModParticleTypes.BOUNCE.get();
+        Vec3 particlePos = Vec3.upFromBottomCenterOf(pos, 0.82);
+        level.addParticle(particle, bouncingEntity.xo, particlePos.y, bouncingEntity.zo, 0, 0, 0);
     }
 
     /**

@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.block.StorageJarBlock;
+import com.mrcrayfish.furniture.refurbished.client.registration.ParticleProviderRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
@@ -11,6 +12,8 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
@@ -22,6 +25,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.client.event.RenderHighlightEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -48,6 +52,18 @@ public class ForgeClientEvents
     public static void onRegisterAdditional(ModelEvent.RegisterAdditional event)
     {
         ExtraModels.register(event::register);
+    }
+
+    public static void onRegisterParticleProviders(RegisterParticleProvidersEvent event)
+    {
+        ClientBootstrap.registerParticleProviders(new ParticleProviderRegister()
+        {
+            @Override
+            public <T extends ParticleOptions> void apply(ParticleType<T> type, SpriteProvider<T> provider)
+            {
+                event.registerSpriteSet(type, provider::apply);
+            }
+        });
     }
 
     public static void onRenderLevelStage(RenderLevelStageEvent event)

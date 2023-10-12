@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.CreativeModeTab;
@@ -88,6 +89,12 @@ public class ForgeClientHelper implements IClientHelper
     public RenderType getElectricityConnectionRenderType()
     {
         return ForgeRenderType.COLOURED_BOX;
+    }
+
+    @Override
+    public SimpleParticleType createSimpleParticleType(boolean ignoreLimit)
+    {
+        return new SimpleParticleType(ignoreLimit);
     }
 
     private Function<ResourceLocation, TextureAtlasSprite> getBlockTextures()

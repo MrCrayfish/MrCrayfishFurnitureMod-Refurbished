@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mrcrayfish.furniture.refurbished.client.FabricRenderType;
 import com.mrcrayfish.furniture.refurbished.platform.services.IClientHelper;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
+import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -15,6 +16,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.CreativeModeTab;
@@ -84,5 +86,11 @@ public class FabricClientHelper implements IClientHelper
     public RenderType getElectricityConnectionRenderType()
     {
         return FabricRenderType.ELECTRICITY_CONNECTION;
+    }
+
+    @Override
+    public SimpleParticleType createSimpleParticleType(boolean ignoreLimit)
+    {
+        return FabricParticleTypes.simple(ignoreLimit);
     }
 }
