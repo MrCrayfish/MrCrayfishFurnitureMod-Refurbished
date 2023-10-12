@@ -14,4 +14,5 @@ public class ModParticleTypes
 {
     public static final RegistryEntry<SimpleParticleType> BOUNCE = RegistryEntry.particleType(Utils.resource("bounce"), () -> ClientServices.PLATFORM.createSimpleParticleType(true));
     public static final RegistryEntry<SimpleParticleType> SUPER_BOUNCE = RegistryEntry.particleType(Utils.resource("super_bounce"), () -> ClientServices.PLATFORM.createSimpleParticleType(true));
+    public static final RegistryEntry<SimpleParticleType> STEAM = RegistryEntry.particleType(Utils.resource("steam"), () -> ClientServices.PLATFORM.createSimpleParticleType(true));
 }

@@ -1,6 +1,8 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.mrcrayfish.furniture.refurbished.block.RangeHoodBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
+import com.mrcrayfish.furniture.refurbished.core.ModParticleTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageFlipAnimation;
@@ -126,7 +128,49 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
             double posY = pos.getY() + 0.15;
             double posZ = pos.getZ() + 0.35 + 0.3 * level.random.nextDouble();
             level.addParticle(new DustParticleOptions(OIL_COLOUR, 0.25F), posX, posY, posZ, 0, -0.05, 0);
+            this.spawnSteam(level, posX, posY, posZ);
         }
+    }
+
+    /**
+     * Spawns a steam particle from the frying pan where the y velocity of the particle
+     * changes depending on if a range hood is being used.
+     *
+     * @param level the level containing the frying pan
+     * @param x     the start x position of the particle
+     * @param y     the start y position of the particle
+     * @param z     the start z position of the particle
+     */
+    public void spawnSteam(Level level, double x, double y, double z)
+    {
+        double ySpeed = 0.01;
+        if(this.isRangeHoodPowered(level, this.worldPosition.above()))
+        {
+            ySpeed = 0.05;
+        }
+        else if(this.isRangeHoodPowered(level, this.worldPosition.above().above()))
+        {
+            ySpeed = 0.1;
+        }
+        level.addParticle(ModParticleTypes.STEAM.get(), x, y, z, 0, ySpeed, 0);
+    }
+
+    /**
+     * Determines if range hood is located at the given block position in the level and that
+     * the range hood is powered.
+     *
+     * @param level the level containing the frying pan
+     * @param pos   the block position to check
+     * @return True if range hook is located and powered
+     */
+    private boolean isRangeHoodPowered(Level level, BlockPos pos)
+    {
+        BlockState state = level.getBlockState(pos);
+        if(state.getBlock() instanceof RangeHoodBlock)
+        {
+            return state.getValue(RangeHoodBlock.POWERED);
+        }
+        return false;
     }
 
     @Override

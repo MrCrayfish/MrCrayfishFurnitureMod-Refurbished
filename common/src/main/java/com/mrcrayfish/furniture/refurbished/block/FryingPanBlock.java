@@ -6,6 +6,7 @@ import com.mrcrayfish.furniture.refurbished.blockentity.FryingPanBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.IHeatingSource;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
+import com.mrcrayfish.furniture.refurbished.core.ModParticleTypes;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -117,7 +118,11 @@ public class FryingPanBlock extends FurnitureHorizontalBlock implements EntityBl
         {
             if(!fryingPan.getItem(0).isEmpty() && fryingPan.isFlippingNeeded())
             {
+                double posX = pos.getX() + 0.35 + 0.3 * level.random.nextDouble();
+                double posY = pos.getY() + 0.15;
+                double posZ = pos.getZ() + 0.35 + 0.3 * level.random.nextDouble();
                 level.addParticle(ParticleTypes.SMOKE, pos.getX() + 0.5, pos.getY() + 0.125, pos.getZ() + 0.5, 0, 0.05, 0);
+                fryingPan.spawnSteam(level, posX, posY, posZ);
             }
         }
     }
