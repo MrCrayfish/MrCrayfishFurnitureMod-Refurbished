@@ -55,12 +55,13 @@ public class GrillBlockEntityRenderer implements BlockEntityRenderer<GrillBlockE
         GrillBlockEntity.CookingSpace space = grill.getCookingSpace(quadrant);
         FlipAnimation animation = space.getAnimation();
         float time = animation.isPlaying() ? animation.getTime(partialTick) : 0;
-        poseStack.translate(0, Mth.sin(Mth.PI * time), 0);
+        float flipProgress = this.calculateFlipProgress(time);
+        poseStack.translate(0, flipProgress, 0);
         poseStack.translate(0.3 + 0.4 * (quadrant % 2), 1.0, 0.3 + 0.4 * (quadrant / 2));
         poseStack.mulPose(Axis.XP.rotation(Mth.HALF_PI));
         poseStack.mulPose(Axis.ZP.rotation(Mth.HALF_PI * space.getRotation()));
         poseStack.mulPose(Axis.XP.rotation(Mth.PI * -3 * time));
-        poseStack.mulPose(Axis.XP.rotation(space.isFlipped() ? Mth.PI : 0));
+        poseStack.mulPose(Axis.XP.rotation(!animation.isPlaying() && space.isFlipped() ? Mth.PI : 0));
         poseStack.scale(0.375F, 0.375F, 0.375F);
         this.renderer.renderStatic(cookingStack, ItemDisplayContext.FIXED, light, overlay, poseStack, source, grill.getLevel(), 0);
         poseStack.popPose();
@@ -77,5 +78,24 @@ public class GrillBlockEntityRenderer implements BlockEntityRenderer<GrillBlockE
         poseStack.scale(0.375F, 0.375F, 0.375F);
         this.renderer.renderStatic(fuelStack, ItemDisplayContext.FIXED, light, overlay, poseStack, source, grill.getLevel(), 0);
         poseStack.popPose();
+    }
+
+
+    /**
+     * Calculates the progress for the flip animation.
+     *
+     * @param time the animation time
+     * @return the calculated flip progress
+     */
+    private float calculateFlipProgress(float time)
+    {
+        if(time <= 0.5)
+        {
+            time /= 0.5F;
+            return 1.0F - (float) Math.pow(1.0F - time, 4);
+        }
+        time -= 0.5F;
+        time /= 0.5F;
+        return 1.0F - (time * time * time * time);
     }
 }
