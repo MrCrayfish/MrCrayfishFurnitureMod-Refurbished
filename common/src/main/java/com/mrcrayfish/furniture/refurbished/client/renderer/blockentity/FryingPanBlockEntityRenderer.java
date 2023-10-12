@@ -34,7 +34,7 @@ public class FryingPanBlockEntityRenderer implements BlockEntityRenderer<FryingP
             FlipAnimation animation = fryingPan.getAnimation();
             float time = animation.isPlaying() ? animation.getTime(partialTick) : 0;
             poseStack.translate(0.5, 0.125 + 0.015625, 0.5);
-            poseStack.translate(0, Mth.sin(Mth.PI * time), 0);
+            poseStack.translate(0, Mth.sin(Mth.PI * time) * 0.75, 0);
             poseStack.mulPose(Axis.XP.rotation(Mth.HALF_PI));
             poseStack.mulPose(Axis.ZP.rotation(Mth.HALF_PI * fryingPan.getRotation()));
             poseStack.mulPose(Axis.XP.rotation(Mth.PI * -3 * time));
