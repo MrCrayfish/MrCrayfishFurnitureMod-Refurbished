@@ -20,6 +20,7 @@ import com.mrcrayfish.furniture.refurbished.client.registration.ParticleProvider
 import com.mrcrayfish.furniture.refurbished.client.registration.RenderTypeRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.CeilingFanBlockEntityRenderer;
+import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.PlateBlockEntityRenderer;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.StorageJarRenderer;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.CuttingBoardBlockEntityRenderer;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.ElectricBlockEntityRenderer;
@@ -102,6 +103,7 @@ public class ClientBootstrap
         register.apply(ModBlockEntities.RECYCLE_BIN.get(), ElectricBlockEntityRenderer::new);
         register.apply(ModBlockEntities.CEILING_FAN.get(), CeilingFanBlockEntityRenderer::new);
         register.apply(ModBlockEntities.RANGE_HOOD.get(), ElectricBlockEntityRenderer::new);
+        register.apply(ModBlockEntities.PLATE.get(), PlateBlockEntityRenderer::new);
     }
 
     public static void registerEntityRenderers(EntityRendererRegister register)

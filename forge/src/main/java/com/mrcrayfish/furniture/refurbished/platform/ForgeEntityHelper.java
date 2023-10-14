@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.platform;
 
 import com.mrcrayfish.furniture.refurbished.platform.services.IEntityHelper;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.FakePlayer;
 
 /**
@@ -13,5 +14,11 @@ public class ForgeEntityHelper implements IEntityHelper
     public boolean isFakePlayer(Player player)
     {
         return player instanceof FakePlayer;
+    }
+
+    @Override
+    public void spawnFoodParticles(Player player, ItemStack stack)
+    {
+        player.spawnItemParticles(stack, 10);
     }
 }

@@ -314,4 +314,8 @@ public class ModBlockEntities
             ModBlocks.KITCHEN_STORAGE_CABINET_RED.get(),
             ModBlocks.KITCHEN_STORAGE_CABINET_BLACK.get()
     });
+
+    public static final RegistryEntry<BlockEntityType<PlateBlockEntity>> PLATE = RegistryEntry.blockEntity(Utils.resource("plate"), PlateBlockEntity::new, () -> new Block[]{
+            ModBlocks.PLATE.get()
+    });
 }

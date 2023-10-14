@@ -352,6 +352,7 @@ public class CommonBlockModelProvider
         this.trampoline(ModBlocks.TRAMPOLINE_GREEN.get());
         this.trampoline(ModBlocks.TRAMPOLINE_RED.get());
         this.trampoline(ModBlocks.TRAMPOLINE_BLACK.get());
+        this.plate(ModBlocks.PLATE.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -1197,6 +1198,16 @@ public class CommonBlockModelProvider
         state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.ALL_WITH_LEG_WESTNORTH_NORTHEAST_EASTSOUTH).parentModel(ModelTemplate.TRAMPOLINE_ALL_WITH_LEG_WESTNORTH_NORTHEAST_EASTSOUTH.stateModel(type).setTextures(textures));
         state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.ALL_WITH_LEG_NORTHEAST_SOUTHWEST).parentModel(ModelTemplate.TRAMPOLINE_ALL_WITH_LEG_NORTHEAST_SOUTHWEST.stateModel(type).setTextures(textures));
         state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.ALL_WITH_LEG_EASTSOUTH_WESTNORTH).parentModel(ModelTemplate.TRAMPOLINE_ALL_WITH_LEG_EASTSOUTH_WESTNORTH.stateModel(type).setTextures(textures));
+        this.stateConsumer.accept(state);
+    }
+
+    private void plate(PlateBlock block)
+    {
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.colourParticle(DyeColor.WHITE));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedBlockState state = new PreparedBlockState(block);
+        state.createVariant().existingModel(ModelTemplate.PLATE.stateModel().setTextures(textures)).markAsItem();
         this.stateConsumer.accept(state);
     }
 }
