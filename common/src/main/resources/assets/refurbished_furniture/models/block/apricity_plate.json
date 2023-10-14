@@ -1,0 +1,7 @@
+{
+	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
+	"parent": "refurbished_furniture:block/plate",
+	"textures": {
+		"texture": "refurbished_furniture:block/apricity_plate"
+	}
+}

@@ -153,7 +153,10 @@ public class ModelTemplate
     public static final ModelTemplate TRAMPOLINE_ALL_WITH_LEG_WESTNORTH_NORTHEAST_EASTSOUTH = block("trampoline_all_with_leg_westnorth_northeast_eastsouth", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate TRAMPOLINE_ALL_WITH_LEG_NORTHEAST_SOUTHWEST = block("trampoline_all_with_leg_northeast_southwest", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate TRAMPOLINE_ALL_WITH_LEG_EASTSOUTH_WESTNORTH = block("trampoline_all_with_leg_eastsouth_westnorth", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
-    public static final ModelTemplate PLATE = block("plate", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate APRICITY_PLATE = block("apricity_plate", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate STARDUST_PLATE = block("stardust_plate", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate CERULEAN_PLATE = block("cerulean_plate", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate TUSCAN_PLATE = block("tuscan_plate", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
 
     public static final ModelTemplate FRIDGE = item("fridge", TextureSlot.TEXTURE);
     public static final ModelTemplate CEILING_FAN = item("ceiling_fan", TextureSlot.TEXTURE);
