@@ -16,6 +16,7 @@ public abstract class ParentModel<T extends ParentModel<T>>
     protected final ResourceLocation model;
     protected final TextureSlot[] slots;
     protected TextureMapping textures = new TextureMapping();
+    protected boolean isChild = false;
 
     public ParentModel(String name, ResourceLocation model, TextureSlot[] slots)
     {
@@ -56,6 +57,16 @@ public abstract class ParentModel<T extends ParentModel<T>>
     public TextureMapping getTextures()
     {
         return this.textures;
+    }
+
+    public void markAsChild()
+    {
+        this.isChild = true;
+    }
+
+    public boolean isChild()
+    {
+        return this.isChild;
     }
 
     public ModelTemplate asTemplate()

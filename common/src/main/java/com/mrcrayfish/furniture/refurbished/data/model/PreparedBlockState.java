@@ -3,12 +3,12 @@ package com.mrcrayfish.furniture.refurbished.data.model;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.models.blockstates.VariantProperties;
-import net.minecraft.data.models.model.TextureMapping;
 import net.minecraft.data.models.model.TextureSlot;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -65,8 +65,7 @@ public class PreparedBlockState
     {
         private final Block block;
         private final Map<Property, Comparable> map = new TreeMap<>(Comparator.comparing(Property::getName));
-        private Model model;
-        private boolean hasParent;
+        private Model[] models = new Model[0];
         private boolean useForItem;
 
         private Entry(Block block)
@@ -81,17 +80,16 @@ public class PreparedBlockState
             return this;
         }
 
-        public Entry existingModel(Model builder)
+        public Entry addExistingModel(Model builder)
         {
-            this.model = builder;
-            this.hasParent = false;
+            this.models = ArrayUtils.add(this.models, builder);
             return this;
         }
 
-        public Entry parentModel(Model builder)
+        public Entry addTexturedModel(Model builder)
         {
-            this.model = builder;
-            this.hasParent = true;
+            builder.markAsChild();
+            this.models = ArrayUtils.add(this.models, builder);
             return this;
         }
 
@@ -100,15 +98,9 @@ public class PreparedBlockState
             this.useForItem = true;
         }
 
-        @Nullable
-        public Model getModel()
+        public Model[] getModels()
         {
-            return this.model;
-        }
-
-        public boolean hasParentModel()
-        {
-            return this.hasParent;
+            return this.models;
         }
 
         public Map<Property, Comparable> getValueMap()

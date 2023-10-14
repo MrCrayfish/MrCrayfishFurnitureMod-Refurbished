@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * Author: MrCrayfish
  */
 @Mixin(LivingEntity.class)
-public class LivingEntityMixin
+public class FabricLivingEntityMixin
 {
     @Inject(method = "checkFallDamage", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;sendParticles(Lnet/minecraft/core/particles/ParticleOptions;DDDIDDDD)I"), cancellable = true)
     private void refurbishedFurnitureBeforeLandingParticle(double d, boolean bl, BlockState state, BlockPos pos, CallbackInfo ci)

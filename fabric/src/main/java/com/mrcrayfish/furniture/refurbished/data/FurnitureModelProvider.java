@@ -55,34 +55,40 @@ public class FurnitureModelProvider extends FabricModelProvider
             MultiVariantGenerator generator = MultiVariantGenerator.multiVariant(block);
             DynamicPropertyDispatch dispatch = DynamicPropertyDispatch.of(block);
             builder.getVariants().forEach(entry -> {
-                // Generates the blockstate
-                PreparedBlockState.Model model = Objects.requireNonNull(entry.getModel());
-                ResourceLocation modelLocation = entry.hasParentModel() ? new ResourceLocation(this.output.getModId(), "block/" + model.getName()) : model.getModel();
-                Variant variant = Variant.variant().with(VariantProperties.MODEL, modelLocation);
-                if(model.getXRotation() != VariantProperties.Rotation.R0) {
-                    variant.with(VariantProperties.X_ROT, model.getXRotation());
-                }
-                if(model.getYRotation() != VariantProperties.Rotation.R0) {
-                    variant.with(VariantProperties.Y_ROT, model.getYRotation());
-                }
-                dispatch.register(entry.getValueMap(), variant);
+                // Generates and registers the blockstate variants
+                List<Variant> variants = new ArrayList<>();
+                for(PreparedBlockState.Model model : entry.getModels()) {
+                    ResourceLocation modelLocation = model.isChild() ? new ResourceLocation(this.output.getModId(), "block/" + model.getName()) : model.getModel();
+                    Variant variant = Variant.variant().with(VariantProperties.MODEL, modelLocation);
+                    if(model.getXRotation() != VariantProperties.Rotation.R0) {
+                        variant.with(VariantProperties.X_ROT, model.getXRotation());
+                    }
+                    if(model.getYRotation() != VariantProperties.Rotation.R0) {
+                        variant.with(VariantProperties.Y_ROT, model.getYRotation());
+                    }
+                    variants.add(variant);
 
-                // Creates and registers the block model into the model output if a child model
-                if(entry.hasParentModel() && !createdModels.contains(modelLocation))
-                {
-                    model.asTemplate().create(modelLocation, model.getTextures(), generators.modelOutput);
-                    createdModels.add(modelLocation);
+                    // Creates and registers the block model into the model output if a child model
+                    if(model.isChild() && !createdModels.contains(modelLocation))
+                    {
+                        model.asTemplate().create(modelLocation, model.getTextures(), generators.modelOutput);
+                        createdModels.add(modelLocation);
+                    }
                 }
+                dispatch.register(entry.getValueMap(), variants);
             });
             generator.with(dispatch);
             generators.blockStateOutput.accept(generator);
 
             // Generates an item model if the block has an item and the state builder marked a variant for the item model
             Optional.ofNullable(Item.BY_BLOCK.get(block)).ifPresent(item -> {
-                Optional.ofNullable(builder.getVariantForItem()).map(PreparedBlockState.Entry::getModel).ifPresent(model -> {
-                    ResourceLocation itemName = ModelLocationUtils.getModelLocation(item);
-                    ResourceLocation modelLocation = new ResourceLocation(this.output.getModId(), "block/" + model.getName());
-                    generators.modelOutput.accept(itemName, new DelegatedModel(modelLocation));
+                Optional.ofNullable(builder.getVariantForItem()).map(PreparedBlockState.Entry::getModels).ifPresent(models -> {
+                    if(models.length > 0) {
+                        PreparedBlockState.Model model = models[0];
+                        ResourceLocation itemName = ModelLocationUtils.getModelLocation(item);
+                        ResourceLocation modelLocation = new ResourceLocation(this.output.getModId(), "block/" + model.getName());
+                        generators.modelOutput.accept(itemName, new DelegatedModel(modelLocation));
+                    }
                 });
             });
         }, model -> {
@@ -118,13 +124,13 @@ public class FurnitureModelProvider extends FabricModelProvider
         }
 
         @SuppressWarnings({"unchecked", "rawtypes"})
-        public DynamicPropertyDispatch register(Map<Property, Comparable> valueMap, Variant variant)
+        public DynamicPropertyDispatch register(Map<Property, Comparable> valueMap, List<Variant> variants)
         {
             Preconditions.checkArgument(this.properties.containsAll(valueMap.keySet()), "Invalid value map. It must match all the properties from the block");
             List<Property.Value<?>> values = new ArrayList<>();
             valueMap.forEach((property, comparable) -> values.add(property.value(comparable)));
             Selector selector = Selector.of(values.toArray(Property.Value[]::new));
-            this.putValue(selector, Collections.singletonList(variant));
+            this.putValue(selector, variants);
             return this;
         }
 
