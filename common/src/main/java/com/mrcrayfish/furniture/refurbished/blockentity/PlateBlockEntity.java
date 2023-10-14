@@ -79,10 +79,10 @@ public class PlateBlockEntity extends BasicLootBlockEntity
     {
         if(this.canPlaceItem(0, stack))
         {
+            this.rotation = player.getDirection().get2DDataValue();
             ItemStack copy = stack.copy();
             copy.setCount(1);
             this.setItem(0, copy);
-            this.rotation = player.getDirection().get2DDataValue();
             return true;
         }
         return false;
