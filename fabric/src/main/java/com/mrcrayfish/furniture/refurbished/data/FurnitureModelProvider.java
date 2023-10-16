@@ -2,7 +2,7 @@ package com.mrcrayfish.furniture.refurbished.data;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.mrcrayfish.furniture.refurbished.data.model.PreparedBlockState;
+import com.mrcrayfish.furniture.refurbished.data.model.PreparedVariantBlockState;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.data.models.BlockModelGenerators;
@@ -20,11 +20,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.Property;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -57,7 +55,7 @@ public class FurnitureModelProvider extends FabricModelProvider
             builder.getVariants().forEach(entry -> {
                 // Generates and registers the blockstate variants
                 List<Variant> variants = new ArrayList<>();
-                for(PreparedBlockState.Model model : entry.getModels()) {
+                for(PreparedVariantBlockState.Model model : entry.getModels()) {
                     ResourceLocation modelLocation = model.isChild() ? new ResourceLocation(this.output.getModId(), "block/" + model.getName()) : model.getModel();
                     Variant variant = Variant.variant().with(VariantProperties.MODEL, modelLocation);
                     if(model.getXRotation() != VariantProperties.Rotation.R0) {
@@ -82,9 +80,9 @@ public class FurnitureModelProvider extends FabricModelProvider
 
             // Generates an item model if the block has an item and the state builder marked a variant for the item model
             Optional.ofNullable(Item.BY_BLOCK.get(block)).ifPresent(item -> {
-                Optional.ofNullable(builder.getVariantForItem()).map(PreparedBlockState.Entry::getModels).ifPresent(models -> {
+                Optional.ofNullable(builder.getVariantForItem()).map(PreparedVariantBlockState.Entry::getModels).ifPresent(models -> {
                     if(models.length > 0) {
-                        PreparedBlockState.Model model = models[0];
+                        PreparedVariantBlockState.Model model = models[0];
                         ResourceLocation itemName = ModelLocationUtils.getModelLocation(item);
                         ResourceLocation modelLocation = new ResourceLocation(this.output.getModId(), "block/" + model.getName());
                         generators.modelOutput.accept(itemName, new DelegatedModel(modelLocation));

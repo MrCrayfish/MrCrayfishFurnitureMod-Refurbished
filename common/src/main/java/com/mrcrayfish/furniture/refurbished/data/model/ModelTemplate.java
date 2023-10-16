@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.data.model;
 
+import com.mrcrayfish.furniture.refurbished.block.LeafType;
 import com.mrcrayfish.furniture.refurbished.block.MetalType;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.data.models.model.TextureSlot;
@@ -158,9 +159,17 @@ public class ModelTemplate
     public static final ModelTemplate CERULEAN_PLATE = block("cerulean_plate", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate TUSCAN_PLATE = block("tuscan_plate", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate STOOL = block("stool", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate HEDGE_CENTER_STYLE_1 = block("hedge_center_style_1", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate HEDGE_CENTER_STYLE_2 = block("hedge_center_style_2", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate HEDGE_CENTER_STYLE_3 = block("hedge_center_style_3", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate HEDGE_CENTER_SIDE = block("hedge_center_side", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate HEDGE_CONNECTION_STYLE_1 = block("hedge_connection_style_1", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate HEDGE_CONNECTION_STYLE_2 = block("hedge_connection_style_2", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate HEDGE_CONNECTION_STYLE_3 = block("hedge_connection_style_3", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
 
     public static final ModelTemplate FRIDGE = item("fridge", TextureSlot.TEXTURE);
     public static final ModelTemplate CEILING_FAN = item("ceiling_fan", TextureSlot.TEXTURE);
+    public static final ModelTemplate HEDGE = item("hedge", TextureSlot.TEXTURE);
 
     private static ModelTemplate block(String name, TextureSlot ... textures)
     {
@@ -192,29 +201,34 @@ public class ModelTemplate
         this.textures = textures;
     }
 
-    public PreparedBlockState.Model stateModel()
+    public PreparedVariantBlockState.Model stateModel()
     {
-        return PreparedBlockState.Model.create(this.path, this.location, this.textures);
+        return PreparedVariantBlockState.Model.create(this.path, this.location, this.textures);
     }
 
-    public PreparedBlockState.Model stateModel(WoodType type)
+    public PreparedVariantBlockState.Model stateModel(WoodType type)
     {
-        return PreparedBlockState.Model.create(type.name() + "_" + this.path, this.location, this.textures);
+        return PreparedVariantBlockState.Model.create(type.name() + "_" + this.path, this.location, this.textures);
     }
 
-    public PreparedBlockState.Model stateModel(DyeColor color)
+    public PreparedVariantBlockState.Model stateModel(DyeColor color)
     {
-        return PreparedBlockState.Model.create(color.getName() + "_" + this.path, this.location, this.textures);
+        return PreparedVariantBlockState.Model.create(color.getName() + "_" + this.path, this.location, this.textures);
     }
 
-    public PreparedBlockState.Model stateModel(MetalType type)
+    public PreparedVariantBlockState.Model stateModel(MetalType type)
     {
-        return PreparedBlockState.Model.create(type.getName() + "_" + this.path, this.location, this.textures);
+        return PreparedVariantBlockState.Model.create(type.getName() + "_" + this.path, this.location, this.textures);
     }
 
-    public PreparedBlockState.Model stateModel(WoodType woodType, MetalType metalType)
+    public PreparedVariantBlockState.Model stateModel(LeafType type)
     {
-        return PreparedBlockState.Model.create(woodType.name() + "_" + metalType.getName() + "_" + this.path, this.location, this.textures);
+        return PreparedVariantBlockState.Model.create(type.getName() + "_" + this.path, this.location, this.textures);
+    }
+
+    public PreparedVariantBlockState.Model stateModel(WoodType woodType, MetalType metalType)
+    {
+        return PreparedVariantBlockState.Model.create(woodType.name() + "_" + metalType.getName() + "_" + this.path, this.location, this.textures);
     }
 
     public PreparedItem.Model itemModel(WoodType type)

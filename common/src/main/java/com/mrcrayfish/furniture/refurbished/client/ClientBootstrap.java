@@ -14,8 +14,10 @@ import com.mrcrayfish.furniture.refurbished.client.particle.BounceParticle;
 import com.mrcrayfish.furniture.refurbished.client.particle.FlatParticle;
 import com.mrcrayfish.furniture.refurbished.client.particle.SteamParticle;
 import com.mrcrayfish.furniture.refurbished.client.particle.SuperBounceParticle;
+import com.mrcrayfish.furniture.refurbished.client.registration.BlockColorsRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.BlockEntityRendererRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.EntityRendererRegister;
+import com.mrcrayfish.furniture.refurbished.client.registration.ItemColorsRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ParticleProviderRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.RenderTypeRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
@@ -34,7 +36,12 @@ import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModParticleTypes;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.level.FoliageColor;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Author: MrCrayfish
@@ -211,6 +218,15 @@ public class ClientBootstrap
         register.apply(ModBlocks.TRAMPOLINE_BLACK.get(), RenderType.cutout());
         register.apply(ModBlocks.RANGE_HOOD_LIGHT.get(), RenderType.cutout());
         register.apply(ModBlocks.RANGE_HOOD_DARK.get(), RenderType.cutout());
+        register.apply(ModBlocks.HEDGE_OAK.get(), RenderType.cutout());
+        register.apply(ModBlocks.HEDGE_SPRUCE.get(), RenderType.cutout());
+        register.apply(ModBlocks.HEDGE_BIRCH.get(), RenderType.cutout());
+        register.apply(ModBlocks.HEDGE_JUNGLE.get(), RenderType.cutout());
+        register.apply(ModBlocks.HEDGE_ACACIA.get(), RenderType.cutout());
+        register.apply(ModBlocks.HEDGE_DARK_OAK.get(), RenderType.cutout());
+        register.apply(ModBlocks.HEDGE_MANGROVE.get(), RenderType.cutout());
+        register.apply(ModBlocks.HEDGE_CHERRY.get(), RenderType.cutout());
+        register.apply(ModBlocks.HEDGE_AZALEA.get(), RenderType.cutout());
     }
 
     public static void registerParticleProviders(ParticleProviderRegister register)
@@ -218,5 +234,32 @@ public class ClientBootstrap
         register.apply(ModParticleTypes.BOUNCE.get(), BounceParticle.Provider::new);
         register.apply(ModParticleTypes.SUPER_BOUNCE.get(), SuperBounceParticle.Provider::new);
         register.apply(ModParticleTypes.STEAM.get(), SteamParticle.Provider::new);
+    }
+
+    public static void registerBlockColors(BlockColorsRegister register)
+    {
+        register.apply((state, reader, pos, index) -> {
+            return reader != null && pos != null ? BiomeColors.getAverageFoliageColor(reader, pos) : FoliageColor.getDefaultColor();
+        }, ModBlocks.HEDGE_OAK.get(), ModBlocks.HEDGE_JUNGLE.get(), ModBlocks.HEDGE_ACACIA.get(), ModBlocks.HEDGE_DARK_OAK.get());
+
+        register.apply((state, reader, pos, i) -> {
+            return FoliageColor.getEvergreenColor();
+        }, ModBlocks.HEDGE_SPRUCE.get());
+
+        register.apply((state, reader, pos, i) -> {
+            return FoliageColor.getBirchColor();
+        }, ModBlocks.HEDGE_BIRCH.get());
+
+        register.apply((state, reader, pos, i) -> {
+            return FoliageColor.getMangroveColor();
+        }, ModBlocks.HEDGE_MANGROVE.get());
+    }
+
+    public static void registerItemColors(ItemColorsRegister register)
+    {
+        register.apply((stack, index) -> {
+            BlockState state = ((BlockItem) stack.getItem()).getBlock().defaultBlockState();
+            return Minecraft.getInstance().getBlockColors().getColor(state, null, null, index);
+        }, ModBlocks.HEDGE_OAK.get(), ModBlocks.HEDGE_SPRUCE.get(), ModBlocks.HEDGE_BIRCH.get(), ModBlocks.HEDGE_JUNGLE.get(), ModBlocks.HEDGE_ACACIA.get(), ModBlocks.HEDGE_DARK_OAK.get(), ModBlocks.HEDGE_MANGROVE.get());
     }
 }

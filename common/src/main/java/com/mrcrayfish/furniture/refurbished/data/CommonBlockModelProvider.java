@@ -5,7 +5,8 @@ import com.mrcrayfish.furniture.refurbished.block.*;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.data.model.ExtraModel;
 import com.mrcrayfish.furniture.refurbished.data.model.ModelTemplate;
-import com.mrcrayfish.furniture.refurbished.data.model.PreparedBlockState;
+import com.mrcrayfish.furniture.refurbished.data.model.PreparedMultiPartBlockState;
+import com.mrcrayfish.furniture.refurbished.data.model.PreparedVariantBlockState;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.models.blockstates.VariantProperties;
@@ -25,12 +26,14 @@ import java.util.function.Consumer;
  */
 public class CommonBlockModelProvider
 {
-    private final Consumer<PreparedBlockState> stateConsumer;
+    private final Consumer<PreparedVariantBlockState> variantStateConsumer;
+    private final Consumer<PreparedMultiPartBlockState> multiPartStateConsumer;
     private final Consumer<ExtraModel> extraModelConsumer;
 
-    public CommonBlockModelProvider(Consumer<PreparedBlockState> stateConsumer, Consumer<ExtraModel> extraModelConsumer)
+    public CommonBlockModelProvider(Consumer<PreparedVariantBlockState> variantStateConsumer, Consumer<PreparedMultiPartBlockState> multiPartStateConsumer, Consumer<ExtraModel> extraModelConsumer)
     {
-        this.stateConsumer = stateConsumer;
+        this.variantStateConsumer = variantStateConsumer;
+        this.multiPartStateConsumer = multiPartStateConsumer;
         this.extraModelConsumer = extraModelConsumer;
     }
 
@@ -369,6 +372,15 @@ public class CommonBlockModelProvider
         this.stool(ModBlocks.STOOL_GREEN.get());
         this.stool(ModBlocks.STOOL_RED.get());
         this.stool(ModBlocks.STOOL_BLACK.get());
+        this.hedge(ModBlocks.HEDGE_OAK.get());
+        this.hedge(ModBlocks.HEDGE_SPRUCE.get());
+        this.hedge(ModBlocks.HEDGE_BIRCH.get());
+        this.hedge(ModBlocks.HEDGE_JUNGLE.get());
+        this.hedge(ModBlocks.HEDGE_ACACIA.get());
+        this.hedge(ModBlocks.HEDGE_DARK_OAK.get());
+        this.hedge(ModBlocks.HEDGE_MANGROVE.get());
+        this.hedge(ModBlocks.HEDGE_CHERRY.get());
+        this.hedge(ModBlocks.HEDGE_AZALEA.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -392,13 +404,18 @@ public class CommonBlockModelProvider
         return new ResourceLocation(Constants.MOD_ID, "block/" + type.getName() + "_particle");
     }
 
+    private ResourceLocation leafTexture(LeafType type)
+    {
+        return new ResourceLocation("block/" + type.getName() + "_leaves");
+    }
+
     private void table(TableBlock block)
     {
         WoodType type = block.getWoodType();
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.woodParticle(type));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(TableBlock.NORTH, false).prop(TableBlock.EAST, false).prop(TableBlock.SOUTH, false).prop(TableBlock.WEST, false).addTexturedModel(ModelTemplate.TABLE.stateModel(type).setTextures(textures)).markAsItem();
         state.createVariant().prop(TableBlock.NORTH, true).prop(TableBlock.EAST, false).prop(TableBlock.SOUTH, false).prop(TableBlock.WEST, false).addTexturedModel(ModelTemplate.TABLE_NORTH.stateModel(type).setTextures(textures));
         state.createVariant().prop(TableBlock.NORTH, true).prop(TableBlock.EAST, true).prop(TableBlock.SOUTH, false).prop(TableBlock.WEST, false).addTexturedModel(ModelTemplate.TABLE_NORTH_EAST.stateModel(type).setTextures(textures));
@@ -415,7 +432,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(TableBlock.NORTH, true).prop(TableBlock.EAST, false).prop(TableBlock.SOUTH, true).prop(TableBlock.WEST, false).addTexturedModel(ModelTemplate.TABLE_NORTH_SOUTH.stateModel(type).setTextures(textures));
         state.createVariant().prop(TableBlock.NORTH, false).prop(TableBlock.EAST, true).prop(TableBlock.SOUTH, false).prop(TableBlock.WEST, true).addTexturedModel(ModelTemplate.TABLE_EAST_WEST.stateModel(type).setTextures(textures));
         state.createVariant().prop(TableBlock.NORTH, true).prop(TableBlock.EAST, true).prop(TableBlock.SOUTH, true).prop(TableBlock.WEST, true).addTexturedModel(ModelTemplate.TABLE_NORTH_EAST_SOUTH_WEST.stateModel(type).setTextures(textures));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void chair(ChairBlock block)
@@ -424,7 +441,7 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.woodParticle(type));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(ChairBlock.DIRECTION, Direction.NORTH).prop(ChairBlock.TUCKED, false).addTexturedModel(ModelTemplate.CHAIR.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
         state.createVariant().prop(ChairBlock.DIRECTION, Direction.EAST).prop(ChairBlock.TUCKED, false).addTexturedModel(ModelTemplate.CHAIR.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(ChairBlock.DIRECTION, Direction.SOUTH).prop(ChairBlock.TUCKED, false).addTexturedModel(ModelTemplate.CHAIR.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
@@ -433,7 +450,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(ChairBlock.DIRECTION, Direction.EAST).prop(ChairBlock.TUCKED, true).addTexturedModel(ModelTemplate.CHAIR_TUCKED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(ChairBlock.DIRECTION, Direction.SOUTH).prop(ChairBlock.TUCKED, true).addTexturedModel(ModelTemplate.CHAIR_TUCKED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(ChairBlock.DIRECTION, Direction.WEST).prop(ChairBlock.TUCKED, true).addTexturedModel(ModelTemplate.CHAIR_TUCKED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void desk(DeskBlock block)
@@ -442,7 +459,7 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.woodParticle(type));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(DeskBlock.DIRECTION, Direction.NORTH).prop(DeskBlock.LEFT, false).prop(DeskBlock.RIGHT, false).addTexturedModel(ModelTemplate.DESK.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
         state.createVariant().prop(DeskBlock.DIRECTION, Direction.EAST).prop(DeskBlock.LEFT, false).prop(DeskBlock.RIGHT, false).addTexturedModel(ModelTemplate.DESK.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(DeskBlock.DIRECTION, Direction.SOUTH).prop(DeskBlock.LEFT, false).prop(DeskBlock.RIGHT, false).addTexturedModel(ModelTemplate.DESK.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
@@ -459,7 +476,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(DeskBlock.DIRECTION, Direction.EAST).prop(DeskBlock.LEFT, true).prop(DeskBlock.RIGHT, true).addTexturedModel(ModelTemplate.DESK_MIDDLE.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(DeskBlock.DIRECTION, Direction.SOUTH).prop(DeskBlock.LEFT, true).prop(DeskBlock.RIGHT, true).addTexturedModel(ModelTemplate.DESK_MIDDLE.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(DeskBlock.DIRECTION, Direction.WEST).prop(DeskBlock.LEFT, true).prop(DeskBlock.RIGHT, true).addTexturedModel(ModelTemplate.DESK_MIDDLE.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void drawer(DrawerBlock block)
@@ -468,7 +485,7 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.woodParticle(type));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.NORTH).prop(DrawerBlock.LEFT, false).prop(DrawerBlock.RIGHT, false).prop(DrawerBlock.OPEN, false).addTexturedModel(ModelTemplate.DRAWER_CLOSED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.EAST).prop(DrawerBlock.LEFT, false).prop(DrawerBlock.RIGHT, false).prop(DrawerBlock.OPEN, false).addTexturedModel(ModelTemplate.DRAWER_CLOSED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.SOUTH).prop(DrawerBlock.LEFT, false).prop(DrawerBlock.RIGHT, false).prop(DrawerBlock.OPEN, false).addTexturedModel(ModelTemplate.DRAWER_CLOSED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
@@ -501,7 +518,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.EAST).prop(DrawerBlock.LEFT, true).prop(DrawerBlock.RIGHT, true).prop(DrawerBlock.OPEN, true).addTexturedModel(ModelTemplate.DRAWER_MIDDLE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.SOUTH).prop(DrawerBlock.LEFT, true).prop(DrawerBlock.RIGHT, true).prop(DrawerBlock.OPEN, true).addTexturedModel(ModelTemplate.DRAWER_MIDDLE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.WEST).prop(DrawerBlock.LEFT, true).prop(DrawerBlock.RIGHT, true).prop(DrawerBlock.OPEN, true).addTexturedModel(ModelTemplate.DRAWER_MIDDLE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void crate(CrateBlock block)
@@ -510,10 +527,10 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.woodParticle(type));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(CrateBlock.OPEN, false).addTexturedModel(ModelTemplate.CRATE_CLOSED.stateModel(type).setTextures(textures)).markAsItem();
         state.createVariant().prop(CrateBlock.OPEN, true).addTexturedModel(ModelTemplate.CRATE_OPEN.stateModel(type).setTextures(textures));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void woodenKitchenCabinetry(WoodenKitchenCabinetryBlock block)
@@ -522,7 +539,7 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.woodParticle(type));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.NORTH).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.DEFAULT).addTexturedModel(ModelTemplate.KITCHEN_CABINETRY_DEFAULT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
         state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.NORTH).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.INSIDE_CORNER_LEFT).addTexturedModel(ModelTemplate.KITCHEN_CABINETRY_INSIDE_CORNER_LEFT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
         state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.NORTH).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.INSIDE_CORNER_RIGHT).addTexturedModel(ModelTemplate.KITCHEN_CABINETRY_INSIDE_CORNER_RIGHT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
@@ -543,7 +560,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.WEST).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.INSIDE_CORNER_RIGHT).addTexturedModel(ModelTemplate.KITCHEN_CABINETRY_INSIDE_CORNER_RIGHT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.WEST).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_LEFT).addTexturedModel(ModelTemplate.KITCHEN_CABINETRY_OUTSIDE_CORNER_LEFT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.WEST).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_RIGHT).addTexturedModel(ModelTemplate.KITCHEN_CABINETRY_OUTSIDE_CORNER_RIGHT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void woodenKitchenDrawer(WoodenKitchenDrawerBlock block)
@@ -552,7 +569,7 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.woodParticle(type));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.NORTH).prop(DrawerBlock.OPEN, false).addTexturedModel(ModelTemplate.KITCHEN_DRAWER_CLOSED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.EAST).prop(DrawerBlock.OPEN, false).addTexturedModel(ModelTemplate.KITCHEN_DRAWER_CLOSED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.SOUTH).prop(DrawerBlock.OPEN, false).addTexturedModel(ModelTemplate.KITCHEN_DRAWER_CLOSED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
@@ -561,7 +578,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.EAST).prop(DrawerBlock.OPEN, true).addTexturedModel(ModelTemplate.KITCHEN_DRAWER_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.SOUTH).prop(DrawerBlock.OPEN, true).addTexturedModel(ModelTemplate.KITCHEN_DRAWER_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.WEST).prop(DrawerBlock.OPEN, true).addTexturedModel(ModelTemplate.KITCHEN_DRAWER_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void woodenKitchenSink(WoodenKitchenSinkBlock block)
@@ -570,12 +587,12 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.woodParticle(type));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.NORTH).addTexturedModel(ModelTemplate.KITCHEN_SINK.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.EAST).addTexturedModel(ModelTemplate.KITCHEN_SINK.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.SOUTH).addTexturedModel(ModelTemplate.KITCHEN_SINK.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.WEST).addTexturedModel(ModelTemplate.KITCHEN_SINK.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void colouredKitchenCabinetry(ColouredKitchenCabinetryBlock block)
@@ -584,7 +601,7 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.colourParticle(color));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.NORTH).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.DEFAULT).addTexturedModel(ModelTemplate.KITCHEN_CABINETRY_DEFAULT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
         state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.NORTH).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.INSIDE_CORNER_LEFT).addTexturedModel(ModelTemplate.KITCHEN_CABINETRY_INSIDE_CORNER_LEFT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
         state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.NORTH).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.INSIDE_CORNER_RIGHT).addTexturedModel(ModelTemplate.KITCHEN_CABINETRY_INSIDE_CORNER_RIGHT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
@@ -605,7 +622,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.WEST).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.INSIDE_CORNER_RIGHT).addTexturedModel(ModelTemplate.KITCHEN_CABINETRY_INSIDE_CORNER_RIGHT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.WEST).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_LEFT).addTexturedModel(ModelTemplate.KITCHEN_CABINETRY_OUTSIDE_CORNER_LEFT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         state.createVariant().prop(WoodenKitchenCabinetryBlock.DIRECTION, Direction.WEST).prop(WoodenKitchenCabinetryBlock.SHAPE, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_RIGHT).addTexturedModel(ModelTemplate.KITCHEN_CABINETRY_OUTSIDE_CORNER_RIGHT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void colouredKitchenDrawer(ColouredKitchenDrawerBlock block)
@@ -614,7 +631,7 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.colourParticle(color));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.NORTH).prop(DrawerBlock.OPEN, false).addTexturedModel(ModelTemplate.KITCHEN_DRAWER_CLOSED.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.EAST).prop(DrawerBlock.OPEN, false).addTexturedModel(ModelTemplate.KITCHEN_DRAWER_CLOSED.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.SOUTH).prop(DrawerBlock.OPEN, false).addTexturedModel(ModelTemplate.KITCHEN_DRAWER_CLOSED.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
@@ -623,7 +640,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.EAST).prop(DrawerBlock.OPEN, true).addTexturedModel(ModelTemplate.KITCHEN_DRAWER_OPEN.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.SOUTH).prop(DrawerBlock.OPEN, true).addTexturedModel(ModelTemplate.KITCHEN_DRAWER_OPEN.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.WEST).prop(DrawerBlock.OPEN, true).addTexturedModel(ModelTemplate.KITCHEN_DRAWER_OPEN.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void colouredKitchenSink(ColouredKitchenSinkBlock block)
@@ -632,12 +649,12 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.colourParticle(color));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.NORTH).addTexturedModel(ModelTemplate.KITCHEN_SINK.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.EAST).addTexturedModel(ModelTemplate.KITCHEN_SINK.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.SOUTH).addTexturedModel(ModelTemplate.KITCHEN_SINK.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(DrawerBlock.DIRECTION, Direction.WEST).addTexturedModel(ModelTemplate.KITCHEN_SINK.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void grill(GrillBlock block)
@@ -646,12 +663,12 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.colourParticle(color));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(GrillBlock.DIRECTION, Direction.NORTH).addTexturedModel(ModelTemplate.GRILL.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
         state.createVariant().prop(GrillBlock.DIRECTION, Direction.EAST).addTexturedModel(ModelTemplate.GRILL.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(GrillBlock.DIRECTION, Direction.SOUTH).addTexturedModel(ModelTemplate.GRILL.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(GrillBlock.DIRECTION, Direction.WEST).addTexturedModel(ModelTemplate.GRILL.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void cooler(CoolerBlock block)
@@ -660,7 +677,7 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.colourParticle(color));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(CoolerBlock.DIRECTION, Direction.NORTH).prop(CoolerBlock.OPEN, false).addTexturedModel(ModelTemplate.COOLER_CLOSED.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
         state.createVariant().prop(CoolerBlock.DIRECTION, Direction.EAST).prop(CoolerBlock.OPEN, false).addTexturedModel(ModelTemplate.COOLER_CLOSED.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(CoolerBlock.DIRECTION, Direction.SOUTH).prop(CoolerBlock.OPEN, false).addTexturedModel(ModelTemplate.COOLER_CLOSED.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
@@ -669,7 +686,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(CoolerBlock.DIRECTION, Direction.EAST).prop(CoolerBlock.OPEN, true).addTexturedModel(ModelTemplate.COOLER_OPEN.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(CoolerBlock.DIRECTION, Direction.SOUTH).prop(CoolerBlock.OPEN, true).addTexturedModel(ModelTemplate.COOLER_OPEN.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(CoolerBlock.DIRECTION, Direction.WEST).prop(CoolerBlock.OPEN, true).addTexturedModel(ModelTemplate.COOLER_OPEN.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
     
     private void fridge(FridgeBlock block)
@@ -678,7 +695,7 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.metalParticle(type));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(FridgeBlock.DIRECTION, Direction.NORTH).prop(FridgeBlock.OPEN, false).addTexturedModel(ModelTemplate.FRIDGE_CLOSED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
         state.createVariant().prop(FridgeBlock.DIRECTION, Direction.EAST).prop(FridgeBlock.OPEN, false).addTexturedModel(ModelTemplate.FRIDGE_CLOSED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(FridgeBlock.DIRECTION, Direction.SOUTH).prop(FridgeBlock.OPEN, false).addTexturedModel(ModelTemplate.FRIDGE_CLOSED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
@@ -687,7 +704,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(FridgeBlock.DIRECTION, Direction.EAST).prop(FridgeBlock.OPEN, true).addTexturedModel(ModelTemplate.FRIDGE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(FridgeBlock.DIRECTION, Direction.SOUTH).prop(FridgeBlock.OPEN, true).addTexturedModel(ModelTemplate.FRIDGE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(FridgeBlock.DIRECTION, Direction.WEST).prop(FridgeBlock.OPEN, true).addTexturedModel(ModelTemplate.FRIDGE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void freezer(FreezerBlock block)
@@ -696,7 +713,7 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.metalParticle(type));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block.getFridge().get()));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(FreezerBlock.DIRECTION, Direction.NORTH).prop(FreezerBlock.OPEN, false).addTexturedModel(ModelTemplate.FREEZER_CLOSED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
         state.createVariant().prop(FreezerBlock.DIRECTION, Direction.EAST).prop(FreezerBlock.OPEN, false).addTexturedModel(ModelTemplate.FREEZER_CLOSED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(FreezerBlock.DIRECTION, Direction.SOUTH).prop(FreezerBlock.OPEN, false).addTexturedModel(ModelTemplate.FREEZER_CLOSED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
@@ -705,7 +722,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(FreezerBlock.DIRECTION, Direction.EAST).prop(FreezerBlock.OPEN, true).addTexturedModel(ModelTemplate.FREEZER_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(FreezerBlock.DIRECTION, Direction.SOUTH).prop(FreezerBlock.OPEN, true).addTexturedModel(ModelTemplate.FREEZER_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(FreezerBlock.DIRECTION, Direction.WEST).prop(FreezerBlock.OPEN, true).addTexturedModel(ModelTemplate.FREEZER_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void toaster(ToasterBlock block)
@@ -714,7 +731,7 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.metalParticle(type));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(ToasterBlock.DIRECTION, Direction.NORTH).prop(ToasterBlock.POWERED, false).addTexturedModel(ModelTemplate.TOASTER.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
         state.createVariant().prop(ToasterBlock.DIRECTION, Direction.EAST).prop(ToasterBlock.POWERED, false).addTexturedModel(ModelTemplate.TOASTER.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(ToasterBlock.DIRECTION, Direction.SOUTH).prop(ToasterBlock.POWERED, false).addTexturedModel(ModelTemplate.TOASTER.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
@@ -723,7 +740,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(ToasterBlock.DIRECTION, Direction.EAST).prop(ToasterBlock.POWERED, true).addTexturedModel(ModelTemplate.TOASTER_COOKING.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(ToasterBlock.DIRECTION, Direction.SOUTH).prop(ToasterBlock.POWERED, true).addTexturedModel(ModelTemplate.TOASTER_COOKING.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(ToasterBlock.DIRECTION, Direction.WEST).prop(ToasterBlock.POWERED, true).addTexturedModel(ModelTemplate.TOASTER_COOKING.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void microwave(MicrowaveBlock block)
@@ -732,7 +749,7 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.metalParticle(type));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(MicrowaveBlock.DIRECTION, Direction.NORTH).prop(MicrowaveBlock.OPEN, false).addTexturedModel(ModelTemplate.MICROWAVE_CLOSED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
         state.createVariant().prop(MicrowaveBlock.DIRECTION, Direction.EAST).prop(MicrowaveBlock.OPEN, false).addTexturedModel(ModelTemplate.MICROWAVE_CLOSED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(MicrowaveBlock.DIRECTION, Direction.SOUTH).prop(MicrowaveBlock.OPEN, false).addTexturedModel(ModelTemplate.MICROWAVE_CLOSED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
@@ -741,7 +758,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(MicrowaveBlock.DIRECTION, Direction.EAST).prop(MicrowaveBlock.OPEN, true).addTexturedModel(ModelTemplate.MICROWAVE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(MicrowaveBlock.DIRECTION, Direction.SOUTH).prop(MicrowaveBlock.OPEN, true).addTexturedModel(ModelTemplate.MICROWAVE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(MicrowaveBlock.DIRECTION, Direction.WEST).prop(MicrowaveBlock.OPEN, true).addTexturedModel(ModelTemplate.MICROWAVE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void stove(StoveBlock block)
@@ -750,7 +767,7 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.metalParticle(type));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(StoveBlock.DIRECTION, Direction.NORTH).prop(StoveBlock.OPEN, false).addTexturedModel(ModelTemplate.STOVE_CLOSED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
         state.createVariant().prop(StoveBlock.DIRECTION, Direction.EAST).prop(StoveBlock.OPEN, false).addTexturedModel(ModelTemplate.STOVE_CLOSED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(StoveBlock.DIRECTION, Direction.SOUTH).prop(StoveBlock.OPEN, false).addTexturedModel(ModelTemplate.STOVE_CLOSED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
@@ -759,7 +776,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(StoveBlock.DIRECTION, Direction.EAST).prop(StoveBlock.OPEN, true).addTexturedModel(ModelTemplate.STOVE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(StoveBlock.DIRECTION, Direction.SOUTH).prop(StoveBlock.OPEN, true).addTexturedModel(ModelTemplate.STOVE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(StoveBlock.DIRECTION, Direction.WEST).prop(StoveBlock.OPEN, true).addTexturedModel(ModelTemplate.STOVE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void rangeHood(RangeHoodBlock block)
@@ -768,7 +785,7 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.metalParticle(type));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(RangeHoodBlock.DIRECTION, Direction.NORTH).prop(RangeHoodBlock.POWERED, false).addTexturedModel(ModelTemplate.RANGE_HOOD_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
         state.createVariant().prop(RangeHoodBlock.DIRECTION, Direction.EAST).prop(RangeHoodBlock.POWERED, false).addTexturedModel(ModelTemplate.RANGE_HOOD_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(RangeHoodBlock.DIRECTION, Direction.SOUTH).prop(RangeHoodBlock.POWERED, false).addTexturedModel(ModelTemplate.RANGE_HOOD_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
@@ -777,7 +794,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(RangeHoodBlock.DIRECTION, Direction.EAST).prop(RangeHoodBlock.POWERED, true).addTexturedModel(ModelTemplate.RANGE_HOOD_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(RangeHoodBlock.DIRECTION, Direction.SOUTH).prop(RangeHoodBlock.POWERED, true).addTexturedModel(ModelTemplate.RANGE_HOOD_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(RangeHoodBlock.DIRECTION, Direction.WEST).prop(RangeHoodBlock.POWERED, true).addTexturedModel(ModelTemplate.RANGE_HOOD_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void cuttingBoard(CuttingBoardBlock block)
@@ -786,12 +803,12 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.woodParticle(type));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(CuttingBoardBlock.DIRECTION, Direction.NORTH).addTexturedModel(ModelTemplate.CUTTING_BOARD.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
         state.createVariant().prop(CuttingBoardBlock.DIRECTION, Direction.EAST).addTexturedModel(ModelTemplate.CUTTING_BOARD.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(CuttingBoardBlock.DIRECTION, Direction.SOUTH).addTexturedModel(ModelTemplate.CUTTING_BOARD.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(CuttingBoardBlock.DIRECTION, Direction.WEST).addTexturedModel(ModelTemplate.CUTTING_BOARD.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void fryingPan(FryingPanBlock block)
@@ -799,12 +816,12 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.metalParticle(MetalType.LIGHT));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(FryingPanBlock.DIRECTION, Direction.NORTH).addExistingModel(ModelTemplate.FRYING_PAN.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
         state.createVariant().prop(FryingPanBlock.DIRECTION, Direction.EAST).addExistingModel(ModelTemplate.FRYING_PAN.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(FryingPanBlock.DIRECTION, Direction.SOUTH).addExistingModel(ModelTemplate.FRYING_PAN.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(FryingPanBlock.DIRECTION, Direction.WEST).addExistingModel(ModelTemplate.FRYING_PAN.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void mailbox(MailboxBlock block)
@@ -813,7 +830,7 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.woodParticle(type));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(MailboxBlock.DIRECTION, Direction.NORTH).prop(MailboxBlock.ENABLED, false).addTexturedModel(ModelTemplate.MAIL_BOX.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
         state.createVariant().prop(MailboxBlock.DIRECTION, Direction.EAST).prop(DrawerBlock.ENABLED, false).addTexturedModel(ModelTemplate.MAIL_BOX.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(MailboxBlock.DIRECTION, Direction.SOUTH).prop(DrawerBlock.ENABLED, false).addTexturedModel(ModelTemplate.MAIL_BOX.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
@@ -822,7 +839,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(MailboxBlock.DIRECTION, Direction.EAST).prop(DrawerBlock.ENABLED, true).addTexturedModel(ModelTemplate.MAIL_BOX_UNCHECKED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(MailboxBlock.DIRECTION, Direction.SOUTH).prop(DrawerBlock.ENABLED, true).addTexturedModel(ModelTemplate.MAIL_BOX_UNCHECKED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(MailboxBlock.DIRECTION, Direction.WEST).prop(DrawerBlock.ENABLED, true).addTexturedModel(ModelTemplate.MAIL_BOX_UNCHECKED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void postBox(PostBoxBlock block)
@@ -830,12 +847,12 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.metalParticle(MetalType.LIGHT));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(PostBoxBlock.DIRECTION, Direction.NORTH).addExistingModel(ModelTemplate.POST_BOX.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
         state.createVariant().prop(PostBoxBlock.DIRECTION, Direction.EAST).addExistingModel(ModelTemplate.POST_BOX.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(PostBoxBlock.DIRECTION, Direction.SOUTH).addExistingModel(ModelTemplate.POST_BOX.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(PostBoxBlock.DIRECTION, Direction.WEST).addExistingModel(ModelTemplate.POST_BOX.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void sofa(SofaBlock block)
@@ -844,7 +861,7 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.colourParticle(color));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(SofaBlock.DIRECTION, Direction.NORTH).prop(SofaBlock.SHAPE, SofaBlock.Shape.DEFAULT).addTexturedModel(ModelTemplate.SOFA.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
         state.createVariant().prop(SofaBlock.DIRECTION, Direction.EAST).prop(SofaBlock.SHAPE, SofaBlock.Shape.DEFAULT).addTexturedModel(ModelTemplate.SOFA.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(SofaBlock.DIRECTION, Direction.SOUTH).prop(SofaBlock.SHAPE, SofaBlock.Shape.DEFAULT).addTexturedModel(ModelTemplate.SOFA.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
@@ -869,7 +886,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(SofaBlock.DIRECTION, Direction.EAST).prop(SofaBlock.SHAPE, SofaBlock.Shape.CORNER_RIGHT).addTexturedModel(ModelTemplate.SOFA_CORNER_RIGHT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(SofaBlock.DIRECTION, Direction.SOUTH).prop(SofaBlock.SHAPE, SofaBlock.Shape.CORNER_RIGHT).addTexturedModel(ModelTemplate.SOFA_CORNER_RIGHT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(SofaBlock.DIRECTION, Direction.WEST).prop(SofaBlock.SHAPE, SofaBlock.Shape.CORNER_RIGHT).addTexturedModel(ModelTemplate.SOFA_CORNER_RIGHT.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void doorbell(DoorbellBlock block)
@@ -877,7 +894,7 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.metalParticle(MetalType.LIGHT));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(DoorbellBlock.DIRECTION, Direction.NORTH).prop(DoorbellBlock.ENABLED, false).addExistingModel(ModelTemplate.DOORBELL.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
         state.createVariant().prop(DoorbellBlock.DIRECTION, Direction.EAST).prop(DoorbellBlock.ENABLED, false).addExistingModel(ModelTemplate.DOORBELL.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(DoorbellBlock.DIRECTION, Direction.SOUTH).prop(DoorbellBlock.ENABLED, false).addExistingModel(ModelTemplate.DOORBELL.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
@@ -886,7 +903,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(DoorbellBlock.DIRECTION, Direction.EAST).prop(DoorbellBlock.ENABLED, true).addExistingModel(ModelTemplate.DOORBELL_PRESSED.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(DoorbellBlock.DIRECTION, Direction.SOUTH).prop(DoorbellBlock.ENABLED, true).addExistingModel(ModelTemplate.DOORBELL_PRESSED.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(DoorbellBlock.DIRECTION, Direction.WEST).prop(DoorbellBlock.ENABLED, true).addExistingModel(ModelTemplate.DOORBELL_PRESSED.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void lightswitch(LightswitchBlock block)
@@ -895,7 +912,7 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.metalParticle(type));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(LightswitchBlock.FACING, Direction.NORTH).prop(LightswitchBlock.FACE, AttachFace.WALL).prop(LightswitchBlock.ENABLED, false).prop(LightswitchBlock.POWERED, false).addTexturedModel(ModelTemplate.LIGHTSWITCH_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180)).markAsItem();
         state.createVariant().prop(LightswitchBlock.FACING, Direction.EAST).prop(LightswitchBlock.FACE, AttachFace.WALL).prop(LightswitchBlock.ENABLED, false).prop(LightswitchBlock.POWERED, false).addTexturedModel(ModelTemplate.LIGHTSWITCH_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         state.createVariant().prop(LightswitchBlock.FACING, Direction.SOUTH).prop(LightswitchBlock.FACE, AttachFace.WALL).prop(LightswitchBlock.ENABLED, false).prop(LightswitchBlock.POWERED, false).addTexturedModel(ModelTemplate.LIGHTSWITCH_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
@@ -944,7 +961,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(LightswitchBlock.FACING, Direction.EAST).prop(LightswitchBlock.FACE, AttachFace.CEILING).prop(LightswitchBlock.ENABLED, true).prop(LightswitchBlock.POWERED, true).addTexturedModel(ModelTemplate.LIGHTSWITCH_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90).setXRotation(VariantProperties.Rotation.R270));
         state.createVariant().prop(LightswitchBlock.FACING, Direction.SOUTH).prop(LightswitchBlock.FACE, AttachFace.CEILING).prop(LightswitchBlock.ENABLED, true).prop(LightswitchBlock.POWERED, true).addTexturedModel(ModelTemplate.LIGHTSWITCH_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180).setXRotation(VariantProperties.Rotation.R270));
         state.createVariant().prop(LightswitchBlock.FACING, Direction.WEST).prop(LightswitchBlock.FACE, AttachFace.CEILING).prop(LightswitchBlock.ENABLED, true).prop(LightswitchBlock.POWERED, true).addTexturedModel(ModelTemplate.LIGHTSWITCH_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270).setXRotation(VariantProperties.Rotation.R270));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void ceilingLight(CeilingLightBlock block)
@@ -953,7 +970,7 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.metalParticle(type));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(CeilingLightBlock.FACING, Direction.NORTH).prop(CeilingLightBlock.FACE, AttachFace.WALL).prop(CeilingLightBlock.POWERED, false).addTexturedModel(ModelTemplate.CEILING_LIGHT_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180)).markAsItem();
         state.createVariant().prop(CeilingLightBlock.FACING, Direction.EAST).prop(CeilingLightBlock.FACE, AttachFace.WALL).prop(CeilingLightBlock.POWERED, false).addTexturedModel(ModelTemplate.CEILING_LIGHT_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         state.createVariant().prop(CeilingLightBlock.FACING, Direction.SOUTH).prop(CeilingLightBlock.FACE, AttachFace.WALL).prop(CeilingLightBlock.POWERED, false).addTexturedModel(ModelTemplate.CEILING_LIGHT_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
@@ -978,7 +995,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(CeilingLightBlock.FACING, Direction.EAST).prop(CeilingLightBlock.FACE, AttachFace.CEILING).prop(CeilingLightBlock.POWERED, true).addTexturedModel(ModelTemplate.CEILING_LIGHT_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90).setXRotation(VariantProperties.Rotation.R270));
         state.createVariant().prop(CeilingLightBlock.FACING, Direction.SOUTH).prop(CeilingLightBlock.FACE, AttachFace.CEILING).prop(CeilingLightBlock.POWERED, true).addTexturedModel(ModelTemplate.CEILING_LIGHT_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180).setXRotation(VariantProperties.Rotation.R270));
         state.createVariant().prop(CeilingLightBlock.FACING, Direction.WEST).prop(CeilingLightBlock.FACE, AttachFace.CEILING).prop(CeilingLightBlock.POWERED, true).addTexturedModel(ModelTemplate.CEILING_LIGHT_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270).setXRotation(VariantProperties.Rotation.R270));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void electricityGenerator(ElectricityGeneratorBlock block)
@@ -987,7 +1004,7 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.metalParticle(type));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(ElectricityGeneratorBlock.DIRECTION, Direction.NORTH).prop(ElectricityGeneratorBlock.POWERED, false).addTexturedModel(ModelTemplate.ELECTRICITY_GENERATOR_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
         state.createVariant().prop(ElectricityGeneratorBlock.DIRECTION, Direction.EAST).prop(ElectricityGeneratorBlock.POWERED, false).addTexturedModel(ModelTemplate.ELECTRICITY_GENERATOR_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(ElectricityGeneratorBlock.DIRECTION, Direction.SOUTH).prop(ElectricityGeneratorBlock.POWERED, false).addTexturedModel(ModelTemplate.ELECTRICITY_GENERATOR_OFF.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
@@ -996,7 +1013,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(ElectricityGeneratorBlock.DIRECTION, Direction.EAST).prop(ElectricityGeneratorBlock.POWERED, true).addTexturedModel(ModelTemplate.ELECTRICITY_GENERATOR_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(ElectricityGeneratorBlock.DIRECTION, Direction.SOUTH).prop(ElectricityGeneratorBlock.POWERED, true).addTexturedModel(ModelTemplate.ELECTRICITY_GENERATOR_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(ElectricityGeneratorBlock.DIRECTION, Direction.WEST).prop(ElectricityGeneratorBlock.POWERED, true).addTexturedModel(ModelTemplate.ELECTRICITY_GENERATOR_ON.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void storageJar(StorageJarBlock block)
@@ -1005,12 +1022,12 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, new ResourceLocation("block/glass"));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(StorageJarBlock.DIRECTION, Direction.NORTH).addTexturedModel(ModelTemplate.STORAGE_JAR.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
         state.createVariant().prop(StorageJarBlock.DIRECTION, Direction.EAST).addTexturedModel(ModelTemplate.STORAGE_JAR.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(StorageJarBlock.DIRECTION, Direction.SOUTH).addTexturedModel(ModelTemplate.STORAGE_JAR.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(StorageJarBlock.DIRECTION, Direction.WEST).addTexturedModel(ModelTemplate.STORAGE_JAR.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void recycleBin(RecycleBinBlock block)
@@ -1018,7 +1035,7 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.metalParticle(MetalType.LIGHT));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(RecycleBinBlock.DIRECTION, Direction.NORTH).prop(RecycleBinBlock.OPEN, false).addExistingModel(ModelTemplate.RECYCLE_BIN_CLOSED.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
         state.createVariant().prop(RecycleBinBlock.DIRECTION, Direction.EAST).prop(RecycleBinBlock.OPEN, false).addExistingModel(ModelTemplate.RECYCLE_BIN_CLOSED.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(RecycleBinBlock.DIRECTION, Direction.SOUTH).prop(RecycleBinBlock.OPEN, false).addExistingModel(ModelTemplate.RECYCLE_BIN_CLOSED.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
@@ -1027,7 +1044,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(RecycleBinBlock.DIRECTION, Direction.EAST).prop(RecycleBinBlock.OPEN, true).addExistingModel(ModelTemplate.RECYCLE_BIN_OPEN.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(RecycleBinBlock.DIRECTION, Direction.SOUTH).prop(RecycleBinBlock.OPEN, true).addExistingModel(ModelTemplate.RECYCLE_BIN_OPEN.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(RecycleBinBlock.DIRECTION, Direction.WEST).prop(RecycleBinBlock.OPEN, true).addExistingModel(ModelTemplate.RECYCLE_BIN_OPEN.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void lamp(LampBlock block)
@@ -1036,10 +1053,10 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.colourParticle(type));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(LampBlock.POWERED, false).addTexturedModel(ModelTemplate.LAMP_OFF.stateModel(type).setTextures(textures)).markAsItem();
         state.createVariant().prop(LampBlock.POWERED, true).addTexturedModel(ModelTemplate.LAMP_ON.stateModel(type).setTextures(textures));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void ceilingFan(CeilingFanBlock block)
@@ -1049,7 +1066,7 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.metalParticle(metalType));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(CeilingFanBlock.FACING, Direction.NORTH).prop(CeilingFanBlock.POWERED, false).prop(CeilingFanBlock.LIT, false).addTexturedModel(ModelTemplate.CEILING_FAN_BASE_OFF.stateModel(woodType, metalType).setTextures(textures).setXRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(CeilingFanBlock.FACING, Direction.EAST).prop(CeilingFanBlock.POWERED, false).prop(CeilingFanBlock.LIT, false).addTexturedModel(ModelTemplate.CEILING_FAN_BASE_OFF.stateModel(woodType, metalType).setTextures(textures).setXRotation(VariantProperties.Rotation.R90).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(CeilingFanBlock.FACING, Direction.SOUTH).prop(CeilingFanBlock.POWERED, false).prop(CeilingFanBlock.LIT, false).addTexturedModel(ModelTemplate.CEILING_FAN_BASE_OFF.stateModel(woodType, metalType).setTextures(textures).setXRotation(VariantProperties.Rotation.R270));
@@ -1074,7 +1091,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(CeilingFanBlock.FACING, Direction.WEST).prop(CeilingFanBlock.POWERED, true).prop(CeilingFanBlock.LIT, true).addTexturedModel(ModelTemplate.CEILING_FAN_BASE_ON.stateModel(woodType, metalType).setTextures(textures).setXRotation(VariantProperties.Rotation.R270).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(CeilingFanBlock.FACING, Direction.UP).prop(CeilingFanBlock.POWERED, true).prop(CeilingFanBlock.LIT, true).addTexturedModel(ModelTemplate.CEILING_FAN_BASE_ON.stateModel(woodType, metalType).setTextures(textures));
         state.createVariant().prop(CeilingFanBlock.FACING, Direction.DOWN).prop(CeilingFanBlock.POWERED, true).prop(CeilingFanBlock.LIT, true).addTexturedModel(ModelTemplate.CEILING_FAN_BASE_ON.stateModel(woodType, metalType).setTextures(textures).setXRotation(VariantProperties.Rotation.R180));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
 
         // Creates the extra models used for animating the blades
         TextureMapping extraTextures = new TextureMapping();
@@ -1088,7 +1105,7 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.woodParticle(type));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.NORTH).prop(StorageCabinetBlock.OPEN, false).prop(StorageCabinetBlock.HINGE, DoorHingeSide.LEFT).addTexturedModel(ModelTemplate.CABINET_CLOSED_HINGE_LEFT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
         state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.EAST).prop(StorageCabinetBlock.OPEN, false).prop(StorageCabinetBlock.HINGE, DoorHingeSide.LEFT).addTexturedModel(ModelTemplate.CABINET_CLOSED_HINGE_LEFT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.SOUTH).prop(StorageCabinetBlock.OPEN, false).prop(StorageCabinetBlock.HINGE, DoorHingeSide.LEFT).addTexturedModel(ModelTemplate.CABINET_CLOSED_HINGE_LEFT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
@@ -1105,7 +1122,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.EAST).prop(StorageCabinetBlock.OPEN, true).prop(StorageCabinetBlock.HINGE, DoorHingeSide.RIGHT).addTexturedModel(ModelTemplate.CABINET_OPEN_HINGE_RIGHT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.SOUTH).prop(StorageCabinetBlock.OPEN, true).prop(StorageCabinetBlock.HINGE, DoorHingeSide.RIGHT).addTexturedModel(ModelTemplate.CABINET_OPEN_HINGE_RIGHT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.WEST).prop(StorageCabinetBlock.OPEN, true).prop(StorageCabinetBlock.HINGE, DoorHingeSide.RIGHT).addTexturedModel(ModelTemplate.CABINET_OPEN_HINGE_RIGHT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void woodenKitchenCabinet(WoodenKitchenStorageCabinetBlock block)
@@ -1114,7 +1131,7 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.woodParticle(type));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.NORTH).prop(StorageCabinetBlock.OPEN, false).prop(StorageCabinetBlock.HINGE, DoorHingeSide.LEFT).addTexturedModel(ModelTemplate.KITCHEN_STORAGE_CABINET_CLOSED_HINGE_LEFT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
         state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.EAST).prop(StorageCabinetBlock.OPEN, false).prop(StorageCabinetBlock.HINGE, DoorHingeSide.LEFT).addTexturedModel(ModelTemplate.KITCHEN_STORAGE_CABINET_CLOSED_HINGE_LEFT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.SOUTH).prop(StorageCabinetBlock.OPEN, false).prop(StorageCabinetBlock.HINGE, DoorHingeSide.LEFT).addTexturedModel(ModelTemplate.KITCHEN_STORAGE_CABINET_CLOSED_HINGE_LEFT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
@@ -1131,7 +1148,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.EAST).prop(StorageCabinetBlock.OPEN, true).prop(StorageCabinetBlock.HINGE, DoorHingeSide.RIGHT).addTexturedModel(ModelTemplate.KITCHEN_STORAGE_CABINET_OPEN_HINGE_RIGHT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.SOUTH).prop(StorageCabinetBlock.OPEN, true).prop(StorageCabinetBlock.HINGE, DoorHingeSide.RIGHT).addTexturedModel(ModelTemplate.KITCHEN_STORAGE_CABINET_OPEN_HINGE_RIGHT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.WEST).prop(StorageCabinetBlock.OPEN, true).prop(StorageCabinetBlock.HINGE, DoorHingeSide.RIGHT).addTexturedModel(ModelTemplate.KITCHEN_STORAGE_CABINET_OPEN_HINGE_RIGHT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void colouredKitchenCabinet(ColouredKitchenStorageCabinetBlock block)
@@ -1140,7 +1157,7 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.colourParticle(type));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.NORTH).prop(StorageCabinetBlock.OPEN, false).prop(StorageCabinetBlock.HINGE, DoorHingeSide.LEFT).addTexturedModel(ModelTemplate.KITCHEN_STORAGE_CABINET_CLOSED_HINGE_LEFT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
         state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.EAST).prop(StorageCabinetBlock.OPEN, false).prop(StorageCabinetBlock.HINGE, DoorHingeSide.LEFT).addTexturedModel(ModelTemplate.KITCHEN_STORAGE_CABINET_CLOSED_HINGE_LEFT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.SOUTH).prop(StorageCabinetBlock.OPEN, false).prop(StorageCabinetBlock.HINGE, DoorHingeSide.LEFT).addTexturedModel(ModelTemplate.KITCHEN_STORAGE_CABINET_CLOSED_HINGE_LEFT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
@@ -1157,7 +1174,7 @@ public class CommonBlockModelProvider
         state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.EAST).prop(StorageCabinetBlock.OPEN, true).prop(StorageCabinetBlock.HINGE, DoorHingeSide.RIGHT).addTexturedModel(ModelTemplate.KITCHEN_STORAGE_CABINET_OPEN_HINGE_RIGHT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.SOUTH).prop(StorageCabinetBlock.OPEN, true).prop(StorageCabinetBlock.HINGE, DoorHingeSide.RIGHT).addTexturedModel(ModelTemplate.KITCHEN_STORAGE_CABINET_OPEN_HINGE_RIGHT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(StorageCabinetBlock.DIRECTION, Direction.WEST).prop(StorageCabinetBlock.OPEN, true).prop(StorageCabinetBlock.HINGE, DoorHingeSide.RIGHT).addTexturedModel(ModelTemplate.KITCHEN_STORAGE_CABINET_OPEN_HINGE_RIGHT.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void trampoline(TrampolineBlock block)
@@ -1166,7 +1183,7 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.colourParticle(type));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.DEFAULT).addTexturedModel(ModelTemplate.TRAMPOLINE_DEFAULT.stateModel(type).setTextures(textures)).markAsItem();
         state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.NORTH).addTexturedModel(ModelTemplate.TRAMPOLINE_NORTH.stateModel(type).setTextures(textures));
         state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.EAST).addTexturedModel(ModelTemplate.TRAMPOLINE_EAST.stateModel(type).setTextures(textures));
@@ -1214,19 +1231,19 @@ public class CommonBlockModelProvider
         state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.ALL_WITH_LEG_WESTNORTH_NORTHEAST_EASTSOUTH).addTexturedModel(ModelTemplate.TRAMPOLINE_ALL_WITH_LEG_WESTNORTH_NORTHEAST_EASTSOUTH.stateModel(type).setTextures(textures));
         state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.ALL_WITH_LEG_NORTHEAST_SOUTHWEST).addTexturedModel(ModelTemplate.TRAMPOLINE_ALL_WITH_LEG_NORTHEAST_SOUTHWEST.stateModel(type).setTextures(textures));
         state.createVariant().prop(TrampolineBlock.SHAPE, TrampolineBlock.Shape.ALL_WITH_LEG_EASTSOUTH_WESTNORTH).addTexturedModel(ModelTemplate.TRAMPOLINE_ALL_WITH_LEG_EASTSOUTH_WESTNORTH.stateModel(type).setTextures(textures));
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void plate(PlateBlock block)
     {
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant()
                 .addExistingModel(ModelTemplate.APRICITY_PLATE.stateModel())
                 .addExistingModel(ModelTemplate.STARDUST_PLATE.stateModel())
                 .addExistingModel(ModelTemplate.CERULEAN_PLATE.stateModel())
                 .addExistingModel(ModelTemplate.TUSCAN_PLATE.stateModel())
                 .markAsItem();
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
     }
 
     private void stool(StoolBlock block)
@@ -1235,8 +1252,43 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.colourParticle(color));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedBlockState state = new PreparedBlockState(block);
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().addTexturedModel(ModelTemplate.STOOL.stateModel(color).setTextures(textures)).markAsItem();
-        this.stateConsumer.accept(state);
+        this.variantStateConsumer.accept(state);
+    }
+
+    private void hedge(HedgeBlock block)
+    {
+        LeafType type = block.getLeafType();
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.leafTexture(type));
+        textures.put(TextureSlot.TEXTURE, this.leafTexture(type));
+        PreparedMultiPartBlockState state = new PreparedMultiPartBlockState(block);
+        state.setItemModel(ModelTemplate.HEDGE.stateModel(type).setTextures(textures).markAsChild());
+        state.createPart()
+                .addTexturedModel(ModelTemplate.HEDGE_CENTER_STYLE_1.stateModel(type).setTextures(textures))
+                .addTexturedModel(ModelTemplate.HEDGE_CENTER_STYLE_2.stateModel(type).setTextures(textures))
+                .addTexturedModel(ModelTemplate.HEDGE_CENTER_STYLE_3.stateModel(type).setTextures(textures));
+        state.createPart().prop(HedgeBlock.NORTH, false).addTexturedModel(ModelTemplate.HEDGE_CENTER_SIDE.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createPart().prop(HedgeBlock.EAST, false).addTexturedModel(ModelTemplate.HEDGE_CENTER_SIDE.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createPart().prop(HedgeBlock.SOUTH, false).addTexturedModel(ModelTemplate.HEDGE_CENTER_SIDE.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
+        state.createPart().prop(HedgeBlock.WEST, false).addTexturedModel(ModelTemplate.HEDGE_CENTER_SIDE.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createPart().prop(HedgeBlock.NORTH, true)
+                .addTexturedModel(ModelTemplate.HEDGE_CONNECTION_STYLE_1.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180))
+                .addTexturedModel(ModelTemplate.HEDGE_CONNECTION_STYLE_2.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180))
+                .addTexturedModel(ModelTemplate.HEDGE_CONNECTION_STYLE_3.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createPart().prop(HedgeBlock.EAST, true)
+                .addTexturedModel(ModelTemplate.HEDGE_CONNECTION_STYLE_1.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270))
+                .addTexturedModel(ModelTemplate.HEDGE_CONNECTION_STYLE_2.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270))
+                .addTexturedModel(ModelTemplate.HEDGE_CONNECTION_STYLE_3.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createPart().prop(HedgeBlock.SOUTH, true)
+                .addTexturedModel(ModelTemplate.HEDGE_CONNECTION_STYLE_1.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0))
+                .addTexturedModel(ModelTemplate.HEDGE_CONNECTION_STYLE_2.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0))
+                .addTexturedModel(ModelTemplate.HEDGE_CONNECTION_STYLE_3.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
+        state.createPart().prop(HedgeBlock.WEST, true)
+                .addTexturedModel(ModelTemplate.HEDGE_CONNECTION_STYLE_1.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90))
+                .addTexturedModel(ModelTemplate.HEDGE_CONNECTION_STYLE_2.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90))
+                .addTexturedModel(ModelTemplate.HEDGE_CONNECTION_STYLE_3.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        this.multiPartStateConsumer.accept(state);
     }
 }

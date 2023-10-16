@@ -411,6 +411,15 @@ public class CommonItemTagsProvider
         outdoors.add(ModBlocks.TRAMPOLINE_GREEN.get().asItem());
         outdoors.add(ModBlocks.TRAMPOLINE_RED.get().asItem());
         outdoors.add(ModBlocks.TRAMPOLINE_BLACK.get().asItem());
+        outdoors.add(ModBlocks.HEDGE_OAK.get().asItem());
+        outdoors.add(ModBlocks.HEDGE_SPRUCE.get().asItem());
+        outdoors.add(ModBlocks.HEDGE_BIRCH.get().asItem());
+        outdoors.add(ModBlocks.HEDGE_JUNGLE.get().asItem());
+        outdoors.add(ModBlocks.HEDGE_ACACIA.get().asItem());
+        outdoors.add(ModBlocks.HEDGE_DARK_OAK.get().asItem());
+        outdoors.add(ModBlocks.HEDGE_MANGROVE.get().asItem());
+        outdoors.add(ModBlocks.HEDGE_CHERRY.get().asItem());
+        outdoors.add(ModBlocks.HEDGE_AZALEA.get().asItem());
         outdoors.add(ModItems.SPATULA.get());
         outdoors.add(ModItems.KNIFE.get());
 

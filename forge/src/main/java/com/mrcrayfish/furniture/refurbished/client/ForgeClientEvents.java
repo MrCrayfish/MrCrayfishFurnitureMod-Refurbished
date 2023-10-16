@@ -25,6 +25,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.client.event.RenderHighlightEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
@@ -114,5 +115,15 @@ public class ForgeClientEvents
                 event.setCanceled(true);
             }
         }
+    }
+
+    public static void onRegisterBlockColors(RegisterColorHandlersEvent.Block event)
+    {
+        ClientBootstrap.registerBlockColors(event::register);
+    }
+
+    public static void onRegisterItemColors(RegisterColorHandlersEvent.Item event)
+    {
+        ClientBootstrap.registerItemColors(event::register);
     }
 }

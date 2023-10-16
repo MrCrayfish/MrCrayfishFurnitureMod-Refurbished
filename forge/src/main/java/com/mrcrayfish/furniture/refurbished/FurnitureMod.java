@@ -43,6 +43,8 @@ public class FurnitureMod
             bus.addListener(ForgeClientEvents::onRegisterRenderers);
             bus.addListener(ForgeClientEvents::onRegisterAdditional);
             bus.addListener(ForgeClientEvents::onRegisterParticleProviders);
+            bus.addListener(ForgeClientEvents::onRegisterBlockColors);
+            bus.addListener(ForgeClientEvents::onRegisterItemColors);
             MinecraftForge.EVENT_BUS.addListener(ForgeClientEvents::onKeyTriggered);
             MinecraftForge.EVENT_BUS.addListener(ForgeClientEvents::onRenderLevelStage);
             MinecraftForge.EVENT_BUS.addListener(ForgeClientEvents::onDrawHighlight);

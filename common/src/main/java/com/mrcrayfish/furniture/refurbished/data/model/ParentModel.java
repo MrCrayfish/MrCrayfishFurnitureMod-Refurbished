@@ -59,9 +59,10 @@ public abstract class ParentModel<T extends ParentModel<T>>
         return this.textures;
     }
 
-    public void markAsChild()
+    public T markAsChild()
     {
         this.isChild = true;
+        return this.self();
     }
 
     public boolean isChild()

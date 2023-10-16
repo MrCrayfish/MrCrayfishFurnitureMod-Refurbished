@@ -10,7 +10,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import org.apache.commons.lang3.ArrayUtils;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -21,12 +20,12 @@ import java.util.TreeMap;
 /**
  * Author: MrCrayfish
  */
-public class PreparedBlockState
+public class PreparedVariantBlockState
 {
     private final Block block;
     private final List<Entry> entries = new ArrayList<>();
 
-    public PreparedBlockState(Block block)
+    public PreparedVariantBlockState(Block block)
     {
         this.block = block;
     }
