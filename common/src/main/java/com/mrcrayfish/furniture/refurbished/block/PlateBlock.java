@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.block;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.furniture.refurbished.blockentity.PlateBlockEntity;
+import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.entity.Seat;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -10,6 +11,8 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.FallingBlockEntity;
@@ -28,13 +31,14 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish
  */
-public class PlateBlock extends FallingBlock implements EntityBlock
+public class PlateBlock extends FallingBlock implements EntityBlock, BlockTagSupplier
 {
     protected final Map<BlockState, VoxelShape> shapes;
 
@@ -109,5 +113,11 @@ public class PlateBlock extends FallingBlock implements EntityBlock
             serverLevel.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, this.defaultBlockState()), center.x, center.y + 0.0625, center.z, 10, 0.25, 0.25, 0.25, 0);
             serverLevel.playSound(null, center.x, center.y, center.z, SoundEvents.GLASS_BREAK, SoundSource.BLOCKS, 1.0F, 0.5F + 0.2F * level.random.nextFloat());
         }
+    }
+
+    @Override
+    public List<TagKey<Block>> getTags()
+    {
+        return List.of(BlockTags.MINEABLE_WITH_PICKAXE);
     }
 }
