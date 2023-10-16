@@ -353,6 +353,22 @@ public class CommonBlockModelProvider
         this.trampoline(ModBlocks.TRAMPOLINE_RED.get());
         this.trampoline(ModBlocks.TRAMPOLINE_BLACK.get());
         this.plate(ModBlocks.PLATE.get());
+        this.stool(ModBlocks.STOOL_WHITE.get());
+        this.stool(ModBlocks.STOOL_ORANGE.get());
+        this.stool(ModBlocks.STOOL_MAGENTA.get());
+        this.stool(ModBlocks.STOOL_LIGHT_BLUE.get());
+        this.stool(ModBlocks.STOOL_YELLOW.get());
+        this.stool(ModBlocks.STOOL_LIME.get());
+        this.stool(ModBlocks.STOOL_PINK.get());
+        this.stool(ModBlocks.STOOL_GRAY.get());
+        this.stool(ModBlocks.STOOL_LIGHT_GRAY.get());
+        this.stool(ModBlocks.STOOL_CYAN.get());
+        this.stool(ModBlocks.STOOL_PURPLE.get());
+        this.stool(ModBlocks.STOOL_BLUE.get());
+        this.stool(ModBlocks.STOOL_BROWN.get());
+        this.stool(ModBlocks.STOOL_GREEN.get());
+        this.stool(ModBlocks.STOOL_RED.get());
+        this.stool(ModBlocks.STOOL_BLACK.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -1210,6 +1226,17 @@ public class CommonBlockModelProvider
                 .addExistingModel(ModelTemplate.CERULEAN_PLATE.stateModel())
                 .addExistingModel(ModelTemplate.TUSCAN_PLATE.stateModel())
                 .markAsItem();
+        this.stateConsumer.accept(state);
+    }
+
+    private void stool(StoolBlock block)
+    {
+        DyeColor color = block.getDyeColor();
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.colourParticle(color));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedBlockState state = new PreparedBlockState(block);
+        state.createVariant().addTexturedModel(ModelTemplate.STOOL.stateModel(color).setTextures(textures)).markAsItem();
         this.stateConsumer.accept(state);
     }
 }

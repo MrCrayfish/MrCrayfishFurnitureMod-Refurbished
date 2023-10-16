@@ -157,6 +157,7 @@ public class ModelTemplate
     public static final ModelTemplate STARDUST_PLATE = block("stardust_plate", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate CERULEAN_PLATE = block("cerulean_plate", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate TUSCAN_PLATE = block("tuscan_plate", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate STOOL = block("stool", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
 
     public static final ModelTemplate FRIDGE = item("fridge", TextureSlot.TEXTURE);
     public static final ModelTemplate CEILING_FAN = item("ceiling_fan", TextureSlot.TEXTURE);
