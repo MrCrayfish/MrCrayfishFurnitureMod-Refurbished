@@ -381,6 +381,11 @@ public class CommonBlockModelProvider
         this.hedge(ModBlocks.HEDGE_MANGROVE.get());
         this.hedge(ModBlocks.HEDGE_CHERRY.get());
         this.hedge(ModBlocks.HEDGE_AZALEA.get());
+        this.steppingStones(ModBlocks.STEPPING_STONES_STONE.get());
+        this.steppingStones(ModBlocks.STEPPING_STONES_GRANITE.get());
+        this.steppingStones(ModBlocks.STEPPING_STONES_DIORITE.get());
+        this.steppingStones(ModBlocks.STEPPING_STONES_ANDESITE.get());
+        this.steppingStones(ModBlocks.STEPPING_STONES_DEEPSLATE.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -407,6 +412,11 @@ public class CommonBlockModelProvider
     private ResourceLocation leafTexture(LeafType type)
     {
         return new ResourceLocation("block/" + type.getName() + "_leaves");
+    }
+
+    private ResourceLocation stoneTexture(StoneType type)
+    {
+        return new ResourceLocation("block/" + type.getName());
     }
 
     private void table(TableBlock block)
@@ -1290,5 +1300,35 @@ public class CommonBlockModelProvider
                 .addTexturedModel(ModelTemplate.HEDGE_CONNECTION_STYLE_2.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90))
                 .addTexturedModel(ModelTemplate.HEDGE_CONNECTION_STYLE_3.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         this.multiPartStateConsumer.accept(state);
+    }
+
+    private void steppingStones(SteppingStoneBlock block)
+    {
+        StoneType type = block.getStoneType();
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.stoneTexture(type));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
+        state.createVariant().prop(SteppingStoneBlock.DIRECTION, Direction.NORTH)
+                .addTexturedModel(ModelTemplate.STEPPING_STONES_STYLE_1.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0))
+                .addTexturedModel(ModelTemplate.STEPPING_STONES_STYLE_2.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0))
+                .addTexturedModel(ModelTemplate.STEPPING_STONES_STYLE_3.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0))
+                .addTexturedModel(ModelTemplate.STEPPING_STONES_STYLE_4.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(SteppingStoneBlock.DIRECTION, Direction.EAST)
+                .addTexturedModel(ModelTemplate.STEPPING_STONES_STYLE_1.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90))
+                .addTexturedModel(ModelTemplate.STEPPING_STONES_STYLE_2.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90))
+                .addTexturedModel(ModelTemplate.STEPPING_STONES_STYLE_3.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90))
+                .addTexturedModel(ModelTemplate.STEPPING_STONES_STYLE_4.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(SteppingStoneBlock.DIRECTION, Direction.SOUTH)
+                .addTexturedModel(ModelTemplate.STEPPING_STONES_STYLE_1.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180))
+                .addTexturedModel(ModelTemplate.STEPPING_STONES_STYLE_2.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180))
+                .addTexturedModel(ModelTemplate.STEPPING_STONES_STYLE_3.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180))
+                .addTexturedModel(ModelTemplate.STEPPING_STONES_STYLE_4.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(SteppingStoneBlock.DIRECTION, Direction.WEST)
+                .addTexturedModel(ModelTemplate.STEPPING_STONES_STYLE_1.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270))
+                .addTexturedModel(ModelTemplate.STEPPING_STONES_STYLE_2.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270))
+                .addTexturedModel(ModelTemplate.STEPPING_STONES_STYLE_3.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270))
+                .addTexturedModel(ModelTemplate.STEPPING_STONES_STYLE_4.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        this.variantStateConsumer.accept(state);
     }
 }

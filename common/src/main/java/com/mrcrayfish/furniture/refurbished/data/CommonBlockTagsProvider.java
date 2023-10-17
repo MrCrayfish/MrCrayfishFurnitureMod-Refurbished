@@ -2,9 +2,11 @@ package com.mrcrayfish.furniture.refurbished.data;
 
 import com.mrcrayfish.framework.Registration;
 import com.mrcrayfish.furniture.refurbished.Constants;
+import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.data.tag.TagBuilder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 
@@ -24,5 +26,11 @@ public class CommonBlockTagsProvider
                 provider.getTags().forEach(key -> builder.apply(key).add(block));
             }
         });
+        builder.apply(BlockTags.COMBINATION_STEP_SOUND_BLOCKS)
+                .add(ModBlocks.STEPPING_STONES_STONE.get())
+                .add(ModBlocks.STEPPING_STONES_GRANITE.get())
+                .add(ModBlocks.STEPPING_STONES_DIORITE.get())
+                .add(ModBlocks.STEPPING_STONES_ANDESITE.get())
+                .add(ModBlocks.STEPPING_STONES_DEEPSLATE.get());
     }
 }

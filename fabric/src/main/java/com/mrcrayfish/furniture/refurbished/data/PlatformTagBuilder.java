@@ -18,9 +18,10 @@ public class PlatformTagBuilder<T> implements TagBuilder<T>
     }
 
     @Override
-    public void add(T t)
+    public PlatformTagBuilder<T> add(T t)
     {
         this.builder.add(t);
+        return this;
     }
 
     @Override

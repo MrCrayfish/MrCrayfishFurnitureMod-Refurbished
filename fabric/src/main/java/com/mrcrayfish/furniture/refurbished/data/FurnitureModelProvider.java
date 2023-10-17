@@ -89,7 +89,7 @@ public class FurnitureModelProvider extends FabricModelProvider
                     }
                 });
             });
-        }, model -> {
+        }, builder -> {}, model -> {
             ResourceLocation modelLocation = new ResourceLocation(this.output.getModId(), "extra/" + model.getName());
             if(!createdModels.contains(modelLocation))
             {

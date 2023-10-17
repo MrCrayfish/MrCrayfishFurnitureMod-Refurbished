@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.data.model;
 
 import com.mrcrayfish.furniture.refurbished.block.LeafType;
 import com.mrcrayfish.furniture.refurbished.block.MetalType;
+import com.mrcrayfish.furniture.refurbished.block.StoneType;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.data.models.model.TextureSlot;
 import net.minecraft.resources.ResourceLocation;
@@ -166,6 +167,10 @@ public class ModelTemplate
     public static final ModelTemplate HEDGE_CONNECTION_STYLE_1 = block("hedge_connection_style_1", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate HEDGE_CONNECTION_STYLE_2 = block("hedge_connection_style_2", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate HEDGE_CONNECTION_STYLE_3 = block("hedge_connection_style_3", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate STEPPING_STONES_STYLE_1 = block("stepping_stones_style_1", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate STEPPING_STONES_STYLE_2 = block("stepping_stones_style_2", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate STEPPING_STONES_STYLE_3 = block("stepping_stones_style_3", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate STEPPING_STONES_STYLE_4 = block("stepping_stones_style_4", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
 
     public static final ModelTemplate FRIDGE = item("fridge", TextureSlot.TEXTURE);
     public static final ModelTemplate CEILING_FAN = item("ceiling_fan", TextureSlot.TEXTURE);
@@ -222,6 +227,11 @@ public class ModelTemplate
     }
 
     public PreparedVariantBlockState.Model stateModel(LeafType type)
+    {
+        return PreparedVariantBlockState.Model.create(type.getName() + "_" + this.path, this.location, this.textures);
+    }
+
+    public PreparedVariantBlockState.Model stateModel(StoneType type)
     {
         return PreparedVariantBlockState.Model.create(type.getName() + "_" + this.path, this.location, this.textures);
     }

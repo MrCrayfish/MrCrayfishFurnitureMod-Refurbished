@@ -420,6 +420,11 @@ public class CommonItemTagsProvider
         outdoors.add(ModBlocks.HEDGE_MANGROVE.get().asItem());
         outdoors.add(ModBlocks.HEDGE_CHERRY.get().asItem());
         outdoors.add(ModBlocks.HEDGE_AZALEA.get().asItem());
+        outdoors.add(ModBlocks.STEPPING_STONES_STONE.get().asItem());
+        outdoors.add(ModBlocks.STEPPING_STONES_GRANITE.get().asItem());
+        outdoors.add(ModBlocks.STEPPING_STONES_DIORITE.get().asItem());
+        outdoors.add(ModBlocks.STEPPING_STONES_ANDESITE.get().asItem());
+        outdoors.add(ModBlocks.STEPPING_STONES_DEEPSLATE.get().asItem());
         outdoors.add(ModItems.SPATULA.get());
         outdoors.add(ModItems.KNIFE.get());
 

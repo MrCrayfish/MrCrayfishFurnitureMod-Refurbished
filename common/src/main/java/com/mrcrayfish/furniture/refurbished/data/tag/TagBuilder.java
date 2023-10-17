@@ -8,7 +8,7 @@ import net.minecraft.tags.TagKey;
  */
 public interface TagBuilder<T>
 {
-    void add(T t);
+    TagBuilder<T> add(T t);
 
     void add(ResourceLocation id);
 
