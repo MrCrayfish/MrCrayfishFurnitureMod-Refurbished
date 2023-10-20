@@ -171,6 +171,7 @@ public class ModelTemplate
     public static final ModelTemplate STEPPING_STONES_STYLE_2 = block("stepping_stones_style_2", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate STEPPING_STONES_STYLE_3 = block("stepping_stones_style_3", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate STEPPING_STONES_STYLE_4 = block("stepping_stones_style_4", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate TOILET = block("toilet", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
 
     public static final ModelTemplate FRIDGE = item("fridge", TextureSlot.TEXTURE);
     public static final ModelTemplate CEILING_FAN = item("ceiling_fan", TextureSlot.TEXTURE);

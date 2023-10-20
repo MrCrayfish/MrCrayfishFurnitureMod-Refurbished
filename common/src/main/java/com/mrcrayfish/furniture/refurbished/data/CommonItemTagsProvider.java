@@ -428,6 +428,18 @@ public class CommonItemTagsProvider
         outdoors.add(ModItems.SPATULA.get());
         outdoors.add(ModItems.KNIFE.get());
 
+        TagBuilder<Item> bathroom = builder.apply(ModTags.Items.BATHROOM);
+        bathroom.add(ModBlocks.TOILET_OAK.get().asItem());
+        bathroom.add(ModBlocks.TOILET_SPRUCE.get().asItem());
+        bathroom.add(ModBlocks.TOILET_BIRCH.get().asItem());
+        bathroom.add(ModBlocks.TOILET_JUNGLE.get().asItem());
+        bathroom.add(ModBlocks.TOILET_ACACIA.get().asItem());
+        bathroom.add(ModBlocks.TOILET_DARK_OAK.get().asItem());
+        bathroom.add(ModBlocks.TOILET_MANGROVE.get().asItem());
+        bathroom.add(ModBlocks.TOILET_CHERRY.get().asItem());
+        bathroom.add(ModBlocks.TOILET_CRIMSON.get().asItem());
+        bathroom.add(ModBlocks.TOILET_WARPED.get().asItem());
+
         TagBuilder<Item> electronics = builder.apply(ModTags.Items.ELECTRONICS);
         electronics.add(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get().asItem());
         electronics.add(ModBlocks.ELECTRICITY_GENERATOR_DARK.get().asItem());

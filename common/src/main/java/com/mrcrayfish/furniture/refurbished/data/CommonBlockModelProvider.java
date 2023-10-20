@@ -386,6 +386,16 @@ public class CommonBlockModelProvider
         this.steppingStones(ModBlocks.STEPPING_STONES_DIORITE.get());
         this.steppingStones(ModBlocks.STEPPING_STONES_ANDESITE.get());
         this.steppingStones(ModBlocks.STEPPING_STONES_DEEPSLATE.get());
+        this.woodenToilet(ModBlocks.TOILET_OAK.get());
+        this.woodenToilet(ModBlocks.TOILET_SPRUCE.get());
+        this.woodenToilet(ModBlocks.TOILET_BIRCH.get());
+        this.woodenToilet(ModBlocks.TOILET_JUNGLE.get());
+        this.woodenToilet(ModBlocks.TOILET_ACACIA.get());
+        this.woodenToilet(ModBlocks.TOILET_DARK_OAK.get());
+        this.woodenToilet(ModBlocks.TOILET_MANGROVE.get());
+        this.woodenToilet(ModBlocks.TOILET_CHERRY.get());
+        this.woodenToilet(ModBlocks.TOILET_CRIMSON.get());
+        this.woodenToilet(ModBlocks.TOILET_WARPED.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -1329,6 +1339,20 @@ public class CommonBlockModelProvider
                 .addTexturedModel(ModelTemplate.STEPPING_STONES_STYLE_2.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270))
                 .addTexturedModel(ModelTemplate.STEPPING_STONES_STYLE_3.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270))
                 .addTexturedModel(ModelTemplate.STEPPING_STONES_STYLE_4.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        this.variantStateConsumer.accept(state);
+    }
+
+    private void woodenToilet(WoodenToiletBlock block)
+    {
+        WoodType type = block.getWoodType();
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.woodParticle(type));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
+        state.createVariant().prop(WoodenToiletBlock.DIRECTION, Direction.NORTH).addTexturedModel(ModelTemplate.TOILET.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(WoodenToiletBlock.DIRECTION, Direction.EAST).addTexturedModel(ModelTemplate.TOILET.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(WoodenToiletBlock.DIRECTION, Direction.SOUTH).addTexturedModel(ModelTemplate.TOILET.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(WoodenToiletBlock.DIRECTION, Direction.WEST).addTexturedModel(ModelTemplate.TOILET.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         this.variantStateConsumer.accept(state);
     }
 }
