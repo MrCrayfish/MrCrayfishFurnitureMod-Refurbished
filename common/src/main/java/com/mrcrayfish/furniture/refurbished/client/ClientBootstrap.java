@@ -237,6 +237,22 @@ public class ClientBootstrap
         register.apply(ModBlocks.TOILET_CHERRY.get(), RenderType.cutout());
         register.apply(ModBlocks.TOILET_CRIMSON.get(), RenderType.cutout());
         register.apply(ModBlocks.TOILET_WARPED.get(), RenderType.cutout());
+        register.apply(ModBlocks.TOILET_WHITE.get(), RenderType.cutout());
+        register.apply(ModBlocks.TOILET_ORANGE.get(), RenderType.cutout());
+        register.apply(ModBlocks.TOILET_MAGENTA.get(), RenderType.cutout());
+        register.apply(ModBlocks.TOILET_LIGHT_BLUE.get(), RenderType.cutout());
+        register.apply(ModBlocks.TOILET_YELLOW.get(), RenderType.cutout());
+        register.apply(ModBlocks.TOILET_LIME.get(), RenderType.cutout());
+        register.apply(ModBlocks.TOILET_PINK.get(), RenderType.cutout());
+        register.apply(ModBlocks.TOILET_GRAY.get(), RenderType.cutout());
+        register.apply(ModBlocks.TOILET_LIGHT_GRAY.get(), RenderType.cutout());
+        register.apply(ModBlocks.TOILET_CYAN.get(), RenderType.cutout());
+        register.apply(ModBlocks.TOILET_PURPLE.get(), RenderType.cutout());
+        register.apply(ModBlocks.TOILET_BLUE.get(), RenderType.cutout());
+        register.apply(ModBlocks.TOILET_BROWN.get(), RenderType.cutout());
+        register.apply(ModBlocks.TOILET_GREEN.get(), RenderType.cutout());
+        register.apply(ModBlocks.TOILET_RED.get(), RenderType.cutout());
+        register.apply(ModBlocks.TOILET_BLACK.get(), RenderType.cutout());
     }
 
     public static void registerParticleProviders(ParticleProviderRegister register)
