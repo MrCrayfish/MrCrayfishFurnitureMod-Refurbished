@@ -33,10 +33,10 @@ public class ToiletBlock extends FurnitureHorizontalBlock
     @Override
     protected Map<BlockState, VoxelShape> generateShapes(ImmutableList<BlockState> states)
     {
-        VoxelShape seatShape = Block.box(0, 3, 2, 16, 9, 14);
-        VoxelShape tankShape = Block.box(11, 9, 2, 16, 16, 14);
-        VoxelShape lidShape = Block.box(10, 16, 2, 16, 18, 14);
-        VoxelShape supportShape = Block.box(3, 0, 4, 16, 3, 12);
+        VoxelShape seatShape = Block.box(0, 4, 2, 16, 10, 14);
+        VoxelShape tankShape = Block.box(11, 10, 2, 16, 17, 14);
+        VoxelShape lidShape = Block.box(10, 17, 2, 16, 19, 14);
+        VoxelShape supportShape = Block.box(3, 0, 4, 16, 4, 12);
         VoxelShape combinedShape = VoxelShapeHelper.combine(List.of(seatShape, tankShape, lidShape, supportShape));
         return ImmutableMap.copyOf(states.stream().collect(Collectors.toMap(state -> state, state -> {
             return VoxelShapeHelper.rotateHorizontally(combinedShape, state.getValue(DIRECTION));
@@ -46,7 +46,7 @@ public class ToiletBlock extends FurnitureHorizontalBlock
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
     {
-        if(Seat.sit(player, pos, 0.275, state.getValue(DIRECTION).getOpposite()))
+        if(Seat.sit(player, pos, 0.35, state.getValue(DIRECTION).getOpposite()))
         {
             return InteractionResult.CONSUME;
         }
