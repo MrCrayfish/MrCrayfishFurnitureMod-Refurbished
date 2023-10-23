@@ -396,7 +396,6 @@ public class CommonBlockModelProvider
         this.woodenToilet(ModBlocks.TOILET_CHERRY.get());
         this.woodenToilet(ModBlocks.TOILET_CRIMSON.get());
         this.woodenToilet(ModBlocks.TOILET_WARPED.get());
-
         this.colouredToilet(ModBlocks.TOILET_WHITE.get());
         this.colouredToilet(ModBlocks.TOILET_ORANGE.get());
         this.colouredToilet(ModBlocks.TOILET_MAGENTA.get());
@@ -413,6 +412,32 @@ public class CommonBlockModelProvider
         this.colouredToilet(ModBlocks.TOILET_GREEN.get());
         this.colouredToilet(ModBlocks.TOILET_RED.get());
         this.colouredToilet(ModBlocks.TOILET_BLACK.get());
+        this.woodenBasin(ModBlocks.BASIN_OAK.get());
+        this.woodenBasin(ModBlocks.BASIN_SPRUCE.get());
+        this.woodenBasin(ModBlocks.BASIN_BIRCH.get());
+        this.woodenBasin(ModBlocks.BASIN_JUNGLE.get());
+        this.woodenBasin(ModBlocks.BASIN_ACACIA.get());
+        this.woodenBasin(ModBlocks.BASIN_DARK_OAK.get());
+        this.woodenBasin(ModBlocks.BASIN_MANGROVE.get());
+        this.woodenBasin(ModBlocks.BASIN_CHERRY.get());
+        this.woodenBasin(ModBlocks.BASIN_CRIMSON.get());
+        this.woodenBasin(ModBlocks.BASIN_WARPED.get());
+        this.colouredBasin(ModBlocks.BASIN_WHITE.get());
+        this.colouredBasin(ModBlocks.BASIN_ORANGE.get());
+        this.colouredBasin(ModBlocks.BASIN_MAGENTA.get());
+        this.colouredBasin(ModBlocks.BASIN_LIGHT_BLUE.get());
+        this.colouredBasin(ModBlocks.BASIN_YELLOW.get());
+        this.colouredBasin(ModBlocks.BASIN_LIME.get());
+        this.colouredBasin(ModBlocks.BASIN_PINK.get());
+        this.colouredBasin(ModBlocks.BASIN_GRAY.get());
+        this.colouredBasin(ModBlocks.BASIN_LIGHT_GRAY.get());
+        this.colouredBasin(ModBlocks.BASIN_CYAN.get());
+        this.colouredBasin(ModBlocks.BASIN_PURPLE.get());
+        this.colouredBasin(ModBlocks.BASIN_BLUE.get());
+        this.colouredBasin(ModBlocks.BASIN_BROWN.get());
+        this.colouredBasin(ModBlocks.BASIN_GREEN.get());
+        this.colouredBasin(ModBlocks.BASIN_RED.get());
+        this.colouredBasin(ModBlocks.BASIN_BLACK.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -1366,10 +1391,10 @@ public class CommonBlockModelProvider
         textures.put(TextureSlot.PARTICLE, this.woodParticle(type));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
         PreparedVariantBlockState state = new PreparedVariantBlockState(block);
-        state.createVariant().prop(WoodenToiletBlock.DIRECTION, Direction.NORTH).addTexturedModel(ModelTemplate.TOILET.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
-        state.createVariant().prop(WoodenToiletBlock.DIRECTION, Direction.EAST).addTexturedModel(ModelTemplate.TOILET.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
-        state.createVariant().prop(WoodenToiletBlock.DIRECTION, Direction.SOUTH).addTexturedModel(ModelTemplate.TOILET.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
-        state.createVariant().prop(WoodenToiletBlock.DIRECTION, Direction.WEST).addTexturedModel(ModelTemplate.TOILET.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(ToiletBlock.DIRECTION, Direction.NORTH).addTexturedModel(ModelTemplate.TOILET.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(ToiletBlock.DIRECTION, Direction.EAST).addTexturedModel(ModelTemplate.TOILET.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(ToiletBlock.DIRECTION, Direction.SOUTH).addTexturedModel(ModelTemplate.TOILET.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(ToiletBlock.DIRECTION, Direction.WEST).addTexturedModel(ModelTemplate.TOILET.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         this.variantStateConsumer.accept(state);
     }
 
@@ -1380,10 +1405,38 @@ public class CommonBlockModelProvider
         textures.put(TextureSlot.PARTICLE, this.colourParticle(color));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
         PreparedVariantBlockState state = new PreparedVariantBlockState(block);
-        state.createVariant().prop(ColouredToiletBlock.DIRECTION, Direction.NORTH).addTexturedModel(ModelTemplate.TOILET.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
-        state.createVariant().prop(ColouredToiletBlock.DIRECTION, Direction.EAST).addTexturedModel(ModelTemplate.TOILET.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
-        state.createVariant().prop(ColouredToiletBlock.DIRECTION, Direction.SOUTH).addTexturedModel(ModelTemplate.TOILET.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
-        state.createVariant().prop(ColouredToiletBlock.DIRECTION, Direction.WEST).addTexturedModel(ModelTemplate.TOILET.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(ToiletBlock.DIRECTION, Direction.NORTH).addTexturedModel(ModelTemplate.TOILET.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(ToiletBlock.DIRECTION, Direction.EAST).addTexturedModel(ModelTemplate.TOILET.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(ToiletBlock.DIRECTION, Direction.SOUTH).addTexturedModel(ModelTemplate.TOILET.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(ToiletBlock.DIRECTION, Direction.WEST).addTexturedModel(ModelTemplate.TOILET.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        this.variantStateConsumer.accept(state);
+    }
+
+    private void woodenBasin(WoodenBasinBlock block)
+    {
+        WoodType type = block.getWoodType();
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.woodParticle(type));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
+        state.createVariant().prop(BasinBlock.DIRECTION, Direction.NORTH).addTexturedModel(ModelTemplate.BASIN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(BasinBlock.DIRECTION, Direction.EAST).addTexturedModel(ModelTemplate.BASIN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(BasinBlock.DIRECTION, Direction.SOUTH).addTexturedModel(ModelTemplate.BASIN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(BasinBlock.DIRECTION, Direction.WEST).addTexturedModel(ModelTemplate.BASIN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        this.variantStateConsumer.accept(state);
+    }
+
+    private void colouredBasin(ColouredBasinBlock block)
+    {
+        DyeColor color = block.getDyeColor();
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.colourParticle(color));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
+        state.createVariant().prop(BasinBlock.DIRECTION, Direction.NORTH).addTexturedModel(ModelTemplate.BASIN.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(BasinBlock.DIRECTION, Direction.EAST).addTexturedModel(ModelTemplate.BASIN.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(BasinBlock.DIRECTION, Direction.SOUTH).addTexturedModel(ModelTemplate.BASIN.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(BasinBlock.DIRECTION, Direction.WEST).addTexturedModel(ModelTemplate.BASIN.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         this.variantStateConsumer.accept(state);
     }
 }
