@@ -72,7 +72,7 @@ public abstract class KitchenSinkBlock extends FurnitureHorizontalBlock implemen
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
     {
-        return Services.BLOCK_ENTITY.createKitchenSinkBlockEntity(pos, state);
+        return new KitchenSinkBlockEntity(pos, state);
     }
 
     @Override

@@ -15,8 +15,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public interface IBlockEntityHelper
 {
-    KitchenSinkBlockEntity createKitchenSinkBlockEntity(BlockPos pos, BlockState state);
-
     RecycleBinBlockEntity createRecycleBinBlockEntity(BlockPos pos, BlockState state);
 
     <T extends BaseContainerBlockEntity & WorldlyContainer> void createForgeSidedWrapper(T container, @Nullable Direction side);

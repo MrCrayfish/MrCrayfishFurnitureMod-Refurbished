@@ -4,6 +4,8 @@ import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.blockentity.FryingPanBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.GrillBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.KitchenSinkBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
+import com.mrcrayfish.furniture.refurbished.blockentity.fluid.IFluidContainerBlock;
 import com.mrcrayfish.furniture.refurbished.client.LinkHandler;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.PostBoxScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.toast.ItemToast;
@@ -33,9 +35,13 @@ public class ClientPlayHandler
     {
         Minecraft mc = Minecraft.getInstance();
         Level level = Objects.requireNonNull(mc.level);
-        if(level.getBlockEntity(message.getPos()) instanceof KitchenSinkBlockEntity sink) // TODO abstract
+        if(level.getBlockEntity(message.getPos()) instanceof IFluidContainerBlock block)
         {
-            sink.onSyncFluid(message.getFluid(), message.getAmount());
+            FluidContainer container = block.getFluidContainer();
+            if(container != null)
+            {
+                container.handleSync(level, message.getFluid(), message.getAmount());
+            }
         }
     }
 

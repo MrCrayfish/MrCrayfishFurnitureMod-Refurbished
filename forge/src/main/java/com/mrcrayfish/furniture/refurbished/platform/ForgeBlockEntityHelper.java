@@ -1,8 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.platform;
 
-import com.mrcrayfish.furniture.refurbished.blockentity.ForgeKitchenSinkBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.ForgeRecycleBinBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.KitchenSinkBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.RecycleBinBlockEntity;
 import com.mrcrayfish.furniture.refurbished.platform.services.IBlockEntityHelper;
 import net.minecraft.core.BlockPos;
@@ -23,11 +21,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public class ForgeBlockEntityHelper implements IBlockEntityHelper
 {
-    @Override
-    public KitchenSinkBlockEntity createKitchenSinkBlockEntity(BlockPos pos, BlockState state)
-    {
-        return new ForgeKitchenSinkBlockEntity(pos, state);
-    }
 
     @Override
     public RecycleBinBlockEntity createRecycleBinBlockEntity(BlockPos pos, BlockState state)

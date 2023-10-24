@@ -70,7 +70,7 @@ public class ModBlockEntities
             ModBlocks.KITCHEN_DRAWER_BLACK.get(),
     });
 
-    public static final RegistryEntry<BlockEntityType<KitchenSinkBlockEntity>> KITCHEN_SINK = RegistryEntry.blockEntity(Utils.resource("kitchen_sink"), Services.BLOCK_ENTITY::createKitchenSinkBlockEntity, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<KitchenSinkBlockEntity>> KITCHEN_SINK = RegistryEntry.blockEntity(Utils.resource("kitchen_sink"), KitchenSinkBlockEntity::new, () -> new Block[]{
             ModBlocks.KITCHEN_SINK_OAK.get(),
             ModBlocks.KITCHEN_SINK_SPRUCE.get(),
             ModBlocks.KITCHEN_SINK_BIRCH.get(),
