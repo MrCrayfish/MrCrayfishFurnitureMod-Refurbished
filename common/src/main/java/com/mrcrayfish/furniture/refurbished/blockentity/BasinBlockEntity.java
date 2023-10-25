@@ -1,8 +1,8 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
-import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.IFluidContainerBlock;
+import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
@@ -28,26 +28,24 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nullable;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * Author: MrCrayfish
  */
-public class KitchenSinkBlockEntity extends BlockEntity implements IFluidContainerBlock
+public class BasinBlockEntity extends BlockEntity implements IFluidContainerBlock
 {
-    protected final FluidContainer tank = FluidContainer.create(FluidContainer.BUCKET_CAPACITY * 3, container -> {
+    protected final FluidContainer tank = FluidContainer.create(FluidContainer.BUCKET_CAPACITY, container -> {
         this.setChanged();
         container.sync(this);
     });
 
-    public KitchenSinkBlockEntity(BlockPos pos, BlockState state)
+    public BasinBlockEntity(BlockPos pos, BlockState state)
     {
-        this(ModBlockEntities.KITCHEN_SINK.get(), pos, state);
+        this(ModBlockEntities.BASIN.get(), pos, state);
     }
 
-    public KitchenSinkBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
+    public BasinBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
     {
         super(type, pos, state);
     }
@@ -72,7 +70,6 @@ public class KitchenSinkBlockEntity extends BlockEntity implements IFluidContain
 
     public InteractionResult interact(Player player, InteractionHand hand, BlockHitResult result)
     {
-        // TODO allow this to be triggered with redstone
         if(player.getItemInHand(hand).isEmpty() && result.getDirection() != Direction.DOWN)
         {
             // Fills the sink with water TODO make config option to disable free water
@@ -90,7 +87,7 @@ public class KitchenSinkBlockEntity extends BlockEntity implements IFluidContain
                 }
             }
 
-            // If lava is in the sink, filling it with water will consume the lava and turn it into obsidian
+            // If lava is in the basin, filling it with water will consume the lava and turn it into obsidian
             if(this.tank.getStoredAmount() >= FluidContainer.BUCKET_CAPACITY && this.tank.getStoredFluid().isSame(Fluids.LAVA))
             {
                 Pair<Fluid, Long> drained = this.tank.pull(FluidContainer.BUCKET_CAPACITY, true);

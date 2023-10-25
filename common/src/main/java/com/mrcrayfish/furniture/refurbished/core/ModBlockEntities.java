@@ -318,4 +318,33 @@ public class ModBlockEntities
     public static final RegistryEntry<BlockEntityType<PlateBlockEntity>> PLATE = RegistryEntry.blockEntity(Utils.resource("plate"), PlateBlockEntity::new, () -> new Block[]{
             ModBlocks.PLATE.get()
     });
+
+    public static final RegistryEntry<BlockEntityType<BasinBlockEntity>> BASIN = RegistryEntry.blockEntity(Utils.resource("basin"), BasinBlockEntity::new, () -> new Block[]{
+            ModBlocks.BASIN_OAK.get(),
+            ModBlocks.BASIN_SPRUCE.get(),
+            ModBlocks.BASIN_BIRCH.get(),
+            ModBlocks.BASIN_JUNGLE.get(),
+            ModBlocks.BASIN_ACACIA.get(),
+            ModBlocks.BASIN_DARK_OAK.get(),
+            ModBlocks.BASIN_MANGROVE.get(),
+            ModBlocks.BASIN_CHERRY.get(),
+            ModBlocks.BASIN_CRIMSON.get(),
+            ModBlocks.BASIN_WARPED.get(),
+            ModBlocks.BASIN_WHITE.get(),
+            ModBlocks.BASIN_ORANGE.get(),
+            ModBlocks.BASIN_MAGENTA.get(),
+            ModBlocks.BASIN_LIGHT_BLUE.get(),
+            ModBlocks.BASIN_YELLOW.get(),
+            ModBlocks.BASIN_LIME.get(),
+            ModBlocks.BASIN_PINK.get(),
+            ModBlocks.BASIN_GRAY.get(),
+            ModBlocks.BASIN_LIGHT_GRAY.get(),
+            ModBlocks.BASIN_CYAN.get(),
+            ModBlocks.BASIN_PURPLE.get(),
+            ModBlocks.BASIN_BLUE.get(),
+            ModBlocks.BASIN_BROWN.get(),
+            ModBlocks.BASIN_GREEN.get(),
+            ModBlocks.BASIN_RED.get(),
+            ModBlocks.BASIN_BLACK.get()
+    });
 }
