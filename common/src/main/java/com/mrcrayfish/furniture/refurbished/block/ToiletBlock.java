@@ -2,6 +2,8 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mrcrayfish.furniture.refurbished.blockentity.BasinBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.ToiletBlockEntity;
 import com.mrcrayfish.furniture.refurbished.entity.Seat;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
@@ -11,10 +13,13 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -22,7 +27,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class ToiletBlock extends FurnitureHorizontalBlock
+public class ToiletBlock extends FurnitureHorizontalBlock implements EntityBlock
 {
     public ToiletBlock(Properties properties)
     {
@@ -46,10 +51,27 @@ public class ToiletBlock extends FurnitureHorizontalBlock
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
     {
-        if(Seat.sit(player, pos, 0.35, state.getValue(DIRECTION).getOpposite()))
+        if(!level.isClientSide())
         {
-            return InteractionResult.CONSUME;
+            if(level.getBlockEntity(pos) instanceof ToiletBlockEntity toilet)
+            {
+                if(toilet.interact(player, hand, result) != InteractionResult.PASS)
+                {
+                    return InteractionResult.CONSUME;
+                }
+            }
+            if(Seat.sit(player, pos, 0.35, state.getValue(DIRECTION).getOpposite()))
+            {
+                return InteractionResult.CONSUME;
+            }
         }
         return InteractionResult.SUCCESS;
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
+    {
+        return new ToiletBlockEntity(pos, state);
     }
 }

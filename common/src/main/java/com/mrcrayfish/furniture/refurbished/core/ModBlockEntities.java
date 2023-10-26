@@ -347,4 +347,33 @@ public class ModBlockEntities
             ModBlocks.BASIN_RED.get(),
             ModBlocks.BASIN_BLACK.get()
     });
+
+    public static final RegistryEntry<BlockEntityType<ToiletBlockEntity>> TOILET = RegistryEntry.blockEntity(Utils.resource("toilet"), ToiletBlockEntity::new, () -> new Block[]{
+            ModBlocks.TOILET_OAK.get(),
+            ModBlocks.TOILET_SPRUCE.get(),
+            ModBlocks.TOILET_BIRCH.get(),
+            ModBlocks.TOILET_JUNGLE.get(),
+            ModBlocks.TOILET_ACACIA.get(),
+            ModBlocks.TOILET_DARK_OAK.get(),
+            ModBlocks.TOILET_MANGROVE.get(),
+            ModBlocks.TOILET_CHERRY.get(),
+            ModBlocks.TOILET_CRIMSON.get(),
+            ModBlocks.TOILET_WARPED.get(),
+            ModBlocks.TOILET_WHITE.get(),
+            ModBlocks.TOILET_ORANGE.get(),
+            ModBlocks.TOILET_MAGENTA.get(),
+            ModBlocks.TOILET_LIGHT_BLUE.get(),
+            ModBlocks.TOILET_YELLOW.get(),
+            ModBlocks.TOILET_LIME.get(),
+            ModBlocks.TOILET_PINK.get(),
+            ModBlocks.TOILET_GRAY.get(),
+            ModBlocks.TOILET_LIGHT_GRAY.get(),
+            ModBlocks.TOILET_CYAN.get(),
+            ModBlocks.TOILET_PURPLE.get(),
+            ModBlocks.TOILET_BLUE.get(),
+            ModBlocks.TOILET_BROWN.get(),
+            ModBlocks.TOILET_GREEN.get(),
+            ModBlocks.TOILET_RED.get(),
+            ModBlocks.TOILET_BLACK.get()
+    });
 }
