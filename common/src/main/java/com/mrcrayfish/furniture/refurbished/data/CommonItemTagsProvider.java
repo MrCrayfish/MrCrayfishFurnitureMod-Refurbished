@@ -336,6 +336,7 @@ public class CommonItemTagsProvider
         kitchen.add(ModBlocks.STORAGE_CABINET_CHERRY.get().asItem());
         kitchen.add(ModBlocks.STORAGE_CABINET_CRIMSON.get().asItem());
         kitchen.add(ModBlocks.STORAGE_CABINET_WARPED.get().asItem());
+        kitchen.add(ModBlocks.PLATE.get().asItem());
         kitchen.add(ModItems.SPATULA.get());
         kitchen.add(ModItems.KNIFE.get());
 
