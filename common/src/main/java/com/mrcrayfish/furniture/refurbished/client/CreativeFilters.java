@@ -134,11 +134,12 @@ public class CreativeFilters
     {
         this.categories.forEach(category -> {
             FilterTab tab = new FilterTab(this.guiLeft - 28, this.guiTop, category, btn -> {
+                // Holding ctrl down will allow multiple categories to be enabled
                 if(Screen.hasControlDown()) {
+                    category.setEnabled(!category.isEnabled());
+                } else {
                     this.categories.forEach(c -> c.setEnabled(false));
                     category.setEnabled(true);
-                } else {
-                    category.setEnabled(!category.isEnabled());
                 }
                 this.updateItems(screen);
             });
