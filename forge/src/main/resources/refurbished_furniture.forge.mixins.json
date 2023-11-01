@@ -7,7 +7,7 @@
     "mixins": [
     ],
     "client": [
-        "client.CreativeModeInventoryScreenMixin"
+        "client.ForgeCreativeModeInventoryScreenMixin"
     ],
     "injectors": {
         "defaultRequire": 1

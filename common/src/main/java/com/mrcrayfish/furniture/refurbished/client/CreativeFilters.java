@@ -32,6 +32,7 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -54,12 +55,13 @@ public class CreativeFilters
 {
     private static CreativeFilters instance;
 
-    public static void init()
+    public static CreativeFilters get()
     {
         if(instance == null)
         {
             instance = new CreativeFilters();
         }
+        return instance;
     }
 
     private final List<FilterCategory> categories;
@@ -74,7 +76,7 @@ public class CreativeFilters
     {
         ImmutableList.Builder<FilterCategory> builder = ImmutableList.builder();
         builder.add(new FilterCategory(ModTags.Items.GENERAL, new ItemStack(ModBlocks.CHAIR_OAK.get())));
-        builder.add(new FilterCategory(ModTags.Items.BEDROOM, new ItemStack(ModBlocks.DRAWER_SPRUCE.get())));
+        builder.add(new FilterCategory(ModTags.Items.BEDROOM, new ItemStack(ModBlocks.DRAWER_CHERRY.get())));
         builder.add(new FilterCategory(ModTags.Items.KITCHEN, new ItemStack(ModBlocks.KITCHEN_SINK_YELLOW.get())));
         builder.add(new FilterCategory(ModTags.Items.OUTDOORS, new ItemStack(ModBlocks.GRILL_RED.get())));
         builder.add(new FilterCategory(ModTags.Items.BATHROOM, new ItemStack(ModBlocks.TOILET_OAK.get())));
@@ -218,6 +220,28 @@ public class CreativeFilters
             return;
         }
         this.categories.forEach(category -> category.setVisible(false));
+    }
+
+    public boolean onMouseScroll(double mouseX, double mouseY, double scroll)
+    {
+        CreativeModeTab selectedTab = ClientServices.PLATFORM.getSelectedCreativeModeTab();
+        if(selectedTab != ModCreativeTabs.MAIN.get())
+            return false;
+
+        double startX = this.guiLeft - 28;
+        double startY = this.guiTop + 29;
+        if(mouseX >= startX && mouseX < startX + 28 && mouseY >= startY && mouseY < startY + 113)
+        {
+            int oldScroll = this.scroll;
+            this.scroll += scroll > 0 ? -1 : 1;
+            this.scroll = Mth.clamp(this.scroll, 0, this.categories.size() - 4);
+            if(this.scroll != oldScroll)
+            {
+                this.updateWidgets();
+            }
+            return true;
+        }
+        return false;
     }
 
     public static class FilterCategory

@@ -11,7 +11,6 @@ import com.mrcrayfish.furniture.refurbished.client.gui.screen.PostBoxScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.RecyclingBinScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.StoveScreen;
 import com.mrcrayfish.furniture.refurbished.client.particle.BounceParticle;
-import com.mrcrayfish.furniture.refurbished.client.particle.FlatParticle;
 import com.mrcrayfish.furniture.refurbished.client.particle.SteamParticle;
 import com.mrcrayfish.furniture.refurbished.client.particle.SuperBounceParticle;
 import com.mrcrayfish.furniture.refurbished.client.registration.BlockColorsRegister;
@@ -42,7 +41,7 @@ public class ClientBootstrap
 {
     public static void init()
     {
-        CreativeFilters.init();
+        CreativeFilters.get();
         TickEvents.START_RENDER.register(partialTick -> {
             LinkHandler.get().beforeRender(partialTick);
             ElectricBlockEntityRenderer.clearDrawn();

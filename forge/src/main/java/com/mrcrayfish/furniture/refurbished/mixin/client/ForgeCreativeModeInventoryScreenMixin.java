@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
  * Author: MrCrayfish
  */
 @Mixin(CreativeModeInventoryScreen.class)
-public class CreativeModeInventoryScreenMixin
+public class ForgeCreativeModeInventoryScreenMixin
 {
     @ModifyArg(method = "renderLabels", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)I"), index = 5)
     private boolean furnitureRefurbishedRenderLabels(boolean original)
