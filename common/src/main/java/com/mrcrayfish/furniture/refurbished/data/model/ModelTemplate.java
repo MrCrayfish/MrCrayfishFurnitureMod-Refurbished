@@ -173,10 +173,13 @@ public class ModelTemplate
     public static final ModelTemplate STEPPING_STONES_STYLE_4 = block("stepping_stones_style_4", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate TOILET = block("toilet", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate BASIN = block("basin", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate BATH_HEAD = block("bath_head", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate BATH_BOTTOM = block("bath_bottom", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
 
     public static final ModelTemplate FRIDGE = item("fridge", TextureSlot.TEXTURE);
     public static final ModelTemplate CEILING_FAN = item("ceiling_fan", TextureSlot.TEXTURE);
     public static final ModelTemplate HEDGE = item("hedge", TextureSlot.TEXTURE);
+    public static final ModelTemplate BATH = item("bath", TextureSlot.TEXTURE);
 
     private static ModelTemplate block(String name, TextureSlot ... textures)
     {

@@ -27,7 +27,7 @@ public class BasinBlockEntityRenderer implements BlockEntityRenderer<BasinBlockE
     public void render(BasinBlockEntity basin, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay)
     {
         FluidContainer container = basin.getFluidContainer();
-        if(container.isEmpty())
+        if(container == null || container.isEmpty())
             return;
 
         BlockState state = basin.getBlockState();

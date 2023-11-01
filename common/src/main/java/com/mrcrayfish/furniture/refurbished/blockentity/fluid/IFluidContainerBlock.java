@@ -1,5 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.blockentity.fluid;
 
+import javax.annotation.Nullable;
+
 /**
  * Implement on BlockEntities to add a fluid storage
  *
@@ -7,5 +9,6 @@ package com.mrcrayfish.furniture.refurbished.blockentity.fluid;
  */
 public interface IFluidContainerBlock
 {
+    @Nullable
     FluidContainer getFluidContainer();
 }

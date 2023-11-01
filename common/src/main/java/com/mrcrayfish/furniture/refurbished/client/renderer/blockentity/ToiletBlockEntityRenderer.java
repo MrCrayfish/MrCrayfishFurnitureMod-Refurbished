@@ -27,7 +27,7 @@ public class ToiletBlockEntityRenderer implements BlockEntityRenderer<ToiletBloc
     public void render(ToiletBlockEntity toilet, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay)
     {
         FluidContainer container = toilet.getFluidContainer();
-        if(container.isEmpty())
+        if(container == null || container.isEmpty())
             return;
 
         BlockState state = toilet.getBlockState();

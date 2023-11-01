@@ -482,6 +482,16 @@ public class CommonItemTagsProvider
         bathroom.add(ModBlocks.BASIN_GREEN.get().asItem());
         bathroom.add(ModBlocks.BASIN_RED.get().asItem());
         bathroom.add(ModBlocks.BASIN_BLACK.get().asItem());
+        bathroom.add(ModBlocks.BATH_OAK.get().asItem());
+        bathroom.add(ModBlocks.BATH_SPRUCE.get().asItem());
+        bathroom.add(ModBlocks.BATH_BIRCH.get().asItem());
+        bathroom.add(ModBlocks.BATH_JUNGLE.get().asItem());
+        bathroom.add(ModBlocks.BATH_ACACIA.get().asItem());
+        bathroom.add(ModBlocks.BATH_DARK_OAK.get().asItem());
+        bathroom.add(ModBlocks.BATH_MANGROVE.get().asItem());
+        bathroom.add(ModBlocks.BATH_CHERRY.get().asItem());
+        bathroom.add(ModBlocks.BATH_CRIMSON.get().asItem());
+        bathroom.add(ModBlocks.BATH_WARPED.get().asItem());
 
         TagBuilder<Item> electronics = builder.apply(ModTags.Items.ELECTRONICS);
         electronics.add(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get().asItem());

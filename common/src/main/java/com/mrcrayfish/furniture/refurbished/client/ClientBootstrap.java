@@ -104,6 +104,7 @@ public class ClientBootstrap
         register.apply(ModBlockEntities.PLATE.get(), PlateBlockEntityRenderer::new);
         register.apply(ModBlockEntities.BASIN.get(), BasinBlockEntityRenderer::new);
         register.apply(ModBlockEntities.TOILET.get(), ToiletBlockEntityRenderer::new);
+        register.apply(ModBlockEntities.BATH.get(), BathBlockEntityRenderer::new);
     }
 
     public static void registerEntityRenderers(EntityRendererRegister register)

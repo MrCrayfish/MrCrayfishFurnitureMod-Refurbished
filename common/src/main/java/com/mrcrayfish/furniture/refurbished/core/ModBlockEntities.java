@@ -376,4 +376,17 @@ public class ModBlockEntities
             ModBlocks.TOILET_RED.get(),
             ModBlocks.TOILET_BLACK.get()
     });
+
+    public static final RegistryEntry<BlockEntityType<BathBlockEntity>> BATH = RegistryEntry.blockEntity(Utils.resource("bath"), BathBlockEntity::new, () -> new Block[]{
+            ModBlocks.BATH_OAK.get(),
+            ModBlocks.BATH_SPRUCE.get(),
+            ModBlocks.BATH_BIRCH.get(),
+            ModBlocks.BATH_JUNGLE.get(),
+            ModBlocks.BATH_ACACIA.get(),
+            ModBlocks.BATH_DARK_OAK.get(),
+            ModBlocks.BATH_MANGROVE.get(),
+            ModBlocks.BATH_CHERRY.get(),
+            ModBlocks.BATH_CRIMSON.get(),
+            ModBlocks.BATH_WARPED.get()
+    });
 }

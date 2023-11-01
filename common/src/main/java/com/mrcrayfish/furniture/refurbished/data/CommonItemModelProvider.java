@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.data;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.block.CeilingFanBlock;
 import com.mrcrayfish.furniture.refurbished.block.MetalType;
+import com.mrcrayfish.furniture.refurbished.block.WoodenBathBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.data.model.ModelTemplate;
@@ -51,6 +52,16 @@ public class CommonItemModelProvider
         this.ceilingFan(ModBlocks.CEILING_FAN_CHERRY_DARK.get());
         this.ceilingFan(ModBlocks.CEILING_FAN_CRIMSON_DARK.get());
         this.ceilingFan(ModBlocks.CEILING_FAN_WARPED_DARK.get());
+        this.woodenBath(ModBlocks.BATH_OAK.get());
+        this.woodenBath(ModBlocks.BATH_SPRUCE.get());
+        this.woodenBath(ModBlocks.BATH_BIRCH.get());
+        this.woodenBath(ModBlocks.BATH_JUNGLE.get());
+        this.woodenBath(ModBlocks.BATH_ACACIA.get());
+        this.woodenBath(ModBlocks.BATH_DARK_OAK.get());
+        this.woodenBath(ModBlocks.BATH_MANGROVE.get());
+        this.woodenBath(ModBlocks.BATH_CHERRY.get());
+        this.woodenBath(ModBlocks.BATH_CRIMSON.get());
+        this.woodenBath(ModBlocks.BATH_WARPED.get());
     }
 
     public void fridge(FridgeItem item)
@@ -71,6 +82,16 @@ public class CommonItemModelProvider
         textures.put(TextureSlot.TEXTURE, new ResourceLocation(Constants.MOD_ID, "block/" + woodType.name() + "_" + metalType.getName() + "_ceiling_fan"));
         PreparedItem preparedItem = new PreparedItem(block.asItem());
         preparedItem.setModel(ModelTemplate.CEILING_FAN.itemModel(woodType, metalType).setTextures(textures));
+        this.consumer.accept(preparedItem);
+    }
+    
+    public void woodenBath(WoodenBathBlock block)
+    {
+        WoodType woodType = block.getWoodType();
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.TEXTURE, new ResourceLocation(Constants.MOD_ID, "block/" + woodType.name() + "_bath"));
+        PreparedItem preparedItem = new PreparedItem(block.asItem());
+        preparedItem.setModel(ModelTemplate.BATH.itemModel(woodType).setTextures(textures));
         this.consumer.accept(preparedItem);
     }
 }

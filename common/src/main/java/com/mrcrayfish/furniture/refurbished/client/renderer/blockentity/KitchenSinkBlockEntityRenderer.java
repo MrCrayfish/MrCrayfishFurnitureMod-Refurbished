@@ -27,7 +27,7 @@ public class KitchenSinkBlockEntityRenderer implements BlockEntityRenderer<Kitch
     public void render(KitchenSinkBlockEntity sink, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay)
     {
         FluidContainer container = sink.getFluidContainer();
-        if(container.isEmpty())
+        if(container == null || container.isEmpty())
             return;
 
         BlockState state = sink.getBlockState();

@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished;
 
 import com.mrcrayfish.furniture.refurbished.block.StorageJarBlock;
+import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.IFluidContainerBlock;
 import com.mrcrayfish.furniture.refurbished.client.ClientBootstrap;
 import com.mrcrayfish.furniture.refurbished.client.ForgeClientEvents;
@@ -34,6 +35,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.templates.EmptyFluidHandler;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -129,7 +131,11 @@ public class FurnitureMod
             event.addCapability(FLUID_CONTAINER_ID, new ICapabilityProvider()
             {
                 final LazyOptional<IFluidHandler> holder = LazyOptional.of(() -> {
-                    return ((ForgeFluidHelper.ForgeFluidContainer) block.getFluidContainer()).getTank();
+                    FluidContainer container = block.getFluidContainer();
+                    if(container == null) {
+                        return EmptyFluidHandler.INSTANCE;
+                    }
+                    return ((ForgeFluidHelper.ForgeFluidContainer) container).getTank();
                 });
 
                 @Override
