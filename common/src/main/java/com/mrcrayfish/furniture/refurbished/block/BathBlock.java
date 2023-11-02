@@ -197,7 +197,7 @@ public abstract class BathBlock extends FurnitureHorizontalBlock implements Enti
             }
         }
     }
-    
+
     @Override
     public List<TagKey<Block>> getTags()
     {
