@@ -2,14 +2,15 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.mrcrayfish.furniture.refurbished.blockentity.BasinBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.BathBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -142,6 +143,24 @@ public abstract class BathBlock extends FurnitureHorizontalBlock implements Enti
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
     {
         return new BathBlockEntity(pos, state);
+    }
+
+    @Override
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource source)
+    {
+        if(level.getBlockEntity(pos) instanceof BathBlockEntity bath)
+        {
+            FluidContainer container = bath.getFluidContainer();
+            if(container == null || container.isEmpty())
+                return;
+
+            // Only start animation tick if full enough. A little bit of lava shouldn't have sounds
+            double fullness = (double) container.getStoredAmount() / container.getCapacity();
+            if(fullness < 0.6)
+                return;
+
+            container.getStoredFluid().defaultFluidState().animateTick(level, pos, source);
+        }
     }
 
     @Override
