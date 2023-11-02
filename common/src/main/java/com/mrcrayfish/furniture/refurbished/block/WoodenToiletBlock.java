@@ -29,6 +29,6 @@ public class WoodenToiletBlock extends ToiletBlock implements BlockTagSupplier
     @Override
     public List<TagKey<Block>> getTags()
     {
-        return List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL);
+        return List.of(BlockTags.MINEABLE_WITH_PICKAXE);
     }
 }
