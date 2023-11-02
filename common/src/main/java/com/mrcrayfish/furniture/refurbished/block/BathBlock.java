@@ -4,9 +4,12 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.furniture.refurbished.blockentity.BasinBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.BathBlockEntity;
+import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -14,6 +17,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -24,6 +28,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -37,6 +42,9 @@ import java.util.stream.Collectors;
  */
 public abstract class BathBlock extends FurnitureHorizontalBlock implements EntityBlock
 {
+    protected static final VoxelShape BASE_SHAPE = Block.box(0, 2, 0, 32, 16, 16);
+    protected static final VoxelShape COLLISION_SHAPE = Shapes.join(BASE_SHAPE, Block.box(2, 4, 2, 28, 16, 14), BooleanOp.ONLY_FIRST);
+
     public static final EnumProperty<Type> TYPE = EnumProperty.create("type", Type.class);
 
     public BathBlock(Properties properties)
@@ -48,15 +56,22 @@ public abstract class BathBlock extends FurnitureHorizontalBlock implements Enti
     @Override
     protected Map<BlockState, VoxelShape> generateShapes(ImmutableList<BlockState> states)
     {
-        VoxelShape baseShape = Block.box(0, 2, 0, 32, 16, 16);
-        VoxelShape insideShape = Block.box(2, 4, 2, 28, 16, 14);
-        VoxelShape combinedShape = Shapes.join(baseShape, insideShape, BooleanOp.ONLY_FIRST);
         return ImmutableMap.copyOf(states.stream().collect(Collectors.toMap(state -> state, state -> {
             if(state.getValue(TYPE) == Type.HEAD) {
-                return VoxelShapeHelper.rotateHorizontally(combinedShape.move(-1, 0, 0), state.getValue(DIRECTION));
+                return VoxelShapeHelper.rotateHorizontally(BASE_SHAPE.move(-1, 0, 0), state.getValue(DIRECTION));
             }
-            return VoxelShapeHelper.rotateHorizontally(combinedShape, state.getValue(DIRECTION));
+            return VoxelShapeHelper.rotateHorizontally(BASE_SHAPE, state.getValue(DIRECTION));
         })));
+    }
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context)
+    {
+        if(state.getValue(TYPE) == Type.HEAD)
+        {
+            return VoxelShapeHelper.rotateHorizontally(COLLISION_SHAPE.move(-1, 0, 0), state.getValue(DIRECTION));
+        }
+        return VoxelShapeHelper.rotateHorizontally(COLLISION_SHAPE, state.getValue(DIRECTION));
     }
 
     @Override
