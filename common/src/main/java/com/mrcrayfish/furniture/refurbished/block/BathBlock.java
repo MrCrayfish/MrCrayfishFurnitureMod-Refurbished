@@ -101,6 +101,23 @@ public abstract class BathBlock extends FurnitureHorizontalBlock implements Enti
     }
 
     @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving)
+    {
+        super.onRemove(state, level, pos, newState, isMoving);
+        if(!state.is(newState.getBlock()))
+        {
+            Direction direction = state.getValue(DIRECTION);
+            Type type = state.getValue(TYPE);
+            BlockPos otherPos = pos.relative(type == Type.HEAD ? direction.getOpposite() : direction);
+            BlockState otherState = level.getBlockState(otherPos);
+            if(otherState.getBlock() instanceof BathBlock && otherState.getValue(TYPE) != type)
+            {
+                level.removeBlock(otherPos, false);
+            }
+        }
+    }
+
+    @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
     {
         if(!level.isClientSide())
