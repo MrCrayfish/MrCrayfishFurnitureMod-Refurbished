@@ -3,9 +3,12 @@ package com.mrcrayfish.furniture.refurbished.block;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.furniture.refurbished.blockentity.BasinBlockEntity;
+import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -26,7 +29,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public abstract class BasinBlock extends FurnitureHorizontalBlock implements EntityBlock
+public abstract class BasinBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
 {
     public BasinBlock(Properties properties)
     {
@@ -63,5 +66,11 @@ public abstract class BasinBlock extends FurnitureHorizontalBlock implements Ent
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
     {
         return new BasinBlockEntity(pos, state);
+    }
+
+    @Override
+    public List<TagKey<Block>> getTags()
+    {
+        return List.of(BlockTags.MINEABLE_WITH_PICKAXE);
     }
 }
