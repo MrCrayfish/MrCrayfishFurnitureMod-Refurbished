@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public abstract class BathBlock extends FurnitureHorizontalBlock implements EntityBlock
+public abstract class BathBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
 {
     protected static final VoxelShape BASE_SHAPE = Block.box(0, 2, 0, 32, 16, 16);
     protected static final VoxelShape COLLISION_SHAPE = Shapes.join(BASE_SHAPE, Block.box(2, 4, 2, 28, 16, 14), BooleanOp.ONLY_FIRST);
@@ -142,6 +142,12 @@ public abstract class BathBlock extends FurnitureHorizontalBlock implements Enti
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
     {
         return new BathBlockEntity(pos, state);
+    }
+
+    @Override
+    public List<TagKey<Block>> getTags()
+    {
+        return List.of(BlockTags.MINEABLE_WITH_PICKAXE);
     }
 
     public enum Type implements StringRepresentable
