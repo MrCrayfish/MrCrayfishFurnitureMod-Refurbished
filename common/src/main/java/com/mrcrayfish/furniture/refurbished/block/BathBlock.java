@@ -8,12 +8,14 @@ import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -27,6 +29,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -163,6 +166,38 @@ public abstract class BathBlock extends FurnitureHorizontalBlock implements Enti
         }
     }
 
+    @Override
+    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity)
+    {
+        if(level.getBlockEntity(pos) instanceof BathBlockEntity bath)
+        {
+            FluidContainer container = bath.getFluidContainer();
+            if(container == null || container.isEmpty())
+                return;
+
+            double fullness = (double) container.getStoredAmount() / container.getCapacity();
+            double startY = pos.getY() + 0.25;
+            double endY = pos.getY() + 0.9375 * fullness;
+            if(entity.getY() < startY || entity.getY() > endY)
+                return;
+
+            if(container.getStoredFluid().isSame(Fluids.LAVA))
+            {
+                entity.lavaHurt();
+            }
+            else if(container.getStoredFluid().isSame(Fluids.WATER))
+            {
+                if(!entity.isSilent() && entity.wasOnFire)
+                {
+                    float volume = 0.7F;
+                    float pitch = 1.6F + 0.4F * (level.random.nextFloat() - level.random.nextFloat());
+                    level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.GENERIC_EXTINGUISH_FIRE, entity.getSoundSource(), volume, pitch);
+                }
+                entity.clearFire();
+            }
+        }
+    }
+    
     @Override
     public List<TagKey<Block>> getTags()
     {
