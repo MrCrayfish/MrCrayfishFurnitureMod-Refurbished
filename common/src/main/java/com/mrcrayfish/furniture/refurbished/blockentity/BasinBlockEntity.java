@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.IFluidContainerBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
@@ -35,7 +36,7 @@ import java.util.Objects;
  */
 public class BasinBlockEntity extends BlockEntity implements IFluidContainerBlock
 {
-    protected final FluidContainer tank = FluidContainer.create(FluidContainer.BUCKET_CAPACITY, container -> {
+    protected final FluidContainer tank = FluidContainer.create(Config.SERVER.basin.fluidCapacity.get(), container -> {
         this.setChanged();
         container.sync(this);
     });
@@ -70,7 +71,7 @@ public class BasinBlockEntity extends BlockEntity implements IFluidContainerBloc
 
     public InteractionResult interact(Player player, InteractionHand hand, BlockHitResult result)
     {
-        if(player.getItemInHand(hand).isEmpty() && result.getDirection() != Direction.DOWN)
+        if(Config.SERVER.basin.dispenseWater.get() && player.getItemInHand(hand).isEmpty() && result.getDirection() != Direction.DOWN)
         {
             // Fills the sink with water TODO make config option to disable free water
             if(this.tank.isEmpty() || this.tank.getStoredFluid().isSame(Fluids.WATER))

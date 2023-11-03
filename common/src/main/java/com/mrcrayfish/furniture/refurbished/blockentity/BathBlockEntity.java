@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.block.BathBlock;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.IFluidContainerBlock;
@@ -82,7 +83,7 @@ public class BathBlockEntity extends BlockEntity implements IFluidContainerBlock
     {
         if(state.hasProperty(BathBlock.TYPE) && state.getValue(BathBlock.TYPE) == BathBlock.Type.HEAD)
         {
-            return FluidContainer.create(FluidContainer.BUCKET_CAPACITY * 10, container -> {
+            return FluidContainer.create(Config.SERVER.bath.fluidCapacity.get(), container -> {
                 this.setChanged();
                 container.sync(this);
             });
@@ -98,7 +99,7 @@ public class BathBlockEntity extends BlockEntity implements IFluidContainerBlock
             return InteractionResult.PASS;
         }
 
-        if(player.getItemInHand(hand).isEmpty())
+        if(Config.SERVER.bath.dispenseWater.get() && player.getItemInHand(hand).isEmpty())
         {
             // Fills the sink with water TODO make config option to disable free water
             if(tank.isEmpty() || tank.getStoredFluid().isSame(Fluids.WATER))

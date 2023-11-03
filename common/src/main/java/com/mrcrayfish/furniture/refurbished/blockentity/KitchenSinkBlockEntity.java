@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.IFluidContainerBlock;
@@ -37,7 +38,7 @@ import java.util.Optional;
  */
 public class KitchenSinkBlockEntity extends BlockEntity implements IFluidContainerBlock
 {
-    protected final FluidContainer tank = FluidContainer.create(FluidContainer.BUCKET_CAPACITY * 3, container -> {
+    protected final FluidContainer tank = FluidContainer.create(Config.SERVER.kitchenSink.fluidCapacity.get(), container -> {
         this.setChanged();
         container.sync(this);
     });
@@ -73,7 +74,7 @@ public class KitchenSinkBlockEntity extends BlockEntity implements IFluidContain
     public InteractionResult interact(Player player, InteractionHand hand, BlockHitResult result)
     {
         // TODO allow this to be triggered with redstone
-        if(player.getItemInHand(hand).isEmpty() && result.getDirection() != Direction.DOWN)
+        if(Config.SERVER.kitchenSink.dispenseWater.get() && player.getItemInHand(hand).isEmpty() && result.getDirection() != Direction.DOWN)
         {
             // Fills the sink with water TODO make config option to disable free water
             if(this.tank.isEmpty() || this.tank.getStoredFluid().isSame(Fluids.WATER))

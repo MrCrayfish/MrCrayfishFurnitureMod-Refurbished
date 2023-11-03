@@ -7,6 +7,8 @@ import com.mrcrayfish.framework.api.config.DoubleProperty;
 import com.mrcrayfish.framework.api.config.FrameworkConfig;
 import com.mrcrayfish.framework.api.config.IntProperty;
 import com.mrcrayfish.framework.api.config.ListProperty;
+import com.mrcrayfish.framework.api.config.LongProperty;
+import com.mrcrayfish.furniture.refurbished.platform.Services;
 
 /**
  * Author: MrCrayfish
@@ -43,6 +45,18 @@ public class Config
 
         @ConfigProperty(name = "trampoline", comment = "Trampoline related properties")
         public final Trampoline trampoline = new Trampoline();
+
+        @ConfigProperty(name = "kitchenSink", comment = "Kitchen Sink related properties")
+        public final FluidStorage kitchenSink = new FluidStorage(Services.FLUID.getBucketCapacity() * 3);
+
+        @ConfigProperty(name = "basin", comment = "Basin related properties")
+        public final FluidStorage basin = new FluidStorage(Services.FLUID.getBucketCapacity());
+
+        @ConfigProperty(name = "bath", comment = "Bath related properties")
+        public final FluidStorage bath = new FluidStorage(Services.FLUID.getBucketCapacity() * 10);
+
+        @ConfigProperty(name = "toilet", comment = "Toilet related properties")
+        public final FluidStorage toilet = new FluidStorage(Services.FLUID.getBucketCapacity());
 
         public static class Mailing
         {
@@ -141,6 +155,26 @@ public class Config
                 be able to reach the maximum bounce height, while a single trampoline will only reach
                 half.""")
             public final DoubleProperty maxBounceHeight = DoubleProperty.create(8.0, 0.0, 64.0);
+        }
+
+        public static class FluidStorage
+        {
+            @ConfigProperty(name = "fluidCapacity", comment = """
+                The storage capacity of the fluid tank contained in this block. If you're using Forge,
+                1000 units represents the capacity of a bucket, while it's 81000 on Fabric. So if you
+                want 3 buckets worth of storage, it will be 3000 (Forge) or 243000 (Fabric)""")
+            public final LongProperty fluidCapacity;
+
+            @ConfigProperty(name = "dispenseWater", comment = """
+                If enabled, when interacting with this block it will dispense free water into
+                it's fluid tank, assuming the tank is empty or contains water but has not reached it's
+                capacity.""")
+            public final BoolProperty dispenseWater = BoolProperty.create(true);
+
+            public FluidStorage(long capacity)
+            {
+                this.fluidCapacity = LongProperty.create(capacity, 1, Long.MAX_VALUE);
+            }
         }
     }
 }
