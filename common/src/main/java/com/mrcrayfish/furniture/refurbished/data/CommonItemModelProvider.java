@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.data;
 
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.block.CeilingFanBlock;
+import com.mrcrayfish.furniture.refurbished.block.ColouredBathBlock;
 import com.mrcrayfish.furniture.refurbished.block.MetalType;
 import com.mrcrayfish.furniture.refurbished.block.WoodenBathBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
@@ -12,6 +13,7 @@ import com.mrcrayfish.furniture.refurbished.item.FridgeItem;
 import net.minecraft.data.models.model.TextureMapping;
 import net.minecraft.data.models.model.TextureSlot;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.state.properties.WoodType;
 
 import java.util.function.Consumer;
@@ -62,6 +64,22 @@ public class CommonItemModelProvider
         this.woodenBath(ModBlocks.BATH_CHERRY.get());
         this.woodenBath(ModBlocks.BATH_CRIMSON.get());
         this.woodenBath(ModBlocks.BATH_WARPED.get());
+        this.colouredBath(ModBlocks.BATH_WHITE.get());
+        this.colouredBath(ModBlocks.BATH_ORANGE.get());
+        this.colouredBath(ModBlocks.BATH_MAGENTA.get());
+        this.colouredBath(ModBlocks.BATH_LIGHT_BLUE.get());
+        this.colouredBath(ModBlocks.BATH_YELLOW.get());
+        this.colouredBath(ModBlocks.BATH_LIME.get());
+        this.colouredBath(ModBlocks.BATH_PINK.get());
+        this.colouredBath(ModBlocks.BATH_GRAY.get());
+        this.colouredBath(ModBlocks.BATH_LIGHT_GRAY.get());
+        this.colouredBath(ModBlocks.BATH_CYAN.get());
+        this.colouredBath(ModBlocks.BATH_PURPLE.get());
+        this.colouredBath(ModBlocks.BATH_BLUE.get());
+        this.colouredBath(ModBlocks.BATH_BROWN.get());
+        this.colouredBath(ModBlocks.BATH_GREEN.get());
+        this.colouredBath(ModBlocks.BATH_RED.get());
+        this.colouredBath(ModBlocks.BATH_BLACK.get());
     }
 
     public void fridge(FridgeItem item)
@@ -92,6 +110,16 @@ public class CommonItemModelProvider
         textures.put(TextureSlot.TEXTURE, new ResourceLocation(Constants.MOD_ID, "block/" + woodType.name() + "_bath"));
         PreparedItem preparedItem = new PreparedItem(block.asItem());
         preparedItem.setModel(ModelTemplate.BATH.itemModel(woodType).setTextures(textures));
+        this.consumer.accept(preparedItem);
+    }
+
+    public void colouredBath(ColouredBathBlock block)
+    {
+        DyeColor color = block.getDyeColor();
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.TEXTURE, new ResourceLocation(Constants.MOD_ID, "block/" + color.getName() + "_bath"));
+        PreparedItem preparedItem = new PreparedItem(block.asItem());
+        preparedItem.setModel(ModelTemplate.BATH.itemModel(color).setTextures(textures));
         this.consumer.accept(preparedItem);
     }
 }

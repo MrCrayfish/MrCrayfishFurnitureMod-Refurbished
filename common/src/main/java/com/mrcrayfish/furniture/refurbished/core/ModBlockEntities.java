@@ -387,6 +387,22 @@ public class ModBlockEntities
             ModBlocks.BATH_MANGROVE.get(),
             ModBlocks.BATH_CHERRY.get(),
             ModBlocks.BATH_CRIMSON.get(),
-            ModBlocks.BATH_WARPED.get()
+            ModBlocks.BATH_WARPED.get(),
+            ModBlocks.BATH_WHITE.get(),
+            ModBlocks.BATH_ORANGE.get(),
+            ModBlocks.BATH_MAGENTA.get(),
+            ModBlocks.BATH_LIGHT_BLUE.get(),
+            ModBlocks.BATH_YELLOW.get(),
+            ModBlocks.BATH_LIME.get(),
+            ModBlocks.BATH_PINK.get(),
+            ModBlocks.BATH_GRAY.get(),
+            ModBlocks.BATH_LIGHT_GRAY.get(),
+            ModBlocks.BATH_CYAN.get(),
+            ModBlocks.BATH_PURPLE.get(),
+            ModBlocks.BATH_BLUE.get(),
+            ModBlocks.BATH_BROWN.get(),
+            ModBlocks.BATH_GREEN.get(),
+            ModBlocks.BATH_RED.get(),
+            ModBlocks.BATH_BLACK.get()
     });
 }

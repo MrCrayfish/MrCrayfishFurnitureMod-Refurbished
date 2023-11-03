@@ -492,6 +492,22 @@ public class CommonItemTagsProvider
         bathroom.add(ModBlocks.BATH_CHERRY.get().asItem());
         bathroom.add(ModBlocks.BATH_CRIMSON.get().asItem());
         bathroom.add(ModBlocks.BATH_WARPED.get().asItem());
+        bathroom.add(ModBlocks.BATH_WHITE.get().asItem());
+        bathroom.add(ModBlocks.BATH_ORANGE.get().asItem());
+        bathroom.add(ModBlocks.BATH_MAGENTA.get().asItem());
+        bathroom.add(ModBlocks.BATH_LIGHT_BLUE.get().asItem());
+        bathroom.add(ModBlocks.BATH_YELLOW.get().asItem());
+        bathroom.add(ModBlocks.BATH_LIME.get().asItem());
+        bathroom.add(ModBlocks.BATH_PINK.get().asItem());
+        bathroom.add(ModBlocks.BATH_GRAY.get().asItem());
+        bathroom.add(ModBlocks.BATH_LIGHT_GRAY.get().asItem());
+        bathroom.add(ModBlocks.BATH_CYAN.get().asItem());
+        bathroom.add(ModBlocks.BATH_PURPLE.get().asItem());
+        bathroom.add(ModBlocks.BATH_BLUE.get().asItem());
+        bathroom.add(ModBlocks.BATH_BROWN.get().asItem());
+        bathroom.add(ModBlocks.BATH_GREEN.get().asItem());
+        bathroom.add(ModBlocks.BATH_RED.get().asItem());
+        bathroom.add(ModBlocks.BATH_BLACK.get().asItem());
 
         TagBuilder<Item> electronics = builder.apply(ModTags.Items.ELECTRONICS);
         electronics.add(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get().asItem());

@@ -448,6 +448,22 @@ public class CommonBlockModelProvider
         this.woodenBath(ModBlocks.BATH_CHERRY.get());
         this.woodenBath(ModBlocks.BATH_CRIMSON.get());
         this.woodenBath(ModBlocks.BATH_WARPED.get());
+        this.colouredBath(ModBlocks.BATH_WHITE.get());
+        this.colouredBath(ModBlocks.BATH_ORANGE.get());
+        this.colouredBath(ModBlocks.BATH_MAGENTA.get());
+        this.colouredBath(ModBlocks.BATH_LIGHT_BLUE.get());
+        this.colouredBath(ModBlocks.BATH_YELLOW.get());
+        this.colouredBath(ModBlocks.BATH_LIME.get());
+        this.colouredBath(ModBlocks.BATH_PINK.get());
+        this.colouredBath(ModBlocks.BATH_GRAY.get());
+        this.colouredBath(ModBlocks.BATH_LIGHT_GRAY.get());
+        this.colouredBath(ModBlocks.BATH_CYAN.get());
+        this.colouredBath(ModBlocks.BATH_PURPLE.get());
+        this.colouredBath(ModBlocks.BATH_BLUE.get());
+        this.colouredBath(ModBlocks.BATH_BROWN.get());
+        this.colouredBath(ModBlocks.BATH_GREEN.get());
+        this.colouredBath(ModBlocks.BATH_RED.get());
+        this.colouredBath(ModBlocks.BATH_BLACK.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -1465,6 +1481,24 @@ public class CommonBlockModelProvider
         state.createVariant().prop(BathBlock.DIRECTION, Direction.EAST).prop(BathBlock.TYPE, BathBlock.Type.BOTTOM).addTexturedModel(ModelTemplate.BATH_BOTTOM.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(BathBlock.DIRECTION, Direction.SOUTH).prop(BathBlock.TYPE, BathBlock.Type.BOTTOM).addTexturedModel(ModelTemplate.BATH_BOTTOM.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(BathBlock.DIRECTION, Direction.WEST).prop(BathBlock.TYPE, BathBlock.Type.BOTTOM).addTexturedModel(ModelTemplate.BATH_BOTTOM.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        this.variantStateConsumer.accept(state);
+    }
+
+    private void colouredBath(ColouredBathBlock block)
+    {
+        DyeColor color = block.getDyeColor();
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.colourParticle(color));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
+        state.createVariant().prop(BathBlock.DIRECTION, Direction.NORTH).prop(BathBlock.TYPE, BathBlock.Type.HEAD).addTexturedModel(ModelTemplate.BATH_HEAD.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
+        state.createVariant().prop(BathBlock.DIRECTION, Direction.EAST).prop(BathBlock.TYPE, BathBlock.Type.HEAD).addTexturedModel(ModelTemplate.BATH_HEAD.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(BathBlock.DIRECTION, Direction.SOUTH).prop(BathBlock.TYPE, BathBlock.Type.HEAD).addTexturedModel(ModelTemplate.BATH_HEAD.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(BathBlock.DIRECTION, Direction.WEST).prop(BathBlock.TYPE, BathBlock.Type.HEAD).addTexturedModel(ModelTemplate.BATH_HEAD.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(BathBlock.DIRECTION, Direction.NORTH).prop(BathBlock.TYPE, BathBlock.Type.BOTTOM).addTexturedModel(ModelTemplate.BATH_BOTTOM.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
+        state.createVariant().prop(BathBlock.DIRECTION, Direction.EAST).prop(BathBlock.TYPE, BathBlock.Type.BOTTOM).addTexturedModel(ModelTemplate.BATH_BOTTOM.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(BathBlock.DIRECTION, Direction.SOUTH).prop(BathBlock.TYPE, BathBlock.Type.BOTTOM).addTexturedModel(ModelTemplate.BATH_BOTTOM.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(BathBlock.DIRECTION, Direction.WEST).prop(BathBlock.TYPE, BathBlock.Type.BOTTOM).addTexturedModel(ModelTemplate.BATH_BOTTOM.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         this.variantStateConsumer.accept(state);
     }
 }

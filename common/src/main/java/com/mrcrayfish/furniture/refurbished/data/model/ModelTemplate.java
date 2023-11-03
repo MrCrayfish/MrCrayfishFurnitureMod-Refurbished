@@ -251,6 +251,11 @@ public class ModelTemplate
         return PreparedItem.Model.create(type.name() + "_" + this.path, this.location, this.textures);
     }
 
+    public PreparedItem.Model itemModel(DyeColor color)
+    {
+        return PreparedItem.Model.create(color.getName() + "_" + this.path, this.location, this.textures);
+    }
+
     public PreparedItem.Model itemModel(MetalType type)
     {
         return PreparedItem.Model.create(type.getName() + "_" + this.path, this.location, this.textures);
