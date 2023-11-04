@@ -475,6 +475,7 @@ public class CommonBlockModelProvider
         this.latticeFence(ModBlocks.LATTICE_FENCE_CRIMSON.get());
         this.latticeFence(ModBlocks.LATTICE_FENCE_WARPED.get());
         this.television(ModBlocks.TELEVISION.get());
+        this.computer(ModBlocks.COMPUTER.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -1539,6 +1540,19 @@ public class CommonBlockModelProvider
         state.createVariant().prop(TelevisionBlock.DIRECTION, Direction.EAST).addExistingModel(ModelTemplate.TELEVISION.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(TelevisionBlock.DIRECTION, Direction.SOUTH).addExistingModel(ModelTemplate.TELEVISION.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(TelevisionBlock.DIRECTION, Direction.WEST).addExistingModel(ModelTemplate.TELEVISION.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        this.variantStateConsumer.accept(state);
+    }
+
+    private void computer(ComputerBlock block)
+    {
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.metalParticle(MetalType.LIGHT));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
+        state.createVariant().prop(ComputerBlock.DIRECTION, Direction.NORTH).addExistingModel(ModelTemplate.COMPUTER.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(ComputerBlock.DIRECTION, Direction.EAST).addExistingModel(ModelTemplate.COMPUTER.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(ComputerBlock.DIRECTION, Direction.SOUTH).addExistingModel(ModelTemplate.COMPUTER.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(ComputerBlock.DIRECTION, Direction.WEST).addExistingModel(ModelTemplate.COMPUTER.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         this.variantStateConsumer.accept(state);
     }
 }

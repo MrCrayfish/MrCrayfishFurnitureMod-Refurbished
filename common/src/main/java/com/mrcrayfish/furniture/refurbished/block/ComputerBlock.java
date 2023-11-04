@@ -13,9 +13,11 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class TelevisionBlock extends FurnitureHorizontalBlock
+public class ComputerBlock extends FurnitureHorizontalBlock
 {
-    public TelevisionBlock(Properties properties)
+    // TODO if player in chair, make arms reach the keyboard when using computer. use synced data key
+
+    public ComputerBlock(Properties properties)
     {
         super(properties);
         this.registerDefaultState(this.getStateDefinition().any().setValue(DIRECTION, Direction.NORTH));
@@ -24,7 +26,7 @@ public class TelevisionBlock extends FurnitureHorizontalBlock
     @Override
     protected Map<BlockState, VoxelShape> generateShapes(ImmutableList<BlockState> states)
     {
-        VoxelShape baseShape = Block.box(2, 0, 2, 14, 12, 14);
+        VoxelShape baseShape = Block.box(1, 0, 1, 15, 12, 15);
         return ImmutableMap.copyOf(states.stream().collect(Collectors.toMap(state -> state, o -> baseShape)));
     }
 }

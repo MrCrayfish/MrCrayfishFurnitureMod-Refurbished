@@ -456,4 +456,5 @@ public class ModBlocks
     public static final RegistryEntry<ColouredBathBlock> BATH_RED = RegistryEntry.blockWithItem(Utils.resource("red_bath"), () -> new ColouredBathBlock(DyeColor.RED, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_RED).strength(3.5F).sound(SoundType.STONE)));
     public static final RegistryEntry<ColouredBathBlock> BATH_BLACK = RegistryEntry.blockWithItem(Utils.resource("black_bath"), () -> new ColouredBathBlock(DyeColor.BLACK, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK).strength(3.5F).sound(SoundType.STONE)));
     public static final RegistryEntry<TelevisionBlock> TELEVISION = RegistryEntry.blockWithItem(Utils.resource("television"), () -> new TelevisionBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GRAY).strength(3.5F).sound(SoundType.LODESTONE)));
+    public static final RegistryEntry<ComputerBlock> COMPUTER = RegistryEntry.blockWithItem(Utils.resource("computer"), () -> new ComputerBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GRAY).strength(3.5F).sound(SoundType.LODESTONE)));
 }
