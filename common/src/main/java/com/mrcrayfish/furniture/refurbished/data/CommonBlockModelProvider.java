@@ -464,6 +464,16 @@ public class CommonBlockModelProvider
         this.colouredBath(ModBlocks.BATH_GREEN.get());
         this.colouredBath(ModBlocks.BATH_RED.get());
         this.colouredBath(ModBlocks.BATH_BLACK.get());
+        this.latticeFence(ModBlocks.LATTICE_FENCE_OAK.get());
+        this.latticeFence(ModBlocks.LATTICE_FENCE_SPRUCE.get());
+        this.latticeFence(ModBlocks.LATTICE_FENCE_BIRCH.get());
+        this.latticeFence(ModBlocks.LATTICE_FENCE_JUNGLE.get());
+        this.latticeFence(ModBlocks.LATTICE_FENCE_ACACIA.get());
+        this.latticeFence(ModBlocks.LATTICE_FENCE_DARK_OAK.get());
+        this.latticeFence(ModBlocks.LATTICE_FENCE_MANGROVE.get());
+        this.latticeFence(ModBlocks.LATTICE_FENCE_CHERRY.get());
+        this.latticeFence(ModBlocks.LATTICE_FENCE_CRIMSON.get());
+        this.latticeFence(ModBlocks.LATTICE_FENCE_WARPED.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -1500,5 +1510,21 @@ public class CommonBlockModelProvider
         state.createVariant().prop(BathBlock.DIRECTION, Direction.SOUTH).prop(BathBlock.TYPE, BathBlock.Type.BOTTOM).addTexturedModel(ModelTemplate.BATH_BOTTOM.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(BathBlock.DIRECTION, Direction.WEST).prop(BathBlock.TYPE, BathBlock.Type.BOTTOM).addTexturedModel(ModelTemplate.BATH_BOTTOM.stateModel(color).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         this.variantStateConsumer.accept(state);
+    }
+
+    private void latticeFence(LatticeFenceBlock block)
+    {
+        WoodType type = block.getWoodType();
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.woodParticle(type));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedMultiPartBlockState state = new PreparedMultiPartBlockState(block);
+        state.setItemModel(ModelTemplate.LATTICE_FENCE.stateModel(type).setTextures(textures).markAsChild());
+        state.createPart().addTexturedModel(ModelTemplate.LATTICE_FENCE_CENTER.stateModel(type).setTextures(textures));
+        state.createPart().prop(HedgeBlock.NORTH, true).addTexturedModel(ModelTemplate.LATTICE_FENCE_CONNECTION.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createPart().prop(HedgeBlock.EAST, true).addTexturedModel(ModelTemplate.LATTICE_FENCE_CONNECTION.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createPart().prop(HedgeBlock.SOUTH, true).addTexturedModel(ModelTemplate.LATTICE_FENCE_CONNECTION.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
+        state.createPart().prop(HedgeBlock.WEST, true).addTexturedModel(ModelTemplate.LATTICE_FENCE_CONNECTION.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        this.multiPartStateConsumer.accept(state);
     }
 }

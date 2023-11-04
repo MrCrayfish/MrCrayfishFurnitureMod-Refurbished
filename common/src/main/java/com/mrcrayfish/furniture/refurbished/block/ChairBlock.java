@@ -77,6 +77,7 @@ public class ChairBlock extends FurnitureHorizontalBlock implements BlockTagSupp
         // If can no longer be tucked, restore to untucked state
         if(!this.canTuck(state, level, pos) && state.getValue(TUCKED))
         {
+            // TODO sound
             level.setBlock(pos, state.setValue(TUCKED, false), UPDATE_ALL);
         }
     }
@@ -86,6 +87,7 @@ public class ChairBlock extends FurnitureHorizontalBlock implements BlockTagSupp
     {
         if(player.isCrouching() && Seat.availableAt(level, pos) && this.canTuck(state, level, pos))
         {
+            // TODO sound
             level.setBlock(pos, state.setValue(TUCKED, !state.getValue(TUCKED)), UPDATE_ALL);
             return InteractionResult.SUCCESS;
         }

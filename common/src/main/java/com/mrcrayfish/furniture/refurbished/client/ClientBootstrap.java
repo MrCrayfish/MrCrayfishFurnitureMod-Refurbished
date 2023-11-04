@@ -247,6 +247,16 @@ public class ClientBootstrap
         register.apply(ModBlocks.TOILET_GREEN.get(), RenderType.cutout());
         register.apply(ModBlocks.TOILET_RED.get(), RenderType.cutout());
         register.apply(ModBlocks.TOILET_BLACK.get(), RenderType.cutout());
+        register.apply(ModBlocks.LATTICE_FENCE_OAK.get(), RenderType.cutout());
+        register.apply(ModBlocks.LATTICE_FENCE_SPRUCE.get(), RenderType.cutout());
+        register.apply(ModBlocks.LATTICE_FENCE_BIRCH.get(), RenderType.cutout());
+        register.apply(ModBlocks.LATTICE_FENCE_JUNGLE.get(), RenderType.cutout());
+        register.apply(ModBlocks.LATTICE_FENCE_ACACIA.get(), RenderType.cutout());
+        register.apply(ModBlocks.LATTICE_FENCE_DARK_OAK.get(), RenderType.cutout());
+        register.apply(ModBlocks.LATTICE_FENCE_MANGROVE.get(), RenderType.cutout());
+        register.apply(ModBlocks.LATTICE_FENCE_CHERRY.get(), RenderType.cutout());
+        register.apply(ModBlocks.LATTICE_FENCE_CRIMSON.get(), RenderType.cutout());
+        register.apply(ModBlocks.LATTICE_FENCE_WARPED.get(), RenderType.cutout());
     }
 
     public static void registerParticleProviders(ParticleProviderRegister register)

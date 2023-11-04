@@ -69,6 +69,8 @@ public class KitchenCabinetryBlock extends FurnitureHorizontalBlock implements I
         return builder.build();
     }
 
+    // TODO fix placement state not updating to neighbours
+
     @Override
     public BlockState updateShape(BlockState state, Direction direction, BlockState newState, LevelAccessor level, BlockPos pos, BlockPos newPos)
     {
