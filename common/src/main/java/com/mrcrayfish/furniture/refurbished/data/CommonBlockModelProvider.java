@@ -474,6 +474,7 @@ public class CommonBlockModelProvider
         this.latticeFence(ModBlocks.LATTICE_FENCE_CHERRY.get());
         this.latticeFence(ModBlocks.LATTICE_FENCE_CRIMSON.get());
         this.latticeFence(ModBlocks.LATTICE_FENCE_WARPED.get());
+        this.television(ModBlocks.TELEVISION.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -1526,5 +1527,18 @@ public class CommonBlockModelProvider
         state.createPart().prop(HedgeBlock.SOUTH, true).addTexturedModel(ModelTemplate.LATTICE_FENCE_CONNECTION.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
         state.createPart().prop(HedgeBlock.WEST, true).addTexturedModel(ModelTemplate.LATTICE_FENCE_CONNECTION.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
         this.multiPartStateConsumer.accept(state);
+    }
+
+    private void television(TelevisionBlock block)
+    {
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.metalParticle(MetalType.LIGHT));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
+        state.createVariant().prop(TelevisionBlock.DIRECTION, Direction.NORTH).addExistingModel(ModelTemplate.TELEVISION.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(TelevisionBlock.DIRECTION, Direction.EAST).addExistingModel(ModelTemplate.TELEVISION.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(TelevisionBlock.DIRECTION, Direction.SOUTH).addExistingModel(ModelTemplate.TELEVISION.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(TelevisionBlock.DIRECTION, Direction.WEST).addExistingModel(ModelTemplate.TELEVISION.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        this.variantStateConsumer.accept(state);
     }
 }

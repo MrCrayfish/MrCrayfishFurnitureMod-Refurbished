@@ -257,6 +257,7 @@ public class ClientBootstrap
         register.apply(ModBlocks.LATTICE_FENCE_CHERRY.get(), RenderType.cutout());
         register.apply(ModBlocks.LATTICE_FENCE_CRIMSON.get(), RenderType.cutout());
         register.apply(ModBlocks.LATTICE_FENCE_WARPED.get(), RenderType.cutout());
+        register.apply(ModBlocks.TELEVISION.get(), RenderType.cutout());
     }
 
     public static void registerParticleProviders(ParticleProviderRegister register)
