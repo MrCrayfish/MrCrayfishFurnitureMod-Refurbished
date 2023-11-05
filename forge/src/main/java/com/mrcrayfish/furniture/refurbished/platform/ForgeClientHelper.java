@@ -92,6 +92,12 @@ public class ForgeClientHelper implements IClientHelper
     }
 
     @Override
+    public RenderType getTelevisionScreenRenderType(ResourceLocation id)
+    {
+        return ForgeRenderType.televisionScreen(id);
+    }
+
+    @Override
     public SimpleParticleType createSimpleParticleType(boolean ignoreLimit)
     {
         return new SimpleParticleType(ignoreLimit);

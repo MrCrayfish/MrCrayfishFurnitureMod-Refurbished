@@ -43,6 +43,9 @@ public class AudioManager
 
     public void playAudioBlock(IAudioBlock block)
     {
+        if(block.getSound() == null)
+            return;
+
         if(!block.canPlayAudio())
             return;
 

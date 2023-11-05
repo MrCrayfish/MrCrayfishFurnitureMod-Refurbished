@@ -118,7 +118,7 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
      * Spawns sizzling particles when the item in the pan is cooking
      *
      * @param level the level the spawn the particles
-     * @param pos the block position of the frying pan
+     * @param pos   the block position of the frying pan
      */
     private void spawnParticles(Level level, BlockPos pos)
     {

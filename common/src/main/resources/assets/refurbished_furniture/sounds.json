@@ -47,6 +47,12 @@
             "refurbished_furniture:block/trampoline/super_bounce"
         ]
     },
+    "block.television.channel.colour_test": {
+        "subtitle": "subtitle.refurbished_furniture.television_channel.colour_test",
+        "sounds": [
+            "refurbished_furniture:block/television/colour_test"
+        ]
+    },
     "item.package.open": {
         "subtitle": "subtitle.refurbished_furniture.package_open",
         "sounds": [

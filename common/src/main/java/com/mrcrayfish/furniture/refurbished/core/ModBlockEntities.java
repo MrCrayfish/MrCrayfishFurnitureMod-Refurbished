@@ -405,4 +405,8 @@ public class ModBlockEntities
             ModBlocks.BATH_RED.get(),
             ModBlocks.BATH_BLACK.get()
     });
+
+    public static final RegistryEntry<BlockEntityType<TelevisionBlockEntity>> TELEVISION = RegistryEntry.blockEntity(Utils.resource("television"), TelevisionBlockEntity::new, () -> new Block[]{
+            ModBlocks.TELEVISION.get()
+    });
 }

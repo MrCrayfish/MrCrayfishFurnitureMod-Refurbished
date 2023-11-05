@@ -42,5 +42,7 @@ public interface IClientHelper
 
     RenderType getElectricityConnectionRenderType();
 
+    RenderType getTelevisionScreenRenderType(ResourceLocation id);
+
     SimpleParticleType createSimpleParticleType(boolean ignoreLimit);
 }
