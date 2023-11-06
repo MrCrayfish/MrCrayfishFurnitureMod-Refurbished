@@ -54,7 +54,7 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
     });
     public static final Map<ResourceLocation, Channel> ID_TO_CHANNEL = ALL_CHANNELS.stream().collect(Collectors.toMap(c -> c.id, Function.identity()));
     public static final int TOTAL_CHANNEL_WEIGHT = VIEWABLE_CHANNELS.stream().mapToInt(Channel::weight).sum();
-    public static final double MAX_AUDIO_DISTANCE = Mth.square(8);
+    public static final double MAX_AUDIO_DISTANCE = Mth.square(16);
 
     protected Channel currentChannel = COLOUR_TEST;
     protected boolean transitioning;
