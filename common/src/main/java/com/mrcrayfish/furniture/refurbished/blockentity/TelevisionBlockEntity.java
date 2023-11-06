@@ -23,6 +23,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -38,12 +39,16 @@ import java.util.stream.Collectors;
 public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implements IAudioBlock
 {
     public static final Channel WHITE_NOISE = new Channel(Utils.resource("white_noise"), ModSounds.BLOCK_TELEVISION_CHANNEL_WHITE_NOISE::get, 0);
+    public static final Channel BLACK_NOISE = new Channel(Utils.resource("black_noise"), ModSounds.BLOCK_TELEVISION_CHANNEL_WHITE_NOISE::get, 0);
     public static final Channel HEART_SCREENSAVER = new Channel(Utils.resource("heart_screensaver"), () -> null, 10);
     public static final Channel COLOUR_TEST = new Channel(Utils.resource("colour_test"), ModSounds.BLOCK_TELEVISION_CHANNEL_COLOUR_TEST::get, 1);
+    public static final Channel HEROBRINE = new Channel(Utils.resource("herobrine"), ModSounds.BLOCK_TELEVISION_CHANNEL_COLOUR_TEST::get, 1);
     public static final Channel DANCE_MUSIC = new Channel(Utils.resource("dance_music"), ModSounds.BLOCK_TELEVISION_CHANNEL_DANCE_MUSIC::get, 10);
     public static final List<Channel> VIEWABLE_CHANNELS = List.of(HEART_SCREENSAVER, COLOUR_TEST, DANCE_MUSIC);
     public static final List<Channel> ALL_CHANNELS = Util.make(new ArrayList<>(), channels -> {
         channels.add(WHITE_NOISE);
+        channels.add(BLACK_NOISE);
+        channels.add(HEROBRINE);
         channels.addAll(VIEWABLE_CHANNELS);
     });
     public static final Map<ResourceLocation, Channel> ID_TO_CHANNEL = ALL_CHANNELS.stream().collect(Collectors.toMap(c -> c.id, Function.identity()));
@@ -52,6 +57,7 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
 
     protected Channel currentChannel = COLOUR_TEST;
     protected boolean transitioning;
+    protected int timer;
 
     public TelevisionBlockEntity(BlockPos $$1, BlockState $$2)
     {
@@ -106,6 +112,16 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
     }
 
     @Override
+    public float getAudioPitch()
+    {
+        if(this.currentChannel == HEROBRINE || this.currentChannel == BLACK_NOISE)
+        {
+            return 0.25F;
+        }
+        return 1.0F;
+    }
+
+    @Override
     public boolean isPowered()
     {
         BlockState state = this.getBlockState();
@@ -137,6 +153,14 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
     public void selectRandomChannel()
     {
         Preconditions.checkState(this.level instanceof ServerLevel);
+
+        if(this.level.dimension() == Level.OVERWORLD && this.worldPosition.getY() <= 0)
+        {
+            this.setChannel(COLOUR_TEST);
+            this.transitioning = false;
+            return;
+        }
+
         int randomIndex = 0;
         for(int i = this.level.random.nextIntBetweenInclusive(0, TOTAL_CHANNEL_WEIGHT); randomIndex < VIEWABLE_CHANNELS.size() - 1; randomIndex++)
         {
@@ -167,8 +191,35 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
         }
     }
 
+    private void specialTick()
+    {
+        Preconditions.checkNotNull(this.level);
+        if(this.isPowered() && this.level.dimension() == Level.OVERWORLD && this.worldPosition.getY() <= 0)
+        {
+            if(this.currentChannel == COLOUR_TEST)
+            {
+                if(this.timer++ >= 200)
+                {
+                    this.setChannel(HEROBRINE);
+                    this.timer = 0;
+                }
+            }
+            else if(this.currentChannel == HEROBRINE)
+            {
+                if(this.timer++ == 100)
+                {
+                    this.setChannel(BLACK_NOISE);
+                    this.timer = 0;
+                }
+            }
+            return;
+        }
+        this.timer = 0;
+    }
+
     public static void serverTick(Level level, BlockPos pos, BlockState state, TelevisionBlockEntity television)
     {
+        television.specialTick();
         ElectricityModuleBlockEntity.serverTick(level, pos, state, television);
     }
 
