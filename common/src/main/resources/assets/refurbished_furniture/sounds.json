@@ -65,6 +65,12 @@
             "refurbished_furniture:block/television/dance_music"
         ]
     },
+    "block.television.channel.villager_news": {
+        "subtitle": "subtitle.refurbished_furniture.television_channel.villager_news",
+        "sounds": [
+            "refurbished_furniture:block/television/villager_news"
+        ]
+    },
     "item.package.open": {
         "subtitle": "subtitle.refurbished_furniture.package_open",
         "sounds": [
