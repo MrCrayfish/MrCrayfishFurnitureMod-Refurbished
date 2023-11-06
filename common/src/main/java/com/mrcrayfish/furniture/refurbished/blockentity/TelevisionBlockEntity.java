@@ -151,6 +151,7 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
     {
         Preconditions.checkNotNull(this.level);
         this.currentChannel = channel;
+        this.setChanged();
         if(!this.level.isClientSide())
         {
             Network.getPlay().sendToTrackingBlockEntity(() -> this, new MessageTelevisionChannel(this.worldPosition, channel.id));
