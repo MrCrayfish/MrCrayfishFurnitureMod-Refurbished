@@ -37,19 +37,20 @@ import java.util.stream.Collectors;
  */
 public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implements IAudioBlock
 {
-    public static final Channel WHITE_NOISE = new Channel(Utils.resource("white_noise"), ModSounds.BLOCK_TELEVISION_CHANNEL_WHITE_NOISE::get);
-    public static final Channel HEART_SCREENSAVER = new Channel(Utils.resource("heart_screensaver"), () -> null);
-    public static final Channel COLOUR_TEST = new Channel(Utils.resource("colour_test"), ModSounds.BLOCK_TELEVISION_CHANNEL_COLOUR_TEST::get);
     public static final List<Channel> VIEWABLE_CHANNELS = List.of(HEART_SCREENSAVER, COLOUR_TEST);
+    public static final Channel WHITE_NOISE = new Channel(Utils.resource("white_noise"), ModSounds.BLOCK_TELEVISION_CHANNEL_WHITE_NOISE::get, 0);
+    public static final Channel HEART_SCREENSAVER = new Channel(Utils.resource("heart_screensaver"), () -> null, 10);
+    public static final Channel COLOUR_TEST = new Channel(Utils.resource("colour_test"), ModSounds.BLOCK_TELEVISION_CHANNEL_COLOUR_TEST::get, 1);
     public static final List<Channel> ALL_CHANNELS = Util.make(new ArrayList<>(), channels -> {
         channels.add(WHITE_NOISE);
         channels.addAll(VIEWABLE_CHANNELS);
     });
     public static final Map<ResourceLocation, Channel> ID_TO_CHANNEL = ALL_CHANNELS.stream().collect(Collectors.toMap(c -> c.id, Function.identity()));
+    public static final int TOTAL_CHANNEL_WEIGHT = VIEWABLE_CHANNELS.stream().mapToInt(Channel::weight).sum();
     public static final double MAX_AUDIO_DISTANCE = Mth.square(8);
 
-    public Channel currentChannel = COLOUR_TEST;
-    public boolean transitioning;
+    protected Channel currentChannel = COLOUR_TEST;
+    protected boolean transitioning;
 
     public TelevisionBlockEntity(BlockPos $$1, BlockState $$2)
     {
@@ -135,7 +136,12 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
     public void selectRandomChannel()
     {
         Preconditions.checkState(this.level instanceof ServerLevel);
-        int randomIndex = this.level.random.nextInt(VIEWABLE_CHANNELS.size());
+        int randomIndex = 0;
+        for(int i = this.level.random.nextIntBetweenInclusive(0, TOTAL_CHANNEL_WEIGHT); randomIndex < VIEWABLE_CHANNELS.size() - 1; randomIndex++)
+        {
+            i -= VIEWABLE_CHANNELS.get(randomIndex).weight();
+            if(i < 0) break;
+        }
         this.setChannel(VIEWABLE_CHANNELS.get(randomIndex));
         this.transitioning = false;
     }
@@ -197,5 +203,5 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
         }
     }
 
-    public record Channel(ResourceLocation id, Supplier<SoundEvent> sound) {}
+    public record Channel(ResourceLocation id, Supplier<SoundEvent> sound, int weight) {}
 }
