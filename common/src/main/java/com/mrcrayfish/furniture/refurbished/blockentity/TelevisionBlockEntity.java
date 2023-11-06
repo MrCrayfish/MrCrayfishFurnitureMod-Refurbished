@@ -37,10 +37,11 @@ import java.util.stream.Collectors;
  */
 public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implements IAudioBlock
 {
-    public static final List<Channel> VIEWABLE_CHANNELS = List.of(HEART_SCREENSAVER, COLOUR_TEST);
     public static final Channel WHITE_NOISE = new Channel(Utils.resource("white_noise"), ModSounds.BLOCK_TELEVISION_CHANNEL_WHITE_NOISE::get, 0);
     public static final Channel HEART_SCREENSAVER = new Channel(Utils.resource("heart_screensaver"), () -> null, 10);
     public static final Channel COLOUR_TEST = new Channel(Utils.resource("colour_test"), ModSounds.BLOCK_TELEVISION_CHANNEL_COLOUR_TEST::get, 1);
+    public static final Channel DANCE_MUSIC = new Channel(Utils.resource("dance_music"), ModSounds.BLOCK_TELEVISION_CHANNEL_DANCE_MUSIC::get, 10);
+    public static final List<Channel> VIEWABLE_CHANNELS = List.of(HEART_SCREENSAVER, COLOUR_TEST, DANCE_MUSIC);
     public static final List<Channel> ALL_CHANNELS = Util.make(new ArrayList<>(), channels -> {
         channels.add(WHITE_NOISE);
         channels.addAll(VIEWABLE_CHANNELS);

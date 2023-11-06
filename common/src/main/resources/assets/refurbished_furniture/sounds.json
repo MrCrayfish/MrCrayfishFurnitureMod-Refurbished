@@ -59,6 +59,12 @@
             "refurbished_furniture:block/television/white_noise"
         ]
     },
+    "block.television.channel.dance_music": {
+        "subtitle": "subtitle.refurbished_furniture.television_channel.dance_music",
+        "sounds": [
+            "refurbished_furniture:block/television/dance_music"
+        ]
+    },
     "item.package.open": {
         "subtitle": "subtitle.refurbished_furniture.package_open",
         "sounds": [
