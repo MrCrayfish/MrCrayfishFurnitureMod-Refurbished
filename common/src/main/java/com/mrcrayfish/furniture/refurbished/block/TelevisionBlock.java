@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -37,7 +38,7 @@ public class TelevisionBlock extends FurnitureHorizontalBlock implements EntityB
     public TelevisionBlock(Properties properties)
     {
         super(properties);
-        this.registerDefaultState(this.getStateDefinition().any().setValue(DIRECTION, Direction.NORTH));
+        this.registerDefaultState(this.getStateDefinition().any().setValue(DIRECTION, Direction.NORTH).setValue(POWERED, false));
     }
 
     @Override
@@ -70,6 +71,13 @@ public class TelevisionBlock extends FurnitureHorizontalBlock implements EntityB
         }
     }
 
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
+    {
+        super.createBlockStateDefinition(builder);
+        builder.add(POWERED);
+    }
+
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
@@ -95,6 +103,6 @@ public class TelevisionBlock extends FurnitureHorizontalBlock implements EntityB
 
     public static int light(BlockState state)
     {
-        return 8;
+        return state.getValue(POWERED) ? 8 : 0;
     }
 }

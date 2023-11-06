@@ -25,25 +25,28 @@ public class TelevisionBlockEntityRenderer implements BlockEntityRenderer<Televi
     @Override
     public void render(TelevisionBlockEntity television, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay)
     {
-        poseStack.pushPose();
-        
-        // Setup rotations
-        Direction direction = television.getBlockState().getValue(CuttingBoardBlock.DIRECTION);
-        poseStack.translate(0.5, 0, 0.5);
-        poseStack.mulPose(Axis.YN.rotation(Mth.HALF_PI * direction.get2DDataValue()));
-        poseStack.translate(-0.5, 0, -0.345);
+        if(television.isPowered())
+        {
+            poseStack.pushPose();
 
-        // Draw tv screen quad with current channel
-        Material channelMaterial = CustomSheets.getTelevisionChannelMaterial(television.getCurrentChannel().id());
-        Matrix4f matrix = poseStack.last().pose();
-        VertexConsumer consumer = channelMaterial.buffer(source, ClientServices.PLATFORM::getTelevisionScreenRenderType);
-        float offset = 0.003125F;
-        consumer.vertex(matrix, 0.75F + offset, 0.625F + offset, 0).color(255, 255, 255, 255).uv(0, 0).uv2(0xF000F0).normal(0, 1, 0).endVertex();
-        consumer.vertex(matrix, 0.75F + offset, 0.1875F - offset, 0).color(255, 255, 255, 255).uv(0, 1).uv2(0xF000F0).normal(0, 1, 0).endVertex();
-        consumer.vertex(matrix, 0.25F - offset, 0.1875F - offset, 0).color(255, 255, 255, 255).uv(1, 1).uv2(0xF000F0).normal(0, 1, 0).endVertex();
-        consumer.vertex(matrix, 0.25F - offset, 0.625F + offset, 0).color(255, 255, 255, 255).uv(1, 0).uv2(0xF000F0).normal(0, 1, 0).endVertex();
+            // Setup rotations
+            Direction direction = television.getBlockState().getValue(CuttingBoardBlock.DIRECTION);
+            poseStack.translate(0.5, 0, 0.5);
+            poseStack.mulPose(Axis.YN.rotation(Mth.HALF_PI * direction.get2DDataValue()));
+            poseStack.translate(-0.5, 0, -0.345);
 
-        poseStack.popPose();
+            // Draw tv screen quad with current channel
+            Material channelMaterial = CustomSheets.getTelevisionChannelMaterial(television.getCurrentChannel().id());
+            Matrix4f matrix = poseStack.last().pose();
+            VertexConsumer consumer = channelMaterial.buffer(source, ClientServices.PLATFORM::getTelevisionScreenRenderType);
+            float offset = 0.003125F;
+            consumer.vertex(matrix, 0.75F + offset, 0.625F + offset, 0).color(255, 255, 255, 255).uv(0, 0).uv2(0xF000F0).normal(0, 1, 0).endVertex();
+            consumer.vertex(matrix, 0.75F + offset, 0.1875F - offset, 0).color(255, 255, 255, 255).uv(0, 1).uv2(0xF000F0).normal(0, 1, 0).endVertex();
+            consumer.vertex(matrix, 0.25F - offset, 0.1875F - offset, 0).color(255, 255, 255, 255).uv(1, 1).uv2(0xF000F0).normal(0, 1, 0).endVertex();
+            consumer.vertex(matrix, 0.25F - offset, 0.625F + offset, 0).color(255, 255, 255, 255).uv(1, 0).uv2(0xF000F0).normal(0, 1, 0).endVertex();
+
+            poseStack.popPose();
+        }
 
         ElectricBlockEntityRenderer.drawNodeAndConnections(television, poseStack, source, overlay);
     }

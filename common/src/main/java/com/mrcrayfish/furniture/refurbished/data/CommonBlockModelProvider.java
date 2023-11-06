@@ -1532,14 +1532,15 @@ public class CommonBlockModelProvider
 
     private void television(TelevisionBlock block)
     {
-        TextureMapping textures = new TextureMapping();
-        textures.put(TextureSlot.PARTICLE, this.metalParticle(MetalType.LIGHT));
-        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
         PreparedVariantBlockState state = new PreparedVariantBlockState(block);
-        state.createVariant().prop(TelevisionBlock.DIRECTION, Direction.NORTH).addExistingModel(ModelTemplate.TELEVISION.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
-        state.createVariant().prop(TelevisionBlock.DIRECTION, Direction.EAST).addExistingModel(ModelTemplate.TELEVISION.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
-        state.createVariant().prop(TelevisionBlock.DIRECTION, Direction.SOUTH).addExistingModel(ModelTemplate.TELEVISION.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
-        state.createVariant().prop(TelevisionBlock.DIRECTION, Direction.WEST).addExistingModel(ModelTemplate.TELEVISION.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(TelevisionBlock.DIRECTION, Direction.NORTH).prop(TelevisionBlock.POWERED, false).addExistingModel(ModelTemplate.TELEVISION_OFF.stateModel().setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(TelevisionBlock.DIRECTION, Direction.EAST).prop(TelevisionBlock.POWERED, false).addExistingModel(ModelTemplate.TELEVISION_OFF.stateModel().setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(TelevisionBlock.DIRECTION, Direction.SOUTH).prop(TelevisionBlock.POWERED, false).addExistingModel(ModelTemplate.TELEVISION_OFF.stateModel().setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(TelevisionBlock.DIRECTION, Direction.WEST).prop(TelevisionBlock.POWERED, false).addExistingModel(ModelTemplate.TELEVISION_OFF.stateModel().setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(TelevisionBlock.DIRECTION, Direction.NORTH).prop(TelevisionBlock.POWERED, true).addExistingModel(ModelTemplate.TELEVISION_ON.stateModel().setYRotation(VariantProperties.Rotation.R0));
+        state.createVariant().prop(TelevisionBlock.DIRECTION, Direction.EAST).prop(TelevisionBlock.POWERED, true).addExistingModel(ModelTemplate.TELEVISION_ON.stateModel().setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(TelevisionBlock.DIRECTION, Direction.SOUTH).prop(TelevisionBlock.POWERED, true).addExistingModel(ModelTemplate.TELEVISION_ON.stateModel().setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(TelevisionBlock.DIRECTION, Direction.WEST).prop(TelevisionBlock.POWERED, true).addExistingModel(ModelTemplate.TELEVISION_ON.stateModel().setYRotation(VariantProperties.Rotation.R270));
         this.variantStateConsumer.accept(state);
     }
 

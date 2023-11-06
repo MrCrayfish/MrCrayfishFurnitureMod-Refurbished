@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.google.common.base.Preconditions;
+import com.mrcrayfish.furniture.refurbished.block.TelevisionBlock;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
@@ -9,6 +10,8 @@ import com.mrcrayfish.furniture.refurbished.network.message.MessageTelevisionCha
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -16,8 +19,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +82,7 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
     @Override
     public boolean canPlayAudio()
     {
-        return !this.isRemoved();
+        return !this.isRemoved() && this.isPowered();
     }
 
     @Override
@@ -88,14 +94,18 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
     @Override
     public boolean isPowered()
     {
-        // TODO implement and create different block model
-        return true;
+        BlockState state = this.getBlockState();
+        return state.hasProperty(BlockStateProperties.POWERED) && state.getValue(BlockStateProperties.POWERED);
     }
 
     @Override
     public void setPowered(boolean powered)
     {
-        // TODO
+        BlockState state = this.getBlockState();
+        if(state.hasProperty(BlockStateProperties.POWERED))
+        {
+            this.level.setBlock(this.worldPosition, state.setValue(BlockStateProperties.POWERED, powered), Block.UPDATE_ALL);
+        }
     }
 
     public void interact()

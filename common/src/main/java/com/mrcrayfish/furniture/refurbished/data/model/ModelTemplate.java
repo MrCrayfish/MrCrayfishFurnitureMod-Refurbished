@@ -177,7 +177,8 @@ public class ModelTemplate
     public static final ModelTemplate BATH_BOTTOM = block("bath_bottom", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate LATTICE_FENCE_CENTER = block("lattice_fence_center", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate LATTICE_FENCE_CONNECTION = block("lattice_fence_connection", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
-    public static final ModelTemplate TELEVISION = block("television", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate TELEVISION_OFF = block("television_off");
+    public static final ModelTemplate TELEVISION_ON = block("television_on");
     public static final ModelTemplate COMPUTER = block("computer", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
 
     public static final ModelTemplate FRIDGE = item("fridge", TextureSlot.TEXTURE);

@@ -1,7 +1,7 @@
 {
 	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
 	"textures": {
-		"particle": "refurbished_furniture:block/light_particle",
+		"particle": "refurbished_furniture:block/plastic_particle",
 		"texture": "refurbished_furniture:block/television"
 	},
 	"elements": [
@@ -11,7 +11,7 @@
 			"faces": {
 				"north": {"uv": [0, 0, 3, 6], "texture": "#texture"},
 				"east": {"uv": [0, 6, 3, 12], "texture": "#texture"},
-				"south": {"uv": [3, 0, 6, 6], "texture": "#texture"},
+				"south": {"uv": [11.5, 0, 14.5, 6], "texture": "#texture"},
 				"west": {"uv": [3, 6, 6, 12], "texture": "#texture"},
 				"up": {"uv": [9, 12, 6, 6], "texture": "#texture"},
 				"down": {"uv": [9, 0, 6, 6], "texture": "#texture"}
@@ -29,44 +29,5 @@
 				"down": {"uv": [11.5, 5, 9, 5.5], "texture": "#texture"}
 			}
 		}
-	],
-	"display": {
-		"thirdperson_righthand": {
-			"rotation": [75, -45, 0],
-			"translation": [0, 2.5, 0],
-			"scale": [0.375, 0.375, 0.375]
-		},
-		"thirdperson_lefthand": {
-			"rotation": [75, -45, 0],
-			"translation": [0, 2.5, 0],
-			"scale": [0.375, 0.375, 0.375]
-		},
-		"firstperson_righthand": {
-			"rotation": [0, -45, 0],
-			"scale": [0.4, 0.4, 0.4]
-		},
-		"firstperson_lefthand": {
-			"rotation": [0, -45, 0],
-			"scale": [0.4, 0.4, 0.4]
-		},
-		"ground": {
-			"translation": [0, 3, 0],
-			"scale": [0.25, 0.25, 0.25]
-		},
-		"gui": {
-			"rotation": [30, 45, 0],
-			"translation": [0, 0.75, 0],
-			"scale": [0.625, 0.625, 0.625]
-		},
-		"head": {
-			"rotation": [0, 180, 0],
-			"translation": [0, 3.5, 0],
-			"scale": [1.25, 1.25, 1.25]
-		},
-		"fixed": {
-			"rotation": [0, 180, 0],
-			"translation": [0, 1, 0],
-			"scale": [0.5, 0.5, 0.5]
-		}
-	}
+	]
 }
