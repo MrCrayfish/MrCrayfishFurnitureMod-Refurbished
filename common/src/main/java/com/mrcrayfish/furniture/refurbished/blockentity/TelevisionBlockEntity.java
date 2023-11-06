@@ -72,11 +72,23 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
         return this.currentChannel.sound().get();
     }
 
-    // TODO change to vec3
     @Override
     public BlockPos getAudioPosition()
     {
         return this.worldPosition;
+    }
+
+    @Override
+    public Vec3 getAudioPositionOffset()
+    {
+        BlockState state = this.getBlockState();
+        if(state.hasProperty(TelevisionBlock.DIRECTION))
+        {
+            Direction direction = state.getValue(TelevisionBlock.DIRECTION).getOpposite();
+            Vec3i normal = direction.getNormal();
+            return new Vec3(normal.getX() * 0.375, normal.getY(), normal.getZ() * 0.375);
+        }
+        return Vec3.ZERO;
     }
 
     @Override

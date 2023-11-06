@@ -9,6 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 
 import java.lang.ref.WeakReference;
 
@@ -31,9 +32,10 @@ public class AudioBlockSound extends AbstractTickableSoundInstance
         this.looping = true;
         this.delay = 0;
         BlockPos pos = block.getAudioPosition();
-        this.x = pos.getX() + 0.5;
-        this.y = pos.getY() + 0.5;
-        this.z = pos.getZ() + 0.5;
+        Vec3 offset = block.getAudioPositionOffset();
+        this.x = pos.getX() + 0.5 + offset.x;
+        this.y = pos.getY() + 0.5 + offset.y;
+        this.z = pos.getZ() + 0.5 + offset.z;
     }
 
     @Override

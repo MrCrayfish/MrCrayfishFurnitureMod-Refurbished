@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * An interface to apply to block entities to play looping sounds. E.g. a machine engine sound.
@@ -31,6 +32,14 @@ public interface IAudioBlock
      * @return True if this audio can play and can continue to play after it's started
      */
     boolean canPlayAudio();
+
+    /**
+     * @return An offset for the audio position. Origin begins at center of block.
+     */
+    default Vec3 getAudioPositionOffset()
+    {
+        return Vec3.ZERO;
+    }
 
     /**
      * @return The radius the sound be heard by players. This value is returned as squared
