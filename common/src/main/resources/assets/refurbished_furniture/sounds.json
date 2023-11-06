@@ -71,6 +71,12 @@
             "refurbished_furniture:block/television/villager_news"
         ]
     },
+    "block.television.channel.chirp_song": {
+        "subtitle": "subtitle.refurbished_furniture.television_channel.chirp_song",
+        "sounds": [
+            "refurbished_furniture:block/television/chirp_song"
+        ]
+    },
     "item.package.open": {
         "subtitle": "subtitle.refurbished_furniture.package_open",
         "sounds": [
