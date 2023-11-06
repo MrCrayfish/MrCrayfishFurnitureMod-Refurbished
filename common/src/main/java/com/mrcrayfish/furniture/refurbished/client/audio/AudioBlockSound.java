@@ -4,6 +4,7 @@ import com.mrcrayfish.furniture.refurbished.blockentity.IAudioBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.client.resources.sounds.TickableSoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -53,11 +54,13 @@ public class AudioBlockSound extends AbstractTickableSoundInstance
 
         // If the sound changes, stop playing and queue new sound
         SoundEvent currentSound = block.getSound();
-        if(this.playingSound != currentSound)
+        if(this.playingSound != currentSound && !this.switchSound)
         {
             if(currentSound != null)
             {
-                Minecraft.getInstance().getSoundManager().queueTickingSound(new AudioBlockSound(block));
+                TickableSoundInstance sound = new AudioBlockSound(block);
+                Minecraft.getInstance().getSoundManager().queueTickingSound(sound);
+                AudioManager.get().updateSound(block.getAudioPosition(), sound);
             }
             this.switchSound = true;
         }

@@ -53,6 +53,12 @@
             "refurbished_furniture:block/television/colour_test"
         ]
     },
+    "block.television.channel.white_noise": {
+        "subtitle": "subtitle.refurbished_furniture.television_channel.white_noise",
+        "sounds": [
+            "refurbished_furniture:block/television/white_noise"
+        ]
+    },
     "item.package.open": {
         "subtitle": "subtitle.refurbished_furniture.package_open",
         "sounds": [

@@ -71,4 +71,9 @@ public class AudioManager
     {
         this.playingSounds.clear();
     }
+
+    public void updateSound(BlockPos pos, TickableSoundInstance sound)
+    {
+        this.playingSounds.put(pos, new WeakReference<>(sound));
+    }
 }

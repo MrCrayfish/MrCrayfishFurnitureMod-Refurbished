@@ -3,7 +3,7 @@ package com.mrcrayfish.furniture.refurbished.network.play;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.blockentity.FryingPanBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.GrillBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.KitchenSinkBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.TelevisionBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.IFluidContainerBlock;
 import com.mrcrayfish.furniture.refurbished.client.LinkHandler;
@@ -14,6 +14,7 @@ import com.mrcrayfish.furniture.refurbished.network.message.MessageDoorbellNotif
 import com.mrcrayfish.furniture.refurbished.network.message.MessageFlipAnimation;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSyncFluid;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSyncLink;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageTelevisionChannel;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageUpdateMailboxes;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
@@ -87,5 +88,15 @@ public class ClientPlayHandler
     public static void handleMessageSyncLink(MessageSyncLink message)
     {
         LinkHandler.get().setLinkingNode(message.getPos());
+    }
+
+    public static void handleMessageTelevisionChannel(MessageTelevisionChannel message)
+    {
+        Minecraft mc = Minecraft.getInstance();
+        Level level = Objects.requireNonNull(mc.level);
+        if(level.getBlockEntity(message.getPos()) instanceof TelevisionBlockEntity television)
+        {
+            television.setChannelFromId(message.getChannel());
+        }
     }
 }

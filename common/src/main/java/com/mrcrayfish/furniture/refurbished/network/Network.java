@@ -24,6 +24,7 @@ public class Network
             .registerPlayMessage(MessageSyncLink.class, MessageDirection.PLAY_CLIENT_BOUND)
             .registerPlayMessage(MessageDeleteLink.class, MessageDirection.PLAY_SERVER_BOUND)
             .registerPlayMessage(MessageTogglePower.class, MessageDirection.PLAY_SERVER_BOUND)
+            .registerPlayMessage(MessageTelevisionChannel.class, MessageDirection.PLAY_CLIENT_BOUND)
             .build();
 
     public static void init() {}

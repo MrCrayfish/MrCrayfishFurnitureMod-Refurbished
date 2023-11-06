@@ -2,11 +2,17 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mrcrayfish.furniture.refurbished.blockentity.CeilingFanBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.ElectricityGeneratorBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.TelevisionBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -14,6 +20,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
@@ -25,6 +32,8 @@ import java.util.stream.Collectors;
  */
 public class TelevisionBlock extends FurnitureHorizontalBlock implements EntityBlock
 {
+    // TODO tv remote
+
     public TelevisionBlock(Properties properties)
     {
         super(properties);
@@ -36,6 +45,29 @@ public class TelevisionBlock extends FurnitureHorizontalBlock implements EntityB
     {
         VoxelShape baseShape = Block.box(2, 0, 2, 14, 12, 14);
         return ImmutableMap.copyOf(states.stream().collect(Collectors.toMap(state -> state, o -> baseShape)));
+    }
+
+    @Override
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+    {
+        if(level.getBlockEntity(pos) instanceof TelevisionBlockEntity television && television.isPowered())
+        {
+            if(!level.isClientSide())
+            {
+                television.interact();
+            }
+            return InteractionResult.sidedSuccess(level.isClientSide());
+        }
+        return InteractionResult.PASS;
+    }
+
+    @Override
+    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource source)
+    {
+        if(level.getBlockEntity(pos) instanceof TelevisionBlockEntity television && television.isPowered())
+        {
+            television.selectRandomChannel();
+        }
     }
 
     @Nullable
@@ -52,13 +84,13 @@ public class TelevisionBlock extends FurnitureHorizontalBlock implements EntityB
     }
 
     @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends TelevisionBlockEntity> generator)
+    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends TelevisionBlockEntity> television)
     {
         if(level.isClientSide())
         {
-            return createTickerHelper(type, generator, TelevisionBlockEntity::clientTick);
+            return createTickerHelper(type, television, TelevisionBlockEntity::clientTick);
         }
-        return null;
+        return createTickerHelper(type, television, TelevisionBlockEntity::serverTick);
     }
 
     public static int light(BlockState state)

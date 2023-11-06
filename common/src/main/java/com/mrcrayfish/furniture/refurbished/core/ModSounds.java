@@ -20,6 +20,7 @@ public class ModSounds
     public static final RegistryEntry<SoundEvent> BLOCK_TRAMPOLINE_BOUNCE = RegistryEntry.soundEvent(Utils.resource("block.trampoline.bounce"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> BLOCK_TRAMPOLINE_SUPER_BOUNCE = RegistryEntry.soundEvent(Utils.resource("block.trampoline.super_bounce"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> BLOCK_TELEVISION_CHANNEL_COLOUR_TEST = RegistryEntry.soundEvent(Utils.resource("block.television.channel.colour_test"), id -> () -> SoundEvent.createVariableRangeEvent(id));
+    public static final RegistryEntry<SoundEvent> BLOCK_TELEVISION_CHANNEL_WHITE_NOISE = RegistryEntry.soundEvent(Utils.resource("block.television.channel.white_noise"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> ITEM_PACKAGE_OPEN = RegistryEntry.soundEvent(Utils.resource("item.package.open"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> ITEM_WRENCH_SELECTED_NODE = RegistryEntry.soundEvent(Utils.resource("item.wrench.selected_node"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> ITEM_WRENCH_REMOVE_LINK = RegistryEntry.soundEvent(Utils.resource("item.wrench.remove_link"), id -> () -> SoundEvent.createVariableRangeEvent(id));
