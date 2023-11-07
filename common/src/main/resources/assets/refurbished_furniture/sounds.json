@@ -83,6 +83,12 @@
             "refurbished_furniture:block/television/ocean_sunset"
         ]
     },
+    "block.television.channel.blocky_game": {
+        "subtitle": "subtitle.refurbished_furniture.television_channel.blocky_game",
+        "sounds": [
+            "refurbished_furniture:block/television/blocky_game"
+        ]
+    },
     "item.package.open": {
         "subtitle": "subtitle.refurbished_furniture.package_open",
         "sounds": [
