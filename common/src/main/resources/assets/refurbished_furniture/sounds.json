@@ -77,6 +77,12 @@
             "refurbished_furniture:block/television/chirp_song"
         ]
     },
+    "block.television.channel.ocean_sunset": {
+        "subtitle": "subtitle.refurbished_furniture.television_channel.ocean_sunset",
+        "sounds": [
+            "refurbished_furniture:block/television/ocean_sunset"
+        ]
+    },
     "item.package.open": {
         "subtitle": "subtitle.refurbished_furniture.package_open",
         "sounds": [

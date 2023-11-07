@@ -24,6 +24,7 @@ public class ModSounds
     public static final RegistryEntry<SoundEvent> BLOCK_TELEVISION_CHANNEL_DANCE_MUSIC = RegistryEntry.soundEvent(Utils.resource("block.television.channel.dance_music"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> BLOCK_TELEVISION_CHANNEL_VILLAGER_NEWS = RegistryEntry.soundEvent(Utils.resource("block.television.channel.villager_news"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> BLOCK_TELEVISION_CHANNEL_CHIRP_SONG = RegistryEntry.soundEvent(Utils.resource("block.television.channel.chirp_song"), id -> () -> SoundEvent.createVariableRangeEvent(id));
+    public static final RegistryEntry<SoundEvent> BLOCK_TELEVISION_CHANNEL_OCEAN_SUNSET = RegistryEntry.soundEvent(Utils.resource("block.television.channel.ocean_sunset"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> ITEM_PACKAGE_OPEN = RegistryEntry.soundEvent(Utils.resource("item.package.open"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> ITEM_WRENCH_SELECTED_NODE = RegistryEntry.soundEvent(Utils.resource("item.wrench.selected_node"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> ITEM_WRENCH_REMOVE_LINK = RegistryEntry.soundEvent(Utils.resource("item.wrench.remove_link"), id -> () -> SoundEvent.createVariableRangeEvent(id));

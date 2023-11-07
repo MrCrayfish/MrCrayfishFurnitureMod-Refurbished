@@ -46,7 +46,8 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
     public static final Channel DANCE_MUSIC = new Channel(Utils.resource("dance_music"), ModSounds.BLOCK_TELEVISION_CHANNEL_DANCE_MUSIC::get, 10);
     public static final Channel VILLAGER_NEWS = new Channel(Utils.resource("villager_news"), ModSounds.BLOCK_TELEVISION_CHANNEL_VILLAGER_NEWS::get, 10);
     public static final Channel RIP_BLIZZARD = new Channel(Utils.resource("rip_blizzard"), ModSounds.BLOCK_TELEVISION_CHANNEL_CHIRP_SONG::get, 5);
-    public static final List<Channel> VIEWABLE_CHANNELS = List.of(HEART_SCREENSAVER, COLOUR_TEST, DANCE_MUSIC, VILLAGER_NEWS, RIP_BLIZZARD);
+    public static final Channel OCEAN_SUNSET = new Channel(Utils.resource("ocean_sunset"), ModSounds.BLOCK_TELEVISION_CHANNEL_OCEAN_SUNSET::get, 10);
+    public static final List<Channel> VIEWABLE_CHANNELS = List.of(HEART_SCREENSAVER, COLOUR_TEST, DANCE_MUSIC, VILLAGER_NEWS, RIP_BLIZZARD, OCEAN_SUNSET);
     public static final List<Channel> ALL_CHANNELS = Util.make(new ArrayList<>(), channels -> {
         channels.add(WHITE_NOISE);
         channels.add(BLACK_NOISE);
