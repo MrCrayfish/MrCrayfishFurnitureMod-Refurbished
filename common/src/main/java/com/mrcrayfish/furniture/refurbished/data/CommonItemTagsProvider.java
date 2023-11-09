@@ -569,6 +569,7 @@ public class CommonItemTagsProvider
         electronics.add(ModBlocks.CEILING_FAN_WARPED_DARK.get().asItem());
         electronics.add(ModBlocks.TELEVISION.get().asItem());
         electronics.add(ModBlocks.COMPUTER.get().asItem());
+        electronics.add(ModItems.TELEVISION_REMOTE.get());
 
         TagBuilder<Item> storage = builder.apply(ModTags.Items.STORAGE);
         storage.add(ModBlocks.DRAWER_OAK.get().asItem());
