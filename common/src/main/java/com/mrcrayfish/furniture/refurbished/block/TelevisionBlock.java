@@ -65,7 +65,7 @@ public class TelevisionBlock extends FurnitureHorizontalBlock implements EntityB
     @Override
     public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource source)
     {
-        if(level.getBlockEntity(pos) instanceof TelevisionBlockEntity television && television.isPowered())
+        if(level.getBlockEntity(pos) instanceof TelevisionBlockEntity television)
         {
             television.selectRandomChannel();
         }

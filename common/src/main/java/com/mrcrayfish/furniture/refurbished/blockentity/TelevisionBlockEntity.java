@@ -147,7 +147,7 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
 
     public void interact()
     {
-        if(!this.transitioning)
+        if(!this.transitioning && this.isPowered())
         {
             Preconditions.checkState(this.level instanceof ServerLevel);
             int transitionTime = this.level.random.nextInt(5, 20);
