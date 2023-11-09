@@ -89,6 +89,12 @@
             "refurbished_furniture:block/television/blocky_game"
         ]
     },
+    "block.television.channel.retro_song": {
+        "subtitle": "subtitle.refurbished_furniture.television_channel.retro_song",
+        "sounds": [
+            "refurbished_furniture:block/television/retro_song"
+        ]
+    },
     "item.package.open": {
         "subtitle": "subtitle.refurbished_furniture.package_open",
         "sounds": [
