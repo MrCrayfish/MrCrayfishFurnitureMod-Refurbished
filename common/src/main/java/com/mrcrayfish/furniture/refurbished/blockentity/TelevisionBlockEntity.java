@@ -59,10 +59,10 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
         channels.addAll(VIEWABLE_CHANNELS);
     });
     public static final Map<ResourceLocation, Channel> ID_TO_CHANNEL = ALL_CHANNELS.stream().collect(Collectors.toMap(c -> c.id, Function.identity()));
-    public static final int TOTAL_CHANNEL_WEIGHT = VIEWABLE_CHANNELS.stream().mapToInt(Channel::weight).sum();
     public static final double MAX_AUDIO_DISTANCE = Mth.square(16);
 
     protected Channel currentChannel = COLOUR_TEST;
+    protected Channel lastChannel;
     protected boolean transitioning;
     protected int timer;
 
@@ -152,6 +152,7 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
             Preconditions.checkState(this.level instanceof ServerLevel);
             int transitionTime = this.level.random.nextInt(5, 20);
             this.level.scheduleTick(this.worldPosition, this.getBlockState().getBlock(), transitionTime);
+            this.lastChannel = this.currentChannel;
             this.setChannel(WHITE_NOISE);
             this.transitioning = true;
         }
@@ -168,13 +169,16 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
             return;
         }
 
+        List<Channel> channels = new ArrayList<>(VIEWABLE_CHANNELS);
+        channels.remove(this.lastChannel); // Don't select the current channel
+        int totalWeight = channels.stream().mapToInt(Channel::weight).sum();
         int randomIndex = 0;
-        for(int i = this.level.random.nextIntBetweenInclusive(0, TOTAL_CHANNEL_WEIGHT); randomIndex < VIEWABLE_CHANNELS.size() - 1; randomIndex++)
+        for(int i = this.level.random.nextIntBetweenInclusive(0, totalWeight); randomIndex < channels.size() - 1; randomIndex++)
         {
-            i -= VIEWABLE_CHANNELS.get(randomIndex).weight();
+            i -= channels.get(randomIndex).weight();
             if(i < 0) break;
         }
-        this.setChannel(VIEWABLE_CHANNELS.get(randomIndex));
+        this.setChannel(channels.get(randomIndex));
         this.transitioning = false;
     }
 
