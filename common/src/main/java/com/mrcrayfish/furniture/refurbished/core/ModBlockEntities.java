@@ -409,4 +409,8 @@ public class ModBlockEntities
     public static final RegistryEntry<BlockEntityType<TelevisionBlockEntity>> TELEVISION = RegistryEntry.blockEntity(Utils.resource("television"), TelevisionBlockEntity::new, () -> new Block[]{
             ModBlocks.TELEVISION.get()
     });
+
+    public static final RegistryEntry<BlockEntityType<ComputerBlockEntity>> COMPUTER = RegistryEntry.blockEntity(Utils.resource("computer"), ComputerBlockEntity::new, () -> new Block[]{
+            ModBlocks.COMPUTER.get()
+    });
 }

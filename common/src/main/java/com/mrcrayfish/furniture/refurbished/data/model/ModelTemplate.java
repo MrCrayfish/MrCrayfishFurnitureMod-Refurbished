@@ -179,7 +179,8 @@ public class ModelTemplate
     public static final ModelTemplate LATTICE_FENCE_CONNECTION = block("lattice_fence_connection", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate TELEVISION_OFF = block("television_off");
     public static final ModelTemplate TELEVISION_ON = block("television_on");
-    public static final ModelTemplate COMPUTER = block("computer", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate COMPUTER_OFF = block("computer_off");
+    public static final ModelTemplate COMPUTER_ON = block("computer_on");
 
     public static final ModelTemplate FRIDGE = item("fridge", TextureSlot.TEXTURE);
     public static final ModelTemplate CEILING_FAN = item("ceiling_fan", TextureSlot.TEXTURE);
