@@ -21,6 +21,10 @@ import net.minecraft.world.item.ItemStack;
 public class ComputerScreen extends AbstractContainerScreen<ComputerMenu> implements ContainerListener
 {
     private static final ResourceLocation TEXTURE = Utils.resource("textures/gui/container/computer.png");
+    private static final int DISPLAY_LEFT = 15;
+    private static final int DISPLAY_TOP = 15;
+    private static final int DISPLAY_WIDTH = 226;
+    private static final int DISPLAY_HEIGHT = 120;
 
     public ComputerScreen(ComputerMenu menu, Inventory playerInventory, Component title)
     {
@@ -43,8 +47,36 @@ public class ComputerScreen extends AbstractContainerScreen<ComputerMenu> implem
         DisplayableProgram<?> displayable = ((ClientComputer) this.menu.getComputer()).getDisplayable();
         if(displayable != null)
         {
-            graphics.enableScissor(this.leftPos + 15, this.topPos + 15, this.leftPos + 241, this.topPos + 135);
-            graphics.pose().translate(this.leftPos + 15, this.topPos + 15, 0);
+            int displayStart = this.leftPos + DISPLAY_LEFT;
+            int displayTop = this.topPos + DISPLAY_TOP;
+            int contentWidth = displayable.getWidth();
+            int contentHeight = displayable.getHeight();
+            int windowWidth = 1 + contentWidth + 1;
+            int windowHeight = 11 + contentHeight + 1;
+            int windowStart = displayStart + (DISPLAY_WIDTH - windowWidth) / 2;
+            int windowTop = displayTop + (DISPLAY_HEIGHT - windowHeight) / 2;
+            int windowEnd = windowStart + windowWidth;
+            int windowBottom = windowTop + windowHeight;
+            int titleBarHeight = 9;
+            int titleBarStart = windowStart + 1;
+            int titleBarTop = windowTop + 1;
+            int titleBarEnd = windowStart + windowWidth - 1;
+            int titleBarBottom = windowTop + 1 + titleBarHeight;
+            int contentStart = windowStart + 1;
+            int contentTop =  windowTop + 1 + titleBarHeight + 1;
+            int contentEnd = windowStart + windowWidth - 1;
+            int contentBottom = windowTop + windowHeight - 1;
+
+            // Draw window
+            graphics.fill(windowStart + 1, windowTop, windowEnd - 1, windowBottom, displayable.getWindowOutlineColour());
+            graphics.fill(windowStart, windowTop + 1, windowEnd, windowBottom - 1, displayable.getWindowOutlineColour());
+            graphics.fill(titleBarStart, titleBarTop, titleBarEnd, titleBarBottom, displayable.getWindowTitleBarColour());
+            graphics.fill(contentStart, contentTop, contentEnd, contentBottom, displayable.getWindowBackgroundColour());
+            graphics.drawString(this.font, displayable.getProgram().getTitle(), titleBarStart + 5, titleBarTop, 0xFFFFFFFF);
+
+            // Draw content
+            graphics.enableScissor(contentStart, contentTop, contentEnd, contentBottom);
+            graphics.pose().translate(contentStart, contentTop, 0);
             displayable.render(graphics, mouseX, mouseY, partialTick);
             graphics.disableScissor();
         }
