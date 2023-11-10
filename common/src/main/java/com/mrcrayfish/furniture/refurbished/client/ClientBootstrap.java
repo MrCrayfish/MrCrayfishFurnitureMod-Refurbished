@@ -4,6 +4,7 @@ import com.mrcrayfish.framework.api.event.ClientConnectionEvents;
 import com.mrcrayfish.framework.api.event.PlayerEvents;
 import com.mrcrayfish.framework.api.event.TickEvents;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
+import com.mrcrayfish.furniture.refurbished.client.gui.screen.ComputerScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.ElectricityGeneratorScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.FreezerScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.MicrowaveScreen;
@@ -22,6 +23,9 @@ import com.mrcrayfish.furniture.refurbished.client.registration.RenderTypeRegist
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.*;
 import com.mrcrayfish.furniture.refurbished.client.renderer.entity.SeatRenderer;
+import com.mrcrayfish.furniture.refurbished.computer.Display;
+import com.mrcrayfish.furniture.refurbished.computer.app.PongGame;
+import com.mrcrayfish.furniture.refurbished.computer.client.PongGameGraphics;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModEntities;
@@ -42,6 +46,8 @@ public class ClientBootstrap
     public static void init()
     {
         CreativeFilters.get();
+
+        // Events
         TickEvents.START_RENDER.register(partialTick -> {
             LinkHandler.get().beforeRender(partialTick);
             ElectricBlockEntityRenderer.clearDrawn();
@@ -52,6 +58,8 @@ public class ClientBootstrap
         PlayerEvents.CHANGE_DIMENSION.register((player, oldDimension, newDimension) -> {
             AudioManager.get().resetSounds();
         });
+
+        // Bind ceiling fan blocks to models
         CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_OAK_LIGHT.get(), ExtraModels.OAK_LIGHT_CEILING_FAN_BLADE::getModel);
         CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_SPRUCE_LIGHT.get(), ExtraModels.SPRUCE_LIGHT_CEILING_FAN_BLADE::getModel);
         CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_BIRCH_LIGHT.get(), ExtraModels.BIRCH_LIGHT_CEILING_FAN_BLADE::getModel);
@@ -72,6 +80,9 @@ public class ClientBootstrap
         CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_MANGROVE_DARK.get(), ExtraModels.MANGROVE_DARK_CEILING_FAN_BLADE::getModel);
         CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_CRIMSON_DARK.get(), ExtraModels.CRIMSON_DARK_CEILING_FAN_BLADE::getModel);
         CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_WARPED_DARK.get(), ExtraModels.WARPED_DARK_CEILING_FAN_BLADE::getModel);
+
+        // Bind computer programs to graphics handler
+        Display.get().bind(PongGame.class, PongGameGraphics::new);
     }
 
     public static void registerScreens(ScreenRegister register)
@@ -82,6 +93,7 @@ public class ClientBootstrap
         register.apply(ModMenuTypes.POST_BOX.get(), PostBoxScreen::new);
         register.apply(ModMenuTypes.ELECTRICITY_GENERATOR.get(), ElectricityGeneratorScreen::new);
         register.apply(ModMenuTypes.RECYCLE_BIN.get(), RecyclingBinScreen::new);
+        register.apply(ModMenuTypes.COMPUTER.get(), ComputerScreen::new);
     }
 
     public static void registerBlockEntityRenderers(BlockEntityRendererRegister register)

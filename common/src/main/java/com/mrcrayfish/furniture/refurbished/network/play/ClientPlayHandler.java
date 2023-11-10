@@ -1,15 +1,21 @@
 package com.mrcrayfish.furniture.refurbished.network.play;
 
 import com.mrcrayfish.furniture.refurbished.Config;
+import com.mrcrayfish.furniture.refurbished.blockentity.ComputerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.FryingPanBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.GrillBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.TelevisionBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.IFluidContainerBlock;
+import com.mrcrayfish.furniture.refurbished.client.ClientComputer;
 import com.mrcrayfish.furniture.refurbished.client.LinkHandler;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.PostBoxScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.toast.ItemToast;
+import com.mrcrayfish.furniture.refurbished.computer.Computer;
+import com.mrcrayfish.furniture.refurbished.computer.Program;
+import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageClearMessage;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageComputerState;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageDoorbellNotification;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageFlipAnimation;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSyncFluid;
@@ -97,6 +103,16 @@ public class ClientPlayHandler
         if(level.getBlockEntity(message.getPos()) instanceof TelevisionBlockEntity television)
         {
             television.setChannelFromId(message.getChannel());
+        }
+    }
+
+    public static void handleMessageComputerState(MessageComputerState message)
+    {
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.player.containerMenu instanceof ComputerMenu menu)
+        {
+            Program program = Computer.get().createProgramInstance(message.getId()).orElse(null);
+            ((ClientComputer) menu.getComputer()).setProgram(program);
         }
     }
 }

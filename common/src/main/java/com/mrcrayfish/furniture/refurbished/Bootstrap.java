@@ -5,6 +5,8 @@ import com.mrcrayfish.framework.api.event.PlayerEvents;
 import com.mrcrayfish.framework.api.event.TickEvents;
 import com.mrcrayfish.furniture.refurbished.blockentity.CuttingBoardBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.GrillBlockEntity;
+import com.mrcrayfish.furniture.refurbished.computer.Computer;
+import com.mrcrayfish.furniture.refurbished.computer.app.PongGame;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.electricity.ElectricityTicker;
 import com.mrcrayfish.furniture.refurbished.electricity.LinkManager;
@@ -12,6 +14,7 @@ import com.mrcrayfish.furniture.refurbished.entity.Seat;
 import com.mrcrayfish.furniture.refurbished.item.PackageItem;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
 import com.mrcrayfish.furniture.refurbished.network.Network;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.MinecraftServer;
@@ -88,5 +91,7 @@ public class Bootstrap
         });
 
         FrameworkAPI.registerSyncedDataKey(Seat.LOCK_YAW);
+
+        Computer.get().install(Utils.resource("pong_game"), PongGame::new);
     }
 }
