@@ -21,4 +21,6 @@ public interface IComputer
 
     @Nullable
     ComputerMenu getMenu();
+
+    boolean isServer();
 }

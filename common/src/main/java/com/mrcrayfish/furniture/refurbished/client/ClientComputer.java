@@ -59,4 +59,10 @@ public class ClientComputer implements IComputer
         }
         return null;
     }
+
+    @Override
+    public boolean isServer()
+    {
+        return false;
+    }
 }

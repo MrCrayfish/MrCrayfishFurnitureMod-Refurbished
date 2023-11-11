@@ -91,6 +91,12 @@ public class ComputerBlockEntity extends ElectricityModuleBlockEntity implements
     }
 
     @Override
+    public boolean isServer()
+    {
+        return this.level != null && !this.level.isClientSide();
+    }
+
+    @Override
     public boolean isPowered()
     {
         BlockState state = this.getBlockState();
