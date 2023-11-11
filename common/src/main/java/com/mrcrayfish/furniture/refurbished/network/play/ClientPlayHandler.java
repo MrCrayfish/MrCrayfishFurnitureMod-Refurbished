@@ -111,8 +111,9 @@ public class ClientPlayHandler
         Minecraft mc = Minecraft.getInstance();
         if(mc.player.containerMenu instanceof ComputerMenu menu)
         {
-            Program program = Computer.get().createProgramInstance(message.getId()).orElse(null);
-            ((ClientComputer) menu.getComputer()).setProgram(program);
+            ClientComputer computer = ((ClientComputer) menu.getComputer());
+            Program program = Computer.get().createProgramInstance(message.getId(), computer).orElse(null);
+            computer.setProgram(program);
         }
     }
 }

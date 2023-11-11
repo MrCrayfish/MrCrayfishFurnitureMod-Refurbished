@@ -4,6 +4,7 @@ import com.mrcrayfish.furniture.refurbished.blockentity.IComputer;
 import com.mrcrayfish.furniture.refurbished.computer.Display;
 import com.mrcrayfish.furniture.refurbished.computer.Program;
 import com.mrcrayfish.furniture.refurbished.computer.client.DisplayableProgram;
+import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
 import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
@@ -45,5 +46,17 @@ public class ClientComputer implements IComputer
     public Program getProgram()
     {
         return this.displayable != null ? this.displayable.getProgram() : null;
+    }
+
+    @Nullable
+    @Override
+    public ComputerMenu getMenu()
+    {
+        Player player = this.getUser();
+        if(player != null && player.containerMenu instanceof ComputerMenu menu && menu.getComputer() == this)
+        {
+            return menu;
+        }
+        return null;
     }
 }

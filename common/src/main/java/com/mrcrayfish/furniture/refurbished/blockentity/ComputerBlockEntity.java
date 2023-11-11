@@ -78,6 +78,18 @@ public class ComputerBlockEntity extends ElectricityModuleBlockEntity implements
         return this.currentProgram;
     }
 
+    @Nullable
+    @Override
+    public ComputerMenu getMenu()
+    {
+        Player player = this.getUser();
+        if(player != null && player.containerMenu instanceof ComputerMenu menu && menu.getComputer() == this)
+        {
+            return menu;
+        }
+        return null;
+    }
+
     @Override
     public boolean isPowered()
     {
@@ -133,7 +145,7 @@ public class ComputerBlockEntity extends ElectricityModuleBlockEntity implements
             return;
 
         // Create the program and sync the state if on the server
-        Computer.get().createProgramInstance(id).ifPresent(program -> {
+        Computer.get().createProgramInstance(id, this).ifPresent(program -> {
             this.currentProgram = program;
             this.syncStateToCurrentUser();
         });

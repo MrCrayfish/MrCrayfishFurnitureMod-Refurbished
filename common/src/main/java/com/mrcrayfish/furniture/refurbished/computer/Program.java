@@ -1,11 +1,12 @@
 package com.mrcrayfish.furniture.refurbished.computer;
 
-import com.mrcrayfish.furniture.refurbished.Constants;
+import com.mrcrayfish.furniture.refurbished.blockentity.IComputer;
 import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
-import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+
+import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish
@@ -14,11 +15,13 @@ public abstract class Program
 {
     private final ResourceLocation id;
     private final Component title;
+    private final IComputer computer;
 
-    public Program(ResourceLocation id)
+    public Program(ResourceLocation id, IComputer computer)
     {
         this.id = id;
         this.title = Component.translatable(String.format("%s.computer_program.%s", id.getNamespace(), id.getPath()));
+        this.computer = computer;
     }
 
     public final ResourceLocation getId()
@@ -29,6 +32,11 @@ public abstract class Program
     public Component getTitle()
     {
         return this.title;
+    }
+
+    public final IComputer getComputer()
+    {
+        return this.computer;
     }
 
     public void tick()
