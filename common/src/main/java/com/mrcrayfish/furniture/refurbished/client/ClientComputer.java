@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
 import com.mrcrayfish.furniture.refurbished.blockentity.IComputer;
+import com.mrcrayfish.furniture.refurbished.client.gui.screen.ComputerScreen;
 import com.mrcrayfish.furniture.refurbished.computer.Display;
 import com.mrcrayfish.furniture.refurbished.computer.Program;
 import com.mrcrayfish.furniture.refurbished.computer.client.DisplayableProgram;
@@ -16,6 +17,7 @@ public class ClientComputer implements IComputer
 {
     private final Player player;
     private DisplayableProgram<?> displayable;
+    private ComputerScreen screen;
 
     public ClientComputer(Player player)
     {
@@ -31,14 +33,24 @@ public class ClientComputer implements IComputer
         return this.player;
     }
 
-    public void setProgram(@Nullable Program program)
-    {
-        this.displayable = program != null ? Display.get().getDisplay(program) : null;
-    }
-
+    @Nullable
     public DisplayableProgram<?> getDisplayable()
     {
         return this.displayable;
+    }
+
+    public void setScreen(ComputerScreen screen)
+    {
+        this.screen = screen;
+    }
+
+    public void setProgram(@Nullable Program program)
+    {
+        this.displayable = program != null ? Display.get().getDisplay(program) : null;
+        if(this.displayable != null && this.screen != null)
+        {
+            this.displayable.setDisplayableListener(new DisplayableProgram.Listener(this.screen));
+        }
     }
 
     @Override
