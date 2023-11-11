@@ -70,7 +70,7 @@ public class ComputerScreen extends AbstractContainerScreen<ComputerMenu> implem
             graphics.fill(windowStart, windowTop + 1, windowEnd, windowBottom - 1, displayable.getWindowOutlineColour());
             graphics.fill(titleBarStart, titleBarTop, titleBarEnd, titleBarBottom, displayable.getWindowTitleBarColour());
             graphics.fill(contentStart, contentTop, contentEnd, contentBottom, displayable.getWindowBackgroundColour());
-            graphics.drawString(this.font, displayable.getProgram().getTitle(), titleBarStart + 5, titleBarTop, displayable.getWindowTitleLabelColour());
+            graphics.drawString(this.font, displayable.getProgram().getTitle(), titleBarStart + 5, titleBarTop + 1, displayable.getWindowTitleLabelColour(), false);
 
             // Draw content
             graphics.enableScissor(contentStart, contentTop, contentEnd, contentBottom);

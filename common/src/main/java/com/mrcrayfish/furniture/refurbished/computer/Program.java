@@ -20,7 +20,7 @@ public abstract class Program
     public Program(ResourceLocation id, IComputer computer)
     {
         this.id = id;
-        this.title = Component.translatable(String.format("%s.computer_program.%s", id.getNamespace(), id.getPath()));
+        this.title = Component.translatable(String.format("computer_program.%s.%s", id.getNamespace(), id.getPath()));
         this.computer = computer;
     }
 
