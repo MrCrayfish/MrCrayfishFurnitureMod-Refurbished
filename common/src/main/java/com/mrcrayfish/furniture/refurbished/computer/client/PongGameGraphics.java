@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.computer.client;
 
 import com.mrcrayfish.furniture.refurbished.computer.app.PongGame;
+import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -65,7 +66,14 @@ public class PongGameGraphics extends DisplayableProgram<PongGame>
         @Override
         public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
         {
-
+            ComputerMenu menu = PongGameGraphics.this.program.getComputer().getMenu();
+            if(menu != null)
+            {
+                long positions = menu.getProgramData();
+                int x = (int) (positions >> 32);
+                int y = (int) positions;
+                graphics.fill(x, y, x + 10, y + 10, 0xFFFFFFFF);
+            }
         }
     }
 }

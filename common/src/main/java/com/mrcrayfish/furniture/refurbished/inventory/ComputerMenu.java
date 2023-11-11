@@ -23,7 +23,7 @@ public class ComputerMenu extends SimpleContainerMenu
 
     public ComputerMenu(int windowId, Inventory playerInventory)
     {
-        this(windowId, playerInventory, new SimpleContainerData(1), new ClientComputer(playerInventory.player));
+        this(windowId, playerInventory, new SimpleContainerData(3), new ClientComputer(playerInventory.player));
     }
 
     public ComputerMenu(int windowId, Inventory playerInventory, ContainerData data, IComputer computer)
@@ -79,5 +79,18 @@ public class ComputerMenu extends SimpleContainerMenu
     public boolean getPowerState()
     {
         return (this.data.get(ComputerBlockEntity.DATA_SYSTEM) & 0xF) > 0;
+    }
+
+    public void setProgramData(long data)
+    {
+        this.data.set(ComputerBlockEntity.DATA_PROGRAM_1, (int) (data >> 32));
+        this.data.set(ComputerBlockEntity.DATA_PROGRAM_2, (int) data);
+    }
+
+    public long getProgramData()
+    {
+        int programData1 = this.data.get(ComputerBlockEntity.DATA_PROGRAM_1);
+        int programData2 = this.data.get(ComputerBlockEntity.DATA_PROGRAM_2);
+        return (((long) programData1) << 32) | (programData2 & 0xFFFFFFFFL);
     }
 }

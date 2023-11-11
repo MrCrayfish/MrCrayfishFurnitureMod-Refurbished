@@ -35,13 +35,19 @@ import javax.annotation.Nullable;
 public class ComputerBlockEntity extends ElectricityModuleBlockEntity implements MenuProvider, IComputer
 {
     public static final int DATA_SYSTEM = 0;
+    public static final int DATA_PROGRAM_1 = 1;
+    public static final int DATA_PROGRAM_2 = 2;
 
     protected int systemData;
+    protected int programData1;
+    protected int programData2;
     protected Program currentProgram;
     protected @Nullable Player currentUser;
 
     protected final ContainerData data = new BuildableContainerData(builder -> {
         builder.add(DATA_SYSTEM, () -> systemData, value -> {});
+        builder.add(DATA_PROGRAM_1, () -> programData1, value -> programData1 = value);
+        builder.add(DATA_PROGRAM_2, () -> programData2, value -> programData2 = value);
     });
 
     public ComputerBlockEntity(BlockPos pos, BlockState state)
@@ -171,8 +177,17 @@ public class ComputerBlockEntity extends ElectricityModuleBlockEntity implements
         Network.getPlay().sendToPlayer(() -> (ServerPlayer) player, new MessageComputerState(this.worldPosition, programId));
     }
 
+    private void tickProgram()
+    {
+        if(this.currentProgram != null)
+        {
+            this.currentProgram.tick();
+        }
+    }
+
     public static void serverTick(Level level, BlockPos pos, BlockState state, ComputerBlockEntity computer)
     {
+        computer.tickProgram();
         ElectricityModuleBlockEntity.serverTick(level, pos, state, computer);
     }
 

@@ -133,7 +133,7 @@ public abstract class DisplayableProgram<T extends Program>
         return this.scene;
     }
 
-    public final void setDisplayableListener(Listener listener)
+    public final void setListener(Listener listener)
     {
         Preconditions.checkState(this.listener == null, "Listener can only be assigned once");
         this.listener = listener;

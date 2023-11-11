@@ -49,7 +49,7 @@ public class ClientComputer implements IComputer
         this.displayable = program != null ? Display.get().getDisplay(program) : null;
         if(this.displayable != null && this.screen != null)
         {
-            this.displayable.setDisplayableListener(new DisplayableProgram.Listener(this.screen));
+            this.displayable.setListener(new DisplayableProgram.Listener(this.screen));
         }
     }
 

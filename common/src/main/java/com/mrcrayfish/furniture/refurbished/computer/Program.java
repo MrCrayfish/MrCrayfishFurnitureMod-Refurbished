@@ -13,9 +13,9 @@ import javax.annotation.Nullable;
  */
 public abstract class Program
 {
-    private final ResourceLocation id;
-    private final Component title;
-    private final IComputer computer;
+    protected final ResourceLocation id;
+    protected final Component title;
+    protected final IComputer computer;
 
     public Program(ResourceLocation id, IComputer computer)
     {
