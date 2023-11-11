@@ -1,8 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 
-import com.mrcrayfish.furniture.refurbished.blockentity.ComputerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.client.ClientComputer;
-import com.mrcrayfish.furniture.refurbished.computer.Program;
 import com.mrcrayfish.furniture.refurbished.computer.client.DisplayableProgram;
 import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
@@ -72,7 +70,7 @@ public class ComputerScreen extends AbstractContainerScreen<ComputerMenu> implem
             graphics.fill(windowStart, windowTop + 1, windowEnd, windowBottom - 1, displayable.getWindowOutlineColour());
             graphics.fill(titleBarStart, titleBarTop, titleBarEnd, titleBarBottom, displayable.getWindowTitleBarColour());
             graphics.fill(contentStart, contentTop, contentEnd, contentBottom, displayable.getWindowBackgroundColour());
-            graphics.drawString(this.font, displayable.getProgram().getTitle(), titleBarStart + 5, titleBarTop, 0xFFFFFFFF);
+            graphics.drawString(this.font, displayable.getProgram().getTitle(), titleBarStart + 5, titleBarTop, displayable.getWindowTitleLabelColour());
 
             // Draw content
             graphics.enableScissor(contentStart, contentTop, contentEnd, contentBottom);
