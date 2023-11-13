@@ -35,6 +35,11 @@ public class Window
         this.displayable.update(this.contentStart, this.contentTop);
     }
 
+    public void tick()
+    {
+        this.displayable.tick();
+    }
+
     public void render(GuiGraphics graphics, Font font, int mouseX, int mouseY, float partialTick)
     {
         int windowEnd = this.windowStart + this.windowWidth;

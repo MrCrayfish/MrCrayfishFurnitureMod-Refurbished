@@ -3,9 +3,11 @@ package com.mrcrayfish.furniture.refurbished.network.play;
 import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.blockentity.INameable;
+import com.mrcrayfish.furniture.refurbished.computer.app.TennisGame;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.electricity.Connection;
 import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
+import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.IPowerSwitchMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.PostBoxMenu;
 import com.mrcrayfish.furniture.refurbished.item.PackageItem;
@@ -15,6 +17,7 @@ import com.mrcrayfish.furniture.refurbished.network.message.MessageClearMessage;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageDeleteLink;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSendPackage;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSetName;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageTennisGame;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageTogglePower;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -103,6 +106,17 @@ public class ServerPlayHandler
         if(player != null && player.containerMenu instanceof IPowerSwitchMenu menu)
         {
             menu.toggle();
+        }
+    }
+
+    public static void handleMessageTennisGame(MessageTennisGame.Action message, ServerPlayer player)
+    {
+        if(player != null && player.containerMenu instanceof ComputerMenu menu)
+        {
+            if(menu.getComputer().getProgram() instanceof TennisGame game)
+            {
+                game.update(message.getMode(), message.getData());
+            }
         }
     }
 }

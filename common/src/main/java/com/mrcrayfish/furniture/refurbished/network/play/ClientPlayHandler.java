@@ -1,7 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.network.play;
 
 import com.mrcrayfish.furniture.refurbished.Config;
-import com.mrcrayfish.furniture.refurbished.blockentity.ComputerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.FryingPanBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.GrillBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.TelevisionBlockEntity;
@@ -13,6 +12,7 @@ import com.mrcrayfish.furniture.refurbished.client.gui.screen.PostBoxScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.toast.ItemToast;
 import com.mrcrayfish.furniture.refurbished.computer.Computer;
 import com.mrcrayfish.furniture.refurbished.computer.Program;
+import com.mrcrayfish.furniture.refurbished.computer.client.TennisGameGraphics;
 import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageClearMessage;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageComputerState;
@@ -21,6 +21,7 @@ import com.mrcrayfish.furniture.refurbished.network.message.MessageFlipAnimation
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSyncFluid;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSyncLink;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageTelevisionChannel;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageTennisGame;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageUpdateMailboxes;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
@@ -114,6 +115,45 @@ public class ClientPlayHandler
             ClientComputer computer = ((ClientComputer) menu.getComputer());
             Program program = Computer.get().createProgramInstance(message.getId(), computer).orElse(null);
             computer.setProgram(program);
+        }
+    }
+
+    public static void handleMessageTennisGamePaddlePosition(MessageTennisGame.PaddlePosition message)
+    {
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.player.containerMenu instanceof ComputerMenu menu)
+        {
+            ClientComputer computer = ((ClientComputer) menu.getComputer());
+            if(computer.getDisplayable() instanceof TennisGameGraphics game)
+            {
+                game.updatePaddles(message.getPlayerPos(), message.getOpponentPos());
+            }
+        }
+    }
+
+    public static void handleMessageTennisGameBallUpdate(MessageTennisGame.BallUpdate message)
+    {
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.player.containerMenu instanceof ComputerMenu menu)
+        {
+            ClientComputer computer = ((ClientComputer) menu.getComputer());
+            if(computer.getDisplayable() instanceof TennisGameGraphics game)
+            {
+                game.updateBall(message.getBallX(), message.getBallY(), message.getVelocityX(), message.getVelocityY());
+            }
+        }
+    }
+
+    public static void handleMessageTennisGameScore(MessageTennisGame.Score message)
+    {
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.player.containerMenu instanceof ComputerMenu menu)
+        {
+            ClientComputer computer = ((ClientComputer) menu.getComputer());
+            if(computer.getDisplayable() instanceof TennisGameGraphics game)
+            {
+                game.updateScore(message.getPlayerScore(), message.getOpponentScore());
+            }
         }
     }
 }

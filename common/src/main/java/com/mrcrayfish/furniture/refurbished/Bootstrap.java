@@ -6,7 +6,8 @@ import com.mrcrayfish.framework.api.event.TickEvents;
 import com.mrcrayfish.furniture.refurbished.blockentity.CuttingBoardBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.GrillBlockEntity;
 import com.mrcrayfish.furniture.refurbished.computer.Computer;
-import com.mrcrayfish.furniture.refurbished.computer.app.PongGame;
+import com.mrcrayfish.furniture.refurbished.computer.IService;
+import com.mrcrayfish.furniture.refurbished.computer.app.TennisGame;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.electricity.ElectricityTicker;
 import com.mrcrayfish.furniture.refurbished.electricity.LinkManager;
@@ -70,6 +71,7 @@ public class Bootstrap
         // Link Manager and Delivery Service events
         TickEvents.START_SERVER.register(server -> {
             DeliveryService.get(server).ifPresent(DeliveryService::serverTick);
+            Computer.get().getServices().forEach(IService::tick);
         });
         TickEvents.START_LEVEL.register(level -> {
             if(level instanceof ServerLevel serverLevel) {
@@ -92,6 +94,8 @@ public class Bootstrap
 
         FrameworkAPI.registerSyncedDataKey(Seat.LOCK_YAW);
 
-        Computer.get().install(Utils.resource("pong_game"), PongGame::new);
+        Computer computer = Computer.get();
+        computer.installProgram(Utils.resource("tennis_game"), TennisGame::new);
+        computer.installService(TennisGame.SERVICE);
     }
 }

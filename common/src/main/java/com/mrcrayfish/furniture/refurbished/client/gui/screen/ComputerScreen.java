@@ -88,8 +88,17 @@ public class ComputerScreen extends AbstractContainerScreen<ComputerMenu>
         int displayBottom = displayTop + DISPLAY_HEIGHT;
         graphics.enableScissor(displayLeft, displayTop, displayEnd, displayBottom);
         Window window = this.getOrCreateWindow();
-        if(window != null) window.render(graphics, this.font, mouseX, mouseY, partialTick);
+        if(window != null) window.render(graphics, this.font, mouseX, mouseY, this.minecraft.getFrameTime());
         graphics.disableScissor();
+    }
+
+    @Override
+    protected void containerTick()
+    {
+        if(this.window != null)
+        {
+            this.window.tick();
+        }
     }
 
     public void addWidgets(IWidgetGroup group)

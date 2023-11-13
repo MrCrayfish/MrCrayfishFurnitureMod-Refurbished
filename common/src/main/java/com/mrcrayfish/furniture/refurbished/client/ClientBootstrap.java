@@ -24,8 +24,8 @@ import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.*;
 import com.mrcrayfish.furniture.refurbished.client.renderer.entity.SeatRenderer;
 import com.mrcrayfish.furniture.refurbished.computer.Display;
-import com.mrcrayfish.furniture.refurbished.computer.app.PongGame;
-import com.mrcrayfish.furniture.refurbished.computer.client.PongGameGraphics;
+import com.mrcrayfish.furniture.refurbished.computer.app.TennisGame;
+import com.mrcrayfish.furniture.refurbished.computer.client.TennisGameGraphics;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModEntities;
@@ -82,7 +82,7 @@ public class ClientBootstrap
         CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_WARPED_DARK.get(), ExtraModels.WARPED_DARK_CEILING_FAN_BLADE::getModel);
 
         // Bind computer programs to graphics handler
-        Display.get().bind(PongGame.class, PongGameGraphics::new);
+        Display.get().bind(TennisGame.class, TennisGameGraphics::new);
     }
 
     public static void registerScreens(ScreenRegister register)

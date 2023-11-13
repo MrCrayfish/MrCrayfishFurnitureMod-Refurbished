@@ -43,6 +43,14 @@ public abstract class DisplayableProgram<T extends Program>
         }
     }
 
+    public void tick()
+    {
+        if(this.scene != null)
+        {
+            this.scene.tick();
+        }
+    }
+
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
         if(this.scene != null)

@@ -3,11 +3,13 @@ package com.mrcrayfish.furniture.refurbished.computer;
 import com.mrcrayfish.furniture.refurbished.blockentity.IComputer;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 /**
  * Author: MrCrayfish
@@ -26,14 +28,25 @@ public class Computer
     }
 
     private final Map<ResourceLocation, BiFunction<ResourceLocation, IComputer, Program>> programs = new HashMap<>();
+    private final List<IService> services = new ArrayList<>();
 
-    public void install(ResourceLocation id, BiFunction<ResourceLocation, IComputer, Program> program)
+    public void installProgram(ResourceLocation id, BiFunction<ResourceLocation, IComputer, Program> program)
     {
         this.programs.putIfAbsent(id, program);
+    }
+
+    public void installService(IService service)
+    {
+        this.services.add(service);
     }
 
     public Optional<Program> createProgramInstance(ResourceLocation id, IComputer computer)
     {
         return Optional.ofNullable(this.programs.get(id)).map(function -> function.apply(id, computer));
+    }
+
+    public List<IService> getServices()
+    {
+        return this.services;
     }
 }

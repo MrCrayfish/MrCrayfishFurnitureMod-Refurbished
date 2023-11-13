@@ -19,6 +19,8 @@ public abstract class Scene implements IWidgetGroup
 
     public abstract void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick);
 
+    public void tick() {}
+
     protected final <T extends AbstractWidget> T addWidget(T widget)
     {
         this.widgets.add(widget);

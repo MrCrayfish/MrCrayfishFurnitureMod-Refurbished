@@ -26,6 +26,10 @@ public class Network
             .registerPlayMessage(MessageTogglePower.class, MessageDirection.PLAY_SERVER_BOUND)
             .registerPlayMessage(MessageTelevisionChannel.class, MessageDirection.PLAY_CLIENT_BOUND)
             .registerPlayMessage(MessageComputerState.class, MessageDirection.PLAY_CLIENT_BOUND)
+            .registerPlayMessage(MessageTennisGame.Action.class, MessageDirection.PLAY_SERVER_BOUND)
+            .registerPlayMessage(MessageTennisGame.PaddlePosition.class, MessageDirection.PLAY_CLIENT_BOUND)
+            .registerPlayMessage(MessageTennisGame.BallUpdate.class, MessageDirection.PLAY_CLIENT_BOUND)
+            .registerPlayMessage(MessageTennisGame.Score.class, MessageDirection.PLAY_CLIENT_BOUND)
             .build();
 
     public static void init() {}
