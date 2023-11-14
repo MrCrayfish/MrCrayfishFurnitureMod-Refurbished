@@ -1,8 +1,12 @@
 package com.mrcrayfish.furniture.refurbished.computer;
 
+import com.mrcrayfish.furniture.refurbished.client.ClientComputer;
 import com.mrcrayfish.furniture.refurbished.computer.client.DisplayableProgram;
+import com.mrcrayfish.furniture.refurbished.computer.client.widget.ComputerButton;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
 
 /**
  * Author: MrCrayfish
@@ -12,6 +16,8 @@ public class Window
     private static final int TITLE_BAR_HEIGHT = 9;
 
     private final DisplayableProgram<?> displayable;
+    private final ClientComputer computer;
+    private final ComputerButton closeButton;
     private final int windowWidth;
     private final int windowHeight;
     private int windowStart;
@@ -19,11 +25,21 @@ public class Window
     private int contentStart;
     private int contentTop;
 
-    public Window(DisplayableProgram<?> displayable)
+    public Window(DisplayableProgram<?> displayable, ClientComputer computer)
     {
         this.displayable = displayable;
+        this.computer = computer;
         this.windowWidth = 1 + displayable.getWidth() + 1;
         this.windowHeight = 1 + TITLE_BAR_HEIGHT + 1 + displayable.getHeight() + 1;
+        this.closeButton = new ComputerButton(9, 9, Component.literal("x"), btn -> {
+            computer.setProgram(null);
+        });
+        //this.closeButton.setTextOffset(-1);
+        this.closeButton.setTextColour(displayable.getWindowTitleBarColour());
+        this.closeButton.setTextHighlightColour(0xFFFFFFFF);
+        this.closeButton.setOutlineColour(displayable.getWindowTitleLabelColour());
+        this.closeButton.setOutlineHighlightColour(displayable.getWindowTitleLabelColour());
+        this.closeButton.setBackgroundColour(displayable.getWindowTitleLabelColour());
     }
 
     public void update(int displayStart, int displayTop, int displayWidth, int displayHeight)
@@ -33,6 +49,7 @@ public class Window
         this.contentStart = this.windowStart + 1;
         this.contentTop =  this.windowTop + 1 + TITLE_BAR_HEIGHT + 1;
         this.displayable.update(this.contentStart, this.contentTop);
+        this.closeButton.setPosition(this.windowStart + this.windowWidth - this.closeButton.getWidth() - 1, this.windowTop + 1);
     }
 
     public void tick()
@@ -62,5 +79,10 @@ public class Window
         graphics.enableScissor(this.contentStart, this.contentTop, contentEnd, contentBottom);
         this.displayable.render(graphics, mouseX, mouseY, partialTick);
         graphics.disableScissor();
+    }
+
+    public Button getCloseButton()
+    {
+        return this.closeButton;
     }
 }

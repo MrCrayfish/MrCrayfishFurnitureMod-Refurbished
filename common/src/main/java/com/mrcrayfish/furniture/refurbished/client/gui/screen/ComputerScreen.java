@@ -45,11 +45,13 @@ public class ComputerScreen extends AbstractContainerScreen<ComputerMenu>
         DisplayableProgram<?> displayable = this.getComputer().getDisplayable();
         if(this.window == null && displayable != null)
         {
-            this.window = new Window(displayable);
+            this.window = new Window(displayable, this.getComputer());
+            this.addRenderableWidget(this.window.getCloseButton());
             this.updateWindow();
         }
-        else if(displayable == null)
+        else if(this.window != null && displayable == null)
         {
+            this.removeWidget(this.window.getCloseButton());
             this.window = null;
         }
         return this.window;
