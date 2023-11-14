@@ -5,10 +5,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.computer.app.TennisGame;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageTennisGame;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.lwjgl.glfw.GLFW;
 
@@ -17,6 +19,8 @@ import org.lwjgl.glfw.GLFW;
  */
 public class TennisGameGraphics extends DisplayableProgram<TennisGame>
 {
+    private static final ResourceLocation TEXTURE = Utils.resource("textures/gui/program/tennis_game.png");
+
     private float ballX;
     private float lastBallX;
     private float ballY;
@@ -169,14 +173,14 @@ public class TennisGameGraphics extends DisplayableProgram<TennisGame>
             // TODO maybe let client control position instead of server
             float smoothHostPos = Mth.lerp(partialTick, this.game.lastPlayerPos, this.game.playerPos);
             stack.translate(4, smoothHostPos, 0);
-            graphics.fill(0, 0, 4, TennisGame.PADDLE_HEIGHT, 0xFFFFFFFF);
+            graphics.blit(TEXTURE, 0, 0, 0, 0, TennisGame.PADDLE_WIDTH + 2, TennisGame.PADDLE_HEIGHT);
             stack.popPose();
 
             // Draw opponent paddle
             stack.pushPose();
             float smoothOpponentPos = Mth.lerp(partialTick, this.game.lastOpponentPos, this.game.opponentPos);
             stack.translate((TennisGame.BOARD_WIDTH) - 8, smoothOpponentPos, 0);
-            graphics.fill(0, 0, 4, TennisGame.PADDLE_HEIGHT, 0xFFFFFFFF);
+            graphics.blit(TEXTURE, -2, 0, 6, 0, TennisGame.PADDLE_WIDTH + 2, TennisGame.PADDLE_HEIGHT);
             stack.popPose();
 
             // Draw ball
@@ -184,14 +188,14 @@ public class TennisGameGraphics extends DisplayableProgram<TennisGame>
             float smoothBallX = Mth.lerp(partialTick, this.game.lastBallX, this.game.ballX);
             float smoothBallY = Mth.lerp(partialTick, this.game.lastBallY, this.game.ballY);
             stack.translate(smoothBallX, smoothBallY, 0);
-            graphics.fill(0, 0, 4, 4, 0xFFFF0000);
+            graphics.blit(TEXTURE, 0, 0, 12, 0, 4, 4);
             stack.popPose();
 
             if(this.game.scoreAnimation > 0 && (this.game.scoreAnimation / 5) % 2 == 0)
             {
                 stack.pushPose();
                 stack.translate((TennisGame.BOARD_WIDTH - TennisGame.PADDLE_WIDTH) * this.game.scoreSide, 0, 0);
-                graphics.fill(0, 0, TennisGame.PADDLE_WIDTH, TennisGame.BOARD_HEIGHT, 0xFFFF0000);
+                graphics.fill(0, 0, TennisGame.PADDLE_WIDTH, TennisGame.BOARD_HEIGHT, 0xFF653938);
                 stack.popPose();
             }
         }
