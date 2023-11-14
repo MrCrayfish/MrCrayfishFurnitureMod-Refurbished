@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.FastColor;
 
 /**
  * Author: MrCrayfish
@@ -15,8 +16,9 @@ public class ComputerButton extends Button
     protected int backgroundColour = 0xFF222225;
     protected int backgroundHighlightColour = 0xFF47403E;
     protected int textColour = 0xFF5B5450;
-    protected int textHighlightColour = 0xFF5B5450;
+    protected int textHighlightColour = 0xFFD3D3D3;
     protected int textDisabledColour = 0xFF5B5450;
+    protected int textOffset;
 
     public ComputerButton(int width, int height, Component label, OnPress onPress)
     {
@@ -31,10 +33,13 @@ public class ComputerButton extends Button
         graphics.fill(this.getX() + 1, this.getY() + 1, this.getX() + this.getWidth() - 1, this.getY() + this.getHeight() - 1, this.getBackgroundColour());
         graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
         int messageWidth = mc.font.width(this.getMessage());
-        graphics.drawString(mc.font, this.getMessage(), this.getX() + (this.getWidth() - messageWidth) / 2 + 1, this.getY() + (this.getHeight() - mc.font.lineHeight) / 2, this.getLabelColour(), false);
+        graphics.drawString(mc.font, this.getMessage(), this.getX() + (this.getWidth() - messageWidth) / 2 + 1, this.getY() + (this.getHeight() - mc.font.lineHeight) / 2 + 1 + this.textOffset, this.getTextColour(), false);
     }
 
-    private int getLabelColour()
+    /**
+     * @return The text colour for the button based on its current state
+     */
+    private int getTextColour()
     {
         if(this.isActive())
         {
@@ -47,6 +52,9 @@ public class ComputerButton extends Button
         return this.textDisabledColour;
     }
 
+    /**
+     * @return The outline colour for the button based on its current state
+     */
     private int getOutlineColour()
     {
         if(this.isActive() && this.isHoveredOrFocused())
@@ -56,6 +64,9 @@ public class ComputerButton extends Button
         return this.outlineColour;
     }
 
+    /**
+     * @return The background colour for the button based on its current state
+     */
     private int getBackgroundColour()
     {
         if(this.isActive() && this.isHoveredOrFocused())
@@ -65,38 +76,78 @@ public class ComputerButton extends Button
         return this.backgroundColour;
     }
 
+    /**
+     * Sets the outline colour of the button when enabled
+     *
+     * @param outlineColour an ARGB integer of the colour. See {@link FastColor.ARGB32} for utilities
+     */
     public void setOutlineColour(int outlineColour)
     {
         this.outlineColour = outlineColour;
     }
 
+    /**
+     * Sets the outline colour of the button when hovered/focused
+     *
+     * @param outlineHighlightColour an ARGB integer of the colour. See {@link FastColor.ARGB32} for utilities
+     */
     public void setOutlineHighlightColour(int outlineHighlightColour)
     {
         this.outlineHighlightColour = outlineHighlightColour;
     }
 
+    /**
+     * Sets the background colour of the button when enabled
+     *
+     * @param backgroundColour an ARGB integer of the colour. See {@link FastColor.ARGB32} for utilities
+     */
     public void setBackgroundColour(int backgroundColour)
     {
         this.backgroundColour = backgroundColour;
     }
 
+    /**
+     * Sets the background colour of the button when hovered/focused
+     *
+     * @param backgroundHighlightColour an ARGB integer of the colour. See {@link FastColor.ARGB32} for utilities
+     */
     public void setBackgroundHighlightColour(int backgroundHighlightColour)
     {
         this.backgroundHighlightColour = backgroundHighlightColour;
     }
 
+    /**
+     * Sets the text colour of the button when enabled
+     *
+     * @param textColour an ARGB integer of the colour. See {@link FastColor.ARGB32} for utilities
+     */
     public void setTextColour(int textColour)
     {
         this.textColour = textColour;
     }
 
+    /**
+     * Sets the text colour of the button when hovered/focused
+     *
+     * @param textHighlightColour an ARGB integer of the colour. See {@link FastColor.ARGB32} for utilities
+     */
     public void setTextHighlightColour(int textHighlightColour)
     {
         this.textHighlightColour = textHighlightColour;
     }
 
+    /**
+     * Sets the text colour of the button when disabled
+     *
+     * @param textDisabledColour an ARGB integer of the colour. See {@link FastColor.ARGB32} for utilities
+     */
     public void setTextDisabledColour(int textDisabledColour)
     {
         this.textDisabledColour = textDisabledColour;
+    }
+
+    public void setTextOffset(int textOffset)
+    {
+        this.textOffset = textOffset;
     }
 }

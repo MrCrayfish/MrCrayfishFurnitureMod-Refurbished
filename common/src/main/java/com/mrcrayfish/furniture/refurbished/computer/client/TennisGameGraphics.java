@@ -3,12 +3,12 @@ package com.mrcrayfish.furniture.refurbished.computer.client;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.computer.app.TennisGame;
+import com.mrcrayfish.furniture.refurbished.computer.client.widget.ComputerButton;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageTennisGame;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -93,28 +93,57 @@ public class TennisGameGraphics extends DisplayableProgram<TennisGame>
     private static class MainMenuScene extends Scene
     {
         private final TennisGameGraphics game;
-        private final Button testButton;
+        private final MenuButton playAiButton;
+        private final MenuButton playVsButton;
 
         public MainMenuScene(TennisGameGraphics game)
         {
             this.game = game;
-            this.testButton = this.addWidget(Button.builder(Component.literal("Play"), var1 -> {
+            this.playAiButton = this.addWidget(new MenuButton(100, 16, Utils.translation("computer_program", "tennis_game.play_ai"), btn -> {
                 Network.getPlay().sendToServer(new MessageTennisGame.Action(TennisGame.Action.JOIN_GAME, (byte) 0));
                 game.setScene(new GameScene(game));
-            }).size(50, 20).build());
+            }));
+            this.playAiButton.setBackgroundHighlightColour(0xFF47403E);
+            this.playAiButton.setTextHighlightColour(0xFF222225);
+
+            this.playVsButton = this.addWidget(new MenuButton(100, 16, Utils.translation("computer_program", "tennis_game.play_vs"), btn -> {
+                Network.getPlay().sendToServer(new MessageTennisGame.Action(TennisGame.Action.JOIN_GAME, (byte) 1));
+                game.setScene(new GameScene(game));
+            }));
+            this.playVsButton.setBackgroundHighlightColour(0xFF47403E);
+            this.playVsButton.setTextHighlightColour(0xFF222225);
         }
 
         @Override
         public void updateWidgets(int contentStart, int contentTop)
         {
-            this.testButton.setX(contentStart - 5);
-            this.testButton.setY(contentTop + 5);
+            this.playAiButton.setPosition(contentStart + (this.game.width - this.playAiButton.getWidth()) / 2, contentTop + 40);
+            this.playVsButton.setPosition(contentStart + (this.game.width - this.playVsButton.getWidth()) / 2, contentTop + 60);
         }
 
         @Override
         public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
         {
+            graphics.blit(TEXTURE, (this.game.width - 128) / 2, 10, 16, 0, 128, 24);
+        }
 
+        private static class MenuButton extends ComputerButton
+        {
+            public MenuButton(int width, int height, Component label, OnPress onPress)
+            {
+                super(width, height, label, onPress);
+            }
+
+            @Override
+            protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+            {
+                super.renderWidget(graphics, mouseX, mouseY, partialTick);
+                if(this.isActive() && this.isHoveredOrFocused())
+                {
+                    graphics.blit(TEXTURE, this.getX() - 6, this.getY() + 6, 12, 0, 4, 4);
+                    graphics.blit(TEXTURE, this.getX() + this.getWidth() + 2, this.getY() + 6, 12, 0, 4, 4);
+                }
+            }
         }
     }
 

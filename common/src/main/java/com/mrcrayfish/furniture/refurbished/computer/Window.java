@@ -34,7 +34,7 @@ public class Window
         this.closeButton = new ComputerButton(9, 9, Component.literal("x"), btn -> {
             computer.setProgram(null);
         });
-        //this.closeButton.setTextOffset(-1);
+        this.closeButton.setTextOffset(-1);
         this.closeButton.setTextColour(displayable.getWindowTitleBarColour());
         this.closeButton.setTextHighlightColour(0xFFFFFFFF);
         this.closeButton.setOutlineColour(displayable.getWindowTitleLabelColour());
