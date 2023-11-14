@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.computer.app;
 
+import com.google.common.base.Preconditions;
 import com.mrcrayfish.furniture.refurbished.blockentity.IComputer;
 import com.mrcrayfish.furniture.refurbished.computer.IService;
 import com.mrcrayfish.furniture.refurbished.computer.Program;
@@ -51,15 +52,15 @@ public class TennisGame extends Program
             {
                 this.activeGame = null;
                 this.controller = null;
-                return;
             }
         }
     }
 
     /**
+     * Handles an action update sent from clients.
      *
-     * @param action
-     * @param data
+     * @param action the action that was performed on the client
+     * @param data   the data associated with the action
      */
     public void update(Action action, byte data)
     {
@@ -117,7 +118,7 @@ public class TennisGame extends Program
         }
 
         /**
-         *
+         * Utility method to update the bounding box bounds to the {@link #pos} coordinates
          */
         protected void updateBoundingBox()
         {
@@ -125,9 +126,10 @@ public class TennisGame extends Program
         }
 
         /**
+         * Updates the bounding box bounds to be adjusted to the given x and y position
          *
-         * @param x
-         * @param y
+         * @param x the new x position of the bounds
+         * @param y the new y position of the bounds
          */
         protected void updateBoundingBox(float x, float y)
         {
@@ -138,8 +140,9 @@ public class TennisGame extends Program
         }
 
         /**
+         * Sets the game this game object has been added to
          *
-         * @param game
+         * @param game the game that added this object
          */
         public void setGame(Game game)
         {
@@ -160,19 +163,18 @@ public class TennisGame extends Program
         }
 
         /**
-         *
-         * @return
+         * @return True if the controller is playing the game
          */
-        protected abstract boolean isConnected();
+        protected abstract boolean isPlaying();
 
         /**
-         *
+         * Runs an update on the controller for movement
          */
         protected abstract void update();
 
         /**
-         *
-         * @param side
+         * Sets the side this paddle is positioned on the board
+         * @param side the side
          */
         public void setSide(Side side)
         {
@@ -184,7 +186,7 @@ public class TennisGame extends Program
         }
 
         /**
-         *
+         * Moves the paddle to the center on the vertical axis.
          */
         public void moveToCenter()
         {
@@ -192,6 +194,12 @@ public class TennisGame extends Program
             this.updateBoundingBox();
         }
 
+        /**
+         * Sends an update to the controller. Only implemented in {@link PlayerController} to send
+         * updates about the game, like ball velocity, positions, etc.
+         *
+         * @param type the type of update. See {@link UpdateType}
+         */
         public void sendUpdate(UpdateType type) {}
     }
 
@@ -209,8 +217,8 @@ public class TennisGame extends Program
         }
 
         /**
-         *
-         * @param inputUp
+         * Sets the up input state
+         * @param inputUp true if the paddle should move up
          */
         public void setInputUp(boolean inputUp)
         {
@@ -218,8 +226,8 @@ public class TennisGame extends Program
         }
 
         /**
-         *
-         * @param inputDown
+         * Sets the down input state
+         * @param inputDown true if the paddle should move down
          */
         public void setInputDown(boolean inputDown)
         {
@@ -227,7 +235,7 @@ public class TennisGame extends Program
         }
 
         @Override
-        public boolean isConnected()
+        public boolean isPlaying()
         {
             IComputer computer = this.program.getComputer();
             return this.player.equals(computer.getUser()) && computer.getProgram() == this.program && this.program.activeGame == this.game;
@@ -238,22 +246,19 @@ public class TennisGame extends Program
         {
             if(!this.game.freezePaddles)
             {
-                if(this.inputUp)
-                {
-                    this.pos.y = Math.max(0, this.pos.y - PADDLE_SPEED);
-                    this.updateBoundingBox();
-                }
-                else if(this.inputDown)
-                {
-                    this.pos.y = Math.min(BOARD_HEIGHT - PADDLE_HEIGHT, this.pos.y + PADDLE_SPEED);
-                    this.updateBoundingBox();
-                }
+                this.pos.y += this.inputUp && !this.inputDown ? -PADDLE_SPEED : !this.inputUp && this.inputDown ? PADDLE_SPEED : 0;
+                this.pos.y = Mth.clamp(this.pos.y, 3, BOARD_HEIGHT - PADDLE_HEIGHT - 3);
+                this.updateBoundingBox();
             }
         }
 
         @Override
         public void sendUpdate(UpdateType type)
         {
+            // Don't send if not playing
+            if(!this.isPlaying())
+                return;
+
             if(UpdateType.BALL.is(type))
             {
                 ServerPlayer player = (ServerPlayer) this.player;
@@ -274,17 +279,8 @@ public class TennisGame extends Program
 
     protected static class AiController extends Controller
     {
-        public final float paddleSpeed;
-        public final float tolerance;
-
-        public AiController(float speed, float tolerance)
-        {
-            this.paddleSpeed = speed;
-            this.tolerance = tolerance;
-        }
-
         @Override
-        public boolean isConnected()
+        public boolean isPlaying()
         {
             return true;
         }
@@ -294,15 +290,17 @@ public class TennisGame extends Program
         {
             if(!this.game.freezePaddles && this.game.ball.velocity.x > 0)
             {
-                if(this.game.ball.pos.y < this.pos.y + (PADDLE_HEIGHT / 2F) - this.tolerance)
+                float tolerance = this.game.difficulty.aiTolerance;
+                float paddleSpeed = this.game.difficulty.aiPaddleSpeed;
+                if(this.game.ball.pos.y < this.pos.y + (PADDLE_HEIGHT / 2F) - tolerance)
                 {
-                    this.pos.y -= Math.min(this.paddleSpeed, this.pos.y + (PADDLE_HEIGHT / 2F) - this.game.ball.pos.y);
+                    this.pos.y -= Math.min(paddleSpeed, this.pos.y + (PADDLE_HEIGHT / 2F) - this.game.ball.pos.y);
                 }
-                else if(this.game.ball.pos.y > this.pos.y + (PADDLE_HEIGHT / 2F) + this.tolerance)
+                else if(this.game.ball.pos.y > this.pos.y + (PADDLE_HEIGHT / 2F) + tolerance)
                 {
-                    this.pos.y += Math.min(this.paddleSpeed, this.game.ball.pos.y - this.pos.y + (PADDLE_HEIGHT / 2F));
+                    this.pos.y += Math.min(paddleSpeed, this.game.ball.pos.y - this.pos.y + (PADDLE_HEIGHT / 2F));
                 }
-                this.pos.y = Mth.clamp(this.pos.y, 0, BOARD_HEIGHT - PADDLE_HEIGHT);
+                this.pos.y = Mth.clamp(this.pos.y, 3, BOARD_HEIGHT - PADDLE_HEIGHT - 3);
                 this.updateBoundingBox(this.pos.x, this.pos.y);
             }
         }
@@ -321,7 +319,7 @@ public class TennisGame extends Program
         }
 
         /**
-         *
+         * Creates a random velocity for the ball
          */
         public void randomVelocity()
         {
@@ -330,7 +328,7 @@ public class TennisGame extends Program
         }
 
         /**
-         *
+         * Performs a move update for the ball
          */
         public void move()
         {
@@ -349,19 +347,26 @@ public class TennisGame extends Program
         }
 
         /**
+         * Updates the y velocity of the ball depending on the given hit factor. The hit factor is
+         * the position the ball hit a paddle. If the ball hit the top of the paddle, the value is 0.
+         * If the ball hit the bottom, the value is one. This value is then used to calculate a new
+         * y velocity for the ball. If the value is closer to 0, the ball will move in an up direction,
+         * while a value closer to 1 will move in a down direction.
          *
-         * @param hit
+         * @param hit the position the ball hit on the paddle from 0 to 1
          */
         public void reflectYVelocity(float hit)
         {
             hit = Math.clamp(hit, 0.0F, 1.0F);
             hit = (hit - 0.5F) * 2F;
-            this.velocity.y = 5F * hit;
+            this.velocity.y = this.game.difficulty.ballYSpeed * hit;
         }
 
         /**
+         * Performs the collision detection for the ball. This will check for collisions against the
+         * top and bottom walls, and the paddles.
          *
-         * @return
+         * @return True if collided with something
          */
         private boolean performCollision()
         {
@@ -479,6 +484,7 @@ public class TennisGame extends Program
         private final Controller host;
         private Controller opponent;
         private Ball ball;
+        private Difficulty difficulty;
         private boolean running;
         private boolean freezePaddles;
         private boolean finished;
@@ -492,8 +498,7 @@ public class TennisGame extends Program
         }
 
         /**
-         *
-         * @return
+         * @return The Controller that is hosting the game
          */
         public Controller getHost()
         {
@@ -501,20 +506,7 @@ public class TennisGame extends Program
         }
 
         /**
-         *
-         * @param controller
-         */
-        public void join(Controller controller)
-        {
-            controller.setGame(this);
-            controller.setSide(Side.RIGHT);
-            this.opponent = controller;
-            this.startNewGame();
-        }
-
-        /**
-         *
-         * @return
+         * @return True if the game is currently being played
          */
         public boolean isRunning()
         {
@@ -522,8 +514,7 @@ public class TennisGame extends Program
         }
 
         /**
-         *
-         * @return
+         * @return True if this game is finished and marked for removal
          */
         public boolean isFinished()
         {
@@ -531,10 +522,43 @@ public class TennisGame extends Program
         }
 
         /**
+         * Sets the difficulty of the game. This affects the AI and the speed of the ball
          *
+         * @param difficulty the difficulty. See {@link Difficulty} for options
+         */
+        public void setDifficulty(Difficulty difficulty)
+        {
+            this.difficulty = difficulty;
+        }
+
+        /**
+         * Joins the given Controller as an opponent/second player of this game
+         *
+         * @param controller the controller to join
+         */
+        public void join(Controller controller)
+        {
+            if(this.opponent != null)
+                return;
+
+            controller.setGame(this);
+            controller.setSide(Side.RIGHT);
+            this.opponent = controller;
+            this.startNewGame();
+        }
+
+        /**
+         * Runs a game update
          */
         public void update()
         {
+            if(!this.host.isPlaying() || (this.opponent != null && !this.opponent.isPlaying()))
+            {
+                this.finished = true;
+                this.running = false;
+                return;
+            }
+
             if(this.running && !this.finished)
             {
                 if(this.cooldown-- > 0)
@@ -546,17 +570,10 @@ public class TennisGame extends Program
                     return;
                 }
 
-                if(!this.host.isConnected() || !this.opponent.isConnected())
-                {
-                    this.finished = true;
-                    this.running = false;
-                    return;
-                }
-
+                this.ball.move();
                 this.host.update();
                 this.opponent.update();
                 this.sendUpdateToPlayers(UpdateType.PADDLES);
-                this.ball.move();
                 this.testForScore();
             }
         }
@@ -566,13 +583,18 @@ public class TennisGame extends Program
          */
         private void startNewGame()
         {
-            this.resetBoard();
+            Preconditions.checkNotNull(this.opponent, "Game cannot be started without an opponent present");
+            this.ball = new Ball(this);
+            this.host.moveToCenter();
+            this.opponent.moveToCenter();
             this.host.score = 0;
             this.opponent.score = 0;
             this.running = true;
             this.finished = false;
             this.freezePaddles = true;
             this.cooldown = 20;
+            this.sendUpdateToPlayers(UpdateType.BALL);
+            this.sendUpdateToPlayers(UpdateType.PADDLES);
         }
 
         /**
@@ -580,6 +602,7 @@ public class TennisGame extends Program
          */
         private void resetBoard()
         {
+            Preconditions.checkNotNull(this.opponent, "Board cannot be reset without an opponent present");
             this.ball = new Ball(this);
             this.ball.randomVelocity();
             this.host.moveToCenter();
@@ -628,6 +651,7 @@ public class TennisGame extends Program
          */
         private void sendUpdateToPlayers(UpdateType type)
         {
+            Preconditions.checkNotNull(this.opponent, "Game updates cannot be sent without an opponent present");
             this.host.sendUpdate(type);
             this.opponent.sendUpdate(type);
         }
@@ -662,7 +686,8 @@ public class TennisGame extends Program
         protected Game createAiGame(PlayerController controller)
         {
             Game game = new Game(controller);
-            game.join(new AiController(4F, 8F));
+            game.setDifficulty(Difficulty.HARD);
+            game.join(new AiController());
             this.activeGames.add(game);
             return game;
         }
@@ -685,6 +710,7 @@ public class TennisGame extends Program
                 return game;
             }
             Game game = new Game(controller);
+            game.setDifficulty(Difficulty.HARD);
             this.pendingGames.offer(game);
             return game;
         }
@@ -692,7 +718,7 @@ public class TennisGame extends Program
         @Override
         public void tick()
         {
-            this.pendingGames.removeIf(game -> !game.getHost().isConnected());
+            this.pendingGames.removeIf(game -> !game.getHost().isPlaying());
             this.activeGames.removeIf(Game::isFinished);
             this.activeGames.forEach(Game::update);
         }
@@ -713,6 +739,24 @@ public class TennisGame extends Program
         public int getPosition()
         {
             return this.position;
+        }
+    }
+
+    public enum Difficulty
+    {
+        EASY(3.5F, 4.0F, 5.0F),
+        MEDIUM(4.0F, 8.0F, 6.0F),
+        HARD(5.0F, 15.0F, 8.0F);
+
+        private final float aiPaddleSpeed;
+        private final float aiTolerance;
+        private final float ballYSpeed;
+
+        Difficulty(float aiPaddleSpeed, float aiTolerance, float ballYSpeed)
+        {
+            this.aiPaddleSpeed = aiPaddleSpeed;
+            this.aiTolerance = aiTolerance;
+            this.ballYSpeed = ballYSpeed;
         }
     }
 
