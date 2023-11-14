@@ -7,7 +7,7 @@ import com.mrcrayfish.furniture.refurbished.blockentity.CuttingBoardBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.GrillBlockEntity;
 import com.mrcrayfish.furniture.refurbished.computer.Computer;
 import com.mrcrayfish.furniture.refurbished.computer.IService;
-import com.mrcrayfish.furniture.refurbished.computer.app.TennisGame;
+import com.mrcrayfish.furniture.refurbished.computer.app.PaddleBall;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.electricity.ElectricityTicker;
 import com.mrcrayfish.furniture.refurbished.electricity.LinkManager;
@@ -95,7 +95,7 @@ public class Bootstrap
         FrameworkAPI.registerSyncedDataKey(Seat.LOCK_YAW);
 
         Computer computer = Computer.get();
-        computer.installProgram(Utils.resource("tennis_game"), TennisGame::new);
-        computer.installService(TennisGame.SERVICE);
+        computer.installProgram(Utils.resource("tennis_game"), PaddleBall::new);
+        computer.installService(PaddleBall.SERVICE);
     }
 }

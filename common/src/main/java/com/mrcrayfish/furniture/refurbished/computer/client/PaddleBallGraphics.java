@@ -2,7 +2,7 @@ package com.mrcrayfish.furniture.refurbished.computer.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mrcrayfish.furniture.refurbished.computer.app.TennisGame;
+import com.mrcrayfish.furniture.refurbished.computer.app.PaddleBall;
 import com.mrcrayfish.furniture.refurbished.computer.client.widget.ComputerButton;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageTennisGame;
@@ -17,9 +17,9 @@ import org.lwjgl.glfw.GLFW;
 /**
  * Author: MrCrayfish
  */
-public class TennisGameGraphics extends DisplayableProgram<TennisGame>
+public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
 {
-    private static final ResourceLocation TEXTURE = Utils.resource("textures/gui/program/tennis_game.png");
+    private static final ResourceLocation TEXTURE = Utils.resource("textures/gui/program/paddle_ball.png");
 
     private float ballX;
     private float lastBallX;
@@ -38,9 +38,9 @@ public class TennisGameGraphics extends DisplayableProgram<TennisGame>
     private int scoreSide;
     private int scoreAnimation;
 
-    public TennisGameGraphics(TennisGame program)
+    public PaddleBallGraphics(PaddleBall program)
     {
-        super(program, TennisGame.BOARD_WIDTH, TennisGame.BOARD_HEIGHT);
+        super(program, PaddleBall.BOARD_WIDTH, PaddleBall.BOARD_HEIGHT);
         this.setWindowOutlineColour(0xFF47403E);
         this.setWindowTitleBarColour(0xFF5B5450);
         this.setScene(new MainMenuScene(this));
@@ -79,7 +79,7 @@ public class TennisGameGraphics extends DisplayableProgram<TennisGame>
         this.scoreSide = this.playerScore != playerScore ? 1 : 0;
         this.playerScore = playerScore;
         this.opponentScore = opponentScore;
-        this.scoreAnimation = TennisGame.RESET_COOLDOWN;
+        this.scoreAnimation = PaddleBall.RESET_COOLDOWN;
     }
 
     private void reset()
@@ -92,22 +92,22 @@ public class TennisGameGraphics extends DisplayableProgram<TennisGame>
 
     private static class MainMenuScene extends Scene
     {
-        private final TennisGameGraphics game;
+        private final PaddleBallGraphics game;
         private final MenuButton playAiButton;
         private final MenuButton playVsButton;
 
-        public MainMenuScene(TennisGameGraphics game)
+        public MainMenuScene(PaddleBallGraphics game)
         {
             this.game = game;
-            this.playAiButton = this.addWidget(new MenuButton(100, 16, Utils.translation("computer_program", "tennis_game.play_ai"), btn -> {
-                Network.getPlay().sendToServer(new MessageTennisGame.Action(TennisGame.Action.JOIN_GAME, (byte) 0));
+            this.playAiButton = this.addWidget(new MenuButton(100, 16, this.game.translation("play_ai"), btn -> {
+                Network.getPlay().sendToServer(new MessageTennisGame.Action(PaddleBall.Action.JOIN_GAME, (byte) 0));
                 game.setScene(new GameScene(game));
             }));
             this.playAiButton.setBackgroundHighlightColour(0xFF47403E);
             this.playAiButton.setTextHighlightColour(0xFF222225);
 
-            this.playVsButton = this.addWidget(new MenuButton(100, 16, Utils.translation("computer_program", "tennis_game.play_vs"), btn -> {
-                Network.getPlay().sendToServer(new MessageTennisGame.Action(TennisGame.Action.JOIN_GAME, (byte) 1));
+            this.playVsButton = this.addWidget(new MenuButton(100, 16, this.game.translation("play_vs"), btn -> {
+                Network.getPlay().sendToServer(new MessageTennisGame.Action(PaddleBall.Action.JOIN_GAME, (byte) 1));
                 game.setScene(new GameScene(game));
             }));
             this.playVsButton.setBackgroundHighlightColour(0xFF47403E);
@@ -149,9 +149,9 @@ public class TennisGameGraphics extends DisplayableProgram<TennisGame>
 
     private static class GameScene extends Scene
     {
-        private final TennisGameGraphics game;
+        private final PaddleBallGraphics game;
 
-        public GameScene(TennisGameGraphics game)
+        public GameScene(PaddleBallGraphics game)
         {
             this.game = game;
             game.reset();
@@ -177,7 +177,7 @@ public class TennisGameGraphics extends DisplayableProgram<TennisGame>
             PoseStack stack = graphics.pose();
 
             stack.pushPose();
-            stack.translate(TennisGame.BOARD_WIDTH / 2, 4, 0);
+            stack.translate(PaddleBall.BOARD_WIDTH / 2, 4, 0);
 
             // Draw player score
             stack.pushPose();
@@ -202,14 +202,14 @@ public class TennisGameGraphics extends DisplayableProgram<TennisGame>
             // TODO maybe let client control position instead of server
             float smoothHostPos = Mth.lerp(partialTick, this.game.lastPlayerPos, this.game.playerPos);
             stack.translate(4, smoothHostPos, 0);
-            graphics.blit(TEXTURE, 0, 0, 0, 0, TennisGame.PADDLE_WIDTH + 2, TennisGame.PADDLE_HEIGHT);
+            graphics.blit(TEXTURE, 0, 0, 0, 0, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT);
             stack.popPose();
 
             // Draw opponent paddle
             stack.pushPose();
             float smoothOpponentPos = Mth.lerp(partialTick, this.game.lastOpponentPos, this.game.opponentPos);
-            stack.translate((TennisGame.BOARD_WIDTH) - 8, smoothOpponentPos, 0);
-            graphics.blit(TEXTURE, -2, 0, 6, 0, TennisGame.PADDLE_WIDTH + 2, TennisGame.PADDLE_HEIGHT);
+            stack.translate((PaddleBall.BOARD_WIDTH) - 8, smoothOpponentPos, 0);
+            graphics.blit(TEXTURE, -2, 0, 6, 0, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT);
             stack.popPose();
 
             // Draw ball
@@ -223,8 +223,8 @@ public class TennisGameGraphics extends DisplayableProgram<TennisGame>
             if(this.game.scoreAnimation > 0 && (this.game.scoreAnimation / 5) % 2 == 0)
             {
                 stack.pushPose();
-                stack.translate((TennisGame.BOARD_WIDTH - TennisGame.PADDLE_WIDTH) * this.game.scoreSide, 0, 0);
-                graphics.fill(0, 0, TennisGame.PADDLE_WIDTH, TennisGame.BOARD_HEIGHT, 0xFF653938);
+                stack.translate((PaddleBall.BOARD_WIDTH - PaddleBall.PADDLE_WIDTH) * this.game.scoreSide, 0, 0);
+                graphics.fill(0, 0, PaddleBall.PADDLE_WIDTH, PaddleBall.BOARD_HEIGHT, 0xFF653938);
                 stack.popPose();
             }
         }
@@ -235,7 +235,7 @@ public class TennisGameGraphics extends DisplayableProgram<TennisGame>
             boolean up = InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_UP);
             boolean down = InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_DOWN);
             byte input = (byte) (up && down ? 0 : up ? 1 : down ? 2 : 0);
-            Network.getPlay().sendToServer(new MessageTennisGame.Action(TennisGame.Action.INPUT, input));
+            Network.getPlay().sendToServer(new MessageTennisGame.Action(PaddleBall.Action.INPUT, input));
         }
 
     }

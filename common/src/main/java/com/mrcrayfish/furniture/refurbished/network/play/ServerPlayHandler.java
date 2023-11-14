@@ -3,7 +3,7 @@ package com.mrcrayfish.furniture.refurbished.network.play;
 import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.blockentity.INameable;
-import com.mrcrayfish.furniture.refurbished.computer.app.TennisGame;
+import com.mrcrayfish.furniture.refurbished.computer.app.PaddleBall;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.electricity.Connection;
 import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
@@ -113,7 +113,7 @@ public class ServerPlayHandler
     {
         if(player != null && player.containerMenu instanceof ComputerMenu menu)
         {
-            if(menu.getComputer().getProgram() instanceof TennisGame game)
+            if(menu.getComputer().getProgram() instanceof PaddleBall game)
             {
                 game.update(message.getMode(), message.getData());
             }

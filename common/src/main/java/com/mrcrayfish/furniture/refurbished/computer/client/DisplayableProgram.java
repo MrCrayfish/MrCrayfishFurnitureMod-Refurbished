@@ -4,6 +4,8 @@ import com.google.common.base.Preconditions;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.ComputerScreen;
 import com.mrcrayfish.furniture.refurbished.computer.Program;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
 
@@ -139,6 +141,12 @@ public abstract class DisplayableProgram<T extends Program>
     public final Scene getScene()
     {
         return this.scene;
+    }
+
+    public final Component translation(String key)
+    {
+        ResourceLocation id = this.getProgram().getId();
+        return Component.translatable(String.format("computer_program.%s.%s.%s", id.getNamespace(), id.getPath(), key));
     }
 
     public final void setListener(Listener listener)

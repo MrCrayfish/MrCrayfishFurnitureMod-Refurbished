@@ -12,7 +12,7 @@ import com.mrcrayfish.furniture.refurbished.client.gui.screen.PostBoxScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.toast.ItemToast;
 import com.mrcrayfish.furniture.refurbished.computer.Computer;
 import com.mrcrayfish.furniture.refurbished.computer.Program;
-import com.mrcrayfish.furniture.refurbished.computer.client.TennisGameGraphics;
+import com.mrcrayfish.furniture.refurbished.computer.client.PaddleBallGraphics;
 import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageClearMessage;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageComputerState;
@@ -124,7 +124,7 @@ public class ClientPlayHandler
         if(mc.player.containerMenu instanceof ComputerMenu menu)
         {
             ClientComputer computer = ((ClientComputer) menu.getComputer());
-            if(computer.getDisplayable() instanceof TennisGameGraphics game)
+            if(computer.getDisplayable() instanceof PaddleBallGraphics game)
             {
                 game.updatePaddles(message.getPlayerPos(), message.getOpponentPos());
             }
@@ -137,7 +137,7 @@ public class ClientPlayHandler
         if(mc.player.containerMenu instanceof ComputerMenu menu)
         {
             ClientComputer computer = ((ClientComputer) menu.getComputer());
-            if(computer.getDisplayable() instanceof TennisGameGraphics game)
+            if(computer.getDisplayable() instanceof PaddleBallGraphics game)
             {
                 game.updateBall(message.getBallX(), message.getBallY(), message.getVelocityX(), message.getVelocityY());
             }
@@ -150,7 +150,7 @@ public class ClientPlayHandler
         if(mc.player.containerMenu instanceof ComputerMenu menu)
         {
             ClientComputer computer = ((ClientComputer) menu.getComputer());
-            if(computer.getDisplayable() instanceof TennisGameGraphics game)
+            if(computer.getDisplayable() instanceof PaddleBallGraphics game)
             {
                 game.updateScore(message.getPlayerScore(), message.getOpponentScore());
             }

@@ -492,7 +492,7 @@
     "gui.refurbished_furniture.node_count": "%s / %s",
     "gui.refurbished_furniture.recycle": "Recycle",
     "subtitle.refurbished_furniture.package_open": "Package Opening",
-    "computer_program.refurbished_furniture.tennis_game": "Tennis Game",
-    "computer_program.refurbished_furniture.tennis_game.play_ai": "Play vs AI",
-    "computer_program.refurbished_furniture.tennis_game.play_vs": "Play vs Player"
+    "computer_program.refurbished_furniture.paddle_ball": "Paddle Ball",
+    "computer_program.refurbished_furniture.paddle_ball.play_ai": "Play vs AI",
+    "computer_program.refurbished_furniture.paddle_ball.play_vs": "Play vs Player"
 }

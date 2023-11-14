@@ -2,7 +2,7 @@ package com.mrcrayfish.furniture.refurbished.network.message;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.framework.api.network.message.PlayMessage;
-import com.mrcrayfish.furniture.refurbished.computer.app.TennisGame;
+import com.mrcrayfish.furniture.refurbished.computer.app.PaddleBall;
 import com.mrcrayfish.furniture.refurbished.network.play.ClientPlayHandler;
 import com.mrcrayfish.furniture.refurbished.network.play.ServerPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
@@ -124,12 +124,12 @@ public class MessageTennisGame
 
     public static class Action extends PlayMessage<Action>
     {
-        private TennisGame.Action action;
+        private PaddleBall.Action action;
         private byte data;
 
         public Action() {}
 
-        public Action(TennisGame.Action action, byte data)
+        public Action(PaddleBall.Action action, byte data)
         {
             this.action = action;
             this.data = data;
@@ -145,7 +145,7 @@ public class MessageTennisGame
         @Override
         public Action decode(FriendlyByteBuf buffer)
         {
-            TennisGame.Action action = buffer.readEnum(TennisGame.Action.class);
+            PaddleBall.Action action = buffer.readEnum(PaddleBall.Action.class);
             byte data = buffer.readByte();
             return new Action(action, data);
         }
@@ -157,7 +157,7 @@ public class MessageTennisGame
             context.setHandled(true);
         }
 
-        public TennisGame.Action getMode()
+        public PaddleBall.Action getMode()
         {
             return this.action;
         }

@@ -23,7 +23,7 @@ import java.util.Queue;
 /**
  * Author: MrCrayfish
  */
-public class TennisGame extends Program
+public class PaddleBall extends Program
 {
     public static final MatchmakingService SERVICE = new MatchmakingService();
     public static final int BOARD_WIDTH = 200;
@@ -37,7 +37,7 @@ public class TennisGame extends Program
     private State state;
     private PlayerController controller;
 
-    public TennisGame(ResourceLocation id, IComputer computer)
+    public PaddleBall(ResourceLocation id, IComputer computer)
     {
         super(id, computer);
         this.state = State.MAIN_MENU;
@@ -206,11 +206,11 @@ public class TennisGame extends Program
     protected static class PlayerController extends Controller
     {
         protected final Player player;
-        protected final TennisGame program;
+        protected final PaddleBall program;
         protected boolean inputUp;
         protected boolean inputDown;
 
-        private PlayerController(Player player, TennisGame program)
+        private PlayerController(Player player, PaddleBall program)
         {
             this.player = player;
             this.program = program;
@@ -678,7 +678,7 @@ public class TennisGame extends Program
         private final List<Game> activeGames = new ArrayList<>();
 
         /**
-         * Creates a tennis game against an AI controller
+         * Creates a paddle ball game against an AI controller
          *
          * @param controller the host player
          * @return The game instance
@@ -693,7 +693,7 @@ public class TennisGame extends Program
         }
 
         /**
-         * Creates a tennis game against another real player. This will first attempt to
+         * Creates a paddle ball game against another real player. This will first attempt to
          * see if another player is waiting for a game and join that, otherwise the game
          * will be put into a queue.
          *
