@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.computer;
 
 import com.mrcrayfish.furniture.refurbished.client.ClientComputer;
 import com.mrcrayfish.furniture.refurbished.computer.client.DisplayableProgram;
+import com.mrcrayfish.furniture.refurbished.computer.client.Scene;
 import com.mrcrayfish.furniture.refurbished.computer.client.widget.ComputerButton;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -79,6 +80,11 @@ public class Window
         graphics.enableScissor(this.contentStart, this.contentTop, contentEnd, contentBottom);
         this.displayable.render(graphics, mouseX, mouseY, partialTick);
         graphics.disableScissor();
+    }
+
+    public void onClose()
+    {
+        this.displayable.onClose();
     }
 
     public DisplayableProgram<?> getDisplayable()

@@ -53,6 +53,7 @@ public class ComputerScreen extends AbstractContainerScreen<ComputerMenu>
         else if(this.window != null && displayable == null)
         {
             this.removeWidget(this.window.getCloseButton());
+            this.window.onClose();
             this.window = null;
         }
         return this.window;

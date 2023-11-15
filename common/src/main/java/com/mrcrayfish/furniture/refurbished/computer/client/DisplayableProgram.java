@@ -166,6 +166,14 @@ public abstract class DisplayableProgram<T extends Program>
         return false;
     }
 
+    public void onClose()
+    {
+        if(this.listener != null)
+        {
+            this.listener.onChangeScene(this.scene, null);
+        }
+    }
+
     public static class Listener
     {
         private final ComputerScreen screen;
