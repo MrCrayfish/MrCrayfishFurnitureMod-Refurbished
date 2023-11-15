@@ -43,6 +43,7 @@ public class PaddleBall extends Program
     public static final byte EVENT_GAME_LOSE = 5;
     public static final byte EVENT_GAME_ROUND_WIN = 6;
     public static final byte EVENT_GAME_ROUND_LOSE = 7;
+    public static final byte EVENT_GAME_OPPONENT_LEFT = 8;
     public static final byte EVENT_SOUND_HIT = 40;
 
     private Game activeGame;
@@ -630,6 +631,7 @@ public class PaddleBall extends Program
         {
             if(!this.host.isPlaying() || (this.opponent != null && !this.opponent.isPlaying()))
             {
+                this.sendEventToPlayers(EVENT_GAME_OPPONENT_LEFT);
                 this.finished = true;
                 this.running = false;
                 return;
@@ -748,16 +750,20 @@ public class PaddleBall extends Program
          */
         private void sendUpdateToPlayers(UpdateType type)
         {
-            Preconditions.checkNotNull(this.opponent, "Game updates cannot be sent without an opponent present");
             this.host.sendUpdate(type);
-            this.opponent.sendUpdate(type);
+            if(this.opponent != null)
+            {
+                this.opponent.sendUpdate(type);
+            }
         }
 
         private void sendEventToPlayers(byte event)
         {
-            Preconditions.checkNotNull(this.opponent, "Game events cannot be sent without an opponent present");
             this.host.sendEvent(event);
-            this.opponent.sendEvent(event);
+            if(this.opponent != null)
+            {
+                this.opponent.sendEvent(event);
+            }
         }
 
         public MessagePaddleBall.PaddlePosition createPaddlePositionMessage()

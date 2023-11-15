@@ -18,6 +18,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.lwjgl.glfw.GLFW;
 
+import javax.annotation.Nullable;
+
 /**
  * Author: MrCrayfish
  */
@@ -41,6 +43,7 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
     private int opponentScore;
     private int scoreSide;
     private int scoreAnimation;
+    private @Nullable Component displayLabel;
     private Boolean wonGame;
     private boolean playing;
     private boolean leftPaddle;
@@ -108,11 +111,13 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
             }
             case PaddleBall.EVENT_GAME_WIN -> {
                 AudioHelper.playUISound(ModSounds.UI_PADDLE_BALL_RETRO_WIN.get(), 1.0F, 0.5F);
+                this.displayLabel = this.translation("win_game");
                 this.wonGame = true;
                 this.playing = false;
             }
             case PaddleBall.EVENT_GAME_LOSE -> {
                 AudioHelper.playUISound(ModSounds.UI_PADDLE_BALL_RETRO_LOSE.get(), 1.0F, 0.5F);
+                this.displayLabel = this.translation("lose_game");
                 this.wonGame = false;
                 this.playing = false;
             }
@@ -134,6 +139,10 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
                     AudioHelper.playUISound(ModSounds.UI_PADDLE_BALL_RETRO_FAIL.get(), 1.0F, 0.5F);
                 }
             }
+            case PaddleBall.EVENT_GAME_OPPONENT_LEFT -> {
+                this.displayLabel = this.translation("opponent_left");
+                this.wonGame = false;
+            }
             case PaddleBall.EVENT_SOUND_HIT -> {
                 AudioHelper.playUISound(ModSounds.UI_PADDLE_BALL_RETRO_HIT.get(), 1.0F, 0.5F);
             }
@@ -142,6 +151,7 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
 
     private void reset()
     {
+        this.displayLabel = null;
         this.wonGame = null;
         this.playerScore = 0;
         this.opponentScore = 0;
@@ -356,9 +366,9 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
                 stack.popPose();
             }
 
-            if(this.game.wonGame != null)
+            if(this.game.wonGame != null && this.game.displayLabel != null)
             {
-                Component bannerLabel = this.game.translation(this.game.wonGame ? "win_game" : "lose_game");
+                Component bannerLabel = this.game.displayLabel;
                 int bannerColour = this.game.wonGame ? 0xFF376337 : 0xFF653938;
                 graphics.drawCenteredString(mc.font, bannerLabel, this.game.width / 2, 40, bannerColour);
             }
