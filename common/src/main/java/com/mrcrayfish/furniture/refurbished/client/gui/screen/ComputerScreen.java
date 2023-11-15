@@ -90,6 +90,7 @@ public class ComputerScreen extends AbstractContainerScreen<ComputerMenu>
         int displayTop = this.topPos + DISPLAY_TOP;
         int displayEnd = displayLeft + DISPLAY_WIDTH;
         int displayBottom = displayTop + DISPLAY_HEIGHT;
+        graphics.fill(displayLeft, displayTop, displayEnd, displayBottom, 0xFF262626);
         graphics.enableScissor(displayLeft, displayTop, displayEnd, displayBottom);
         Window window = this.getOrCreateWindow();
         if(window != null) window.render(graphics, this.font, mouseX, mouseY, this.minecraft.getFrameTime());
