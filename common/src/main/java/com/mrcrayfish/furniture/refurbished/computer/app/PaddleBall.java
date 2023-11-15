@@ -32,10 +32,13 @@ public class PaddleBall extends Program
     public static final int PADDLE_HEIGHT = 28;
     public static final float PADDLE_SPEED = 4.0F;
     public static final int RESET_COOLDOWN = 40;
+    public static final int POINTS_TO_WIN = 7;
 
-    public static final byte EVENT_SOUND_HIT = 1;
-    public static final byte EVENT_SOUND_SUCCESS = 2;
-    public static final byte EVENT_SOUND_FAIL = 3;
+    public static final byte EVENT_GAME_WIN = 1;
+    public static final byte EVENT_GAME_LOSE = 2;
+    public static final byte EVENT_SOUND_HIT = 64;
+    public static final byte EVENT_SOUND_SUCCESS = 65;
+    public static final byte EVENT_SOUND_FAIL = 66;
 
     private Game activeGame;
     private State state;
@@ -52,6 +55,11 @@ public class PaddleBall extends Program
     {
         if(this.computer.isServer() && this.activeGame != null)
         {
+            if(this.activeGame.finished)
+            {
+                this.activeGame = null;
+            }
+
             if(this.computer.getUser() == null)
             {
                 this.activeGame = null;
@@ -79,13 +87,13 @@ public class PaddleBall extends Program
             if(data == 0)
             {
                 this.controller = new PlayerController(this.computer.getUser(), this);
-                this.activeGame = SERVICE.createAiGame(this.controller);
+                SERVICE.createAiGame(this.controller);
                 this.state = State.IN_GAME;
             }
             else if(data == 1)
             {
                 this.controller = new PlayerController(this.computer.getUser(), this);
-                this.activeGame = SERVICE.createMultiplayerGame(this.controller);
+                SERVICE.createMultiplayerGame(this.controller);
                 this.state = this.activeGame.isRunning() ? State.IN_GAME : State.PENDING;
             }
         }
@@ -297,6 +305,13 @@ public class PaddleBall extends Program
             ServerPlayer player = (ServerPlayer) this.player;
             Network.getPlay().sendToPlayer(() -> player, new MessagePaddleBall.Event(event));
         }
+
+        @Override
+        public void setGame(Game game)
+        {
+            super.setGame(game);
+            this.program.activeGame = game;
+        }
     }
 
     protected static class AiController extends Controller
@@ -336,7 +351,7 @@ public class PaddleBall extends Program
         {
             super(4, 4);
             this.game = game;
-            this.pos = new Vector2f(BOARD_WIDTH / 2.0F, (BOARD_HEIGHT - PADDLE_HEIGHT) / 2.0F);
+            this.pos = new Vector2f(BOARD_WIDTH / 2.0F, (BOARD_HEIGHT - 4) / 2.0F);
             this.updateBoundingBox();
         }
 
@@ -643,14 +658,26 @@ public class PaddleBall extends Program
         {
             if(this.ball.x1 <= 0)
             {
-                this.scoreAndCooldown(this.opponent);
+                if(this.scoreAndCooldown(this.opponent))
+                {
+                    this.opponent.sendEvent(EVENT_GAME_WIN);
+                    this.host.sendEvent(EVENT_GAME_LOSE);
+                    this.finished = true;
+                    return;
+                }
                 this.opponent.sendEvent(EVENT_SOUND_SUCCESS);
                 this.host.sendEvent(EVENT_SOUND_FAIL);
                 return;
             }
             if(this.ball.x2 >= BOARD_WIDTH)
             {
-                this.scoreAndCooldown(this.host);
+                if(this.scoreAndCooldown(this.host))
+                {
+                    this.host.sendEvent(EVENT_GAME_WIN);
+                    this.opponent.sendEvent(EVENT_GAME_LOSE);
+                    this.finished = true;
+                    return;
+                }
                 this.host.sendEvent(EVENT_SOUND_SUCCESS);
                 this.opponent.sendEvent(EVENT_SOUND_FAIL);
             }
@@ -662,12 +689,17 @@ public class PaddleBall extends Program
          *
          * @param controller the controller that scored
          */
-        private void scoreAndCooldown(Controller controller)
+        private boolean scoreAndCooldown(Controller controller)
         {
             controller.score++;
+            this.sendUpdateToPlayers(UpdateType.SCORE);
+            if(controller.score >= POINTS_TO_WIN)
+            {
+                return true;
+            }
             this.freezePaddles = true;
             this.cooldown = RESET_COOLDOWN;
-            this.sendUpdateToPlayers(UpdateType.SCORE);
+            return false;
         }
 
         /**

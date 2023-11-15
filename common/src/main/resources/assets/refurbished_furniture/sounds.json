@@ -143,5 +143,17 @@
         "sounds": [
             "refurbished_furniture:ui/paddle_ball/retro_fail"
         ]
+    },
+    "ui.paddle_ball.retro_win": {
+        "subtitle": "subtitle.refurbished_furniture.ui.paddle_ball.retro_win",
+        "sounds": [
+            "refurbished_furniture:ui/paddle_ball/retro_win"
+        ]
+    },
+    "ui.paddle_ball.retro_lose": {
+        "subtitle": "subtitle.refurbished_furniture.ui.paddle_ball.retro_lose",
+        "sounds": [
+            "refurbished_furniture:ui/paddle_ball/retro_lose"
+        ]
     }
 }

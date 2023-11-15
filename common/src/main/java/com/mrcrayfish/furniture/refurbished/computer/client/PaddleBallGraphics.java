@@ -11,7 +11,6 @@ import com.mrcrayfish.furniture.refurbished.network.message.MessagePaddleBall;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -40,6 +39,7 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
     private int opponentScore;
     private int scoreSide;
     private int scoreAnimation;
+    private Boolean wonGame;
 
     public PaddleBallGraphics(PaddleBall program)
     {
@@ -89,6 +89,14 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
     {
         switch(event)
         {
+            case PaddleBall.EVENT_GAME_WIN -> {
+                AudioHelper.playUISound(ModSounds.UI_PADDLE_BALL_RETRO_WIN.get(), 1.0F, 0.5F);
+                this.wonGame = true;
+            }
+            case PaddleBall.EVENT_GAME_LOSE -> {
+                AudioHelper.playUISound(ModSounds.UI_PADDLE_BALL_RETRO_LOSE.get(), 1.0F, 0.5F);
+                this.wonGame = false;
+            }
             case PaddleBall.EVENT_SOUND_HIT -> {
                 AudioHelper.playUISound(ModSounds.UI_PADDLE_BALL_RETRO_HIT.get(), 1.0F, 0.5F);
             }
@@ -103,10 +111,12 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
 
     private void reset()
     {
+        this.wonGame = null;
         this.playerScore = 0;
         this.opponentScore = 0;
         this.ballVelocityX = 0;
         this.ballVelocityY = 0;
+        this.scoreAnimation = 0;
     }
 
     private static class MainMenuScene extends Scene
@@ -171,15 +181,22 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
     private static class GameScene extends Scene
     {
         private final PaddleBallGraphics game;
+        private final MainMenuScene.MenuButton backButton;
 
         public GameScene(PaddleBallGraphics game)
         {
             this.game = game;
+            this.backButton = this.addWidget(new MainMenuScene.MenuButton(100, 16, this.game.translation("main_menu"), btn -> {
+                game.setScene(new MainMenuScene(game));
+            }));
             game.reset();
         }
 
         @Override
-        public void updateWidgets(int contentStart, int contentTop) {}
+        public void updateWidgets(int contentStart, int contentTop)
+        {
+            this.backButton.setPosition(contentStart + (this.game.width - this.backButton.getWidth()) / 2, contentTop + 60);
+        }
 
         @Override
         public void tick()
@@ -194,6 +211,9 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
         @Override
         public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
         {
+            this.backButton.active = this.game.wonGame != null;
+            this.backButton.visible = this.game.wonGame != null;
+
             Minecraft mc = Minecraft.getInstance();
             PoseStack stack = graphics.pose();
 
@@ -220,7 +240,6 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
 
             // Draw host paddle
             stack.pushPose();
-            // TODO maybe let client control position instead of server
             float smoothHostPos = Mth.lerp(partialTick, this.game.lastPlayerPos, this.game.playerPos);
             stack.translate(4, smoothHostPos, 0);
             graphics.blit(TEXTURE, 0, 0, 0, 0, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT);
@@ -247,6 +266,13 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
                 stack.translate((PaddleBall.BOARD_WIDTH - PaddleBall.PADDLE_WIDTH) * this.game.scoreSide, 0, 0);
                 graphics.fill(0, 0, PaddleBall.PADDLE_WIDTH, PaddleBall.BOARD_HEIGHT, 0xFF653938);
                 stack.popPose();
+            }
+
+            if(this.game.wonGame != null)
+            {
+                Component bannerLabel = this.game.translation(this.game.wonGame ? "win_game" : "lose_game");
+                int bannerColour = this.game.wonGame ? 0xFF376337 : 0xFF653938;
+                graphics.drawCenteredString(mc.font, bannerLabel, this.game.width / 2, 40, bannerColour);
             }
         }
 

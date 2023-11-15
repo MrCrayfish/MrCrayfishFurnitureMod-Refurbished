@@ -494,5 +494,9 @@
     "subtitle.refurbished_furniture.package_open": "Package Opening",
     "computer_program.refurbished_furniture.paddle_ball": "Paddle Ball",
     "computer_program.refurbished_furniture.paddle_ball.play_ai": "Play vs AI",
-    "computer_program.refurbished_furniture.paddle_ball.play_vs": "Play vs Player"
+    "computer_program.refurbished_furniture.paddle_ball.play_vs": "Play vs Player",
+    "computer_program.refurbished_furniture.paddle_ball.main_menu": "Main Menu",
+    "computer_program.refurbished_furniture.paddle_ball.win_game": "You Win :)",
+    "computer_program.refurbished_furniture.paddle_ball.lose_game": "You Lose :("
+
 }
