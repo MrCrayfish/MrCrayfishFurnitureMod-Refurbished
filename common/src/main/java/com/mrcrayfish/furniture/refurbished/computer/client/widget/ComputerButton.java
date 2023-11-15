@@ -12,6 +12,7 @@ import net.minecraft.util.FastColor;
 /**
  * Author: MrCrayfish
  */
+// TODO merge into Framework
 public class ComputerButton extends Button
 {
     protected int outlineColour = 0xFF47403E;
@@ -20,7 +21,7 @@ public class ComputerButton extends Button
     protected int backgroundColour = 0xFF222225;
     protected int backgroundHighlightColour = 0xFF47403E;
     protected int textColour = 0xFF5B5450;
-    protected int textHighlightColour = 0xFFD3D3D3;
+    protected int textHighlightColour = 0xFF222225;
     protected int textDisabledColour = 0xFF332E2D;
     protected int textOffset;
     protected SoundEvent clickSound;
@@ -166,11 +167,21 @@ public class ComputerButton extends Button
         this.textDisabledColour = textDisabledColour;
     }
 
+    /**
+     * Sets the vertical offset when drawing the button text. Allows for better alignment.
+     *
+     * @param textOffset the offset value
+     */
     public void setTextOffset(int textOffset)
     {
         this.textOffset = textOffset;
     }
 
+    /**
+     * Sets the sound that is played on clicking the button
+     *
+     * @param clickSound a sound event
+     */
     public void setClickSound(SoundEvent clickSound)
     {
         this.clickSound = clickSound;

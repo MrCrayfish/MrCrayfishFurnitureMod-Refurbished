@@ -47,8 +47,6 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
     public PaddleBallGraphics(PaddleBall program)
     {
         super(program, PaddleBall.BOARD_WIDTH, PaddleBall.BOARD_HEIGHT);
-        this.setWindowOutlineColour(0xFF47403E);
-        this.setWindowTitleBarColour(0xFF5B5450);
         this.setScene(new MainMenuScene(this));
     }
 
@@ -147,16 +145,12 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
                 Network.getPlay().sendToServer(new MessagePaddleBall.Action(PaddleBall.Action.JOIN_GAME, (byte) 0));
                 game.setScene(new GameScene(game));
             }));
-            this.playAiButton.setBackgroundHighlightColour(0xFF47403E);
-            this.playAiButton.setTextHighlightColour(0xFF222225);
             this.playAiButton.setClickSound(ModSounds.UI_PADDLE_BALL_RETRO_CLICK.get());
 
             this.playVsButton = this.addWidget(new MenuButton(100, 16, this.game.translation("play_vs"), btn -> {
                 Network.getPlay().sendToServer(new MessagePaddleBall.Action(PaddleBall.Action.JOIN_GAME, (byte) 1));
                 game.setScene(new PendingScene(game));
             }));
-            this.playVsButton.setBackgroundHighlightColour(0xFF47403E);
-            this.playVsButton.setTextHighlightColour(0xFF222225);
             this.playVsButton.setClickSound(ModSounds.UI_PADDLE_BALL_RETRO_CLICK.get());
 
             // Disable the vs player button if not in a server
@@ -215,8 +209,6 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
                 Network.getPlay().sendToServer(new MessagePaddleBall.Action(PaddleBall.Action.UPDATE_STATE, (byte) 0));
                 game.setScene(new MainMenuScene(game));
             }));
-            this.backButton.setBackgroundHighlightColour(0xFF47403E);
-            this.backButton.setTextHighlightColour(0xFF222225);
             this.backButton.setClickSound(ModSounds.UI_PADDLE_BALL_RETRO_CLICK.get());
         }
 
