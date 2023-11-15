@@ -29,7 +29,6 @@ public class Network
             .registerPlayMessage(MessagePaddleBall.Action.class, MessageDirection.PLAY_SERVER_BOUND)
             .registerPlayMessage(MessagePaddleBall.PaddlePosition.class, MessageDirection.PLAY_CLIENT_BOUND)
             .registerPlayMessage(MessagePaddleBall.BallUpdate.class, MessageDirection.PLAY_CLIENT_BOUND)
-            .registerPlayMessage(MessagePaddleBall.Score.class, MessageDirection.PLAY_CLIENT_BOUND)
             .registerPlayMessage(MessagePaddleBall.Event.class, MessageDirection.PLAY_CLIENT_BOUND)
             .build();
 

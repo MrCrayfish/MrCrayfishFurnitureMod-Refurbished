@@ -36,9 +36,9 @@ public class PaddleBall extends Program
 
     public static final byte EVENT_GAME_WIN = 1;
     public static final byte EVENT_GAME_LOSE = 2;
+    public static final byte EVENT_GAME_ROUND_WIN = 3;
+    public static final byte EVENT_GAME_ROUND_LOSE = 4;
     public static final byte EVENT_SOUND_HIT = 64;
-    public static final byte EVENT_SOUND_SUCCESS = 65;
-    public static final byte EVENT_SOUND_FAIL = 66;
 
     private Game activeGame;
     private State state;
@@ -288,11 +288,6 @@ public class PaddleBall extends Program
             {
                 ServerPlayer player = (ServerPlayer) this.player;
                 Network.getPlay().sendToPlayer(() -> player, this.game.createPaddlePositionMessage());
-            }
-            if(UpdateType.SCORE.is(type))
-            {
-                ServerPlayer player = (ServerPlayer) this.player;
-                Network.getPlay().sendToPlayer(() -> player, this.game.createScoreMessage());
             }
         }
 
@@ -658,28 +653,25 @@ public class PaddleBall extends Program
         {
             if(this.ball.x1 <= 0)
             {
+                this.opponent.sendEvent(EVENT_GAME_ROUND_WIN);
+                this.host.sendEvent(EVENT_GAME_ROUND_LOSE);
                 if(this.scoreAndCooldown(this.opponent))
                 {
                     this.opponent.sendEvent(EVENT_GAME_WIN);
                     this.host.sendEvent(EVENT_GAME_LOSE);
                     this.finished = true;
-                    return;
                 }
-                this.opponent.sendEvent(EVENT_SOUND_SUCCESS);
-                this.host.sendEvent(EVENT_SOUND_FAIL);
-                return;
             }
-            if(this.ball.x2 >= BOARD_WIDTH)
+            else if(this.ball.x2 >= BOARD_WIDTH)
             {
+                this.host.sendEvent(EVENT_GAME_ROUND_WIN);
+                this.opponent.sendEvent(EVENT_GAME_ROUND_LOSE);
                 if(this.scoreAndCooldown(this.host))
                 {
                     this.host.sendEvent(EVENT_GAME_WIN);
                     this.opponent.sendEvent(EVENT_GAME_LOSE);
                     this.finished = true;
-                    return;
                 }
-                this.host.sendEvent(EVENT_SOUND_SUCCESS);
-                this.opponent.sendEvent(EVENT_SOUND_FAIL);
             }
         }
 
@@ -692,7 +684,6 @@ public class PaddleBall extends Program
         private boolean scoreAndCooldown(Controller controller)
         {
             controller.score++;
-            this.sendUpdateToPlayers(UpdateType.SCORE);
             if(controller.score >= POINTS_TO_WIN)
             {
                 return true;
@@ -730,11 +721,6 @@ public class PaddleBall extends Program
         public MessagePaddleBall.BallUpdate createBallUpdateMessage()
         {
             return new MessagePaddleBall.BallUpdate(this.ball.pos.x, this.ball.pos.y, this.ball.velocity.x, this.ball.velocity.y);
-        }
-
-        public MessagePaddleBall.Score createScoreMessage()
-        {
-            return new MessagePaddleBall.Score(this.host.score, this.opponent.score);
         }
     }
 
@@ -842,7 +828,7 @@ public class PaddleBall extends Program
 
     public enum UpdateType
     {
-        BALL, PADDLES, SCORE;
+        BALL, PADDLES;
 
         public boolean is(UpdateType type)
         {

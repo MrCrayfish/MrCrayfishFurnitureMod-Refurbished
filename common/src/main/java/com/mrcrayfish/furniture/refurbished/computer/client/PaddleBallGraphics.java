@@ -84,14 +84,6 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
         this.ballVelocityY = velocityY;
     }
 
-    public void updateScore(int playerScore, int opponentScore)
-    {
-        this.scoreSide = this.playerScore != playerScore ? 1 : 0;
-        this.playerScore = playerScore;
-        this.opponentScore = opponentScore;
-        this.scoreAnimation = PaddleBall.RESET_COOLDOWN;
-    }
-
     public void handleEvent(byte event)
     {
         switch(event)
@@ -106,14 +98,26 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
                 this.wonGame = false;
                 this.playing = false;
             }
+            case PaddleBall.EVENT_GAME_ROUND_WIN -> {
+                this.playerScore++;
+                this.scoreSide = 1;
+                this.scoreAnimation = PaddleBall.RESET_COOLDOWN;
+                if(this.playerScore < PaddleBall.POINTS_TO_WIN)
+                {
+                    AudioHelper.playUISound(ModSounds.UI_PADDLE_BALL_RETRO_SUCCESS.get(), 1.0F, 0.5F);
+                }
+            }
+            case PaddleBall.EVENT_GAME_ROUND_LOSE -> {
+                this.opponentScore++;
+                this.scoreSide = 0;
+                this.scoreAnimation = PaddleBall.RESET_COOLDOWN;
+                if(this.opponentScore < PaddleBall.POINTS_TO_WIN)
+                {
+                    AudioHelper.playUISound(ModSounds.UI_PADDLE_BALL_RETRO_FAIL.get(), 1.0F, 0.5F);
+                }
+            }
             case PaddleBall.EVENT_SOUND_HIT -> {
                 AudioHelper.playUISound(ModSounds.UI_PADDLE_BALL_RETRO_HIT.get(), 1.0F, 0.5F);
-            }
-            case PaddleBall.EVENT_SOUND_SUCCESS -> {
-                AudioHelper.playUISound(ModSounds.UI_PADDLE_BALL_RETRO_SUCCESS.get(), 1.0F, 0.5F);
-            }
-            case PaddleBall.EVENT_SOUND_FAIL -> {
-                AudioHelper.playUISound(ModSounds.UI_PADDLE_BALL_RETRO_FAIL.get(), 1.0F, 0.5F);
             }
         }
     }

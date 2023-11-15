@@ -144,19 +144,6 @@ public class ClientPlayHandler
         }
     }
 
-    public static void handleMessageTennisGameScore(MessagePaddleBall.Score message)
-    {
-        Minecraft mc = Minecraft.getInstance();
-        if(mc.player.containerMenu instanceof ComputerMenu menu)
-        {
-            ClientComputer computer = ((ClientComputer) menu.getComputer());
-            if(computer.getDisplayable() instanceof PaddleBallGraphics game)
-            {
-                game.updateScore(message.getPlayerScore(), message.getOpponentScore());
-            }
-        }
-    }
-
     public static void handleMessagePaddleBallEvent(MessagePaddleBall.Event message)
     {
         Minecraft mc = Minecraft.getInstance();

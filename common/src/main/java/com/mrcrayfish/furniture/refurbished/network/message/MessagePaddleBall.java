@@ -168,52 +168,6 @@ public class MessagePaddleBall
         }
     }
 
-    public static class Score extends PlayMessage<Score>
-    {
-        private int playerScore;
-        private int opponentScore;
-
-        public Score() {}
-
-        public Score(int playerScore, int opponentScore)
-        {
-            this.playerScore = playerScore;
-            this.opponentScore = opponentScore;
-        }
-
-        @Override
-        public void encode(Score message, FriendlyByteBuf buffer)
-        {
-            buffer.writeInt(message.playerScore);
-            buffer.writeInt(message.opponentScore);
-        }
-
-        @Override
-        public Score decode(FriendlyByteBuf buffer)
-        {
-            int playerScore = buffer.readInt();
-            int opponentScore = buffer.readInt();
-            return new Score(playerScore, opponentScore);
-        }
-
-        @Override
-        public void handle(Score message, MessageContext context)
-        {
-            context.execute(() -> ClientPlayHandler.handleMessageTennisGameScore(message));
-            context.setHandled(true);
-        }
-
-        public int getPlayerScore()
-        {
-            return this.playerScore;
-        }
-
-        public int getOpponentScore()
-        {
-            return this.opponentScore;
-        }
-    }
-
     public static class Event extends PlayMessage<Event>
     {
         private byte data;
