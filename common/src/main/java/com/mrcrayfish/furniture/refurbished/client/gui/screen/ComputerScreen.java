@@ -13,7 +13,6 @@ import net.minecraft.world.entity.player.Inventory;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
 
 /**
  * Author: MrCrayfish
@@ -21,10 +20,10 @@ import java.util.Optional;
 public class ComputerScreen extends AbstractContainerScreen<ComputerMenu>
 {
     private static final ResourceLocation TEXTURE = Utils.resource("textures/gui/container/computer.png");
-    private static final int DISPLAY_LEFT = 15;
+    private static final int DISPLAY_LEFT = 17;
     private static final int DISPLAY_TOP = 15;
-    private static final int DISPLAY_WIDTH = 226;
-    private static final int DISPLAY_HEIGHT = 120;
+    public static final int DISPLAY_WIDTH = 222;
+    public static final int DISPLAY_HEIGHT = 120;
     private @Nullable Window window;
 
     public ComputerScreen(ComputerMenu menu, Inventory playerInventory, Component title)

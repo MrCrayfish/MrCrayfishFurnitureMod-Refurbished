@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.computer.client;
 import com.google.common.base.Preconditions;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.ComputerScreen;
 import com.mrcrayfish.furniture.refurbished.computer.Program;
+import com.mrcrayfish.furniture.refurbished.computer.Window;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -14,6 +15,9 @@ import javax.annotation.Nullable;
  */
 public abstract class DisplayableProgram<T extends Program>
 {
+    private static final int MAX_CONTENT_WIDTH = ComputerScreen.DISPLAY_WIDTH - 2;
+    private static final int MAX_CONTENT_HEIGHT = ComputerScreen.DISPLAY_HEIGHT - Window.TITLE_BAR_HEIGHT - 3;
+    
     protected final T program;
     protected final int width;
     protected final int height;
@@ -28,8 +32,8 @@ public abstract class DisplayableProgram<T extends Program>
 
     public DisplayableProgram(T program, int width, int height)
     {
-        Preconditions.checkArgument(width >= 16 && width <= 224, "Width must be between 16 and 224 (inclusive)");
-        Preconditions.checkArgument(height >= 16 && height <= 110, "Height must be between 16 and 110 (inclusive)");
+        Preconditions.checkArgument(width >= 16 && width <= MAX_CONTENT_WIDTH, "Displayable program width must be between 16 and " + MAX_CONTENT_WIDTH + " (inclusive)");
+        Preconditions.checkArgument(height >= 16 && height <= MAX_CONTENT_HEIGHT, "Displayable program height must be between 16 and " + MAX_CONTENT_HEIGHT + " (inclusive)");
         this.program = program;
         this.width = width;
         this.height = height;

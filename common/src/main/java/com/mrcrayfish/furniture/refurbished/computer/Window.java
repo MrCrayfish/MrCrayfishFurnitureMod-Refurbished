@@ -14,7 +14,7 @@ import net.minecraft.network.chat.Component;
  */
 public class Window
 {
-    private static final int TITLE_BAR_HEIGHT = 9;
+    public static final int TITLE_BAR_HEIGHT = 9;
 
     private final DisplayableProgram<?> displayable;
     private final ClientComputer computer;
