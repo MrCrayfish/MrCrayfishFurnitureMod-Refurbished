@@ -10,7 +10,7 @@ import net.minecraft.network.FriendlyByteBuf;
 /**
  * Author: MrCrayfish
  */
-public class MessageTennisGame
+public class MessagePaddleBall
 {
     public static class PaddlePosition extends PlayMessage<PaddlePosition>
     {
@@ -211,6 +211,43 @@ public class MessageTennisGame
         public int getOpponentScore()
         {
             return this.opponentScore;
+        }
+    }
+
+    public static class Event extends PlayMessage<Event>
+    {
+        private byte data;
+
+        public Event() {}
+
+        public Event(byte event)
+        {
+            this.data = event;
+        }
+
+        @Override
+        public void encode(Event message, FriendlyByteBuf buffer)
+        {
+            buffer.writeByte(message.data);
+        }
+
+        @Override
+        public Event decode(FriendlyByteBuf buffer)
+        {
+            byte event = buffer.readByte();
+            return new Event(event);
+        }
+
+        @Override
+        public void handle(Event message, MessageContext context)
+        {
+            context.execute(() -> ClientPlayHandler.handleMessagePaddleBallEvent(message));
+            context.setHandled(true);
+        }
+
+        public byte getEvent()
+        {
+            return this.data;
         }
     }
 }

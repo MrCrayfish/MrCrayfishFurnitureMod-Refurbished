@@ -2,13 +2,16 @@ package com.mrcrayfish.furniture.refurbished.computer.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mrcrayfish.furniture.refurbished.client.util.AudioHelper;
 import com.mrcrayfish.furniture.refurbished.computer.app.PaddleBall;
 import com.mrcrayfish.furniture.refurbished.computer.client.widget.ComputerButton;
+import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.network.Network;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageTennisGame;
+import com.mrcrayfish.furniture.refurbished.network.message.MessagePaddleBall;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -82,6 +85,16 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
         this.scoreAnimation = PaddleBall.RESET_COOLDOWN;
     }
 
+    public void handleEvent(byte event)
+    {
+        switch(event)
+        {
+            case PaddleBall.EVENT_SOUND_HIT -> {
+                AudioHelper.playUISound(ModSounds.UI_PADDLE_BALL_RETRO_HIT.get(), 1.0F, 0.5F);
+            }
+        }
+    }
+
     private void reset()
     {
         this.playerScore = 0;
@@ -100,18 +113,20 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
         {
             this.game = game;
             this.playAiButton = this.addWidget(new MenuButton(100, 16, this.game.translation("play_ai"), btn -> {
-                Network.getPlay().sendToServer(new MessageTennisGame.Action(PaddleBall.Action.JOIN_GAME, (byte) 0));
+                Network.getPlay().sendToServer(new MessagePaddleBall.Action(PaddleBall.Action.JOIN_GAME, (byte) 0));
                 game.setScene(new GameScene(game));
             }));
             this.playAiButton.setBackgroundHighlightColour(0xFF47403E);
             this.playAiButton.setTextHighlightColour(0xFF222225);
+            this.playAiButton.setClickSound(ModSounds.UI_PADDLE_BALL_RETRO_CLICK.get());
 
             this.playVsButton = this.addWidget(new MenuButton(100, 16, this.game.translation("play_vs"), btn -> {
-                Network.getPlay().sendToServer(new MessageTennisGame.Action(PaddleBall.Action.JOIN_GAME, (byte) 1));
+                Network.getPlay().sendToServer(new MessagePaddleBall.Action(PaddleBall.Action.JOIN_GAME, (byte) 1));
                 game.setScene(new GameScene(game));
             }));
             this.playVsButton.setBackgroundHighlightColour(0xFF47403E);
             this.playVsButton.setTextHighlightColour(0xFF222225);
+            this.playVsButton.setClickSound(ModSounds.UI_PADDLE_BALL_RETRO_CLICK.get());
         }
 
         @Override
@@ -235,7 +250,7 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
             boolean up = InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_UP);
             boolean down = InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_DOWN);
             byte input = (byte) (up && down ? 0 : up ? 1 : down ? 2 : 0);
-            Network.getPlay().sendToServer(new MessageTennisGame.Action(PaddleBall.Action.INPUT, input));
+            Network.getPlay().sendToServer(new MessagePaddleBall.Action(PaddleBall.Action.INPUT, input));
         }
 
     }

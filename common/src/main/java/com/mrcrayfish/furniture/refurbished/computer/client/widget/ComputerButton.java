@@ -3,7 +3,10 @@ package com.mrcrayfish.furniture.refurbished.computer.client.widget;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.FastColor;
 
 /**
@@ -19,6 +22,7 @@ public class ComputerButton extends Button
     protected int textHighlightColour = 0xFFD3D3D3;
     protected int textDisabledColour = 0xFF5B5450;
     protected int textOffset;
+    protected SoundEvent clickSound;
 
     public ComputerButton(int width, int height, Component label, OnPress onPress)
     {
@@ -34,6 +38,17 @@ public class ComputerButton extends Button
         graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
         int messageWidth = mc.font.width(this.getMessage());
         graphics.drawString(mc.font, this.getMessage(), this.getX() + (this.getWidth() - messageWidth) / 2 + 1, this.getY() + (this.getHeight() - mc.font.lineHeight) / 2 + 1 + this.textOffset, this.getTextColour(), false);
+    }
+
+    @Override
+    public void playDownSound(SoundManager manager)
+    {
+        if(this.clickSound != null)
+        {
+            manager.play(SimpleSoundInstance.forUI(this.clickSound, 1.0F, 0.5F));
+            return;
+        }
+        super.playDownSound(manager);
     }
 
     /**
@@ -149,5 +164,10 @@ public class ComputerButton extends Button
     public void setTextOffset(int textOffset)
     {
         this.textOffset = textOffset;
+    }
+
+    public void setClickSound(SoundEvent clickSound)
+    {
+        this.clickSound = clickSound;
     }
 }

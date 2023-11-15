@@ -17,7 +17,7 @@ import com.mrcrayfish.furniture.refurbished.network.message.MessageClearMessage;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageDeleteLink;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSendPackage;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSetName;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageTennisGame;
+import com.mrcrayfish.furniture.refurbished.network.message.MessagePaddleBall;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageTogglePower;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -109,7 +109,7 @@ public class ServerPlayHandler
         }
     }
 
-    public static void handleMessageTennisGame(MessageTennisGame.Action message, ServerPlayer player)
+    public static void handleMessageTennisGame(MessagePaddleBall.Action message, ServerPlayer player)
     {
         if(player != null && player.containerMenu instanceof ComputerMenu menu)
         {

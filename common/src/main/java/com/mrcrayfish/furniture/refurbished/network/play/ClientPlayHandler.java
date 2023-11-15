@@ -21,7 +21,7 @@ import com.mrcrayfish.furniture.refurbished.network.message.MessageFlipAnimation
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSyncFluid;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSyncLink;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageTelevisionChannel;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageTennisGame;
+import com.mrcrayfish.furniture.refurbished.network.message.MessagePaddleBall;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageUpdateMailboxes;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
@@ -118,7 +118,7 @@ public class ClientPlayHandler
         }
     }
 
-    public static void handleMessageTennisGamePaddlePosition(MessageTennisGame.PaddlePosition message)
+    public static void handleMessageTennisGamePaddlePosition(MessagePaddleBall.PaddlePosition message)
     {
         Minecraft mc = Minecraft.getInstance();
         if(mc.player.containerMenu instanceof ComputerMenu menu)
@@ -131,7 +131,7 @@ public class ClientPlayHandler
         }
     }
 
-    public static void handleMessageTennisGameBallUpdate(MessageTennisGame.BallUpdate message)
+    public static void handleMessageTennisGameBallUpdate(MessagePaddleBall.BallUpdate message)
     {
         Minecraft mc = Minecraft.getInstance();
         if(mc.player.containerMenu instanceof ComputerMenu menu)
@@ -144,7 +144,7 @@ public class ClientPlayHandler
         }
     }
 
-    public static void handleMessageTennisGameScore(MessageTennisGame.Score message)
+    public static void handleMessageTennisGameScore(MessagePaddleBall.Score message)
     {
         Minecraft mc = Minecraft.getInstance();
         if(mc.player.containerMenu instanceof ComputerMenu menu)
@@ -153,6 +153,19 @@ public class ClientPlayHandler
             if(computer.getDisplayable() instanceof PaddleBallGraphics game)
             {
                 game.updateScore(message.getPlayerScore(), message.getOpponentScore());
+            }
+        }
+    }
+
+    public static void handleMessagePaddleBallEvent(MessagePaddleBall.Event message)
+    {
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.player.containerMenu instanceof ComputerMenu menu)
+        {
+            ClientComputer computer = ((ClientComputer) menu.getComputer());
+            if(computer.getDisplayable() instanceof PaddleBallGraphics game)
+            {
+                game.handleEvent(message.getEvent());
             }
         }
     }

@@ -129,7 +129,7 @@ public class ComputerBlockEntity extends ElectricityModuleBlockEntity implements
     @Override
     public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player)
     {
-        this.launchProgram(Utils.resource("tennis_game"));
+        this.launchProgram(Utils.resource("paddle_ball"));
         return new ComputerMenu(windowId, playerInventory, this.data, this);
     }
 

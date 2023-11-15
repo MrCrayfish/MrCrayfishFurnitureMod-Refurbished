@@ -5,7 +5,7 @@ import com.mrcrayfish.furniture.refurbished.blockentity.IComputer;
 import com.mrcrayfish.furniture.refurbished.computer.IService;
 import com.mrcrayfish.furniture.refurbished.computer.Program;
 import com.mrcrayfish.furniture.refurbished.network.Network;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageTennisGame;
+import com.mrcrayfish.furniture.refurbished.network.message.MessagePaddleBall;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -32,6 +32,8 @@ public class PaddleBall extends Program
     public static final int PADDLE_HEIGHT = 28;
     public static final float PADDLE_SPEED = 4.0F;
     public static final int RESET_COOLDOWN = 40;
+
+    public static final byte EVENT_SOUND_HIT = 1;
 
     private Game activeGame;
     private State state;
@@ -201,6 +203,8 @@ public class PaddleBall extends Program
          * @param type the type of update. See {@link UpdateType}
          */
         public void sendUpdate(UpdateType type) {}
+
+        public void sendEvent(byte event) {}
     }
 
     protected static class PlayerController extends Controller
@@ -275,6 +279,13 @@ public class PaddleBall extends Program
                 Network.getPlay().sendToPlayer(() -> player, this.game.createScoreMessage());
             }
         }
+
+        @Override
+        public void sendEvent(byte event)
+        {
+            ServerPlayer player = (ServerPlayer) this.player;
+            Network.getPlay().sendToPlayer(() -> player, new MessagePaddleBall.Event(event));
+        }
     }
 
     protected static class AiController extends Controller
@@ -337,6 +348,7 @@ public class PaddleBall extends Program
             if(this.performCollision())
             {
                 this.game.sendUpdateToPlayers(UpdateType.BALL);
+                this.game.sendEventToPlayers(EVENT_SOUND_HIT);
             }
         }
 
@@ -656,19 +668,26 @@ public class PaddleBall extends Program
             this.opponent.sendUpdate(type);
         }
 
-        public MessageTennisGame.PaddlePosition createPaddlePositionMessage()
+        private void sendEventToPlayers(byte event)
         {
-            return new MessageTennisGame.PaddlePosition(this.host.pos.y, this.opponent.pos.y);
+            Preconditions.checkNotNull(this.opponent, "Game events cannot be sent without an opponent present");
+            this.host.sendEvent(event);
+            this.opponent.sendEvent(event);
         }
 
-        public MessageTennisGame.BallUpdate createBallUpdateMessage()
+        public MessagePaddleBall.PaddlePosition createPaddlePositionMessage()
         {
-            return new MessageTennisGame.BallUpdate(this.ball.pos.x, this.ball.pos.y, this.ball.velocity.x, this.ball.velocity.y);
+            return new MessagePaddleBall.PaddlePosition(this.host.pos.y, this.opponent.pos.y);
         }
 
-        public MessageTennisGame.Score createScoreMessage()
+        public MessagePaddleBall.BallUpdate createBallUpdateMessage()
         {
-            return new MessageTennisGame.Score(this.host.score, this.opponent.score);
+            return new MessagePaddleBall.BallUpdate(this.ball.pos.x, this.ball.pos.y, this.ball.velocity.x, this.ball.velocity.y);
+        }
+
+        public MessagePaddleBall.Score createScoreMessage()
+        {
+            return new MessagePaddleBall.Score(this.host.score, this.opponent.score);
         }
     }
 

@@ -95,7 +95,7 @@ public class Bootstrap
         FrameworkAPI.registerSyncedDataKey(Seat.LOCK_YAW);
 
         Computer computer = Computer.get();
-        computer.installProgram(Utils.resource("tennis_game"), PaddleBall::new);
+        computer.installProgram(Utils.resource("paddle_ball"), PaddleBall::new);
         computer.installService(PaddleBall.SERVICE);
     }
 }
