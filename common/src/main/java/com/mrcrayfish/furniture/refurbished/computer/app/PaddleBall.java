@@ -55,13 +55,9 @@ public class PaddleBall extends Program
     {
         if(this.computer.isServer() && this.activeGame != null)
         {
-            if(this.activeGame.finished)
+            if(this.computer.getUser() == null || this.activeGame.finished)
             {
-                this.activeGame = null;
-            }
-
-            if(this.computer.getUser() == null)
-            {
+                this.state = State.MAIN_MENU;
                 this.activeGame = null;
                 this.controller = null;
             }

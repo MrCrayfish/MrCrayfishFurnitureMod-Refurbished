@@ -16,11 +16,12 @@ public class ComputerButton extends Button
 {
     protected int outlineColour = 0xFF47403E;
     protected int outlineHighlightColour = 0xFF47403E;
+    protected int outlineDisabledColour = 0xFF332E2D;
     protected int backgroundColour = 0xFF222225;
     protected int backgroundHighlightColour = 0xFF47403E;
     protected int textColour = 0xFF5B5450;
     protected int textHighlightColour = 0xFFD3D3D3;
-    protected int textDisabledColour = 0xFF5B5450;
+    protected int textDisabledColour = 0xFF332E2D;
     protected int textOffset;
     protected SoundEvent clickSound;
 
@@ -72,11 +73,15 @@ public class ComputerButton extends Button
      */
     private int getOutlineColour()
     {
-        if(this.isActive() && this.isHoveredOrFocused())
+        if(this.isActive())
         {
-            return this.outlineHighlightColour;
+            if(this.isHoveredOrFocused())
+            {
+                return this.outlineHighlightColour;
+            }
+            return this.outlineColour;
         }
-        return this.outlineColour;
+        return this.outlineDisabledColour;
     }
 
     /**

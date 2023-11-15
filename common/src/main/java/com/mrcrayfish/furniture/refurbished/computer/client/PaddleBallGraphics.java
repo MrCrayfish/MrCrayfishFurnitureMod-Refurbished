@@ -9,8 +9,10 @@ import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessagePaddleBall;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -151,19 +153,28 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
 
             this.playVsButton = this.addWidget(new MenuButton(100, 16, this.game.translation("play_vs"), btn -> {
                 Network.getPlay().sendToServer(new MessagePaddleBall.Action(PaddleBall.Action.JOIN_GAME, (byte) 1));
-                game.setScene(new GameScene(game));
+                game.setScene(new PendingScene(game));
             }));
             this.playVsButton.setBackgroundHighlightColour(0xFF47403E);
             this.playVsButton.setTextHighlightColour(0xFF222225);
             this.playVsButton.setClickSound(ModSounds.UI_PADDLE_BALL_RETRO_CLICK.get());
+
+            // Disable the vs player button if not in a server
+            Minecraft mc = Minecraft.getInstance();
+            if((mc.getSingleplayerServer() == null || mc.isSingleplayer()) && mc.getCurrentServer() == null)
+            {
+                this.playVsButton.setTooltip(Tooltip.create(this.game.translation("server_required")));
+                this.playVsButton.active = false;
+            }
+
             game.playing = false;
         }
 
         @Override
         public void updateWidgets(int contentStart, int contentTop)
         {
-            this.playAiButton.setPosition(contentStart + (this.game.width - this.playAiButton.getWidth()) / 2, contentTop + 40);
-            this.playVsButton.setPosition(contentStart + (this.game.width - this.playVsButton.getWidth()) / 2, contentTop + 60);
+            this.playAiButton.setPosition(contentStart + (this.game.width - this.playAiButton.getWidth()) / 2, contentTop + 45);
+            this.playVsButton.setPosition(contentStart + (this.game.width - this.playVsButton.getWidth()) / 2, contentTop + 65);
         }
 
         @Override
@@ -192,6 +203,45 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
         }
     }
 
+    private static class PendingScene extends Scene
+    {
+        private final PaddleBallGraphics game;
+        private final MainMenuScene.MenuButton backButton;
+
+        private PendingScene(PaddleBallGraphics game)
+        {
+            this.game = game;
+            this.backButton = this.addWidget(new MainMenuScene.MenuButton(100, 16, this.game.translation("cancel"), btn -> {
+                Network.getPlay().sendToServer(new MessagePaddleBall.Action(PaddleBall.Action.UPDATE_STATE, (byte) 0));
+                game.setScene(new MainMenuScene(game));
+            }));
+            this.backButton.setBackgroundHighlightColour(0xFF47403E);
+            this.backButton.setTextHighlightColour(0xFF222225);
+            this.backButton.setClickSound(ModSounds.UI_PADDLE_BALL_RETRO_CLICK.get());
+        }
+
+        @Override
+        public void updateWidgets(int contentStart, int contentTop)
+        {
+            this.backButton.setPosition(contentStart + (this.game.width - this.backButton.getWidth()) / 2, contentTop + 65);
+        }
+
+        @Override
+        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+        {
+            graphics.blit(TEXTURE, (this.game.width - 128) / 2, 10, 16, 0, 128, 24);
+
+            String loading = switch((int) (Util.getMillis() / 300L % 4L)) {
+                default -> "O o o";
+                case 1, 3 -> "o O o";
+                case 2 -> "o o O";
+            };
+            Minecraft mc = Minecraft.getInstance();
+            graphics.drawCenteredString(mc.font, loading, this.game.width / 2, 50, 0xFFD3CCBE);
+            graphics.drawCenteredString(mc.font, this.game.translation("searching_players"), this.game.width / 2, 40, 0xFFD3CCBE);
+        }
+    }
+
     private static class GameScene extends Scene
     {
         private final PaddleBallGraphics game;
@@ -203,6 +253,9 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
             this.backButton = this.addWidget(new MainMenuScene.MenuButton(100, 16, this.game.translation("main_menu"), btn -> {
                 game.setScene(new MainMenuScene(game));
             }));
+            this.backButton.setBackgroundHighlightColour(0xFF47403E);
+            this.backButton.setTextHighlightColour(0xFF222225);
+            this.backButton.setClickSound(ModSounds.UI_PADDLE_BALL_RETRO_CLICK.get());
             game.reset();
             game.playing = true;
         }
