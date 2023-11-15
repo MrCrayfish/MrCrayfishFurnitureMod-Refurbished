@@ -1,13 +1,16 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 
 import com.mrcrayfish.furniture.refurbished.client.ClientComputer;
-import com.mrcrayfish.furniture.refurbished.computer.Window;
+import com.mrcrayfish.furniture.refurbished.computer.client.Desktop;
+import com.mrcrayfish.furniture.refurbished.computer.client.Window;
 import com.mrcrayfish.furniture.refurbished.computer.client.DisplayableProgram;
 import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.lwjgl.glfw.GLFW;
@@ -20,15 +23,19 @@ import javax.annotation.Nullable;
 public class ComputerScreen extends AbstractContainerScreen<ComputerMenu>
 {
     private static final ResourceLocation TEXTURE = Utils.resource("textures/gui/container/computer.png");
-    private static final int DISPLAY_LEFT = 17;
+    private static final int DISPLAY_LEFT = 15;
     private static final int DISPLAY_TOP = 15;
-    public static final int DISPLAY_WIDTH = 222;
+    public static final int DISPLAY_WIDTH = 226;
     public static final int DISPLAY_HEIGHT = 120;
+
+    private final Desktop desktop;
     private @Nullable Window window;
 
     public ComputerScreen(ComputerMenu menu, Inventory playerInventory, Component title)
     {
         super(menu, playerInventory, title);
+        this.desktop = new Desktop(this);
+        this.desktop.getShortcuts().forEach(this::addWidget);
         this.imageWidth = 256;
         this.imageHeight = 150;
         this.getComputer().setScreen(this);
@@ -67,10 +74,18 @@ public class ComputerScreen extends AbstractContainerScreen<ComputerMenu>
     }
 
     @Override
+    protected void init()
+    {
+        super.init();
+        this.desktop.update(this.leftPos + DISPLAY_LEFT, this.topPos + DISPLAY_TOP, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+    }
+
+    @Override
     protected void repositionElements()
     {
         super.init();
         this.updateWindow();
+        this.desktop.update(this.leftPos + DISPLAY_LEFT, this.topPos + DISPLAY_TOP, DISPLAY_WIDTH, DISPLAY_HEIGHT);
     }
 
     @Override
@@ -85,12 +100,14 @@ public class ComputerScreen extends AbstractContainerScreen<ComputerMenu>
         // Draw background
         graphics.blit(TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
 
+        // Draw desktop
+        this.desktop.render(graphics, mouseX, mouseY, partialTick);
+
         // Draw window
         int displayLeft = this.leftPos + DISPLAY_LEFT;
         int displayTop = this.topPos + DISPLAY_TOP;
         int displayEnd = displayLeft + DISPLAY_WIDTH;
         int displayBottom = displayTop + DISPLAY_HEIGHT;
-        graphics.fill(displayLeft, displayTop, displayEnd, displayBottom, 0xFF262626);
         graphics.enableScissor(displayLeft, displayTop, displayEnd, displayBottom);
         Window window = this.getOrCreateWindow();
         if(window != null) window.render(graphics, this.font, mouseX, mouseY, this.minecraft.getFrameTime());

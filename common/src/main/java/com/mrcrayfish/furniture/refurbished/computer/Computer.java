@@ -6,9 +6,11 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiFunction;
 
 /**
@@ -27,7 +29,7 @@ public class Computer
         return instance;
     }
 
-    private final Map<ResourceLocation, BiFunction<ResourceLocation, IComputer, Program>> programs = new HashMap<>();
+    private final Map<ResourceLocation, BiFunction<ResourceLocation, IComputer, Program>> programs = new LinkedHashMap<>();
     private final List<IService> services = new ArrayList<>();
 
     public void installProgram(ResourceLocation id, BiFunction<ResourceLocation, IComputer, Program> program)
@@ -43,6 +45,11 @@ public class Computer
     public Optional<Program> createProgramInstance(ResourceLocation id, IComputer computer)
     {
         return Optional.ofNullable(this.programs.get(id)).map(function -> function.apply(id, computer));
+    }
+
+    public Set<ResourceLocation> getPrograms()
+    {
+        return this.programs.keySet();
     }
 
     public List<IService> getServices()

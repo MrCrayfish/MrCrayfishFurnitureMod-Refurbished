@@ -26,6 +26,7 @@ public class Network
             .registerPlayMessage(MessageTogglePower.class, MessageDirection.PLAY_SERVER_BOUND)
             .registerPlayMessage(MessageTelevisionChannel.class, MessageDirection.PLAY_CLIENT_BOUND)
             .registerPlayMessage(MessageComputerState.class, MessageDirection.PLAY_CLIENT_BOUND)
+            .registerPlayMessage(MessageComputerOpenProgram.class, MessageDirection.PLAY_SERVER_BOUND)
             .registerPlayMessage(MessagePaddleBall.Action.class, MessageDirection.PLAY_SERVER_BOUND)
             .registerPlayMessage(MessagePaddleBall.PaddlePosition.class, MessageDirection.PLAY_CLIENT_BOUND)
             .registerPlayMessage(MessagePaddleBall.BallUpdate.class, MessageDirection.PLAY_CLIENT_BOUND)

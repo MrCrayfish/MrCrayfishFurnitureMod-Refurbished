@@ -129,7 +129,6 @@ public class ComputerBlockEntity extends ElectricityModuleBlockEntity implements
     @Override
     public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player)
     {
-        this.launchProgram(Utils.resource("paddle_ball"));
         return new ComputerMenu(windowId, playerInventory, this.data, this);
     }
 
@@ -138,6 +137,7 @@ public class ComputerBlockEntity extends ElectricityModuleBlockEntity implements
         return this.currentUser != null && this.currentUser.isAlive() && this.currentUser.containerMenu instanceof ComputerMenu menu && this.currentUser.equals(menu.getComputer().getUser());
     }
 
+    @Override
     public void launchProgram(@Nullable ResourceLocation id)
     {
         // If the id is null, it means to close the program

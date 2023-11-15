@@ -1,9 +1,11 @@
-package com.mrcrayfish.furniture.refurbished.computer;
+package com.mrcrayfish.furniture.refurbished.computer.client;
 
 import com.mrcrayfish.furniture.refurbished.client.ClientComputer;
 import com.mrcrayfish.furniture.refurbished.computer.client.DisplayableProgram;
 import com.mrcrayfish.furniture.refurbished.computer.client.Scene;
 import com.mrcrayfish.furniture.refurbished.computer.client.widget.ComputerButton;
+import com.mrcrayfish.furniture.refurbished.network.Network;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageComputerOpenProgram;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -33,6 +35,7 @@ public class Window
         this.windowWidth = 1 + displayable.getWidth() + 1;
         this.windowHeight = 1 + TITLE_BAR_HEIGHT + 1 + displayable.getHeight() + 1;
         this.closeButton = new ComputerButton(9, 9, Component.literal("x"), btn -> {
+            Network.getPlay().sendToServer(new MessageComputerOpenProgram(null));
             computer.setProgram(null);
         });
         this.closeButton.setTextOffset(-1);

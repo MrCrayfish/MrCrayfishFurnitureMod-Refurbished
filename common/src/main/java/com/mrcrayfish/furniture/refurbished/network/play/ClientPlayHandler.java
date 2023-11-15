@@ -114,8 +114,7 @@ public class ClientPlayHandler
         if(mc.player.containerMenu instanceof ComputerMenu menu)
         {
             ClientComputer computer = ((ClientComputer) menu.getComputer());
-            Program program = Computer.get().createProgramInstance(message.getId(), computer).orElse(null);
-            computer.setProgram(program);
+            computer.launchProgram(message.getId());
         }
     }
 

@@ -3,7 +3,6 @@ package com.mrcrayfish.furniture.refurbished.computer.client;
 import com.google.common.base.Preconditions;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.ComputerScreen;
 import com.mrcrayfish.furniture.refurbished.computer.Program;
-import com.mrcrayfish.furniture.refurbished.computer.Window;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -17,7 +16,7 @@ public abstract class DisplayableProgram<T extends Program>
 {
     private static final int MAX_CONTENT_WIDTH = ComputerScreen.DISPLAY_WIDTH - 2;
     private static final int MAX_CONTENT_HEIGHT = ComputerScreen.DISPLAY_HEIGHT - Window.TITLE_BAR_HEIGHT - 3;
-    
+
     protected final T program;
     protected final int width;
     protected final int height;

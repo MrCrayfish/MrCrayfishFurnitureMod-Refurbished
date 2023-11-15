@@ -20,6 +20,7 @@ public class ComputerButton extends Button
     protected int outlineDisabledColour = 0xFF332E2D;
     protected int backgroundColour = 0xFF222225;
     protected int backgroundHighlightColour = 0xFF47403E;
+    protected int backgroundDisabledColour = 0xFF47403E;
     protected int textColour = 0xFF5B5450;
     protected int textHighlightColour = 0xFF222225;
     protected int textDisabledColour = 0xFF332E2D;
@@ -56,7 +57,7 @@ public class ComputerButton extends Button
     /**
      * @return The text colour for the button based on its current state
      */
-    private int getTextColour()
+    protected int getTextColour()
     {
         if(this.isActive())
         {
@@ -72,7 +73,7 @@ public class ComputerButton extends Button
     /**
      * @return The outline colour for the button based on its current state
      */
-    private int getOutlineColour()
+    protected int getOutlineColour()
     {
         if(this.isActive())
         {
@@ -88,13 +89,17 @@ public class ComputerButton extends Button
     /**
      * @return The background colour for the button based on its current state
      */
-    private int getBackgroundColour()
+    protected int getBackgroundColour()
     {
-        if(this.isActive() && this.isHoveredOrFocused())
+        if(this.isActive())
         {
-            return this.backgroundHighlightColour;
+            if(this.isHoveredOrFocused())
+            {
+                return this.backgroundHighlightColour;
+            }
+            return this.backgroundColour;
         }
-        return this.backgroundColour;
+        return this.backgroundDisabledColour;
     }
 
     /**

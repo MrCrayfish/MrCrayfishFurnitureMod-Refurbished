@@ -14,6 +14,7 @@ import com.mrcrayfish.furniture.refurbished.item.PackageItem;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageClearMessage;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageComputerOpenProgram;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageDeleteLink;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSendPackage;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSetName;
@@ -117,6 +118,14 @@ public class ServerPlayHandler
             {
                 game.update(message.getMode(), message.getData());
             }
+        }
+    }
+
+    public static void handleMessageComputerOpenProgram(MessageComputerOpenProgram message, ServerPlayer player)
+    {
+        if(player != null && player.containerMenu instanceof ComputerMenu menu)
+        {
+            menu.getComputer().launchProgram(message.getId());
         }
     }
 }

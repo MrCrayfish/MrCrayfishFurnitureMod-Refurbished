@@ -2,10 +2,12 @@ package com.mrcrayfish.furniture.refurbished.client;
 
 import com.mrcrayfish.furniture.refurbished.blockentity.IComputer;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.ComputerScreen;
+import com.mrcrayfish.furniture.refurbished.computer.Computer;
 import com.mrcrayfish.furniture.refurbished.computer.Display;
 import com.mrcrayfish.furniture.refurbished.computer.Program;
 import com.mrcrayfish.furniture.refurbished.computer.client.DisplayableProgram;
 import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
@@ -58,6 +60,18 @@ public class ClientComputer implements IComputer
     public Program getProgram()
     {
         return this.displayable != null ? this.displayable.getProgram() : null;
+    }
+
+    @Override
+    public void launchProgram(@Nullable ResourceLocation id)
+    {
+        if(id == null)
+        {
+            this.setProgram(null);
+            return;
+        }
+        Program program = Computer.get().createProgramInstance(id, this).orElse(null);
+        this.setProgram(program);
     }
 
     @Nullable
