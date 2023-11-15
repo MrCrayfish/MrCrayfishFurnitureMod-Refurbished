@@ -70,6 +70,7 @@ public class ComputerScreen extends AbstractContainerScreen<ComputerMenu>
     @Override
     protected void repositionElements()
     {
+        super.init();
         this.updateWindow();
     }
 
