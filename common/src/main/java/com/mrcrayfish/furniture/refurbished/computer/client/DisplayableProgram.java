@@ -161,6 +161,11 @@ public abstract class DisplayableProgram<T extends Program>
         }
     }
 
+    public boolean blocksNavigation()
+    {
+        return false;
+    }
+
     public static class Listener
     {
         private final ComputerScreen screen;

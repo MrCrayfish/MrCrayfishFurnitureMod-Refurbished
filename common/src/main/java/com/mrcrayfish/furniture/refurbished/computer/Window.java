@@ -81,6 +81,11 @@ public class Window
         graphics.disableScissor();
     }
 
+    public DisplayableProgram<?> getDisplayable()
+    {
+        return this.displayable;
+    }
+
     public Button getCloseButton()
     {
         return this.closeButton;

@@ -10,6 +10,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -101,6 +102,19 @@ public class ComputerScreen extends AbstractContainerScreen<ComputerMenu>
         {
             this.window.tick();
         }
+    }
+
+    @Override
+    public boolean keyPressed(int key, int scanCode, int modifiers)
+    {
+        if(this.window != null && this.window.getDisplayable().blocksNavigation())
+        {
+            if(key == GLFW.GLFW_KEY_UP || key == GLFW.GLFW_KEY_DOWN || key == GLFW.GLFW_KEY_LEFT || key == GLFW.GLFW_KEY_RIGHT)
+            {
+                return true;
+            }
+        }
+        return super.keyPressed(key, scanCode, modifiers);
     }
 
     public void addWidgets(IWidgetGroup group)

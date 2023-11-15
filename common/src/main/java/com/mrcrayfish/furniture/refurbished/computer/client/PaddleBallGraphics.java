@@ -40,6 +40,7 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
     private int scoreSide;
     private int scoreAnimation;
     private Boolean wonGame;
+    private boolean playing;
 
     public PaddleBallGraphics(PaddleBall program)
     {
@@ -61,6 +62,12 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
         this.playerPos = this.targetPlayerPos;
         this.opponentPos = this.targetOpponentPos;
         super.tick();
+    }
+
+    @Override
+    public boolean blocksNavigation()
+    {
+        return this.playing;
     }
 
     public void updatePaddles(float playerPos, float opponentPos)
@@ -92,10 +99,12 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
             case PaddleBall.EVENT_GAME_WIN -> {
                 AudioHelper.playUISound(ModSounds.UI_PADDLE_BALL_RETRO_WIN.get(), 1.0F, 0.5F);
                 this.wonGame = true;
+                this.playing = false;
             }
             case PaddleBall.EVENT_GAME_LOSE -> {
                 AudioHelper.playUISound(ModSounds.UI_PADDLE_BALL_RETRO_LOSE.get(), 1.0F, 0.5F);
                 this.wonGame = false;
+                this.playing = false;
             }
             case PaddleBall.EVENT_SOUND_HIT -> {
                 AudioHelper.playUISound(ModSounds.UI_PADDLE_BALL_RETRO_HIT.get(), 1.0F, 0.5F);
@@ -143,6 +152,7 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
             this.playVsButton.setBackgroundHighlightColour(0xFF47403E);
             this.playVsButton.setTextHighlightColour(0xFF222225);
             this.playVsButton.setClickSound(ModSounds.UI_PADDLE_BALL_RETRO_CLICK.get());
+            game.playing = false;
         }
 
         @Override
@@ -190,6 +200,7 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
                 game.setScene(new MainMenuScene(game));
             }));
             game.reset();
+            game.playing = true;
         }
 
         @Override
