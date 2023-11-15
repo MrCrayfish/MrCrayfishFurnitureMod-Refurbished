@@ -168,6 +168,43 @@ public class MessagePaddleBall
         }
     }
 
+    public static class OpponentName extends PlayMessage<OpponentName>
+    {
+        private String name;
+
+        public OpponentName() {}
+
+        public OpponentName(String name)
+        {
+            this.name = name;
+        }
+
+        @Override
+        public void encode(OpponentName message, FriendlyByteBuf buffer)
+        {
+            buffer.writeUtf(message.name);
+        }
+
+        @Override
+        public OpponentName decode(FriendlyByteBuf buffer)
+        {
+            String name = buffer.readUtf();
+            return new OpponentName(name);
+        }
+
+        @Override
+        public void handle(OpponentName message, MessageContext context)
+        {
+            context.execute(() -> ClientPlayHandler.handleMessagePaddleBallOpponentName(message));
+            context.setHandled(true);
+        }
+
+        public String getName()
+        {
+            return this.name;
+        }
+    }
+
     public static class Event extends PlayMessage<Event>
     {
         private byte data;

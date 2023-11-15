@@ -30,6 +30,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
+import javax.annotation.Nullable;
 import java.util.Objects;
 
 /**
@@ -118,7 +119,8 @@ public class ClientPlayHandler
         }
     }
 
-    public static void handleMessageTennisGamePaddlePosition(MessagePaddleBall.PaddlePosition message)
+    @Nullable
+    private static PaddleBallGraphics getPaddleGame()
     {
         Minecraft mc = Minecraft.getInstance();
         if(mc.player.containerMenu instanceof ComputerMenu menu)
@@ -126,34 +128,45 @@ public class ClientPlayHandler
             ClientComputer computer = ((ClientComputer) menu.getComputer());
             if(computer.getDisplayable() instanceof PaddleBallGraphics game)
             {
-                game.updatePaddles(message.getPlayerPos(), message.getOpponentPos());
+                return game;
             }
+        }
+        return null;
+    }
+
+    public static void handleMessageTennisGamePaddlePosition(MessagePaddleBall.PaddlePosition message)
+    {
+        PaddleBallGraphics game = getPaddleGame();
+        if(game != null)
+        {
+            game.updatePaddles(message.getPlayerPos(), message.getOpponentPos());
         }
     }
 
     public static void handleMessageTennisGameBallUpdate(MessagePaddleBall.BallUpdate message)
     {
-        Minecraft mc = Minecraft.getInstance();
-        if(mc.player.containerMenu instanceof ComputerMenu menu)
+        PaddleBallGraphics game = getPaddleGame();
+        if(game != null)
         {
-            ClientComputer computer = ((ClientComputer) menu.getComputer());
-            if(computer.getDisplayable() instanceof PaddleBallGraphics game)
-            {
-                game.updateBall(message.getBallX(), message.getBallY(), message.getVelocityX(), message.getVelocityY());
-            }
+            game.updateBall(message.getBallX(), message.getBallY(), message.getVelocityX(), message.getVelocityY());
         }
     }
 
     public static void handleMessagePaddleBallEvent(MessagePaddleBall.Event message)
     {
-        Minecraft mc = Minecraft.getInstance();
-        if(mc.player.containerMenu instanceof ComputerMenu menu)
+        PaddleBallGraphics game = getPaddleGame();
+        if(game != null)
         {
-            ClientComputer computer = ((ClientComputer) menu.getComputer());
-            if(computer.getDisplayable() instanceof PaddleBallGraphics game)
-            {
-                game.handleEvent(message.getEvent());
-            }
+            game.handleEvent(message.getEvent());
+        }
+    }
+
+    public static void handleMessagePaddleBallOpponentName(MessagePaddleBall.OpponentName message)
+    {
+        PaddleBallGraphics game = getPaddleGame();
+        if(game != null)
+        {
+            game.handleOpponentName(message.getName());
         }
     }
 }

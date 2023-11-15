@@ -15,9 +15,11 @@ import org.joml.Intersectionf;
 import org.joml.Math;
 import org.joml.Vector2f;
 
+import javax.annotation.Nullable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Queue;
 
 /**
@@ -34,11 +36,14 @@ public class PaddleBall extends Program
     public static final int RESET_COOLDOWN = 40;
     public static final int POINTS_TO_WIN = 7;
 
-    public static final byte EVENT_GAME_WIN = 1;
-    public static final byte EVENT_GAME_LOSE = 2;
-    public static final byte EVENT_GAME_ROUND_WIN = 3;
-    public static final byte EVENT_GAME_ROUND_LOSE = 4;
-    public static final byte EVENT_SOUND_HIT = 64;
+    public static final byte EVENT_GAME_START = 1;
+    public static final byte EVENT_GAME_SIDE_LEFT = 2;
+    public static final byte EVENT_GAME_SIDE_RIGHT = 3;
+    public static final byte EVENT_GAME_WIN = 4;
+    public static final byte EVENT_GAME_LOSE = 5;
+    public static final byte EVENT_GAME_ROUND_WIN = 6;
+    public static final byte EVENT_GAME_ROUND_LOSE = 7;
+    public static final byte EVENT_SOUND_HIT = 40;
 
     private Game activeGame;
     private State state;
@@ -89,8 +94,8 @@ public class PaddleBall extends Program
             else if(data == 1)
             {
                 this.controller = new PlayerController(this.computer.getUser(), this);
-                SERVICE.createMultiplayerGame(this.controller);
-                this.state = this.activeGame.isRunning() ? State.IN_GAME : State.PENDING;
+                Game game = SERVICE.createMultiplayerGame(this.controller);
+                this.state = game.isRunning() ? State.IN_GAME : State.PENDING;
             }
         }
         else if(action == Action.UPDATE_STATE)
@@ -187,6 +192,11 @@ public class PaddleBall extends Program
         protected abstract void update();
 
         /**
+         * @return The name (or username of player) of this controller
+         */
+        protected abstract String getName();
+
+        /**
          * Sets the side this paddle is positioned on the board
          * @param side the side
          */
@@ -251,6 +261,12 @@ public class PaddleBall extends Program
         }
 
         @Override
+        protected String getName()
+        {
+            return Optional.ofNullable(this.player.getGameProfile().getName()).orElse("Player");
+        }
+
+        @Override
         public boolean isPlaying()
         {
             IComputer computer = this.program.getComputer();
@@ -285,6 +301,15 @@ public class PaddleBall extends Program
                 ServerPlayer player = (ServerPlayer) this.player;
                 Network.getPlay().sendToPlayer(() -> player, this.game.createPaddlePositionMessage());
             }
+            if(UpdateType.OPPONENT_NAME.is(type))
+            {
+                Controller opponent = this.game.getOpponent(this);
+                if(opponent != null)
+                {
+                    ServerPlayer player = (ServerPlayer) this.player;
+                    Network.getPlay().sendToPlayer(() -> player, new MessagePaddleBall.OpponentName(opponent.getName()));
+                }
+            }
         }
 
         @Override
@@ -307,6 +332,12 @@ public class PaddleBall extends Program
 
     protected static class AiController extends Controller
     {
+        @Override
+        protected String getName()
+        {
+            return "AI";
+        }
+
         @Override
         public boolean isPlaying()
         {
@@ -577,6 +608,22 @@ public class PaddleBall extends Program
         }
 
         /**
+         * Gets the controller that is versing the given controller
+         *
+         * @param self a controller
+         * @return The versing controller or null
+         */
+        @Nullable
+        protected Controller getOpponent(Controller self)
+        {
+            if(this.host == self)
+            {
+                return this.opponent;
+            }
+            return this.host;
+        }
+
+        /**
          * Runs a game update
          */
         public void update()
@@ -613,6 +660,9 @@ public class PaddleBall extends Program
         private void startNewGame()
         {
             Preconditions.checkNotNull(this.opponent, "Game cannot be started without an opponent present");
+            this.sendEventToPlayers(EVENT_GAME_START);
+            this.host.sendEvent(EVENT_GAME_SIDE_LEFT);
+            this.opponent.sendEvent(EVENT_GAME_SIDE_RIGHT);
             this.ball = new Ball(this);
             this.host.moveToCenter();
             this.opponent.moveToCenter();
@@ -624,6 +674,7 @@ public class PaddleBall extends Program
             this.cooldown = 20;
             this.sendUpdateToPlayers(UpdateType.BALL);
             this.sendUpdateToPlayers(UpdateType.PADDLES);
+            this.sendUpdateToPlayers(UpdateType.OPPONENT_NAME);
         }
 
         /**
@@ -824,7 +875,8 @@ public class PaddleBall extends Program
 
     public enum UpdateType
     {
-        BALL, PADDLES;
+        BALL, PADDLES,
+        OPPONENT_NAME;
 
         public boolean is(UpdateType type)
         {

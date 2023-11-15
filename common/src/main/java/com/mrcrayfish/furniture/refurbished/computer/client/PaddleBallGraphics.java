@@ -43,6 +43,8 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
     private int scoreAnimation;
     private Boolean wonGame;
     private boolean playing;
+    private boolean leftPaddle;
+    private String opponentName = "Opponent";
 
     public PaddleBallGraphics(PaddleBall program)
     {
@@ -72,8 +74,8 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
 
     public void updatePaddles(float playerPos, float opponentPos)
     {
-        this.targetPlayerPos = playerPos;
-        this.targetOpponentPos = opponentPos;
+        this.targetPlayerPos = this.leftPaddle ? playerPos : opponentPos;
+        this.targetOpponentPos = this.leftPaddle ? opponentPos : playerPos;
     }
 
     public void updateBall(float ballX, float ballY, float velocityX, float velocityY)
@@ -84,10 +86,26 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
         this.ballVelocityY = velocityY;
     }
 
+    public void handleOpponentName(String name)
+    {
+        this.opponentName = name;
+    }
+
     public void handleEvent(byte event)
     {
         switch(event)
         {
+            case PaddleBall.EVENT_GAME_START -> {
+                this.reset();
+                this.playing = true;
+                this.setScene(new GameScene(this));
+            }
+            case PaddleBall.EVENT_GAME_SIDE_LEFT -> {
+                this.leftPaddle = true;
+            }
+            case PaddleBall.EVENT_GAME_SIDE_RIGHT -> {
+                this.leftPaddle = false;
+            }
             case PaddleBall.EVENT_GAME_WIN -> {
                 AudioHelper.playUISound(ModSounds.UI_PADDLE_BALL_RETRO_WIN.get(), 1.0F, 0.5F);
                 this.wonGame = true;
@@ -130,6 +148,7 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
         this.ballVelocityX = 0;
         this.ballVelocityY = 0;
         this.scoreAnimation = 0;
+        this.opponentName = "Opponent";
     }
 
     private static class MainMenuScene extends Scene
@@ -143,7 +162,6 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
             this.game = game;
             this.playAiButton = this.addWidget(new MenuButton(100, 16, this.game.translation("play_ai"), btn -> {
                 Network.getPlay().sendToServer(new MessagePaddleBall.Action(PaddleBall.Action.JOIN_GAME, (byte) 0));
-                game.setScene(new GameScene(game));
             }));
             this.playAiButton.setClickSound(ModSounds.UI_PADDLE_BALL_RETRO_CLICK.get());
 
@@ -248,8 +266,6 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
             this.backButton.setBackgroundHighlightColour(0xFF47403E);
             this.backButton.setTextHighlightColour(0xFF222225);
             this.backButton.setClickSound(ModSounds.UI_PADDLE_BALL_RETRO_CLICK.get());
-            game.reset();
-            game.playing = true;
         }
 
         @Override
@@ -283,20 +299,31 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
             // Draw player score
             stack.pushPose();
             String label = Integer.toString(this.game.playerScore);
-            int width = mc.font.width(label) * 4;
-            stack.translate(-width - 4, 0, 0);
-            stack.scale(4, 4, 4);
+            int width = mc.font.width(label) * 2;
+            stack.translate(-width - 7, 0, 0);
+            stack.scale(2, 2, 2);
             graphics.drawString(mc.font, label, 0, 0, 0xFF2F2F33, false);
+            stack.popPose();
+
+            stack.pushPose();
+            stack.scale(2, 2, 2);
+            int breakWidth = mc.font.width(label) / 2;
+            graphics.drawString(mc.font, "-", -breakWidth, 0, 0xFF2F2F33, false);
             stack.popPose();
 
             // Draw opponent score
             stack.pushPose();
-            stack.translate(4, 0, 0);
-            stack.scale(4, 4, 4);
+            stack.translate(7, 0, 0);
+            stack.scale(2, 2, 2);
             graphics.drawString(mc.font, Integer.toString(this.game.opponentScore), 0, 0, 0xFF2F2F33, false);
             stack.popPose();
 
             stack.popPose();
+
+            // Draw name tags
+            graphics.drawString(mc.font, this.game.translation("you"), 5, 5, 0xFF2F2F33, false);
+            String opponentName = this.game.opponentName;
+            graphics.drawString(mc.font, opponentName, PaddleBall.BOARD_WIDTH - 5 - mc.font.width(opponentName), 5, 0xFF2F2F33, false);
 
             // Draw host paddle
             stack.pushPose();
@@ -316,6 +343,7 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
             stack.pushPose();
             float smoothBallX = Mth.lerp(partialTick, this.game.lastBallX, this.game.ballX);
             float smoothBallY = Mth.lerp(partialTick, this.game.lastBallY, this.game.ballY);
+            smoothBallX = this.game.leftPaddle ? smoothBallX : PaddleBall.BOARD_WIDTH - smoothBallX;
             stack.translate(smoothBallX, smoothBallY, 0);
             graphics.blit(TEXTURE, 0, 0, 12, 0, 4, 4);
             stack.popPose();
