@@ -34,6 +34,8 @@ public class PaddleBall extends Program
     public static final int RESET_COOLDOWN = 40;
 
     public static final byte EVENT_SOUND_HIT = 1;
+    public static final byte EVENT_SOUND_SUCCESS = 2;
+    public static final byte EVENT_SOUND_FAIL = 3;
 
     private Game activeGame;
     private State state;
@@ -56,6 +58,12 @@ public class PaddleBall extends Program
                 this.controller = null;
             }
         }
+    }
+
+    @Override
+    public void onClose(boolean remote)
+    {
+        this.activeGame = null;
     }
 
     /**
@@ -283,6 +291,9 @@ public class PaddleBall extends Program
         @Override
         public void sendEvent(byte event)
         {
+            if(!this.isPlaying())
+                return;
+
             ServerPlayer player = (ServerPlayer) this.player;
             Network.getPlay().sendToPlayer(() -> player, new MessagePaddleBall.Event(event));
         }
@@ -633,11 +644,15 @@ public class PaddleBall extends Program
             if(this.ball.x1 <= 0)
             {
                 this.scoreAndCooldown(this.opponent);
+                this.opponent.sendEvent(EVENT_SOUND_SUCCESS);
+                this.host.sendEvent(EVENT_SOUND_FAIL);
                 return;
             }
             if(this.ball.x2 >= BOARD_WIDTH)
             {
                 this.scoreAndCooldown(this.host);
+                this.host.sendEvent(EVENT_SOUND_SUCCESS);
+                this.opponent.sendEvent(EVENT_SOUND_FAIL);
             }
         }
 

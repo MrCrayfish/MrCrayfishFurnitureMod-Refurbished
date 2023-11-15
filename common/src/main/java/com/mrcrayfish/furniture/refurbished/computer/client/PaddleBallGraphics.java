@@ -92,6 +92,12 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
             case PaddleBall.EVENT_SOUND_HIT -> {
                 AudioHelper.playUISound(ModSounds.UI_PADDLE_BALL_RETRO_HIT.get(), 1.0F, 0.5F);
             }
+            case PaddleBall.EVENT_SOUND_SUCCESS -> {
+                AudioHelper.playUISound(ModSounds.UI_PADDLE_BALL_RETRO_SUCCESS.get(), 1.0F, 0.5F);
+            }
+            case PaddleBall.EVENT_SOUND_FAIL -> {
+                AudioHelper.playUISound(ModSounds.UI_PADDLE_BALL_RETRO_FAIL.get(), 1.0F, 0.5F);
+            }
         }
     }
 

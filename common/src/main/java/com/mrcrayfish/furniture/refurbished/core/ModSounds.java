@@ -33,4 +33,6 @@ public class ModSounds
     public static final RegistryEntry<SoundEvent> ITEM_WRENCH_CONNECTED_LINK = RegistryEntry.soundEvent(Utils.resource("item.wrench.connected_link"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> UI_PADDLE_BALL_RETRO_CLICK = RegistryEntry.soundEvent(Utils.resource("ui.paddle_ball.retro_click"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> UI_PADDLE_BALL_RETRO_HIT = RegistryEntry.soundEvent(Utils.resource("ui.paddle_ball.retro_hit"), id -> () -> SoundEvent.createVariableRangeEvent(id));
+    public static final RegistryEntry<SoundEvent> UI_PADDLE_BALL_RETRO_SUCCESS = RegistryEntry.soundEvent(Utils.resource("ui.paddle_ball.retro_success"), id -> () -> SoundEvent.createVariableRangeEvent(id));
+    public static final RegistryEntry<SoundEvent> UI_PADDLE_BALL_RETRO_FAIL = RegistryEntry.soundEvent(Utils.resource("ui.paddle_ball.retro_fail"), id -> () -> SoundEvent.createVariableRangeEvent(id));
 }

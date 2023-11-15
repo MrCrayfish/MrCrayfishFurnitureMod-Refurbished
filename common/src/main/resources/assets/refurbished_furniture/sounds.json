@@ -131,5 +131,17 @@
         "sounds": [
             "refurbished_furniture:ui/paddle_ball/retro_hit"
         ]
+    },
+    "ui.paddle_ball.retro_success": {
+        "subtitle": "subtitle.refurbished_furniture.ui.paddle_ball.retro_success",
+        "sounds": [
+            "refurbished_furniture:ui/paddle_ball/retro_success"
+        ]
+    },
+    "ui.paddle_ball.retro_fail": {
+        "subtitle": "subtitle.refurbished_furniture.ui.paddle_ball.retro_fail",
+        "sounds": [
+            "refurbished_furniture:ui/paddle_ball/retro_fail"
+        ]
     }
 }
