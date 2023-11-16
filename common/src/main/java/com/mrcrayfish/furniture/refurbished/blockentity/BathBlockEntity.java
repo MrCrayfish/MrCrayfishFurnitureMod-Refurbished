@@ -101,7 +101,7 @@ public class BathBlockEntity extends BlockEntity implements IFluidContainerBlock
 
         if(Config.SERVER.bath.dispenseWater.get() && player.getItemInHand(hand).isEmpty())
         {
-            // Fills the sink with water TODO make config option to disable free water
+            // Fills the sink with water
             if(tank.isEmpty() || tank.getStoredFluid().isSame(Fluids.WATER))
             {
                 long filled = tank.push(Fluids.WATER, FluidContainer.BUCKET_CAPACITY, false);

@@ -33,8 +33,6 @@ import java.util.stream.Collectors;
  */
 public class TelevisionBlock extends FurnitureHorizontalBlock implements EntityBlock
 {
-    // TODO tv remote
-
     public TelevisionBlock(Properties properties)
     {
         super(properties);

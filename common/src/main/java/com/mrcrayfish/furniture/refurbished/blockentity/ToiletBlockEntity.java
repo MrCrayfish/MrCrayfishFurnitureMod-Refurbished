@@ -73,7 +73,7 @@ public class ToiletBlockEntity extends BlockEntity implements IFluidContainerBlo
     {
         if(Config.SERVER.toilet.dispenseWater.get() && player.getItemInHand(hand).isEmpty() && result.getDirection() != Direction.DOWN)
         {
-            // Fills the sink with water TODO make config option to disable free water
+            // Fills the sink with water
             if(this.tank.isEmpty() || this.tank.getStoredFluid().isSame(Fluids.WATER))
             {
                 long filled = this.tank.push(Fluids.WATER, FluidContainer.BUCKET_CAPACITY, false);

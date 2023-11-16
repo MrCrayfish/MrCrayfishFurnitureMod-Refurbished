@@ -172,7 +172,7 @@ public class CreativeFilters
         this.categories.stream().filter(FilterCategory::isEnabled).forEach(category -> {
             category.getItems().ifPresent(items -> items.forEach(item -> {
                 if(!seenItems.contains(item)) {
-                    categorisedItems.add(new ItemStack(item)); // TODO allow items to fill (e.g. for the trampoline)
+                    categorisedItems.add(new ItemStack(item));
                     seenItems.add(item);
                 }
             }));
