@@ -89,6 +89,12 @@ public class FabricClientHelper implements IClientHelper
     }
 
     @Override
+    public RenderType getTelevisionScreenRenderType(ResourceLocation id)
+    {
+        return FabricRenderType.televisionScreen(id);
+    }
+
+    @Override
     public SimpleParticleType createSimpleParticleType(boolean ignoreLimit)
     {
         return FabricParticleTypes.simple(ignoreLimit);
