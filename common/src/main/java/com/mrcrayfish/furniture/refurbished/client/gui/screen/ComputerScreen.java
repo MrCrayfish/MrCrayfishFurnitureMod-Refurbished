@@ -100,15 +100,13 @@ public class ComputerScreen extends AbstractContainerScreen<ComputerMenu>
         // Draw background
         graphics.blit(TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
 
-        // Draw desktop
-        this.desktop.render(graphics, mouseX, mouseY, partialTick);
-
-        // Draw window
+        // Draw desktop and window
         int displayLeft = this.leftPos + DISPLAY_LEFT;
         int displayTop = this.topPos + DISPLAY_TOP;
         int displayEnd = displayLeft + DISPLAY_WIDTH;
         int displayBottom = displayTop + DISPLAY_HEIGHT;
         graphics.enableScissor(displayLeft, displayTop, displayEnd, displayBottom);
+        this.desktop.render(graphics, mouseX, mouseY, partialTick);
         Window window = this.getOrCreateWindow();
         if(window != null) window.render(graphics, this.font, mouseX, mouseY, this.minecraft.getFrameTime());
         graphics.disableScissor();
