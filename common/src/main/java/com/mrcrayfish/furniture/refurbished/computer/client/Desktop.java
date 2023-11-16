@@ -6,16 +6,12 @@ import com.mrcrayfish.furniture.refurbished.computer.Display;
 import com.mrcrayfish.furniture.refurbished.computer.client.widget.ProgramShortcutButton;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageComputerOpenProgram;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Author: MrCrayfish

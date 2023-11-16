@@ -39,21 +39,7 @@ public abstract class Program
         return this.computer;
     }
 
-    public void tick()
-    {
+    public void tick() {}
 
-    }
-
-    public void saveState(CompoundTag tag) {}
-
-    public void restoreState(CompoundTag tag) {}
-
-    public void saveData(CompoundTag tag) {}
-
-    public void loadData(CompoundTag tag) {}
-
-    public void onClose(boolean remote)
-    {
-
-    }
+    public void onClose(boolean remote) {}
 }
