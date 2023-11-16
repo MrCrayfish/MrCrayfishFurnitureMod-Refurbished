@@ -34,6 +34,7 @@ import java.util.function.Consumer;
  */
 public class PackageItem extends Item
 {
+    // TODO exclude from creative tab
     public PackageItem(Properties properties)
     {
         super(properties);

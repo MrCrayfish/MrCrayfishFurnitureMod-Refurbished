@@ -31,6 +31,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModParticleTypes;
+import com.mrcrayfish.furniture.refurbished.image.TextureCache;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.RenderType;
@@ -48,6 +49,9 @@ public class ClientBootstrap
         CreativeFilters.get();
 
         // Events
+        TickEvents.END_CLIENT.register(() -> {
+            TextureCache.get().tick();
+        });
         TickEvents.START_RENDER.register(partialTick -> {
             LinkHandler.get().beforeRender(partialTick);
             ElectricBlockEntityRenderer.clearDrawn();
@@ -119,6 +123,7 @@ public class ClientBootstrap
         register.apply(ModBlockEntities.BATH.get(), BathBlockEntityRenderer::new);
         register.apply(ModBlockEntities.TELEVISION.get(), TelevisionBlockEntityRenderer::new);
         register.apply(ModBlockEntities.COMPUTER.get(), ComputerBlockEntityRenderer::new);
+        register.apply(ModBlockEntities.DOOR_MAT.get(), DoorMatBlockEntityRenderer::new);
     }
 
     public static void registerEntityRenderers(EntityRendererRegister register)

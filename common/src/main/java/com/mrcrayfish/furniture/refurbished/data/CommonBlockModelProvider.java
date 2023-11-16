@@ -476,6 +476,7 @@ public class CommonBlockModelProvider
         this.latticeFence(ModBlocks.LATTICE_FENCE_WARPED.get());
         this.television(ModBlocks.TELEVISION.get());
         this.computer(ModBlocks.COMPUTER.get());
+        this.doorMat(ModBlocks.DOOR_MAT.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -1555,6 +1556,16 @@ public class CommonBlockModelProvider
         state.createVariant().prop(ComputerBlock.DIRECTION, Direction.EAST).prop(ComputerBlock.POWERED, true).addExistingModel(ModelTemplate.COMPUTER_ON.stateModel().setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(ComputerBlock.DIRECTION, Direction.SOUTH).prop(ComputerBlock.POWERED, true).addExistingModel(ModelTemplate.COMPUTER_ON.stateModel().setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(ComputerBlock.DIRECTION, Direction.WEST).prop(ComputerBlock.POWERED, true).addExistingModel(ModelTemplate.COMPUTER_ON.stateModel().setYRotation(VariantProperties.Rotation.R270));
+        this.variantStateConsumer.accept(state);
+    }
+
+    private void doorMat(DoorMatBlock block)
+    {
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
+        state.createVariant().prop(DoorMatBlock.DIRECTION, Direction.NORTH).addExistingModel(ModelTemplate.DOOR_MAT.stateModel().setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(DoorMatBlock.DIRECTION, Direction.EAST).addExistingModel(ModelTemplate.DOOR_MAT.stateModel().setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(DoorMatBlock.DIRECTION, Direction.SOUTH).addExistingModel(ModelTemplate.DOOR_MAT.stateModel().setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(DoorMatBlock.DIRECTION, Direction.WEST).addExistingModel(ModelTemplate.DOOR_MAT.stateModel().setYRotation(VariantProperties.Rotation.R270));
         this.variantStateConsumer.accept(state);
     }
 }

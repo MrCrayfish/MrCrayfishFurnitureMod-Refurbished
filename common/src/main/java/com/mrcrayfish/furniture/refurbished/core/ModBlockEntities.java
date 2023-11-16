@@ -413,4 +413,8 @@ public class ModBlockEntities
     public static final RegistryEntry<BlockEntityType<ComputerBlockEntity>> COMPUTER = RegistryEntry.blockEntity(Utils.resource("computer"), ComputerBlockEntity::new, () -> new Block[]{
             ModBlocks.COMPUTER.get()
     });
+
+    public static final RegistryEntry<BlockEntityType<DoorMatBlockEntity>> DOOR_MAT = RegistryEntry.blockEntity(Utils.resource("door_mat"), DoorMatBlockEntity::new, () -> new Block[]{
+            ModBlocks.DOOR_MAT.get()
+    });
 }
