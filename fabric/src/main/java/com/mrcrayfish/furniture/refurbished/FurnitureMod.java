@@ -9,6 +9,7 @@ import com.mrcrayfish.furniture.refurbished.data.FurnitureItemTagsProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureLootTableProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureModelProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureRecipeProvider;
+import com.mrcrayfish.furniture.refurbished.platform.FabricFluidHelper;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -31,7 +32,7 @@ public class FurnitureMod implements ModInitializer, DataGeneratorEntrypoint
         Bootstrap.init();
 
         FluidStorage.SIDED.registerForBlockEntity((sink, direction) -> {
-            return direction != Direction.UP ? (SingleFluidStorage) sink.getTank() : null;
+            return direction != Direction.UP ? ((FabricFluidHelper.FabricFluidContainer) sink.getFluidContainer()).getTank() : null;
         }, ModBlockEntities.KITCHEN_SINK.get());
 
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {

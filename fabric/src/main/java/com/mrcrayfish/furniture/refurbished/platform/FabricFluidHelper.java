@@ -142,5 +142,10 @@ public class FabricFluidHelper implements IFluidHelper
             this.tank.writeNbt(tankTag);
             tag.put("FluidTank", tankTag);
         }
+
+        public SingleFluidStorage getTank()
+        {
+            return this.tank;
+        }
     }
 }
