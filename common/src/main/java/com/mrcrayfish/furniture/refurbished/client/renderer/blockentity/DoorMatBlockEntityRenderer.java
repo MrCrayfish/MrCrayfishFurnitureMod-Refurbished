@@ -40,16 +40,15 @@ public class DoorMatBlockEntityRenderer implements BlockEntityRenderer<DoorMatBl
         {
             Direction direction = state.getValue(DoorMatBlock.DIRECTION);
             poseStack.translate(0.5, 0, 0.5);
-            poseStack.mulPose(direction.getRotation());
+            poseStack.mulPose(Axis.YN.rotation(Mth.HALF_PI * direction.get2DDataValue()));
             poseStack.mulPose(Axis.YP.rotation(Mth.PI));
-            poseStack.mulPose(Axis.XP.rotation(Mth.HALF_PI));
             poseStack.translate(-0.5, 0, -0.5);
-            VertexConsumer consumer = source.getBuffer(RenderType.entityCutout(id));
+            VertexConsumer consumer = source.getBuffer(RenderType.text(id));
             Matrix4f matrix = poseStack.last().pose();
-            consumer.vertex(matrix, 0.0625F, 0.063F, 0.1875F).color(255, 255, 255, 255).uv(0, 0).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(0, 0, 1).endVertex();
-            consumer.vertex(matrix, 0.0625F, 0.063F, 0.8125F).color(255, 255, 255, 255).uv(0, 1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(0, 0, 1).endVertex();
-            consumer.vertex(matrix, 0.9375F, 0.063F, 0.8125F).color(255, 255, 255, 255).uv(1, 1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(0, 0, 1).endVertex();
-            consumer.vertex(matrix, 0.9375F, 0.063F, 0.1875F).color(255, 255, 255, 255).uv(1, 0).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(0, 0, 1).endVertex();
+            consumer.vertex(matrix, 0.0625F, 0.063F, 0.1875F).color(255, 255, 255, 255).uv(0, 0).uv2(light).endVertex();
+            consumer.vertex(matrix, 0.0625F, 0.063F, 0.8125F).color(255, 255, 255, 255).uv(0, 1).uv2(light).endVertex();
+            consumer.vertex(matrix, 0.9375F, 0.063F, 0.8125F).color(255, 255, 255, 255).uv(1, 1).uv2(light).endVertex();
+            consumer.vertex(matrix, 0.9375F, 0.063F, 0.1875F).color(255, 255, 255, 255).uv(1, 0).uv2(light).endVertex();
         }
     }
 }
