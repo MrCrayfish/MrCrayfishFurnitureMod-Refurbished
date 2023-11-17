@@ -49,12 +49,12 @@ public class DoorMatScreen extends AbstractContainerScreen<DoorMatMenu>
         {
             this.addRenderableWidget(new ColourButton(this.leftPos + (i - 1) * 8 + 7, this.topPos + 65, i));
         }
-        this.addRenderableWidget(new ToolButton(this.leftPos + 7, this.topPos + 77, 0, 0, Tool.PENCIL));
-        this.addRenderableWidget(new ToolButton(this.leftPos + 30, this.topPos + 77, 0, 0, Tool.ERASER));
-        this.addRenderableWidget(new ToolButton(this.leftPos + 53, this.topPos + 77, 0, 0, Tool.FILL));
+        this.addRenderableWidget(new ToolButton(this.leftPos + 6, this.topPos + 77, 30, 10, Tool.PENCIL));
+        this.addRenderableWidget(new ToolButton(this.leftPos + 29, this.topPos + 77, 40, 10, Tool.ERASER));
+        this.addRenderableWidget(new ToolButton(this.leftPos + 52, this.topPos + 77, 50, 10, Tool.FILL));
         this.addRenderableWidget(Button.builder(Utils.translation("gui", "save"), var1 -> {
             Network.getPlay().sendToServer(new MessageUpdatePainting(this.image));
-        }).pos(this.leftPos + 79, this.topPos + 77).size(49, 20).build());
+        }).pos(this.leftPos + 75, this.topPos + 77).size(53, 20).build());
     }
 
     @Override
