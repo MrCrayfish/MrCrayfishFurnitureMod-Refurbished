@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.core;
 import com.mrcrayfish.framework.api.registry.RegistryContainer;
 import com.mrcrayfish.framework.api.registry.RegistryEntry;
 import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
+import com.mrcrayfish.furniture.refurbished.inventory.DoorMatMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.ElectricityGeneratorMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.FreezerMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.MicrowaveMenu;
@@ -25,4 +26,5 @@ public class ModMenuTypes
     public static final RegistryEntry<MenuType<ElectricityGeneratorMenu>> ELECTRICITY_GENERATOR = RegistryEntry.menuType(Utils.resource("electricity_generator"), ElectricityGeneratorMenu::new);
     public static final RegistryEntry<MenuType<RecycleBinMenu>> RECYCLE_BIN = RegistryEntry.menuType(Utils.resource("recycle_bin"), RecycleBinMenu::new);
     public static final RegistryEntry<MenuType<ComputerMenu>> COMPUTER = RegistryEntry.menuType(Utils.resource("computer"), ComputerMenu::new);
+    public static final RegistryEntry<MenuType<DoorMatMenu>> DOOR_MAT = RegistryEntry.menuType(Utils.resource("door_mat"), DoorMatMenu::new);
 }

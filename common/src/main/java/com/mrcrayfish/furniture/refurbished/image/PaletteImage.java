@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.image;
 
 import com.google.common.base.Preconditions;
 import net.minecraft.Util;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 import java.nio.ByteBuffer;
@@ -18,7 +19,7 @@ import java.util.function.Supplier;
  */
 public class PaletteImage
 {
-    public static final int[] COLOURS = {0x00100A0A, 0xFF333025, 0xFF585E53, 0xFFA5A589, 0xFFEAE5D1, 0xFFDEC666, 0xFF97AB50, 0xFF516B38, 0xFF25150F, 0xFF522732, 0xFF9C323C, 0xFFC4663D, 0xFFE48D80, 0xFF6392AF, 0xFF2C3C6A, 0xFF2C1D34};
+    public static final int[] COLOURS = {0x00000000, 0xFF100A0A, 0xFF585E53, 0xFFA5A589, 0xFFEAE5D1, 0xFFDEC666, 0xFF97AB50, 0xFF516B38, 0xFF25150F, 0xFF522732, 0xFF9C323C, 0xFFC4663D, 0xFFE48D80, 0xFF6392AF, 0xFF2C3C6A, 0xFF2C1D34};
     private static final int BITS_PER_INDEX = 4;
 
     protected final ResourceLocation id;
@@ -38,11 +39,9 @@ public class PaletteImage
         this.id = createUniqueId();
         this.width = width;
         this.height = height;
-        this.bits = supplier.get();
-        if(this.bits.size() < this.width * this.height)
-        {
-            throw new IllegalArgumentException("BitSet size does not contain enough bits for the image width and height");
-        }
+        BitSet bits = new BitSet(width * height);
+        bits.or(supplier.get());
+        this.bits = bits;
     }
 
     // TODO docs
@@ -98,27 +97,18 @@ public class PaletteImage
         return value;
     }
 
-    public void write(ByteBuffer buffer)
+    public void write(FriendlyByteBuf buffer)
     {
-        buffer.put((byte) this.width);
-        buffer.put((byte) this.height);
-        long[] data = this.bits.toLongArray();
-        buffer.putInt(data.length);
-        for(long d : data)
-        {
-            buffer.putLong(d);
-        }
+        buffer.writeByte((byte) this.width);
+        buffer.writeByte((byte) this.height);
+        buffer.writeLongArray(this.bits.toLongArray());
     }
 
-    public static PaletteImage read(ByteBuffer buffer)
+    public static PaletteImage read(FriendlyByteBuf buffer)
     {
-        int width = buffer.get();
-        int height = buffer.get();
-        long[] data = new long[buffer.getInt()];
-        for(int i = 0; i < data.length; i++)
-        {
-            data[i] = buffer.getLong();
-        }
+        int width = buffer.readByte();
+        int height = buffer.readByte();
+        long[] data = buffer.readLongArray();
         return new PaletteImage(width, height, () -> BitSet.valueOf(data));
     }
 

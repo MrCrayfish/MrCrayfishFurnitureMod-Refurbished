@@ -3,9 +3,19 @@ package com.mrcrayfish.furniture.refurbished.block;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.furniture.refurbished.blockentity.DoorMatBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.DoorbellBlockEntity;
+import com.mrcrayfish.furniture.refurbished.client.FurnitureScreens;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -34,6 +44,19 @@ public class DoorMatBlock extends FurnitureHorizontalBlock implements EntityBloc
         return ImmutableMap.copyOf(states.stream().collect(Collectors.toMap(state -> state, state -> {
             return VoxelShapeHelper.rotateHorizontally(baseShape, state.getValue(DIRECTION));
         })));
+    }
+
+    @Override
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack)
+    {
+        if(entity instanceof ServerPlayer player)
+        {
+            CompoundTag tag = BlockItem.getBlockEntityData(stack); // If block entity data on item, don't open menu
+            if(tag == null && level.getBlockEntity(pos) instanceof DoorMatBlockEntity doorMat)
+            {
+                player.openMenu(doorMat);
+            }
+        }
     }
 
     @Nullable

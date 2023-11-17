@@ -5,6 +5,7 @@ import com.mrcrayfish.framework.api.event.PlayerEvents;
 import com.mrcrayfish.framework.api.event.TickEvents;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.ComputerScreen;
+import com.mrcrayfish.furniture.refurbished.client.gui.screen.DoorMatScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.ElectricityGeneratorScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.FreezerScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.MicrowaveScreen;
@@ -98,6 +99,7 @@ public class ClientBootstrap
         register.apply(ModMenuTypes.ELECTRICITY_GENERATOR.get(), ElectricityGeneratorScreen::new);
         register.apply(ModMenuTypes.RECYCLE_BIN.get(), RecyclingBinScreen::new);
         register.apply(ModMenuTypes.COMPUTER.get(), ComputerScreen::new);
+        register.apply(ModMenuTypes.DOOR_MAT.get(), DoorMatScreen::new);
     }
 
     public static void registerBlockEntityRenderers(BlockEntityRendererRegister register)

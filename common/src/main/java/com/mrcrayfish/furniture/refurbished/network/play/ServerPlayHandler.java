@@ -8,6 +8,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.electricity.Connection;
 import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
 import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
+import com.mrcrayfish.furniture.refurbished.inventory.DoorMatMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.IPowerSwitchMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.PostBoxMenu;
 import com.mrcrayfish.furniture.refurbished.item.PackageItem;
@@ -20,6 +21,7 @@ import com.mrcrayfish.furniture.refurbished.network.message.MessageSendPackage;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSetName;
 import com.mrcrayfish.furniture.refurbished.network.message.MessagePaddleBall;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageTogglePower;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageUpdatePainting;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
@@ -126,6 +128,16 @@ public class ServerPlayHandler
         if(player != null && player.containerMenu instanceof ComputerMenu menu)
         {
             menu.getComputer().launchProgram(message.getId());
+        }
+    }
+
+    public static void handleMessageUpdatePainting(MessageUpdatePainting message, ServerPlayer player)
+    {
+        if(player != null && player.containerMenu instanceof DoorMatMenu menu)
+        {
+            menu.getPaintable().setImage(message.getImage());
+            menu.getPaintable().setEditable(false);
+            player.closeContainer();
         }
     }
 }

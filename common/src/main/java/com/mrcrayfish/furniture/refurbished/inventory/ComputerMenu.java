@@ -55,7 +55,7 @@ public class ComputerMenu extends SimpleContainerMenu
     @Override
     public boolean stillValid(Player player)
     {
-        return player.equals(this.computer.getUser());
+        return player.equals(this.computer.getUser()); // TODO ensure tile entity is valid
     }
 
     @Override
