@@ -3,14 +3,17 @@ package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 import com.mrcrayfish.furniture.refurbished.blockentity.DoorMatBlockEntity;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.IconButton;
 import com.mrcrayfish.furniture.refurbished.computer.client.widget.ComputerButton;
+import com.mrcrayfish.furniture.refurbished.image.ImagePresets;
 import com.mrcrayfish.furniture.refurbished.image.PaletteImage;
 import com.mrcrayfish.furniture.refurbished.inventory.DoorMatMenu;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageUpdatePainting;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import it.unimi.dsi.fastutil.Pair;
+import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -28,23 +31,47 @@ import java.util.Queue;
 public class DoorMatScreen extends AbstractContainerScreen<DoorMatMenu>
 {
     private static final ResourceLocation TEXTURE = Utils.resource("textures/gui/container/door_mat.png");
+    private static final PaletteImage[] PRESETS = {
+            ImagePresets.BLANK,
+            ImagePresets.HEART,
+            ImagePresets.MUSHROOM,
+            ImagePresets.FORWARD_ARROW,
+            ImagePresets.WARNING,
+            ImagePresets.HOUSE,
+            ImagePresets.CRISSCROSS,
+            ImagePresets.STRIPES,
+            ImagePresets.WAVES_PATTERN,
+            ImagePresets.GEM_PATTERN,
+            ImagePresets.ABSTRACT_PATTERN,
+            ImagePresets.SWIRL_PATTERN
+    };
 
-    private final PaletteImage image = new PaletteImage(DoorMatBlockEntity.IMAGE_WIDTH, DoorMatBlockEntity.IMAGE_HEIGHT);
+    private PaletteImage image;
     private Tool currentTool = Tool.PENCIL;
     private @Nullable Tool activeTool;
     private int selectedColourIndex = 1;
+    private int currentPreset = 0;
 
     public DoorMatScreen(DoorMatMenu menu, Inventory playerInventory, Component title)
     {
         super(menu, playerInventory, title);
         this.imageWidth = 134;
         this.imageHeight = 103;
+        this.image = PRESETS[0].copy();
     }
 
     @Override
     protected void init()
     {
         super.init();
+        Button previousPreset = this.addRenderableWidget(new IconButton(this.leftPos + this.imageWidth / 2 - 45 - 20, this.topPos + 14, 0, 20, btn -> {
+            this.image = PRESETS[Math.floorMod(--currentPreset, PRESETS.length)].copy();
+        }));
+        previousPreset.setTooltip(Tooltip.create(Utils.translation("gui", "previous_preset")));
+        Button nextPreset = this.addRenderableWidget(new IconButton(this.leftPos + this.imageWidth / 2 + 45, this.topPos + 14, 10, 20, btn -> {
+            this.image = PRESETS[Math.floorMod(++currentPreset, PRESETS.length)].copy();
+        }));
+        nextPreset.setTooltip(Tooltip.create(Utils.translation("gui", "next_preset")));
         for(int i = 1; i < PaletteImage.COLOURS.length; i++)
         {
             this.addRenderableWidget(new ColourButton(this.leftPos + (i - 1) * 8 + 7, this.topPos + 65, i));

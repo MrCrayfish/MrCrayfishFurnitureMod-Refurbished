@@ -493,6 +493,8 @@
     "gui.refurbished_furniture.node_count": "%s / %s",
     "gui.refurbished_furniture.recycle": "Recycle",
     "gui.refurbished_furniture.save": "Save",
+    "gui.refurbished_furniture.next_preset": "Next Preset",
+    "gui.refurbished_furniture.previous_preset": "Previous Preset",
     "subtitle.refurbished_furniture.package_open": "Package Opening",
     "computer_program.refurbished_furniture.paddle_ball": "Paddle Ball",
     "computer_program.refurbished_furniture.paddle_ball.play_ai": "Play vs AI",

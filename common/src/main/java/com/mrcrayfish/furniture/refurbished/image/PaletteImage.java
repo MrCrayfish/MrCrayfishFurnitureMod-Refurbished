@@ -115,5 +115,9 @@ public class PaletteImage
     public ResourceLocation createUniqueId()
     {
         return new ResourceLocation(Util.sanitizeName(UUID.randomUUID().toString(), ResourceLocation::validPathChar));
+
+    public PaletteImage copy()
+    {
+        return new PaletteImage(this.width, this.height, () -> BitSet.valueOf(this.bits.toLongArray()));
     }
 }
