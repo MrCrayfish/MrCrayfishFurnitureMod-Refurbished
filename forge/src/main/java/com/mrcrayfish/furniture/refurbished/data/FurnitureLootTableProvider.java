@@ -10,6 +10,7 @@ import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.ValidationContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -32,10 +33,7 @@ public class FurnitureLootTableProvider extends LootTableProvider
     }
 
     @Override
-    protected void validate(Map<ResourceLocation, LootTable> map, ValidationContext context)
-    {
-
-    }
+    protected void validate(Map<ResourceLocation, LootTable> map, ValidationContext context) {}
 
     public static class Block extends BlockLootSubProvider
     {
@@ -47,7 +45,10 @@ public class FurnitureLootTableProvider extends LootTableProvider
         @Override
         protected void generate()
         {
-            CommonLootTableProvider.Block.accept(new PlatformLootBuilder.Block(this::dropSelf, this::add));
+            CommonLootTableProvider.Block.accept(new PlatformLootBuilder.Block(this::dropSelf, (block, builder) -> {
+
+                this.add(block, LootTable.lootTable().withPool(this.applyExplosionCondition(block, builder)));
+            }));
         }
 
         @Override

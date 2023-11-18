@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.data;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 import java.util.function.BiConsumer;
@@ -22,15 +23,15 @@ public class PlatformLootBuilder
         }
 
         @Override
-        public void add(net.minecraft.world.level.block.Block block)
+        public void self(net.minecraft.world.level.block.Block block)
         {
             this.provider.dropSelf(block);
         }
 
         @Override
-        public void add(net.minecraft.world.level.block.Block block, LootTable.Builder builder)
+        public void custom(net.minecraft.world.level.block.Block block, LootPool.Builder builder)
         {
-            this.provider.add(block, builder);
+            this.provider.add(block, LootTable.lootTable().withPool(this.provider.applyExplosionCondition(block, builder)));
         }
     }
 
