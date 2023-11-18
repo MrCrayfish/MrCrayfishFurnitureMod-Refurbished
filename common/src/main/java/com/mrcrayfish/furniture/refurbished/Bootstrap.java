@@ -8,6 +8,8 @@ import com.mrcrayfish.furniture.refurbished.blockentity.GrillBlockEntity;
 import com.mrcrayfish.furniture.refurbished.computer.Computer;
 import com.mrcrayfish.furniture.refurbished.computer.IService;
 import com.mrcrayfish.furniture.refurbished.computer.app.PaddleBall;
+import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
+import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.electricity.ElectricityTicker;
 import com.mrcrayfish.furniture.refurbished.electricity.LinkManager;
@@ -18,11 +20,17 @@ import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.cauldron.CauldronInteraction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Containers;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -66,6 +74,31 @@ public class Bootstrap
                 Containers.dropItemStack(source.getLevel(), pos.x, pos.y, pos.z, s);
             });
             return ItemStack.EMPTY;
+        });
+
+        // Adds the ability to remove the art from door mats by interacting with a water cauldron
+        CauldronInteraction.WATER.put(ModBlocks.DOOR_MAT.get().asItem(), (state, level, pos, player, hand, stack) -> {
+            Block block = Block.byItem(stack.getItem());
+            if(block == ModBlocks.DOOR_MAT.get()) {
+                CompoundTag tag = BlockItem.getBlockEntityData(stack);
+                if(tag != null) {
+                    if(!level.isClientSide()) {
+                        ItemStack copy = stack.copyWithCount(1);
+                        BlockItem.setBlockEntityData(copy, ModBlockEntities.DOOR_MAT.get(), new CompoundTag());
+                        stack.shrink(1);
+                        if(stack.isEmpty()) {
+                            player.setItemInHand(hand, copy);
+                        } else if (player.addItem(copy)) {
+                            player.inventoryMenu.sendAllDataToRemote();
+                        } else {
+                            player.drop(copy, false);
+                        }
+                        LayeredCauldronBlock.lowerFillLevel(state, level, pos);
+                    }
+                    return InteractionResult.sidedSuccess(level.isClientSide());
+                }
+            }
+            return InteractionResult.PASS;
         });
 
         // Link Manager and Delivery Service events
