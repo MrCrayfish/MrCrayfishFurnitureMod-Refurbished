@@ -3,16 +3,12 @@ package com.mrcrayfish.furniture.refurbished.block;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.furniture.refurbished.blockentity.DoorMatBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.DoorbellBlockEntity;
-import com.mrcrayfish.furniture.refurbished.client.FurnitureScreens;
-import com.mrcrayfish.furniture.refurbished.util.Utils;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -45,6 +41,30 @@ public class DoorMatBlock extends FurnitureHorizontalBlock implements EntityBloc
             return VoxelShapeHelper.rotateHorizontally(baseShape, state.getValue(DIRECTION));
         })));
     }
+
+    /*(@Override
+    public InteractionResult use(BlockState $$0, Level level, BlockPos pos, Player $$3, InteractionHand $$4, BlockHitResult $$5)
+    {
+        if(level instanceof ServerLevel)
+        {
+            if(level.getBlockEntity(pos) instanceof DoorMatBlockEntity doorMat)
+            {
+                PaletteImage image = doorMat.getImage();
+                if(image != null)
+                {
+                    for(int y = 0; y < image.getHeight(); y++)
+                    {
+                        for(int x = 0; x < image.getWidth(); x++)
+                        {
+                            if(image.get(x, y) != 0)
+                                System.out.println("image.set(" + x + ", " + y + ", " + image.get(x, y) + ");");
+                        }
+                    }
+                }
+            }
+        }
+        return super.use($$0, level, pos, $$3, $$4, $$5);
+    }*/
 
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack)
