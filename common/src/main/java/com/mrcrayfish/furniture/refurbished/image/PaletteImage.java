@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.image;
 
 import com.google.common.base.Preconditions;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.Util;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -36,12 +37,12 @@ public class PaletteImage
     {
         Preconditions.checkArgument(width >= 1 && width <= 128, "Width must be between 1 and 128 (inclusive)");
         Preconditions.checkArgument(height >= 1 && height <= 128, "Height must be between 1 and 128 (inclusive)");
-        this.id = createUniqueId();
         this.width = width;
         this.height = height;
         BitSet bits = new BitSet(width * height);
         bits.or(supplier.get());
         this.bits = bits;
+        this.id = this.createUniqueId(bits);
     }
 
     // TODO docs
@@ -112,9 +113,10 @@ public class PaletteImage
         return new PaletteImage(width, height, () -> BitSet.valueOf(data));
     }
 
-    public ResourceLocation createUniqueId()
+    public ResourceLocation createUniqueId(BitSet set)
     {
-        return new ResourceLocation(Util.sanitizeName(UUID.randomUUID().toString(), ResourceLocation::validPathChar));
+        return Utils.resource("palette_image_" + Util.sanitizeName(Integer.toHexString(set.hashCode()), ResourceLocation::validPathChar));
+    }
 
     public PaletteImage copy()
     {
