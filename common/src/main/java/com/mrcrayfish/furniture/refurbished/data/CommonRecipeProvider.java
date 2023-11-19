@@ -8,13 +8,13 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.data.recipes.SingleItemRecipeBuilder;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -738,34 +738,39 @@ public class CommonRecipeProvider
                 .save(this.consumer);
     }
 
+    private void cooking(String name, RecipeCategory category, RecipeSerializer<? extends AbstractCookingRecipe> serializer, ItemLike input, ItemLike output, int time, float experience)
+    {
+        String baseName = input.asItem().toString();
+        String resultName = output.asItem().toString();
+        SimpleCookingRecipeBuilder
+                .generic(Ingredient.of(input), category, output, experience, time, serializer)
+                .unlockedBy("has_" + baseName, this.has.apply(input))
+                .save(this.consumer, resultName + "_from_" + name);
+    }
+
     private void grillCooking(ItemLike rawItem, ItemLike cookedItem, int cookingTime, float experience)
     {
-        String baseName = rawItem.asItem().toString();
-        String resultName = cookedItem.asItem().toString();
-        SimpleCookingRecipeBuilder
-                .generic(Ingredient.of(rawItem), RecipeCategory.FOOD, cookedItem, experience, cookingTime, ModRecipeSerializers.GRILL_RECIPE.get())
-                .unlockedBy("has_" + baseName, this.has.apply(rawItem))
-                .save(this.consumer, resultName + "_from_grill_cooking");
+        this.cooking("grill_cooking", RecipeCategory.FOOD, ModRecipeSerializers.GRILL_RECIPE.get(), rawItem, cookedItem, cookingTime, experience);
     }
 
     private void freezerSolidifying(ItemLike baseItem, ItemLike frozenItem, int freezeTime, float experience)
     {
-        String baseName = baseItem.asItem().toString();
-        String resultName = frozenItem.asItem().toString();
-        SimpleCookingRecipeBuilder
-                .generic(Ingredient.of(baseItem), RecipeCategory.MISC, frozenItem, experience, freezeTime, ModRecipeSerializers.FREEZER_RECIPE.get())
-                .unlockedBy("has_" + baseName, this.has.apply(baseItem))
-                .save(this.consumer, resultName + "_from_freezer_solidifying");
+        this.cooking("freezer_solidifying", RecipeCategory.MISC, ModRecipeSerializers.FREEZER_RECIPE.get(), baseItem, frozenItem, freezeTime, experience);
     }
 
     private void toasterHeating(ItemLike baseItem, ItemLike heatedItem, int heatingTime, float experience)
     {
-        String baseName = baseItem.asItem().toString();
-        String resultName = heatedItem.asItem().toString();
-        SimpleCookingRecipeBuilder
-                .generic(Ingredient.of(baseItem), RecipeCategory.FOOD, heatedItem, experience, heatingTime, ModRecipeSerializers.TOASTER_RECIPE.get())
-                .unlockedBy("has_" + baseName, this.has.apply(baseItem))
-                .save(this.consumer, resultName + "_from_toaster_heating");
+        this.cooking("toaster_heating", RecipeCategory.FOOD, ModRecipeSerializers.TOASTER_RECIPE.get(), baseItem, heatedItem, heatingTime, experience);
+    }
+
+    private void microwaveHeating(ItemLike baseItem, ItemLike heatedItem, int heatingTime, float experience)
+    {
+        this.cooking("microwave_heating", RecipeCategory.FOOD, ModRecipeSerializers.MICROWAVE_RECIPE.get(), baseItem, heatedItem, heatingTime, experience);
+    }
+
+    private void fryingPanCooking(ItemLike baseItem, ItemLike heatedItem, int heatingTime, float experience)
+    {
+        this.cooking("frying_pan_cooking", RecipeCategory.FOOD, ModRecipeSerializers.FRYING_PAN_RECIPE.get(), baseItem, heatedItem, heatingTime, experience);
     }
 
     private void cuttingBoardSlicing(ItemLike baseItem, ItemLike resultItem, int resultCount)
@@ -774,26 +779,6 @@ public class CommonRecipeProvider
         String resultName = resultItem.asItem().toString();
         SingleItemRecipeBuilder builder = new SingleItemRecipeBuilder(RecipeCategory.MISC, ModRecipeSerializers.CUTTING_BOARD_RECIPE.get(), Ingredient.of(baseItem), resultItem, resultCount);
         builder.unlockedBy("has_" + baseName, this.has.apply(baseItem)).save(this.consumer, resultName + "_from_cutting_board_slicing");
-    }
-
-    private void microwaveHeating(ItemLike baseItem, ItemLike heatedItem, int heatingTime, float experience)
-    {
-        String baseName = baseItem.asItem().toString();
-        String resultName = heatedItem.asItem().toString();
-        SimpleCookingRecipeBuilder
-                .generic(Ingredient.of(baseItem), RecipeCategory.MISC, heatedItem, experience, heatingTime, ModRecipeSerializers.MICROWAVE_RECIPE.get())
-                .unlockedBy("has_" + baseName, this.has.apply(baseItem))
-                .save(this.consumer, resultName + "_from_microwave_heating");
-    }
-
-    private void fryingPanCooking(ItemLike baseItem, ItemLike heatedItem, int heatingTime, float experience)
-    {
-        String baseName = baseItem.asItem().toString();
-        String resultName = heatedItem.asItem().toString();
-        SimpleCookingRecipeBuilder
-                .generic(Ingredient.of(baseItem), RecipeCategory.FOOD, heatedItem, experience, heatingTime, ModRecipeSerializers.FRYING_PAN_RECIPE.get())
-                .unlockedBy("has_" + baseName, this.has.apply(baseItem))
-                .save(this.consumer, resultName + "_from_frying_pan_cooking");
     }
 
     private void recycleBinSalvaging(ItemLike baseItem, ItemLike resultItem, int resultCount)
