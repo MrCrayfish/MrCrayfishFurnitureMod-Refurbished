@@ -6,6 +6,7 @@ import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -69,7 +70,12 @@ public class KitchenCabinetryBlock extends FurnitureHorizontalBlock implements I
         return builder.build();
     }
 
-    // TODO fix placement state not updating to neighbours
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context)
+    {
+        BlockState state = super.getStateForPlacement(context);
+        return state != null ? state.setValue(SHAPE, this.getShape(state, context.getLevel(), context.getClickedPos())) : null;
+    }
 
     @Override
     public BlockState updateShape(BlockState state, Direction direction, BlockState newState, LevelAccessor level, BlockPos pos, BlockPos newPos)
