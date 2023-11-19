@@ -123,6 +123,16 @@ public class ComputerButton extends Button
     }
 
     /**
+     * Sets the outline colour of the button when it is not {@link #active}
+     *
+     * @param outlineDisabledColour an ARGB integer of the colour. See {@link FastColor.ARGB32} for utilities
+     */
+    public void setOutlineDisabledColour(int outlineDisabledColour)
+    {
+        this.outlineDisabledColour = outlineDisabledColour;
+    }
+
+    /**
      * Sets the background colour of the button when enabled
      *
      * @param backgroundColour an ARGB integer of the colour. See {@link FastColor.ARGB32} for utilities
@@ -140,6 +150,16 @@ public class ComputerButton extends Button
     public void setBackgroundHighlightColour(int backgroundHighlightColour)
     {
         this.backgroundHighlightColour = backgroundHighlightColour;
+    }
+
+    /**
+     * Sets the background colour of the button when it is not {@link #active}
+     *
+     * @param backgroundDisabledColour an ARGB integer of the colour. See {@link FastColor.ARGB32} for utilities
+     */
+    public void setBackgroundDisabledColour(int backgroundDisabledColour)
+    {
+        this.backgroundDisabledColour = backgroundDisabledColour;
     }
 
     /**
