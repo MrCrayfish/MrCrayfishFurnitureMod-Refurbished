@@ -22,6 +22,14 @@ public class ModTags
         public static final TagKey<Item> ELECTRONICS = tag("electronics");
         public static final TagKey<Item> STORAGE = tag("storage");
         public static final TagKey<Item> ITEMS = tag("items");
+        public static final TagKey<Item> WOODEN_KITCHEN_CABINETRY = tag("wooden_kitchen_cabinetry");
+        public static final TagKey<Item> WOODEN_KITCHEN_DRAWERS = tag("wooden_kitchen_drawers");
+        public static final TagKey<Item> WOODEN_KITCHEN_SINKS = tag("wooden_kitchen_sinks");
+        public static final TagKey<Item> WOODEN_KITCHEN_STORAGE_CABINETS = tag("wooden_kitchen_storage_cabinets");
+        public static final TagKey<Item> COLOURED_KITCHEN_CABINETRY = tag("coloured_kitchen_cabinetry");
+        public static final TagKey<Item> COLOURED_KITCHEN_DRAWERS = tag("coloured_kitchen_drawers");
+        public static final TagKey<Item> COLOURED_KITCHEN_SINKS = tag("coloured_kitchen_sinks");
+        public static final TagKey<Item> COLOURED_KITCHEN_STORAGE_CABINETS = tag("coloured_kitchen_storage_cabinets");
 
         private static TagKey<Item> tag(String name)
         {

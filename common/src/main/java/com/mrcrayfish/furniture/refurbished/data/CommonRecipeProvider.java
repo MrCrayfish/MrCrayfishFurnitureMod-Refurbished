@@ -2,10 +2,12 @@ package com.mrcrayfish.furniture.refurbished.data;
 
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeSerializers;
+import com.mrcrayfish.furniture.refurbished.core.ModTags;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.data.recipes.SingleItemRecipeBuilder;
 import net.minecraft.tags.ItemTags;
@@ -38,6 +40,193 @@ public class CommonRecipeProvider
 
     public void run()
     {
+        this.table(Blocks.OAK_PLANKS, ModBlocks.TABLE_OAK.get());
+        this.table(Blocks.SPRUCE_PLANKS, ModBlocks.TABLE_SPRUCE.get());
+        this.table(Blocks.BIRCH_PLANKS, ModBlocks.TABLE_BIRCH.get());
+        this.table(Blocks.JUNGLE_PLANKS, ModBlocks.TABLE_JUNGLE.get());
+        this.table(Blocks.ACACIA_PLANKS, ModBlocks.TABLE_ACACIA.get());
+        this.table(Blocks.DARK_OAK_PLANKS, ModBlocks.TABLE_DARK_OAK.get());
+        this.table(Blocks.MANGROVE_PLANKS, ModBlocks.TABLE_MANGROVE.get());
+        this.table(Blocks.CHERRY_PLANKS, ModBlocks.TABLE_CHERRY.get());
+        this.table(Blocks.CRIMSON_PLANKS, ModBlocks.TABLE_CRIMSON.get());
+        this.table(Blocks.WARPED_PLANKS, ModBlocks.TABLE_WARPED.get());
+        this.chair(Blocks.OAK_PLANKS, ModBlocks.CHAIR_OAK.get());
+        this.chair(Blocks.SPRUCE_PLANKS, ModBlocks.CHAIR_SPRUCE.get());
+        this.chair(Blocks.BIRCH_PLANKS, ModBlocks.CHAIR_BIRCH.get());
+        this.chair(Blocks.JUNGLE_PLANKS, ModBlocks.CHAIR_JUNGLE.get());
+        this.chair(Blocks.ACACIA_PLANKS, ModBlocks.CHAIR_ACACIA.get());
+        this.chair(Blocks.DARK_OAK_PLANKS, ModBlocks.CHAIR_DARK_OAK.get());
+        this.chair(Blocks.MANGROVE_PLANKS, ModBlocks.CHAIR_MANGROVE.get());
+        this.chair(Blocks.CHERRY_PLANKS, ModBlocks.CHAIR_CHERRY.get());
+        this.chair(Blocks.CRIMSON_PLANKS, ModBlocks.CHAIR_CRIMSON.get());
+        this.chair(Blocks.WARPED_PLANKS, ModBlocks.CHAIR_WARPED.get());
+        this.desk(Blocks.OAK_PLANKS, ModBlocks.DESK_OAK.get());
+        this.desk(Blocks.SPRUCE_PLANKS, ModBlocks.DESK_SPRUCE.get());
+        this.desk(Blocks.BIRCH_PLANKS, ModBlocks.DESK_BIRCH.get());
+        this.desk(Blocks.JUNGLE_PLANKS, ModBlocks.DESK_JUNGLE.get());
+        this.desk(Blocks.ACACIA_PLANKS, ModBlocks.DESK_ACACIA.get());
+        this.desk(Blocks.DARK_OAK_PLANKS, ModBlocks.DESK_DARK_OAK.get());
+        this.desk(Blocks.MANGROVE_PLANKS, ModBlocks.DESK_MANGROVE.get());
+        this.desk(Blocks.CHERRY_PLANKS, ModBlocks.DESK_CHERRY.get());
+        this.desk(Blocks.CRIMSON_PLANKS, ModBlocks.DESK_CRIMSON.get());
+        this.desk(Blocks.WARPED_PLANKS, ModBlocks.DESK_WARPED.get());
+        this.drawer(Blocks.OAK_PLANKS, Blocks.OAK_SLAB, ModBlocks.DRAWER_OAK.get());
+        this.drawer(Blocks.SPRUCE_PLANKS, Blocks.SPRUCE_SLAB, ModBlocks.DRAWER_SPRUCE.get());
+        this.drawer(Blocks.BIRCH_PLANKS, Blocks.BIRCH_SLAB, ModBlocks.DRAWER_BIRCH.get());
+        this.drawer(Blocks.JUNGLE_PLANKS, Blocks.JUNGLE_SLAB, ModBlocks.DRAWER_JUNGLE.get());
+        this.drawer(Blocks.ACACIA_PLANKS, Blocks.ACACIA_SLAB, ModBlocks.DRAWER_ACACIA.get());
+        this.drawer(Blocks.DARK_OAK_PLANKS, Blocks.DARK_OAK_SLAB, ModBlocks.DRAWER_DARK_OAK.get());
+        this.drawer(Blocks.MANGROVE_PLANKS, Blocks.MANGROVE_SLAB, ModBlocks.DRAWER_MANGROVE.get());
+        this.drawer(Blocks.CHERRY_PLANKS, Blocks.CHERRY_SLAB, ModBlocks.DRAWER_CHERRY.get());
+        this.drawer(Blocks.CRIMSON_PLANKS, Blocks.CRIMSON_SLAB, ModBlocks.DRAWER_CRIMSON.get());
+        this.drawer(Blocks.WARPED_PLANKS, Blocks.WARPED_SLAB, ModBlocks.DRAWER_WARPED.get());
+        this.woodenKitchenCabinetry(Blocks.OAK_PLANKS, Blocks.OAK_SLAB, ModBlocks.KITCHEN_CABINETRY_OAK.get());
+        this.woodenKitchenCabinetry(Blocks.SPRUCE_PLANKS, Blocks.SPRUCE_SLAB, ModBlocks.KITCHEN_CABINETRY_SPRUCE.get());
+        this.woodenKitchenCabinetry(Blocks.BIRCH_PLANKS, Blocks.BIRCH_SLAB, ModBlocks.KITCHEN_CABINETRY_BIRCH.get());
+        this.woodenKitchenCabinetry(Blocks.JUNGLE_PLANKS, Blocks.JUNGLE_SLAB, ModBlocks.KITCHEN_CABINETRY_JUNGLE.get());
+        this.woodenKitchenCabinetry(Blocks.ACACIA_PLANKS, Blocks.ACACIA_SLAB, ModBlocks.KITCHEN_CABINETRY_ACACIA.get());
+        this.woodenKitchenCabinetry(Blocks.DARK_OAK_PLANKS, Blocks.DARK_OAK_SLAB, ModBlocks.KITCHEN_CABINETRY_DARK_OAK.get());
+        this.woodenKitchenCabinetry(Blocks.MANGROVE_PLANKS, Blocks.MANGROVE_SLAB, ModBlocks.KITCHEN_CABINETRY_MANGROVE.get());
+        this.woodenKitchenCabinetry(Blocks.CHERRY_PLANKS, Blocks.CHERRY_SLAB, ModBlocks.KITCHEN_CABINETRY_CHERRY.get());
+        this.woodenKitchenCabinetry(Blocks.CRIMSON_PLANKS, Blocks.CRIMSON_SLAB, ModBlocks.KITCHEN_CABINETRY_CRIMSON.get());
+        this.woodenKitchenCabinetry(Blocks.WARPED_PLANKS, Blocks.WARPED_SLAB, ModBlocks.KITCHEN_CABINETRY_WARPED.get());
+        this.woodenKitchenDrawer(Blocks.OAK_PLANKS, Blocks.OAK_SLAB, ModBlocks.KITCHEN_DRAWER_OAK.get());
+        this.woodenKitchenDrawer(Blocks.SPRUCE_PLANKS, Blocks.SPRUCE_SLAB, ModBlocks.KITCHEN_DRAWER_SPRUCE.get());
+        this.woodenKitchenDrawer(Blocks.BIRCH_PLANKS, Blocks.BIRCH_SLAB, ModBlocks.KITCHEN_DRAWER_BIRCH.get());
+        this.woodenKitchenDrawer(Blocks.JUNGLE_PLANKS, Blocks.JUNGLE_SLAB, ModBlocks.KITCHEN_DRAWER_JUNGLE.get());
+        this.woodenKitchenDrawer(Blocks.ACACIA_PLANKS, Blocks.ACACIA_SLAB, ModBlocks.KITCHEN_DRAWER_ACACIA.get());
+        this.woodenKitchenDrawer(Blocks.DARK_OAK_PLANKS, Blocks.DARK_OAK_SLAB, ModBlocks.KITCHEN_DRAWER_DARK_OAK.get());
+        this.woodenKitchenDrawer(Blocks.MANGROVE_PLANKS, Blocks.MANGROVE_SLAB, ModBlocks.KITCHEN_DRAWER_MANGROVE.get());
+        this.woodenKitchenDrawer(Blocks.CHERRY_PLANKS, Blocks.CHERRY_SLAB, ModBlocks.KITCHEN_DRAWER_CHERRY.get());
+        this.woodenKitchenDrawer(Blocks.CRIMSON_PLANKS, Blocks.CRIMSON_SLAB, ModBlocks.KITCHEN_DRAWER_CRIMSON.get());
+        this.woodenKitchenDrawer(Blocks.WARPED_PLANKS, Blocks.WARPED_SLAB, ModBlocks.KITCHEN_DRAWER_WARPED.get());
+        this.woodenKitchenSink(Blocks.OAK_PLANKS, Blocks.OAK_SLAB, ModBlocks.KITCHEN_SINK_OAK.get());
+        this.woodenKitchenSink(Blocks.SPRUCE_PLANKS, Blocks.SPRUCE_SLAB, ModBlocks.KITCHEN_SINK_SPRUCE.get());
+        this.woodenKitchenSink(Blocks.BIRCH_PLANKS, Blocks.BIRCH_SLAB, ModBlocks.KITCHEN_SINK_BIRCH.get());
+        this.woodenKitchenSink(Blocks.JUNGLE_PLANKS, Blocks.JUNGLE_SLAB, ModBlocks.KITCHEN_SINK_JUNGLE.get());
+        this.woodenKitchenSink(Blocks.ACACIA_PLANKS, Blocks.ACACIA_SLAB, ModBlocks.KITCHEN_SINK_ACACIA.get());
+        this.woodenKitchenSink(Blocks.DARK_OAK_PLANKS, Blocks.DARK_OAK_SLAB, ModBlocks.KITCHEN_SINK_DARK_OAK.get());
+        this.woodenKitchenSink(Blocks.MANGROVE_PLANKS, Blocks.MANGROVE_SLAB, ModBlocks.KITCHEN_SINK_MANGROVE.get());
+        this.woodenKitchenSink(Blocks.CHERRY_PLANKS, Blocks.CHERRY_SLAB, ModBlocks.KITCHEN_SINK_CHERRY.get());
+        this.woodenKitchenSink(Blocks.CRIMSON_PLANKS, Blocks.CRIMSON_SLAB, ModBlocks.KITCHEN_SINK_CRIMSON.get());
+        this.woodenKitchenSink(Blocks.WARPED_PLANKS, Blocks.WARPED_SLAB, ModBlocks.KITCHEN_SINK_WARPED.get());
+        this.woodenKitchenStorageCabinet(Blocks.OAK_PLANKS, Blocks.OAK_SLAB, ModBlocks.KITCHEN_STORAGE_CABINET_OAK.get());
+        this.woodenKitchenStorageCabinet(Blocks.SPRUCE_PLANKS, Blocks.SPRUCE_SLAB, ModBlocks.KITCHEN_STORAGE_CABINET_SPRUCE.get());
+        this.woodenKitchenStorageCabinet(Blocks.BIRCH_PLANKS, Blocks.BIRCH_SLAB, ModBlocks.KITCHEN_STORAGE_CABINET_BIRCH.get());
+        this.woodenKitchenStorageCabinet(Blocks.JUNGLE_PLANKS, Blocks.JUNGLE_SLAB, ModBlocks.KITCHEN_STORAGE_CABINET_JUNGLE.get());
+        this.woodenKitchenStorageCabinet(Blocks.ACACIA_PLANKS, Blocks.ACACIA_SLAB, ModBlocks.KITCHEN_STORAGE_CABINET_ACACIA.get());
+        this.woodenKitchenStorageCabinet(Blocks.DARK_OAK_PLANKS, Blocks.DARK_OAK_SLAB, ModBlocks.KITCHEN_STORAGE_CABINET_DARK_OAK.get());
+        this.woodenKitchenStorageCabinet(Blocks.MANGROVE_PLANKS, Blocks.MANGROVE_SLAB, ModBlocks.KITCHEN_STORAGE_CABINET_MANGROVE.get());
+        this.woodenKitchenStorageCabinet(Blocks.CHERRY_PLANKS, Blocks.CHERRY_SLAB, ModBlocks.KITCHEN_STORAGE_CABINET_CHERRY.get());
+        this.woodenKitchenStorageCabinet(Blocks.CRIMSON_PLANKS, Blocks.CRIMSON_SLAB, ModBlocks.KITCHEN_STORAGE_CABINET_CRIMSON.get());
+        this.woodenKitchenStorageCabinet(Blocks.WARPED_PLANKS, Blocks.WARPED_SLAB, ModBlocks.KITCHEN_STORAGE_CABINET_WARPED.get());
+        this.colouredKitchenCabinetry(Items.WHITE_DYE, ModBlocks.KITCHEN_CABINETRY_WHITE.get());
+        this.colouredKitchenCabinetry(Items.ORANGE_DYE, ModBlocks.KITCHEN_CABINETRY_ORANGE.get());
+        this.colouredKitchenCabinetry(Items.MAGENTA_DYE, ModBlocks.KITCHEN_CABINETRY_MAGENTA.get());
+        this.colouredKitchenCabinetry(Items.LIGHT_BLUE_DYE, ModBlocks.KITCHEN_CABINETRY_LIGHT_BLUE.get());
+        this.colouredKitchenCabinetry(Items.YELLOW_DYE, ModBlocks.KITCHEN_CABINETRY_YELLOW.get());
+        this.colouredKitchenCabinetry(Items.LIME_DYE, ModBlocks.KITCHEN_CABINETRY_LIME.get());
+        this.colouredKitchenCabinetry(Items.PINK_DYE, ModBlocks.KITCHEN_CABINETRY_PINK.get());
+        this.colouredKitchenCabinetry(Items.GRAY_DYE, ModBlocks.KITCHEN_CABINETRY_GRAY.get());
+        this.colouredKitchenCabinetry(Items.LIGHT_GRAY_DYE, ModBlocks.KITCHEN_CABINETRY_LIGHT_GRAY.get());
+        this.colouredKitchenCabinetry(Items.CYAN_DYE, ModBlocks.KITCHEN_CABINETRY_CYAN.get());
+        this.colouredKitchenCabinetry(Items.PURPLE_DYE, ModBlocks.KITCHEN_CABINETRY_PURPLE.get());
+        this.colouredKitchenCabinetry(Items.BLUE_DYE, ModBlocks.KITCHEN_CABINETRY_BLUE.get());
+        this.colouredKitchenCabinetry(Items.BROWN_DYE, ModBlocks.KITCHEN_CABINETRY_BROWN.get());
+        this.colouredKitchenCabinetry(Items.GREEN_DYE, ModBlocks.KITCHEN_CABINETRY_GREEN.get());
+        this.colouredKitchenCabinetry(Items.RED_DYE, ModBlocks.KITCHEN_CABINETRY_RED.get());
+        this.colouredKitchenCabinetry(Items.BLACK_DYE, ModBlocks.KITCHEN_CABINETRY_BLACK.get());
+        this.colouredKitchenDrawer(Items.WHITE_DYE, ModBlocks.KITCHEN_DRAWER_WHITE.get());
+        this.colouredKitchenDrawer(Items.ORANGE_DYE, ModBlocks.KITCHEN_DRAWER_ORANGE.get());
+        this.colouredKitchenDrawer(Items.MAGENTA_DYE, ModBlocks.KITCHEN_DRAWER_MAGENTA.get());
+        this.colouredKitchenDrawer(Items.LIGHT_BLUE_DYE, ModBlocks.KITCHEN_DRAWER_LIGHT_BLUE.get());
+        this.colouredKitchenDrawer(Items.YELLOW_DYE, ModBlocks.KITCHEN_DRAWER_YELLOW.get());
+        this.colouredKitchenDrawer(Items.LIME_DYE, ModBlocks.KITCHEN_DRAWER_LIME.get());
+        this.colouredKitchenDrawer(Items.PINK_DYE, ModBlocks.KITCHEN_DRAWER_PINK.get());
+        this.colouredKitchenDrawer(Items.GRAY_DYE, ModBlocks.KITCHEN_DRAWER_GRAY.get());
+        this.colouredKitchenDrawer(Items.LIGHT_GRAY_DYE, ModBlocks.KITCHEN_DRAWER_LIGHT_GRAY.get());
+        this.colouredKitchenDrawer(Items.CYAN_DYE, ModBlocks.KITCHEN_DRAWER_CYAN.get());
+        this.colouredKitchenDrawer(Items.PURPLE_DYE, ModBlocks.KITCHEN_DRAWER_PURPLE.get());
+        this.colouredKitchenDrawer(Items.BLUE_DYE, ModBlocks.KITCHEN_DRAWER_BLUE.get());
+        this.colouredKitchenDrawer(Items.BROWN_DYE, ModBlocks.KITCHEN_DRAWER_BROWN.get());
+        this.colouredKitchenDrawer(Items.GREEN_DYE, ModBlocks.KITCHEN_DRAWER_GREEN.get());
+        this.colouredKitchenDrawer(Items.RED_DYE, ModBlocks.KITCHEN_DRAWER_RED.get());
+        this.colouredKitchenDrawer(Items.BLACK_DYE, ModBlocks.KITCHEN_DRAWER_BLACK.get());
+        this.colouredKitchenSink(Items.WHITE_DYE, ModBlocks.KITCHEN_SINK_WHITE.get());
+        this.colouredKitchenSink(Items.ORANGE_DYE, ModBlocks.KITCHEN_SINK_ORANGE.get());
+        this.colouredKitchenSink(Items.MAGENTA_DYE, ModBlocks.KITCHEN_SINK_MAGENTA.get());
+        this.colouredKitchenSink(Items.LIGHT_BLUE_DYE, ModBlocks.KITCHEN_SINK_LIGHT_BLUE.get());
+        this.colouredKitchenSink(Items.YELLOW_DYE, ModBlocks.KITCHEN_SINK_YELLOW.get());
+        this.colouredKitchenSink(Items.LIME_DYE, ModBlocks.KITCHEN_SINK_LIME.get());
+        this.colouredKitchenSink(Items.PINK_DYE, ModBlocks.KITCHEN_SINK_PINK.get());
+        this.colouredKitchenSink(Items.GRAY_DYE, ModBlocks.KITCHEN_SINK_GRAY.get());
+        this.colouredKitchenSink(Items.LIGHT_GRAY_DYE, ModBlocks.KITCHEN_SINK_LIGHT_GRAY.get());
+        this.colouredKitchenSink(Items.CYAN_DYE, ModBlocks.KITCHEN_SINK_CYAN.get());
+        this.colouredKitchenSink(Items.PURPLE_DYE, ModBlocks.KITCHEN_SINK_PURPLE.get());
+        this.colouredKitchenSink(Items.BLUE_DYE, ModBlocks.KITCHEN_SINK_BLUE.get());
+        this.colouredKitchenSink(Items.BROWN_DYE, ModBlocks.KITCHEN_SINK_BROWN.get());
+        this.colouredKitchenSink(Items.GREEN_DYE, ModBlocks.KITCHEN_SINK_GREEN.get());
+        this.colouredKitchenSink(Items.RED_DYE, ModBlocks.KITCHEN_SINK_RED.get());
+        this.colouredKitchenSink(Items.BLACK_DYE, ModBlocks.KITCHEN_SINK_BLACK.get());
+        this.colouredKitchenStorageCabinet(Items.WHITE_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_WHITE.get());
+        this.colouredKitchenStorageCabinet(Items.ORANGE_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_ORANGE.get());
+        this.colouredKitchenStorageCabinet(Items.MAGENTA_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_MAGENTA.get());
+        this.colouredKitchenStorageCabinet(Items.LIGHT_BLUE_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_LIGHT_BLUE.get());
+        this.colouredKitchenStorageCabinet(Items.YELLOW_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_YELLOW.get());
+        this.colouredKitchenStorageCabinet(Items.LIME_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_LIME.get());
+        this.colouredKitchenStorageCabinet(Items.PINK_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_PINK.get());
+        this.colouredKitchenStorageCabinet(Items.GRAY_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_GRAY.get());
+        this.colouredKitchenStorageCabinet(Items.LIGHT_GRAY_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_LIGHT_GRAY.get());
+        this.colouredKitchenStorageCabinet(Items.CYAN_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_CYAN.get());
+        this.colouredKitchenStorageCabinet(Items.PURPLE_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_PURPLE.get());
+        this.colouredKitchenStorageCabinet(Items.BLUE_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_BLUE.get());
+        this.colouredKitchenStorageCabinet(Items.BROWN_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_BROWN.get());
+        this.colouredKitchenStorageCabinet(Items.GREEN_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_GREEN.get());
+        this.colouredKitchenStorageCabinet(Items.RED_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_RED.get());
+        this.colouredKitchenStorageCabinet(Items.BLACK_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_BLACK.get());
+        this.toaster(ModBlocks.TOASTER_LIGHT.get(), ModBlocks.TOASTER_DARK.get());
+        this.microwave(ModBlocks.MICROWAVE_LIGHT.get(), ModBlocks.MICROWAVE_DARK.get());
+        this.stove(ModBlocks.STOVE_LIGHT.get(), ModBlocks.STOVE_DARK.get());
+        this.rangeHood(ModBlocks.RANGE_HOOD_LIGHT.get(), ModBlocks.RANGE_HOOD_DARK.get());
+        this.fryingPan(ModBlocks.FRYING_PAN.get());
+        this.recyclingBin(ModBlocks.RECYCLE_BIN.get());
+        this.cuttingBoard(Blocks.OAK_PLANKS, Blocks.OAK_SLAB, ModBlocks.CUTTING_BOARD_OAK.get());
+        this.cuttingBoard(Blocks.SPRUCE_PLANKS, Blocks.SPRUCE_SLAB, ModBlocks.CUTTING_BOARD_SPRUCE.get());
+        this.cuttingBoard(Blocks.BIRCH_PLANKS, Blocks.BIRCH_SLAB, ModBlocks.CUTTING_BOARD_BIRCH.get());
+        this.cuttingBoard(Blocks.JUNGLE_PLANKS, Blocks.JUNGLE_SLAB, ModBlocks.CUTTING_BOARD_JUNGLE.get());
+        this.cuttingBoard(Blocks.ACACIA_PLANKS, Blocks.ACACIA_SLAB, ModBlocks.CUTTING_BOARD_ACACIA.get());
+        this.cuttingBoard(Blocks.DARK_OAK_PLANKS, Blocks.DARK_OAK_SLAB, ModBlocks.CUTTING_BOARD_DARK_OAK.get());
+        this.cuttingBoard(Blocks.MANGROVE_PLANKS, Blocks.MANGROVE_SLAB, ModBlocks.CUTTING_BOARD_MANGROVE.get());
+        this.cuttingBoard(Blocks.CHERRY_PLANKS, Blocks.CHERRY_SLAB, ModBlocks.CUTTING_BOARD_CHERRY.get());
+        this.cuttingBoard(Blocks.CRIMSON_PLANKS, Blocks.CRIMSON_SLAB, ModBlocks.CUTTING_BOARD_CRIMSON.get());
+        this.cuttingBoard(Blocks.WARPED_PLANKS, Blocks.WARPED_SLAB, ModBlocks.CUTTING_BOARD_WARPED.get());
+        this.plate(ModBlocks.PLATE.get());
+        this.crate(Blocks.OAK_PLANKS, ModBlocks.CRATE_OAK.get());
+        this.crate(Blocks.SPRUCE_PLANKS, ModBlocks.CRATE_SPRUCE.get());
+        this.crate(Blocks.BIRCH_PLANKS, ModBlocks.CRATE_BIRCH.get());
+        this.crate(Blocks.JUNGLE_PLANKS, ModBlocks.CRATE_JUNGLE.get());
+        this.crate(Blocks.ACACIA_PLANKS, ModBlocks.CRATE_ACACIA.get());
+        this.crate(Blocks.DARK_OAK_PLANKS, ModBlocks.CRATE_DARK_OAK.get());
+        this.crate(Blocks.MANGROVE_PLANKS, ModBlocks.CRATE_MANGROVE.get());
+        this.crate(Blocks.CHERRY_PLANKS, ModBlocks.CRATE_CHERRY.get());
+        this.crate(Blocks.CRIMSON_PLANKS, ModBlocks.CRATE_CRIMSON.get());
+        this.crate(Blocks.WARPED_PLANKS, ModBlocks.CRATE_WARPED.get());
+        this.grill(Items.WHITE_DYE, ModBlocks.GRILL_WHITE.get());
+        this.grill(Items.ORANGE_DYE, ModBlocks.GRILL_ORANGE.get());
+        this.grill(Items.MAGENTA_DYE, ModBlocks.GRILL_MAGENTA.get());
+        this.grill(Items.LIGHT_BLUE_DYE, ModBlocks.GRILL_LIGHT_BLUE.get());
+        this.grill(Items.YELLOW_DYE, ModBlocks.GRILL_YELLOW.get());
+        this.grill(Items.LIME_DYE, ModBlocks.GRILL_LIME.get());
+        this.grill(Items.PINK_DYE, ModBlocks.GRILL_PINK.get());
+        this.grill(Items.GRAY_DYE, ModBlocks.GRILL_GRAY.get());
+        this.grill(Items.LIGHT_GRAY_DYE, ModBlocks.GRILL_LIGHT_GRAY.get());
+        this.grill(Items.CYAN_DYE, ModBlocks.GRILL_CYAN.get());
+        this.grill(Items.PURPLE_DYE, ModBlocks.GRILL_PURPLE.get());
+        this.grill(Items.BLUE_DYE, ModBlocks.GRILL_BLUE.get());
+        this.grill(Items.BROWN_DYE, ModBlocks.GRILL_BROWN.get());
+        this.grill(Items.GREEN_DYE, ModBlocks.GRILL_GREEN.get());
+        this.grill(Items.RED_DYE, ModBlocks.GRILL_RED.get());
+        this.grill(Items.BLACK_DYE, ModBlocks.GRILL_BLACK.get());
         this.mailbox(Blocks.OAK_SLAB, Blocks.OAK_PLANKS, Blocks.OAK_FENCE, ModBlocks.MAIL_BOX_OAK.get());
         this.mailbox(Blocks.SPRUCE_SLAB, Blocks.SPRUCE_PLANKS, Blocks.SPRUCE_FENCE, ModBlocks.MAIL_BOX_SPRUCE.get());
         this.mailbox(Blocks.BIRCH_SLAB, Blocks.BIRCH_PLANKS, Blocks.BIRCH_FENCE, ModBlocks.MAIL_BOX_BIRCH.get());
@@ -709,7 +898,331 @@ public class CommonRecipeProvider
         this.recycleBinSalvaging(Items.ENCHANTED_BOOK, Items.LEATHER, 1);
         this.recycleBinSalvaging(Items.ENCHANTED_BOOK, Items.PAPER, 2);
     }
-    
+
+    private void table(Block plank, Block result)
+    {
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
+                .pattern("PPP")
+                .pattern("P P")
+                .pattern("P P")
+                .define('P', plank)
+                .unlockedBy("has_planks", this.has.apply(plank))
+                .save(this.consumer);
+    }
+
+    private void chair(Block plank, Block result)
+    {
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
+                .pattern("P  ")
+                .pattern("PPP")
+                .pattern("P P")
+                .define('P', plank)
+                .unlockedBy("has_planks", this.has.apply(plank))
+                .save(this.consumer);
+    }
+
+    private void desk(Block plank, Block result)
+    {
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
+                .pattern("PPP")
+                .pattern("PSP")
+                .pattern("PSP")
+                .define('P', plank)
+                .define('S', Items.STICK)
+                .unlockedBy("has_planks", this.has.apply(plank))
+                .save(this.consumer);
+    }
+
+    private void drawer(Block plank, Block slab, Block result)
+    {
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result, 2)
+                .pattern("SSS")
+                .pattern("PCP")
+                .pattern("PPP")
+                .define('S', slab)
+                .define('P', plank)
+                .define('C', Items.CHEST)
+                .unlockedBy("has_planks", this.has.apply(plank))
+                .save(this.consumer);
+    }
+
+    private void woodenKitchenCabinetry(Block plank, Block slab, Block result)
+    {
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result, 2)
+                .pattern("SSS")
+                .pattern("PPP")
+                .pattern("PDP")
+                .define('S', slab)
+                .define('P', plank)
+                .define('D', Items.WHITE_DYE)
+                .unlockedBy("has_planks", this.has.apply(plank))
+                .save(this.consumer);
+    }
+
+    private void woodenKitchenDrawer(Block plank, Block slab, Block result)
+    {
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result, 2)
+                .pattern("SSS")
+                .pattern("PCP")
+                .pattern("PDP")
+                .define('S', slab)
+                .define('P', plank)
+                .define('C', Items.CHEST)
+                .define('D', Items.WHITE_DYE)
+                .unlockedBy("has_planks", this.has.apply(plank))
+                .save(this.consumer);
+    }
+
+    private void woodenKitchenSink(Block plank, Block slab, Block result)
+    {
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
+                .pattern("SIS")
+                .pattern("PQP")
+                .pattern("PDP")
+                .define('S', slab)
+                .define('P', plank)
+                .define('I', Items.COPPER_INGOT)
+                .define('Q', Items.QUARTZ_BLOCK)
+                .define('D', Items.WHITE_DYE)
+                .unlockedBy("has_planks", this.has.apply(plank))
+                .save(this.consumer);
+    }
+
+    private void woodenKitchenStorageCabinet(Block plank, Block slab, Block result)
+    {
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result, 2)
+                .pattern("PPS")
+                .pattern("D S")
+                .pattern("PPS")
+                .define('S', slab)
+                .define('P', plank)
+                .define('D', Items.WHITE_DYE)
+                .unlockedBy("has_planks", this.has.apply(plank))
+                .save(this.consumer);
+    }
+
+    private void colouredKitchenCabinetry(Item dye, Block result)
+    {
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
+                .pattern("D")
+                .pattern("K")
+                .define('D', dye)
+                .define('K', ModTags.Items.WOODEN_KITCHEN_CABINETRY)
+                .unlockedBy("has_dye", this.has.apply(dye))
+                .save(this.consumer);
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
+                .pattern("D")
+                .pattern("K")
+                .define('D', dye)
+                .define('K', ModTags.Items.COLOURED_KITCHEN_CABINETRY)
+                .unlockedBy("has_dye", this.has.apply(dye))
+                .save(this.consumer);
+    }
+
+    private void colouredKitchenDrawer(Item dye, Block result)
+    {
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
+                .pattern("D")
+                .pattern("K")
+                .define('D', dye)
+                .define('K', ModTags.Items.WOODEN_KITCHEN_DRAWERS)
+                .unlockedBy("has_dye", this.has.apply(dye))
+                .save(this.consumer);
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
+                .pattern("D")
+                .pattern("K")
+                .define('D', dye)
+                .define('K', ModTags.Items.COLOURED_KITCHEN_DRAWERS)
+                .unlockedBy("has_dye", this.has.apply(dye))
+                .save(this.consumer);
+    }
+
+    private void colouredKitchenSink(Item dye, Block result)
+    {
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
+                .pattern("D")
+                .pattern("K")
+                .define('D', dye)
+                .define('K', ModTags.Items.WOODEN_KITCHEN_SINKS)
+                .unlockedBy("has_dye", this.has.apply(dye))
+                .save(this.consumer);
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
+                .pattern("D")
+                .pattern("K")
+                .define('D', dye)
+                .define('K', ModTags.Items.COLOURED_KITCHEN_SINKS)
+                .unlockedBy("has_dye", this.has.apply(dye))
+                .save(this.consumer);
+    }
+
+    private void colouredKitchenStorageCabinet(Item dye, Block result)
+    {
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
+                .pattern("KD")
+                .define('D', dye)
+                .define('K', ModTags.Items.WOODEN_KITCHEN_STORAGE_CABINETS)
+                .unlockedBy("has_dye", this.has.apply(dye))
+                .save(this.consumer);
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
+                .pattern("KD")
+                .define('D', dye)
+                .define('K', ModTags.Items.COLOURED_KITCHEN_STORAGE_CABINETS)
+                .unlockedBy("has_dye", this.has.apply(dye))
+                .save(this.consumer);
+    }
+
+    private void toaster(Block light, Block dark)
+    {
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, light)
+                .pattern("IBI")
+                .pattern("IRI")
+                .define('I', Items.IRON_INGOT)
+                .define('B', Items.IRON_BARS)
+                .define('R', Items.REDSTONE)
+                .unlockedBy("has_ingots", this.has.apply(Items.IRON_INGOT))
+                .unlockedBy("has_redstone", this.has.apply(Items.REDSTONE))
+                .save(this.consumer);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
+                .requires(light)
+                .requires(Items.BLACK_DYE)
+                .unlockedBy("has_ingots", this.has.apply(Items.IRON_INGOT))
+                .unlockedBy("has_redstone", this.has.apply(Items.REDSTONE))
+                .save(this.consumer);
+    }
+
+    private void microwave(Block light, Block dark)
+    {
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, light)
+                .pattern("IGI")
+                .pattern("IRI")
+                .define('I', Items.IRON_INGOT)
+                .define('G', Items.GLASS_PANE)
+                .define('R', Items.REDSTONE)
+                .unlockedBy("has_ingots", this.has.apply(Items.IRON_INGOT))
+                .unlockedBy("has_redstone", this.has.apply(Items.REDSTONE))
+                .save(this.consumer);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
+                .requires(light)
+                .requires(Items.BLACK_DYE)
+                .unlockedBy("has_ingots", this.has.apply(Items.IRON_INGOT))
+                .unlockedBy("has_redstone", this.has.apply(Items.REDSTONE))
+                .save(this.consumer);
+    }
+
+    private void stove(Block light, Block dark)
+    {
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, light)
+                .pattern("IBI")
+                .pattern("IFI")
+                .pattern("IRI")
+                .define('I', Items.IRON_INGOT)
+                .define('B', Items.IRON_BARS)
+                .define('F', Items.FURNACE)
+                .define('R', Items.REDSTONE)
+                .unlockedBy("has_ingots", this.has.apply(Items.IRON_INGOT))
+                .unlockedBy("has_redstone", this.has.apply(Items.REDSTONE))
+                .save(this.consumer);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
+                .requires(light)
+                .requires(Items.BLACK_DYE)
+                .unlockedBy("has_ingots", this.has.apply(Items.IRON_INGOT))
+                .unlockedBy("has_redstone", this.has.apply(Items.REDSTONE))
+                .save(this.consumer);
+    }
+
+    private void rangeHood(Block light, Block dark)
+    {
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, light)
+                .pattern(" R ")
+                .pattern("ILI")
+                .define('R', Items.REDSTONE)
+                .define('I', Items.IRON_INGOT)
+                .define('L', Items.REDSTONE_LAMP)
+                .unlockedBy("has_ingots", this.has.apply(Items.IRON_INGOT))
+                .unlockedBy("has_redstone", this.has.apply(Items.REDSTONE))
+                .save(this.consumer);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
+                .requires(light)
+                .requires(Items.BLACK_DYE)
+                .unlockedBy("has_ingots", this.has.apply(Items.IRON_INGOT))
+                .unlockedBy("has_redstone", this.has.apply(Items.REDSTONE))
+                .save(this.consumer);
+    }
+
+    private void fryingPan(Block result)
+    {
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
+                .pattern("SII")
+                .define('S', Items.STICK)
+                .define('I', Items.IRON_INGOT)
+                .unlockedBy("has_ingots", this.has.apply(Items.IRON_INGOT))
+                .save(this.consumer);
+    }
+
+    private void recyclingBin(Block result)
+    {
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
+                .pattern("III")
+                .pattern("IRI")
+                .pattern("IPI")
+                .define('I', Items.IRON_INGOT)
+                .define('R', Items.REDSTONE)
+                .define('P', Items.PISTON)
+                .unlockedBy("has_ingots", this.has.apply(Items.IRON_INGOT))
+                .unlockedBy("has_redstone", this.has.apply(Items.REDSTONE))
+                .save(this.consumer);
+    }
+
+    private void cuttingBoard(Block slab, Block plank, Block result)
+    {
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
+                .pattern("SS")
+                .define('S', slab)
+                .unlockedBy("has_planks", this.has.apply(plank))
+                .unlockedBy("has_slabs", this.has.apply(slab))
+                .save(this.consumer);
+    }
+
+    private void plate(Block result)
+    {
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result, 4)
+                .pattern("QQ")
+                .define('Q', Items.QUARTZ_BLOCK)
+                .unlockedBy("has_quartz_block", this.has.apply(Items.QUARTZ_BLOCK))
+                .unlockedBy("has_quartz", this.has.apply(Items.QUARTZ))
+                .save(this.consumer);
+    }
+
+    private void crate(Block plank, Block result)
+    {
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
+                .pattern("PSP")
+                .pattern("SPS")
+                .pattern("PSP")
+                .define('P', plank)
+                .define('S', Items.STICK)
+                .unlockedBy("has_planks", this.has.apply(plank))
+                .save(this.consumer);
+    }
+
+    private void grill(Item dye, Block result)
+    {
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
+                .pattern("IBI")
+                .pattern("IDI")
+                .pattern("I I")
+                .define('I', Items.IRON_INGOT)
+                .define('B', Items.IRON_BARS)
+                .define('D', dye)
+                .unlockedBy("has_ingots", this.has.apply(Items.IRON_INGOT))
+                .unlockedBy("has_dye", this.has.apply(dye))
+                .save(this.consumer);
+    }
+
     private void mailbox(Block slab, Block plank, Block fence, Block result)
     {
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)

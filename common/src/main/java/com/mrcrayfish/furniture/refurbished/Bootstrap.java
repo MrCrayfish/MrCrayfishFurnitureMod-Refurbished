@@ -38,6 +38,8 @@ import net.minecraft.world.phys.Vec3;
  */
 public class Bootstrap
 {
+    // TODO fix unknown recipe spam on launch
+
     public static void init()
     {
         Network.init();
