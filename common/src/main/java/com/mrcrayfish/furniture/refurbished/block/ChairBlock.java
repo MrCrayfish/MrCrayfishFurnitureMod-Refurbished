@@ -2,12 +2,14 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.core.ModTags;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.entity.Seat;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
@@ -77,7 +79,6 @@ public class ChairBlock extends FurnitureHorizontalBlock implements BlockTagSupp
         // If can no longer be tucked, restore to untucked state
         if(!this.canTuck(state, level, pos) && state.getValue(TUCKED))
         {
-            // TODO sound
             level.setBlock(pos, state.setValue(TUCKED, false), UPDATE_ALL);
         }
     }
@@ -87,7 +88,7 @@ public class ChairBlock extends FurnitureHorizontalBlock implements BlockTagSupp
     {
         if(player.isCrouching() && Seat.availableAt(level, pos) && this.canTuck(state, level, pos))
         {
-            // TODO sound
+            level.playSound(null, pos, ModSounds.BLOCK_CHAIR_SLIDE.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.random.nextFloat());
             level.setBlock(pos, state.setValue(TUCKED, !state.getValue(TUCKED)), UPDATE_ALL);
             return InteractionResult.SUCCESS;
         }

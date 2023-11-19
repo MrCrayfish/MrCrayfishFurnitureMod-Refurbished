@@ -1,4 +1,10 @@
 {
+    "block.chair.slide": {
+        "subtitle": "subtitle.refurbished_furniture.chair_slide",
+        "sounds": [
+            "refurbished_furniture:block/chair/slide"
+        ]
+    },
     "block.doorbell.chime": {
         "subtitle": "subtitle.refurbished_furniture.doorbell_chime",
         "sounds": [

@@ -11,6 +11,7 @@ import net.minecraft.sounds.SoundEvent;
 @RegistryContainer
 public class ModSounds
 {
+    public static final RegistryEntry<SoundEvent> BLOCK_CHAIR_SLIDE = RegistryEntry.soundEvent(Utils.resource("block.chair.slide"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> BLOCK_DOORBELL_CHIME = RegistryEntry.soundEvent(Utils.resource("block.doorbell.chime"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> BLOCK_ELECTRICITY_GENERATOR_ENGINE = RegistryEntry.soundEvent(Utils.resource("block.electricity_generator.engine"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> BLOCK_STORAGE_JAR_INSERT_ITEM = RegistryEntry.soundEvent(Utils.resource("block.storage_jar.insert_item"), id -> () -> SoundEvent.createVariableRangeEvent(id));
