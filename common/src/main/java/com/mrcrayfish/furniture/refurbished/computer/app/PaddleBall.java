@@ -46,9 +46,9 @@ public class PaddleBall extends Program
     public static final byte EVENT_GAME_OPPONENT_LEFT = 8;
     public static final byte EVENT_SOUND_HIT = 40;
 
-    private Game activeGame;
     private State state;
-    private PlayerController controller;
+    private @Nullable Game activeGame;
+    private @Nullable PlayerController controller;
 
     public PaddleBall(ResourceLocation id, IComputer computer)
     {
@@ -116,7 +116,7 @@ public class PaddleBall extends Program
                 this.state = State.IN_GAME;
             }
         }
-        else if(action == Action.INPUT)
+        else if(action == Action.INPUT && this.controller != null)
         {
             this.controller.setInputUp(data == 1);
             this.controller.setInputDown(data == 2);
