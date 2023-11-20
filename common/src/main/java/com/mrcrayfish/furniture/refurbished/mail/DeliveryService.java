@@ -124,6 +124,7 @@ public class DeliveryService extends SavedData
         if(mailbox != null && mailbox.queue().size() < Config.SERVER.mailing.deliveryQueueSize.get())
         {
             mailbox.queue().offer(stack);
+            this.setDirty();
             return true;
         }
         return false;
