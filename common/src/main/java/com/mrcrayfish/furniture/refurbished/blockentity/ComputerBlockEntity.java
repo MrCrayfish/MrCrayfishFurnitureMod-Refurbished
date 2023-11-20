@@ -27,6 +27,7 @@ import javax.annotation.Nullable;
 
 // TODO create app to control lightswitches connected in the power network
 // TODO create amazon like app to buy items and send to mailboxes
+// TODO cmd like app
 
 // TODO add a message to say unpowered
 

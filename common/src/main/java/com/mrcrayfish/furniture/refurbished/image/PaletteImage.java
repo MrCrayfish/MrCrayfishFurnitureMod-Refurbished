@@ -6,9 +6,7 @@ import net.minecraft.Util;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
-import java.nio.ByteBuffer;
 import java.util.BitSet;
-import java.util.UUID;
 import java.util.function.Supplier;
 
 /**
@@ -42,36 +40,55 @@ public class PaletteImage
         BitSet bits = new BitSet(width * height);
         bits.or(supplier.get());
         this.bits = bits;
-        this.id = this.createUniqueId(bits);
+        this.id = this.createImageId(bits);
     }
 
-    // TODO docs
-
+    /**
+     * @return The id of this palette image
+     */
     public ResourceLocation getId()
     {
         return this.id;
     }
 
+    /**
+     * @return The width of this palette image
+     */
     public int getWidth()
     {
         return this.width;
     }
 
+    /**
+     * @return The height of this palette image
+     */
     public int getHeight()
     {
         return this.height;
     }
 
+    /**
+     * @return The raw colour index data of this palette image
+     */
     public BitSet getData()
     {
         return this.bits;
     }
 
+    /**
+     * Sets the colour index of the pixel at the given x and y position to the provided colour index.
+     * An exception will be thrown if the x and y position is not within the bounds of the image or
+     * if the colourIndex does not reference a colour in {@link #COLOURS}.
+     *
+     * @param x           the x position of the pixel
+     * @param y           the y position of the pixel
+     * @param colourIndex the index of a palette colour. See {@link #COLOURS}
+     */
     @SuppressWarnings("PointlessArithmeticExpression")
     public void set(int x, int y, int colourIndex)
     {
-        Preconditions.checkArgument((y * this.width + x) < this.width * this.height);
-        Preconditions.checkArgument(colourIndex >= 0 && colourIndex < COLOURS.length);
+        Preconditions.checkPositionIndex((y * this.width + x), this.width * this.height - 1);
+        Preconditions.checkPositionIndex(colourIndex, COLOURS.length - 1);
         int bitIndex = (y * this.width + x) * BITS_PER_INDEX;
         this.bits.set(bitIndex + 0, (colourIndex & 1) != 0);
         this.bits.set(bitIndex + 1, (colourIndex & 2) != 0);
@@ -79,6 +96,14 @@ public class PaletteImage
         this.bits.set(bitIndex + 3, (colourIndex & 8) != 0);
     }
 
+    /**
+     * Gets the colour index of the pixel at the given x and y position. An exception will be thrown
+     * if the x and y position is not within the bounds of the image.
+     *
+     * @param x the x position of the pixel
+     * @param y the y position of the pixel
+     * @return The index of the colour in {@link #COLOURS}
+     */
     @SuppressWarnings("PointlessArithmeticExpression")
     public int get(int x, int y)
     {
@@ -92,12 +117,26 @@ public class PaletteImage
         return value;
     }
 
+    /**
+     * Utility method to change the state of the bit at the given offset in the provided value
+     *
+     * @param value  the integer value to modify
+     * @param offset the offset of the bit
+     * @param state  the new state of the bit; true for 1, false for 0
+     * @return the new value
+     */
     private static int setBit(int value, int offset, boolean state)
     {
         if(state) value |= (1 << offset);
         return value;
     }
 
+    /**
+     * Encodes this palette image into the given {@link FriendlyByteBuf}.
+     * See {@link #read(FriendlyByteBuf)} to decode.
+     *
+     * @param buffer the buffer to write to
+     */
     public void write(FriendlyByteBuf buffer)
     {
         buffer.writeByte((byte) this.width);
@@ -105,6 +144,13 @@ public class PaletteImage
         buffer.writeLongArray(this.bits.toLongArray());
     }
 
+    /**
+     * Decodes a palette image from the given {@link FriendlyByteBuf}.
+     * See {@link #write(FriendlyByteBuf)} to encode.
+     *
+     * @param buffer the buffer to read from
+     * @return a decoded palette iamge
+     */
     public static PaletteImage read(FriendlyByteBuf buffer)
     {
         int width = buffer.readByte();
@@ -113,11 +159,22 @@ public class PaletteImage
         return new PaletteImage(width, height, () -> BitSet.valueOf(data));
     }
 
-    public ResourceLocation createUniqueId(BitSet set)
+    /**
+     * Creates an id (as a resource location) to identify a palette image. This method accepts the
+     * raw contents of a palette image to generate an identifier. Palette images with the same contents
+     * will create the same id. This is used when loading as a dynamic texture.
+     *
+     * @param set the bit set contents of the palette image
+     * @return a new resource location to identify the contents
+     */
+    private ResourceLocation createImageId(BitSet set)
     {
         return Utils.resource("palette_image_" + Util.sanitizeName(Integer.toHexString(set.hashCode()), ResourceLocation::validPathChar));
     }
 
+    /**
+     * @return Creates a copy of this palette image
+     */
     public PaletteImage copy()
     {
         return new PaletteImage(this.width, this.height, () -> BitSet.valueOf(this.bits.toLongArray()));

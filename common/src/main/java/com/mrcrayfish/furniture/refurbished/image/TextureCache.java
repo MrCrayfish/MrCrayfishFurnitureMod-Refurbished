@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.image;
 
 import com.mojang.blaze3d.platform.NativeImage;
+import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.DoorMatBlockEntityRenderer;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
@@ -34,10 +35,13 @@ public class TextureCache
         return instance;
     }
 
-    private Map<ResourceLocation, Entry> entries = new HashMap<>();
+    private final Map<ResourceLocation, Entry> entries = new HashMap<>();
 
     private TextureCache() {}
 
+    /**
+     * Ticks the texture cache. This handles removing and releasing expired dynamic textures
+     */
     public void tick()
     {
         // Removes any cached images that have expired and releases the texture from memory
@@ -51,6 +55,14 @@ public class TextureCache
         });
     }
 
+    /**
+     * Gets the texture identifier of the supplied palette image or if palette image has not been
+     * registered, it will be converted into a dynamic texture and registered into the texture
+     * manager before returning the identifier.
+     *
+     * @param supplier a supplier returning a palette image
+     * @return a texture id linking to a registered dynamic texture
+     */
     @Nullable
     public ResourceLocation getOrCacheImage(Supplier<PaletteImage> supplier)
     {
@@ -82,22 +94,38 @@ public class TextureCache
             this.lastDrawTime = Util.getMillis();
         }
 
+        /**
+         * @return The identifier of this entry, based on the contents of the palette image
+         */
         public ResourceLocation getId()
         {
             return this.id;
         }
 
+        /**
+         * Updates the last draw time to the current time.
+         */
         public void ping()
         {
             this.lastDrawTime = Util.getMillis();
         }
 
+        /**
+         * @return True if this entry last draw time is greater than {@link #EXPIRE_TIME}
+         */
         public boolean isExpired()
         {
             return Util.getMillis() - this.lastDrawTime > EXPIRE_TIME;
         }
     }
 
+    /**
+     * Converts a PaletteImage into a NativeImage. This allows it to be loaded into a
+     * {@link DynamicTexture} for custom rendering.
+     *
+     * @param image the palette image to convert
+     * @return a native image of the palette image
+     */
     private static NativeImage convertToNativeImage(PaletteImage image)
     {
         NativeImage nativeImage = new NativeImage(image.width, image.height, false);
@@ -113,6 +141,12 @@ public class TextureCache
         return nativeImage;
     }
 
+    /**
+     * Converts an ARGB format int to an ABGR format int
+     *
+     * @param value an argb integer
+     * @return the argb integer in abgr format
+     */
     private static int convertARGBToABGR(int value)
     {
         int alpha = FastColor.ARGB32.alpha(value);

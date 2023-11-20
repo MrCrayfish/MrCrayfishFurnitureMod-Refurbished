@@ -4,6 +4,8 @@ import com.mrcrayfish.furniture.refurbished.blockentity.DoorMatBlockEntity;
 import net.minecraft.Util;
 
 /**
+ * Preset images for door mats
+ * <p>
  * Author: MrCrayfish
  */
 public class ImagePresets
