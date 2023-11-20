@@ -1,6 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 
-import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 
 import java.util.List;
 
@@ -9,5 +9,5 @@ import java.util.List;
  */
 public interface IWidgetGroup
 {
-    List<AbstractWidget> getWidgets();
+    List<GuiEventListener> getWidgets();
 }

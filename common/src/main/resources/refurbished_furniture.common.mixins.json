@@ -11,7 +11,9 @@
         "SimpleCookingRecipeBuilderMixin"
     ],
     "client": [
-        "client.CreativeModeInventoryScreenMixin", "client.ModelManagerMixin"
+        "client.CreativeModeInventoryScreenMixin",
+        "client.ModelManagerMixin",
+        "client.ScreenAccessor"
     ],
     "injectors": {
         "defaultRequire": 1

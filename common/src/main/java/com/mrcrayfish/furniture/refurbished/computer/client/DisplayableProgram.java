@@ -67,7 +67,7 @@ public abstract class DisplayableProgram<T extends Program>
             graphics.pose().popPose();
 
             // Render widgets
-            this.scene.getWidgets().forEach(widget -> widget.render(graphics, mouseX, mouseY, partialTick));
+            this.scene.getRenderables().forEach(widget -> widget.render(graphics, mouseX, mouseY, partialTick));
         }
     }
 

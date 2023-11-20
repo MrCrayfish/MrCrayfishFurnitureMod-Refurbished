@@ -3,6 +3,9 @@ package com.mrcrayfish.furniture.refurbished.computer.client;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.IWidgetGroup;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,7 +16,8 @@ import java.util.List;
  */
 public abstract class Scene implements IWidgetGroup
 {
-    private final List<AbstractWidget> widgets = new ArrayList<>();
+    private final List<GuiEventListener> widgets = new ArrayList<>();
+    private final List<Renderable> renderables = new ArrayList<>();
 
     public abstract void updateWidgets(int contentStart, int contentTop);
 
@@ -21,15 +25,24 @@ public abstract class Scene implements IWidgetGroup
 
     public void tick() {}
 
-    protected final <T extends AbstractWidget> T addWidget(T widget)
+    protected final <T extends GuiEventListener> T addWidget(T widget)
     {
         this.widgets.add(widget);
+        if(widget instanceof Renderable renderable)
+        {
+            this.renderables.add(renderable);
+        }
         return widget;
     }
 
     @Override
-    public List<AbstractWidget> getWidgets()
+    public List<GuiEventListener> getWidgets()
     {
         return Collections.unmodifiableList(this.widgets);
+    }
+
+    public List<Renderable> getRenderables()
+    {
+         return this.renderables;
     }
 }

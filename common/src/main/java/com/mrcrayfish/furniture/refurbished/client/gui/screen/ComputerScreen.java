@@ -5,9 +5,13 @@ import com.mrcrayfish.furniture.refurbished.computer.client.Desktop;
 import com.mrcrayfish.furniture.refurbished.computer.client.Window;
 import com.mrcrayfish.furniture.refurbished.computer.client.DisplayableProgram;
 import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
+import com.mrcrayfish.furniture.refurbished.mixin.client.ScreenAccessor;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -136,7 +140,13 @@ public class ComputerScreen extends AbstractContainerScreen<ComputerMenu>
 
     public void addWidgets(IWidgetGroup group)
     {
-        group.getWidgets().forEach(this::addWidget);
+        ScreenAccessor accessor = (ScreenAccessor) this;
+        group.getWidgets().forEach(listener -> {
+            accessor.getChildren().add(listener);
+            if(listener instanceof NarratableEntry entry) {
+                accessor.getNarratables().add(entry);
+            }
+        });
     }
 
     public void removeWidgets(IWidgetGroup group)
