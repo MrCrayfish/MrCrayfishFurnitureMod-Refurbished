@@ -904,11 +904,6 @@ public class CommonRecipeProvider
         this.recycleBinSalvaging(Items.ENCHANTED_BOOK, Items.LEATHER, 1);
         this.recycleBinSalvaging(Items.ENCHANTED_BOOK, Items.PAPER, 2);
 
-        this.modLoadedConsumer.apply("fortnite", Utils.resource("good_recipe"),
-                ShapelessRecipeBuilder.shapeless(RecipeCategory.BREWING, Items.STICK)
-                        .requires(Items.ACACIA_BOAT)
-                        .unlockedBy("has_stick", this.has.apply(Items.STICK)));
-
         SpecialRecipeBuilder.special(ModRecipeSerializers.DOOR_MAT_COPY_RECIPE.get()).save(this.consumer, Constants.MOD_ID + ":door_mat_copy");
     }
 
