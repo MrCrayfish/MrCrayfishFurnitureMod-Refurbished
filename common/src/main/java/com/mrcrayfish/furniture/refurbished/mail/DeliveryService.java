@@ -150,6 +150,7 @@ public class DeliveryService extends SavedData
      */
     public Mailbox getOrCreateMailBox(MailboxBlockEntity blockEntity)
     {
+        this.duplicateIdCheck(blockEntity);
         return this.mailboxes.computeIfAbsent(blockEntity.getId(), uuid -> {
             ResourceKey<Level> levelKey = blockEntity.getLevel().dimension();
             BlockPos pos = blockEntity.getBlockPos();
@@ -158,6 +159,23 @@ public class DeliveryService extends SavedData
             this.setDirty();
             return mailbox;
         });
+    }
+
+    /**
+     * Regenerates the id of the mailbox block entity if another mailbox with that id already exists.
+     * A collision with a random UUID is very unlikely, however a player can pick a block with NBT
+     * and place down a mailbox with the same UUID. Naturally, regenerating the UUID won't affect
+     * the mailbox that already exists with the UUID that collided with the given blockEntity arg.
+     *
+     * @param blockEntity the mailbox block entity to check
+     */
+    private void duplicateIdCheck(MailboxBlockEntity blockEntity)
+    {
+        Mailbox box = this.mailboxes.get(blockEntity.getId());
+        if(box != null && !box.pos().equals(blockEntity.getBlockPos()))
+        {
+            blockEntity.regenerateId();
+        }
     }
 
     /**

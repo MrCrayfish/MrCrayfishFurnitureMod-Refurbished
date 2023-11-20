@@ -39,6 +39,12 @@ public class MailboxBlockEntity extends RowedStorageBlockEntity implements IName
         return this.uuid;
     }
 
+    public void regenerateId()
+    {
+        this.uuid = UUID.randomUUID();
+        this.setChanged();
+    }
+
     @Override
     public void setName(@Nullable ServerPlayer player, String name)
     {
