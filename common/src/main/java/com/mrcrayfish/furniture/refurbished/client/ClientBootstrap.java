@@ -278,6 +278,16 @@ public class ClientBootstrap
         register.apply(ModBlocks.LATTICE_FENCE_CHERRY.get(), RenderType.cutout());
         register.apply(ModBlocks.LATTICE_FENCE_CRIMSON.get(), RenderType.cutout());
         register.apply(ModBlocks.LATTICE_FENCE_WARPED.get(), RenderType.cutout());
+        register.apply(ModBlocks.LATTICE_FENCE_GATE_OAK.get(), RenderType.cutout());
+        register.apply(ModBlocks.LATTICE_FENCE_GATE_SPRUCE.get(), RenderType.cutout());
+        register.apply(ModBlocks.LATTICE_FENCE_GATE_BIRCH.get(), RenderType.cutout());
+        register.apply(ModBlocks.LATTICE_FENCE_GATE_JUNGLE.get(), RenderType.cutout());
+        register.apply(ModBlocks.LATTICE_FENCE_GATE_ACACIA.get(), RenderType.cutout());
+        register.apply(ModBlocks.LATTICE_FENCE_GATE_DARK_OAK.get(), RenderType.cutout());
+        register.apply(ModBlocks.LATTICE_FENCE_GATE_MANGROVE.get(), RenderType.cutout());
+        register.apply(ModBlocks.LATTICE_FENCE_GATE_CHERRY.get(), RenderType.cutout());
+        register.apply(ModBlocks.LATTICE_FENCE_GATE_CRIMSON.get(), RenderType.cutout());
+        register.apply(ModBlocks.LATTICE_FENCE_GATE_WARPED.get(), RenderType.cutout());
         register.apply(ModBlocks.TELEVISION.get(), RenderType.cutout());
     }
 

@@ -437,6 +437,16 @@ public class CommonItemTagsProvider
         outdoors.add(ModBlocks.LATTICE_FENCE_CHERRY.get().asItem());
         outdoors.add(ModBlocks.LATTICE_FENCE_CRIMSON.get().asItem());
         outdoors.add(ModBlocks.LATTICE_FENCE_WARPED.get().asItem());
+        outdoors.add(ModBlocks.LATTICE_FENCE_GATE_OAK.get().asItem());
+        outdoors.add(ModBlocks.LATTICE_FENCE_GATE_SPRUCE.get().asItem());
+        outdoors.add(ModBlocks.LATTICE_FENCE_GATE_BIRCH.get().asItem());
+        outdoors.add(ModBlocks.LATTICE_FENCE_GATE_JUNGLE.get().asItem());
+        outdoors.add(ModBlocks.LATTICE_FENCE_GATE_ACACIA.get().asItem());
+        outdoors.add(ModBlocks.LATTICE_FENCE_GATE_DARK_OAK.get().asItem());
+        outdoors.add(ModBlocks.LATTICE_FENCE_GATE_MANGROVE.get().asItem());
+        outdoors.add(ModBlocks.LATTICE_FENCE_GATE_CHERRY.get().asItem());
+        outdoors.add(ModBlocks.LATTICE_FENCE_GATE_CRIMSON.get().asItem());
+        outdoors.add(ModBlocks.LATTICE_FENCE_GATE_WARPED.get().asItem());
         outdoors.add(ModItems.SPATULA.get());
         outdoors.add(ModItems.KNIFE.get());
 

@@ -10,6 +10,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CrossCollisionBlock;
+import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.WoodType;
@@ -64,7 +65,8 @@ public class LatticeFenceBlock extends CrossCollisionBlock implements BlockTagSu
     {
         pos = pos.relative(direction);
         BlockState state = level.getBlockState(pos);
-        return !isExceptionForConnection(state) && state.isFaceSturdy(level, pos, direction.getOpposite()) || state.getBlock() instanceof LatticeFenceBlock;
+        boolean isGate = state.getBlock() instanceof LatticeFenceGateBlock && FenceGateBlock.connectsToDirection(state, direction);
+        return !isExceptionForConnection(state) && state.isFaceSturdy(level, pos, direction.getOpposite()) || state.getBlock() instanceof LatticeFenceBlock || isGate;
     }
 
     @Override

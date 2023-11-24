@@ -474,6 +474,16 @@ public class CommonBlockModelProvider
         this.latticeFence(ModBlocks.LATTICE_FENCE_CHERRY.get());
         this.latticeFence(ModBlocks.LATTICE_FENCE_CRIMSON.get());
         this.latticeFence(ModBlocks.LATTICE_FENCE_WARPED.get());
+        this.latticeFenceGate(ModBlocks.LATTICE_FENCE_GATE_OAK.get());
+        this.latticeFenceGate(ModBlocks.LATTICE_FENCE_GATE_SPRUCE.get());
+        this.latticeFenceGate(ModBlocks.LATTICE_FENCE_GATE_BIRCH.get());
+        this.latticeFenceGate(ModBlocks.LATTICE_FENCE_GATE_JUNGLE.get());
+        this.latticeFenceGate(ModBlocks.LATTICE_FENCE_GATE_ACACIA.get());
+        this.latticeFenceGate(ModBlocks.LATTICE_FENCE_GATE_DARK_OAK.get());
+        this.latticeFenceGate(ModBlocks.LATTICE_FENCE_GATE_MANGROVE.get());
+        this.latticeFenceGate(ModBlocks.LATTICE_FENCE_GATE_CHERRY.get());
+        this.latticeFenceGate(ModBlocks.LATTICE_FENCE_GATE_CRIMSON.get());
+        this.latticeFenceGate(ModBlocks.LATTICE_FENCE_GATE_WARPED.get());
         this.television(ModBlocks.TELEVISION.get());
         this.computer(ModBlocks.COMPUTER.get());
         this.doorMat(ModBlocks.DOOR_MAT.get());
@@ -1528,6 +1538,25 @@ public class CommonBlockModelProvider
         state.createPart().prop(HedgeBlock.EAST, true).addTexturedModel(ModelTemplate.LATTICE_FENCE_CONNECTION.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         state.createPart().prop(HedgeBlock.SOUTH, true).addTexturedModel(ModelTemplate.LATTICE_FENCE_CONNECTION.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
         state.createPart().prop(HedgeBlock.WEST, true).addTexturedModel(ModelTemplate.LATTICE_FENCE_CONNECTION.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        this.multiPartStateConsumer.accept(state);
+    }
+
+    private void latticeFenceGate(LatticeFenceGateBlock block)
+    {
+        WoodType type = block.getWoodType();
+        TextureMapping textures = new TextureMapping();
+        textures.put(TextureSlot.PARTICLE, this.woodParticle(type));
+        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
+        PreparedMultiPartBlockState state = new PreparedMultiPartBlockState(block);
+        state.setItemModel(ModelTemplate.LATTICE_FENCE_GATE_CLOSED.stateModel(type).setTextures(textures).markAsChild());
+        state.createPart().prop(LatticeFenceGateBlock.FACING, Direction.NORTH).prop(LatticeFenceGateBlock.OPEN, false).addTexturedModel(ModelTemplate.LATTICE_FENCE_GATE_CLOSED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
+        state.createPart().prop(LatticeFenceGateBlock.FACING, Direction.EAST).prop(LatticeFenceGateBlock.OPEN, false).addTexturedModel(ModelTemplate.LATTICE_FENCE_GATE_CLOSED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createPart().prop(LatticeFenceGateBlock.FACING, Direction.SOUTH).prop(LatticeFenceGateBlock.OPEN, false).addTexturedModel(ModelTemplate.LATTICE_FENCE_GATE_CLOSED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createPart().prop(LatticeFenceGateBlock.FACING, Direction.WEST).prop(LatticeFenceGateBlock.OPEN, false).addTexturedModel(ModelTemplate.LATTICE_FENCE_GATE_CLOSED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createPart().prop(LatticeFenceGateBlock.FACING, Direction.NORTH).prop(LatticeFenceGateBlock.OPEN, true).addTexturedModel(ModelTemplate.LATTICE_FENCE_GATE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
+        state.createPart().prop(LatticeFenceGateBlock.FACING, Direction.EAST).prop(LatticeFenceGateBlock.OPEN, true).addTexturedModel(ModelTemplate.LATTICE_FENCE_GATE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createPart().prop(LatticeFenceGateBlock.FACING, Direction.SOUTH).prop(LatticeFenceGateBlock.OPEN, true).addTexturedModel(ModelTemplate.LATTICE_FENCE_GATE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createPart().prop(LatticeFenceGateBlock.FACING, Direction.WEST).prop(LatticeFenceGateBlock.OPEN, true).addTexturedModel(ModelTemplate.LATTICE_FENCE_GATE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
         this.multiPartStateConsumer.accept(state);
     }
 
