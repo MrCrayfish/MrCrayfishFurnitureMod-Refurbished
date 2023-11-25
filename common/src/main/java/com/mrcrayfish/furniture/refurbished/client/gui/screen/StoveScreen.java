@@ -32,11 +32,5 @@ public class StoveScreen extends AbstractContainerScreen<StoveMenu>
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
     {
         graphics.blit(TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
-        if(this.menu.getEnergy() > 0 && this.menu.getTotalEnergy() > 0)
-        {
-            float normalEnergy = this.menu.getEnergy() / (float) this.menu.getTotalEnergy();
-            int v = (int) Math.ceil(14 * normalEnergy);
-            graphics.blit(TEXTURE, this.leftPos + 80, this.topPos + 25 + 14 - v, 176, 14 - v, 14, v);
-        }
     }
 }

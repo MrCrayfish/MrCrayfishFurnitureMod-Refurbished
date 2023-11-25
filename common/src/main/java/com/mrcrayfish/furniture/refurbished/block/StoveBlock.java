@@ -42,7 +42,7 @@ public class StoveBlock extends FurnitureHorizontalBlock implements EntityBlock,
     public StoveBlock(MetalType type, Properties properties)
     {
         super(properties);
-        this.registerDefaultState(this.getStateDefinition().any().setValue(DIRECTION, Direction.NORTH).setValue(OPEN, false));
+        this.registerDefaultState(this.getStateDefinition().any().setValue(DIRECTION, Direction.NORTH).setValue(OPEN, false).setValue(POWERED, false).setValue(LIT, false));
         this.type = type;
     }
 
@@ -103,6 +103,8 @@ public class StoveBlock extends FurnitureHorizontalBlock implements EntityBlock,
     {
         super.createBlockStateDefinition(builder);
         builder.add(OPEN);
+        builder.add(POWERED);
+        builder.add(LIT);
     }
 
     @Nullable

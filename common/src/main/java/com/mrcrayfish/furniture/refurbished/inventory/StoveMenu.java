@@ -22,17 +22,16 @@ public class StoveMenu extends SimpleContainerMenu
 
     public StoveMenu(int windowId, Inventory playerInventory)
     {
-        this(windowId, playerInventory, new SimpleContainer(1), new SimpleContainerData(2));
+        this(windowId, playerInventory, new SimpleContainer(1), new SimpleContainerData(0));
     }
 
     public StoveMenu(int windowId, Inventory playerInventory, Container container, ContainerData data)
     {
         super(ModMenuTypes.STOVE.get(), windowId, container);
         checkContainerSize(container, 1);
-        checkContainerDataCount(data, 2);
+        checkContainerDataCount(data, 0);
         container.startOpen(playerInventory.player);
         this.data = data;
-        this.addSlot(new FuelSlot(container, 0, 80, 42));
         this.addPlayerInventorySlots(8, 84, playerInventory);
         this.addDataSlots(data);
     }
@@ -87,15 +86,5 @@ public class StoveMenu extends SimpleContainerMenu
     private boolean isFuel(ItemStack stack)
     {
         return Services.ITEM.getBurnTime(stack, null) > 0;
-    }
-
-    public int getEnergy()
-    {
-        return this.data.get(StoveBlockEntity.DATA_ENERGY);
-    }
-
-    public int getTotalEnergy()
-    {
-        return this.data.get(StoveBlockEntity.DATA_TOTAL_ENERGY);
     }
 }

@@ -878,16 +878,17 @@ public class CommonBlockModelProvider
         TextureMapping textures = new TextureMapping();
         textures.put(TextureSlot.PARTICLE, this.metalParticle(type));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
-        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
-        state.createVariant().prop(StoveBlock.DIRECTION, Direction.NORTH).prop(StoveBlock.OPEN, false).addTexturedModel(ModelTemplate.STOVE_CLOSED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
-        state.createVariant().prop(StoveBlock.DIRECTION, Direction.EAST).prop(StoveBlock.OPEN, false).addTexturedModel(ModelTemplate.STOVE_CLOSED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
-        state.createVariant().prop(StoveBlock.DIRECTION, Direction.SOUTH).prop(StoveBlock.OPEN, false).addTexturedModel(ModelTemplate.STOVE_CLOSED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
-        state.createVariant().prop(StoveBlock.DIRECTION, Direction.WEST).prop(StoveBlock.OPEN, false).addTexturedModel(ModelTemplate.STOVE_CLOSED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        state.createVariant().prop(StoveBlock.DIRECTION, Direction.NORTH).prop(StoveBlock.OPEN, true).addTexturedModel(ModelTemplate.STOVE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
-        state.createVariant().prop(StoveBlock.DIRECTION, Direction.EAST).prop(StoveBlock.OPEN, true).addTexturedModel(ModelTemplate.STOVE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
-        state.createVariant().prop(StoveBlock.DIRECTION, Direction.SOUTH).prop(StoveBlock.OPEN, true).addTexturedModel(ModelTemplate.STOVE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
-        state.createVariant().prop(StoveBlock.DIRECTION, Direction.WEST).prop(StoveBlock.OPEN, true).addTexturedModel(ModelTemplate.STOVE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        this.variantStateConsumer.accept(state);
+        PreparedMultiPartBlockState state = new PreparedMultiPartBlockState(block);
+        state.setItemModel(ModelTemplate.STOVE_CLOSED.stateModel(type).setTextures(textures).markAsChild());
+        state.createPart().prop(StoveBlock.DIRECTION, Direction.NORTH).prop(StoveBlock.OPEN, false).addTexturedModel(ModelTemplate.STOVE_CLOSED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
+        state.createPart().prop(StoveBlock.DIRECTION, Direction.EAST).prop(StoveBlock.OPEN, false).addTexturedModel(ModelTemplate.STOVE_CLOSED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createPart().prop(StoveBlock.DIRECTION, Direction.SOUTH).prop(StoveBlock.OPEN, false).addTexturedModel(ModelTemplate.STOVE_CLOSED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createPart().prop(StoveBlock.DIRECTION, Direction.WEST).prop(StoveBlock.OPEN, false).addTexturedModel(ModelTemplate.STOVE_CLOSED.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createPart().prop(StoveBlock.DIRECTION, Direction.NORTH).prop(StoveBlock.OPEN, true).addTexturedModel(ModelTemplate.STOVE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
+        state.createPart().prop(StoveBlock.DIRECTION, Direction.EAST).prop(StoveBlock.OPEN, true).addTexturedModel(ModelTemplate.STOVE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
+        state.createPart().prop(StoveBlock.DIRECTION, Direction.SOUTH).prop(StoveBlock.OPEN, true).addTexturedModel(ModelTemplate.STOVE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
+        state.createPart().prop(StoveBlock.DIRECTION, Direction.WEST).prop(StoveBlock.OPEN, true).addTexturedModel(ModelTemplate.STOVE_OPEN.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        this.multiPartStateConsumer.accept(state);
     }
 
     private void rangeHood(RangeHoodBlock block)

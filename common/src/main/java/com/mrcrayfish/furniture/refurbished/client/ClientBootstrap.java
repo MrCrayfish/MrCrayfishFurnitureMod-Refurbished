@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.client;
 import com.mrcrayfish.framework.api.event.ClientConnectionEvents;
 import com.mrcrayfish.framework.api.event.PlayerEvents;
 import com.mrcrayfish.framework.api.event.TickEvents;
+import com.mrcrayfish.furniture.refurbished.block.StoveBlock;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.ComputerScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.DoorMatScreen;
@@ -126,6 +127,7 @@ public class ClientBootstrap
         register.apply(ModBlockEntities.TELEVISION.get(), TelevisionBlockEntityRenderer::new);
         register.apply(ModBlockEntities.COMPUTER.get(), ComputerBlockEntityRenderer::new);
         register.apply(ModBlockEntities.DOOR_MAT.get(), DoorMatBlockEntityRenderer::new);
+        register.apply(ModBlockEntities.STOVE.get(), ElectricBlockEntityRenderer::new);
     }
 
     public static void registerEntityRenderers(EntityRendererRegister register)
@@ -315,6 +317,13 @@ public class ClientBootstrap
         register.apply((state, reader, pos, i) -> {
             return FoliageColor.getMangroveColor();
         }, ModBlocks.HEDGE_MANGROVE.get());
+
+        register.apply((state, reader, pos, i) -> {
+            if(state.hasProperty(StoveBlock.LIT) && state.getValue(StoveBlock.LIT)) {
+                return 0xFFCBCB;
+            }
+            return 0xFFFFFF;
+        }, ModBlocks.STOVE_LIGHT.get(), ModBlocks.STOVE_DARK.get());
     }
 
     public static void registerItemColors(ItemColorsRegister register)

@@ -4,7 +4,6 @@ import com.mrcrayfish.furniture.refurbished.block.StoveBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.inventory.BuildableContainerData;
 import com.mrcrayfish.furniture.refurbished.inventory.StoveMenu;
-import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
@@ -16,7 +15,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -29,7 +27,7 @@ import java.lang.ref.WeakReference;
 /**
  * Author: MrCrayfish
  */
-public class StoveBlockEntity extends BasicLootBlockEntity implements IProcessingBlock, IHeatingSource
+public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implements IProcessingBlock, IHeatingSource
 {
     public static final int DATA_ENERGY = 0;
     public static final int DATA_TOTAL_ENERGY = 1;
@@ -37,15 +35,10 @@ public class StoveBlockEntity extends BasicLootBlockEntity implements IProcessin
     protected boolean processing;
     protected int totalProcessingTime;
     protected int processingTime;
-    protected int totalEnergy;
-    protected int energy;
     protected WeakReference<ICookingBlock> cookingBlockRef;
     protected boolean sync;
 
-    protected final ContainerData data = new BuildableContainerData(builder -> {
-        builder.add(DATA_ENERGY, () -> energy, value -> energy = value);
-        builder.add(DATA_TOTAL_ENERGY, () -> totalEnergy, value -> totalEnergy = value);
-    });
+    protected final ContainerData data = new BuildableContainerData(builder -> {});
 
     public StoveBlockEntity(BlockPos pos, BlockState state)
     {
@@ -58,46 +51,23 @@ public class StoveBlockEntity extends BasicLootBlockEntity implements IProcessin
     }
 
     @Override
-    public EnergyMode getEnergyMode()
-    {
-        return EnergyMode.ALWAYS_CONSUME;
-    }
-
-    @Override
     public int getEnergy()
     {
-        return this.energy;
+        return 0;
     }
 
     @Override
-    public void addEnergy(int energy)
-    {
-        this.energy += energy;
-    }
+    public void addEnergy(int energy) {}
 
     @Override
     public boolean requiresEnergy()
     {
-        return true;
+        return false;
     }
 
     @Override
     public int retrieveEnergy(boolean simulate)
     {
-        ItemStack stack = this.getItem(0);
-        if(!stack.isEmpty())
-        {
-            int energy = Services.ITEM.getBurnTime(stack, null);
-            if(energy > 0)
-            {
-                if(!simulate)
-                {
-                    stack.shrink(1);
-                    this.totalEnergy = energy;
-                }
-                return energy;
-            }
-        }
         return 0;
     }
 
@@ -170,6 +140,8 @@ public class StoveBlockEntity extends BasicLootBlockEntity implements IProcessin
     @Override
     public boolean canProcess()
     {
+        if(!this.isPowered())
+            return false;
         ICookingBlock block = this.getCookingBlock();
         return block != null && block.canCook();
     }
@@ -201,6 +173,7 @@ public class StoveBlockEntity extends BasicLootBlockEntity implements IProcessin
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, StoveBlockEntity stove)
     {
+        ElectricityModuleLootBlockEntity.serverTick(level, pos, state, stove);
         stove.processTick();
         if(stove.sync)
         {
@@ -310,14 +283,6 @@ public class StoveBlockEntity extends BasicLootBlockEntity implements IProcessin
         {
             this.processingTime = tag.getInt("ProcessingTime");
         }
-        if(tag.contains("TotalEnergy", Tag.TAG_INT))
-        {
-            this.totalEnergy = tag.getInt("TotalEnergy");
-        }
-        if(tag.contains("Energy", Tag.TAG_INT))
-        {
-            this.energy = tag.getInt("Energy");
-        }
     }
 
     @Override
@@ -327,7 +292,22 @@ public class StoveBlockEntity extends BasicLootBlockEntity implements IProcessin
         tag.putBoolean("Processing", this.processing);
         tag.putInt("TotalProcessingTime", this.totalProcessingTime);
         tag.putInt("ProcessingTime", this.processingTime);
-        tag.putInt("TotalEnergy", this.totalEnergy);
-        tag.putInt("Energy", this.energy);
+    }
+
+    @Override
+    public boolean isPowered()
+    {
+        BlockState state = this.getBlockState();
+        return state.hasProperty(StoveBlock.POWERED) && state.getValue(StoveBlock.POWERED);
+    }
+
+    @Override
+    public void setPowered(boolean powered)
+    {
+        BlockState state = this.getBlockState();
+        if(state.hasProperty(StoveBlock.POWERED) && state.hasProperty(StoveBlock.LIT))
+        {
+            this.level.setBlock(this.worldPosition, state.setValue(StoveBlock.POWERED, powered).setValue(StoveBlock.LIT, powered), Block.UPDATE_ALL);
+        }
     }
 }
