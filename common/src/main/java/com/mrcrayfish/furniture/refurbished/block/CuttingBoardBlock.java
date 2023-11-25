@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.block;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.furniture.refurbished.blockentity.CuttingBoardBlockEntity;
+import com.mrcrayfish.furniture.refurbished.compat.CompatibilityTags;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
@@ -66,7 +67,7 @@ public class CuttingBoardBlock extends FurnitureHorizontalBlock implements Entit
             ItemStack heldItem = player.getItemInHand(hand);
             if(!level.isClientSide())
             {
-                if(heldItem.is(ModItems.KNIFE.get()))
+                if(heldItem.is(CompatibilityTags.Items.FORGE_TOOLS_KNIVES))
                 {
                     boolean dropAsEntity = !Services.ENTITY.isFakePlayer(player);
                     if(cuttingBoard.sliceItem(level, dropAsEntity))

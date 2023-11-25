@@ -1,8 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
-import com.mrcrayfish.furniture.refurbished.block.FryingPanBlock;
 import com.mrcrayfish.furniture.refurbished.block.RangeHoodBlock;
-import com.mrcrayfish.furniture.refurbished.block.StoveBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModParticleTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
@@ -30,7 +28,6 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -41,6 +38,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+// TODO allow to be placed on grills, including farmers delight blocks
 
 /**
  * Author: MrCrayfish
