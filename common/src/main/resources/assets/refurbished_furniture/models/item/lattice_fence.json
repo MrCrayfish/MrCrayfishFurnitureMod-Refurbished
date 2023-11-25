@@ -1,9 +1,5 @@
 {
 	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
-	"textures": {
-		"particle": "lattice_fence",
-		"texture": "lattice_fence"
-	},
 	"elements": [
 		{
 			"from": [8, 13, 7],
