@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.data;
 
 import com.mrcrayfish.framework.Registration;
 import com.mrcrayfish.furniture.refurbished.Constants;
+import com.mrcrayfish.furniture.refurbished.compat.CompatibilityTags;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.data.tag.TagBuilder;
@@ -32,5 +33,10 @@ public class CommonBlockTagsProvider
                 .add(ModBlocks.STEPPING_STONES_DIORITE.get())
                 .add(ModBlocks.STEPPING_STONES_ANDESITE.get())
                 .add(ModBlocks.STEPPING_STONES_DEEPSLATE.get());
+
+        // Compatibility to allow stove to act as a heating source for farmers delight
+        builder.apply(CompatibilityTags.Blocks.FARMERS_DELIGHT_HEAT_SOURCES)
+                .add(ModBlocks.STOVE_LIGHT.get())
+                .add(ModBlocks.STOVE_DARK.get());
     }
 }
