@@ -50,6 +50,7 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
     public static final Vector3f OIL_COLOUR = Vec3.fromRGB24(0xE1A803).toVector3f();
 
     protected final RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> recipeCache;
+    protected final RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> smokerRecipeCache;
     protected boolean needsFlipping;
     protected boolean flipped;
     protected int rotation;
@@ -67,6 +68,7 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
     {
         super(type, pos, state, 1);
         this.recipeCache = RecipeManager.createCheck(recipeType);
+        this.smokerRecipeCache = RecipeManager.createCheck(RecipeType.SMOKING);
     }
 
     public boolean isFlippingNeeded()
@@ -179,8 +181,7 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
         ItemStack stack = this.getItem(0);
         if(!stack.isEmpty() && !this.needsFlipping)
         {
-            Optional<? extends AbstractCookingRecipe> optional = this.getRecipe(this.recipeCache, stack);
-            return optional.isPresent();
+            return this.getRecipe(stack).isPresent();
         }
         return false;
     }
@@ -191,7 +192,7 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
         ItemStack stack = this.getItem(0);
         if(!stack.isEmpty())
         {
-            Optional<? extends AbstractCookingRecipe> optional = this.getRecipe(this.recipeCache, stack);
+            Optional<? extends AbstractCookingRecipe> optional = this.getRecipe(stack);
             if(optional.isPresent())
             {
                 return optional.get().getCookingTime() / 2; // Half the time since it's flipped
@@ -214,7 +215,7 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
         if(!stack.isEmpty())
         {
             Item remainingItem = stack.getItem().getCraftingRemainingItem();
-            Optional<? extends AbstractCookingRecipe> optional = this.getRecipe(this.recipeCache, stack);
+            Optional<? extends AbstractCookingRecipe> optional = this.getRecipe(stack);
             ItemStack result = optional.map(recipe -> recipe.getResultItem(this.level.registryAccess())).orElse(ItemStack.EMPTY);
             stack.shrink(1);
             if(!result.isEmpty())
@@ -228,6 +229,21 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
                 }
             }
         }
+    }
+
+    /**
+     * Gets the frying pan recipe for the given input ItemStack. This method has a fallback on
+     * smoker recipes if no frying pan recipe is found. Smoker recipes are mostly food items. This
+     * allows for greater support of modded food items since they most likely support the smoker.
+     *
+     * @param stack the input item stack
+     * @return an AbstractCookingRecipe for the given input or an empty optional is no recipe is found
+     */
+    private Optional<? extends AbstractCookingRecipe> getRecipe(ItemStack stack)
+    {
+        Optional<? extends AbstractCookingRecipe> optional = this.getRecipe(this.recipeCache, stack);
+        optional = optional.isEmpty() ? this.getRecipe(this.smokerRecipeCache, stack) : optional;
+        return optional;
     }
 
     /**
