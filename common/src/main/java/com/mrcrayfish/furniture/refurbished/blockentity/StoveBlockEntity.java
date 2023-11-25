@@ -223,9 +223,16 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     }
 
     @Override
-    public boolean isHeatingAboveBlock()
+    public boolean isProcessing()
     {
         return this.processing;
+    }
+
+    @Override
+    public boolean isHeating()
+    {
+        BlockState state = this.getBlockState();
+        return state.hasProperty(StoveBlock.LIT) && state.getValue(StoveBlock.LIT);
     }
 
     /**
@@ -236,7 +243,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
      */
     public void onDestroyed(BlockPos pos)
     {
-        if(this.isHeatingAboveBlock())
+        if(this.isProcessing())
         {
             Level level = this.getLevel();
             if(level != null && level.getBlockEntity(pos.above()) instanceof ICookingBlock cooking)

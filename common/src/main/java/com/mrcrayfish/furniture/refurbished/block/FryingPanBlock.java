@@ -27,6 +27,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -44,7 +45,7 @@ public class FryingPanBlock extends FurnitureHorizontalBlock implements EntityBl
     public FryingPanBlock(Properties properties)
     {
         super(properties);
-        this.registerDefaultState(this.getStateDefinition().any().setValue(DIRECTION, Direction.NORTH));
+        this.registerDefaultState(this.getStateDefinition().any().setValue(DIRECTION, Direction.NORTH).setValue(LIT, false));
     }
 
     @Override
@@ -64,7 +65,7 @@ public class FryingPanBlock extends FurnitureHorizontalBlock implements EntityBl
         double side = right.getAxis().choose(clickVec.x, 0, clickVec.z);
         side = Math.abs(Math.min(right.getAxisDirection().getStep(), 0) + side);
         forward = side < 0.5 ? forward.getOpposite() : forward;
-        return this.defaultBlockState().setValue(DIRECTION, forward);
+        return this.defaultBlockState().setValue(DIRECTION, forward).setValue(LIT, this.isHeated(context.getLevel(), pos));
     }
 
     @Override
@@ -104,6 +105,13 @@ public class FryingPanBlock extends FurnitureHorizontalBlock implements EntityBl
         return reader.getBlockEntity(pos.below()) instanceof IHeatingSource;
     }
 
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
+    {
+        super.createBlockStateDefinition(builder);
+        builder.add(LIT);
+    }
+
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
@@ -140,10 +148,29 @@ public class FryingPanBlock extends FurnitureHorizontalBlock implements EntityBl
         {
             return createTickerHelper(type, fryingPan, FryingPanBlockEntity::clientTick);
         }
-        else
+        return null;
+    }
+
+    @Override
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos $$4, boolean $$5)
+    {
+        if(!state.getValue(FryingPanBlock.LIT))
         {
-            return createTickerHelper(type, fryingPan, FryingPanBlockEntity::serverTick);
+            if(this.isHeated(level, pos))
+            {
+                level.setBlock(pos, state.setValue(FryingPanBlock.LIT, true), Block.UPDATE_ALL);
+            }
         }
+        else if(!this.isHeated(level, pos))
+        {
+            level.setBlock(pos, state.setValue(FryingPanBlock.LIT, false), Block.UPDATE_ALL);
+        }
+    }
+
+    private boolean isHeated(Level level, BlockPos pos)
+    {
+        BlockPos belowPos = pos.below();
+        return level != null && level.getBlockEntity(belowPos) instanceof IHeatingSource source && source.isHeating();
     }
 
     @Override

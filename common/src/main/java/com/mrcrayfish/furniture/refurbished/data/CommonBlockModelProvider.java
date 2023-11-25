@@ -925,14 +925,15 @@ public class CommonBlockModelProvider
 
     private void fryingPan(FryingPanBlock block)
     {
-        TextureMapping textures = new TextureMapping();
-        textures.put(TextureSlot.PARTICLE, this.metalParticle(MetalType.LIGHT));
-        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
         PreparedVariantBlockState state = new PreparedVariantBlockState(block);
-        state.createVariant().prop(FryingPanBlock.DIRECTION, Direction.NORTH).addExistingModel(ModelTemplate.FRYING_PAN.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
-        state.createVariant().prop(FryingPanBlock.DIRECTION, Direction.EAST).addExistingModel(ModelTemplate.FRYING_PAN.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
-        state.createVariant().prop(FryingPanBlock.DIRECTION, Direction.SOUTH).addExistingModel(ModelTemplate.FRYING_PAN.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
-        state.createVariant().prop(FryingPanBlock.DIRECTION, Direction.WEST).addExistingModel(ModelTemplate.FRYING_PAN.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(FryingPanBlock.DIRECTION, Direction.NORTH).prop(FryingPanBlock.LIT, false).addExistingModel(ModelTemplate.FRYING_PAN.stateModel().setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(FryingPanBlock.DIRECTION, Direction.EAST).prop(FryingPanBlock.LIT, false).addExistingModel(ModelTemplate.FRYING_PAN.stateModel().setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(FryingPanBlock.DIRECTION, Direction.SOUTH).prop(FryingPanBlock.LIT, false).addExistingModel(ModelTemplate.FRYING_PAN.stateModel().setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(FryingPanBlock.DIRECTION, Direction.WEST).prop(FryingPanBlock.LIT, false).addExistingModel(ModelTemplate.FRYING_PAN.stateModel().setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(FryingPanBlock.DIRECTION, Direction.NORTH).prop(FryingPanBlock.LIT, true).addExistingModel(ModelTemplate.FRYING_PAN_HOT.stateModel().setYRotation(VariantProperties.Rotation.R0));
+        state.createVariant().prop(FryingPanBlock.DIRECTION, Direction.EAST).prop(FryingPanBlock.LIT, true).addExistingModel(ModelTemplate.FRYING_PAN_HOT.stateModel().setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(FryingPanBlock.DIRECTION, Direction.SOUTH).prop(FryingPanBlock.LIT, true).addExistingModel(ModelTemplate.FRYING_PAN_HOT.stateModel().setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(FryingPanBlock.DIRECTION, Direction.WEST).prop(FryingPanBlock.LIT, true).addExistingModel(ModelTemplate.FRYING_PAN_HOT.stateModel().setYRotation(VariantProperties.Rotation.R270));
         this.variantStateConsumer.accept(state);
     }
 

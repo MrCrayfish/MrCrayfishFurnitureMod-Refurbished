@@ -1,6 +1,8 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.mrcrayfish.furniture.refurbished.block.FryingPanBlock;
 import com.mrcrayfish.furniture.refurbished.block.RangeHoodBlock;
+import com.mrcrayfish.furniture.refurbished.block.StoveBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModParticleTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
@@ -28,6 +30,7 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -97,15 +100,6 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
     protected AbstractContainerMenu createMenu(int windowId, Inventory playerInventory)
     {
         return null;
-    }
-
-    public static void serverTick(Level level, BlockPos pos, BlockState state, FryingPanBlockEntity fryingPan)
-    {
-        if(fryingPan.sync)
-        {
-            BlockEntityHelper.sendCustomUpdate(fryingPan, fryingPan.getUpdateTag());
-            fryingPan.sync = false;
-        }
     }
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, FryingPanBlockEntity fryingPan)
@@ -363,7 +357,7 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
      */
     protected void sync()
     {
-        this.sync = true;
+        BlockEntityHelper.sendCustomUpdate(this, this.getUpdateTag());
     }
 
     @Nullable
