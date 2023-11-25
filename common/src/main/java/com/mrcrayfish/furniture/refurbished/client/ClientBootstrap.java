@@ -53,6 +53,7 @@ public class ClientBootstrap
         // Events
         TickEvents.END_CLIENT.register(() -> {
             TextureCache.get().tick();
+            ToolAnimationRenderer.get().tick();
         });
         TickEvents.START_RENDER.register(partialTick -> {
             LinkHandler.get().beforeRender(partialTick);

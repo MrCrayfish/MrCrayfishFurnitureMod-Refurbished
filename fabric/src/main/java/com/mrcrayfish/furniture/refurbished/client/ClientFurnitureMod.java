@@ -46,7 +46,7 @@ public class ClientFurnitureMod implements ClientModInitializer
 
         WorldRenderEvents.LAST.register(context -> {
             Minecraft mc = Minecraft.getInstance();
-            if(mc.player == null)
+            if(mc.player == null || mc.level == null)
                 return;
 
             // Draw active link
@@ -55,6 +55,7 @@ public class ClientFurnitureMod implements ClientModInitializer
             Vec3 view = context.camera().getPosition();
             stack.translate(-view.x(), -view.y(), -view.z());
             LinkHandler.get().render(mc.player, stack, mc.renderBuffers().bufferSource(), context.tickDelta());
+            ToolAnimationRenderer.get().render(mc.level, stack, mc.renderBuffers().bufferSource(), context.tickDelta());
             stack.popPose();
 
             // End render types

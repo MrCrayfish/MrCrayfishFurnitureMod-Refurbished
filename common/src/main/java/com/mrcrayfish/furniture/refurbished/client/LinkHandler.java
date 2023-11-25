@@ -167,14 +167,13 @@ public class LinkHandler
         this.distance = delta.length();
         double yaw = Math.atan2(-delta.z, delta.x) + Math.PI;
         double pitch = Math.atan2(delta.horizontalDistance(), delta.y) + Mth.HALF_PI;
+        poseStack.pushPose();
         poseStack.translate(start.x, start.y, start.z);
         poseStack.mulPose(Axis.YP.rotation((float) yaw));
         poseStack.mulPose(Axis.ZP.rotation((float) pitch));
         int color = this.getLinkColour(player.level());
-        float red = FastColor.ARGB32.red(color) / 255F;
-        float green = FastColor.ARGB32.green(color) / 255F;
-        float blue = FastColor.ARGB32.blue(color) / 255F;
         drawColouredBox(poseStack, source, new AABB(0, -0.03125, -0.03125, delta.length(), 0.03125, 0.03125), color, 0.75F);
+        poseStack.popPose();
     }
 
     /**

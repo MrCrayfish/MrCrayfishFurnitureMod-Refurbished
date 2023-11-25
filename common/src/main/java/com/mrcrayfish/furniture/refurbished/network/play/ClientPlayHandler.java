@@ -8,21 +8,12 @@ import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.IFluidContainerBlock;
 import com.mrcrayfish.furniture.refurbished.client.ClientComputer;
 import com.mrcrayfish.furniture.refurbished.client.LinkHandler;
+import com.mrcrayfish.furniture.refurbished.client.ToolAnimationRenderer;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.PostBoxScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.toast.ItemToast;
-import com.mrcrayfish.furniture.refurbished.computer.Computer;
-import com.mrcrayfish.furniture.refurbished.computer.Program;
 import com.mrcrayfish.furniture.refurbished.computer.client.PaddleBallGraphics;
 import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageClearMessage;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageComputerState;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageDoorbellNotification;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageFlipAnimation;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageSyncFluid;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageSyncLink;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageTelevisionChannel;
-import com.mrcrayfish.furniture.refurbished.network.message.MessagePaddleBall;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageUpdateMailboxes;
+import com.mrcrayfish.furniture.refurbished.network.message.*;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -166,6 +157,15 @@ public class ClientPlayHandler
         if(game != null)
         {
             game.handleOpponentName(message.getName());
+        }
+    }
+
+    public static void handleMessageToolAnimation(MessageToolAnimation message)
+    {
+        switch(message.getTool())
+        {
+            case SPATULA -> ToolAnimationRenderer.get().playSpatulaAnimation(message.getPos(), message.getDirection());
+            case KNIFE -> ToolAnimationRenderer.get().playKnifeAnimation(message.getPos(), message.getDirection());
         }
     }
 }

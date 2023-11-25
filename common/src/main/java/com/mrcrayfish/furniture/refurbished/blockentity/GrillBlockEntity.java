@@ -179,7 +179,7 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
     /**
      * Hook method for dispenser behaviour.
      */
-    public void flipItems()
+    public boolean flipItems()
     {
         for(int i = 0; i < 4; i++)
         {
@@ -188,10 +188,11 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
                 if(this.spaces.get(i).isHalfCooked())
                 {
                     this.flipItem(i);
-                    return;
+                    return true;
                 }
             }
         }
+        return false;
     }
 
     public void removeCookingItem(int position)

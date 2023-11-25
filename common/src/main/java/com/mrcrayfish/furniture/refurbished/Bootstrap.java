@@ -17,6 +17,7 @@ import com.mrcrayfish.furniture.refurbished.entity.Seat;
 import com.mrcrayfish.furniture.refurbished.item.PackageItem;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
 import com.mrcrayfish.furniture.refurbished.network.Network;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageToolAnimation;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -49,7 +50,9 @@ public class Bootstrap
             Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
             BlockPos pos = source.getPos().relative(direction).below();
             if(source.getLevel().getBlockEntity(pos) instanceof GrillBlockEntity grill) {
-                grill.flipItems();
+                if(grill.flipItems()) {
+                    Network.getPlay().sendToTrackingBlockEntity(() -> grill, new MessageToolAnimation(MessageToolAnimation.Tool.SPATULA, source.getPos(), direction));
+                }
             }
             return stack;
         });
@@ -63,6 +66,7 @@ public class Bootstrap
                     if(stack.hurt(1, source.getLevel().random, null)) {
                         stack.setCount(0);
                     }
+                    Network.getPlay().sendToTrackingBlockEntity(() -> cuttingBoard, new MessageToolAnimation(MessageToolAnimation.Tool.KNIFE, source.getPos(), direction));
                 }
             }
             return stack;

@@ -33,6 +33,7 @@ public class Network
             .registerPlayMessage(MessagePaddleBall.OpponentName.class, MessageDirection.PLAY_CLIENT_BOUND)
             .registerPlayMessage(MessagePaddleBall.Event.class, MessageDirection.PLAY_CLIENT_BOUND)
             .registerPlayMessage(MessageUpdatePainting.class, MessageDirection.PLAY_SERVER_BOUND)
+            .registerPlayMessage(MessageToolAnimation.class, MessageDirection.PLAY_CLIENT_BOUND)
             .build();
 
     public static void init() {}
