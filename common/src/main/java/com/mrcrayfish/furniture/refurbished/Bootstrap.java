@@ -62,7 +62,7 @@ public class Bootstrap
             Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
             BlockPos pos = source.getPos().relative(direction);
             if(source.getLevel().getBlockEntity(pos) instanceof CuttingBoardBlockEntity cuttingBoard) {
-                if(cuttingBoard.sliceItem(false)) {
+                if(cuttingBoard.sliceItem(source.getLevel(), false)) {
                     if(stack.hurt(1, source.getLevel().random, null)) {
                         stack.setCount(0);
                     }

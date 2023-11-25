@@ -2,12 +2,14 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
+import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -96,24 +98,23 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
     }
 
     /**
-     *
-     * @return
+     * @return True if an item was sliced
      */
-    public boolean sliceItem(boolean drop)
+    public boolean sliceItem(Level level, boolean drop)
     {
         ItemStack input = this.getItem(0);
         Optional<? extends SingleItemRecipe> recipe = this.getRecipe(input);
         if(recipe.isPresent())
         {
-            // TODO play sound
-            ItemStack result = recipe.get().getResultItem(this.level.registryAccess());
+            level.playSound(null, this.worldPosition, ModSounds.ITEM_KNIFE_CHOP.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+            ItemStack result = recipe.get().getResultItem(level.registryAccess());
             BlockPos pos = this.worldPosition;
             if(drop)
             {
-                ItemEntity entity = new ItemEntity(this.level, pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5, result.copy());
+                ItemEntity entity = new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5, result.copy());
                 entity.setDefaultPickUpDelay();
                 entity.setDeltaMovement(new Vec3(0, 0.15, 0));
-                this.level.addFreshEntity(entity);
+                level.addFreshEntity(entity);
                 result = ItemStack.EMPTY;
             }
             this.setItem(0, result.copy());

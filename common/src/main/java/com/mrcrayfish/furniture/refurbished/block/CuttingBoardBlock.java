@@ -69,7 +69,7 @@ public class CuttingBoardBlock extends FurnitureHorizontalBlock implements Entit
                 if(heldItem.is(ModItems.KNIFE.get()))
                 {
                     boolean dropAsEntity = !Services.ENTITY.isFakePlayer(player);
-                    if(cuttingBoard.sliceItem(dropAsEntity))
+                    if(cuttingBoard.sliceItem(level, dropAsEntity))
                     {
                         heldItem.hurtAndBreak(1, player, (player1) -> player1.broadcastBreakEvent(hand));
                         return InteractionResult.CONSUME;
