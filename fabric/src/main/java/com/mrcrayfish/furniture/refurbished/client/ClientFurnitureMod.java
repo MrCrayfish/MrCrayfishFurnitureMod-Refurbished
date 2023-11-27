@@ -7,10 +7,12 @@ import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.client.player.ClientPreAttackCallback;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
@@ -42,6 +44,8 @@ public class ClientFurnitureMod implements ClientModInitializer
         ClientBootstrap.registerBlockEntityRenderers(BlockEntityRenderers::register);
         ClientBootstrap.registerEntityRenderers(EntityRendererRegistry::register);
         ClientBootstrap.registerRenderTypes(BlockRenderLayerMap.INSTANCE::putBlock);
+        ClientBootstrap.registerBlockColors(ColorProviderRegistry.BLOCK::register);
+        ClientBootstrap.registerItemColors(ColorProviderRegistry.ITEM::register);
         ModelLoadingRegistry.INSTANCE.registerModelProvider((manager, out) -> ExtraModels.register(out));
 
         WorldRenderEvents.LAST.register(context -> {
