@@ -4,6 +4,7 @@ import com.mrcrayfish.framework.api.FrameworkAPI;
 import com.mrcrayfish.framework.api.event.PlayerEvents;
 import com.mrcrayfish.framework.api.event.TickEvents;
 import com.mrcrayfish.furniture.refurbished.blockentity.CuttingBoardBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.FryingPanBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.GrillBlockEntity;
 import com.mrcrayfish.furniture.refurbished.computer.Computer;
 import com.mrcrayfish.furniture.refurbished.computer.IService;
@@ -52,6 +53,15 @@ public class Bootstrap
             if(source.getLevel().getBlockEntity(pos) instanceof GrillBlockEntity grill) {
                 if(grill.flipItems()) {
                     Network.getPlay().sendToTrackingBlockEntity(() -> grill, new MessageToolAnimation(MessageToolAnimation.Tool.SPATULA, source.getPos(), direction));
+                    return stack;
+                }
+            }
+            pos = source.getPos().relative(direction);
+            if(source.getLevel().getBlockEntity(pos) instanceof FryingPanBlockEntity fryingPan) {
+                if(fryingPan.isFlippingNeeded()) {
+                    fryingPan.flipItem();
+                    Network.getPlay().sendToTrackingBlockEntity(() -> fryingPan, new MessageToolAnimation(MessageToolAnimation.Tool.SPATULA, source.getPos(), direction));
+                    return stack;
                 }
             }
             return stack;
