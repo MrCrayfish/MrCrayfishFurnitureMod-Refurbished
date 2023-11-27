@@ -107,6 +107,36 @@
             "refurbished_furniture:block/frying_pan/place_ingredient"
         ]
     },
+    "block.frying_pan.break": {
+        "subtitle": "subtitle.refurbished_furniture.frying_pan.break",
+        "sounds": [
+            "refurbished_furniture:block/frying_pan/break"
+        ]
+    },
+    "block.frying_pan.hit": {
+        "subtitle": "subtitle.refurbished_furniture.frying_pan.hit",
+        "sounds": [
+            "refurbished_furniture:block/frying_pan/hit1",
+            "refurbished_furniture:block/frying_pan/hit2",
+            "refurbished_furniture:block/frying_pan/hit3"
+        ]
+    },
+    "block.frying_pan.place": {
+        "subtitle": "subtitle.refurbished_furniture.frying_pan.place",
+        "sounds": [
+            "refurbished_furniture:block/frying_pan/place1",
+            "refurbished_furniture:block/frying_pan/place2",
+            "refurbished_furniture:block/frying_pan/place3"
+        ]
+    },
+    "block.frying_pan.step": {
+        "subtitle": "subtitle.refurbished_furniture.frying_pan.step",
+        "sounds": [
+            "refurbished_furniture:block/frying_pan/step1",
+            "refurbished_furniture:block/frying_pan/step2",
+            "refurbished_furniture:block/frying_pan/step3"
+        ]
+    },
     "item.package.open": {
         "subtitle": "subtitle.refurbished_furniture.package_open",
         "sounds": [

@@ -2,8 +2,12 @@ package com.mrcrayfish.furniture.refurbished.core;
 
 import com.mrcrayfish.framework.api.registry.RegistryContainer;
 import com.mrcrayfish.framework.api.registry.RegistryEntry;
+import com.mrcrayfish.furniture.refurbished.util.LazyValue;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.level.block.SoundType;
+import org.apache.commons.lang3.concurrent.ConcurrentException;
+import org.apache.commons.lang3.concurrent.LazyInitializer;
 
 /**
  * Author: MrCrayfish
@@ -29,6 +33,10 @@ public class ModSounds
     public static final RegistryEntry<SoundEvent> BLOCK_TELEVISION_CHANNEL_BLOCKY_GAME = RegistryEntry.soundEvent(Utils.resource("block.television.channel.blocky_game"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> BLOCK_TELEVISION_CHANNEL_RETRO_SONG = RegistryEntry.soundEvent(Utils.resource("block.television.channel.retro_song"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> BLOCK_FRYING_PAN_PLACE_INGREDIENT = RegistryEntry.soundEvent(Utils.resource("block.frying_pan.place_ingredient"), id -> () -> SoundEvent.createVariableRangeEvent(id));
+    public static final RegistryEntry<SoundEvent> BLOCK_FRYING_PAN_BREAK = RegistryEntry.soundEvent(Utils.resource("block.frying_pan.break"), id -> () -> SoundEvent.createVariableRangeEvent(id));
+    public static final RegistryEntry<SoundEvent> BLOCK_FRYING_PAN_HIT = RegistryEntry.soundEvent(Utils.resource("block.frying_pan.hit"), id -> () -> SoundEvent.createVariableRangeEvent(id));
+    public static final RegistryEntry<SoundEvent> BLOCK_FRYING_PAN_STEP = RegistryEntry.soundEvent(Utils.resource("block.frying_pan.step"), id -> () -> SoundEvent.createVariableRangeEvent(id));
+    public static final RegistryEntry<SoundEvent> BLOCK_FRYING_PAN_PLACE = RegistryEntry.soundEvent(Utils.resource("block.frying_pan.place"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> ITEM_PACKAGE_OPEN = RegistryEntry.soundEvent(Utils.resource("item.package.open"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> ITEM_WRENCH_SELECTED_NODE = RegistryEntry.soundEvent(Utils.resource("item.wrench.selected_node"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> ITEM_WRENCH_REMOVE_LINK = RegistryEntry.soundEvent(Utils.resource("item.wrench.remove_link"), id -> () -> SoundEvent.createVariableRangeEvent(id));
@@ -41,4 +49,8 @@ public class ModSounds
     public static final RegistryEntry<SoundEvent> UI_PADDLE_BALL_RETRO_FAIL = RegistryEntry.soundEvent(Utils.resource("ui.paddle_ball.retro_fail"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> UI_PADDLE_BALL_RETRO_WIN = RegistryEntry.soundEvent(Utils.resource("ui.paddle_ball.retro_win"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> UI_PADDLE_BALL_RETRO_LOSE = RegistryEntry.soundEvent(Utils.resource("ui.paddle_ball.retro_lose"), id -> () -> SoundEvent.createVariableRangeEvent(id));
+
+    public static final LazyValue<SoundType> SOUND_TYPE_FRYING_PAN = new LazyValue<>(() -> {
+        return new SoundType(1.0F, 1.0F, ModSounds.BLOCK_FRYING_PAN_BREAK.get(), ModSounds.BLOCK_FRYING_PAN_STEP.get(), ModSounds.BLOCK_FRYING_PAN_PLACE.get(), ModSounds.BLOCK_FRYING_PAN_HIT.get(), ModSounds.BLOCK_FRYING_PAN_PLACE.get());
+    });
 }
