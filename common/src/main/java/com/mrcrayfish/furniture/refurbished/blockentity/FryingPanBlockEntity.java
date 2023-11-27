@@ -103,6 +103,12 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
         return null;
     }
 
+    @Override
+    public int getMaxStackSize()
+    {
+        return 1;
+    }
+
     public static void clientTick(Level level, BlockPos pos, BlockState state, FryingPanBlockEntity fryingPan)
     {
         fryingPan.spawnParticles(level, pos);
@@ -230,6 +236,30 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
         }
     }
 
+    @Override
+    public boolean canPlaceItem(int slotIndex, ItemStack stack)
+    {
+        return slotIndex == 0 && super.canPlaceItem(slotIndex, stack) && this.getRecipe(stack).isPresent();
+    }
+
+    @Override
+    public boolean canTakeItem(Container container, int slotIndex, ItemStack stack)
+    {
+        return slotIndex == 0 && super.canTakeItem(container, slotIndex, stack) && this.getRecipe(stack).isEmpty();
+    }
+
+    @Override
+    public void setItem(int slotIndex, ItemStack stack)
+    {
+        // Fixes an issue when items are inserted by a hopper that flipped is not reset
+        if(!this.isCooking() && this.getRecipe(stack).isPresent())
+        {
+            this.flipped = false;
+            this.needsFlipping = false;
+        }
+        super.setItem(slotIndex, stack);
+    }
+
     /**
      * Gets the frying pan recipe for the given input ItemStack. This method has a fallback on
      * smoker recipes if no frying pan recipe is found. Smoker recipes are mostly food items. This
@@ -313,6 +343,8 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
             ItemEntity entity = new ItemEntity(this.level, pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5, stack.copy());
             this.setItem(0, ItemStack.EMPTY);
             this.level.addFreshEntity(entity);
+            this.flipped = false;
+            this.needsFlipping = false;
             this.sync();
         }
     }
@@ -375,19 +407,6 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
         BlockEntityHelper.sendCustomUpdate(this, this.getUpdateTag());
     }
 
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket()
-    {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @Override
-    public CompoundTag getUpdateTag()
-    {
-        return this.saveWithoutMetadata();
-    }
-
     @Override
     public void load(CompoundTag tag)
     {
@@ -413,5 +432,18 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
         tag.putBoolean("NeedsFlipping", this.needsFlipping);
         tag.putBoolean("Flipped", this.flipped);
         tag.putInt("Rotation", this.rotation);
+    }
+
+    @Nullable
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket()
+    {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag()
+    {
+        return this.saveWithoutMetadata();
     }
 }

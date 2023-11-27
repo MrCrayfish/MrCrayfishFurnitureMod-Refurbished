@@ -99,6 +99,16 @@ public class StoveBlock extends FurnitureHorizontalBlock implements EntityBlock,
     }
 
     @Override
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos neighbourPos, boolean movedByPiston)
+    {
+        super.neighborChanged(state, level, pos, block, neighbourPos, movedByPiston);
+        if(pos.above().equals(neighbourPos) && level.getBlockEntity(pos) instanceof StoveBlockEntity stove)
+        {
+            stove.onNeighbourChanged();
+        }
+    }
+
+    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
     {
         super.createBlockStateDefinition(builder);

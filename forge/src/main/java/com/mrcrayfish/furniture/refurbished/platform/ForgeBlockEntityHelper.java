@@ -1,7 +1,9 @@
 package com.mrcrayfish.furniture.refurbished.platform;
 
 import com.mrcrayfish.furniture.refurbished.blockentity.ForgeRecycleBinBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.ForgeStoveBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.RecycleBinBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.StoveBlockEntity;
 import com.mrcrayfish.furniture.refurbished.platform.services.IBlockEntityHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -26,6 +28,12 @@ public class ForgeBlockEntityHelper implements IBlockEntityHelper
     public RecycleBinBlockEntity createRecycleBinBlockEntity(BlockPos pos, BlockState state)
     {
         return new ForgeRecycleBinBlockEntity(pos, state);
+    }
+
+    @Override
+    public StoveBlockEntity createStoveBlockEntity(BlockPos pos, BlockState state)
+    {
+        return new ForgeStoveBlockEntity(pos, state);
     }
 
     @Override

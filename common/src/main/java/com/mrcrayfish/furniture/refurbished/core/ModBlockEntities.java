@@ -157,7 +157,7 @@ public class ModBlockEntities
             ModBlocks.MICROWAVE_DARK.get()
     });
 
-    public static final RegistryEntry<BlockEntityType<StoveBlockEntity>> STOVE = RegistryEntry.blockEntity(Utils.resource("stove"), StoveBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<StoveBlockEntity>> STOVE = RegistryEntry.blockEntity(Utils.resource("stove"), Services.BLOCK_ENTITY::createStoveBlockEntity, () -> new Block[]{
             ModBlocks.STOVE_LIGHT.get(),
             ModBlocks.STOVE_DARK.get()
     });

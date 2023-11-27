@@ -147,7 +147,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     }
 
     @Nullable
-    private ICookingBlock getCookingBlock()
+    public ICookingBlock getCookingBlock()
     {
         if(this.cookingBlockRef != null)
         {
@@ -252,6 +252,11 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
             }
         }
     }
+
+    /**
+     * Called when a neighbour block is changed.
+     */
+    public void onNeighbourChanged() {}
 
     /**
      * Marks the frying pan as needing to sync data to tracking clients

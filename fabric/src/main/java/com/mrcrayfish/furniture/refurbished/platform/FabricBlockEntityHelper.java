@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.platform;
 
 import com.mrcrayfish.furniture.refurbished.blockentity.RecycleBinBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.StoveBlockEntity;
 import com.mrcrayfish.furniture.refurbished.platform.services.IBlockEntityHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,6 +19,12 @@ public class FabricBlockEntityHelper implements IBlockEntityHelper
     public RecycleBinBlockEntity createRecycleBinBlockEntity(BlockPos pos, BlockState state)
     {
         return new RecycleBinBlockEntity(pos, state);
+    }
+
+    @Override
+    public StoveBlockEntity createStoveBlockEntity(BlockPos pos, BlockState state)
+    {
+        return new StoveBlockEntity(pos, state);
     }
 
     @Override
