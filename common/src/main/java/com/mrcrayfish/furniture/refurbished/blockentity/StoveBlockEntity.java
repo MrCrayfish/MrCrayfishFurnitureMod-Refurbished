@@ -102,15 +102,17 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     @Override
     public void setProcessingTime(int time)
     {
+        boolean changed = false;
         if(this.processingTime == 0 && time > this.processingTime)
         {
             ICookingBlock block = this.getCookingBlock();
             if(block != null)
             {
                 block.onStartCooking();
-                this.processing = true;
-                this.sync();
             }
+            this.processing = true;
+            this.sync();
+            changed = true;
         }
         else if(time == 0 && time < this.processingTime)
         {
@@ -118,11 +120,20 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
             if(block != null)
             {
                 block.onStopCooking();
-                this.processing = false;
-                this.sync();
             }
+            this.processing = false;
+            this.sync();
+            changed = true;
         }
-        this.processingTime = time;
+        if(this.processingTime != time)
+        {
+            this.processingTime = time;
+            changed = true;
+        }
+        if(changed)
+        {
+            this.setChanged();
+        }
     }
 
     @Override
@@ -133,6 +144,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
         {
             block.onCompleteCooking();
             this.processing = false;
+            this.setChanged();
             this.sync();
         }
     }
