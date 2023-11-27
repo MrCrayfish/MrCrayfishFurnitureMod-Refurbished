@@ -85,7 +85,7 @@ public class FryingPanBlock extends FurnitureHorizontalBlock implements EntityBl
                 }
                 else if(!stack.isEmpty())
                 {
-                    if(fryingPan.placeContents(stack, player.getDirection().get2DDataValue()))
+                    if(fryingPan.placeContents(level, stack, player.getDirection().get2DDataValue()))
                     {
                         if(!player.getAbilities().instabuild)
                         {

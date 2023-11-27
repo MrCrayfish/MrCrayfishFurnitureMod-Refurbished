@@ -4,6 +4,7 @@ import com.mrcrayfish.furniture.refurbished.block.RangeHoodBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModParticleTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
+import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageFlipAnimation;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
@@ -16,6 +17,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -112,7 +114,14 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
     public static void clientTick(Level level, BlockPos pos, BlockState state, FryingPanBlockEntity fryingPan)
     {
         fryingPan.spawnParticles(level, pos);
-        fryingPan.getAnimation().tick();
+
+        FlipAnimation animation = fryingPan.getAnimation();
+        boolean wasPlaying = animation.isPlaying();
+        animation.tick();
+        if(wasPlaying && !animation.isPlaying())
+        {
+            fryingPan.playPlaceIngredientSound(true, 1.0F);
+        }
     }
 
     /**
@@ -314,7 +323,7 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
      * @param rotation the rotation of the item
      * @return True if the item was placed into the frying pan
      */
-    public boolean placeContents(ItemStack stack, int rotation)
+    public boolean placeContents(Level level, ItemStack stack, int rotation)
     {
         if(!stack.isEmpty() && this.getItem(0).isEmpty())
         {
@@ -325,6 +334,7 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
             this.flipped = false;
             this.needsFlipping = false;
             this.sync();
+            this.playPlaceIngredientSound(false, 0.85F);
             return true;
         }
         this.removeContents();
@@ -390,6 +400,18 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
             this.animation = new FlipAnimation();
         }
         return this.animation;
+    }
+
+    private void playPlaceIngredientSound(boolean client, float pitch)
+    {
+        Level level = Objects.requireNonNull(this.level);
+        Vec3 vec = Vec3.atBottomCenterOf(this.worldPosition);
+        if(client)
+        {
+            level.playLocalSound(vec.x, vec.y, vec.z, ModSounds.BLOCK_FRYING_PAN_PLACE_INGREDIENT.get(), SoundSource.PLAYERS, 1.0F, pitch, false);
+            return;
+        }
+        level.playSound(null, vec.x, vec.y, vec.z, ModSounds.BLOCK_FRYING_PAN_PLACE_INGREDIENT.get(), SoundSource.PLAYERS, 1.0F, pitch);
     }
 
     @Override

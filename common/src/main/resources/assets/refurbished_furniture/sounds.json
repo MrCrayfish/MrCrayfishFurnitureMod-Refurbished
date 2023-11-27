@@ -101,6 +101,12 @@
             "refurbished_furniture:block/television/retro_song"
         ]
     },
+    "block.frying_pan.place_ingredient": {
+        "subtitle": "subtitle.refurbished_furniture.frying_pan.place_ingredient",
+        "sounds": [
+            "refurbished_furniture:block/frying_pan/place_ingredient"
+        ]
+    },
     "item.package.open": {
         "subtitle": "subtitle.refurbished_furniture.package_open",
         "sounds": [
