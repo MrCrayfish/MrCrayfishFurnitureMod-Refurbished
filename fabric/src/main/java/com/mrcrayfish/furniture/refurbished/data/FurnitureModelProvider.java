@@ -5,8 +5,11 @@ import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.furniture.refurbished.data.model.PreparedVariantBlockState;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.ItemModelGenerators;
+import net.minecraft.data.models.blockstates.Condition;
+import net.minecraft.data.models.blockstates.MultiPartGenerator;
 import net.minecraft.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.data.models.blockstates.PropertyDispatch;
 import net.minecraft.data.models.blockstates.Selector;
@@ -14,15 +17,21 @@ import net.minecraft.data.models.blockstates.Variant;
 import net.minecraft.data.models.blockstates.VariantProperties;
 import net.minecraft.data.models.model.DelegatedModel;
 import net.minecraft.data.models.model.ModelLocationUtils;
+import net.minecraft.data.models.model.ModelTemplate;
+import net.minecraft.data.models.model.TextureMapping;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -39,6 +48,7 @@ public class FurnitureModelProvider extends FabricModelProvider
         this.output = output;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void generateBlockStateModels(BlockModelGenerators generators)
     {
@@ -89,7 +99,50 @@ public class FurnitureModelProvider extends FabricModelProvider
                     }
                 });
             });
-        }, builder -> {}, model -> {
+        }, builder -> {
+            Block block = builder.getBlock();
+
+            // We do our own handling of item models, so skip auto generation
+            generators.skipAutoItemBlock(block);
+
+            MultiPartGenerator generator = MultiPartGenerator.multiPart(block);
+            builder.getParts().forEach(entry -> {
+                List<Variant> variants = new ArrayList<>();
+                for(PreparedVariantBlockState.Model model : entry.getModels()) {
+                    ResourceLocation modelLocation = model.isChild() ? new ResourceLocation(this.output.getModId(), "block/" + model.getName()) : model.getModel();
+                    Variant variant = Variant.variant().with(VariantProperties.MODEL, modelLocation);
+                    if(model.getXRotation() != VariantProperties.Rotation.R0) {
+                        variant.with(VariantProperties.X_ROT, model.getXRotation());
+                    }
+                    if(model.getYRotation() != VariantProperties.Rotation.R0) {
+                        variant.with(VariantProperties.Y_ROT, model.getYRotation());
+                    }
+                    variants.add(variant);
+
+                    // Creates and registers the block model into the model output if a child model
+                    if(model.isChild() && !createdModels.contains(modelLocation))
+                    {
+                        model.asTemplate().create(modelLocation, model.getTextures(), generators.modelOutput);
+                        createdModels.add(modelLocation);
+                    }
+                }
+
+                Condition[] variantConditions = entry.getValueMap().entrySet().stream().map(e -> {
+                    return Condition.condition().term(e.getKey(), e.getValue());
+                }).toArray(Condition[]::new);
+                Condition condition = entry.isOrMode() ? Condition.or(variantConditions) : Condition.and(variantConditions);
+                generator.with(condition, variants);
+            });
+            generators.blockStateOutput.accept(generator);
+
+            // Generates an item model if the block has an item and the state builder marked a variant for the item model
+            Optional.ofNullable(Item.BY_BLOCK.get(block)).ifPresent(item -> {
+                Optional.ofNullable(builder.getModelForItem()).ifPresent(model -> {
+                    ResourceLocation itemName = ModelLocationUtils.getModelLocation(item);
+                    model.asTemplate().create(itemName, model.getTextures(), generators.modelOutput);
+                });
+            });
+        }, model -> {
             ResourceLocation modelLocation = new ResourceLocation(this.output.getModId(), "extra/" + model.getName());
             if(!createdModels.contains(modelLocation))
             {
