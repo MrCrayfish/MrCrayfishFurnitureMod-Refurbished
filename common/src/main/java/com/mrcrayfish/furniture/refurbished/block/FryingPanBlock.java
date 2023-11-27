@@ -7,10 +7,12 @@ import com.mrcrayfish.furniture.refurbished.blockentity.IHeatingSource;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.core.ModParticleTypes;
+import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
@@ -76,9 +78,10 @@ public class FryingPanBlock extends FurnitureHorizontalBlock implements EntityBl
             if(level.getBlockEntity(pos) instanceof FryingPanBlockEntity fryingPan)
             {
                 ItemStack stack = player.getItemInHand(hand);
-                if(stack.getItem() == ModItems.SPATULA.get())
+                if(stack.is(ModItems.SPATULA.get()))
                 {
                     fryingPan.flipItem();
+                    FryingPanBlock.playSpatulaScoopSound(level, pos, 0.1875);
                 }
                 else if(!stack.isEmpty())
                 {
@@ -185,5 +188,11 @@ public class FryingPanBlock extends FurnitureHorizontalBlock implements EntityBl
     public List<TagKey<Block>> getTags()
     {
         return List.of(BlockTags.MINEABLE_WITH_PICKAXE);
+    }
+
+    public static void playSpatulaScoopSound(Level level, BlockPos pos, double offset)
+    {
+        Vec3 vec = Vec3.atBottomCenterOf(pos);
+        level.playSound(null, vec.x, vec.y, vec.z, ModSounds.ITEM_SPATULA_SCOOP.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
     }
 }

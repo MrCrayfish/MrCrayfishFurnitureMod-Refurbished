@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished;
 import com.mrcrayfish.framework.api.FrameworkAPI;
 import com.mrcrayfish.framework.api.event.PlayerEvents;
 import com.mrcrayfish.framework.api.event.TickEvents;
+import com.mrcrayfish.furniture.refurbished.block.FryingPanBlock;
 import com.mrcrayfish.furniture.refurbished.blockentity.CuttingBoardBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.FryingPanBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.GrillBlockEntity;
@@ -49,17 +50,23 @@ public class Bootstrap
         // Allows a spatula in a dispenser to flip items on the grill
         DispenserBlock.registerBehavior(ModItems.SPATULA::get, (source, stack) -> {
             Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
+
+            // Handle interaction with grill
             BlockPos pos = source.getPos().relative(direction).below();
             if(source.getLevel().getBlockEntity(pos) instanceof GrillBlockEntity grill) {
                 if(grill.flipItems()) {
+                    FryingPanBlock.playSpatulaScoopSound(source.getLevel(), pos.above(), 0);
                     Network.getPlay().sendToTrackingBlockEntity(() -> grill, new MessageToolAnimation(MessageToolAnimation.Tool.SPATULA, source.getPos(), direction));
                     return stack;
                 }
             }
+
+            // Handle interaction with frying pan
             pos = source.getPos().relative(direction);
             if(source.getLevel().getBlockEntity(pos) instanceof FryingPanBlockEntity fryingPan) {
                 if(fryingPan.isFlippingNeeded()) {
                     fryingPan.flipItem();
+                    FryingPanBlock.playSpatulaScoopSound(source.getLevel(), pos, 0.1875);
                     Network.getPlay().sendToTrackingBlockEntity(() -> fryingPan, new MessageToolAnimation(MessageToolAnimation.Tool.SPATULA, source.getPos(), direction));
                     return stack;
                 }

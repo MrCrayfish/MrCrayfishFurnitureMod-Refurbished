@@ -134,6 +134,14 @@
             "refurbished_furniture:item/knife/chop3"
         ]
     },
+    "item.spatula.scoop": {
+        "subtitle": "subtitle.refurbished_furniture.spatula_scoop",
+        "sounds": [
+            "refurbished_furniture:item/spatula/scoop1",
+            "refurbished_furniture:item/spatula/scoop2",
+            "refurbished_furniture:item/spatula/scoop3"
+        ]
+    },
     "ui.paddle_ball.retro_click": {
         "subtitle": "subtitle.refurbished_furniture.ui.paddle_ball.retro_click",
         "sounds": [
