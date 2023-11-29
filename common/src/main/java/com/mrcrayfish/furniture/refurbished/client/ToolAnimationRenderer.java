@@ -136,7 +136,7 @@ public class ToolAnimationRenderer
         {
             poseStack.pushPose();
             poseStack.translate(this.pos.getX() + 0.5, this.pos.getY(), this.pos.getZ() + 0.5);
-            poseStack.mulPose(Axis.YP.rotation(Mth.HALF_PI * this.direction.get2DDataValue()));
+            poseStack.mulPose(Axis.YP.rotation(-Mth.HALF_PI * this.direction.get2DDataValue()));
             this.tool.transform.accept(poseStack, this.time + partialTick);
             Minecraft.getInstance().getItemRenderer().renderStatic(this.stack, ItemDisplayContext.NONE, light, OverlayTexture.NO_OVERLAY, poseStack, source, level, 0);
             poseStack.popPose();
