@@ -1145,18 +1145,15 @@ public class CommonBlockModelProvider
 
     private void recycleBin(RecycleBinBlock block)
     {
-        TextureMapping textures = new TextureMapping();
-        textures.put(TextureSlot.PARTICLE, this.metalParticle(MetalType.LIGHT));
-        textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
         PreparedVariantBlockState state = new PreparedVariantBlockState(block);
-        state.createVariant().prop(RecycleBinBlock.DIRECTION, Direction.NORTH).prop(RecycleBinBlock.OPEN, false).addExistingModel(ModelTemplate.RECYCLE_BIN_CLOSED.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();
-        state.createVariant().prop(RecycleBinBlock.DIRECTION, Direction.EAST).prop(RecycleBinBlock.OPEN, false).addExistingModel(ModelTemplate.RECYCLE_BIN_CLOSED.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
-        state.createVariant().prop(RecycleBinBlock.DIRECTION, Direction.SOUTH).prop(RecycleBinBlock.OPEN, false).addExistingModel(ModelTemplate.RECYCLE_BIN_CLOSED.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
-        state.createVariant().prop(RecycleBinBlock.DIRECTION, Direction.WEST).prop(RecycleBinBlock.OPEN, false).addExistingModel(ModelTemplate.RECYCLE_BIN_CLOSED.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
-        state.createVariant().prop(RecycleBinBlock.DIRECTION, Direction.NORTH).prop(RecycleBinBlock.OPEN, true).addExistingModel(ModelTemplate.RECYCLE_BIN_OPEN.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R0));
-        state.createVariant().prop(RecycleBinBlock.DIRECTION, Direction.EAST).prop(RecycleBinBlock.OPEN, true).addExistingModel(ModelTemplate.RECYCLE_BIN_OPEN.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R90));
-        state.createVariant().prop(RecycleBinBlock.DIRECTION, Direction.SOUTH).prop(RecycleBinBlock.OPEN, true).addExistingModel(ModelTemplate.RECYCLE_BIN_OPEN.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R180));
-        state.createVariant().prop(RecycleBinBlock.DIRECTION, Direction.WEST).prop(RecycleBinBlock.OPEN, true).addExistingModel(ModelTemplate.RECYCLE_BIN_OPEN.stateModel().setTextures(textures).setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(RecycleBinBlock.DIRECTION, Direction.NORTH).prop(RecycleBinBlock.OPEN, false).addExistingModel(ModelTemplate.RECYCLE_BIN_CLOSED.stateModel().setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(RecycleBinBlock.DIRECTION, Direction.EAST).prop(RecycleBinBlock.OPEN, false).addExistingModel(ModelTemplate.RECYCLE_BIN_CLOSED.stateModel().setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(RecycleBinBlock.DIRECTION, Direction.SOUTH).prop(RecycleBinBlock.OPEN, false).addExistingModel(ModelTemplate.RECYCLE_BIN_CLOSED.stateModel().setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(RecycleBinBlock.DIRECTION, Direction.WEST).prop(RecycleBinBlock.OPEN, false).addExistingModel(ModelTemplate.RECYCLE_BIN_CLOSED.stateModel().setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(RecycleBinBlock.DIRECTION, Direction.NORTH).prop(RecycleBinBlock.OPEN, true).addExistingModel(ModelTemplate.RECYCLE_BIN_OPEN.stateModel().setYRotation(VariantProperties.Rotation.R0));
+        state.createVariant().prop(RecycleBinBlock.DIRECTION, Direction.EAST).prop(RecycleBinBlock.OPEN, true).addExistingModel(ModelTemplate.RECYCLE_BIN_OPEN.stateModel().setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(RecycleBinBlock.DIRECTION, Direction.SOUTH).prop(RecycleBinBlock.OPEN, true).addExistingModel(ModelTemplate.RECYCLE_BIN_OPEN.stateModel().setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(RecycleBinBlock.DIRECTION, Direction.WEST).prop(RecycleBinBlock.OPEN, true).addExistingModel(ModelTemplate.RECYCLE_BIN_OPEN.stateModel().setYRotation(VariantProperties.Rotation.R270));
         this.variantStateConsumer.accept(state);
     }
 
