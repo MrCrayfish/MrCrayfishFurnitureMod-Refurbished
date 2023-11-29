@@ -51,4 +51,10 @@ public class DoorMatBlockEntityRenderer implements BlockEntityRenderer<DoorMatBl
             consumer.vertex(matrix, 0.9375F, 0.063F, 0.1875F).color(255, 255, 255, 255).uv(1, 0).uv2(light).endVertex();
         }
     }
+
+    @Override
+    public int getViewDistance()
+    {
+        return 24;
+    }
 }
