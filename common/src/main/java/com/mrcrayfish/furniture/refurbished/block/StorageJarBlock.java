@@ -99,6 +99,6 @@ public class StorageJarBlock extends FurnitureHorizontalBlock implements EntityB
     @Override
     public List<TagKey<Block>> getTags()
     {
-        return List.of(BlockTags.NEEDS_STONE_TOOL);
+        return List.of(BlockTags.MINEABLE_WITH_PICKAXE);
     }
 }
