@@ -4,8 +4,11 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.furniture.refurbished.blockentity.RangeHoodBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
+import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -17,13 +20,14 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish
  */
-public class RangeHoodBlock extends FurnitureHorizontalBlock implements EntityBlock
+public class RangeHoodBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
 {
     private final MetalType type;
 
@@ -79,5 +83,11 @@ public class RangeHoodBlock extends FurnitureHorizontalBlock implements EntityBl
     public static int light(BlockState state)
     {
         return state.getValue(POWERED) ? 10 : 0;
+    }
+
+    @Override
+    public List<TagKey<Block>> getTags()
+    {
+        return List.of(BlockTags.MINEABLE_WITH_PICKAXE);
     }
 }
