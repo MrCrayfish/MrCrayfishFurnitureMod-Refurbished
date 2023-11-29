@@ -106,7 +106,7 @@ public class LampBlock extends FurnitureBlock implements EntityBlock, BlockTagSu
     @Override
     public List<TagKey<Block>> getTags()
     {
-        return List.of(BlockTags.MINEABLE_WITH_PICKAXE);
+        return List.of(BlockTags.MINEABLE_WITH_AXE);
     }
 
     public static int light(BlockState state)
