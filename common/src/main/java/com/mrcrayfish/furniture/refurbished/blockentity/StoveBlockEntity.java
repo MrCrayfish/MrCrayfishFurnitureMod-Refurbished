@@ -27,10 +27,12 @@ import java.lang.ref.WeakReference;
 /**
  * Author: MrCrayfish
  */
-public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implements IProcessingBlock, IHeatingSource
+public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implements IProcessingBlock, IHeatingSource, IPowerSwitch
 {
     public static final int DATA_POWERED = 0;
+    public static final int DATA_ENABLED = 1;
 
+    protected boolean enabled;
     protected boolean processing;
     protected int totalProcessingTime;
     protected int processingTime;
@@ -39,6 +41,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
 
     protected final ContainerData data = new BuildableContainerData(builder -> {
         builder.add(DATA_POWERED, () -> isPowered() ? 1 : 0, value -> {});
+        builder.add(DATA_ENABLED, () -> enabled ? 1 : 0, value -> {});
     });
 
     public StoveBlockEntity(BlockPos pos, BlockState state)
@@ -153,7 +156,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     @Override
     public boolean canProcess()
     {
-        if(!this.isPowered())
+        if(!this.isPowered() || !this.enabled)
             return false;
         ICookingBlock block = this.getCookingBlock();
         return block != null && block.canCook();
@@ -308,6 +311,10 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
         {
             this.processingTime = tag.getInt("ProcessingTime");
         }
+        if(tag.contains("Enabled", Tag.TAG_BYTE))
+        {
+            this.enabled = tag.getBoolean("Enabled");
+        }
     }
 
     @Override
@@ -317,6 +324,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
         tag.putBoolean("Processing", this.processing);
         tag.putInt("TotalProcessingTime", this.totalProcessingTime);
         tag.putInt("ProcessingTime", this.processingTime);
+        tag.putBoolean("Enabled", this.enabled);
     }
 
     @Override
@@ -330,9 +338,23 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     public void setPowered(boolean powered)
     {
         BlockState state = this.getBlockState();
-        if(state.hasProperty(StoveBlock.POWERED) && state.hasProperty(StoveBlock.LIT))
+        if(state.hasProperty(StoveBlock.POWERED))
         {
-            this.level.setBlock(this.worldPosition, state.setValue(StoveBlock.POWERED, powered).setValue(StoveBlock.LIT, powered), Block.UPDATE_ALL);
+            state = state.setValue(StoveBlock.POWERED, powered);
         }
+        if(state.hasProperty(StoveBlock.LIT))
+        {
+            state = state.setValue(StoveBlock.LIT, powered && this.enabled);
+        }
+        this.level.setBlock(this.worldPosition, state, Block.UPDATE_ALL);
+    }
+
+    @Override
+    public void toggle()
+    {
+        this.enabled = !this.enabled;
+        this.level.setBlock(this.worldPosition, this.getBlockState().setValue(StoveBlock.LIT, this.isPowered() && this.enabled), Block.UPDATE_ALL);
+        this.setChanged();
+        this.sync();
     }
 }

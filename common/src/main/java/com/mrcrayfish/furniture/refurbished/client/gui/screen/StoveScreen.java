@@ -1,6 +1,10 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 
+import com.mrcrayfish.furniture.refurbished.Components;
+import com.mrcrayfish.furniture.refurbished.client.gui.widget.OnOffSlider;
 import com.mrcrayfish.furniture.refurbished.inventory.StoveMenu;
+import com.mrcrayfish.furniture.refurbished.network.Network;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageTogglePower;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -15,14 +19,26 @@ public class StoveScreen extends ElectricityContainerScreen<StoveMenu>
 {
     private static final ResourceLocation TEXTURE = Utils.resource("textures/gui/container/stove.png");
 
+    private OnOffSlider slider;
+
     public StoveScreen(StoveMenu menu, Inventory inventory, Component title)
     {
         super(menu, inventory, title);
     }
 
     @Override
+    protected void init()
+    {
+        super.init();
+        this.slider = this.addRenderableWidget(new OnOffSlider(this.leftPos + this.imageWidth - 22 - 6, this.topPos + 5, Components.GUI_TOGGLE_POWER, btn -> {
+            Network.getPlay().sendToServer(new MessageTogglePower());
+        }));
+    }
+
+    @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
+        this.slider.setEnabled(this.menu.isEnabled());
         this.renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTick);
         this.renderTooltip(graphics, mouseX, mouseY);

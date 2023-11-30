@@ -38,7 +38,7 @@ public class RecyclingBinScreen extends ElectricityContainerScreen<RecycleBinMen
     protected void init()
     {
         super.init();
-        this.slider = this.addRenderableWidget(new OnOffSlider(this.leftPos + this.imageWidth - 22 - 6, this.topPos + 5, Utils.translation("gui", "generator_toggle"), btn -> {
+        this.slider = this.addRenderableWidget(new OnOffSlider(this.leftPos + this.imageWidth - 22 - 6, this.topPos + 5, Components.GUI_TOGGLE_POWER, btn -> {
             Network.getPlay().sendToServer(new MessageTogglePower());
         }));
     }

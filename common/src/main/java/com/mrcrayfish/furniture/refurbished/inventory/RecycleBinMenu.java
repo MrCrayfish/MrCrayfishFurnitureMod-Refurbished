@@ -71,14 +71,6 @@ public class RecycleBinMenu extends SimpleContainerMenu implements IPowerSwitchM
     }
 
     @Override
-    public void toggle()
-    {
-        if(this.container instanceof IPowerSwitch powerSwitch)
-        {
-            powerSwitch.toggle();
-        }
-    }
-
     public boolean isEnabled()
     {
         return this.data.get(RecycleBinBlockEntity.DATA_ENABLED) != 0;
@@ -93,5 +85,14 @@ public class RecycleBinMenu extends SimpleContainerMenu implements IPowerSwitchM
     public int getProcessTime()
     {
         return this.data.get(RecycleBinBlockEntity.DATA_PROCESSING_TIME);
+    }
+
+    @Override
+    public void toggle()
+    {
+        if(this.container instanceof IPowerSwitch powerSwitch)
+        {
+            powerSwitch.toggle();
+        }
     }
 }

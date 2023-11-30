@@ -6,9 +6,12 @@ import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.inventory.BuildableContainerData;
 import com.mrcrayfish.furniture.refurbished.inventory.FreezerMenu;
+import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -21,16 +24,20 @@ import net.minecraft.world.level.block.state.BlockState;
 /**
  * Author: MrCrayfish
  */
-public class FreezerBlockEntity extends ElectricityModuleProcessingContainerBlockEntity
+public class FreezerBlockEntity extends ElectricityModuleProcessingContainerBlockEntity implements IPowerSwitch
 {
     public static final int[] INPUT_SLOTS = new int[]{0};
     public static final int[] OUTPUT_SLOTS = new int[]{1};
     public static final int DATA_POWERED = 0;
-    public static final int DATA_PROCESS_TIME = 1;
-    public static final int DATA_MAX_PROCESS_TIME = 2;
+    public static final int DATA_ENABLED = 1;
+    public static final int DATA_PROCESS_TIME = 2;
+    public static final int DATA_MAX_PROCESS_TIME = 3;
+
+    protected boolean enabled;
 
     protected final ContainerData data = new BuildableContainerData(builder -> {
         builder.add(DATA_POWERED, () -> powered ? 1 : 0, value -> {});
+        builder.add(DATA_ENABLED, () -> enabled ? 1 : 0, value -> {});
         builder.add(DATA_PROCESS_TIME, () -> processingTime, value -> processingTime = value);
         builder.add(DATA_MAX_PROCESS_TIME, () -> totalProcessingTime, value -> totalProcessingTime = value);
     });
@@ -88,6 +95,12 @@ public class FreezerBlockEntity extends ElectricityModuleProcessingContainerBloc
     }
 
     @Override
+    public boolean canProcess()
+    {
+        return super.canProcess() && this.enabled;
+    }
+
+    @Override
     public void onOpen(Level level, BlockPos pos, BlockState state)
     {
         // TODO sounds
@@ -107,5 +120,38 @@ public class FreezerBlockEntity extends ElectricityModuleProcessingContainerBloc
         {
             level.setBlock(this.getBlockPos(), state.setValue(FreezerBlock.OPEN, open), Block.UPDATE_ALL);
         }
+    }
+
+    @Override
+    public void toggle()
+    {
+        this.enabled = !this.enabled;
+        this.setChanged();
+        BlockEntityHelper.sendCustomUpdate(this, this.getUpdateTag());
+    }
+
+    @Override
+    public void load(CompoundTag tag)
+    {
+        super.load(tag);
+        if(tag.contains("Enabled", Tag.TAG_BYTE))
+        {
+            this.enabled = tag.getBoolean("Enabled");
+        }
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag tag)
+    {
+        super.saveAdditional(tag);
+        tag.putBoolean("Enabled", this.enabled);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag()
+    {
+        CompoundTag tag = super.getUpdateTag();
+        tag.putBoolean("Enabled", this.enabled);
+        return tag;
     }
 }

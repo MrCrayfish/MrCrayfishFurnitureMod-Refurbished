@@ -1,6 +1,10 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 
+import com.mrcrayfish.furniture.refurbished.Components;
+import com.mrcrayfish.furniture.refurbished.client.gui.widget.OnOffSlider;
 import com.mrcrayfish.furniture.refurbished.inventory.MicrowaveMenu;
+import com.mrcrayfish.furniture.refurbished.network.Network;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageTogglePower;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -15,14 +19,26 @@ public class MicrowaveScreen extends ElectricityContainerScreen<MicrowaveMenu>
 {
     private static final ResourceLocation TEXTURE = Utils.resource("textures/gui/container/microwave.png");
 
+    private OnOffSlider slider;
+
     public MicrowaveScreen(MicrowaveMenu menu, Inventory inventory, Component title)
     {
         super(menu, inventory, title);
     }
 
     @Override
+    protected void init()
+    {
+        super.init();
+        this.slider = this.addRenderableWidget(new OnOffSlider(this.leftPos + this.imageWidth - 22 - 6, this.topPos + 5, Components.GUI_TOGGLE_POWER, btn -> {
+            Network.getPlay().sendToServer(new MessageTogglePower());
+        }));
+    }
+
+    @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
+        this.slider.setEnabled(this.menu.isEnabled());
         this.renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTick);
         this.renderTooltip(graphics, mouseX, mouseY);

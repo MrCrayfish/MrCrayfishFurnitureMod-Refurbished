@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.inventory;
 
 import com.mrcrayfish.furniture.refurbished.blockentity.FreezerBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.IPowerSwitch;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.inventory.slot.ResultSlot;
@@ -18,21 +19,21 @@ import net.minecraft.world.level.Level;
 /**
  * Author: MrCrayfish
  */
-public class FreezerMenu extends SimpleContainerMenu implements IElectricityMenu
+public class FreezerMenu extends SimpleContainerMenu implements IPowerSwitchMenu, IElectricityMenu
 {
     private final ContainerData data;
     private final Level level;
 
     public FreezerMenu(int windowId, Inventory playerInventory)
     {
-        this(ModMenuTypes.FREEZER.get(), windowId, playerInventory, new SimpleContainer(2), new SimpleContainerData(3));
+        this(ModMenuTypes.FREEZER.get(), windowId, playerInventory, new SimpleContainer(2), new SimpleContainerData(4));
     }
 
     public FreezerMenu(MenuType<?> type, int windowId, Inventory playerInventory, Container container, ContainerData data)
     {
         super(type, windowId, container);
         checkContainerSize(container, 2);
-        checkContainerDataCount(data, 3);
+        checkContainerDataCount(data, 4);
         container.startOpen(playerInventory.player);
         this.data = data;
         this.level = playerInventory.player.level();
@@ -108,5 +109,20 @@ public class FreezerMenu extends SimpleContainerMenu implements IElectricityMenu
     public boolean isPowered()
     {
         return this.data.get(FreezerBlockEntity.DATA_POWERED) != 0;
+    }
+
+    @Override
+    public boolean isEnabled()
+    {
+        return this.data.get(FreezerBlockEntity.DATA_ENABLED) != 0;
+    }
+
+    @Override
+    public void toggle()
+    {
+        if(this.container instanceof IPowerSwitch powerSwitch)
+        {
+            powerSwitch.toggle();
+        }
     }
 }

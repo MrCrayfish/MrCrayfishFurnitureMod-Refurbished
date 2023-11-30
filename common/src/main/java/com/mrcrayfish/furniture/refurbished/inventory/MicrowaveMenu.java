@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.inventory;
 
 import com.mrcrayfish.furniture.refurbished.blockentity.FreezerBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.IPowerSwitch;
 import com.mrcrayfish.furniture.refurbished.blockentity.MicrowaveBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
@@ -19,21 +20,21 @@ import net.minecraft.world.level.Level;
 /**
  * Author: MrCrayfish
  */
-public class MicrowaveMenu extends SimpleContainerMenu implements IElectricityMenu
+public class MicrowaveMenu extends SimpleContainerMenu implements IPowerSwitchMenu, IElectricityMenu
 {
     private final ContainerData data;
     private final Level level;
 
     public MicrowaveMenu(int windowId, Inventory playerInventory)
     {
-        this(ModMenuTypes.MICROWAVE.get(), windowId, playerInventory, new SimpleContainer(2), new SimpleContainerData(3));
+        this(ModMenuTypes.MICROWAVE.get(), windowId, playerInventory, new SimpleContainer(2), new SimpleContainerData(4));
     }
 
     public MicrowaveMenu(MenuType<?> type, int windowId, Inventory playerInventory, Container container, ContainerData data)
     {
         super(type, windowId, container);
         checkContainerSize(container, 2);
-        checkContainerDataCount(data, 3);
+        checkContainerDataCount(data, 4);
         container.startOpen(playerInventory.player);
         this.data = data;
         this.level = playerInventory.player.level();
@@ -109,5 +110,20 @@ public class MicrowaveMenu extends SimpleContainerMenu implements IElectricityMe
     public boolean isPowered()
     {
         return this.data.get(MicrowaveBlockEntity.DATA_POWERED) != 0;
+    }
+
+    @Override
+    public boolean isEnabled()
+    {
+        return this.data.get(MicrowaveBlockEntity.DATA_ENABLED) != 0;
+    }
+
+    @Override
+    public void toggle()
+    {
+        if(this.container instanceof IPowerSwitch powerSwitch)
+        {
+            powerSwitch.toggle();
+        }
     }
 }

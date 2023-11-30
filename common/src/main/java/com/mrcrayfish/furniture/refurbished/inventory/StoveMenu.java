@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.inventory;
 
+import com.mrcrayfish.furniture.refurbished.blockentity.IPowerSwitch;
 import com.mrcrayfish.furniture.refurbished.blockentity.RecycleBinBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.StoveBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
@@ -17,20 +18,20 @@ import net.minecraft.world.item.ItemStack;
 /**
  * Author: MrCrayfish
  */
-public class StoveMenu extends SimpleContainerMenu implements IElectricityMenu
+public class StoveMenu extends SimpleContainerMenu implements IPowerSwitchMenu, IElectricityMenu
 {
     private final ContainerData data;
 
     public StoveMenu(int windowId, Inventory playerInventory)
     {
-        this(windowId, playerInventory, new SimpleContainer(1), new SimpleContainerData(1));
+        this(windowId, playerInventory, new SimpleContainer(1), new SimpleContainerData(2));
     }
 
     public StoveMenu(int windowId, Inventory playerInventory, Container container, ContainerData data)
     {
         super(ModMenuTypes.STOVE.get(), windowId, container);
         checkContainerSize(container, 1);
-        checkContainerDataCount(data, 1);
+        checkContainerDataCount(data, 2);
         container.startOpen(playerInventory.player);
         this.data = data;
         this.addPlayerInventorySlots(8, 84, playerInventory);
@@ -93,5 +94,20 @@ public class StoveMenu extends SimpleContainerMenu implements IElectricityMenu
     public boolean isPowered()
     {
         return this.data.get(StoveBlockEntity.DATA_POWERED) != 0;
+    }
+
+    @Override
+    public boolean isEnabled()
+    {
+        return this.data.get(StoveBlockEntity.DATA_ENABLED) != 0;
+    }
+
+    @Override
+    public void toggle()
+    {
+        if(this.container instanceof IPowerSwitch powerSwitch)
+        {
+            powerSwitch.toggle();
+        }
     }
 }

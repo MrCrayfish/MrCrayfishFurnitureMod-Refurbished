@@ -6,4 +6,6 @@ package com.mrcrayfish.furniture.refurbished.inventory;
 public interface IPowerSwitchMenu
 {
     void toggle();
+
+    boolean isEnabled();
 }
