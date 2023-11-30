@@ -11,7 +11,7 @@ import net.minecraft.world.entity.player.Inventory;
 /**
  * Author: MrCrayfish
  */
-public class MicrowaveScreen extends AbstractContainerScreen<MicrowaveMenu>
+public class MicrowaveScreen extends ElectricityContainerScreen<MicrowaveMenu>
 {
     private static final ResourceLocation TEXTURE = Utils.resource("textures/gui/container/microwave.png");
 
@@ -31,6 +31,7 @@ public class MicrowaveScreen extends AbstractContainerScreen<MicrowaveMenu>
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
     {
+        super.renderBg(graphics, partialTick, mouseX, mouseY);
         graphics.blit(TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
         if(this.menu.getMaxProcessTime() > 0 && this.menu.getProcessTime() >= 0)
         {

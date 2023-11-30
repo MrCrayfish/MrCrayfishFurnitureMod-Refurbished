@@ -25,10 +25,12 @@ public class FreezerBlockEntity extends ElectricityModuleProcessingContainerBloc
 {
     public static final int[] INPUT_SLOTS = new int[]{0};
     public static final int[] OUTPUT_SLOTS = new int[]{1};
-    public static final int DATA_PROCESS_TIME = 0;
-    public static final int DATA_MAX_PROCESS_TIME = 1;
+    public static final int DATA_POWERED = 0;
+    public static final int DATA_PROCESS_TIME = 1;
+    public static final int DATA_MAX_PROCESS_TIME = 2;
 
     protected final ContainerData data = new BuildableContainerData(builder -> {
+        builder.add(DATA_POWERED, () -> powered ? 1 : 0, value -> {});
         builder.add(DATA_PROCESS_TIME, () -> processingTime, value -> processingTime = value);
         builder.add(DATA_MAX_PROCESS_TIME, () -> totalProcessingTime, value -> totalProcessingTime = value);
     });

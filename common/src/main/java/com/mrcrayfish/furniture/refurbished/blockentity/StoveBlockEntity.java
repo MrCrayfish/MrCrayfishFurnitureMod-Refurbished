@@ -29,8 +29,7 @@ import java.lang.ref.WeakReference;
  */
 public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implements IProcessingBlock, IHeatingSource
 {
-    public static final int DATA_ENERGY = 0;
-    public static final int DATA_TOTAL_ENERGY = 1;
+    public static final int DATA_POWERED = 0;
 
     protected boolean processing;
     protected int totalProcessingTime;
@@ -38,7 +37,9 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     protected WeakReference<ICookingBlock> cookingBlockRef;
     protected boolean sync;
 
-    protected final ContainerData data = new BuildableContainerData(builder -> {});
+    protected final ContainerData data = new BuildableContainerData(builder -> {
+        builder.add(DATA_POWERED, () -> isPowered() ? 1 : 0, value -> {});
+    });
 
     public StoveBlockEntity(BlockPos pos, BlockState state)
     {

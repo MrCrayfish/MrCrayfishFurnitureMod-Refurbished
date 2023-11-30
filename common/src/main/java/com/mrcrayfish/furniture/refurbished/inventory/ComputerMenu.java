@@ -15,7 +15,7 @@ import net.minecraft.world.item.ItemStack;
 /**
  * Author: MrCrayfish
  */
-public class ComputerMenu extends SimpleContainerMenu
+public class ComputerMenu extends SimpleContainerMenu implements IElectricityMenu
 {
     private final ContainerData data;
     private final IComputer computer;
@@ -23,12 +23,13 @@ public class ComputerMenu extends SimpleContainerMenu
 
     public ComputerMenu(int windowId, Inventory playerInventory)
     {
-        this(windowId, playerInventory, new SimpleContainerData(3), new ClientComputer(playerInventory.player));
+        this(windowId, playerInventory, new SimpleContainerData(4), new ClientComputer(playerInventory.player));
     }
 
     public ComputerMenu(int windowId, Inventory playerInventory, ContainerData data, IComputer computer)
     {
         super(ModMenuTypes.COMPUTER.get(), windowId, new SimpleContainer(0));
+        checkContainerDataCount(data, 4);
         this.data = data;
         this.computer = computer;
         this.addDataSlots(data);
@@ -92,5 +93,11 @@ public class ComputerMenu extends SimpleContainerMenu
         int programData1 = this.data.get(ComputerBlockEntity.DATA_PROGRAM_1);
         int programData2 = this.data.get(ComputerBlockEntity.DATA_PROGRAM_2);
         return (((long) programData1) << 32) | (programData2 & 0xFFFFFFFFL);
+    }
+
+    @Override
+    public boolean isPowered()
+    {
+        return this.data.get(ComputerBlockEntity.DATA_POWERED) != 0;
     }
 }

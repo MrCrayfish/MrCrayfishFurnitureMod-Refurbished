@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.inventory;
 
+import com.mrcrayfish.furniture.refurbished.blockentity.RecycleBinBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.StoveBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.inventory.slot.FuelSlot;
@@ -16,20 +17,20 @@ import net.minecraft.world.item.ItemStack;
 /**
  * Author: MrCrayfish
  */
-public class StoveMenu extends SimpleContainerMenu
+public class StoveMenu extends SimpleContainerMenu implements IElectricityMenu
 {
     private final ContainerData data;
 
     public StoveMenu(int windowId, Inventory playerInventory)
     {
-        this(windowId, playerInventory, new SimpleContainer(1), new SimpleContainerData(0));
+        this(windowId, playerInventory, new SimpleContainer(1), new SimpleContainerData(1));
     }
 
     public StoveMenu(int windowId, Inventory playerInventory, Container container, ContainerData data)
     {
         super(ModMenuTypes.STOVE.get(), windowId, container);
         checkContainerSize(container, 1);
-        checkContainerDataCount(data, 0);
+        checkContainerDataCount(data, 1);
         container.startOpen(playerInventory.player);
         this.data = data;
         this.addPlayerInventorySlots(8, 84, playerInventory);
@@ -86,5 +87,11 @@ public class StoveMenu extends SimpleContainerMenu
     private boolean isFuel(ItemStack stack)
     {
         return Services.ITEM.getBurnTime(stack, null) > 0;
+    }
+
+    @Override
+    public boolean isPowered()
+    {
+        return this.data.get(StoveBlockEntity.DATA_POWERED) != 0;
     }
 }

@@ -16,13 +16,13 @@ import net.minecraft.world.item.ItemStack;
 /**
  * Author: MrCrayfish
  */
-public class RecycleBinMenu extends SimpleContainerMenu implements IPowerSwitchMenu
+public class RecycleBinMenu extends SimpleContainerMenu implements IPowerSwitchMenu, IElectricityMenu
 {
     private final ContainerData data;
 
     public RecycleBinMenu(int windowId, Inventory playerInventory)
     {
-        this(windowId, playerInventory, new SimpleContainer(10), new SimpleContainerData(3));
+        this(windowId, playerInventory, new SimpleContainer(10), new SimpleContainerData(4));
     }
 
     public RecycleBinMenu(int windowId, Inventory playerInventory, Container container, ContainerData data)
@@ -84,6 +84,7 @@ public class RecycleBinMenu extends SimpleContainerMenu implements IPowerSwitchM
         return this.data.get(RecycleBinBlockEntity.DATA_ENABLED) != 0;
     }
 
+    @Override
     public boolean isPowered()
     {
         return this.data.get(RecycleBinBlockEntity.DATA_POWERED) != 0;

@@ -11,7 +11,7 @@ import net.minecraft.world.entity.player.Inventory;
 /**
  * Author: MrCrayfish
  */
-public class FreezerScreen extends AbstractContainerScreen<FreezerMenu>
+public class FreezerScreen extends ElectricityContainerScreen<FreezerMenu>
 {
     private static final ResourceLocation TEXTURE = Utils.resource("textures/gui/container/freezer.png");
 
@@ -31,6 +31,7 @@ public class FreezerScreen extends AbstractContainerScreen<FreezerMenu>
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
     {
+        super.renderBg(graphics, partialTick, mouseX, mouseY);
         graphics.blit(TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
         if(this.menu.getMaxProcessTime() > 0 && this.menu.getProcessTime() >= 0)
         {

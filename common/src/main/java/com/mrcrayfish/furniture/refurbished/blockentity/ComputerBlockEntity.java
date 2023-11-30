@@ -36,9 +36,10 @@ import javax.annotation.Nullable;
  */
 public class ComputerBlockEntity extends ElectricityModuleBlockEntity implements MenuProvider, IComputer
 {
-    public static final int DATA_SYSTEM = 0;
-    public static final int DATA_PROGRAM_1 = 1;
-    public static final int DATA_PROGRAM_2 = 2;
+    public static final int DATA_POWERED = 0;
+    public static final int DATA_SYSTEM = 1;
+    public static final int DATA_PROGRAM_1 = 2;
+    public static final int DATA_PROGRAM_2 = 3;
 
     protected int systemData;
     protected int programData1;
@@ -47,6 +48,7 @@ public class ComputerBlockEntity extends ElectricityModuleBlockEntity implements
     protected @Nullable Player currentUser;
 
     protected final ContainerData data = new BuildableContainerData(builder -> {
+        builder.add(DATA_POWERED, () -> isPowered() ? 1 : 0, value -> {});
         builder.add(DATA_SYSTEM, () -> systemData, value -> {});
         builder.add(DATA_PROGRAM_1, () -> programData1, value -> programData1 = value);
         builder.add(DATA_PROGRAM_2, () -> programData2, value -> programData2 = value);

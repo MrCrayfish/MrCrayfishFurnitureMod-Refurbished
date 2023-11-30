@@ -11,7 +11,7 @@ import net.minecraft.world.entity.player.Inventory;
 /**
  * Author: MrCrayfish
  */
-public class StoveScreen extends AbstractContainerScreen<StoveMenu>
+public class StoveScreen extends ElectricityContainerScreen<StoveMenu>
 {
     private static final ResourceLocation TEXTURE = Utils.resource("textures/gui/container/stove.png");
 
@@ -31,6 +31,7 @@ public class StoveScreen extends AbstractContainerScreen<StoveMenu>
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
     {
+        super.renderBg(graphics, partialTick, mouseX, mouseY);
         graphics.blit(TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
     }
 }

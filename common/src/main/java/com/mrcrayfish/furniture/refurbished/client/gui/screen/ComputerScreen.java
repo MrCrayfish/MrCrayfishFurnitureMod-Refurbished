@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class ComputerScreen extends AbstractContainerScreen<ComputerMenu>
+public class ComputerScreen extends ElectricityContainerScreen<ComputerMenu>
 {
     private static final ResourceLocation TEXTURE = Utils.resource("textures/gui/container/computer.png");
     private static final int DISPLAY_LEFT = 15;
@@ -101,6 +101,8 @@ public class ComputerScreen extends AbstractContainerScreen<ComputerMenu>
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
     {
+        super.renderBg(graphics, partialTick, mouseX, mouseY);
+
         // Draw background
         graphics.blit(TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
 

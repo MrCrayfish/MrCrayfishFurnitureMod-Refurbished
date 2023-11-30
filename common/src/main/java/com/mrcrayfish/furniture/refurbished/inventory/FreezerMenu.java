@@ -18,21 +18,21 @@ import net.minecraft.world.level.Level;
 /**
  * Author: MrCrayfish
  */
-public class FreezerMenu extends SimpleContainerMenu
+public class FreezerMenu extends SimpleContainerMenu implements IElectricityMenu
 {
     private final ContainerData data;
     private final Level level;
 
     public FreezerMenu(int windowId, Inventory playerInventory)
     {
-        this(ModMenuTypes.FREEZER.get(), windowId, playerInventory, new SimpleContainer(2), new SimpleContainerData(2));
+        this(ModMenuTypes.FREEZER.get(), windowId, playerInventory, new SimpleContainer(2), new SimpleContainerData(3));
     }
 
     public FreezerMenu(MenuType<?> type, int windowId, Inventory playerInventory, Container container, ContainerData data)
     {
         super(type, windowId, container);
         checkContainerSize(container, 2);
-        checkContainerDataCount(data, 2);
+        checkContainerDataCount(data, 3);
         container.startOpen(playerInventory.player);
         this.data = data;
         this.level = playerInventory.player.level();
@@ -102,5 +102,11 @@ public class FreezerMenu extends SimpleContainerMenu
     public int getMaxProcessTime()
     {
         return this.data.get(FreezerBlockEntity.DATA_MAX_PROCESS_TIME);
+    }
+
+    @Override
+    public boolean isPowered()
+    {
+        return this.data.get(FreezerBlockEntity.DATA_POWERED) != 0;
     }
 }

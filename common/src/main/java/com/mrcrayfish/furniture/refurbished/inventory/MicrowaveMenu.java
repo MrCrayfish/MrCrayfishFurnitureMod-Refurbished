@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.inventory;
 
+import com.mrcrayfish.furniture.refurbished.blockentity.FreezerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.MicrowaveBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
@@ -18,21 +19,21 @@ import net.minecraft.world.level.Level;
 /**
  * Author: MrCrayfish
  */
-public class MicrowaveMenu extends SimpleContainerMenu
+public class MicrowaveMenu extends SimpleContainerMenu implements IElectricityMenu
 {
     private final ContainerData data;
     private final Level level;
 
     public MicrowaveMenu(int windowId, Inventory playerInventory)
     {
-        this(ModMenuTypes.MICROWAVE.get(), windowId, playerInventory, new SimpleContainer(2), new SimpleContainerData(2));
+        this(ModMenuTypes.MICROWAVE.get(), windowId, playerInventory, new SimpleContainer(2), new SimpleContainerData(3));
     }
 
     public MicrowaveMenu(MenuType<?> type, int windowId, Inventory playerInventory, Container container, ContainerData data)
     {
         super(type, windowId, container);
         checkContainerSize(container, 2);
-        checkContainerDataCount(data, 2);
+        checkContainerDataCount(data, 3);
         container.startOpen(playerInventory.player);
         this.data = data;
         this.level = playerInventory.player.level();
@@ -102,5 +103,11 @@ public class MicrowaveMenu extends SimpleContainerMenu
     public int getMaxProcessTime()
     {
         return this.data.get(MicrowaveBlockEntity.DATA_MAX_PROCESS_TIME);
+    }
+
+    @Override
+    public boolean isPowered()
+    {
+        return this.data.get(MicrowaveBlockEntity.DATA_POWERED) != 0;
     }
 }
