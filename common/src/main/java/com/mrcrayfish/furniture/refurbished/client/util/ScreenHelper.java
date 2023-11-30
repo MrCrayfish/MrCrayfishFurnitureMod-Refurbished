@@ -58,7 +58,19 @@ public class ScreenHelper
         return Minecraft.getInstance().font.getSplitter().splitLines(text, maxWidth, Style.EMPTY).stream().map(t -> Component.literal(t.getString())).collect(Collectors.toList());
     }
 
-    public static boolean isMouseWithin(double mouseX, double mouseY, int x, int y, int width, int height)
+    /**
+     * Tests if the given mouse position is within the given bounds as determined by the position
+     * of the bounds (x and y) and it's size (width and height).
+     *
+     * @param mouseX the current mouse x position
+     * @param mouseY the current mouse y position
+     * @param x      the x position of the bounds
+     * @param y      the y position of the bounds
+     * @param width  the width of the bounds
+     * @param height the height of the bounds
+     * @return True if the mouse is within the bounds
+     */
+    public static boolean isMouseWithinBounds(double mouseX, double mouseY, int x, int y, int width, int height)
     {
         return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
     }

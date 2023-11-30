@@ -170,7 +170,7 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
             int scrollBarEnd = scrollBarStart + this.scrollBarWidth;
             int scrollBarHeight = this.getScrollbarHeight();
             int scrollBarTop = (int) (this.getScrollAreaTop() + (this.getScrollAreaHeight() - this.getScrollbarHeight()) * (this.getScrollAmount() / maxScroll));
-            int scrollBarColour = ScreenHelper.isMouseWithin(mouseX, mouseY, scrollBarStart, scrollBarTop, this.scrollBarWidth, scrollBarHeight) ? this.scrollBarHighlightColour : this.scrollBarColour;
+            int scrollBarColour = ScreenHelper.isMouseWithinBounds(mouseX, mouseY, scrollBarStart, scrollBarTop, this.scrollBarWidth, scrollBarHeight) ? this.scrollBarHighlightColour : this.scrollBarColour;
             graphics.fill(scrollBarStart, scrollBarTop, scrollBarEnd, scrollBarTop + scrollBarHeight, scrollBarColour);
         }
     }
@@ -203,7 +203,7 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
     protected void updateScrollingState(double mouseX, double mouseY, int button)
     {
         this.scrolling = button == GLFW.GLFW_MOUSE_BUTTON_LEFT
-                && ScreenHelper.isMouseWithin(mouseX, mouseY, this.getScrollbarPosition(), this.getScrollAreaTop(), 6, this.getScrollAreaHeight());
+                && ScreenHelper.isMouseWithinBounds(mouseX, mouseY, this.getScrollbarPosition(), this.getScrollAreaTop(), 6, this.getScrollAreaHeight());
     }
 
     @Override

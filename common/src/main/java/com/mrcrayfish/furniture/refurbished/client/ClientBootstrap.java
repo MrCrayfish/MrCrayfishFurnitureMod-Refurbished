@@ -5,6 +5,7 @@ import com.mrcrayfish.framework.api.event.PlayerEvents;
 import com.mrcrayfish.framework.api.event.TickEvents;
 import com.mrcrayfish.furniture.refurbished.block.StoveBlock;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
+import com.mrcrayfish.furniture.refurbished.client.gui.overlay.PowerIndicatorOverlay;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.ComputerScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.DoorMatScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.ElectricityGeneratorScreen;
@@ -19,6 +20,7 @@ import com.mrcrayfish.furniture.refurbished.client.particle.SuperBounceParticle;
 import com.mrcrayfish.furniture.refurbished.client.registration.BlockColorsRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.BlockEntityRendererRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.EntityRendererRegister;
+import com.mrcrayfish.furniture.refurbished.client.registration.HudOverlayRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ItemColorsRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ParticleProviderRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.RenderTypeRegister;
@@ -34,6 +36,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModParticleTypes;
 import com.mrcrayfish.furniture.refurbished.image.TextureCache;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.RenderType;
@@ -333,5 +336,10 @@ public class ClientBootstrap
             BlockState state = ((BlockItem) stack.getItem()).getBlock().defaultBlockState();
             return Minecraft.getInstance().getBlockColors().getColor(state, null, null, index);
         }, ModBlocks.HEDGE_OAK.get(), ModBlocks.HEDGE_SPRUCE.get(), ModBlocks.HEDGE_BIRCH.get(), ModBlocks.HEDGE_JUNGLE.get(), ModBlocks.HEDGE_ACACIA.get(), ModBlocks.HEDGE_DARK_OAK.get(), ModBlocks.HEDGE_MANGROVE.get());
+    }
+
+    public static void registerHudOverlays(HudOverlayRegister register)
+    {
+        register.apply(Utils.resource("power_indicator"), new PowerIndicatorOverlay());
     }
 }
