@@ -37,6 +37,7 @@ public class ModSounds
     public static final RegistryEntry<SoundEvent> BLOCK_FRYING_PAN_HIT = RegistryEntry.soundEvent(Utils.resource("block.frying_pan.hit"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> BLOCK_FRYING_PAN_STEP = RegistryEntry.soundEvent(Utils.resource("block.frying_pan.step"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> BLOCK_FRYING_PAN_PLACE = RegistryEntry.soundEvent(Utils.resource("block.frying_pan.place"), id -> () -> SoundEvent.createVariableRangeEvent(id));
+    public static final RegistryEntry<SoundEvent> BLOCK_FRYING_PAN_SIZZLING = RegistryEntry.soundEvent(Utils.resource("block.frying_pan.sizzling"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> BLOCK_TOASTER_DOWN = RegistryEntry.soundEvent(Utils.resource("block.toaster.down"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> BLOCK_TOASTER_POP = RegistryEntry.soundEvent(Utils.resource("block.toaster.pop"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> BLOCK_TOASTER_INSERT = RegistryEntry.soundEvent(Utils.resource("block.toaster.insert"), id -> () -> SoundEvent.createVariableRangeEvent(id));

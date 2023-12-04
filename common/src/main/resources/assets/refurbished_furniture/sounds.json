@@ -137,6 +137,12 @@
             "refurbished_furniture:block/frying_pan/step3"
         ]
     },
+    "block.frying_pan.sizzling": {
+        "subtitle": "subtitle.refurbished_furniture.frying_pan.sizzling",
+        "sounds": [
+            "refurbished_furniture:block/frying_pan/sizzling"
+        ]
+    },
     "block.toaster.down": {
         "subtitle": "subtitle.refurbished_furniture.toaster.down",
         "sounds": [

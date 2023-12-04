@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.mrcrayfish.furniture.refurbished.block.RangeHoodBlock;
+import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModParticleTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
@@ -17,7 +18,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -46,9 +49,10 @@ import java.util.Optional;
 /**
  * Author: MrCrayfish
  */
-public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICookingBlock
+public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICookingBlock, IAudioBlock
 {
     public static final Vector3f OIL_COLOUR = Vec3.fromRGB24(0xE1A803).toVector3f();
+    public static final double MAX_AUDIO_DISTANCE = Mth.square(8);
 
     protected final RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> recipeCache;
     protected final RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> smokerRecipeCache;
@@ -113,6 +117,7 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, FryingPanBlockEntity fryingPan)
     {
+        AudioManager.get().playAudioBlock(fryingPan);
         fryingPan.spawnParticles(level, pos);
 
         FlipAnimation animation = fryingPan.getAnimation();
@@ -467,5 +472,52 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
     public CompoundTag getUpdateTag()
     {
         return this.saveWithoutMetadata();
+    }
+
+    @Override
+    public SoundEvent getSound()
+    {
+        return ModSounds.BLOCK_FRYING_PAN_SIZZLING.get();
+    }
+
+    @Override
+    public BlockPos getAudioPosition()
+    {
+        return this.worldPosition;
+    }
+
+    @Override
+    public Vec3 getAudioPositionOffset()
+    {
+        return new Vec3(0, -0.375, 0);
+    }
+
+    @Override
+    public boolean canPlayAudio()
+    {
+        return !this.isRemoved() && (this.isCooking() || this.isPartiallyCooked());
+    }
+
+    @Override
+    public float getAudioVolume()
+    {
+        return (this.isCooking() || this.isPartiallyCooked()) && !this.getAnimation().isPlaying() ? 1.0F : 0.0F;
+    }
+
+    @Override
+    public float getAudioPitch()
+    {
+        return this.isPartiallyCooked() ? 0.8F : 1.0F;
+    }
+
+    @Override
+    public double getAudioRadiusSqr()
+    {
+        return MAX_AUDIO_DISTANCE;
+    }
+
+    private boolean isPartiallyCooked()
+    {
+        return !this.getItem(0).isEmpty() && this.isFlippingNeeded();
     }
 }
