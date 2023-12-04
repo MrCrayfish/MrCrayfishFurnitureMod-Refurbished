@@ -63,7 +63,7 @@ public class ToasterBlockEntity extends ElectricityModuleProcessingContainerBloc
      */
     public void startHeating()
     {
-        if(!this.heating && this.canProcessInput())
+        if(!this.heating && this.canProcessInput() && this.isPowered())
         {
             this.setHeating(true);
         }
@@ -75,7 +75,7 @@ public class ToasterBlockEntity extends ElectricityModuleProcessingContainerBloc
      */
     public boolean toggleHeating()
     {
-        if(this.heating || this.canProcessInput())
+        if(this.heating || (this.canProcessInput() && this.isPowered()))
         {
             this.setHeating(!this.heating);
             return true;
@@ -310,7 +310,6 @@ public class ToasterBlockEntity extends ElectricityModuleProcessingContainerBloc
     {
         Preconditions.checkNotNull(this.level);
         this.level.playSound(null, this.worldPosition, ModSounds.BLOCK_TOASTER_INSERT.get(), SoundSource.BLOCKS, 0.5F, 0.9F + 0.1F * this.level.random.nextFloat());
-
     }
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, ToasterBlockEntity entity)
