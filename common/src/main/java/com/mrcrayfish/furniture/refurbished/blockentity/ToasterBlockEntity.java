@@ -1,8 +1,10 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.google.common.base.Preconditions;
 import com.mrcrayfish.furniture.refurbished.block.ToasterBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
+import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
@@ -10,6 +12,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
@@ -90,9 +93,8 @@ public class ToasterBlockEntity extends ElectricityModuleProcessingContainerBloc
     private void setHeating(boolean heating)
     {
         this.heating = heating;
-        // TODO change sound to custom one
-        this.level.playSound(null, this.worldPosition, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.BLOCKS);
         this.level.setBlock(this.worldPosition, this.getBlockState().setValue(ToasterBlock.POWERED, this.heating), Block.UPDATE_ALL);
+        this.playSound(heating);
         this.sync();
     }
 
@@ -295,6 +297,13 @@ public class ToasterBlockEntity extends ElectricityModuleProcessingContainerBloc
             }
         }
         return true;
+    }
+
+    private void playSound(boolean heating)
+    {
+        Preconditions.checkNotNull(this.level);
+        SoundEvent event = heating ? ModSounds.BLOCK_TOASTER_DOWN.get() : ModSounds.BLOCK_TOASTER_POP.get();
+        this.level.playSound(null, this.worldPosition, event, SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * this.level.random.nextFloat());
     }
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, ToasterBlockEntity entity)

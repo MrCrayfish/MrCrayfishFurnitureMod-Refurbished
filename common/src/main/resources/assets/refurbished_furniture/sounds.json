@@ -137,6 +137,18 @@
             "refurbished_furniture:block/frying_pan/step3"
         ]
     },
+    "block.toaster.down": {
+        "subtitle": "subtitle.refurbished_furniture.toaster.down",
+        "sounds": [
+            "refurbished_furniture:block/toaster/down"
+        ]
+    },
+    "block.toaster.pop": {
+        "subtitle": "subtitle.refurbished_furniture.toaster.pop",
+        "sounds": [
+            "refurbished_furniture:block/toaster/pop"
+        ]
+    },
     "item.package.open": {
         "subtitle": "subtitle.refurbished_furniture.package_open",
         "sounds": [
