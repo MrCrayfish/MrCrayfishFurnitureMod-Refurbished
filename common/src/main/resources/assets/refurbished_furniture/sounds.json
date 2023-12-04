@@ -187,6 +187,18 @@
             "refurbished_furniture:block/microwave/close"
         ]
     },
+    "block.kitchen_drawer.open": {
+        "subtitle": "subtitle.refurbished_furniture.kitchen_drawer.open",
+        "sounds": [
+            "refurbished_furniture:block/kitchen_drawer/open"
+        ]
+    },
+    "block.kitchen_drawer.close": {
+        "subtitle": "subtitle.refurbished_furniture.kitchen_drawer.close",
+        "sounds": [
+            "refurbished_furniture:block/kitchen_drawer/close"
+        ]
+    },
     "item.package.open": {
         "subtitle": "subtitle.refurbished_furniture.package_open",
         "sounds": [
