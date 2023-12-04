@@ -149,6 +149,18 @@
             "refurbished_furniture:block/toaster/pop"
         ]
     },
+    "block.cooler.open": {
+        "subtitle": "subtitle.refurbished_furniture.cooler.open",
+        "sounds": [
+            "refurbished_furniture:block/cooler/open"
+        ]
+    },
+    "block.cooler.close": {
+        "subtitle": "subtitle.refurbished_furniture.cooler.close",
+        "sounds": [
+            "refurbished_furniture:block/cooler/close"
+        ]
+    },
     "item.package.open": {
         "subtitle": "subtitle.refurbished_furniture.package_open",
         "sounds": [
