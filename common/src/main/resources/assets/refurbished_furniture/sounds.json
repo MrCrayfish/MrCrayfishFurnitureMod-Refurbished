@@ -175,6 +175,18 @@
             "refurbished_furniture:block/cooler/close"
         ]
     },
+    "block.microwave.open": {
+        "subtitle": "subtitle.refurbished_furniture.microwave.open",
+        "sounds": [
+            "refurbished_furniture:block/microwave/open"
+        ]
+    },
+    "block.microwave.close": {
+        "subtitle": "subtitle.refurbished_furniture.microwave.close",
+        "sounds": [
+            "refurbished_furniture:block/microwave/close"
+        ]
+    },
     "item.package.open": {
         "subtitle": "subtitle.refurbished_furniture.package_open",
         "sounds": [
