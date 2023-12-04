@@ -193,6 +193,6 @@ public class FryingPanBlock extends FurnitureHorizontalBlock implements EntityBl
     public static void playSpatulaScoopSound(Level level, BlockPos pos, double offset)
     {
         Vec3 vec = Vec3.atBottomCenterOf(pos);
-        level.playSound(null, vec.x, vec.y, vec.z, ModSounds.ITEM_SPATULA_SCOOP.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+        level.playSound(null, vec.x, vec.y + offset, vec.z, ModSounds.ITEM_SPATULA_SCOOP.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
     }
 }
