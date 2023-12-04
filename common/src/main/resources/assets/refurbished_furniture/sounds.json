@@ -149,6 +149,14 @@
             "refurbished_furniture:block/toaster/pop"
         ]
     },
+    "block.toaster.insert": {
+        "subtitle": "subtitle.refurbished_furniture.toaster.insert",
+        "sounds": [
+            "refurbished_furniture:block/toaster/insert1",
+            "refurbished_furniture:block/toaster/insert2",
+            "refurbished_furniture:block/toaster/insert3"
+        ]
+    },
     "block.cooler.open": {
         "subtitle": "subtitle.refurbished_furniture.cooler.open",
         "sounds": [

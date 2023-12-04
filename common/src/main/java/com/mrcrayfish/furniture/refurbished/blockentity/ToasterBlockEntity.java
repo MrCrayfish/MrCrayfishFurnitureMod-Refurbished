@@ -13,7 +13,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -94,7 +93,7 @@ public class ToasterBlockEntity extends ElectricityModuleProcessingContainerBloc
     {
         this.heating = heating;
         this.level.setBlock(this.worldPosition, this.getBlockState().setValue(ToasterBlock.POWERED, this.heating), Block.UPDATE_ALL);
-        this.playSound(heating);
+        this.playLeverSound(heating);
         this.sync();
     }
 
@@ -254,6 +253,7 @@ public class ToasterBlockEntity extends ElectricityModuleProcessingContainerBloc
                     stack.setCount(1);
                     heldItem.shrink(1);
                     this.setItem(i, stack);
+                    this.playInsertSound();
                     this.sync();
                     return true;
                 }
@@ -299,11 +299,18 @@ public class ToasterBlockEntity extends ElectricityModuleProcessingContainerBloc
         return true;
     }
 
-    private void playSound(boolean heating)
+    private void playLeverSound(boolean heating)
     {
         Preconditions.checkNotNull(this.level);
         SoundEvent event = heating ? ModSounds.BLOCK_TOASTER_DOWN.get() : ModSounds.BLOCK_TOASTER_POP.get();
         this.level.playSound(null, this.worldPosition, event, SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * this.level.random.nextFloat());
+    }
+
+    private void playInsertSound()
+    {
+        Preconditions.checkNotNull(this.level);
+        this.level.playSound(null, this.worldPosition, ModSounds.BLOCK_TOASTER_INSERT.get(), SoundSource.BLOCKS, 0.5F, 0.9F + 0.1F * this.level.random.nextFloat());
+
     }
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, ToasterBlockEntity entity)
