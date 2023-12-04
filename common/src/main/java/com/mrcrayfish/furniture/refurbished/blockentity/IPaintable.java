@@ -9,24 +9,43 @@ import java.util.function.Supplier;
 /**
  * Author: MrCrayfish
  */
-public interface IPaintable extends Supplier<PaletteImage>
+public interface IPaintable
 {
+    /**
+     * Sets the palette image of this paintable
+     *
+     * @param image the new palette image
+     */
     void setImage(PaletteImage image);
 
+    /**
+     * @return The palette image of this paintable or null if no image exists
+     */
+    @Nullable
     PaletteImage getImage();
 
+    /**
+     * @return The player currently editing this paintable or null
+     */
     @Nullable
     Player getPainter();
 
+    /**
+     * Sets the player that is editing this paintable
+     *
+     * @param player a player or null
+     */
     void setPainter(@Nullable Player player);
 
+    /**
+     * @return True if this paintable can be edited
+     */
     boolean isEditable();
 
+    /**
+     * Sets the editable state of this paintable
+     *
+     * @param state true to allow editing, false to disallow
+     */
     void setEditable(boolean state);
-
-    @Override
-    default PaletteImage get()
-    {
-        return this.getImage();
-    }
 }

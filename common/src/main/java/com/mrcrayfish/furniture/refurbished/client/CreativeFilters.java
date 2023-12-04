@@ -222,6 +222,14 @@ public class CreativeFilters
         this.categories.forEach(category -> category.setVisible(false));
     }
 
+    /**
+     * Called when the mouse scrolls
+     *
+     * @param mouseX the x position of the mouse at the time of the scroll event
+     * @param mouseY the y position of the mouse at the time of the scroll event
+     * @param scroll the amount that was scrolled
+     * @return True if the event was handled
+     */
     public boolean onMouseScroll(double mouseX, double mouseY, double scroll)
     {
         CreativeModeTab selectedTab = ClientServices.PLATFORM.getSelectedCreativeModeTab();

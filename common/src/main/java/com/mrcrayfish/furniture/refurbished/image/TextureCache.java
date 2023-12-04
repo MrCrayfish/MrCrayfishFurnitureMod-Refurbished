@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.image;
 
 import com.mojang.blaze3d.platform.NativeImage;
+import com.mrcrayfish.furniture.refurbished.blockentity.IPaintable;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.DoorMatBlockEntityRenderer;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -64,9 +65,9 @@ public class TextureCache
      * @return a texture id linking to a registered dynamic texture
      */
     @Nullable
-    public ResourceLocation getOrCacheImage(Supplier<PaletteImage> supplier)
+    public ResourceLocation getOrCacheImage(IPaintable paintable)
     {
-        PaletteImage image = supplier.get();
+        PaletteImage image = paintable.getImage();
         if(image != null)
         {
             Entry entry = this.entries.get(image.getId());

@@ -126,12 +126,18 @@ public class LinkHandler
         return this.result instanceof NodeHitResult nodeResult && nodeResult.getNode() == node;
     }
 
+    /**
+     * @return The electricity node the local player is currently looking at or null
+     */
     @Nullable
     public IElectricityNode getTargetNode()
     {
         return this.result instanceof NodeHitResult nodeResult ? nodeResult.getNode() : null;
     }
 
+    /**
+     * @return The connection link the local player is currently looking at or null
+     */
     @Nullable
     public Connection getTargetLink()
     {
