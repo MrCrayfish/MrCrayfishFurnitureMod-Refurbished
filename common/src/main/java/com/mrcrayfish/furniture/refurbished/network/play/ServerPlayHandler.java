@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.network.play;
 import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.blockentity.INameable;
+import com.mrcrayfish.furniture.refurbished.blockentity.IPaintable;
 import com.mrcrayfish.furniture.refurbished.computer.app.PaddleBall;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.electricity.Connection;
@@ -133,11 +134,16 @@ public class ServerPlayHandler
 
     public static void handleMessageUpdatePainting(MessageUpdatePainting message, ServerPlayer player)
     {
+        // TODO could be interface for paintable menu when needed
         if(player != null && player.containerMenu instanceof DoorMatMenu menu)
         {
-            menu.getPaintable().setImage(message.getImage());
-            menu.getPaintable().setEditable(false);
-            player.closeContainer();
+            IPaintable paintable = menu.getPaintable();
+            if(paintable.isEditable())
+            {
+                paintable.setImage(message.getImage());
+                paintable.setEditable(false);
+                player.closeContainer();
+            }
         }
     }
 }
