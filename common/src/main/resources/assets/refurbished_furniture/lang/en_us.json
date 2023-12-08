@@ -519,6 +519,7 @@
     "computer_program.refurbished_furniture.paddle_ball.searching_players": "Finding an opponent...",
     "computer_program.refurbished_furniture.paddle_ball.opponent_left": "Opponent left the game",
     "computer_program.refurbished_furniture.paddle_ball.cancel": "Cancel",
-    "computer_program.refurbished_furniture.paddle_ball.server_required": "Must be playing on a server"
+    "computer_program.refurbished_furniture.paddle_ball.server_required": "Must be playing on a server",
+    "jei_category.refurbished_furniture.freezer_solidifying": "Solidifying"
 
 }

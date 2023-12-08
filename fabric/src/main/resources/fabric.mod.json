@@ -23,6 +23,9 @@
         ],
         "fabric-datagen": [
             "com.mrcrayfish.furniture.refurbished.FurnitureMod"
+        ],
+        "jei_mod_plugin": [
+            "com.mrcrayfish.furniture.compat.jei.Plugin"
         ]
     },
     "mixins": [
