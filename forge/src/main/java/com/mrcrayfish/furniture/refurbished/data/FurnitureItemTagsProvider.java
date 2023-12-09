@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.data;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.compat.CompatibilityTags;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
+import com.mrcrayfish.furniture.refurbished.core.ModTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
@@ -29,6 +30,6 @@ public class FurnitureItemTagsProvider extends ItemTagsProvider
 
         // Allows knife to be used with farmers delight and other mods
         this.tag(CompatibilityTags.Items.FORGE_TOOLS_KNIVES)
-                .add(ModItems.KNIFE.get());
+                .addTag(ModTags.Items.TOOLS_KNIVES);
     }
 }

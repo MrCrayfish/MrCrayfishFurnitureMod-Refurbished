@@ -5,19 +5,25 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 
 import java.text.DecimalFormat;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * Author: MrCrayfish
@@ -67,5 +73,12 @@ public class Plugin implements IModPlugin
     {
         ClientPacketListener listener = Objects.requireNonNull(Minecraft.getInstance().getConnection());
         return recipe.getResultItem(listener.registryAccess());
+    }
+
+    static List<ItemStack> getTagItems(TagKey<Item> tag)
+    {
+        return StreamSupport.stream(BuiltInRegistries.ITEM.getTagOrEmpty(tag).spliterator(), false).map(holder -> {
+            return new ItemStack(holder.value());
+        }).toList();
     }
 }

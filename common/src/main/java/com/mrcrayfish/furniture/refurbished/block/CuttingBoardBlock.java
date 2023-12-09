@@ -67,7 +67,7 @@ public class CuttingBoardBlock extends FurnitureHorizontalBlock implements Entit
             ItemStack heldItem = player.getItemInHand(hand);
             if(!level.isClientSide())
             {
-                if(heldItem.is(CompatibilityTags.Items.FORGE_TOOLS_KNIVES))
+                if(heldItem.is(Services.TAG.getToolKnivesTag()))
                 {
                     boolean dropAsEntity = !Services.ENTITY.isFakePlayer(player);
                     if(cuttingBoard.sliceItem(level, dropAsEntity))

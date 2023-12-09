@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.data;
 
+import com.mrcrayfish.furniture.refurbished.compat.CompatibilityTags;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.core.ModTags;
@@ -855,5 +856,8 @@ public class CommonItemTagsProvider
         colouredKitchenStorageCabinets.add(ModBlocks.KITCHEN_STORAGE_CABINET_GREEN.get().asItem());
         colouredKitchenStorageCabinets.add(ModBlocks.KITCHEN_STORAGE_CABINET_RED.get().asItem());
         colouredKitchenStorageCabinets.add(ModBlocks.KITCHEN_STORAGE_CABINET_BLACK.get().asItem());
+
+        TagBuilder<Item> toolsKnives = builder.apply(ModTags.Items.TOOLS_KNIVES);
+        toolsKnives.add(ModItems.KNIFE.get());
     }
 }

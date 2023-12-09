@@ -30,6 +30,7 @@ public class ModTags
         public static final TagKey<Item> COLOURED_KITCHEN_DRAWERS = tag("coloured_kitchen_drawers");
         public static final TagKey<Item> COLOURED_KITCHEN_SINKS = tag("coloured_kitchen_sinks");
         public static final TagKey<Item> COLOURED_KITCHEN_STORAGE_CABINETS = tag("coloured_kitchen_storage_cabinets");
+        public static final TagKey<Item> TOOLS_KNIVES = tag("tools/knives");
 
         private static TagKey<Item> tag(String name)
         {

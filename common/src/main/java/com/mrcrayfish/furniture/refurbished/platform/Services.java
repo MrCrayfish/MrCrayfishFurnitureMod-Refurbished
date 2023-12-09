@@ -8,6 +8,7 @@ import com.mrcrayfish.furniture.refurbished.platform.services.IFluidHelper;
 import com.mrcrayfish.furniture.refurbished.platform.services.IItemHelper;
 import com.mrcrayfish.furniture.refurbished.platform.services.IPlatformHelper;
 import com.mrcrayfish.furniture.refurbished.platform.services.IRecipeHelper;
+import com.mrcrayfish.furniture.refurbished.platform.services.ITagHelper;
 
 import java.util.ServiceLoader;
 
@@ -20,6 +21,7 @@ public class Services
     public static final IEntityHelper ENTITY = load(IEntityHelper.class);
     public static final IRecipeHelper RECIPE = load(IRecipeHelper.class);
     public static final IFluidHelper FLUID = load(IFluidHelper.class);
+    public static final ITagHelper TAG = load(ITagHelper.class);
 
     public static <T> T load(Class<T> clazz)
     {
