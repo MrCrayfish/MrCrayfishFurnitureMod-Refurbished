@@ -21,18 +21,19 @@ import net.minecraft.world.item.ItemStack;
 /**
  * Author: MrCrayfish
  */
-public class FreezerSolidifyingCategory implements IRecipeCategory<FreezerSolidifyingRecipe>
+public class FreezerSolidifyingCategory extends FurnitureRecipeCategory<FreezerSolidifyingRecipe>
 {
     public static final RecipeType<FreezerSolidifyingRecipe> TYPE = RecipeType.create(Constants.MOD_ID, "freezer_solidifying", FreezerSolidifyingRecipe.class);
 
+    private final IGuiHelper helper;
     private final IDrawable background;
-    private final IDrawable arrow;
     private final IDrawable icon;
+    private IDrawable arrow;
 
     public FreezerSolidifyingCategory(IGuiHelper helper)
     {
+        this.helper = helper;
         this.background = helper.createDrawable(Plugin.TEXTURES, 0, 0, 93, 36);
-        this.arrow = helper.createAnimatedDrawable(helper.createDrawable(Plugin.TEXTURES, 93, 0, 24, 17), 40, IDrawableAnimated.StartDirection.LEFT, false);
         this.icon = helper.createDrawableItemStack(new ItemStack(ModItems.FRIDGE_LIGHT.get()));
     }
 
@@ -65,11 +66,13 @@ public class FreezerSolidifyingCategory implements IRecipeCategory<FreezerSolidi
     {
         builder.addSlot(RecipeIngredientRole.INPUT, 7, 10).addIngredients(recipe.getIngredients().get(0));
         builder.addSlot(RecipeIngredientRole.OUTPUT, 67, 10).addItemStack(Plugin.getResult(recipe));
+        this.arrow = this.helper.createAnimatedDrawable(this.helper.createDrawable(Plugin.TEXTURES, 93, 0, 24, 17), recipe.getCookingTime(), IDrawableAnimated.StartDirection.LEFT, false);
     }
 
     @Override
     public void draw(FreezerSolidifyingRecipe recipe, IRecipeSlotsView view, GuiGraphics graphics, double mouseX, double mouseY)
     {
         this.arrow.draw(graphics, 30, 9);
+        this.drawSeconds(graphics, 42, 28, recipe.getCookingTime());
     }
 }

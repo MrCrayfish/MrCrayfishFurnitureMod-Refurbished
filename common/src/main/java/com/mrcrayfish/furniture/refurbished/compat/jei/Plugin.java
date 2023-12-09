@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.compat.jei;
 
+import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import mezz.jei.api.IModPlugin;
@@ -11,12 +12,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.level.ItemLike;
 
 import java.text.DecimalFormat;
 import java.util.Collections;
@@ -82,5 +87,13 @@ public class Plugin implements IModPlugin
         return StreamSupport.stream(BuiltInRegistries.ITEM.getTagOrEmpty(tag).spliterator(), false).map(holder -> {
             return new ItemStack(holder.value());
         }).toList();
+    }
+
+    static List<Component> getItemTooltip(ItemLike item)
+    {
+        Minecraft minecraft = Minecraft.getInstance();
+        Player player = minecraft.player;
+        boolean advanced = minecraft.options.advancedItemTooltips;
+        return new ItemStack(item).getTooltipLines(player, advanced ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
     }
 }

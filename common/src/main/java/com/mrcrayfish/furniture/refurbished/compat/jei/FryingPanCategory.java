@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.compat.jei;
 
 import com.mrcrayfish.furniture.refurbished.Constants;
+import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardRecipe;
@@ -19,10 +20,12 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.List;
+
 /**
  * Author: MrCrayfish
  */
-public class FryingPanCategory implements IRecipeCategory<FryingPanCookingRecipe>
+public class FryingPanCategory extends FurnitureRecipeCategory<FryingPanCookingRecipe>
 {
     public static final RecipeType<FryingPanCookingRecipe> TYPE = RecipeType.create(Constants.MOD_ID, "frying_pan_cooking", FryingPanCookingRecipe.class);
 
@@ -75,9 +78,20 @@ public class FryingPanCategory implements IRecipeCategory<FryingPanCookingRecipe
     public void draw(FryingPanCookingRecipe recipe, IRecipeSlotsView view, GuiGraphics graphics, double mouseX, double mouseY)
     {
         this.arrow.draw(graphics, 71, 36);
+        this.drawSeconds(graphics, 83, 55, recipe.getCookingTime());
+    }
 
-        float seconds = recipe.getCookingTime() / 20.0F;
-        String formattedTime = Plugin.FORMATTER.format(seconds);
-        graphics.drawString(Plugin.getFont(), formattedTime, 101, 59, 0xFF808080, false);
+    @Override
+    public List<Component> getTooltipStrings(FryingPanCookingRecipe recipe, IRecipeSlotsView view, double mouseX, double mouseY)
+    {
+        if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, 14, 22, 42, 13))
+        {
+            return Plugin.getItemTooltip(ModBlocks.FRYING_PAN.get());
+        }
+        if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, 5, 26, 60, 48))
+        {
+            return Plugin.getItemTooltip(ModBlocks.STOVE_LIGHT.get());
+        }
+        return super.getTooltipStrings(recipe, view, mouseX, mouseY);
     }
 }

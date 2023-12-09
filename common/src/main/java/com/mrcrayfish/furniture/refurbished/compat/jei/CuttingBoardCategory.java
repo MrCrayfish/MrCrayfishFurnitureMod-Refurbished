@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.compat.jei;
 
 import com.mrcrayfish.furniture.refurbished.Constants;
+import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardRecipe;
@@ -70,5 +71,15 @@ public class CuttingBoardCategory implements IRecipeCategory<CuttingBoardRecipe>
         builder.addSlot(RecipeIngredientRole.INPUT, 25, 6).addIngredients(recipe.getIngredients().get(0));
         builder.addSlot(RecipeIngredientRole.OUTPUT, 111, 10).addItemStack(Plugin.getResult(recipe));
         builder.addSlot(RecipeIngredientRole.RENDER_ONLY, 73, 11).addItemStacks(this.knives);
+    }
+
+    @Override
+    public List<Component> getTooltipStrings(CuttingBoardRecipe recipe, IRecipeSlotsView view, double mouseX, double mouseY)
+    {
+        if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, 5, 16, 55, 15) && !ScreenHelper.isMouseWithinBounds(mouseX, mouseY, 25, 6, 16, 16))
+        {
+            return Plugin.getItemTooltip(ModBlocks.CUTTING_BOARD_OAK.get());
+        }
+        return IRecipeCategory.super.getTooltipStrings(recipe, view, mouseX, mouseY);
     }
 }

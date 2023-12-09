@@ -22,7 +22,7 @@ import net.minecraft.world.item.ItemStack;
 /**
  * Author: MrCrayfish
  */
-public class MicrowaveHeatingCategory implements IRecipeCategory<MicrowaveHeatingRecipe>
+public class MicrowaveHeatingCategory extends FurnitureRecipeCategory<MicrowaveHeatingRecipe>
 {
     public static final RecipeType<MicrowaveHeatingRecipe> TYPE = RecipeType.create(Constants.MOD_ID, "microwave_heating", MicrowaveHeatingRecipe.class);
 
@@ -74,5 +74,6 @@ public class MicrowaveHeatingCategory implements IRecipeCategory<MicrowaveHeatin
     public void draw(MicrowaveHeatingRecipe recipe, IRecipeSlotsView view, GuiGraphics graphics, double mouseX, double mouseY)
     {
         this.waveform.draw(graphics, 30, 9);
+        this.drawSeconds(graphics, 42, 28, recipe.getCookingTime());
     }
 }
