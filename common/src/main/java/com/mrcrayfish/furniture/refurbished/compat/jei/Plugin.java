@@ -36,6 +36,7 @@ public class Plugin implements IModPlugin
     {
         IGuiHelper helper = registration.getJeiHelpers().getGuiHelper();
         registration.addRecipeCategories(new FreezerSolidifyingCategory(helper));
+        registration.addRecipeCategories(new CuttingBoardCategory(helper));
     }
 
     @Override
@@ -43,6 +44,7 @@ public class Plugin implements IModPlugin
     {
         RecipeManager manager = getRecipeManager();
         registration.addRecipes(FreezerSolidifyingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.FREEZER_SOLIDIFYING.get()));
+        registration.addRecipes(CuttingBoardCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.CUTTING_BOARD_SLICING.get()));
     }
 
     static RecipeManager getRecipeManager()
