@@ -47,6 +47,7 @@ public class Plugin implements IModPlugin
         registration.addRecipeCategories(new FreezerSolidifyingCategory(helper));
         registration.addRecipeCategories(new CuttingBoardCategory(helper));
         registration.addRecipeCategories(new FryingPanCategory(helper));
+        registration.addRecipeCategories(new MicrowaveHeatingCategory(helper));
     }
 
     @Override
@@ -56,6 +57,7 @@ public class Plugin implements IModPlugin
         registration.addRecipes(FreezerSolidifyingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.FREEZER_SOLIDIFYING.get()));
         registration.addRecipes(CuttingBoardCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.CUTTING_BOARD_SLICING.get()));
         registration.addRecipes(FryingPanCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.FRYING_PAN_COOKING.get()));
+        registration.addRecipes(MicrowaveHeatingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.MICROWAVE_HEATING.get()));
     }
 
     static RecipeManager getRecipeManager()
