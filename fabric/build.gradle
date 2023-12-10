@@ -35,6 +35,13 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
     modImplementation "com.mrcrayfish:framework-fabric:${minecraft_version}-${framework_version}"
     implementation "com.google.code.findbugs:jsr305:3.0.2"
+
+    // JEI
+    modCompileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
+    modCompileOnly "mezz.jei:jei-${minecraft_version}-fabric-api:${jei_version}"
+    modRuntimeOnly "mezz.jei:jei-${minecraft_version}-fabric:${jei_version}"
+    testModRuntimeOnly "mezz.jei:jei-${minecraft_version}-fabric:${jei_version}"
+
     implementation project(":common")
     testModImplementation sourceSets.main.output
     testModImplementation sourceSets.test.output

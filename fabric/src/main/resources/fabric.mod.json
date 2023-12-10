@@ -25,7 +25,7 @@
             "com.mrcrayfish.furniture.refurbished.FurnitureMod"
         ],
         "jei_mod_plugin": [
-            "com.mrcrayfish.furniture.compat.jei.Plugin"
+            "com.mrcrayfish.furniture.refurbished.compat.jei.Plugin"
         ]
     },
     "mixins": [
