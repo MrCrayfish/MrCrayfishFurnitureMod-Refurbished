@@ -1,12 +1,14 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mrcrayfish.furniture.refurbished.client.registration.ParticleProviderRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
@@ -17,6 +19,8 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
@@ -47,6 +51,12 @@ public class ClientFurnitureMod implements ClientModInitializer
         ClientBootstrap.registerBlockColors(ColorProviderRegistry.BLOCK::register);
         ClientBootstrap.registerItemColors(ColorProviderRegistry.ITEM::register);
         ClientBootstrap.registerHudOverlays((id, overlay) -> HudRenderCallback.EVENT.register(overlay::draw));
+        ClientBootstrap.registerParticleProviders(new ParticleProviderRegister() {
+            @Override
+            public <T extends ParticleOptions> void apply(ParticleType<T> type, SpriteProvider<T> provider) {
+                ParticleFactoryRegistry.getInstance().register(type, provider::apply);
+            }
+        });
         ModelLoadingRegistry.INSTANCE.registerModelProvider((manager, out) -> ExtraModels.register(out));
 
         WorldRenderEvents.LAST.register(context -> {
