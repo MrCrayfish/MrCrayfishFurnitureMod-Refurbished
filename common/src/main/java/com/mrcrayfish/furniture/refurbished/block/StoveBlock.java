@@ -3,7 +3,9 @@ package com.mrcrayfish.furniture.refurbished.block;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.furniture.refurbished.blockentity.BasicLootBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.ICookingBlock;
 import com.mrcrayfish.furniture.refurbished.blockentity.StoveBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.StoveContainer;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
@@ -12,10 +14,15 @@ import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.CompoundContainer;
+import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.WorldlyContainerHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -35,7 +42,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class StoveBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
+public class StoveBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier, WorldlyContainerHolder
 {
     private final MetalType type;
 
@@ -153,5 +160,15 @@ public class StoveBlock extends FurnitureHorizontalBlock implements EntityBlock,
     public List<TagKey<Block>> getTags()
     {
         return List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL);
+    }
+
+    @Override
+    public WorldlyContainer getContainer(BlockState state, LevelAccessor accessor, BlockPos pos)
+    {
+        if(accessor.getBlockEntity(pos) instanceof StoveBlockEntity stove)
+        {
+            return stove.getContainer();
+        }
+        return null;
     }
 }

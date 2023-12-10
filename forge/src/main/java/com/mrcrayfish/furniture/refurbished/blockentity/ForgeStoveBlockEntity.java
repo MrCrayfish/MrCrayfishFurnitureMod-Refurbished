@@ -30,6 +30,7 @@ public class ForgeStoveBlockEntity extends StoveBlockEntity
     @Override
     public void onNeighbourChanged()
     {
+        super.onNeighbourChanged();
         this.invalidateItemHandlers();
     }
 
@@ -69,39 +70,10 @@ public class ForgeStoveBlockEntity extends StoveBlockEntity
         {
             LazyOptional<IItemHandlerModifiable>[] handlers = new LazyOptional[2];
             handlers[0] = LazyOptional.of(() -> new InvWrapper(this));
-            handlers[1] = LazyOptional.of(() -> {
-                IItemHandlerModifiable stoveHandler = new SidedInvWrapper(this, Direction.DOWN);
-                IItemHandlerModifiable cookingHandler = this.createCookingBlockItemHandler();
-                if(cookingHandler != null) {
-                    return new CombinedInvWrapper(stoveHandler, cookingHandler);
-                }
-                return stoveHandler;
-            });
+            handlers[1] = LazyOptional.of(() -> new SidedInvWrapper(this.getContainer(), Direction.DOWN));
             this.handlers = handlers;
         }
         return this.handlers;
-    }
-
-    /**
-     * Creates an item handler for the above cooking block if it exists and is a container.
-     * An appropriate item handler will be created if the container is a worldly container, only
-     * accessing the down direction of the cooking block.
-     *
-     * @return A IItemHandlerModifiable of the cooking block or null if no cooking block exists
-     */
-    @Nullable
-    private IItemHandlerModifiable createCookingBlockItemHandler()
-    {
-        ICookingBlock block = this.getCookingBlock();
-        if(block instanceof WorldlyContainer container)
-        {
-            return new SidedInvWrapper(container, Direction.DOWN);
-        }
-        else if(block instanceof Container container)
-        {
-            return new InvWrapper(container);
-        }
-        return null;
     }
 
     /**

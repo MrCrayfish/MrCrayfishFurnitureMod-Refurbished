@@ -12,6 +12,8 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.Container;
+import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
@@ -38,6 +40,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     protected int processingTime;
     protected WeakReference<ICookingBlock> cookingBlockRef;
     protected boolean sync;
+    protected @Nullable StoveContainer container;
 
     protected final ContainerData data = new BuildableContainerData(builder -> {
         builder.add(DATA_POWERED, () -> isPowered() ? 1 : 0, value -> {});
@@ -156,8 +159,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     @Override
     public boolean canProcess()
     {
-        if(!this.isPowered() || !this.enabled)
-            return false;
+        if(!this.isPowered() || !this.enabled) return false;
         ICookingBlock block = this.getCookingBlock();
         return block != null && block.canCook();
     }
@@ -272,7 +274,35 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     /**
      * Called when a neighbour block is changed.
      */
-    public void onNeighbourChanged() {}
+    public void onNeighbourChanged()
+    {
+        this.container = null;
+    }
+
+    @Override
+    public void setBlockState(BlockState state)
+    {
+        super.setBlockState(state);
+        this.container = null;
+    }
+
+    @Nullable
+    public WorldlyContainer getContainer()
+    {
+        if(this.container == null)
+        {
+            ICookingBlock cookingBlock = this.getCookingBlock();
+            if(cookingBlock != null && cookingBlock.getBlockEntity() instanceof Container cookingContainer)
+            {
+                this.container = new StoveContainer(this, cookingBlock, cookingContainer);
+            }
+        }
+        else if(!this.container.isValid())
+        {
+            this.container = null;
+        }
+        return this.container != null ? this.container : this;
+    }
 
     /**
      * Marks the frying pan as needing to sync data to tracking clients
