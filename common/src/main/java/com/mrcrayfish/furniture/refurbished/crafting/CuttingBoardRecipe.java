@@ -24,4 +24,14 @@ public class CuttingBoardRecipe extends SingleItemRecipe
     {
         return this.ingredient.test(container.getItem(0));
     }
+
+    public Ingredient getInput()
+    {
+        return this.ingredient;
+    }
+
+    public ItemStack getOutput()
+    {
+        return this.result;
+    }
 }
