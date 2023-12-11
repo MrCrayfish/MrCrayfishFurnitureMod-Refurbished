@@ -11,11 +11,9 @@ import com.mrcrayfish.furniture.refurbished.inventory.BuildableContainerData;
 import com.mrcrayfish.furniture.refurbished.inventory.RecycleBinMenu;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -24,6 +22,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -32,19 +31,17 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SpawnEggItem;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -52,7 +49,6 @@ import java.util.Set;
  */
 public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity implements IProcessingBlock, IPowerSwitch, IAudioBlock
 {
-    private static Map<ResourceLocation, List<WeakReference<RecycleBinRecyclingRecipe>>> recipeLookup;
     private static final Set<ItemLike> INVALID_ITEMS = Util.make(() -> {
         ImmutableSet.Builder<ItemLike> builder = ImmutableSet.builder();
         builder.add(Items.KNOWLEDGE_BOOK);
@@ -103,6 +99,7 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
     protected long seed = this.random.nextLong();
     protected @Nullable Item inputCache;
     protected @Nullable List<ItemStack> outputCache;
+    protected final RecipeManager.CachedCheck<Container, RecycleBinRecyclingRecipe> recipeCache;
 
     protected final ContainerData data = new BuildableContainerData(builder -> {
         builder.add(DATA_ENABLED, () -> enabled ? 1 : 0, value -> {});
@@ -118,6 +115,7 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
     public RecycleBinBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
     {
         super(type, pos, state, 10);
+        this.recipeCache = RecipeManager.createCheck(ModRecipeTypes.RECYCLE_BIN_RECYCLING.get());
     }
 
     @Override
@@ -232,22 +230,23 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
     @Override
     public boolean canProcess()
     {
-        if(!this.stopped && this.enabled && this.isPowered() && recipeLookup != null)
+        if(!this.stopped && this.enabled && this.isPowered())
         {
             ItemStack input = this.getItem(0);
             if(input.isEmpty())
                 return false;
 
-            // A unique seed per item
-            ResourceLocation id = BuiltInRegistries.ITEM.getKey(input.getItem());
-            this.random.setSeed(this.seed + id.hashCode());
-
-            // Don't process if input doesn't have an output
-            if(!Config.SERVER.recycleBin.recycleEveryItem.get() && !recipeLookup.containsKey(id))
+            // If the recycle bin has been configured to only process items that have an output,
+            // check if the current input has an output. If no output, prevent processing.
+            if(!Config.SERVER.recycleBin.recycleEveryItem.get() && this.getRecipe(input).isEmpty())
             {
                 this.stopped = true;
                 return false;
             }
+
+            // Create unique seed per item
+            ResourceLocation id = BuiltInRegistries.ITEM.getKey(input.getItem());
+            this.random.setSeed(this.seed + id.hashCode());
 
             // Checks if the recycled items can be added output. The output is cached for later use
             // when completing a recycling process. This means the item will be exactly the same
@@ -265,13 +264,6 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void setLevel(Level level)
-    {
-        super.setLevel(level);
-        refreshRecipeLookup(level, false);
     }
 
     @Override
@@ -424,12 +416,9 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
      */
     private List<ItemStack> getRecycledItems(ItemStack input)
     {
-        List<RecycleBinRecyclingRecipe> recipes = this.getRecyclingRecipes(input.getItem());
-        if(recipes == null || recipes.isEmpty())
+        Optional<RecycleBinRecyclingRecipe> optional = this.getRecipe(input);
+        if(optional.isEmpty())
             return Collections.emptyList();
-
-        Utils.shuffle(recipes, this.random);
-        recipes = recipes.subList(0, Math.min(recipes.size(), this.output.getContainerSize()));
 
         // Create an initial chance based on the config property
         float chance = Config.SERVER.recycleBin.baseOutputChance.get().floatValue();
@@ -440,67 +429,32 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
             float damaged = (float) input.getDamageValue() / (float) input.getMaxDamage();
             damaged = 1.0F - Mth.square(1.0F - damaged); // Ramp the damage for balancing
             damaged = 1.0F - damaged; // Invert since the higher the damage, the less chance to recycle
-            chance *= Mth.clamp(damaged, 0.0F, 1.0F);; // Finally multiply the chance
+            chance *= Mth.clamp(damaged, 0.0F, 1.0F); // Finally multiply the chance
         }
 
-        List<ItemStack> items = new ArrayList<>();
-        for(RecycleBinRecyclingRecipe recipe : recipes)
+        RecycleBinRecyclingRecipe recipe = optional.get();
+        List<ItemStack> output = recipe.createRandomisedOutput(this.random, chance);
+
+        // Remove invalid or banned items
+        output.removeIf(this::isInvalidItem);
+
+        // If enabled, randomised the count of every output item based on it's initial count
+        if(Config.SERVER.recycleBin.randomizeOutputCount.get())
         {
-            NonNullList<Ingredient> ingredients = recipe.getIngredients();
-            if(ingredients.isEmpty())
-                continue;
-
-            Ingredient randomIngredient = ingredients.get(this.random.nextInt(ingredients.size()));
-            ItemStack[] stacks = randomIngredient.getItems();
-            if(stacks.length == 0)
-                continue;
-
-            ItemStack randomItem = stacks[this.random.nextInt(stacks.length)];
-            if(this.isInvalidItem(randomItem))
-                continue;
-
-            // Return an output if lucky
-            if(this.random.nextFloat() < chance)
-            {
-                ItemStack copy = randomItem.copy();
-                int count = recipe.getResultItem(this.level.registryAccess()).getCount();
-                boolean randomCount = Config.SERVER.recycleBin.randomizeOutputCount.get();
-                copy.setCount(!randomCount ? count : this.random.nextIntBetweenInclusive(1, count));
-                items.add(copy);
-            }
+            output.forEach(stack -> stack.setCount(this.random.nextIntBetweenInclusive(1, stack.getCount())));
         }
-        return items;
+
+        return output;
     }
 
     /**
-     * Gets the recycling recipe for the given item.
-     *
-     * @param item the item to get the recipe for
-     * @return The recycling recipe for the item or null if none
+     * A utility to get a recipe for the given cache and ItemStack.
+     * @param stack the itemstack of the recipe
+     * @return An optional recipe
      */
-    @Nullable
-    private List<RecycleBinRecyclingRecipe> getRecyclingRecipes(Item item)
+    private Optional<RecycleBinRecyclingRecipe> getRecipe(ItemStack stack)
     {
-        if(this.level == null || recipeLookup == null)
-            return null;
-
-        ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
-        List<WeakReference<RecycleBinRecyclingRecipe>> list = recipeLookup.get(id);
-        if(list == null || list.isEmpty())
-            return null;
-
-        List<RecycleBinRecyclingRecipe> recipes = new ObjectArrayList<>();
-        for(WeakReference<RecycleBinRecyclingRecipe> recipeRef : list)
-        {
-            RecycleBinRecyclingRecipe recipe = recipeRef.get();
-            if(recipe == null)
-            {
-                refreshRecipeLookup(this.level, true);
-                return this.getRecyclingRecipes(item);
-            }
-            recipes.add(recipe);
-        }
-        return recipes;
+        return this.recipeCache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level));
     }
 
     /**
@@ -552,34 +506,5 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
             }
         }
         return true;
-    }
-
-    /**
-     * Builds the recipe lookup map for efficient access to the possible recipes that the
-     * recycle bin can recycle items into.
-     *
-     * @param level the level where the recycle bin is located
-     * @param force true if it should force a rebuild of the map
-     */
-    private static void refreshRecipeLookup(Level level, boolean force)
-    {
-        if(!level.isClientSide() && (recipeLookup == null || force))
-        {
-            recipeLookup = new HashMap<>();
-            List<RecycleBinRecyclingRecipe> recipes = level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.RECYCLE_BIN_RECYCLING.get());
-            recipes.forEach(recipe -> {
-                if(recipe.isSpecial() || recipe.isIncomplete())
-                    return;
-                ItemStack input = recipe.getResultItem(level.registryAccess());
-                ResourceLocation id = BuiltInRegistries.ITEM.getKey(input.getItem());
-                List<WeakReference<RecycleBinRecyclingRecipe>> list = recipeLookup.computeIfAbsent(id, id2 -> new ObjectArrayList<>());
-                list.add(new WeakReference<>(recipe));
-            });
-        }
-    }
-
-    public static void clearRecipeLookup()
-    {
-        recipeLookup = null;
     }
 }
