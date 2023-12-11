@@ -134,7 +134,7 @@ public class Config
                 Recycled items are still consumed even if no items were added to the output. This value
                 is seen as the base value, however it is further affected for items that are damaged,
                 which greatly reduce the chance of an output. The value must be between 0 and 1 (inclusive)""")
-            public final DoubleProperty baseOutputChance = DoubleProperty.create(0.5, 0.0, 1.0);
+            public final DoubleProperty baseOutputChance = DoubleProperty.create(0.6, 0.0, 1.0);
 
             @ConfigProperty(name = "recycleEveryItem", comment = """
                 When enabled, the recycle bin will recycle every item even if the item doesn't recycle into anything.""")
@@ -144,7 +144,7 @@ public class Config
                 If enabled, the count of an item created from recycling will be randomized based on
                 the count defined in the recipe. For example, if the recipe is outputting 5 iron ingots,
                 a randomized output count will be a random number from 1 to 5""")
-            public final BoolProperty randomizeOutputCount = BoolProperty.create(true);
+            public final BoolProperty randomizeOutputCount = BoolProperty.create(false);
         }
 
         public static class Trampoline
