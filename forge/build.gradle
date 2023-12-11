@@ -99,6 +99,10 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
 
+    // CraftTweaker
+    compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-common-${minecraft_version}:${crafttweaker_version}")
+    runtimeOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}")
+
     compileOnly project(":common")
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
 }
