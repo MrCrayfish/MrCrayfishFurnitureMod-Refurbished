@@ -51,6 +51,7 @@ public class Plugin implements IModPlugin
         registration.addRecipeCategories(new FryingPanCookingCategory(helper));
         registration.addRecipeCategories(new MicrowaveHeatingCategory(helper));
         registration.addRecipeCategories(new RecycleBinRecyclingCategory(helper));
+        registration.addRecipeCategories(new ToasterToastingCategory(helper));
     }
 
     @Override
@@ -62,6 +63,7 @@ public class Plugin implements IModPlugin
         registration.addRecipes(FryingPanCookingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.FRYING_PAN_COOKING.get()));
         registration.addRecipes(MicrowaveHeatingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.MICROWAVE_HEATING.get()));
         registration.addRecipes(RecycleBinRecyclingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.RECYCLE_BIN_RECYCLING.get()));
+        registration.addRecipes(ToasterToastingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.TOASTER_HEATING.get()));
     }
 
     static RecipeManager getRecipeManager()
