@@ -1,7 +1,8 @@
-package com.mrcrayfish.furniture.refurbished.compat.jei;
+package com.mrcrayfish.furniture.refurbished.compat.jei.categories;
 
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
+import com.mrcrayfish.furniture.refurbished.compat.jei.Plugin;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardRecipe;

@@ -1,5 +1,6 @@
-package com.mrcrayfish.furniture.refurbished.compat.jei;
+package com.mrcrayfish.furniture.refurbished.compat.jei.categories;
 
+import com.mrcrayfish.furniture.refurbished.compat.jei.Plugin;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.gui.GuiGraphics;
 

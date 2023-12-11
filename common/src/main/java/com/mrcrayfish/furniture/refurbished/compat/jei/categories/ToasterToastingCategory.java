@@ -1,9 +1,8 @@
-package com.mrcrayfish.furniture.refurbished.compat.jei;
+package com.mrcrayfish.furniture.refurbished.compat.jei.categories;
 
 import com.mrcrayfish.furniture.refurbished.Constants;
+import com.mrcrayfish.furniture.refurbished.compat.jei.Plugin;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
-import com.mrcrayfish.furniture.refurbished.core.ModItems;
-import com.mrcrayfish.furniture.refurbished.crafting.RecycleBinRecyclingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.ToasterHeatingRecipe;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;

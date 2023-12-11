@@ -1,5 +1,11 @@
 package com.mrcrayfish.furniture.refurbished.compat.jei;
 
+import com.mrcrayfish.furniture.refurbished.compat.jei.categories.CuttingBoardSlicingCategory;
+import com.mrcrayfish.furniture.refurbished.compat.jei.categories.FreezerSolidifyingCategory;
+import com.mrcrayfish.furniture.refurbished.compat.jei.categories.FryingPanCookingCategory;
+import com.mrcrayfish.furniture.refurbished.compat.jei.categories.MicrowaveHeatingCategory;
+import com.mrcrayfish.furniture.refurbished.compat.jei.categories.RecycleBinRecyclingCategory;
+import com.mrcrayfish.furniture.refurbished.compat.jei.categories.ToasterToastingCategory;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import mezz.jei.api.IModPlugin;
@@ -33,8 +39,8 @@ import java.util.stream.StreamSupport;
 @JeiPlugin
 public class Plugin implements IModPlugin
 {
-    static final ResourceLocation TEXTURES = Utils.resource("textures/gui/jei.png");
-    static final DecimalFormat FORMATTER = new DecimalFormat("0.##s");
+    public static final ResourceLocation TEXTURES = Utils.resource("textures/gui/jei.png");
+    public static final DecimalFormat FORMATTER = new DecimalFormat("0.##s");
 
     @Override
     public ResourceLocation getPluginUid()
@@ -66,31 +72,31 @@ public class Plugin implements IModPlugin
         registration.addRecipes(ToasterToastingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.TOASTER_HEATING.get()));
     }
 
-    static RecipeManager getRecipeManager()
+    public static RecipeManager getRecipeManager()
     {
         ClientPacketListener listener = Objects.requireNonNull(Minecraft.getInstance().getConnection());
         return listener.getRecipeManager();
     }
 
-    static Font getFont()
+    public static Font getFont()
     {
         return Minecraft.getInstance().font;
     }
 
-    static ItemStack getResult(Recipe<?> recipe)
+    public static ItemStack getResult(Recipe<?> recipe)
     {
         ClientPacketListener listener = Objects.requireNonNull(Minecraft.getInstance().getConnection());
         return recipe.getResultItem(listener.registryAccess());
     }
 
-    static List<ItemStack> getTagItems(TagKey<Item> tag)
+    public static List<ItemStack> getTagItems(TagKey<Item> tag)
     {
         return StreamSupport.stream(BuiltInRegistries.ITEM.getTagOrEmpty(tag).spliterator(), false).map(holder -> {
             return new ItemStack(holder.value());
         }).toList();
     }
 
-    static List<Component> getItemTooltip(ItemLike item)
+    public static List<Component> getItemTooltip(ItemLike item)
     {
         Minecraft minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
