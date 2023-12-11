@@ -42,6 +42,10 @@ dependencies {
     modRuntimeOnly "mezz.jei:jei-${minecraft_version}-fabric:${jei_version}"
     testModRuntimeOnly "mezz.jei:jei-${minecraft_version}-fabric:${jei_version}"
 
+    // CraftTweaker
+    modCompileOnly "com.blamejared.crafttweaker:CraftTweaker-common-${minecraft_version}:${crafttweaker_version}"
+    modRuntimeOnly "com.blamejared.crafttweaker:CraftTweaker-fabric-${minecraft_version}:${crafttweaker_version}"
+
     implementation project(":common")
     testModImplementation sourceSets.main.output
     testModImplementation sourceSets.test.output
