@@ -4,7 +4,6 @@ import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
-import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.FryingPanCookingRecipe;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -15,7 +14,6 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -25,7 +23,7 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class FryingPanCategory extends FurnitureRecipeCategory<FryingPanCookingRecipe>
+public class FryingPanCookingCategory extends FurnitureRecipeCategory<FryingPanCookingRecipe>
 {
     public static final RecipeType<FryingPanCookingRecipe> TYPE = RecipeType.create(Constants.MOD_ID, "frying_pan_cooking", FryingPanCookingRecipe.class);
 
@@ -34,7 +32,7 @@ public class FryingPanCategory extends FurnitureRecipeCategory<FryingPanCookingR
     private final IDrawable icon;
     private IDrawable arrow;
 
-    public FryingPanCategory(IGuiHelper helper)
+    public FryingPanCookingCategory(IGuiHelper helper)
     {
         this.helper = helper;
         this.background = helper.createDrawable(Plugin.TEXTURES, 0, 72, 124, 82);

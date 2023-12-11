@@ -97,6 +97,16 @@ public class RecycleBinRecyclingRecipe implements Recipe<Container>
         return this.outputs[0];
     }
 
+    public ItemStack getInput()
+    {
+        return this.input;
+    }
+
+    public ItemStack[] getOutputs()
+    {
+        return this.outputs;
+    }
+
     /**
      * Creates a randomised output of this recycling recipe. This takes each possible output of
      * this recipe, creates a new list, then adds the output to the new list if the random roll

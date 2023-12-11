@@ -5,19 +5,16 @@ import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardRecipe;
-import com.mrcrayfish.furniture.refurbished.crafting.FreezerSolidifyingRecipe;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -26,7 +23,7 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class CuttingBoardCategory implements IRecipeCategory<CuttingBoardRecipe>
+public class CuttingBoardSlicingCategory implements IRecipeCategory<CuttingBoardRecipe>
 {
     public static final RecipeType<CuttingBoardRecipe> TYPE = RecipeType.create(Constants.MOD_ID, "cutting_board_slicing", CuttingBoardRecipe.class);
 
@@ -34,7 +31,7 @@ public class CuttingBoardCategory implements IRecipeCategory<CuttingBoardRecipe>
     private final IDrawable icon;
     private final List<ItemStack> knives;
 
-    public CuttingBoardCategory(IGuiHelper helper)
+    public CuttingBoardSlicingCategory(IGuiHelper helper)
     {
         this.background = helper.createDrawable(Plugin.TEXTURES, 0, 36, 133, 36);
         this.icon = helper.createDrawableItemStack(new ItemStack(ModItems.KNIFE.get()));

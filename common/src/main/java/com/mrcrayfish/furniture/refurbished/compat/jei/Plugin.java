@@ -1,6 +1,5 @@
 package com.mrcrayfish.furniture.refurbished.compat.jei;
 
-import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import mezz.jei.api.IModPlugin;
@@ -24,10 +23,8 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.ItemLike;
 
 import java.text.DecimalFormat;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
@@ -50,9 +47,10 @@ public class Plugin implements IModPlugin
     {
         IGuiHelper helper = registration.getJeiHelpers().getGuiHelper();
         registration.addRecipeCategories(new FreezerSolidifyingCategory(helper));
-        registration.addRecipeCategories(new CuttingBoardCategory(helper));
-        registration.addRecipeCategories(new FryingPanCategory(helper));
+        registration.addRecipeCategories(new CuttingBoardSlicingCategory(helper));
+        registration.addRecipeCategories(new FryingPanCookingCategory(helper));
         registration.addRecipeCategories(new MicrowaveHeatingCategory(helper));
+        registration.addRecipeCategories(new RecycleBinRecyclingCategory(helper));
     }
 
     @Override
@@ -60,9 +58,10 @@ public class Plugin implements IModPlugin
     {
         RecipeManager manager = getRecipeManager();
         registration.addRecipes(FreezerSolidifyingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.FREEZER_SOLIDIFYING.get()));
-        registration.addRecipes(CuttingBoardCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.CUTTING_BOARD_SLICING.get()));
-        registration.addRecipes(FryingPanCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.FRYING_PAN_COOKING.get()));
+        registration.addRecipes(CuttingBoardSlicingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.CUTTING_BOARD_SLICING.get()));
+        registration.addRecipes(FryingPanCookingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.FRYING_PAN_COOKING.get()));
         registration.addRecipes(MicrowaveHeatingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.MICROWAVE_HEATING.get()));
+        registration.addRecipes(RecycleBinRecyclingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.RECYCLE_BIN_RECYCLING.get()));
     }
 
     static RecipeManager getRecipeManager()
