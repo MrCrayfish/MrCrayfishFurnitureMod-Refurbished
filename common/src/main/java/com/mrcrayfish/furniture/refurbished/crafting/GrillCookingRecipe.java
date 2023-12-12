@@ -24,4 +24,14 @@ public class GrillCookingRecipe extends AbstractCookingRecipe
     {
         return ModRecipeSerializers.GRILL_RECIPE.get();
     }
+
+    public Ingredient getInput()
+    {
+        return this.ingredient;
+    }
+
+    public ItemStack getOutput()
+    {
+        return this.result;
+    }
 }
