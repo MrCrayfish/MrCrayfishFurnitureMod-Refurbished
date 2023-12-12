@@ -24,4 +24,14 @@ public class FryingPanCookingRecipe extends AbstractCookingRecipe
     {
         return ModRecipeSerializers.FRYING_PAN_RECIPE.get();
     }
+
+    public Ingredient getInput()
+    {
+        return this.ingredient;
+    }
+
+    public ItemStack getOutput()
+    {
+        return this.result;
+    }
 }
