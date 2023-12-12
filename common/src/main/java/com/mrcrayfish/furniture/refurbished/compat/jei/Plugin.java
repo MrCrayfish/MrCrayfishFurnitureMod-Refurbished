@@ -6,13 +6,17 @@ import com.mrcrayfish.furniture.refurbished.compat.jei.categories.FryingPanCooki
 import com.mrcrayfish.furniture.refurbished.compat.jei.categories.MicrowaveHeatingCategory;
 import com.mrcrayfish.furniture.refurbished.compat.jei.categories.RecycleBinRecyclingCategory;
 import com.mrcrayfish.furniture.refurbished.compat.jei.categories.ToasterToastingCategory;
+import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.registration.IVanillaCategoryExtensionRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -27,6 +31,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -70,6 +75,13 @@ public class Plugin implements IModPlugin
         registration.addRecipes(MicrowaveHeatingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.MICROWAVE_HEATING.get()));
         registration.addRecipes(RecycleBinRecyclingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.RECYCLE_BIN_RECYCLING.get()));
         registration.addRecipes(ToasterToastingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.TOASTER_HEATING.get()));
+    }
+
+    @Override
+    public void registerRecipeCatalysts(IRecipeCatalystRegistration registration)
+    {
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get()), RecipeTypes.FUELING);
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.ELECTRICITY_GENERATOR_DARK.get()), RecipeTypes.FUELING);
     }
 
     public static RecipeManager getRecipeManager()
