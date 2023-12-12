@@ -10,10 +10,12 @@ import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.mrcrayfish.furniture.refurbished.blockentity.RecycleBinBlockEntity;
 import com.mrcrayfish.furniture.refurbished.compat.crafttweaker.Plugin;
+import com.mrcrayfish.furniture.refurbished.compat.crafttweaker.actions.ActionAddRecycleBinOutput;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.RecycleBinRecyclingRecipe;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.openzen.zencode.java.ZenCodeType;
@@ -35,6 +37,12 @@ public class RecycleBinRecyclingRecipeManager implements IRecipeManager<RecycleB
             return;
         ItemStack[] outputs = output.stream().map(IItemStack::getInternal).toArray(ItemStack[]::new);
         CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new RecycleBinRecyclingRecipe(CraftTweakerConstants.rl(name), input.getInternal(), outputs)));
+    }
+
+    @ZenCodeType.Method
+    public void addOutput(String id, List<IItemStack> output)
+    {
+        CraftTweakerAPI.apply(new ActionAddRecycleBinOutput(this, new ResourceLocation(id), output));
     }
 
     private boolean validate(List<IItemStack> output)
