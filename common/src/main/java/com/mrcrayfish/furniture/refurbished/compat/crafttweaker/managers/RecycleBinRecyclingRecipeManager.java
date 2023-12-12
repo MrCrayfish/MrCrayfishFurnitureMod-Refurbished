@@ -11,6 +11,7 @@ import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.mrcrayfish.furniture.refurbished.blockentity.RecycleBinBlockEntity;
 import com.mrcrayfish.furniture.refurbished.compat.crafttweaker.Plugin;
 import com.mrcrayfish.furniture.refurbished.compat.crafttweaker.actions.ActionAddRecycleBinOutput;
+import com.mrcrayfish.furniture.refurbished.compat.crafttweaker.actions.ActionRemoveRecycleBinOutput;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.RecycleBinRecyclingRecipe;
@@ -43,6 +44,18 @@ public class RecycleBinRecyclingRecipeManager implements IRecipeManager<RecycleB
     public void addOutput(String id, List<IItemStack> output)
     {
         CraftTweakerAPI.apply(new ActionAddRecycleBinOutput(this, new ResourceLocation(id), output));
+    }
+
+    @ZenCodeType.Method
+    public void removeOutput(String id, IItemStack removal)
+    {
+        CraftTweakerAPI.apply(new ActionRemoveRecycleBinOutput(this, new ResourceLocation(id), List.of(removal)));
+    }
+
+    @ZenCodeType.Method
+    public void removeOutput(String id, List<IItemStack> removal)
+    {
+        CraftTweakerAPI.apply(new ActionRemoveRecycleBinOutput(this, new ResourceLocation(id), removal));
     }
 
     private boolean validate(List<IItemStack> output)
