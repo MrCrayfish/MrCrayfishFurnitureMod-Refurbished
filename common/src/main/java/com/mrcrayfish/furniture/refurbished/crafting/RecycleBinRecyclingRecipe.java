@@ -42,7 +42,7 @@ import java.util.stream.StreamSupport;
  */
 public class RecycleBinRecyclingRecipe implements Recipe<Container>
 {
-    protected static final int MAX_OUTPUT_COUNT = 9;
+    public static final int MAX_OUTPUT_COUNT = 9;
 
     protected final ResourceLocation id;
     protected final ItemStack input;

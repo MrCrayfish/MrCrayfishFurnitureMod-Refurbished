@@ -436,7 +436,7 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
         List<ItemStack> output = recipe.createRandomisedOutput(this.random, chance);
 
         // Remove invalid or banned items
-        output.removeIf(this::isInvalidItem);
+        output.removeIf(RecycleBinBlockEntity::isInvalidItem);
 
         // If enabled, randomised the count of every output item based on it's initial count
         if(Config.SERVER.recycleBin.randomizeOutputCount.get())
@@ -465,7 +465,7 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
      * @param stack the item stack to test if invalid
      * @return True if the item is invalid
      */
-    private boolean isInvalidItem(ItemStack stack)
+    public static boolean isInvalidItem(ItemStack stack)
     {
         if(stack.isEmpty())
             return true;
