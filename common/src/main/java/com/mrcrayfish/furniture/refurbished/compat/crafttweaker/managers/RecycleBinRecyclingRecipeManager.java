@@ -41,6 +41,12 @@ public class RecycleBinRecyclingRecipeManager implements IRecipeManager<RecycleB
     }
 
     @ZenCodeType.Method
+    public void addOutput(String id, IItemStack output)
+    {
+        CraftTweakerAPI.apply(new ActionAddRecycleBinOutput(this, new ResourceLocation(id), List.of(output)));
+    }
+
+    @ZenCodeType.Method
     public void addOutput(String id, List<IItemStack> output)
     {
         CraftTweakerAPI.apply(new ActionAddRecycleBinOutput(this, new ResourceLocation(id), output));
