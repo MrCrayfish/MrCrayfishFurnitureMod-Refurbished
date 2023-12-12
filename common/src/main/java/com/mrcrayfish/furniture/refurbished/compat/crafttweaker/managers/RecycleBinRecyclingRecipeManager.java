@@ -4,16 +4,15 @@ import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.CraftTweakerConstants;
 import com.blamejared.crafttweaker.api.action.recipe.ActionAddRecipe;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
-import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.mrcrayfish.furniture.refurbished.blockentity.RecycleBinBlockEntity;
 import com.mrcrayfish.furniture.refurbished.compat.crafttweaker.Plugin;
-import com.mrcrayfish.furniture.refurbished.compat.crafttweaker.actions.ActionAddRecycleBinOutput;
-import com.mrcrayfish.furniture.refurbished.compat.crafttweaker.actions.ActionRemoveRecycleBinOutput;
+import com.mrcrayfish.furniture.refurbished.compat.crafttweaker.actions.ActionAddItemsToRecycleBinOutput;
+import com.mrcrayfish.furniture.refurbished.compat.crafttweaker.actions.ActionRemoveItemsFromRecycleBinOutput;
+import com.mrcrayfish.furniture.refurbished.compat.crafttweaker.actions.ActionReplaceItemInRecycleBinOutput;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
-import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.RecycleBinRecyclingRecipe;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -43,25 +42,31 @@ public class RecycleBinRecyclingRecipeManager implements IRecipeManager<RecycleB
     @ZenCodeType.Method
     public void addOutput(String id, IItemStack output)
     {
-        CraftTweakerAPI.apply(new ActionAddRecycleBinOutput(this, new ResourceLocation(id), List.of(output)));
+        CraftTweakerAPI.apply(new ActionAddItemsToRecycleBinOutput(this, new ResourceLocation(id), List.of(output)));
     }
 
     @ZenCodeType.Method
     public void addOutput(String id, List<IItemStack> output)
     {
-        CraftTweakerAPI.apply(new ActionAddRecycleBinOutput(this, new ResourceLocation(id), output));
+        CraftTweakerAPI.apply(new ActionAddItemsToRecycleBinOutput(this, new ResourceLocation(id), output));
     }
 
     @ZenCodeType.Method
     public void removeOutput(String id, IItemStack removal)
     {
-        CraftTweakerAPI.apply(new ActionRemoveRecycleBinOutput(this, new ResourceLocation(id), List.of(removal)));
+        CraftTweakerAPI.apply(new ActionRemoveItemsFromRecycleBinOutput(this, new ResourceLocation(id), List.of(removal)));
     }
 
     @ZenCodeType.Method
     public void removeOutput(String id, List<IItemStack> removal)
     {
-        CraftTweakerAPI.apply(new ActionRemoveRecycleBinOutput(this, new ResourceLocation(id), removal));
+        CraftTweakerAPI.apply(new ActionRemoveItemsFromRecycleBinOutput(this, new ResourceLocation(id), removal));
+    }
+
+    @ZenCodeType.Method
+    public void replaceOutput(String id, IItemStack from, IItemStack to)
+    {
+        CraftTweakerAPI.apply(new ActionReplaceItemInRecycleBinOutput(this, new ResourceLocation(id), from, to));
     }
 
     private boolean validate(List<IItemStack> output)
