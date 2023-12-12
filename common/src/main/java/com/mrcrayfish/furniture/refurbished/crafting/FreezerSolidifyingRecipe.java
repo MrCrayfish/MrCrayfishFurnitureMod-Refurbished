@@ -24,4 +24,14 @@ public class FreezerSolidifyingRecipe extends AbstractCookingRecipe
     {
         return ModRecipeSerializers.FREEZER_RECIPE.get();
     }
+
+    public Ingredient getInput()
+    {
+        return this.ingredient;
+    }
+
+    public ItemStack getOutput()
+    {
+        return this.result;
+    }
 }
