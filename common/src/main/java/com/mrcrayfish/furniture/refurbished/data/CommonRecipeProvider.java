@@ -1087,39 +1087,39 @@ public class CommonRecipeProvider
                 .save(this.consumer);
     }
 
-    private void cooking(String name, RecipeCategory category, RecipeSerializer<? extends AbstractCookingRecipe> serializer, ItemLike input, ItemLike output, int time, float experience)
+    private void cooking(String folder, RecipeCategory category, RecipeSerializer<? extends AbstractCookingRecipe> serializer, ItemLike input, ItemLike output, int time, float experience)
     {
         String baseName = input.asItem().toString();
         String resultName = output.asItem().toString();
         SimpleCookingRecipeBuilder
                 .generic(Ingredient.of(input), category, output, experience, time, serializer)
                 .unlockedBy("has_" + baseName, this.has.apply(input))
-                .save(this.consumer, Utils.resource(resultName + "_from_" + name));
+                .save(this.consumer, Utils.resource(folder + "/" + resultName));
     }
 
     private void grillCooking(ItemLike rawItem, ItemLike cookedItem, int cookingTime, float experience)
     {
-        this.cooking("grill_cooking", RecipeCategory.FOOD, ModRecipeSerializers.GRILL_RECIPE.get(), rawItem, cookedItem, cookingTime, experience);
+        this.cooking("grilling", RecipeCategory.FOOD, ModRecipeSerializers.GRILL_RECIPE.get(), rawItem, cookedItem, cookingTime, experience);
     }
 
     private void freezerSolidifying(ItemLike baseItem, ItemLike frozenItem, int freezeTime, float experience)
     {
-        this.cooking("freezer_solidifying", RecipeCategory.MISC, ModRecipeSerializers.FREEZER_RECIPE.get(), baseItem, frozenItem, freezeTime, experience);
+        this.cooking("freezing", RecipeCategory.MISC, ModRecipeSerializers.FREEZER_RECIPE.get(), baseItem, frozenItem, freezeTime, experience);
     }
 
     private void toasterHeating(ItemLike baseItem, ItemLike heatedItem, int heatingTime, float experience)
     {
-        this.cooking("toaster_heating", RecipeCategory.FOOD, ModRecipeSerializers.TOASTER_RECIPE.get(), baseItem, heatedItem, heatingTime, experience);
+        this.cooking("toasting", RecipeCategory.FOOD, ModRecipeSerializers.TOASTER_RECIPE.get(), baseItem, heatedItem, heatingTime, experience);
     }
 
     private void microwaveHeating(ItemLike baseItem, ItemLike heatedItem, int heatingTime, float experience)
     {
-        this.cooking("microwave_heating", RecipeCategory.FOOD, ModRecipeSerializers.MICROWAVE_RECIPE.get(), baseItem, heatedItem, heatingTime, experience);
+        this.cooking("heating", RecipeCategory.FOOD, ModRecipeSerializers.MICROWAVE_RECIPE.get(), baseItem, heatedItem, heatingTime, experience);
     }
 
     private void fryingPanCooking(ItemLike baseItem, ItemLike heatedItem, int heatingTime, float experience)
     {
-        this.cooking("frying_pan_cooking", RecipeCategory.FOOD, ModRecipeSerializers.FRYING_PAN_RECIPE.get(), baseItem, heatedItem, heatingTime, experience);
+        this.cooking("frying", RecipeCategory.FOOD, ModRecipeSerializers.FRYING_PAN_RECIPE.get(), baseItem, heatedItem, heatingTime, experience);
     }
 
     private void cuttingBoardSlicing(ItemLike baseItem, ItemLike resultItem, int resultCount)
@@ -1127,7 +1127,7 @@ public class CommonRecipeProvider
         String baseName = baseItem.asItem().toString();
         String resultName = resultItem.asItem().toString();
         SingleItemRecipeBuilder builder = new SingleItemRecipeBuilder(RecipeCategory.MISC, ModRecipeSerializers.CUTTING_BOARD_RECIPE.get(), Ingredient.of(baseItem), resultItem, resultCount);
-        builder.unlockedBy("has_" + baseName, this.has.apply(baseItem)).save(this.consumer, Utils.resource(resultName + "_from_cutting_board_slicing"));
+        builder.unlockedBy("has_" + baseName, this.has.apply(baseItem)).save(this.consumer, Utils.resource("slicing/" + resultName));
     }
 
     private Set<Item> recycledItems = new HashSet<>();
@@ -1139,7 +1139,7 @@ public class CommonRecipeProvider
         }
         String baseName = baseItem.asItem().toString();
         RecycleBinRecyclingRecipe.Builder builder = new RecycleBinRecyclingRecipe.Builder(baseItem.asItem(), outputItems);
-        builder.save(this.consumer, Utils.resource(baseName + "_recycling"));
+        builder.save(this.consumer, Utils.resource("recycling/" + baseName));
         this.recycledItems.add(baseItem.asItem());
     }
 }
