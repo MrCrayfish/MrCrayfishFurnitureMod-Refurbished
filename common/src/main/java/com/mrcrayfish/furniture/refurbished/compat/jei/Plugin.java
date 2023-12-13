@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.compat.jei;
 import com.mrcrayfish.furniture.refurbished.compat.jei.categories.CuttingBoardSlicingCategory;
 import com.mrcrayfish.furniture.refurbished.compat.jei.categories.FreezerSolidifyingCategory;
 import com.mrcrayfish.furniture.refurbished.compat.jei.categories.FryingPanCookingCategory;
+import com.mrcrayfish.furniture.refurbished.compat.jei.categories.GrillCookingCategory;
 import com.mrcrayfish.furniture.refurbished.compat.jei.categories.MicrowaveHeatingCategory;
 import com.mrcrayfish.furniture.refurbished.compat.jei.categories.RecycleBinRecyclingCategory;
 import com.mrcrayfish.furniture.refurbished.compat.jei.categories.ToasterToastingCategory;
@@ -12,6 +13,7 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
@@ -63,6 +65,7 @@ public class Plugin implements IModPlugin
         registration.addRecipeCategories(new MicrowaveHeatingCategory(helper));
         registration.addRecipeCategories(new RecycleBinRecyclingCategory(helper));
         registration.addRecipeCategories(new ToasterToastingCategory(helper));
+        registration.addRecipeCategories(new GrillCookingCategory(helper));
     }
 
     @Override
@@ -75,6 +78,10 @@ public class Plugin implements IModPlugin
         registration.addRecipes(MicrowaveHeatingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.MICROWAVE_HEATING.get()));
         registration.addRecipes(RecycleBinRecyclingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.RECYCLE_BIN_RECYCLING.get()));
         registration.addRecipes(ToasterToastingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.TOASTER_HEATING.get()));
+        registration.addRecipes(GrillCookingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.GRILL_COOKING.get()));
+
+        // TODO ingredient info
+        //registration.addIngredientInfo(new ItemStack(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get()), VanillaTypes.ITEM_STACK, Utils.translation("jei_ingredient_info", "electricity_generator"));
     }
 
     @Override
