@@ -81,7 +81,7 @@ public class Plugin implements IModPlugin
         registration.addRecipes(MicrowaveHeatingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.MICROWAVE_HEATING.get()));
         registration.addRecipes(RecycleBinRecyclingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.RECYCLE_BIN_RECYCLING.get()));
         registration.addRecipes(ToasterToastingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.TOASTER_HEATING.get()));
-        registration.addRecipes(GrillCookingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.GRILL_COOKING.get()));
+        registration.addRecipes(GrillCookingCategory.TYPE, this.getGrillRecipes(manager));
 
         // TODO ingredient info
         //registration.addIngredientInfo(new ItemStack(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get()), VanillaTypes.ITEM_STACK, Utils.translation("jei_ingredient_info", "electricity_generator"));
@@ -93,12 +93,21 @@ public class Plugin implements IModPlugin
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get()), RecipeTypes.FUELING);
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.ELECTRICITY_GENERATOR_DARK.get()), RecipeTypes.FUELING);
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.FRYING_PAN.get()), RecipeTypes.CAMPFIRE_COOKING);
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.GRILL_RED.get()), RecipeTypes.CAMPFIRE_COOKING);
     }
 
     private List<AbstractCookingRecipe> getFryingPanRecipes(RecipeManager manager)
     {
         List<AbstractCookingRecipe> recipes = new ArrayList<>();
         recipes.addAll(manager.getAllRecipesFor(ModRecipeTypes.FRYING_PAN_COOKING.get()));
+        recipes.addAll(manager.getAllRecipesFor(RecipeType.CAMPFIRE_COOKING));
+        return recipes;
+    }
+
+    private List<AbstractCookingRecipe> getGrillRecipes(RecipeManager manager)
+    {
+        List<AbstractCookingRecipe> recipes = new ArrayList<>();
+        recipes.addAll(manager.getAllRecipesFor(ModRecipeTypes.GRILL_COOKING.get()));
         recipes.addAll(manager.getAllRecipesFor(RecipeType.CAMPFIRE_COOKING));
         return recipes;
     }

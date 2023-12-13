@@ -23,6 +23,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.WorldlyContainer;
@@ -31,6 +32,8 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -61,17 +64,21 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
         IntStream.range(0, this.cooking.size()).forEach(i -> builder.add(new CookingSpace()));
         return builder.build();
     });
+    protected final RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> recipeCache;
+    protected final RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> campfireCookingCache;
     private int remainingFuel;
     private float storedExperience;
 
-    protected GrillBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
-    {
-        super(type, pos, state);
-    }
-
     public GrillBlockEntity(BlockPos pos, BlockState state)
     {
-        super(ModBlockEntities.GRILL.get(), pos, state);
+        this(ModBlockEntities.GRILL.get(), pos, state, ModRecipeTypes.GRILL_COOKING.get());
+    }
+
+    protected GrillBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, RecipeType<? extends AbstractCookingRecipe> recipeType)
+    {
+        super(type, pos, state);
+        this.recipeCache = RecipeManager.createCheck(recipeType);
+        this.campfireCookingCache = RecipeManager.createCheck(RecipeType.CAMPFIRE_COOKING);
     }
 
     /**
@@ -113,10 +120,10 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
     {
         if(this.cooking.get(position).isEmpty())
         {
-            Optional<GrillCookingRecipe> optional = this.findMatchingRecipe(stack);
+            Optional<? extends AbstractCookingRecipe> optional = this.getRecipe(stack);
             if(optional.isPresent())
             {
-                GrillCookingRecipe recipe = optional.get();
+                AbstractCookingRecipe recipe = optional.get();
                 ItemStack copy = stack.copy();
                 copy.setCount(1);
                 this.cooking.set(position, copy);
@@ -129,6 +136,7 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
         return false;
     }
 
+    // TODO docs
     public boolean addFuel(ItemStack stack)
     {
         for(int i = 0; i < this.fuel.size(); i++)
@@ -299,7 +307,7 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
                         if(space.isFlipped())
                         {
                             Level level = Objects.requireNonNull(this.level);
-                            Optional<GrillCookingRecipe> optional = level.getRecipeManager().getRecipeFor(ModRecipeTypes.GRILL_COOKING.get(), new SimpleContainer(this.cooking.get(i)), level);
+                            Optional<? extends AbstractCookingRecipe> optional = this.getRecipe(this.cooking.get(i));
                             if(optional.isPresent())
                             {
                                 this.cooking.set(i, optional.get().getResultItem(level.registryAccess()).copy());
@@ -369,9 +377,16 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
         return false;
     }
 
-    public Optional<GrillCookingRecipe> findMatchingRecipe(ItemStack input)
+    private Optional<? extends AbstractCookingRecipe> getRecipe(ItemStack stack)
     {
-        return this.cooking.stream().noneMatch(ItemStack::isEmpty) ? Optional.empty() : this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.GRILL_COOKING.get(), new SimpleContainer(input), this.level);
+        Optional<? extends AbstractCookingRecipe> optional = this.getRecipeFromCache(this.recipeCache, stack);
+        optional = optional.isEmpty() ? this.getRecipeFromCache(this.campfireCookingCache, stack) : optional;
+        return optional;
+    }
+
+    private Optional<? extends AbstractCookingRecipe> getRecipeFromCache(RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> cache, ItemStack stack)
+    {
+        return cache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level));
     }
 
     @Override
@@ -464,10 +479,10 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
             index -= this.fuel.size();
             inventory = this.cooking;
             // TODO store this in the cooking space
-            Optional<GrillCookingRecipe> optional = this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.GRILL_COOKING.get(), new SimpleContainer(stack), this.level);
+            Optional<? extends AbstractCookingRecipe> optional = this.getRecipe(stack);
             if(optional.isPresent())
             {
-                GrillCookingRecipe recipe = optional.get();
+                AbstractCookingRecipe recipe = optional.get();
                 this.spaces.get(index).update(recipe.getCookingTime(), recipe.getExperience(), (byte) 0);
                 this.syncCookingSpace(index);
             }
@@ -679,7 +694,7 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
         }
         if(index - this.fuel.size() >= 0)
         {
-            return this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.GRILL_COOKING.get(), new SimpleContainer(stack), this.level).isPresent();
+            return this.getRecipe(stack).isPresent();
         }
         return stack.getItem() == Items.COAL || stack.getItem() == Items.CHARCOAL;
     }
@@ -694,8 +709,7 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
                 index -= this.fuel.size();
                 if(this.spaces.get(index).isFullyCooked())
                 {
-                    Optional<GrillCookingRecipe> optional = this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.GRILL_COOKING.get(), new SimpleContainer(stack), this.level);
-                    return !optional.isPresent();
+                    return this.getRecipe(stack).isEmpty();
                 }
             }
         }

@@ -246,15 +246,6 @@ public class CommonRecipeProvider
         this.mailbox(Blocks.CRIMSON_SLAB, Blocks.CRIMSON_PLANKS, Blocks.CRIMSON_FENCE, ModBlocks.MAIL_BOX_CRIMSON.get());
         this.mailbox(Blocks.WARPED_SLAB, Blocks.WARPED_PLANKS, Blocks.WARPED_FENCE, ModBlocks.MAIL_BOX_WARPED.get());
         this.postBox(ModBlocks.POST_BOX.get());
-        this.grillCooking(Items.BEEF, Items.COOKED_BEEF, 200, 0.5F);
-        this.grillCooking(Items.CHICKEN, Items.COOKED_CHICKEN, 200, 0.5F);
-        this.grillCooking(Items.COD, Items.COOKED_COD, 200, 0.5F);
-        this.grillCooking(Items.KELP, Items.DRIED_KELP, 200, 0.25F);
-        this.grillCooking(Items.SALMON, Items.COOKED_SALMON, 200, 0.5F);
-        this.grillCooking(Items.MUTTON, Items.COOKED_MUTTON, 200, 0.5F);
-        this.grillCooking(Items.PORKCHOP, Items.COOKED_PORKCHOP, 200, 0.5F);
-        this.grillCooking(Items.POTATO, Items.BAKED_POTATO, 200, 0.5F);
-        this.grillCooking(Items.RABBIT, Items.COOKED_RABBIT, 200, 0.5F);
         this.freezerSolidifying(Items.WATER_BUCKET, Items.ICE, 300, 1.0F);
         this.toasterHeating(Items.POTATO, Items.BAKED_POTATO, 100, 0.5F);
         this.cuttingBoardSlicing(Blocks.MELON, Items.MELON_SLICE, 6);

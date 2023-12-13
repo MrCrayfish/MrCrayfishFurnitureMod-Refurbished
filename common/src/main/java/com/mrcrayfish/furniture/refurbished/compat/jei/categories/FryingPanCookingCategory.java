@@ -101,7 +101,7 @@ public class FryingPanCookingCategory extends FurnitureRecipeCategory<AbstractCo
         }
         if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, 103, 5, 16, 16))
         {
-            return List.of(Utils.translation("jei_category", "frying_pan_cooking.campfire_info"));
+            return List.of(Utils.translation("gui", "jei_campfire_info"));
         }
         return super.getTooltipStrings(recipe, view, mouseX, mouseY);
     }
