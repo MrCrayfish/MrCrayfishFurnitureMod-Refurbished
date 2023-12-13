@@ -5,7 +5,6 @@ import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import com.mrcrayfish.furniture.refurbished.compat.jei.Plugin;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
-import com.mrcrayfish.furniture.refurbished.crafting.FryingPanCookingRecipe;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -18,16 +17,20 @@ import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe;
+import net.minecraft.world.item.crafting.CampfireCookingRecipe;
 
 import java.util.List;
 
 /**
  * Author: MrCrayfish
  */
-public class FryingPanCookingCategory extends FurnitureRecipeCategory<FryingPanCookingRecipe>
+public class FryingPanCookingCategory extends FurnitureRecipeCategory<AbstractCookingRecipe>
 {
-    public static final RecipeType<FryingPanCookingRecipe> TYPE = RecipeType.create(Constants.MOD_ID, "frying_pan_cooking", FryingPanCookingRecipe.class);
+    public static final RecipeType<AbstractCookingRecipe> TYPE = RecipeType.create(Constants.MOD_ID, "frying_pan_cooking", AbstractCookingRecipe.class);
 
+    private final ItemStack campfireStack = new ItemStack(Items.CAMPFIRE);
     private final IGuiHelper helper;
     private final IDrawable background;
     private final IDrawable icon;
@@ -41,7 +44,7 @@ public class FryingPanCookingCategory extends FurnitureRecipeCategory<FryingPanC
     }
 
     @Override
-    public RecipeType<FryingPanCookingRecipe> getRecipeType()
+    public RecipeType<AbstractCookingRecipe> getRecipeType()
     {
         return TYPE;
     }
@@ -65,7 +68,7 @@ public class FryingPanCookingCategory extends FurnitureRecipeCategory<FryingPanC
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, FryingPanCookingRecipe recipe, IFocusGroup focuses)
+    public void setRecipe(IRecipeLayoutBuilder builder, AbstractCookingRecipe recipe, IFocusGroup focuses)
     {
         builder.addSlot(RecipeIngredientRole.INPUT, 27, 6).addIngredients(recipe.getIngredients().get(0));
         builder.addSlot(RecipeIngredientRole.OUTPUT, 102, 36).addItemStack(Plugin.getResult(recipe));
@@ -74,14 +77,19 @@ public class FryingPanCookingCategory extends FurnitureRecipeCategory<FryingPanC
     }
 
     @Override
-    public void draw(FryingPanCookingRecipe recipe, IRecipeSlotsView view, GuiGraphics graphics, double mouseX, double mouseY)
+    public void draw(AbstractCookingRecipe recipe, IRecipeSlotsView view, GuiGraphics graphics, double mouseX, double mouseY)
     {
         this.arrow.draw(graphics, 71, 36);
         this.drawSeconds(graphics, 83, 55, recipe.getCookingTime());
+        if(recipe instanceof CampfireCookingRecipe)
+        {
+            graphics.fill(102, 5, 102 + 16, 5 + 16, 0x33000000);
+            graphics.renderFakeItem(this.campfireStack, 102, 5);
+        }
     }
 
     @Override
-    public List<Component> getTooltipStrings(FryingPanCookingRecipe recipe, IRecipeSlotsView view, double mouseX, double mouseY)
+    public List<Component> getTooltipStrings(AbstractCookingRecipe recipe, IRecipeSlotsView view, double mouseX, double mouseY)
     {
         if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, 14, 22, 42, 13))
         {
@@ -90,6 +98,10 @@ public class FryingPanCookingCategory extends FurnitureRecipeCategory<FryingPanC
         if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, 5, 26, 60, 48))
         {
             return Plugin.getItemTooltip(ModBlocks.STOVE_LIGHT.get());
+        }
+        if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, 103, 5, 16, 16))
+        {
+            return List.of(Utils.translation("jei_category", "frying_pan_cooking.campfire_info"));
         }
         return super.getTooltipStrings(recipe, view, mouseX, mouseY);
     }

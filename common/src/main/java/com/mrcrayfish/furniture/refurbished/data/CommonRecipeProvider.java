@@ -260,7 +260,6 @@ public class CommonRecipeProvider
         this.cuttingBoardSlicing(Blocks.MELON, Items.MELON_SLICE, 6);
         this.cuttingBoardSlicing(Items.APPLE, Items.DIAMOND, 8);
         this.microwaveHeating(Items.POTATO, Items.BAKED_POTATO, 200, 0.5F);
-        this.fryingPanCooking(Items.BEEF, Items.COOKED_BEEF, 200, 0.5F);
 
         // Recycling
         this.recycleBinSalvaging(Items.OAK_STAIRS, new ItemStack(Items.OAK_PLANKS, 1));
