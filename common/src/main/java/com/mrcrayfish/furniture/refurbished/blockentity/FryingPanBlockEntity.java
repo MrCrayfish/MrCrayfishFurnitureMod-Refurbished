@@ -55,7 +55,7 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
     public static final double MAX_AUDIO_DISTANCE = Mth.square(8);
 
     protected final RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> recipeCache;
-    protected final RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> smokerRecipeCache;
+    protected final RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> campfireCookingCache;
     protected boolean needsFlipping;
     protected boolean flipped;
     protected int rotation;
@@ -73,7 +73,7 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
     {
         super(type, pos, state, 1);
         this.recipeCache = RecipeManager.createCheck(recipeType);
-        this.smokerRecipeCache = RecipeManager.createCheck(RecipeType.SMOKING);
+        this.campfireCookingCache = RecipeManager.createCheck(RecipeType.CAMPFIRE_COOKING);
     }
 
     public boolean isFlippingNeeded()
@@ -285,7 +285,7 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
     private Optional<? extends AbstractCookingRecipe> getRecipe(ItemStack stack)
     {
         Optional<? extends AbstractCookingRecipe> optional = this.getRecipe(this.recipeCache, stack);
-        optional = optional.isEmpty() ? this.getRecipe(this.smokerRecipeCache, stack) : optional;
+        optional = optional.isEmpty() ? this.getRecipe(this.campfireCookingCache, stack) : optional;
         return optional;
     }
 
