@@ -28,16 +28,17 @@ public class ModCreativeTabs
         builder.icon(() -> new ItemStack(ModBlocks.TABLE_OAK.get()));
         builder.title(Component.translatable("itemGroup." + Constants.MOD_ID).withStyle(ChatFormatting.GOLD));
         builder.displayItems((params, output) -> {
+            Set<Item> ignoredItems = new HashSet<>();
+            ignoredItems.add(ModItems.PACKAGE.get());
             Set<Item> acceptedItems = new HashSet<>();
             Consumer<Item> add = item -> {
-                if(item != Items.AIR && !acceptedItems.contains(item)) {
+                if(item != Items.AIR && !acceptedItems.contains(item) && !ignoredItems.contains(item)) {
                     output.accept(item);
                     acceptedItems.add(item);
                 }
             };
             Registration.get(Registries.BLOCK).stream().filter(entry -> entry.getId().getNamespace().equals(Constants.MOD_ID)).forEach(entry -> {
-                Block block = (Block) entry.get();
-                add.accept(block.asItem());
+                add.accept(((Block) entry.get()).asItem());
             });
             Registration.get(Registries.ITEM).stream().filter(entry -> entry.getId().getNamespace().equals(Constants.MOD_ID)).forEach(entry -> {
                 add.accept((Item) entry.get());
