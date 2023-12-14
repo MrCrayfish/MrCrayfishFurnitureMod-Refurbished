@@ -31,7 +31,7 @@ public class ToasterBlockEntityRenderer implements BlockEntityRenderer<ToasterBl
     public void render(ToasterBlockEntity toaster, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay)
     {
         poseStack.pushPose();
-        poseStack.translate(0.5, toaster.isHeating() ? 0.4 : 0.5, 0.5);
+        poseStack.translate(0.5, toaster.isHeating() ? 0.375 : 0.4375, 0.5);
         Direction direction = toaster.getBlockState().getValue(ToasterBlock.DIRECTION);
         Level level = toaster.getLevel();
         this.drawItem(toaster.getItem(0), 1, direction, level, poseStack, source, light, overlay);
