@@ -249,6 +249,7 @@ public class CommonRecipeProvider
         this.postBox(ModBlocks.POST_BOX.get());
 
         this.simpleCombined(ModItems.SWEET_BERRY_JAM.get(), ModItems.TOAST.get(), ModItems.SWEET_BERRY_JAM_TOAST.get(), 1, RecipeCategory.FOOD);
+        this.simpleCombined(ModItems.GLOW_BERRY_JAM.get(), ModItems.TOAST.get(), ModItems.GLOW_BERRY_JAM_TOAST.get(), 1, RecipeCategory.FOOD);
 
         // Solidifying
         this.freezerSolidifying(Items.WATER_BUCKET, Items.ICE, 300, 1.0F);
