@@ -262,6 +262,9 @@ public class CommonRecipeProvider
         // Heating
         this.microwaveHeating(Items.POTATO, Items.BAKED_POTATO, 200, 0.5F);
 
+        // Frying
+        this.fryingPanCooking(Items.SWEET_BERRIES, ModItems.SWEET_BERRY_JAM.get(), 400, 0.5F);
+
         // Recycling
         this.recycleBinSalvaging(Items.OAK_STAIRS, new ItemStack(Items.OAK_PLANKS, 1));
         this.recycleBinSalvaging(Items.OAK_FENCE, new ItemStack(Items.OAK_PLANKS, 1));

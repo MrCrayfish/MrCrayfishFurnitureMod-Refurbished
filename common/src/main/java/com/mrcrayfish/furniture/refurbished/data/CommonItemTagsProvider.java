@@ -735,6 +735,7 @@ public class CommonItemTagsProvider
         TagBuilder<Item> food = builder.apply(ModTags.Items.FOOD);
         food.add(ModItems.BREAD_SLICE.get());
         food.add(ModItems.TOAST.get());
+        food.add(ModItems.SWEET_BERRY_JAM.get());
 
         TagBuilder<Item> items = builder.apply(ModTags.Items.ITEMS);
         items.add(ModItems.SPATULA.get());
