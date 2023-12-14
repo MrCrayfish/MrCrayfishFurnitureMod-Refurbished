@@ -248,6 +248,8 @@ public class CommonRecipeProvider
         this.mailbox(Blocks.WARPED_SLAB, Blocks.WARPED_PLANKS, Blocks.WARPED_FENCE, ModBlocks.MAIL_BOX_WARPED.get());
         this.postBox(ModBlocks.POST_BOX.get());
 
+        this.simpleCombined(ModItems.SWEET_BERRY_JAM.get(), ModItems.TOAST.get(), ModItems.SWEET_BERRY_JAM_TOAST.get(), 1, RecipeCategory.FOOD);
+
         // Solidifying
         this.freezerSolidifying(Items.WATER_BUCKET, Items.ICE, 300, 1.0F);
 
@@ -736,6 +738,13 @@ public class CommonRecipeProvider
         this.recycleBinSalvaging(Items.ENCHANTED_BOOK, new ItemStack(Items.LEATHER, 1), new ItemStack(Items.PAPER, 2));
 
         SpecialRecipeBuilder.special(ModRecipeSerializers.DOOR_MAT_COPY_RECIPE.get()).save(this.consumer, Constants.MOD_ID + ":door_mat_copy");
+    }
+
+    private void simpleCombined(ItemLike first, ItemLike second, ItemLike result, int count, RecipeCategory category)
+    {
+        ShapelessRecipeBuilder.shapeless(category, result, count)
+                .requires(first).requires(second)
+                .save(this.consumer);
     }
 
     private void table(Block plank, Block result)

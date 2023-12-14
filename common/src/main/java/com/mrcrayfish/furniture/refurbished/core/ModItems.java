@@ -27,5 +27,6 @@ public class ModItems
     public static final RegistryEntry<Item> BREAD_SLICE = RegistryEntry.item(Utils.resource("bread_slice"), () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(1).saturationMod(0.2F).fast().build())));
     public static final RegistryEntry<Item> TOAST = RegistryEntry.item(Utils.resource("toast"), () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(1).saturationMod(0.3F).fast().build())));
     public static final RegistryEntry<Item> SWEET_BERRY_JAM = RegistryEntry.item(Utils.resource("sweet_berry_jam"), () -> new Item(new Item.Properties()));
+    public static final RegistryEntry<Item> SWEET_BERRY_JAM_TOAST = RegistryEntry.item(Utils.resource("sweet_berry_jam_toast"), () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(6).saturationMod(0.6F).build())));
     public static final RegistryEntry<TelevisionRemoteItem> TELEVISION_REMOTE = RegistryEntry.item(Utils.resource("television_remote"), () -> new TelevisionRemoteItem(new Item.Properties().stacksTo(1)));
 }
