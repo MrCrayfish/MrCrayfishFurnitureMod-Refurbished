@@ -82,7 +82,7 @@ public class CreativeFilters
         builder.add(new FilterCategory(ModTags.Items.BATHROOM, new ItemStack(ModBlocks.TOILET_OAK.get())));
         builder.add(new FilterCategory(ModTags.Items.ELECTRONICS, new ItemStack(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get())));
         builder.add(new FilterCategory(ModTags.Items.STORAGE, new ItemStack(ModBlocks.CRATE_BIRCH.get())));
-        builder.add(new FilterCategory(ModTags.Items.FOOD, new ItemStack(ModItems.TOAST.get())));
+        builder.add(new FilterCategory(ModTags.Items.FOOD, new ItemStack(ModItems.SWEET_BERRY_JAM_TOAST.get())));
         builder.add(new FilterCategory(ModTags.Items.ITEMS, new ItemStack(ModItems.SPATULA.get())));
         this.categories = builder.build();
 
