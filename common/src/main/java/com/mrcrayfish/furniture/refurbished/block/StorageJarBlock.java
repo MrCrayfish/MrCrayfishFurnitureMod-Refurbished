@@ -60,18 +60,6 @@ public class StorageJarBlock extends FurnitureHorizontalBlock implements EntityB
     }
 
     @Override
-    public void attack(BlockState state, Level level, BlockPos pos, Player player)
-    {
-        if(level.isClientSide())
-            return;
-
-        if(level.getBlockEntity(pos) instanceof StorageJarBlockEntity storageJar)
-        {
-            storageJar.popItem(player.getDirection().getOpposite());
-        }
-    }
-
-    @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
     {
         if(level.getBlockEntity(pos) instanceof StorageJarBlockEntity storageJar)

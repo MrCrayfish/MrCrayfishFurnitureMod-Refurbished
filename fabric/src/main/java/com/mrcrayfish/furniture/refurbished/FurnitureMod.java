@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished;
 
 import com.mrcrayfish.framework.FrameworkSetup;
 import com.mrcrayfish.furniture.refurbished.block.StorageJarBlock;
+import com.mrcrayfish.furniture.refurbished.blockentity.StorageJarBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureBlockTagsProvider;
@@ -45,10 +46,11 @@ public class FurnitureMod implements ModInitializer, DataGeneratorEntrypoint
         });
 
         AttackBlockCallback.EVENT.register((player, level, hand, pos, direction) -> {
-            BlockState state = level.getBlockState(pos);
             if(player.isCreative() && !player.isCrouching()) {
-                if(state.getBlock() instanceof StorageJarBlock storageJar) {
-                    storageJar.attack(state, level, pos, player);
+                if(level.getBlockEntity(pos) instanceof StorageJarBlockEntity storageJar && !storageJar.isEmpty()) {
+                    if(!level.isClientSide()) {
+                        storageJar.popItem(player.getDirection().getOpposite());
+                    }
                     return InteractionResult.SUCCESS;
                 }
             }

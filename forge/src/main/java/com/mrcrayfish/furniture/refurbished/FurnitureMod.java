@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished;
 
 import com.mrcrayfish.furniture.refurbished.block.StorageJarBlock;
+import com.mrcrayfish.furniture.refurbished.blockentity.StorageJarBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.IFluidContainerBlock;
 import com.mrcrayfish.furniture.refurbished.client.ClientBootstrap;
@@ -108,18 +109,20 @@ public class FurnitureMod
     {
         Level level = event.getLevel();
         BlockPos pos = event.getPos();
-        BlockState state = level.getBlockState(pos);
         Player player = event.getEntity();
-        
+
         if(!player.isCreative())
             return;
 
         if(player.isCrouching())
             return;
 
-        if(state.getBlock() instanceof StorageJarBlock storageJar)
+        if(level.getBlockEntity(pos) instanceof StorageJarBlockEntity storageJar && !storageJar.isEmpty())
         {
-            storageJar.attack(state, level, pos, event.getEntity());
+            if(!level.isClientSide())
+            {
+                storageJar.popItem(player.getDirection().getOpposite());
+            }
             event.setCanceled(true);
         }
     }
