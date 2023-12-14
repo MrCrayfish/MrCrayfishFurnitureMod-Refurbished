@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.data;
 
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
+import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeSerializers;
 import com.mrcrayfish.furniture.refurbished.core.ModTags;
 import com.mrcrayfish.furniture.refurbished.crafting.RecycleBinRecyclingRecipe;
@@ -246,10 +247,19 @@ public class CommonRecipeProvider
         this.mailbox(Blocks.CRIMSON_SLAB, Blocks.CRIMSON_PLANKS, Blocks.CRIMSON_FENCE, ModBlocks.MAIL_BOX_CRIMSON.get());
         this.mailbox(Blocks.WARPED_SLAB, Blocks.WARPED_PLANKS, Blocks.WARPED_FENCE, ModBlocks.MAIL_BOX_WARPED.get());
         this.postBox(ModBlocks.POST_BOX.get());
+
+        // Solidifying
         this.freezerSolidifying(Items.WATER_BUCKET, Items.ICE, 300, 1.0F);
-        this.toasterHeating(Items.POTATO, Items.BAKED_POTATO, 100, 0.5F);
+
+        // Toasting
+        this.toasterHeating(ModItems.BREAD_SLICE.get(), ModItems.TOAST.get(), 300, 0.5F);
+
+        // Slicing
         this.cuttingBoardSlicing(Blocks.MELON, Items.MELON_SLICE, 6);
         this.cuttingBoardSlicing(Items.APPLE, Items.DIAMOND, 8);
+        this.cuttingBoardSlicing(Items.BREAD, ModItems.BREAD_SLICE.get(), 6);
+
+        // Heating
         this.microwaveHeating(Items.POTATO, Items.BAKED_POTATO, 200, 0.5F);
 
         // Recycling

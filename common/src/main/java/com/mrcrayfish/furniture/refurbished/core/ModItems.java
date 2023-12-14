@@ -7,6 +7,7 @@ import com.mrcrayfish.furniture.refurbished.item.PackageItem;
 import com.mrcrayfish.furniture.refurbished.item.TelevisionRemoteItem;
 import com.mrcrayfish.furniture.refurbished.item.WrenchItem;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tiers;
@@ -23,5 +24,7 @@ public class ModItems
     public static final RegistryEntry<Item> KNIFE = RegistryEntry.item(Utils.resource("knife"), () -> new SwordItem(Tiers.IRON, 3, -1.4F, new Item.Properties().durability(256)));
     public static final RegistryEntry<Item> PACKAGE = RegistryEntry.item(Utils.resource("package"), () -> new PackageItem(new Item.Properties().stacksTo(1)));
     public static final RegistryEntry<Item> WRENCH = RegistryEntry.item(Utils.resource("wrench"), () -> new WrenchItem(new Item.Properties().stacksTo(1)));
+    public static final RegistryEntry<Item> BREAD_SLICE = RegistryEntry.item(Utils.resource("bread_slice"), () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(1).saturationMod(0.2F).fast().build())));
+    public static final RegistryEntry<Item> TOAST = RegistryEntry.item(Utils.resource("toast"), () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(1).saturationMod(0.3F).fast().build())));
     public static final RegistryEntry<TelevisionRemoteItem> TELEVISION_REMOTE = RegistryEntry.item(Utils.resource("television_remote"), () -> new TelevisionRemoteItem(new Item.Properties().stacksTo(1)));
 }
