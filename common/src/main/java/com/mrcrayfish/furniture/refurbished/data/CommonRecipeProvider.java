@@ -744,6 +744,8 @@ public class CommonRecipeProvider
     {
         ShapelessRecipeBuilder.shapeless(category, result, count)
                 .requires(first).requires(second)
+                .unlockedBy("has_first", this.has.apply(first))
+                .unlockedBy("has_second", this.has.apply(second))
                 .save(this.consumer);
     }
 
