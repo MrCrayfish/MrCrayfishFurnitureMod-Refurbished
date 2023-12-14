@@ -266,6 +266,7 @@ public class CommonRecipeProvider
 
         // Frying
         this.fryingPanCooking(Items.SWEET_BERRIES, ModItems.SWEET_BERRY_JAM.get(), 400, 0.5F);
+        this.fryingPanCooking(Items.GLOW_BERRIES, ModItems.GLOW_BERRY_JAM.get(), 400, 0.5F);
 
         // Recycling
         this.recycleBinSalvaging(Items.OAK_STAIRS, new ItemStack(Items.OAK_PLANKS, 1));
