@@ -9,9 +9,7 @@ import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
-import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardRecipe;
-import com.mrcrayfish.furniture.refurbished.crafting.ToasterHeatingRecipe;
-import net.minecraft.world.item.crafting.CookingBookCategory;
+import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardSlicingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -21,16 +19,16 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenRegister
 @Document("mods/RefurbishedFurniture/CuttingBoard")
 @ZenCodeType.Name("mods.refurbished_furniture.CuttingBoard")
-public class CuttingBoardRecipeManager implements IRecipeManager<CuttingBoardRecipe>
+public class CuttingBoardRecipeManager implements IRecipeManager<CuttingBoardSlicingRecipe>
 {
     @ZenCodeType.Method
     public void addRecipe(String name, IIngredient input, IItemStack output)
     {
-        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new CuttingBoardRecipe(CraftTweakerConstants.rl(name), "", input.asVanillaIngredient(), output.getInternal())));
+        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new CuttingBoardSlicingRecipe(CraftTweakerConstants.rl(name), "", input.asVanillaIngredient(), output.getInternal())));
     }
 
     @Override
-    public RecipeType<CuttingBoardRecipe> getRecipeType()
+    public RecipeType<CuttingBoardSlicingRecipe> getRecipeType()
     {
         return ModRecipeTypes.CUTTING_BOARD_SLICING.get();
     }

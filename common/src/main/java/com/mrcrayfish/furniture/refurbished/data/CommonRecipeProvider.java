@@ -5,6 +5,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeSerializers;
 import com.mrcrayfish.furniture.refurbished.core.ModTags;
+import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardCombiningRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.RecycleBinRecyclingRecipe;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.advancements.CriterionTriggerInstance;
@@ -261,6 +262,19 @@ public class CommonRecipeProvider
         this.cuttingBoardSlicing(Blocks.MELON, Items.MELON_SLICE, 6);
         this.cuttingBoardSlicing(Items.APPLE, Items.DIAMOND, 8);
         this.cuttingBoardSlicing(Items.BREAD, ModItems.BREAD_SLICE.get(), 6);
+
+        // Combining
+        this.cuttingBoardCombining(ModItems.SWEET_BERRY_JAM_TOAST.get(), 1,
+                Ingredient.of(ModItems.SWEET_BERRY_JAM.get()),
+                Ingredient.of(ModItems.TOAST.get()));
+        this.cuttingBoardCombining(ModItems.GLOW_BERRY_JAM_TOAST.get(), 1,
+                Ingredient.of(ModItems.GLOW_BERRY_JAM.get()),
+                Ingredient.of(ModItems.TOAST.get()));
+        this.cuttingBoardCombining(Items.DIAMOND, 10,
+                Ingredient.of(Items.APPLE),
+                Ingredient.of(Items.APPLE),
+                Ingredient.of(Items.APPLE),
+                Ingredient.of(Items.APPLE));
 
         // Heating
         this.microwaveHeating(Items.POTATO, Items.BAKED_POTATO, 200, 0.5F);
@@ -1142,8 +1156,19 @@ public class CommonRecipeProvider
     {
         String baseName = baseItem.asItem().toString();
         String resultName = resultItem.asItem().toString();
-        SingleItemRecipeBuilder builder = new SingleItemRecipeBuilder(RecipeCategory.MISC, ModRecipeSerializers.CUTTING_BOARD_RECIPE.get(), Ingredient.of(baseItem), resultItem, resultCount);
+        SingleItemRecipeBuilder builder = new SingleItemRecipeBuilder(RecipeCategory.MISC, ModRecipeSerializers.CUTTING_BOARD_SLICING_RECIPE.get(), Ingredient.of(baseItem), resultItem, resultCount);
         builder.unlockedBy("has_" + baseName, this.has.apply(baseItem)).save(this.consumer, Utils.resource("slicing/" + resultName));
+    }
+
+    private void cuttingBoardCombining(ItemLike combinedItem, int count, Ingredient ... inputs)
+    {
+        String baseName = combinedItem.asItem().toString();
+        CuttingBoardCombiningRecipe.Builder builder = new CuttingBoardCombiningRecipe.Builder(new ItemStack(combinedItem, count));
+        for(int i = inputs.length - 1; i >= 0; i--) // Reverse order since the code visualises the stacked items in the level
+        {
+            builder.add(inputs[i]);
+        }
+        builder.save(this.consumer, Utils.resource("combining/" + baseName));
     }
 
     private Set<Item> recycledItems = new HashSet<>();

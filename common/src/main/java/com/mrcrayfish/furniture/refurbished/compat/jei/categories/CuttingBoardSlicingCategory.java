@@ -5,7 +5,7 @@ import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import com.mrcrayfish.furniture.refurbished.compat.jei.Plugin;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
-import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardSlicingRecipe;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -24,9 +24,9 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class CuttingBoardSlicingCategory implements IRecipeCategory<CuttingBoardRecipe>
+public class CuttingBoardSlicingCategory implements IRecipeCategory<CuttingBoardSlicingRecipe>
 {
-    public static final RecipeType<CuttingBoardRecipe> TYPE = RecipeType.create(Constants.MOD_ID, "cutting_board_slicing", CuttingBoardRecipe.class);
+    public static final RecipeType<CuttingBoardSlicingRecipe> TYPE = RecipeType.create(Constants.MOD_ID, "cutting_board_slicing", CuttingBoardSlicingRecipe.class);
 
     private final IDrawable background;
     private final IDrawable icon;
@@ -40,7 +40,7 @@ public class CuttingBoardSlicingCategory implements IRecipeCategory<CuttingBoard
     }
 
     @Override
-    public RecipeType<CuttingBoardRecipe> getRecipeType()
+    public RecipeType<CuttingBoardSlicingRecipe> getRecipeType()
     {
         return TYPE;
     }
@@ -64,7 +64,7 @@ public class CuttingBoardSlicingCategory implements IRecipeCategory<CuttingBoard
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, CuttingBoardRecipe recipe, IFocusGroup focuses)
+    public void setRecipe(IRecipeLayoutBuilder builder, CuttingBoardSlicingRecipe recipe, IFocusGroup focuses)
     {
         builder.addSlot(RecipeIngredientRole.INPUT, 25, 6).addIngredients(recipe.getIngredients().get(0));
         builder.addSlot(RecipeIngredientRole.OUTPUT, 111, 10).addItemStack(Plugin.getResult(recipe));
@@ -72,7 +72,7 @@ public class CuttingBoardSlicingCategory implements IRecipeCategory<CuttingBoard
     }
 
     @Override
-    public List<Component> getTooltipStrings(CuttingBoardRecipe recipe, IRecipeSlotsView view, double mouseX, double mouseY)
+    public List<Component> getTooltipStrings(CuttingBoardSlicingRecipe recipe, IRecipeSlotsView view, double mouseX, double mouseY)
     {
         if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, 5, 16, 55, 15) && !ScreenHelper.isMouseWithinBounds(mouseX, mouseY, 25, 6, 16, 16))
         {

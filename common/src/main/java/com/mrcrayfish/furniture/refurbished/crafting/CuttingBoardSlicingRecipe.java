@@ -12,11 +12,11 @@ import net.minecraft.world.level.Level;
 /**
  * Author: MrCrayfish
  */
-public class CuttingBoardRecipe extends SingleItemRecipe
+public class CuttingBoardSlicingRecipe extends SingleItemRecipe
 {
-    public CuttingBoardRecipe(ResourceLocation id, String group, Ingredient input, ItemStack result)
+    public CuttingBoardSlicingRecipe(ResourceLocation id, String group, Ingredient input, ItemStack result)
     {
-        super(ModRecipeTypes.CUTTING_BOARD_SLICING.get(), ModRecipeSerializers.CUTTING_BOARD_RECIPE.get(), id, group, input, result);
+        super(ModRecipeTypes.CUTTING_BOARD_SLICING.get(), ModRecipeSerializers.CUTTING_BOARD_SLICING_RECIPE.get(), id, group, input, result);
     }
 
     @Override

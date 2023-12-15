@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Author: MrCrayfish
@@ -33,7 +34,15 @@ public class CuttingBoardBlockEntityRenderer implements BlockEntityRenderer<Cutt
         poseStack.mulPose(direction.getRotation());
         poseStack.mulPose(Axis.YP.rotation(Mth.PI));
         poseStack.scale(0.5F, 0.5F, 0.5F);
-        this.renderer.renderStatic(cuttingBoard.getItem(0), ItemDisplayContext.NONE, light, overlay, poseStack, source, cuttingBoard.getLevel(), 0);
+        for(int i = 0; i < cuttingBoard.getContainerSize(); i++)
+        {
+            ItemStack stack = cuttingBoard.getItem(i);
+            if(!stack.isEmpty())
+            {
+                this.renderer.renderStatic(stack, ItemDisplayContext.NONE, light, overlay, poseStack, source, cuttingBoard.getLevel(), 0);
+                poseStack.translate(0, 0, 0.0625);
+            }
+        }
         poseStack.popPose();
     }
 }

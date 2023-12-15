@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
+import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardCombiningRecipe;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
@@ -14,6 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -32,26 +34,31 @@ import net.minecraft.world.phys.Vec3;
 import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 /**
  * Author: MrCrayfish
  */
 public class CuttingBoardBlockEntity extends BasicLootBlockEntity
 {
-    private final RecipeManager.CachedCheck<Container, ? extends SingleItemRecipe> inputRecipeCache;
+    private final RecipeManager.CachedCheck<Container, ? extends SingleItemRecipe> slicingRecipeCache;
+    private final RecipeManager.CachedCheck<Container, CuttingBoardCombiningRecipe> combiningRecipeCache;
     private final RecipeManager.CachedCheck<Container, ? extends SingleItemRecipe> outputCache;
     protected boolean sync;
+    protected boolean canExtract;
+    protected boolean placedByPlayer;
 
     public CuttingBoardBlockEntity(BlockPos pos, BlockState state)
     {
-        this(ModBlockEntities.CUTTING_BOARD.get(), pos, state, 1, ModRecipeTypes.CUTTING_BOARD_SLICING.get());
+        this(ModBlockEntities.CUTTING_BOARD.get(), pos, state, CuttingBoardCombiningRecipe.MAX_INGREDIENTS, ModRecipeTypes.CUTTING_BOARD_SLICING.get(), ModRecipeTypes.CUTTING_BOARD_COMBINING.get());
     }
 
-    public CuttingBoardBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int containerSize, RecipeType<? extends SingleItemRecipe> recipeType)
+    public CuttingBoardBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int containerSize, RecipeType<? extends SingleItemRecipe> slicingRecipeType, RecipeType<CuttingBoardCombiningRecipe> combiningRecipeType)
     {
         super(type, pos, state, containerSize);
-        this.inputRecipeCache = RecipeManager.createCheck(recipeType);
-        this.outputCache = RecipeManager.createCheck(recipeType);
+        this.slicingRecipeCache = RecipeManager.createCheck(slicingRecipeType);
+        this.combiningRecipeCache = RecipeManager.createCheck(combiningRecipeType);
+        this.outputCache = RecipeManager.createCheck(slicingRecipeType);
     }
 
     @Override
@@ -84,19 +91,24 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
      */
     public boolean placeItem(ItemStack heldItem)
     {
-        if(this.canPlaceItem(0, heldItem))
+        int placeIndex = this.getPlaceIndex();
+        if(this.canPlaceItem(placeIndex, heldItem))
         {
             ItemStack copy = heldItem.copy();
             copy.setCount(1);
             heldItem.shrink(1);
-            this.setItem(0, copy);
+            this.placedByPlayer = true;
+            this.canExtract = false;
+            this.setItem(placeIndex, copy);
             return true;
         }
-        else if(!this.getItem(0).isEmpty())
+        int removeIndex = this.getHeadIndex();
+        if(removeIndex >= 0 && !this.getItem(removeIndex).isEmpty())
         {
-            ItemStack stack = this.getItem(0);
+            ItemStack stack = this.getItem(removeIndex);
             this.spawnItemIntoLevel(this.level, stack);
-            this.setItem(0, ItemStack.EMPTY);
+            this.setItem(removeIndex, ItemStack.EMPTY);
+            this.canExtract = false;
             return true;
         }
         return false;
@@ -107,13 +119,16 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
      */
     public boolean sliceItem(Level level, boolean spawnIntoLevel)
     {
-        ItemStack input = this.getItem(0);
-        Optional<? extends SingleItemRecipe> recipe = this.getRecipe(input);
+        int sliceIndex = this.getHeadIndex();
+        if(sliceIndex != 0) // Head index must be the first item
+            return false;
+        ItemStack input = this.getItem(sliceIndex);
+        Optional<? extends SingleItemRecipe> recipe = this.getSlicingRecipe(input);
         if(recipe.isPresent())
         {
             level.playSound(null, this.worldPosition, ModSounds.ITEM_KNIFE_CHOP.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
             this.spawnSliceParticles(input);
-            this.spawnSliceResultFromRecipe(recipe.get(), spawnIntoLevel);
+            this.spawnSliceResultFromRecipe(sliceIndex, recipe.get(), spawnIntoLevel);
             return true;
         }
         return false;
@@ -138,24 +153,42 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
         }
     }
 
+    private void spawnMagicParticles()
+    {
+        if(this.level instanceof ServerLevel serverLevel)
+        {
+            BlockPos pos = this.worldPosition;
+            RandomSource rand = serverLevel.getRandom();
+            for(int i = 0; i < 8; i++)
+            {
+                double x = pos.getX() + 0.5 + 0.3 * rand.nextGaussian();
+                double y = pos.getY() + 0.1;
+                double z = pos.getZ() + 0.5 + 0.3 * rand.nextGaussian();
+                serverLevel.sendParticles(ParticleTypes.COMPOSTER, x, y, z, 1, rand.nextGaussian() * 0.02, rand.nextGaussian() * 0.02, rand.nextGaussian() * 0.02, 0);
+            }
+        }
+    }
+
     /**
      * Spawns the result item stack from the given recipe, either into the level or placed back on
      * the cutting board. To spawn into the level, mark spawnIntoLevel as true.
      *
-     * @param recipe the recipe to get the result item
+     * @param sliceIndex
+     * @param recipe         the recipe to get the result item
      * @param spawnIntoLevel if the item should spawn into the level or remain on the cutting board
      */
-    private void spawnSliceResultFromRecipe(SingleItemRecipe recipe, boolean spawnIntoLevel)
+    private void spawnSliceResultFromRecipe(int sliceIndex, SingleItemRecipe recipe, boolean spawnIntoLevel)
     {
         Preconditions.checkNotNull(this.level);
         ItemStack result = recipe.getResultItem(this.level.registryAccess());
         if(spawnIntoLevel)
         {
             this.spawnItemIntoLevel(this.level, result);
-            this.setItem(0, ItemStack.EMPTY);
+            this.setItem(sliceIndex, ItemStack.EMPTY);
             return;
         }
-        this.setItem(0, result.copy());
+        this.setItem(sliceIndex, result.copy());
+        this.canExtract = true;
     }
 
     /**
@@ -167,26 +200,69 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
     private void spawnItemIntoLevel(Level level, ItemStack stack)
     {
         BlockPos pos = this.worldPosition;
-        ItemEntity entity = new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5, stack.copy());
+        ItemEntity entity = new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.0625, pos.getZ() + 0.5, stack.copy());
         entity.setDefaultPickUpDelay();
         entity.setDeltaMovement(new Vec3(0, 0.15, 0));
         level.addFreshEntity(entity);
     }
 
+    /**
+     * The index where to next item will be placed. May return a value greater than the container
+     * size, so ensure this is checked.
+     *
+     * @return index to place the next item
+     */
+    public int getPlaceIndex()
+    {
+        return this.getHeadIndex() + 1;
+    }
+
+    /**
+     * @return The index of the item highest on the cutting board or -1 if empty
+     */
+    public int getHeadIndex()
+    {
+        for(int i = this.containerSize - 1; i >= 0; i--)
+        {
+            if(!this.getItem(i).isEmpty())
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     @Override
     public boolean canPlaceItem(int slotIndex, ItemStack stack)
     {
-        return slotIndex == 0 && this.isSlotInsertable(slotIndex) && this.isRecipe(stack);
+        return slotIndex >= 0 && slotIndex < this.containerSize && slotIndex == this.getPlaceIndex() && this.isSlotInsertable(slotIndex) && this.canPlaceOnTop(stack);
     }
 
     @Override
     public boolean canTakeItem(Container container, int slotIndex, ItemStack stack)
     {
-        if(slotIndex == 0)
+        if(slotIndex >= 0 && slotIndex < this.containerSize && slotIndex == this.getHeadIndex() && this.canExtract)
         {
             return this.outputCache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level)).isEmpty();
         }
         return false;
+    }
+
+    @Override
+    public void setItem(int slotIndex, ItemStack stack)
+    {
+        super.setItem(slotIndex, stack);
+        if(!stack.isEmpty() && this.getHeadIndex() >= 0 && !Objects.requireNonNull(this.level).isClientSide())
+        {
+            this.craftCombiningRecipe(this.placedByPlayer);
+        }
+    }
+
+    @Override
+    public ItemStack removeItem(int slotIndex, int count)
+    {
+        this.canExtract = false;
+        return super.removeItem(slotIndex, count);
     }
 
     @Override
@@ -201,9 +277,9 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
      * @param stack the item stack to check
      * @return True if it matches a recipe
      */
-    public boolean isRecipe(ItemStack stack)
+    public boolean canPlaceOnTop(ItemStack stack)
     {
-        return this.getRecipe(stack).isPresent();
+        return this.getNextCombiningRecipe(stack).isPresent() || this.getHeadIndex() == -1 && this.getSlicingRecipe(stack).isPresent();
     }
 
     /**
@@ -213,9 +289,72 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
      * @param stack the input item
      * @return the recipe for the input or empty optional if no recipe exists.
      */
-    public Optional<? extends SingleItemRecipe> getRecipe(ItemStack stack)
+    private Optional<? extends SingleItemRecipe> getSlicingRecipe(ItemStack stack)
     {
-        return this.inputRecipeCache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level));
+        return this.slicingRecipeCache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level));
+    }
+
+    /**
+     *
+     * @return
+     */
+    private Optional<CuttingBoardCombiningRecipe> getCombiningRecipe()
+    {
+        return this.combiningRecipeCache.getRecipeFor(this, Objects.requireNonNull(this.level));
+    }
+
+    /**
+     * Gets the next possible combining recipe based on the current items on the cutting item board
+     * and the given item stack. The given item stack is assumed to be placed on top. The returned
+     * recipe is not necessarily complete. A complete match will require call to
+     * {@link CuttingBoardCombiningRecipe#completelyMatches(Container)}.
+     *
+     * @param stack the next item stack to be placed on the cutting board
+     * @return An optional containing the recipe or empty
+     */
+    private Optional<CuttingBoardCombiningRecipe> getNextCombiningRecipe(ItemStack stack)
+    {
+        int placeIndex = this.getPlaceIndex();
+        if(placeIndex >= this.containerSize)
+            return Optional.empty();
+
+        Container container = new SimpleContainer(placeIndex + 1);
+        IntStream.range(0, placeIndex + 1).forEach(index -> container.setItem(index, this.getItem(index)));
+        container.setItem(container.getContainerSize() - 1, stack);
+        return this.combiningRecipeCache.getRecipeFor(container, Objects.requireNonNull(this.level));
+    }
+
+    /**
+     * Attempts to use the items currently placed on the cutting board and combine them into a new item
+     *
+     * @param spawnIntoLevel if the result should spawn into the level or stay on the cutting board
+     */
+    private void craftCombiningRecipe(boolean spawnIntoLevel)
+    {
+        this.placedByPlayer = false;
+
+        Optional<CuttingBoardCombiningRecipe> optional = this.getCombiningRecipe();
+        if(optional.isEmpty())
+            return;
+
+        CuttingBoardCombiningRecipe recipe = optional.get();
+        if(!recipe.completelyMatches(this))
+            return;
+
+        Level level = Objects.requireNonNull(this.level);
+        ItemStack stack = recipe.assemble(this, level.registryAccess());
+        this.clearContent();
+        this.spawnSliceParticles(stack);
+        this.spawnMagicParticles();
+
+        if(spawnIntoLevel)
+        {
+            this.spawnItemIntoLevel(level, stack);
+            return;
+        }
+
+        this.setItem(0, stack);
+        this.canExtract = true;
     }
 
     @Override

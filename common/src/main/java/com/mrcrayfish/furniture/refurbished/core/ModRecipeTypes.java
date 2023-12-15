@@ -2,7 +2,8 @@ package com.mrcrayfish.furniture.refurbished.core;
 
 import com.mrcrayfish.framework.api.registry.RegistryContainer;
 import com.mrcrayfish.framework.api.registry.RegistryEntry;
-import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardCombiningRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardSlicingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.FreezerSolidifyingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.FryingPanCookingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.GrillCookingRecipe;
@@ -23,7 +24,8 @@ public class ModRecipeTypes
     public static final RegistryEntry<RecipeType<GrillCookingRecipe>> GRILL_COOKING = create("grill_cooking");
     public static final RegistryEntry<RecipeType<FreezerSolidifyingRecipe>> FREEZER_SOLIDIFYING = create("freezer_solidifying");
     public static final RegistryEntry<RecipeType<ToasterHeatingRecipe>> TOASTER_HEATING = create("toaster_heating");
-    public static final RegistryEntry<RecipeType<CuttingBoardRecipe>> CUTTING_BOARD_SLICING = create("cutting_board_slicing");
+    public static final RegistryEntry<RecipeType<CuttingBoardSlicingRecipe>> CUTTING_BOARD_SLICING = create("cutting_board_slicing");
+    public static final RegistryEntry<RecipeType<CuttingBoardCombiningRecipe>> CUTTING_BOARD_COMBINING = create("cutting_board_combining");
     public static final RegistryEntry<RecipeType<MicrowaveHeatingRecipe>> MICROWAVE_HEATING = create("microwave_heating");
     public static final RegistryEntry<RecipeType<FryingPanCookingRecipe>> FRYING_PAN_COOKING = create("frying_pan_cooking");
     public static final RegistryEntry<RecipeType<RecycleBinRecyclingRecipe>> RECYCLE_BIN_RECYCLING = create("recycle_bin_recycling");
