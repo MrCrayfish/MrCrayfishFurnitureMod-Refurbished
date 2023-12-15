@@ -86,6 +86,7 @@ public class GrillBlock extends FurnitureHorizontalBlock implements EntityBlock,
                 if(stack.getItem() == ModItems.SPATULA.get())
                 {
                     grill.flipItem(this.getGrillQuadrant(result));
+                    FryingPanBlock.playSpatulaScoopSound(level, pos.above(), 0);
                 }
                 else if(stack.getItem() == Items.CHARCOAL)
                 {
