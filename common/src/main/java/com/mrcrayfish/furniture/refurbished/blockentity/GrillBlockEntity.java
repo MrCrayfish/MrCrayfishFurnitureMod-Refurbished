@@ -1,9 +1,12 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.google.common.collect.ImmutableList;
+import com.mrcrayfish.furniture.refurbished.block.RangeHoodBlock;
+import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
+import com.mrcrayfish.furniture.refurbished.core.ModParticleTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
-import com.mrcrayfish.furniture.refurbished.crafting.GrillCookingRecipe;
+import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageFlipAnimation;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
@@ -20,6 +23,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -59,11 +63,7 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
 
     private final NonNullList<ItemStack> fuel = NonNullList.withSize(9, ItemStack.EMPTY);
     private final NonNullList<ItemStack> cooking = NonNullList.withSize(4, ItemStack.EMPTY);
-    private final ImmutableList<CookingSpace> spaces = Util.make(() -> {
-        ImmutableList.Builder<CookingSpace> builder = ImmutableList.builderWithExpectedSize(this.cooking.size());
-        IntStream.range(0, this.cooking.size()).forEach(i -> builder.add(new CookingSpace()));
-        return builder.build();
-    });
+    private final ImmutableList<CookingSpace> spaces;
     protected final RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> recipeCache;
     protected final RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> campfireCookingCache;
     private int remainingFuel;
@@ -79,6 +79,11 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
         super(type, pos, state);
         this.recipeCache = RecipeManager.createCheck(recipeType);
         this.campfireCookingCache = RecipeManager.createCheck(RecipeType.CAMPFIRE_COOKING);
+        this.spaces = Util.make(() -> {
+            ImmutableList.Builder<CookingSpace> builder = ImmutableList.builderWithExpectedSize(this.cooking.size());
+            IntStream.range(0, this.cooking.size()).forEach(i -> builder.add(new CookingSpace(i, this)));
+            return builder.build();
+        });
     }
 
     /**
@@ -273,8 +278,12 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, GrillBlockEntity grill)
     {
+        // TODO steam particles for grill items
         grill.spawnParticles();
-        grill.spaces.forEach(space -> space.getAnimation().tick());
+        grill.spaces.forEach(space -> {
+            AudioManager.get().playLevelAudio(space);
+            space.getAnimation().tick();
+        });
     }
 
     private boolean canCook()
@@ -344,24 +353,86 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
                 level.addParticle(ParticleTypes.FLAME, posX, posY, posZ, 0.0, 0.0, 0.0);
             }
 
-            BlockPos pos = this.getBlockPos();
             for(int i = 0; i < this.cooking.size(); i++)
             {
-                if(!this.cooking.get(i).isEmpty() && level.random.nextFloat() < 0.1F)
+                if(!this.cooking.get(i).isEmpty())
                 {
-                    double posX = pos.getX() + 0.3 + 0.4 * (i % 2);
-                    double posY = pos.getY() + 1.0;
-                    double posZ = pos.getZ() + 0.3 + 0.4 * (i / 2);
-                    if(this.spaces.get(i).isHalfCooked())
+                    if(level.random.nextFloat() < 0.1F)
                     {
-                        for(int j = 0; j < 4; j++)
+                        CookingSpace space = this.spaces.get(i);
+                        if(space.isHalfCooked())
                         {
-                            level.addParticle(ParticleTypes.SMOKE, posX, posY, posZ, 0.0D, 5.0E-4D, 0.0D);
+                            Vec3 spacePos = space.getWorldPosition();
+                            for(int j = 0; j < 4; j++)
+                            {
+                                level.addParticle(ParticleTypes.SMOKE, spacePos.x, spacePos.y, spacePos.z, 0, 0, 0);
+                            }
                         }
+                    }
+
+                    CookingSpace space = this.spaces.get(i);
+                    if(this.remainingFuel > 0 && space.canCook() && !space.isCooked() && !space.getAnimation().isPlaying())
+                    {
+                        Vec3 spacePos = space.getWorldPosition();
+                        spacePos = spacePos.add(0.05 * level.random.nextGaussian(), 0, 0.05 * level.random.nextGaussian());
+                        this.spawnSteam(level, spacePos.x, spacePos.y, spacePos.z);
                     }
                 }
             }
         }
+    }
+
+    /**
+     * Spawns a steam particle from the grill where the y velocity of the particle
+     * changes depending on if a range hood is being used.
+     *
+     * @param level the level containing the frying pan
+     * @param x     the start x position of the particle
+     * @param y     the start y position of the particle
+     * @param z     the start z position of the particle
+     */
+    public void spawnSteam(Level level, double x, double y, double z)
+    {
+        double ySpeed = 0.01;
+        if(this.isRangeHoodPowered(level, this.worldPosition.above(2)))
+        {
+            ySpeed = 0.05;
+        }
+        else if(this.isRangeHoodPowered(level, this.worldPosition.above(3)))
+        {
+            ySpeed = 0.1;
+        }
+        level.addParticle(ModParticleTypes.STEAM.get(), x, y, z, 0, ySpeed, 0);
+    }
+
+    /**
+     * Determines if range hood is located at the given block position in the level and that
+     * the range hood is powered.
+     *
+     * @param level the level containing the frying pan
+     * @param pos   the block position to check
+     * @return True if range hook is located and powered
+     */
+    private boolean isRangeHoodPowered(Level level, BlockPos pos)
+    {
+        // Check if air between grill and range hood
+        BlockPos start = this.worldPosition.above();
+        while(start.getY() < pos.getY())
+        {
+            if(!level.getBlockState(start).isAir())
+            {
+                return false;
+            }
+            start = start.above();
+        }
+
+        // Finally check if range hood is powered
+        BlockState state = level.getBlockState(pos);
+        if(state.getBlock() instanceof RangeHoodBlock)
+        {
+            return state.getValue(RangeHoodBlock.POWERED);
+        }
+        return false;
     }
 
     private boolean isCooking()
@@ -788,8 +859,12 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
         }
     }
 
-    public static class CookingSpace
+    public static class CookingSpace implements ILevelAudio
     {
+        public static final double MAX_AUDIO_DISTANCE = Mth.square(8);
+
+        private final int index;
+        private final GrillBlockEntity grill;
         private int cookingTime = 0;
         private int totalCookingTime = 0;
         private boolean flipped = false;
@@ -798,6 +873,12 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
 
         // Client only
         private FlipAnimation animation;
+
+        public CookingSpace(int index, GrillBlockEntity grill)
+        {
+            this.index = index;
+            this.grill = grill;
+        }
 
         public boolean isFlipped()
         {
@@ -878,6 +959,15 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
             }
         }
 
+        public Vec3 getWorldPosition()
+        {
+            BlockPos pos = this.grill.worldPosition;
+            double x = pos.getX() + 0.3 + 0.4 * (this.index % 2);
+            double y = pos.getY() + 1.0;
+            double z = pos.getZ() + 0.3 + 0.4 * (this.index / 2);
+            return new Vec3(x, y, z);
+        }
+
         public void writeToTag(CompoundTag tag)
         {
             tag.putInt("CookingTime", this.cookingTime);
@@ -918,6 +1008,60 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
                 this.animation = new FlipAnimation();
             }
             return this.animation;
+        }
+
+        @Override
+        public SoundEvent getSound()
+        {
+            return ModSounds.BLOCK_FRYING_PAN_SIZZLING.get();
+        }
+
+        @Override
+        public SoundSource getSource()
+        {
+            return SoundSource.BLOCKS;
+        }
+
+        @Override
+        public Vec3 getAudioPosition()
+        {
+            return this.getWorldPosition();
+        }
+
+        @Override
+        public boolean canPlayAudio()
+        {
+            return !this.grill.isRemoved() && this.grill.remainingFuel > 0 && !this.grill.cooking.get(this.index).isEmpty() && (!this.isCooked() || this.isHalfCooked());
+        }
+
+        @Override
+        public float getAudioVolume()
+        {
+            return (this.canCook() && !this.isCooked() || this.isHalfCooked()) && !this.getAnimation().isPlaying() ? 1.0F : 0.0F;
+        }
+
+        @Override
+        public float getAudioPitch()
+        {
+            return this.isHalfCooked() ? 0.8F : 1.0F;
+        }
+
+        @Override
+        public double getAudioRadiusSqr()
+        {
+            return MAX_AUDIO_DISTANCE;
+        }
+
+        @Override
+        public int getAudioHash()
+        {
+            return Objects.hash(this.grill.worldPosition, this.index);
+        }
+
+        @Override
+        public boolean isAudioEqual(ILevelAudio other)
+        {
+            return other == this;
         }
     }
 
