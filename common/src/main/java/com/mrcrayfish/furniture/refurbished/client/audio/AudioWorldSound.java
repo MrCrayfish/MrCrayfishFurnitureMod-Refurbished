@@ -1,13 +1,11 @@
 package com.mrcrayfish.furniture.refurbished.client.audio;
 
-import com.mrcrayfish.furniture.refurbished.blockentity.IAudioBlock;
+import com.mrcrayfish.furniture.refurbished.blockentity.ILevelAudio;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.resources.sounds.TickableSoundInstance;
-import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
@@ -16,26 +14,26 @@ import java.lang.ref.WeakReference;
 /**
  * Author: MrCrayfish
  */
-public class AudioBlockSound extends AbstractTickableSoundInstance
+public class AudioWorldSound extends AbstractTickableSoundInstance
 {
-    private final WeakReference<IAudioBlock> audioBlockRef;
+    private final WeakReference<ILevelAudio> audioBlockRef;
     private final SoundEvent playingSound;
     private boolean switchSound;
+    private boolean cancel;
 
-    public AudioBlockSound(IAudioBlock block)
+    public AudioWorldSound(ILevelAudio audio)
     {
-        super(block.getSound(), SoundSource.BLOCKS, SoundInstance.createUnseededRandom());
-        this.playingSound = block.getSound();
-        this.audioBlockRef = new WeakReference<>(block);
-        this.volume = block.getAudioVolume();
-        this.pitch = block.getAudioPitch();
+        super(audio.getSound(), audio.getSource(), SoundInstance.createUnseededRandom());
+        this.playingSound = audio.getSound();
+        this.audioBlockRef = new WeakReference<>(audio);
+        this.volume = audio.getAudioVolume();
+        this.pitch = audio.getAudioPitch();
         this.looping = true;
         this.delay = 0;
-        BlockPos pos = block.getAudioPosition();
-        Vec3 offset = block.getAudioPositionOffset();
-        this.x = pos.getX() + 0.5 + offset.x;
-        this.y = pos.getY() + 0.5 + offset.y;
-        this.z = pos.getZ() + 0.5 + offset.z;
+        Vec3 pos = audio.getAudioPosition();
+        this.x = pos.x;
+        this.y = pos.y;
+        this.z = pos.z;
     }
 
     @Override
@@ -44,46 +42,57 @@ public class AudioBlockSound extends AbstractTickableSoundInstance
         return true;
     }
 
+    public void cancel()
+    {
+        this.cancel = true;
+    }
+
     @Override
     public void tick()
     {
-        IAudioBlock block = this.audioBlockRef.get();
-        if(block == null || !block.canPlayAudio())
+        ILevelAudio audio = this.audioBlockRef.get();
+        if(audio == null || !audio.canPlayAudio() || this.cancel)
         {
             this.stop();
             return;
         }
 
         // If the sound changes, stop playing and queue new sound
-        SoundEvent currentSound = block.getSound();
+        SoundEvent currentSound = audio.getSound();
         if(this.playingSound != currentSound && !this.switchSound)
         {
             if(currentSound != null)
             {
-                TickableSoundInstance sound = new AudioBlockSound(block);
+                AudioWorldSound sound = new AudioWorldSound(audio);
                 Minecraft.getInstance().getSoundManager().queueTickingSound(sound);
-                AudioManager.get().updateSound(block.getAudioPosition(), sound);
+                AudioManager.get().updateSound(audio, sound);
             }
             this.switchSound = true;
         }
 
-        this.pitch = block.getAudioPitch();
+        this.pitch = audio.getAudioPitch();
 
         Minecraft mc = Minecraft.getInstance();
         if(mc.player != null && !this.switchSound)
         {
             double distanceSquared = mc.player.getEyePosition().distanceToSqr(this.x, this.y, this.z);
-            if(distanceSquared > block.getAudioRadiusSqr())
+            if(distanceSquared > audio.getAudioRadiusSqr())
             {
                 this.stop();
                 return;
             }
-            this.volume = 1.0F - (float) Mth.clamp(distanceSquared / block.getAudioRadiusSqr(), 0.0, 1.0);
-            this.volume *= block.getAudioVolume();
+            this.volume = 1.0F - (float) Mth.clamp(distanceSquared / audio.getAudioRadiusSqr(), 0.0, 1.0);
+            this.volume *= audio.getAudioVolume();
         }
         else
         {
             this.stop();
         }
+
+        // Update the position of the audio
+        Vec3 pos = audio.getAudioPosition();
+        this.x = pos.x;
+        this.y = pos.y;
+        this.z = pos.z;
     }
 }

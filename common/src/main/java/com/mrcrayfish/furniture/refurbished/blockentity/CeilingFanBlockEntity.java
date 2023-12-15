@@ -8,6 +8,7 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -15,13 +16,14 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
 /**
  * Author: MrCrayfish
  */
-public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implements IAudioBlock
+public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implements ILevelAudio
 {
     private static final float MAX_SPEED = 50F;
     private static final float ACCELERATION = 1.25F;
@@ -37,6 +39,7 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implemen
         return boxes;
     });
 
+    protected final Vec3 audioPosition;
     private float bladeSpeed;
     private float bladeRotation;
     private float lastBladeRotation;
@@ -44,6 +47,7 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implemen
     public CeilingFanBlockEntity(BlockPos pos, BlockState state)
     {
         super(ModBlockEntities.CEILING_FAN.get(), pos, state);
+        this.audioPosition = pos.getCenter().add(0, 0.375, 0);
     }
 
     @Override
@@ -97,7 +101,7 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implemen
     public static void clientTick(Level level, BlockPos pos, BlockState state, CeilingFanBlockEntity ceilingFan)
     {
         ceilingFan.updateAnimation();
-        AudioManager.get().playAudioBlock(ceilingFan);
+        AudioManager.get().playLevelAudio(ceilingFan);
     }
 
     /**
@@ -154,9 +158,15 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implemen
     }
 
     @Override
-    public BlockPos getAudioPosition()
+    public SoundSource getSource()
     {
-        return this.worldPosition;
+        return SoundSource.BLOCKS;
+    }
+
+    @Override
+    public Vec3 getAudioPosition()
+    {
+        return this.audioPosition;
     }
 
     @Override
@@ -175,6 +185,18 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implemen
     public float getAudioPitch()
     {
         return 0.5F + this.bladeSpeed / MAX_SPEED;
+    }
+
+    @Override
+    public int getAudioHash()
+    {
+        return this.worldPosition.hashCode();
+    }
+
+    @Override
+    public boolean isAudioEqual(ILevelAudio other)
+    {
+        return this == other;
     }
 
     @Override

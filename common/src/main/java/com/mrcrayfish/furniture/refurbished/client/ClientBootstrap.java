@@ -57,6 +57,7 @@ public class ClientBootstrap
         TickEvents.END_CLIENT.register(() -> {
             TextureCache.get().tick();
             ToolAnimationRenderer.get().tick();
+            AudioManager.get().update();
         });
         TickEvents.START_RENDER.register(partialTick -> {
             LinkHandler.get().beforeRender(partialTick);

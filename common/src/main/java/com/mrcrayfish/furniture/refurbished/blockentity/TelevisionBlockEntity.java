@@ -17,14 +17,13 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -37,7 +36,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implements IAudioBlock
+public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implements ILevelAudio
 {
     public static final Channel WHITE_NOISE = new Channel(Utils.resource("white_noise"), ModSounds.BLOCK_TELEVISION_CHANNEL_WHITE_NOISE::get, 0);
     public static final Channel BLACK_NOISE = new Channel(Utils.resource("black_noise"), ModSounds.BLOCK_TELEVISION_CHANNEL_WHITE_NOISE::get, 0);
@@ -61,19 +60,21 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
     public static final Map<ResourceLocation, Channel> ID_TO_CHANNEL = ALL_CHANNELS.stream().collect(Collectors.toMap(c -> c.id, Function.identity()));
     public static final double MAX_AUDIO_DISTANCE = Mth.square(16);
 
+    protected final Vec3 audioPosition;
     protected Channel currentChannel = OCEAN_SUNSET;
     protected Channel lastChannel;
     protected boolean transitioning;
     protected int timer;
 
-    public TelevisionBlockEntity(BlockPos $$1, BlockState $$2)
+    public TelevisionBlockEntity(BlockPos pos, BlockState state)
     {
-        this(ModBlockEntities.TELEVISION.get(), $$1, $$2);
+        this(ModBlockEntities.TELEVISION.get(), pos, state);
     }
 
-    public TelevisionBlockEntity(BlockEntityType<?> $$0, BlockPos $$1, BlockState $$2)
+    public TelevisionBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
     {
-        super($$0, $$1, $$2);
+        super(type, pos, state);
+        this.audioPosition = pos.getCenter();
     }
 
     public Channel getCurrentChannel()
@@ -88,22 +89,22 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
     }
 
     @Override
-    public BlockPos getAudioPosition()
+    public SoundSource getSource()
     {
-        return this.worldPosition;
+        return SoundSource.BLOCKS;
     }
 
     @Override
-    public Vec3 getAudioPositionOffset()
+    public Vec3 getAudioPosition()
     {
         BlockState state = this.getBlockState();
         if(state.hasProperty(TelevisionBlock.DIRECTION))
         {
             Direction direction = state.getValue(TelevisionBlock.DIRECTION).getOpposite();
             Vec3i normal = direction.getNormal();
-            return new Vec3(normal.getX() * 0.375, normal.getY(), normal.getZ() * 0.375);
+            return this.audioPosition.add(normal.getX() * 0.375, normal.getY(), normal.getZ() * 0.375);
         }
-        return Vec3.ZERO;
+        return this.audioPosition;
     }
 
     @Override
@@ -126,6 +127,18 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
             return 0.25F;
         }
         return 1.0F;
+    }
+
+    @Override
+    public int getAudioHash()
+    {
+        return this.worldPosition.hashCode();
+    }
+
+    @Override
+    public boolean isAudioEqual(ILevelAudio other)
+    {
+        return other == this;
     }
 
     @Override
@@ -239,7 +252,7 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
         SoundEvent sound = television.currentChannel.sound().get();
         if(sound != null)
         {
-            AudioManager.get().playAudioBlock(television);
+            AudioManager.get().playLevelAudio(television);
         }
     }
 

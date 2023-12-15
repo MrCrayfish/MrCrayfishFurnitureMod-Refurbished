@@ -20,6 +20,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
@@ -36,6 +37,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -47,7 +49,7 @@ import java.util.Set;
 /**
  * Author: MrCrayfish
  */
-public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity implements IProcessingBlock, IPowerSwitch, IAudioBlock
+public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity implements IProcessingBlock, IPowerSwitch, ILevelAudio
 {
     private static final Set<ItemLike> INVALID_ITEMS = Util.make(() -> {
         ImmutableSet.Builder<ItemLike> builder = ImmutableSet.builder();
@@ -89,6 +91,8 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
     public static final int DATA_ENABLED = 1;
     public static final int DATA_PROCESSING_TIME = 2;
 
+    protected final RecipeManager.CachedCheck<Container, RecycleBinRecyclingRecipe> recipeCache;
+    protected final Vec3 audioPosition;
     protected RandomSource random = RandomSource.create();
     protected SimpleContainer output = new SimpleContainer(9);
     protected boolean powered;
@@ -99,7 +103,6 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
     protected long seed = this.random.nextLong();
     protected @Nullable Item inputCache;
     protected @Nullable List<ItemStack> outputCache;
-    protected final RecipeManager.CachedCheck<Container, RecycleBinRecyclingRecipe> recipeCache;
 
     protected final ContainerData data = new BuildableContainerData(builder -> {
         builder.add(DATA_ENABLED, () -> enabled ? 1 : 0, value -> {});
@@ -116,6 +119,7 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
     {
         super(type, pos, state, 10);
         this.recipeCache = RecipeManager.createCheck(ModRecipeTypes.RECYCLE_BIN_RECYCLING.get());
+        this.audioPosition = pos.getCenter();
     }
 
     @Override
@@ -149,15 +153,33 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
     }
 
     @Override
-    public BlockPos getAudioPosition()
+    public SoundSource getSource()
     {
-        return this.worldPosition;
+        return SoundSource.BLOCKS;
+    }
+
+    @Override
+    public Vec3 getAudioPosition()
+    {
+        return this.audioPosition;
     }
 
     @Override
     public boolean canPlayAudio()
     {
         return this.isPowered() && this.processing && this.enabled && !this.isRemoved();
+    }
+
+    @Override
+    public int getAudioHash()
+    {
+        return this.worldPosition.hashCode();
+    }
+
+    @Override
+    public boolean isAudioEqual(ILevelAudio other)
+    {
+        return other == this;
     }
 
     @Override
@@ -321,7 +343,7 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, RecycleBinBlockEntity recycleBin)
     {
-        AudioManager.get().playAudioBlock(recycleBin);
+        AudioManager.get().playLevelAudio(recycleBin);
     }
 
     @Override

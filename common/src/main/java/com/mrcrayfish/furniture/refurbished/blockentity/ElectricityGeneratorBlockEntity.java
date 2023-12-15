@@ -17,6 +17,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
@@ -25,13 +26,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Set;
 
 /**
  * Author: MrCrayfish
  */
-public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockEntity implements IProcessingBlock, IPowerSwitch, IAudioBlock
+public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockEntity implements IProcessingBlock, IPowerSwitch, ILevelAudio
 {
     public static final int DATA_ENERGY = 0;
     public static final int DATA_TOTAL_ENERGY = 1;
@@ -40,6 +42,7 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
     public static final int DATA_POWERED = 4;
     public static final int DATA_NODE_COUNT = 5;
 
+    protected final Vec3 audioPosition;
     protected int totalEnergy;
     protected int energy;
     protected boolean enabled;
@@ -62,6 +65,7 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
     public ElectricityGeneratorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
     {
         super(type, pos, state, 1);
+        this.audioPosition = pos.getCenter().add(0, -0.375, 0);
     }
 
     @Override
@@ -93,15 +97,33 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
     }
 
     @Override
-    public BlockPos getAudioPosition()
+    public SoundSource getSource()
     {
-        return this.worldPosition;
+        return SoundSource.BLOCKS;
+    }
+
+    @Override
+    public Vec3 getAudioPosition()
+    {
+        return this.audioPosition;
     }
 
     @Override
     public boolean canPlayAudio()
     {
         return this.isPowered() && !this.isRemoved();
+    }
+
+    @Override
+    public int getAudioHash()
+    {
+        return this.worldPosition.hashCode();
+    }
+
+    @Override
+    public boolean isAudioEqual(ILevelAudio other)
+    {
+        return other == this;
     }
 
     @Override
@@ -268,7 +290,7 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, ElectricityGeneratorBlockEntity generator)
     {
-        AudioManager.get().playAudioBlock(generator);
+        AudioManager.get().playLevelAudio(generator);
     }
 
     @Override

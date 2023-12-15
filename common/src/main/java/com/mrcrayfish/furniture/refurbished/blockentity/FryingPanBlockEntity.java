@@ -49,13 +49,14 @@ import java.util.Optional;
 /**
  * Author: MrCrayfish
  */
-public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICookingBlock, IAudioBlock
+public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICookingBlock, ILevelAudio
 {
     public static final Vector3f OIL_COLOUR = Vec3.fromRGB24(0xE1A803).toVector3f();
     public static final double MAX_AUDIO_DISTANCE = Mth.square(8);
 
     protected final RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> recipeCache;
     protected final RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> campfireCookingCache;
+    protected final Vec3 audioPosition;
     protected boolean needsFlipping;
     protected boolean flipped;
     protected int rotation;
@@ -74,6 +75,7 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
         super(type, pos, state, 1);
         this.recipeCache = RecipeManager.createCheck(recipeType);
         this.campfireCookingCache = RecipeManager.createCheck(RecipeType.CAMPFIRE_COOKING);
+        this.audioPosition = pos.getCenter().add(0, -0.375, 0);
     }
 
     public boolean isFlippingNeeded()
@@ -117,7 +119,7 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, FryingPanBlockEntity fryingPan)
     {
-        AudioManager.get().playAudioBlock(fryingPan);
+        AudioManager.get().playLevelAudio(fryingPan);
         fryingPan.spawnParticles(level, pos);
 
         FlipAnimation animation = fryingPan.getAnimation();
@@ -481,15 +483,15 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
     }
 
     @Override
-    public BlockPos getAudioPosition()
+    public SoundSource getSource()
     {
-        return this.worldPosition;
+        return SoundSource.BLOCKS;
     }
 
     @Override
-    public Vec3 getAudioPositionOffset()
+    public Vec3 getAudioPosition()
     {
-        return new Vec3(0, -0.375, 0);
+        return this.audioPosition;
     }
 
     @Override
@@ -508,6 +510,18 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
     public float getAudioPitch()
     {
         return this.isPartiallyCooked() ? 0.8F : 1.0F;
+    }
+
+    @Override
+    public int getAudioHash()
+    {
+        return this.worldPosition.hashCode();
+    }
+
+    @Override
+    public boolean isAudioEqual(ILevelAudio other)
+    {
+        return this == other;
     }
 
     @Override
