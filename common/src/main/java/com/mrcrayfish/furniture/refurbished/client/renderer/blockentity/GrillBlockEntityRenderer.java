@@ -56,7 +56,8 @@ public class GrillBlockEntityRenderer implements BlockEntityRenderer<GrillBlockE
         FlipAnimation animation = space.getAnimation();
         float time = animation.isPlaying() ? animation.getTime(partialTick) : 0;
         float flipProgress = this.calculateFlipProgress(time);
-        poseStack.translate(0, flipProgress, 0);
+        float flipHeight = 0.75F;
+        poseStack.translate(0, flipProgress * flipHeight, 0);
         poseStack.translate(0.3 + 0.4 * (quadrant % 2), 1.0, 0.3 + 0.4 * (quadrant / 2));
         poseStack.mulPose(Axis.XP.rotation(Mth.HALF_PI));
         poseStack.mulPose(Axis.ZP.rotation(Mth.HALF_PI * space.getRotation()));
