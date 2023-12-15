@@ -134,7 +134,7 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
                 this.cooking.set(position, copy);
                 this.spaces.get(position).update(recipe.getCookingTime(), recipe.getExperience(), rotation);
                 this.syncCookingSpace(position);
-                this.playPlaceSound();
+                this.playPlaceSound(this.spaces.get(position), false, 0.85F);
                 return true;
             }
         }
@@ -168,7 +168,6 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
                 space.flip();
                 this.sendFlipAnimationToPlayers(position);
                 this.syncCookingSpace(position);
-                this.playFlipSound();
                 this.setChanged();
             }
             else if(space.isFullyCooked())
@@ -278,12 +277,18 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, GrillBlockEntity grill)
     {
-        // TODO steam particles for grill items
         grill.spawnParticles();
         grill.spaces.forEach(space -> {
             AudioManager.get().playLevelAudio(space);
-            space.getAnimation().tick();
+            FlipAnimation animation = space.getAnimation();
+            boolean wasPlaying = animation.isPlaying();
+            animation.tick();
+            if(wasPlaying && !animation.isPlaying()) {
+                grill.playPlaceSound(space, true, 1.0F);
+            }
         });
+
+
     }
 
     private boolean canCook()
@@ -787,19 +792,16 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
         return false;
     }
 
-    private void playPlaceSound()
+    private void playPlaceSound(CookingSpace space, boolean client, float pitch)
     {
         Level level = Objects.requireNonNull(this.level);
-        Vec3 pos = Vec3.atBottomCenterOf(this.worldPosition).add(0, 1, 0);
-        float pitch = 0.9F + 0.2F * level.random.nextFloat();
-        level.playSound(null, pos.x, pos.y, pos.z, SoundEvents.BONE_BLOCK_PLACE, SoundSource.BLOCKS, 0.75F, pitch);
-    }
-
-    private void playFlipSound()
-    {
-        Level level = Objects.requireNonNull(this.level);
-        Vec3 pos = Vec3.atBottomCenterOf(this.worldPosition).add(0, 1, 0);
-        level.playSound(null, pos.x, pos.y, pos.z, SoundEvents.AMETHYST_BLOCK_HIT, SoundSource.BLOCKS, 0.75F, 1.0F);
+        Vec3 pos = space.getWorldPosition();
+        if(client)
+        {
+            level.playLocalSound(pos.x, pos.y, pos.z, ModSounds.BLOCK_FRYING_PAN_PLACE_INGREDIENT.get(), SoundSource.PLAYERS, 1.0F, pitch, false);
+            return;
+        }
+        level.playSound(null, pos.x, pos.y, pos.z, ModSounds.BLOCK_FRYING_PAN_PLACE_INGREDIENT.get(), SoundSource.PLAYERS, 1.0F, pitch);
     }
 
     /**
