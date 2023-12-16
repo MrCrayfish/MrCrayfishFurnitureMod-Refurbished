@@ -213,6 +213,18 @@
             "refurbished_furniture:block/kitchen_sink/fill3"
         ]
     },
+    "block.fridge.open": {
+        "subtitle": "subtitle.refurbished_furniture.fridge.open",
+        "sounds": [
+            "refurbished_furniture:block/fridge/open"
+        ]
+    },
+    "block.fridge.close": {
+        "subtitle": "subtitle.refurbished_furniture.fridge.close",
+        "sounds": [
+            "refurbished_furniture:block/fridge/close"
+        ]
+    },
     "item.package.open": {
         "subtitle": "subtitle.refurbished_furniture.package_open",
         "sounds": [

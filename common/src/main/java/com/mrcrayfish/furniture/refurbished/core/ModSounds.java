@@ -49,6 +49,8 @@ public class ModSounds
     public static final RegistryEntry<SoundEvent> BLOCK_KITCHEN_DRAWER_CLOSE = RegistryEntry.soundEvent(Utils.resource("block.kitchen_drawer.close"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> BLOCK_KITCHEN_SINK_FILL = RegistryEntry.soundEvent(Utils.resource("block.kitchen_sink.fill"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> BLOCK_CUTTING_BOARD_PLACED_INGREDIENT = RegistryEntry.soundEvent(Utils.resource("block.cutting_board.place_ingredient"), id -> () -> SoundEvent.createVariableRangeEvent(id));
+    public static final RegistryEntry<SoundEvent> BLOCK_FRIDGE_OPEN = RegistryEntry.soundEvent(Utils.resource("block.fridge.open"), id -> () -> SoundEvent.createVariableRangeEvent(id));
+    public static final RegistryEntry<SoundEvent> BLOCK_FRIDGE_CLOSE = RegistryEntry.soundEvent(Utils.resource("block.fridge.close"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> ITEM_PACKAGE_OPEN = RegistryEntry.soundEvent(Utils.resource("item.package.open"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> ITEM_WRENCH_SELECTED_NODE = RegistryEntry.soundEvent(Utils.resource("item.wrench.selected_node"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> ITEM_WRENCH_REMOVE_LINK = RegistryEntry.soundEvent(Utils.resource("item.wrench.remove_link"), id -> () -> SoundEvent.createVariableRangeEvent(id));
