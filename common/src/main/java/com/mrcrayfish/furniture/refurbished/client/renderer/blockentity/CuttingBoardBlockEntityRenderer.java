@@ -41,7 +41,7 @@ public class CuttingBoardBlockEntityRenderer implements BlockEntityRenderer<Cutt
             ItemStack stack = cuttingBoard.getItem(i);
             if(!stack.isEmpty())
             {
-                this.random.setSeed(cuttingBoard.getBlockPos().hashCode());
+                this.random.setSeed(cuttingBoard.getBlockPos().hashCode() + i);
                 poseStack.pushPose();
                 poseStack.mulPose(Axis.ZP.rotation((float) this.random.nextGaussian() * Mth.PI * 0.025F));
                 this.renderer.renderStatic(stack, ItemDisplayContext.NONE, light, overlay, poseStack, source, cuttingBoard.getLevel(), 0);

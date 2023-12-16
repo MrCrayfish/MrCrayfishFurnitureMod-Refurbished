@@ -5,6 +5,7 @@ import com.mrcrayfish.furniture.refurbished.block.BathBlock;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.IFluidContainerBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
+import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
@@ -107,12 +108,8 @@ public class BathBlockEntity extends BlockEntity implements IFluidContainerBlock
                 long filled = tank.push(Fluids.WATER, FluidContainer.BUCKET_CAPACITY, false);
                 if(filled > 0)
                 {
-                    SoundEvent event = Services.FLUID.getBucketEmptySound(Fluids.WATER);
-                    if(event != null)
-                    {
-                        Objects.requireNonNull(this.level).playSound(null, this.worldPosition, event, SoundSource.BLOCKS);
-                        return InteractionResult.SUCCESS;
-                    }
+                    Objects.requireNonNull(this.level).playSound(null, this.worldPosition, ModSounds.BLOCK_KITCHEN_SINK_FILL.get(), SoundSource.BLOCKS);
+                    return InteractionResult.SUCCESS;
                 }
             }
 

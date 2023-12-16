@@ -205,6 +205,14 @@
             "refurbished_furniture:block/cutting_board/place_ingredient"
         ]
     },
+    "block.kitchen_sink.fill": {
+        "subtitle": "subtitle.refurbished_furniture.kitchen_sink.fill",
+        "sounds": [
+            "refurbished_furniture:block/kitchen_sink/fill1",
+            "refurbished_furniture:block/kitchen_sink/fill2",
+            "refurbished_furniture:block/kitchen_sink/fill3"
+        ]
+    },
     "item.package.open": {
         "subtitle": "subtitle.refurbished_furniture.package_open",
         "sounds": [
