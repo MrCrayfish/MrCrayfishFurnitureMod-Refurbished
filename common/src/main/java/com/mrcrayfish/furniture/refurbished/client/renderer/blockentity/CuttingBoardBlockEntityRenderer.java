@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
@@ -19,6 +20,7 @@ import net.minecraft.world.item.ItemStack;
 public class CuttingBoardBlockEntityRenderer implements BlockEntityRenderer<CuttingBoardBlockEntity>
 {
     private final ItemRenderer renderer;
+    private final RandomSource random = RandomSource.create();
 
     public CuttingBoardBlockEntityRenderer(BlockEntityRendererProvider.Context context)
     {
@@ -39,7 +41,11 @@ public class CuttingBoardBlockEntityRenderer implements BlockEntityRenderer<Cutt
             ItemStack stack = cuttingBoard.getItem(i);
             if(!stack.isEmpty())
             {
+                this.random.setSeed(cuttingBoard.getBlockPos().hashCode());
+                poseStack.pushPose();
+                poseStack.mulPose(Axis.ZP.rotation((float) this.random.nextGaussian() * Mth.PI * 0.025F));
                 this.renderer.renderStatic(stack, ItemDisplayContext.NONE, light, overlay, poseStack, source, cuttingBoard.getLevel(), 0);
+                poseStack.popPose();
                 poseStack.translate(0, 0, 0.0625);
             }
         }
