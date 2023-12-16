@@ -199,6 +199,12 @@
             "refurbished_furniture:block/kitchen_drawer/close"
         ]
     },
+    "block.cutting_board.place_ingredient": {
+        "subtitle": "subtitle.refurbished_furniture.cutting_board.place_ingredient",
+        "sounds": [
+            "refurbished_furniture:block/cutting_board/place_ingredient"
+        ]
+    },
     "item.package.open": {
         "subtitle": "subtitle.refurbished_furniture.package_open",
         "sounds": [

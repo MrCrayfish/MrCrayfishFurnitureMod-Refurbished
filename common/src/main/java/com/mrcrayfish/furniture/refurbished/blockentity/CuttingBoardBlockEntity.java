@@ -100,6 +100,7 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
             this.placedByPlayer = true;
             this.canExtract = false;
             this.setItem(placeIndex, copy);
+            this.playPlaceIngredientSound(1.0F);
             return true;
         }
         int removeIndex = this.getHeadIndex();
@@ -204,6 +205,13 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
         entity.setDefaultPickUpDelay();
         entity.setDeltaMovement(new Vec3(0, 0.15, 0));
         level.addFreshEntity(entity);
+    }
+
+    private void playPlaceIngredientSound(float pitch)
+    {
+        Level level = Objects.requireNonNull(this.level);
+        Vec3 vec = Vec3.atBottomCenterOf(this.worldPosition);
+        level.playSound(null, vec.x, vec.y, vec.z, ModSounds.BLOCK_CUTTING_BOARD_PLACED_INGREDIENT.get(), SoundSource.PLAYERS, 1.0F, pitch + 0.05F * (float) level.random.nextGaussian());
     }
 
     /**
