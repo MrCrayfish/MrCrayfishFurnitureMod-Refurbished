@@ -33,7 +33,7 @@ public class RecycleBinRecyclingCategory extends FurnitureRecipeCategory<Recycle
     {
         this.background = helper.createDrawable(Plugin.TEXTURES, 0, 190, 118, 64);
         this.icon = helper.createDrawableItemStack(new ItemStack(ModBlocks.RECYCLE_BIN.get()));
-        this.arrow = helper.createAnimatedDrawable(helper.createDrawable(Plugin.TEXTURES, 118, 190, 24, 17), Config.SERVER.recycleBin.processingTime.get(), IDrawableAnimated.StartDirection.LEFT, false);
+        this.arrow = helper.createAnimatedDrawable(helper.createDrawable(Plugin.TEXTURES, 93, 173, 24, 17), Config.SERVER.recycleBin.processingTime.get(), IDrawableAnimated.StartDirection.LEFT, false);
     }
 
     @Override
