@@ -53,7 +53,7 @@ public class DrawerBlockEntity extends RowedStorageBlockEntity
         this.setDrawState(state, false);
     }
 
-    private void setDrawState(BlockState state, boolean open)
+    protected void setDrawState(BlockState state, boolean open)
     {
         Level level = this.getLevel();
         if(level != null)
