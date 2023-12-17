@@ -11,15 +11,21 @@ import com.mrcrayfish.furniture.refurbished.client.LinkHandler;
 import com.mrcrayfish.furniture.refurbished.client.ToolAnimationRenderer;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.PostBoxScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.toast.ItemToast;
+import com.mrcrayfish.furniture.refurbished.client.particle.ItemFlushParticle;
 import com.mrcrayfish.furniture.refurbished.computer.client.PaddleBallGraphics;
 import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
 import com.mrcrayfish.furniture.refurbished.network.message.*;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderBuffers;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -166,6 +172,19 @@ public class ClientPlayHandler
         {
             case SPATULA -> ToolAnimationRenderer.get().playSpatulaAnimation(message.getPos(), message.getDirection());
             case KNIFE -> ToolAnimationRenderer.get().playKnifeAnimation(message.getPos(), message.getDirection());
+        }
+    }
+
+    public static void handleMessageFlushItem(MessageFlushItem message)
+    {
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.level != null && mc.level.getEntity(message.getEntityId()) instanceof ItemEntity entity)
+        {
+            EntityRenderDispatcher dispatcher = mc.getEntityRenderDispatcher();
+            RenderBuffers buffers = mc.renderBuffers();
+            Vec3 pos = Vec3.atCenterOf(message.getPos());
+            mc.particleEngine.add(new ItemFlushParticle(dispatcher, buffers, mc.level, entity, pos));
+            mc.level.removeEntity(message.getEntityId(), Entity.RemovalReason.DISCARDED);
         }
     }
 }

@@ -10,9 +10,11 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.SoundActions;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidUtil;
@@ -49,6 +51,12 @@ public class ForgeFluidHelper implements IFluidHelper
     public InteractionResult performInteractionWithBlock(Player player, InteractionHand hand, Level level, BlockPos pos, Direction face)
     {
         return FluidUtil.interactWithFluidHandler(player, hand, level, pos, face) ? InteractionResult.SUCCESS : InteractionResult.PASS;
+    }
+
+    @Override
+    public boolean isFluidContainerItem(ItemStack stack)
+    {
+        return stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent();
     }
 
     public static class ForgeFluidContainer extends FluidContainer

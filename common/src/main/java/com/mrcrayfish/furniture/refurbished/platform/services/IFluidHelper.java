@@ -7,6 +7,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 
@@ -25,4 +26,6 @@ public interface IFluidHelper
     FluidContainer createFluidContainer(long capacity, @Nullable Consumer<FluidContainer> onChange);
 
     InteractionResult performInteractionWithBlock(Player player, InteractionHand hand, Level level, BlockPos pos, Direction face);
+
+    boolean isFluidContainerItem(ItemStack stack);
 }

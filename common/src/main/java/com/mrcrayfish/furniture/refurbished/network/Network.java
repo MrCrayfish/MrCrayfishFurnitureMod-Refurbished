@@ -34,6 +34,7 @@ public class Network
             .registerPlayMessage(MessagePaddleBall.Event.class, MessageDirection.PLAY_CLIENT_BOUND)
             .registerPlayMessage(MessageUpdatePainting.class, MessageDirection.PLAY_SERVER_BOUND)
             .registerPlayMessage(MessageToolAnimation.class, MessageDirection.PLAY_CLIENT_BOUND)
+            .registerPlayMessage(MessageFlushItem.class, MessageDirection.PLAY_CLIENT_BOUND)
             .build();
 
     public static void init() {}
