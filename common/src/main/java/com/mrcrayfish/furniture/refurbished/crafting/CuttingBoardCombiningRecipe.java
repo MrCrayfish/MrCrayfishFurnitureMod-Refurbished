@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeSerializers;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -93,6 +94,12 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
     public RecipeType<?> getType()
     {
         return ModRecipeTypes.CUTTING_BOARD_COMBINING.get();
+    }
+
+    @Override
+    public NonNullList<Ingredient> getIngredients()
+    {
+        return NonNullList.of(Ingredient.EMPTY, this.inputs);
     }
 
     public boolean completelyMatches(Container container)

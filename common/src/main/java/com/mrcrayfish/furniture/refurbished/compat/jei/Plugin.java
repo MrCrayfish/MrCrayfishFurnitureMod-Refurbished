@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.compat.jei;
 
+import com.mrcrayfish.furniture.refurbished.compat.jei.categories.CuttingBoardCombiningCategory;
 import com.mrcrayfish.furniture.refurbished.compat.jei.categories.CuttingBoardSlicingCategory;
 import com.mrcrayfish.furniture.refurbished.compat.jei.categories.FreezerSolidifyingCategory;
 import com.mrcrayfish.furniture.refurbished.compat.jei.categories.FryingPanCookingCategory;
@@ -69,6 +70,7 @@ public class Plugin implements IModPlugin
         registration.addRecipeCategories(new RecycleBinRecyclingCategory(helper));
         registration.addRecipeCategories(new ToasterToastingCategory(helper));
         registration.addRecipeCategories(new GrillCookingCategory(helper));
+        registration.addRecipeCategories(new CuttingBoardCombiningCategory(helper));
     }
 
     @Override
@@ -82,6 +84,7 @@ public class Plugin implements IModPlugin
         registration.addRecipes(RecycleBinRecyclingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.RECYCLE_BIN_RECYCLING.get()));
         registration.addRecipes(ToasterToastingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.TOASTER_HEATING.get()));
         registration.addRecipes(GrillCookingCategory.TYPE, this.getGrillRecipes(manager));
+        registration.addRecipes(CuttingBoardCombiningCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.CUTTING_BOARD_COMBINING.get()));
 
         // TODO ingredient info
         //registration.addIngredientInfo(new ItemStack(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get()), VanillaTypes.ITEM_STACK, Utils.translation("jei_ingredient_info", "electricity_generator"));
