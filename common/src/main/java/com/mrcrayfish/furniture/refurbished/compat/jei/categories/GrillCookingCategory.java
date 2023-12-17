@@ -75,7 +75,7 @@ public class GrillCookingCategory extends FurnitureRecipeCategory<AbstractCookin
         builder.addSlot(RecipeIngredientRole.INPUT, 26, 6).addIngredients(recipe.getIngredients().get(0));
         builder.addSlot(RecipeIngredientRole.OUTPUT, 99, 31).addItemStack(Plugin.getResult(recipe));
         builder.addSlot(RecipeIngredientRole.RENDER_ONLY, 71, 3).addItemStack(new ItemStack(ModItems.SPATULA.get()));
-        this.arrow = this.helper.createAnimatedDrawable(this.helper.createDrawable(Plugin.TEXTURES, 135, 136, 24, 17), recipe.getCookingTime(), IDrawableAnimated.StartDirection.LEFT, false);
+        this.arrow = this.helper.createAnimatedDrawable(this.helper.createDrawable(Plugin.TEXTURES, 133, 136, 24, 17), recipe.getCookingTime(), IDrawableAnimated.StartDirection.LEFT, false);
     }
 
     @Override
@@ -85,8 +85,8 @@ public class GrillCookingCategory extends FurnitureRecipeCategory<AbstractCookin
         this.drawSeconds(graphics, 80, 50, recipe.getCookingTime());
         if(recipe instanceof CampfireCookingRecipe)
         {
-            graphics.fill(102, 5, 102 + 16, 5 + 16, 0x33000000);
-            graphics.renderFakeItem(this.campfireStack, 102, 5);
+            graphics.fill(99, 5, 99 + 16, 5 + 16, 0x33000000);
+            graphics.renderFakeItem(this.campfireStack, 99, 5);
         }
     }
 
@@ -97,7 +97,7 @@ public class GrillCookingCategory extends FurnitureRecipeCategory<AbstractCookin
         {
             return Plugin.getItemTooltip(ModBlocks.GRILL_RED.get());
         }
-        if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, 103, 5, 16, 16))
+        if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, 99, 5, 16, 16))
         {
             return List.of(Utils.translation("gui", "jei_campfire_info"));
         }
