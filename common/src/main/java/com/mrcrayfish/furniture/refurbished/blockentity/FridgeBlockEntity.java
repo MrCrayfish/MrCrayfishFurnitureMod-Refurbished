@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.mrcrayfish.furniture.refurbished.block.FridgeBlock;
+import com.mrcrayfish.furniture.refurbished.block.StoveBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
@@ -11,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Author: MrCrayfish
@@ -38,14 +40,16 @@ public class FridgeBlockEntity extends RowedStorageBlockEntity
     @Override
     public void onOpen(Level level, BlockPos pos, BlockState state)
     {
-        level.playSound(null, this.worldPosition, ModSounds.BLOCK_FRIDGE_OPEN.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.random.nextFloat());
+        Vec3 center = Vec3.atCenterOf(this.worldPosition).relative(state.getValue(FridgeBlock.DIRECTION).getOpposite(), 0.5);
+        level.playSound(null, center.x, center.y, center.z, ModSounds.BLOCK_FRIDGE_OPEN.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.random.nextFloat());
         this.setDoorState(state, true);
     }
 
     @Override
     public void onClose(Level level, BlockPos pos, BlockState state)
     {
-        level.playSound(null, this.worldPosition, ModSounds.BLOCK_FRIDGE_CLOSE.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.random.nextFloat());
+        Vec3 center = Vec3.atCenterOf(this.worldPosition).relative(state.getValue(FridgeBlock.DIRECTION).getOpposite(), 0.5);
+        level.playSound(null, center.x, center.y, center.z, ModSounds.BLOCK_FRIDGE_CLOSE.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.random.nextFloat());
         this.setDoorState(state, false);
     }
 
