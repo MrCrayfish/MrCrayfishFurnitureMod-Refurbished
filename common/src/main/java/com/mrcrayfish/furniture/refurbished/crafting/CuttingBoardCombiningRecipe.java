@@ -122,6 +122,7 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
             }
             object.add("input", inputArray);
             object.addProperty("output", BuiltInRegistries.ITEM.getKey(result.output.getItem()).toString());
+            object.addProperty("count", result.output.getCount());
         }
 
         @Override
@@ -133,7 +134,8 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
             }).toArray(Ingredient[]::new);
             String outputString = GsonHelper.getAsString(object, "output");
             Item item = BuiltInRegistries.ITEM.getOptional(new ResourceLocation(outputString)).orElseThrow(() -> new IllegalStateException("Item: " + outputString + " does not exist"));
-            ItemStack output = new ItemStack(item, 1);
+            int count = GsonHelper.getAsInt(object, "count", 1);
+            ItemStack output = new ItemStack(item, count);
             return new CuttingBoardCombiningRecipe(id, inputs, output);
         }
 
