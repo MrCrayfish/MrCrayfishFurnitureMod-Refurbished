@@ -180,6 +180,7 @@ public interface IElectricityNode
             IElectricityNode node = c.getNodeB(level);
             if(node != null) {
                 node.removeConnection(c);
+                node.syncNodeData();
             }
         });
         connections.clear();
