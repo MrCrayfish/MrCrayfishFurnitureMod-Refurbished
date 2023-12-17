@@ -14,6 +14,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -354,6 +355,10 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
         this.clearContent();
         this.spawnSliceParticles(stack);
         this.spawnMagicParticles();
+
+        Vec3 center = Vec3.atBottomCenterOf(this.worldPosition);
+        level.playSound(null, center.x, center.y, center.z, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 1.0F, 1.0F);
+
 
         if(spawnIntoLevel)
         {
