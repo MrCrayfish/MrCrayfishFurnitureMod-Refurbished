@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.mrcrayfish.furniture.refurbished.block.StoveBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
+import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.inventory.BuildableContainerData;
 import com.mrcrayfish.furniture.refurbished.inventory.StoveMenu;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
@@ -12,6 +13,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -22,6 +24,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
@@ -221,13 +224,16 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     @Override
     public void onOpen(Level level, BlockPos pos, BlockState state)
     {
-        // TODO sounds
+        Vec3 center = Vec3.atCenterOf(this.worldPosition).relative(state.getValue(StoveBlock.DIRECTION).getOpposite(), 0.5);
+        level.playSound(null, center.x, center.y, center.z, ModSounds.BLOCK_STOVE_OPEN.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.random.nextFloat());
         this.setDoorState(state, true);
     }
 
     @Override
     public void onClose(Level level, BlockPos pos, BlockState state)
     {
+        Vec3 center = Vec3.atCenterOf(this.worldPosition).relative(state.getValue(StoveBlock.DIRECTION).getOpposite(), 0.5);
+        level.playSound(null, center.x, center.y, center.z, ModSounds.BLOCK_STOVE_CLOSE.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.random.nextFloat());
         this.setDoorState(state, false);
     }
 

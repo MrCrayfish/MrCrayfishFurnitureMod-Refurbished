@@ -225,6 +225,18 @@
             "refurbished_furniture:block/fridge/close"
         ]
     },
+    "block.stove.open": {
+        "subtitle": "subtitle.refurbished_furniture.stove.open",
+        "sounds": [
+            "refurbished_furniture:block/stove/open"
+        ]
+    },
+    "block.stove.close": {
+        "subtitle": "subtitle.refurbished_furniture.stove.close",
+        "sounds": [
+            "refurbished_furniture:block/stove/close"
+        ]
+    },
     "item.package.open": {
         "subtitle": "subtitle.refurbished_furniture.package_open",
         "sounds": [
