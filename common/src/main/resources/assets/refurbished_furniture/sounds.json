@@ -249,6 +249,18 @@
             "refurbished_furniture:block/freezer/close"
         ]
     },
+    "block.drawer.open": {
+        "subtitle": "subtitle.refurbished_furniture.drawer.open",
+        "sounds": [
+            "refurbished_furniture:block/drawer/open"
+        ]
+    },
+    "block.drawer.close": {
+        "subtitle": "subtitle.refurbished_furniture.drawer.close",
+        "sounds": [
+            "refurbished_furniture:block/drawer/close"
+        ]
+    },
     "item.package.open": {
         "subtitle": "subtitle.refurbished_furniture.package_open",
         "sounds": [

@@ -55,6 +55,8 @@ public class ModSounds
     public static final RegistryEntry<SoundEvent> BLOCK_FREEZER_CLOSE = RegistryEntry.soundEvent(Utils.resource("block.freezer.close"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> BLOCK_STOVE_OPEN = RegistryEntry.soundEvent(Utils.resource("block.stove.open"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> BLOCK_STOVE_CLOSE = RegistryEntry.soundEvent(Utils.resource("block.stove.close"), id -> () -> SoundEvent.createVariableRangeEvent(id));
+    public static final RegistryEntry<SoundEvent> BLOCK_DRAWER_OPEN = RegistryEntry.soundEvent(Utils.resource("block.drawer.open"), id -> () -> SoundEvent.createVariableRangeEvent(id));
+    public static final RegistryEntry<SoundEvent> BLOCK_DRAWER_CLOSE = RegistryEntry.soundEvent(Utils.resource("block.drawer.close"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> ITEM_PACKAGE_OPEN = RegistryEntry.soundEvent(Utils.resource("item.package.open"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> ITEM_WRENCH_SELECTED_NODE = RegistryEntry.soundEvent(Utils.resource("item.wrench.selected_node"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> ITEM_WRENCH_REMOVE_LINK = RegistryEntry.soundEvent(Utils.resource("item.wrench.remove_link"), id -> () -> SoundEvent.createVariableRangeEvent(id));
