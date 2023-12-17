@@ -1,8 +1,10 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 
+import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.IconButton;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.OnOffSlider;
+import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import com.mrcrayfish.furniture.refurbished.inventory.ElectricityGeneratorMenu;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageTogglePower;
@@ -59,6 +61,11 @@ public class ElectricityGeneratorScreen extends AbstractContainerScreen<Electric
         Status status = this.getStatus();
         graphics.blit(IconButton.ICON_TEXTURES, this.leftPos + 66, this.topPos + 29, status.iconU, status.iconV, 10, 10, 64, 64);
         graphics.blit(IconButton.ICON_TEXTURES, this.leftPos + 66, this.topPos + 46, 0, 10, 10, 10, 64, 64);
+
+        if(this.menu.getEnergy() > 0 && this.menu.getTotalEnergy() > 0 && ScreenHelper.isMouseWithinBounds(mouseX, mouseY, this.leftPos + 26, this.topPos + 25, 14, 14))
+        {
+            this.setTooltipForNextRenderPass(Utils.translation("gui", "progress", this.menu.getEnergy(), Components.GUI_SLASH, this.menu.getTotalEnergy()));
+        }
     }
 
     @Override

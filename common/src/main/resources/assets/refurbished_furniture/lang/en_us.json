@@ -517,6 +517,7 @@
     "gui.refurbished_furniture.connect_to_power": "Ensure the block is receiving power from an %s. It can be connected using a %s.",
     "gui.refurbished_furniture.electricity_generator": "Electricity Generator",
     "gui.refurbished_furniture.jei_campfire_info": "Inherited from Campfire Cooking",
+    "gui.refurbished_furniture.progress": "%s %s %s",
     "subtitle.refurbished_furniture.package_open": "Package Opening",
     "computer_program.refurbished_furniture.paddle_ball": "Paddle Ball",
     "computer_program.refurbished_furniture.paddle_ball.play_ai": "Play vs AI",
