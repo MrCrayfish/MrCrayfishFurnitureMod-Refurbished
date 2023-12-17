@@ -253,7 +253,9 @@ public class CommonRecipeProvider
         this.simpleCombined(ModItems.GLOW_BERRY_JAM.get(), ModItems.TOAST.get(), ModItems.GLOW_BERRY_JAM_TOAST.get(), 1, RecipeCategory.FOOD);
 
         // Solidifying
-        this.freezerSolidifying(Items.WATER_BUCKET, Items.ICE, 300, 1.0F);
+        this.freezerSolidifying(Items.WATER_BUCKET, Items.ICE, 600, 1.0F);
+        this.freezerSolidifying(Items.ICE, Items.PACKED_ICE, 1200, 1.0F);
+        this.freezerSolidifying(Items.PACKED_ICE, Items.BLUE_ICE, 2400, 1.0F);
 
         // Toasting
         this.toasterHeating(ModItems.BREAD_SLICE.get(), ModItems.TOAST.get(), 300, 0.5F);
