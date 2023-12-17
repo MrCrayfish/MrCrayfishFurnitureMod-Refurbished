@@ -33,7 +33,7 @@ import java.util.stream.StreamSupport;
  */
 public class CuttingBoardCombiningRecipe implements Recipe<Container>
 {
-    public static final int MAX_INGREDIENTS = 9;
+    public static final int MAX_INGREDIENTS = 5;
 
     protected final ResourceLocation id;
     protected final Ingredient[] inputs;
