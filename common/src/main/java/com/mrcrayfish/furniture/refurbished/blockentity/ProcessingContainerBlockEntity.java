@@ -308,7 +308,7 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
         for(int slot : slots)
         {
             ItemStack stack = this.getItem(slot);
-            if(stack.isEmpty() || ItemStack.matches(result, stack) && stack.getCount() < stack.getMaxStackSize())
+            if(stack.isEmpty() || ItemStack.isSameItemSameTags(result, stack) && stack.getCount() < stack.getMaxStackSize())
             {
                 return true;
             }
