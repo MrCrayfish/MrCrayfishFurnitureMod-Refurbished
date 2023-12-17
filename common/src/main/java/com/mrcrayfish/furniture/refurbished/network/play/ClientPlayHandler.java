@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.network.play;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.blockentity.FryingPanBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.GrillBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.IWaterTap;
 import com.mrcrayfish.furniture.refurbished.blockentity.TelevisionBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.IFluidContainerBlock;
@@ -185,6 +186,15 @@ public class ClientPlayHandler
             Vec3 pos = Vec3.atCenterOf(message.getPos());
             mc.particleEngine.add(new ItemFlushParticle(dispatcher, buffers, mc.level, entity, pos));
             mc.level.removeEntity(message.getEntityId(), Entity.RemovalReason.DISCARDED);
+        }
+    }
+
+    public static void handleMessageWaterTapAnimation(MessageWaterTapAnimation message)
+    {
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.level != null && mc.level.getBlockEntity(message.getPos()) instanceof IWaterTap tap)
+        {
+            tap.playWaterAnimation();
         }
     }
 }

@@ -54,4 +54,9 @@ public class Utils
             list.set(randIndex, temp);
         }
     }
+
+    public static double toPixelUnits(double value)
+    {
+        return value * 0.0625;
+    }
 }

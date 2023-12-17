@@ -1,11 +1,16 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.mrcrayfish.furniture.refurbished.Config;
+import com.mrcrayfish.furniture.refurbished.block.KitchenSinkBlock;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.IFluidContainerBlock;
+import com.mrcrayfish.furniture.refurbished.core.ModParticleTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
+import com.mrcrayfish.furniture.refurbished.network.Network;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageWaterTapAnimation;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -37,12 +42,15 @@ import java.util.Optional;
 /**
  * Author: MrCrayfish
  */
-public class KitchenSinkBlockEntity extends BlockEntity implements IFluidContainerBlock
+public class KitchenSinkBlockEntity extends BlockEntity implements IFluidContainerBlock, IWaterTap
 {
     protected final FluidContainer tank = FluidContainer.create(Config.SERVER.kitchenSink.fluidCapacity.get(), container -> {
         this.setChanged();
         container.sync(this);
     });
+
+    // Client only
+    private int animationTime;
 
     public KitchenSinkBlockEntity(BlockPos pos, BlockState state)
     {
@@ -83,6 +91,7 @@ public class KitchenSinkBlockEntity extends BlockEntity implements IFluidContain
                 long filled = this.tank.push(Fluids.WATER, FluidContainer.BUCKET_CAPACITY, false);
                 if(filled > 0)
                 {
+                    Network.getPlay().sendToTrackingBlockEntity(() -> this, new MessageWaterTapAnimation(this.worldPosition));
                     Objects.requireNonNull(this.level).playSound(null, this.worldPosition, ModSounds.BLOCK_KITCHEN_SINK_FILL.get(), SoundSource.BLOCKS);
                     return InteractionResult.SUCCESS;
                 }
@@ -102,11 +111,34 @@ public class KitchenSinkBlockEntity extends BlockEntity implements IFluidContain
                     level.addFreshEntity(entity);
                     level.playSound(null, this.worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS);
                     level.levelEvent(LevelEvent.LAVA_FIZZ, this.worldPosition, 0);
+                    Network.getPlay().sendToTrackingBlockEntity(() -> this, new MessageWaterTapAnimation(this.worldPosition));
                     return InteractionResult.SUCCESS;
                 }
             }
         }
         return Services.FLUID.performInteractionWithBlock(player, hand, this.getLevel(), this.getBlockPos(), result.getDirection());
+    }
+
+    @Override
+    public void playWaterAnimation()
+    {
+        this.animationTime = 4;
+    }
+
+    public static void clientTick(Level level, BlockPos pos, BlockState state, KitchenSinkBlockEntity kitchenSink)
+    {
+        if(kitchenSink.animationTime > 0)
+        {
+            Vec3 tap = Vec3.atBottomCenterOf(pos).add(0, Utils.toPixelUnits(18), 0);
+            tap = tap.relative(state.getValue(KitchenSinkBlock.DIRECTION), Utils.toPixelUnits(2));
+            for(int i = 0; i < 5; i++)
+            {
+                double x = tap.x + Utils.toPixelUnits(0.5) * level.random.nextGaussian();
+                double z = tap.z + Utils.toPixelUnits(0.5) * level.random.nextGaussian();
+                level.addParticle(ModParticleTypes.TAP_WATER.get(), x, tap.y, z, 0, 0, 0);
+            }
+            kitchenSink.animationTime--;
+        }
     }
 
     @Override

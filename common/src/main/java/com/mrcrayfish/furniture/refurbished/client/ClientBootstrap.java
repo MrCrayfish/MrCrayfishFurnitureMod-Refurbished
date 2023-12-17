@@ -17,6 +17,7 @@ import com.mrcrayfish.furniture.refurbished.client.gui.screen.StoveScreen;
 import com.mrcrayfish.furniture.refurbished.client.particle.BounceParticle;
 import com.mrcrayfish.furniture.refurbished.client.particle.SteamParticle;
 import com.mrcrayfish.furniture.refurbished.client.particle.SuperBounceParticle;
+import com.mrcrayfish.furniture.refurbished.client.particle.TapWaterParticle;
 import com.mrcrayfish.furniture.refurbished.client.registration.BlockColorsRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.BlockEntityRendererRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.EntityRendererRegister;
@@ -303,6 +304,7 @@ public class ClientBootstrap
         register.apply(ModParticleTypes.BOUNCE.get(), BounceParticle.Provider::new);
         register.apply(ModParticleTypes.SUPER_BOUNCE.get(), SuperBounceParticle.Provider::new);
         register.apply(ModParticleTypes.STEAM.get(), SteamParticle.Provider::new);
+        register.apply(ModParticleTypes.TAP_WATER.get(), TapWaterParticle.Provider::new);
     }
 
     public static void registerBlockColors(BlockColorsRegister register)

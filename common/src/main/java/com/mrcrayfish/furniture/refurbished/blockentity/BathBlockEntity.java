@@ -2,11 +2,16 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.block.BathBlock;
+import com.mrcrayfish.furniture.refurbished.block.KitchenSinkBlock;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.IFluidContainerBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
+import com.mrcrayfish.furniture.refurbished.core.ModParticleTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
+import com.mrcrayfish.furniture.refurbished.network.Network;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageWaterTapAnimation;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -37,9 +42,12 @@ import java.util.Objects;
 /**
  * Author: MrCrayfish
  */
-public class BathBlockEntity extends BlockEntity implements IFluidContainerBlock
+public class BathBlockEntity extends BlockEntity implements IFluidContainerBlock, IWaterTap
 {
     protected final FluidContainer tank;
+
+    // Client only
+    private int animationTime;
 
     public BathBlockEntity(BlockPos pos, BlockState state)
     {
@@ -108,6 +116,7 @@ public class BathBlockEntity extends BlockEntity implements IFluidContainerBlock
                 long filled = tank.push(Fluids.WATER, FluidContainer.BUCKET_CAPACITY, false);
                 if(filled > 0)
                 {
+                    this.sendTapWaterAnimation();
                     Objects.requireNonNull(this.level).playSound(null, this.worldPosition, ModSounds.BLOCK_KITCHEN_SINK_FILL.get(), SoundSource.BLOCKS);
                     return InteractionResult.SUCCESS;
                 }
@@ -127,11 +136,47 @@ public class BathBlockEntity extends BlockEntity implements IFluidContainerBlock
                     level.addFreshEntity(entity);
                     level.playSound(null, this.worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS);
                     level.levelEvent(LevelEvent.LAVA_FIZZ, this.worldPosition, 0);
+                    this.sendTapWaterAnimation();
                     return InteractionResult.SUCCESS;
                 }
             }
         }
         return Services.FLUID.performInteractionWithBlock(player, hand, this.getLevel(), this.getBlockPos(), result.getDirection());
+    }
+
+    private void sendTapWaterAnimation()
+    {
+        BlockState state = this.getBlockState();
+        if(state.hasProperty(BathBlock.DIRECTION))
+        {
+            BlockPos tapPos = this.isHead() ? this.worldPosition : this.worldPosition.relative(state.getValue(BathBlock.DIRECTION));
+            Network.getPlay().sendToTrackingBlockEntity(() -> this, new MessageWaterTapAnimation(tapPos));
+        }
+    }
+
+    @Override
+    public void playWaterAnimation()
+    {
+        if(this.isHead())
+        {
+            this.animationTime = 4;
+        }
+    }
+
+    public static void clientTick(Level level, BlockPos pos, BlockState state, BathBlockEntity bath)
+    {
+        if(bath.animationTime > 0)
+        {
+            Vec3 tap = Vec3.atBottomCenterOf(pos).add(0, Utils.toPixelUnits(18), 0);
+            tap = tap.relative(state.getValue(BathBlock.DIRECTION), Utils.toPixelUnits(2));
+            for(int i = 0; i < 5; i++)
+            {
+                double x = tap.x + Utils.toPixelUnits(0.5) * level.random.nextGaussian();
+                double z = tap.z + Utils.toPixelUnits(0.5) * level.random.nextGaussian();
+                level.addParticle(ModParticleTypes.TAP_WATER.get(), x, tap.y, z, 0, 0, 0);
+            }
+            bath.animationTime--;
+        }
     }
 
     @Override
