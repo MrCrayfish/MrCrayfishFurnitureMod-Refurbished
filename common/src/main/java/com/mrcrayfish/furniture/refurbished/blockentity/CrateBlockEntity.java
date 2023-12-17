@@ -2,13 +2,18 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.mrcrayfish.furniture.refurbished.block.CrateBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
+import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Author: MrCrayfish
@@ -36,13 +41,16 @@ public class CrateBlockEntity extends RowedStorageBlockEntity
     @Override
     public void onOpen(Level level, BlockPos pos, BlockState state)
     {
-        // TODO sounds
+        Vec3 top = Vec3.upFromBottomCenterOf(pos, 1.0);
+        level.playSound(null, top.x, top.y, top.z, SoundEvents.BARREL_OPEN, SoundSource.BLOCKS, 0.5F, 0.7F + 0.1F * level.random.nextFloat());
         this.setLidState(state, true);
     }
 
     @Override
     public void onClose(Level level, BlockPos pos, BlockState state)
     {
+        Vec3 top = Vec3.upFromBottomCenterOf(pos, 1.0);
+        level.playSound(null, top.x, top.y, top.z, SoundEvents.BARREL_CLOSE, SoundSource.BLOCKS, 0.5F, 0.7F + 0.1F * level.random.nextFloat());
         this.setLidState(state, false);
     }
 
