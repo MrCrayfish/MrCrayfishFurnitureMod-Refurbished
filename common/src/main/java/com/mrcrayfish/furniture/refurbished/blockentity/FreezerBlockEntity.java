@@ -4,6 +4,7 @@ import com.mrcrayfish.furniture.refurbished.block.FreezerBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
+import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.inventory.BuildableContainerData;
 import com.mrcrayfish.furniture.refurbished.inventory.FreezerMenu;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
@@ -13,6 +14,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
@@ -20,6 +22,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Author: MrCrayfish
@@ -103,13 +106,16 @@ public class FreezerBlockEntity extends ElectricityModuleProcessingContainerBloc
     @Override
     public void onOpen(Level level, BlockPos pos, BlockState state)
     {
-        // TODO sounds
+        Vec3 door = Vec3.atCenterOf(this.worldPosition).relative(state.getValue(FreezerBlock.DIRECTION).getOpposite(), 0.5);
+        level.playSound(null, door.x, door.y, door.z, ModSounds.BLOCK_FREEZER_OPEN.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.random.nextFloat());
         this.setDoorState(state, true);
     }
 
     @Override
     public void onClose(Level level, BlockPos pos, BlockState state)
     {
+        Vec3 door = Vec3.atCenterOf(this.worldPosition).relative(state.getValue(FreezerBlock.DIRECTION).getOpposite(), 0.5);
+        level.playSound(null, door.x, door.y, door.z, ModSounds.BLOCK_FREEZER_CLOSE.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.random.nextFloat());
         this.setDoorState(state, false);
     }
 

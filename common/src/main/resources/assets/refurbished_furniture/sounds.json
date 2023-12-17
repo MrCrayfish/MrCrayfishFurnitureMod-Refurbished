@@ -237,6 +237,18 @@
             "refurbished_furniture:block/stove/close"
         ]
     },
+    "block.freezer.open": {
+        "subtitle": "subtitle.refurbished_furniture.freezer.open",
+        "sounds": [
+            "refurbished_furniture:block/freezer/open"
+        ]
+    },
+    "block.freezer.close": {
+        "subtitle": "subtitle.refurbished_furniture.freezer.close",
+        "sounds": [
+            "refurbished_furniture:block/freezer/close"
+        ]
+    },
     "item.package.open": {
         "subtitle": "subtitle.refurbished_furniture.package_open",
         "sounds": [
