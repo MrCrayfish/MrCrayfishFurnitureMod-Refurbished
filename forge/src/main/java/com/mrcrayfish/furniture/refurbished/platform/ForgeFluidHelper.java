@@ -56,7 +56,7 @@ public class ForgeFluidHelper implements IFluidHelper
     @Override
     public boolean isFluidContainerItem(ItemStack stack)
     {
-        return stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent();
+        return !stack.isEmpty() && stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent();
     }
 
     public static class ForgeFluidContainer extends FluidContainer

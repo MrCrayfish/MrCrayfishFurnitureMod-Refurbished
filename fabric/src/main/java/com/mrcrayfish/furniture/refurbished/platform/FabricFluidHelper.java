@@ -61,7 +61,7 @@ public class FabricFluidHelper implements IFluidHelper
     @Override
     public boolean isFluidContainerItem(ItemStack stack)
     {
-        return FluidStorage.ITEM.find(stack, ContainerItemContext.withConstant(stack)) != null;
+        return !stack.isEmpty() && FluidStorage.ITEM.find(stack, ContainerItemContext.withConstant(stack)) != null;
     }
 
     public static class FabricFluidContainer extends FluidContainer
