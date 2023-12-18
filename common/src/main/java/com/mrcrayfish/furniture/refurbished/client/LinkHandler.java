@@ -89,6 +89,14 @@ public class LinkHandler
     }
 
     /**
+     * @return
+     */
+    public double getLinkDistance()
+    {
+        return this.distance;
+    }
+
+    /**
      * Updates the node hit result before rendering
      *
      * @param partialTick the current partial tick
