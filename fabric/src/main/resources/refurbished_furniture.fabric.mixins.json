@@ -8,7 +8,6 @@
         "FabricLivingEntityMixin"
     ],
     "client": [
-        "client.FabricCreativeModeInventoryScreenMixin"
     ],
     "injectors": {
         "defaultRequire": 1
