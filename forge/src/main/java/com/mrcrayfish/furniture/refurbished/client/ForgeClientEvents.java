@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
+import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.client.registration.ParticleProviderRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
@@ -25,6 +26,7 @@ import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
+import net.minecraftforge.client.event.RegisterRecipeBookCategoriesEvent;
 import net.minecraftforge.client.event.RenderHighlightEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import org.apache.commons.lang3.function.TriFunction;
@@ -132,5 +134,10 @@ public class ForgeClientEvents
                 overlay.draw(graphics, partialTick);
             });
         });
+    }
+
+    public static void onRegisterRecipeCategories(RegisterRecipeBookCategoriesEvent event)
+    {
+        ClientBootstrap.registerRecipeBookCategories(event::registerRecipeCategoryFinder);
     }
 }

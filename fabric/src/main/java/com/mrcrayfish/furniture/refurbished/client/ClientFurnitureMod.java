@@ -15,6 +15,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.client.player.ClientPreAttackCallback;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
@@ -27,14 +28,22 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.function.TriFunction;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 /**
  * Author: MrCrayfish
  */
 public class ClientFurnitureMod implements ClientModInitializer
 {
+    public static final Map<RecipeType<?>, Function<Recipe<?>, RecipeBookCategories>> RECIPE_TYPE_TO_CATEGORY = new HashMap<>();
+
     @Override
     public void onInitializeClient()
     {
@@ -57,6 +66,7 @@ public class ClientFurnitureMod implements ClientModInitializer
                 ParticleFactoryRegistry.getInstance().register(type, provider::apply);
             }
         });
+        ClientBootstrap.registerRecipeBookCategories(RECIPE_TYPE_TO_CATEGORY::put);
         ModelLoadingRegistry.INSTANCE.registerModelProvider((manager, out) -> ExtraModels.register(out));
 
         WorldRenderEvents.LAST.register(context -> {

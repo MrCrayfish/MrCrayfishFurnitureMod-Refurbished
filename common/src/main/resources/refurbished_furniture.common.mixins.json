@@ -11,7 +11,6 @@
         "SimpleCookingRecipeBuilderMixin"
     ],
     "client": [
-        "client.ClientRecipeBookMixin",
         "client.CreativeModeInventoryScreenMixin",
         "client.ModelManagerMixin",
         "client.ScreenAccessor"

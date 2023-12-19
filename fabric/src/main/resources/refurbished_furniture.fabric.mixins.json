@@ -8,6 +8,7 @@
         "FabricLivingEntityMixin"
     ],
     "client": [
+        "client.ClientRecipeBookMixin"
     ],
     "injectors": {
         "defaultRequire": 1

@@ -24,6 +24,7 @@ import com.mrcrayfish.furniture.refurbished.client.registration.EntityRendererRe
 import com.mrcrayfish.furniture.refurbished.client.registration.HudOverlayRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ItemColorsRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ParticleProviderRegister;
+import com.mrcrayfish.furniture.refurbished.client.registration.RecipeCategoryRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.RenderTypeRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.*;
@@ -36,9 +37,11 @@ import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModParticleTypes;
+import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.image.TextureCache;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.BlockItem;
@@ -344,5 +347,18 @@ public class ClientBootstrap
     public static void registerHudOverlays(HudOverlayRegister register)
     {
         register.apply(Utils.resource("power_indicator"), new NodeIndicatorOverlay());
+    }
+
+    public static void registerRecipeBookCategories(RecipeCategoryRegister register)
+    {
+        // Unknown at the moment since we don't use the crafting book yet
+        register.apply(ModRecipeTypes.GRILL_COOKING.get(), recipe -> RecipeBookCategories.UNKNOWN);
+        register.apply(ModRecipeTypes.FREEZER_SOLIDIFYING.get(), recipe -> RecipeBookCategories.UNKNOWN);
+        register.apply(ModRecipeTypes.TOASTER_HEATING.get(), recipe -> RecipeBookCategories.UNKNOWN);
+        register.apply(ModRecipeTypes.CUTTING_BOARD_SLICING.get(), recipe -> RecipeBookCategories.UNKNOWN);
+        register.apply(ModRecipeTypes.CUTTING_BOARD_COMBINING.get(), recipe -> RecipeBookCategories.UNKNOWN);
+        register.apply(ModRecipeTypes.MICROWAVE_HEATING.get(), recipe -> RecipeBookCategories.UNKNOWN);
+        register.apply(ModRecipeTypes.FRYING_PAN_COOKING.get(), recipe -> RecipeBookCategories.UNKNOWN);
+        register.apply(ModRecipeTypes.RECYCLE_BIN_RECYCLING.get(), recipe -> RecipeBookCategories.UNKNOWN);
     }
 }
