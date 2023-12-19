@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -104,6 +105,12 @@ public class ComputerBlockEntity extends ElectricityModuleBlockEntity implements
     public boolean isServer()
     {
         return this.level != null && !this.level.isClientSide();
+    }
+
+    @Override
+    public boolean isValid(Player player)
+    {
+        return this.isPowered() && Container.stillValidBlockEntity(this, player) && player.equals(this.getUser());
     }
 
     @Override

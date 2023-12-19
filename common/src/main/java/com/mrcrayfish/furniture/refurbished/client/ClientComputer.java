@@ -91,4 +91,10 @@ public class ClientComputer implements IComputer
     {
         return false;
     }
+
+    @Override
+    public boolean isValid(Player player)
+    {
+        return true;
+    }
 }

@@ -49,4 +49,12 @@ public interface IComputer
      * @return True if this computer is running on the server
      */
     boolean isServer();
+
+    /**
+     * Determines if the computer is still valid for access for the given player
+     *
+     * @param player a player instance to test
+     * @return True if the can still access this computer
+     */
+    boolean isValid(Player player);
 }

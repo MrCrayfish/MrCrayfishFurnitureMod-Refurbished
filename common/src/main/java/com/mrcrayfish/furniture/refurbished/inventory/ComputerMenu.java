@@ -56,7 +56,7 @@ public class ComputerMenu extends SimpleContainerMenu implements IElectricityMen
     @Override
     public boolean stillValid(Player player)
     {
-        return player.equals(this.computer.getUser()); // TODO ensure tile entity is valid and is powered
+        return this.computer.isValid(player);
     }
 
     @Override
