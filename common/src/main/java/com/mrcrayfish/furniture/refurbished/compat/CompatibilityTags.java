@@ -24,7 +24,7 @@ public class CompatibilityTags
     public static class Items
     {
         public static final TagKey<Item> FORGE_TOOLS_KNIVES = tag("forge", "tools/knives");
-        public static final TagKey<Item> FABRIC_TOOLS_KNIVES = tag("fabric", "tools/knives");
+        public static final TagKey<Item> FABRIC_TOOLS_KNIVES = tag("c", "knives");
 
         private static TagKey<Item> tag(String modId, String name)
         {
