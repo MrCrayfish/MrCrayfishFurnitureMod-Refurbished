@@ -50,7 +50,7 @@ public abstract class SimpleContainerMenu extends AbstractContainerMenu
         {
             for(int i = 0; i < width; i++)
             {
-                int slotIndex = startIndex + i + j * height;
+                int slotIndex = startIndex + i + j * width;
                 int slotX = x + i * 18;
                 int slotY = y + j * 18;
                 this.addSlot(builder.apply(this.container, slotIndex, slotX, slotY));
