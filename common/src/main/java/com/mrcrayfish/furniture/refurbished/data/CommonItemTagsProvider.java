@@ -19,6 +19,7 @@ public class CommonItemTagsProvider
     {
         // TODO throw exception if items are not in a category tag
         TagBuilder<Item> general = builder.apply(ModTags.Items.GENERAL);
+        general.add(ModBlocks.WORKBENCH.get().asItem());
         general.add(ModBlocks.TABLE_OAK.get().asItem());
         general.add(ModBlocks.TABLE_SPRUCE.get().asItem());
         general.add(ModBlocks.TABLE_BIRCH.get().asItem());
@@ -532,6 +533,7 @@ public class CommonItemTagsProvider
         bathroom.add(ModBlocks.BATH_BLACK.get().asItem());
 
         TagBuilder<Item> electronics = builder.apply(ModTags.Items.ELECTRONICS);
+        electronics.add(ModBlocks.WORKBENCH.get().asItem());
         electronics.add(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get().asItem());
         electronics.add(ModBlocks.ELECTRICITY_GENERATOR_DARK.get().asItem());
         electronics.add(ModBlocks.DOORBELL.get().asItem());

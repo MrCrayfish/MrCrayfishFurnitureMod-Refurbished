@@ -14,6 +14,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 @RegistryContainer
 public class ModBlockEntities
 {
+    public static final RegistryEntry<BlockEntityType<WorkbenchBlockEntity>> WORKBENCH = RegistryEntry.blockEntity(Utils.resource("workbench"), WorkbenchBlockEntity::new, () -> new Block[] {
+            ModBlocks.WORKBENCH.get(),
+    });
+
     public static final RegistryEntry<BlockEntityType<DrawerBlockEntity>> DRAWER = RegistryEntry.blockEntity(Utils.resource("drawer"), DrawerBlockEntity::new, () -> new Block[]{
             // Valid blocks TODO maybe make dynamic?
             ModBlocks.DRAWER_OAK.get(),

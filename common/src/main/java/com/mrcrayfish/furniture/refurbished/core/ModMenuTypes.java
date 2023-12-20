@@ -10,6 +10,7 @@ import com.mrcrayfish.furniture.refurbished.inventory.MicrowaveMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.PostBoxMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.RecycleBinMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.StoveMenu;
+import com.mrcrayfish.furniture.refurbished.inventory.WorkbenchMenu;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.world.inventory.MenuType;
 
@@ -19,6 +20,7 @@ import net.minecraft.world.inventory.MenuType;
 @RegistryContainer
 public class ModMenuTypes
 {
+    public static final RegistryEntry<MenuType<WorkbenchMenu>> WORKBENCH = RegistryEntry.menuType(Utils.resource("workbench"), WorkbenchMenu::new);
     public static final RegistryEntry<MenuType<FreezerMenu>> FREEZER = RegistryEntry.menuType(Utils.resource("freezer"), FreezerMenu::new);
     public static final RegistryEntry<MenuType<MicrowaveMenu>> MICROWAVE = RegistryEntry.menuType(Utils.resource("microwave"), MicrowaveMenu::new);
     public static final RegistryEntry<MenuType<StoveMenu>> STOVE = RegistryEntry.menuType(Utils.resource("stove"), StoveMenu::new);

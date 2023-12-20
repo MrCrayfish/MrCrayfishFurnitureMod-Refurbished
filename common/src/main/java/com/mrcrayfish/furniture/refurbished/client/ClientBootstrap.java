@@ -14,6 +14,7 @@ import com.mrcrayfish.furniture.refurbished.client.gui.screen.MicrowaveScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.PostBoxScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.RecyclingBinScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.StoveScreen;
+import com.mrcrayfish.furniture.refurbished.client.gui.screen.WorkbenchScreen;
 import com.mrcrayfish.furniture.refurbished.client.particle.BounceParticle;
 import com.mrcrayfish.furniture.refurbished.client.particle.SteamParticle;
 import com.mrcrayfish.furniture.refurbished.client.particle.SuperBounceParticle;
@@ -110,6 +111,7 @@ public class ClientBootstrap
         register.apply(ModMenuTypes.RECYCLE_BIN.get(), RecyclingBinScreen::new);
         register.apply(ModMenuTypes.COMPUTER.get(), ComputerScreen::new);
         register.apply(ModMenuTypes.DOOR_MAT.get(), DoorMatScreen::new);
+        register.apply(ModMenuTypes.WORKBENCH.get(), WorkbenchScreen::new);
     }
 
     public static void registerBlockEntityRenderers(BlockEntityRendererRegister register)
