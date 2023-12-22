@@ -13,11 +13,14 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +39,8 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     private static final int WINDOW_HEIGHT = 70;
 
     protected double scroll; // 0-1
-    protected int hoveredIndex;
+    protected int selectedIndex = -1;
+    protected int hoveredIndex = -1;
 
     public WorkbenchScreen(WorkbenchMenu menu, Inventory playerInventory, Component title)
     {
@@ -77,7 +81,8 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         {
             int buttonX = this.leftPos + 46 + startIndex % RECIPES_PER_ROW;
             int buttonY = this.topPos + 18 + startIndex / RECIPES_PER_ROW;
-            graphics.blit(WORKBENCH_TEXTURE, buttonX, buttonY, 176, 0, BUTTON_SIZE, BUTTON_SIZE);
+            boolean selected = i == this.selectedIndex;
+            graphics.blit(WORKBENCH_TEXTURE, buttonX, buttonY, 176, selected ? BUTTON_SIZE : 0, BUTTON_SIZE, BUTTON_SIZE);
             graphics.renderFakeItem(recipes.get(i).getResultItem(this.menu.getLevel().registryAccess()), buttonX + 2, buttonY + 2);
             if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, buttonX, buttonY, BUTTON_SIZE, BUTTON_SIZE))
             {
@@ -102,5 +107,17 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
             recipe.getMaterials().forEach(material -> components.add(new ClientWorkbenchRecipeIngredientTooltip(material)));
         }
         ClientServices.PLATFORM.renderTooltip(graphics, this.font, components, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE);
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button)
+    {
+        if(button == GLFW.GLFW_MOUSE_BUTTON_LEFT && this.hoveredIndex != -1)
+        {
+            this.selectedIndex = this.hoveredIndex;
+            this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+            return true;
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 }
