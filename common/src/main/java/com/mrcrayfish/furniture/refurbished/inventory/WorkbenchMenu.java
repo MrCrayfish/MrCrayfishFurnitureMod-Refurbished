@@ -1,18 +1,27 @@
 package com.mrcrayfish.furniture.refurbished.inventory;
 
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
+import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
+import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchCraftingRecipe;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
+
+import java.util.List;
 
 /**
  * Author: MrCrayfish
  */
 public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMenu
 {
+    private final Level level;
+    private final List<WorkbenchCraftingRecipe> recipes;
+
     public WorkbenchMenu(int windowId, Inventory playerInventory)
     {
         this(windowId, playerInventory, new SimpleContainer(9));
@@ -23,9 +32,24 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
         super(ModMenuTypes.WORKBENCH.get(), windowId, container);
         checkContainerSize(container, 9);
         container.startOpen(playerInventory.player);
+        this.level = playerInventory.player.level();
+        this.recipes = this.level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.WORKBENCH_CRAFTING.get());
         this.addContainerSlots(8, 18, 2, 4, 0);
         this.addSlot(new WorkbenchResultSlot(container, 8, 148, 21));
         this.addPlayerInventorySlots(8, 111, playerInventory);
+    }
+
+    public Level getLevel()
+    {
+        return this.level;
+    }
+
+    /**
+     * @return An immutable list of all workbench crafting recipes
+     */
+    public List<WorkbenchCraftingRecipe> getRecipes()
+    {
+        return this.recipes;
     }
 
     @Override

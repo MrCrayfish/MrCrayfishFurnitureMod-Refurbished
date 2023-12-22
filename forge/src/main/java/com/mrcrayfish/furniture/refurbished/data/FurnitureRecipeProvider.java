@@ -30,6 +30,6 @@ public class FurnitureRecipeProvider extends RecipeProvider
                     .generateAdvancement(recipe.getAdvancementId())
                     .build(consumer, recipeName);
             }, recipeName);
-        }, RecipeProvider::has).run();
+        }, RecipeProvider::has, RecipeProvider::has).run();
     }
 }

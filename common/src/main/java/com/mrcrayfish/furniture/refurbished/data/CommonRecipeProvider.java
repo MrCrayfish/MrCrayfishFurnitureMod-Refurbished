@@ -7,6 +7,8 @@ import com.mrcrayfish.furniture.refurbished.core.ModRecipeSerializers;
 import com.mrcrayfish.furniture.refurbished.core.ModTags;
 import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardCombiningRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.RecycleBinRecyclingRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.StackedIngredient;
+import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchCraftingRecipe;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -17,6 +19,7 @@ import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.data.recipes.SingleItemRecipeBuilder;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -39,13 +42,15 @@ public class CommonRecipeProvider
 {
     private final Consumer<FinishedRecipe> consumer;
     private final ConditionalModConsumer modLoadedConsumer;
-    private final Function<ItemLike, CriterionTriggerInstance> has;
+    private final Function<ItemLike, CriterionTriggerInstance> hasItem;
+    private final Function<TagKey<Item>, CriterionTriggerInstance> hasTag;
 
-    public CommonRecipeProvider(Consumer<FinishedRecipe> consumer, ConditionalModConsumer modLoadedConsumer, Function<ItemLike, CriterionTriggerInstance> has)
+    public CommonRecipeProvider(Consumer<FinishedRecipe> consumer, ConditionalModConsumer modLoadedConsumer, Function<ItemLike, CriterionTriggerInstance> hasItem, Function<TagKey<Item>, CriterionTriggerInstance> hasTag)
     {
         this.consumer = consumer;
         this.modLoadedConsumer = modLoadedConsumer;
-        this.has = has;
+        this.hasItem = hasItem;
+        this.hasTag = hasTag;
     }
 
     public void run()
@@ -248,6 +253,9 @@ public class CommonRecipeProvider
         this.mailbox(Blocks.CRIMSON_SLAB, Blocks.CRIMSON_PLANKS, Blocks.CRIMSON_FENCE, ModBlocks.MAIL_BOX_CRIMSON.get());
         this.mailbox(Blocks.WARPED_SLAB, Blocks.WARPED_PLANKS, Blocks.WARPED_FENCE, ModBlocks.MAIL_BOX_WARPED.get());
         this.postBox(ModBlocks.POST_BOX.get());
+
+        this.workbenchCrafting(ModBlocks.CHAIR_OAK.get(), 1,
+                Material.of(Blocks.OAK_PLANKS, 2));
 
         this.simpleCombined(ModItems.SWEET_BERRY_JAM.get(), ModItems.TOAST.get(), ModItems.SWEET_BERRY_JAM_TOAST.get(), 1, RecipeCategory.FOOD);
         this.simpleCombined(ModItems.GLOW_BERRY_JAM.get(), ModItems.TOAST.get(), ModItems.GLOW_BERRY_JAM_TOAST.get(), 1, RecipeCategory.FOOD);
@@ -762,8 +770,8 @@ public class CommonRecipeProvider
     {
         ShapelessRecipeBuilder.shapeless(category, result, count)
                 .requires(first).requires(second)
-                .unlockedBy("has_first", this.has.apply(first))
-                .unlockedBy("has_second", this.has.apply(second))
+                .unlockedBy("has_first", this.hasItem.apply(first))
+                .unlockedBy("has_second", this.hasItem.apply(second))
                 .save(this.consumer);
     }
 
@@ -774,7 +782,7 @@ public class CommonRecipeProvider
                 .pattern("P P")
                 .pattern("P P")
                 .define('P', plank)
-                .unlockedBy("has_planks", this.has.apply(plank))
+                .unlockedBy("has_planks", this.hasItem.apply(plank))
                 .save(this.consumer);
     }
 
@@ -785,7 +793,7 @@ public class CommonRecipeProvider
                 .pattern("PPP")
                 .pattern("P P")
                 .define('P', plank)
-                .unlockedBy("has_planks", this.has.apply(plank))
+                .unlockedBy("has_planks", this.hasItem.apply(plank))
                 .save(this.consumer);
     }
 
@@ -797,7 +805,7 @@ public class CommonRecipeProvider
                 .pattern("PSP")
                 .define('P', plank)
                 .define('S', Items.STICK)
-                .unlockedBy("has_planks", this.has.apply(plank))
+                .unlockedBy("has_planks", this.hasItem.apply(plank))
                 .save(this.consumer);
     }
 
@@ -810,7 +818,7 @@ public class CommonRecipeProvider
                 .define('S', slab)
                 .define('P', plank)
                 .define('C', Items.CHEST)
-                .unlockedBy("has_planks", this.has.apply(plank))
+                .unlockedBy("has_planks", this.hasItem.apply(plank))
                 .save(this.consumer);
     }
 
@@ -823,7 +831,7 @@ public class CommonRecipeProvider
                 .define('S', slab)
                 .define('P', plank)
                 .define('D', Items.WHITE_DYE)
-                .unlockedBy("has_planks", this.has.apply(plank))
+                .unlockedBy("has_planks", this.hasItem.apply(plank))
                 .save(this.consumer);
     }
 
@@ -837,7 +845,7 @@ public class CommonRecipeProvider
                 .define('P', plank)
                 .define('C', Items.CHEST)
                 .define('D', Items.WHITE_DYE)
-                .unlockedBy("has_planks", this.has.apply(plank))
+                .unlockedBy("has_planks", this.hasItem.apply(plank))
                 .save(this.consumer);
     }
 
@@ -852,7 +860,7 @@ public class CommonRecipeProvider
                 .define('I', Items.COPPER_INGOT)
                 .define('Q', Items.QUARTZ_BLOCK)
                 .define('D', Items.WHITE_DYE)
-                .unlockedBy("has_planks", this.has.apply(plank))
+                .unlockedBy("has_planks", this.hasItem.apply(plank))
                 .save(this.consumer);
     }
 
@@ -865,7 +873,7 @@ public class CommonRecipeProvider
                 .define('S', slab)
                 .define('P', plank)
                 .define('D', Items.WHITE_DYE)
-                .unlockedBy("has_planks", this.has.apply(plank))
+                .unlockedBy("has_planks", this.hasItem.apply(plank))
                 .save(this.consumer);
     }
 
@@ -876,14 +884,14 @@ public class CommonRecipeProvider
                 .pattern("K")
                 .define('D', dye)
                 .define('K', ModTags.Items.WOODEN_KITCHEN_CABINETRY)
-                .unlockedBy("has_dye", this.has.apply(dye))
+                .unlockedBy("has_dye", this.hasItem.apply(dye))
                 .save(this.consumer);
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
                 .pattern("D")
                 .pattern("K")
                 .define('D', dye)
                 .define('K', ModTags.Items.COLOURED_KITCHEN_CABINETRY)
-                .unlockedBy("has_dye", this.has.apply(dye))
+                .unlockedBy("has_dye", this.hasItem.apply(dye))
                 .save(this.consumer, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
     }
 
@@ -894,14 +902,14 @@ public class CommonRecipeProvider
                 .pattern("K")
                 .define('D', dye)
                 .define('K', ModTags.Items.WOODEN_KITCHEN_DRAWERS)
-                .unlockedBy("has_dye", this.has.apply(dye))
+                .unlockedBy("has_dye", this.hasItem.apply(dye))
                 .save(this.consumer);
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
                 .pattern("D")
                 .pattern("K")
                 .define('D', dye)
                 .define('K', ModTags.Items.COLOURED_KITCHEN_DRAWERS)
-                .unlockedBy("has_dye", this.has.apply(dye))
+                .unlockedBy("has_dye", this.hasItem.apply(dye))
                 .save(this.consumer, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
     }
 
@@ -912,14 +920,14 @@ public class CommonRecipeProvider
                 .pattern("K")
                 .define('D', dye)
                 .define('K', ModTags.Items.WOODEN_KITCHEN_SINKS)
-                .unlockedBy("has_dye", this.has.apply(dye))
+                .unlockedBy("has_dye", this.hasItem.apply(dye))
                 .save(this.consumer);
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
                 .pattern("D")
                 .pattern("K")
                 .define('D', dye)
                 .define('K', ModTags.Items.COLOURED_KITCHEN_SINKS)
-                .unlockedBy("has_dye", this.has.apply(dye))
+                .unlockedBy("has_dye", this.hasItem.apply(dye))
                 .save(this.consumer, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
     }
 
@@ -929,13 +937,13 @@ public class CommonRecipeProvider
                 .pattern("KD")
                 .define('D', dye)
                 .define('K', ModTags.Items.WOODEN_KITCHEN_STORAGE_CABINETS)
-                .unlockedBy("has_dye", this.has.apply(dye))
+                .unlockedBy("has_dye", this.hasItem.apply(dye))
                 .save(this.consumer);
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
                 .pattern("KD")
                 .define('D', dye)
                 .define('K', ModTags.Items.COLOURED_KITCHEN_STORAGE_CABINETS)
-                .unlockedBy("has_dye", this.has.apply(dye))
+                .unlockedBy("has_dye", this.hasItem.apply(dye))
                 .save(this.consumer, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
     }
 
@@ -947,15 +955,15 @@ public class CommonRecipeProvider
                 .define('I', Items.IRON_INGOT)
                 .define('B', Items.IRON_BARS)
                 .define('R', Items.REDSTONE)
-                .unlockedBy("has_ingots", this.has.apply(Items.IRON_INGOT))
-                .unlockedBy("has_redstone", this.has.apply(Items.REDSTONE))
+                .unlockedBy("has_ingots", this.hasItem.apply(Items.IRON_INGOT))
+                .unlockedBy("has_redstone", this.hasItem.apply(Items.REDSTONE))
                 .save(this.consumer);
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
                 .requires(light)
                 .requires(Items.BLACK_DYE)
-                .unlockedBy("has_ingots", this.has.apply(Items.IRON_INGOT))
-                .unlockedBy("has_redstone", this.has.apply(Items.REDSTONE))
+                .unlockedBy("has_ingots", this.hasItem.apply(Items.IRON_INGOT))
+                .unlockedBy("has_redstone", this.hasItem.apply(Items.REDSTONE))
                 .save(this.consumer, BuiltInRegistries.ITEM.getKey(dark.asItem()) + "_from_dyeing");
     }
 
@@ -967,15 +975,15 @@ public class CommonRecipeProvider
                 .define('I', Items.IRON_INGOT)
                 .define('G', Items.GLASS_PANE)
                 .define('R', Items.REDSTONE)
-                .unlockedBy("has_ingots", this.has.apply(Items.IRON_INGOT))
-                .unlockedBy("has_redstone", this.has.apply(Items.REDSTONE))
+                .unlockedBy("has_ingots", this.hasItem.apply(Items.IRON_INGOT))
+                .unlockedBy("has_redstone", this.hasItem.apply(Items.REDSTONE))
                 .save(this.consumer);
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
                 .requires(light)
                 .requires(Items.BLACK_DYE)
-                .unlockedBy("has_ingots", this.has.apply(Items.IRON_INGOT))
-                .unlockedBy("has_redstone", this.has.apply(Items.REDSTONE))
+                .unlockedBy("has_ingots", this.hasItem.apply(Items.IRON_INGOT))
+                .unlockedBy("has_redstone", this.hasItem.apply(Items.REDSTONE))
                 .save(this.consumer, BuiltInRegistries.ITEM.getKey(dark.asItem()) + "_from_dyeing");
     }
 
@@ -989,15 +997,15 @@ public class CommonRecipeProvider
                 .define('B', Items.IRON_BARS)
                 .define('F', Items.FURNACE)
                 .define('R', Items.REDSTONE)
-                .unlockedBy("has_ingots", this.has.apply(Items.IRON_INGOT))
-                .unlockedBy("has_redstone", this.has.apply(Items.REDSTONE))
+                .unlockedBy("has_ingots", this.hasItem.apply(Items.IRON_INGOT))
+                .unlockedBy("has_redstone", this.hasItem.apply(Items.REDSTONE))
                 .save(this.consumer);
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
                 .requires(light)
                 .requires(Items.BLACK_DYE)
-                .unlockedBy("has_ingots", this.has.apply(Items.IRON_INGOT))
-                .unlockedBy("has_redstone", this.has.apply(Items.REDSTONE))
+                .unlockedBy("has_ingots", this.hasItem.apply(Items.IRON_INGOT))
+                .unlockedBy("has_redstone", this.hasItem.apply(Items.REDSTONE))
                 .save(this.consumer, BuiltInRegistries.ITEM.getKey(dark.asItem()) + "_from_dyeing");
     }
 
@@ -1009,15 +1017,15 @@ public class CommonRecipeProvider
                 .define('R', Items.REDSTONE)
                 .define('I', Items.IRON_INGOT)
                 .define('L', Items.REDSTONE_LAMP)
-                .unlockedBy("has_ingots", this.has.apply(Items.IRON_INGOT))
-                .unlockedBy("has_redstone", this.has.apply(Items.REDSTONE))
+                .unlockedBy("has_ingots", this.hasItem.apply(Items.IRON_INGOT))
+                .unlockedBy("has_redstone", this.hasItem.apply(Items.REDSTONE))
                 .save(this.consumer);
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
                 .requires(light)
                 .requires(Items.BLACK_DYE)
-                .unlockedBy("has_ingots", this.has.apply(Items.IRON_INGOT))
-                .unlockedBy("has_redstone", this.has.apply(Items.REDSTONE))
+                .unlockedBy("has_ingots", this.hasItem.apply(Items.IRON_INGOT))
+                .unlockedBy("has_redstone", this.hasItem.apply(Items.REDSTONE))
                 .save(this.consumer, BuiltInRegistries.ITEM.getKey(dark.asItem()) + "_from_dyeing");
     }
 
@@ -1027,7 +1035,7 @@ public class CommonRecipeProvider
                 .pattern("SII")
                 .define('S', Items.STICK)
                 .define('I', Items.IRON_INGOT)
-                .unlockedBy("has_ingots", this.has.apply(Items.IRON_INGOT))
+                .unlockedBy("has_ingots", this.hasItem.apply(Items.IRON_INGOT))
                 .save(this.consumer);
     }
 
@@ -1040,8 +1048,8 @@ public class CommonRecipeProvider
                 .define('I', Items.IRON_INGOT)
                 .define('R', Items.REDSTONE)
                 .define('P', Items.PISTON)
-                .unlockedBy("has_ingots", this.has.apply(Items.IRON_INGOT))
-                .unlockedBy("has_redstone", this.has.apply(Items.REDSTONE))
+                .unlockedBy("has_ingots", this.hasItem.apply(Items.IRON_INGOT))
+                .unlockedBy("has_redstone", this.hasItem.apply(Items.REDSTONE))
                 .save(this.consumer);
     }
 
@@ -1050,8 +1058,8 @@ public class CommonRecipeProvider
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
                 .pattern("SS")
                 .define('S', slab)
-                .unlockedBy("has_planks", this.has.apply(plank))
-                .unlockedBy("has_slabs", this.has.apply(slab))
+                .unlockedBy("has_planks", this.hasItem.apply(plank))
+                .unlockedBy("has_slabs", this.hasItem.apply(slab))
                 .save(this.consumer);
     }
 
@@ -1060,8 +1068,8 @@ public class CommonRecipeProvider
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result, 4)
                 .pattern("QQ")
                 .define('Q', Items.QUARTZ_BLOCK)
-                .unlockedBy("has_quartz_block", this.has.apply(Items.QUARTZ_BLOCK))
-                .unlockedBy("has_quartz", this.has.apply(Items.QUARTZ))
+                .unlockedBy("has_quartz_block", this.hasItem.apply(Items.QUARTZ_BLOCK))
+                .unlockedBy("has_quartz", this.hasItem.apply(Items.QUARTZ))
                 .save(this.consumer);
     }
 
@@ -1073,7 +1081,7 @@ public class CommonRecipeProvider
                 .pattern("PSP")
                 .define('P', plank)
                 .define('S', Items.STICK)
-                .unlockedBy("has_planks", this.has.apply(plank))
+                .unlockedBy("has_planks", this.hasItem.apply(plank))
                 .save(this.consumer);
     }
 
@@ -1086,8 +1094,8 @@ public class CommonRecipeProvider
                 .define('I', Items.IRON_INGOT)
                 .define('B', Items.IRON_BARS)
                 .define('D', dye)
-                .unlockedBy("has_ingots", this.has.apply(Items.IRON_INGOT))
-                .unlockedBy("has_dye", this.has.apply(dye))
+                .unlockedBy("has_ingots", this.hasItem.apply(Items.IRON_INGOT))
+                .unlockedBy("has_dye", this.hasItem.apply(dye))
                 .save(this.consumer);
     }
 
@@ -1101,7 +1109,7 @@ public class CommonRecipeProvider
                 .define('P', plank)
                 .define('C', Blocks.CHEST)
                 .define('F', fence)
-                .unlockedBy("has_planks", this.has.apply(plank))
+                .unlockedBy("has_planks", this.hasItem.apply(plank))
                 .save(this.consumer);
     }
 
@@ -1115,8 +1123,19 @@ public class CommonRecipeProvider
                 .define('I', Items.IRON_INGOT)
                 .define('B', Blocks.IRON_BLOCK)
                 .define('C', Blocks.CHEST)
-                .unlockedBy("has_ingots", this.has.apply(Items.IRON_INGOT))
+                .unlockedBy("has_ingots", this.hasItem.apply(Items.IRON_INGOT))
                 .save(this.consumer);
+    }
+
+    private void workbenchCrafting(ItemLike result, int count, Material<?> ... materials)
+    {
+        WorkbenchCraftingRecipe.Builder builder = WorkbenchCraftingRecipe.builder(result, count, this.hasItem, this.hasTag);
+        for(Material<?> material : materials)
+        {
+            builder.requiresMaterial(material);
+        }
+        String resultName = result.asItem().toString();
+        builder.save(this.consumer, Utils.resource("crafting/" + resultName));
     }
 
     private void cooking(String folder, RecipeCategory category, RecipeSerializer<? extends AbstractCookingRecipe> serializer, ItemLike input, ItemLike output, int time, float experience)
@@ -1125,7 +1144,7 @@ public class CommonRecipeProvider
         String resultName = output.asItem().toString();
         SimpleCookingRecipeBuilder
                 .generic(Ingredient.of(input), category, output, experience, time, serializer)
-                .unlockedBy("has_" + baseName, this.has.apply(input))
+                .unlockedBy("has_" + baseName, this.hasItem.apply(input))
                 .save(this.consumer, Utils.resource(folder + "/" + resultName));
     }
 
@@ -1159,7 +1178,7 @@ public class CommonRecipeProvider
         String baseName = baseItem.asItem().toString();
         String resultName = resultItem.asItem().toString();
         SingleItemRecipeBuilder builder = new SingleItemRecipeBuilder(RecipeCategory.MISC, ModRecipeSerializers.CUTTING_BOARD_SLICING_RECIPE.get(), Ingredient.of(baseItem), resultItem, resultCount);
-        builder.unlockedBy("has_" + baseName, this.has.apply(baseItem)).save(this.consumer, Utils.resource("slicing/" + resultName));
+        builder.unlockedBy("has_" + baseName, this.hasItem.apply(baseItem)).save(this.consumer, Utils.resource("slicing/" + resultName));
     }
 
     private void cuttingBoardCombining(ItemLike combinedItem, int count, Ingredient ... inputs)

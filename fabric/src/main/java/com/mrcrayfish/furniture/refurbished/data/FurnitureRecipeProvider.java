@@ -23,6 +23,6 @@ public class FurnitureRecipeProvider extends FabricRecipeProvider
     {
         new CommonRecipeProvider(consumer, (modId, recipeName, builder) -> {
             builder.save(this.withConditions(consumer, DefaultResourceConditions.allModsLoaded(modId)), recipeName);
-        }, RecipeProvider::has).run();
+        }, RecipeProvider::has, RecipeProvider::has).run();
     }
 }
