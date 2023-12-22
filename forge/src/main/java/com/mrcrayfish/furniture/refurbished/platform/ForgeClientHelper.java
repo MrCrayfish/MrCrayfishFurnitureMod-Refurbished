@@ -6,9 +6,13 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mrcrayfish.furniture.refurbished.client.ForgeRenderType;
 import com.mrcrayfish.furniture.refurbished.platform.services.IClientHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -101,6 +105,12 @@ public class ForgeClientHelper implements IClientHelper
     public SimpleParticleType createSimpleParticleType(boolean ignoreLimit)
     {
         return new SimpleParticleType(ignoreLimit);
+    }
+
+    @Override
+    public void renderTooltip(GuiGraphics graphics, Font font, List<ClientTooltipComponent> components, int mouseX, int mouseY, ClientTooltipPositioner position)
+    {
+        graphics.renderTooltipInternal(font, components, mouseX, mouseY, position);
     }
 
     private Function<ResourceLocation, TextureAtlasSprite> getBlockTextures()
