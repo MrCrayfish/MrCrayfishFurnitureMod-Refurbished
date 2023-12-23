@@ -22,14 +22,19 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Author: MrCrayfish
@@ -131,7 +136,7 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
         Player player = this.getUser();
         if(player != null && this.updateTimer++ % 4 == 0) // Only send every four ticks
         {
-            this.counts = Utils.countItems(true, List.of(Pair.of(null, this)));
+            this.counts = Utils.countItems(true, this.getSupplyContainers());
             Map<Integer, Integer> map = new Int2IntOpenHashMap();
             for(Map.Entry<Item, Integer> entry : this.counts.entrySet())
             {
@@ -169,7 +174,7 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     private Map<Item, Integer> getConsumedMaterialItems(WorkbenchCraftingRecipe recipe)
     {
         // Find the items we are going to consume. This has been made complicated since it accepts tags.
-        Map<Item, Integer> counts = Utils.countItems(true, this.getSourceContainers());
+        Map<Item, Integer> counts = Utils.countItems(true, this.getSupplyContainers());
         Map<Item, Integer> materials = new HashMap<>();
         outer: for(StackedIngredient material : recipe.getMaterials())
         {
@@ -190,7 +195,7 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     private boolean removeItems(Map<Item, Integer> items)
     {
         List<Pair<Container, Runnable>> transactions = new ArrayList<>();
-        for(Pair<Direction, Container> pair : this.getSourceContainers())
+        for(Pair<Direction, Container> pair : this.getSupplyContainers())
         {
             Direction direction = pair.first();
             Container container = pair.second();
@@ -228,11 +233,45 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
         return false;
     }
 
-    private List<Pair<Direction, Container>> getSourceContainers()
+    private List<Pair<Direction, Container>> getSupplyContainers()
     {
         List<Pair<Direction, Container>> list = new ArrayList<>();
         list.add(Pair.of(null, this));
-        // TODO neighbours
+        Direction direction = this.getDirection();
+        this.getContainer(direction.getCounterClockWise()).ifPresent(list::add);
+        this.getContainer(direction.getClockWise()).ifPresent(list::add);
         return list;
+    }
+
+    private Optional<Pair<Direction, Container>> getContainer(Direction offset)
+    {
+        if(this.level != null)
+        {
+            BlockPos pos = this.worldPosition.relative(offset);
+            if(this.level.getBlockEntity(pos) instanceof Container container)
+            {
+                BlockState state = this.level.getBlockState(pos);
+                Block block = state.getBlock();
+                if(container instanceof ChestBlockEntity && block instanceof ChestBlock)
+                {
+                    container = ChestBlock.getContainer((ChestBlock) block, state, this.level, pos, true);
+                }
+                if(container != null)
+                {
+                    return Optional.of(Pair.of(offset.getOpposite(), container));
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+    private Direction getDirection()
+    {
+        BlockState state = this.getBlockState();
+        if(state.hasProperty(BlockStateProperties.HORIZONTAL_FACING))
+        {
+            return state.getValue(BlockStateProperties.HORIZONTAL_FACING);
+        }
+        return Direction.NORTH;
     }
 }

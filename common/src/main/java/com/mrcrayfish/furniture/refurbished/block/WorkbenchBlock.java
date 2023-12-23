@@ -6,6 +6,7 @@ import com.mrcrayfish.furniture.refurbished.blockentity.CeilingFanBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.WorkbenchBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -27,11 +28,12 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class WorkbenchBlock extends FurnitureBlock implements EntityBlock
+public class WorkbenchBlock extends FurnitureHorizontalBlock implements EntityBlock
 {
     public WorkbenchBlock(Properties properties)
     {
         super(properties);
+        this.registerDefaultState(this.getStateDefinition().any().setValue(DIRECTION, Direction.NORTH));
     }
 
     @Override
