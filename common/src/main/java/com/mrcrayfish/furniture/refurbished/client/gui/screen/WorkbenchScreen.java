@@ -4,6 +4,7 @@ import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.client.gui.ClientWorkbenchRecipeIngredientTooltip;
 import com.mrcrayfish.furniture.refurbished.client.gui.ClientWorkbenchRecipeTooltip;
 import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
+import com.mrcrayfish.furniture.refurbished.crafting.StackedIngredient;
 import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchCraftingRecipe;
 import com.mrcrayfish.furniture.refurbished.inventory.WorkbenchMenu;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
@@ -20,10 +21,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -31,7 +35,7 @@ import java.util.Optional;
  */
 public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
 {
-    private static final ResourceLocation WORKBENCH_TEXTURE = Utils.resource("textures/gui/container/workbench.png");
+    public static final ResourceLocation WORKBENCH_TEXTURE = Utils.resource("textures/gui/container/workbench.png");
 
     private static final int BUTTON_SIZE = 20;
     private static final int RECIPES_PER_ROW = 4;
@@ -79,11 +83,14 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         int endIndex = startIndex + Mth.ceil(WINDOW_HEIGHT / (double) BUTTON_SIZE) + RECIPES_PER_ROW;
         for(int i = startIndex; i < endIndex && i < recipes.size(); i++)
         {
+            WorkbenchCraftingRecipe recipe = recipes.get(i);
+            boolean canCraft = this.menu.canCraft(recipe);
+            boolean selected = i == this.selectedIndex;
             int buttonX = this.leftPos + 46 + startIndex % RECIPES_PER_ROW;
             int buttonY = this.topPos + 18 + startIndex / RECIPES_PER_ROW;
-            boolean selected = i == this.selectedIndex;
-            graphics.blit(WORKBENCH_TEXTURE, buttonX, buttonY, 176, selected ? BUTTON_SIZE : 0, BUTTON_SIZE, BUTTON_SIZE);
-            graphics.renderFakeItem(recipes.get(i).getResultItem(this.menu.getLevel().registryAccess()), buttonX + 2, buttonY + 2);
+            int textureV = !canCraft ? BUTTON_SIZE * 2 : selected ? BUTTON_SIZE : 0;
+            graphics.blit(WORKBENCH_TEXTURE, buttonX, buttonY, 176, textureV, BUTTON_SIZE, BUTTON_SIZE);
+            graphics.renderFakeItem(recipe.getResultItem(this.menu.getLevel().registryAccess()), buttonX + 2, buttonY + 2);
             if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, buttonX, buttonY, BUTTON_SIZE, BUTTON_SIZE))
             {
                 this.hoveredIndex = i;
@@ -99,12 +106,12 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         components.add(new ClientTextTooltip(recipe.getResultItem(this.menu.getLevel().registryAccess()).getHoverName().getVisualOrderText()));
         if(!Screen.hasShiftDown())
         {
-            components.add(new ClientWorkbenchRecipeTooltip(recipe));
+            components.add(new ClientWorkbenchRecipeTooltip(this.menu, recipe));
             components.add(new ClientTextTooltip(Components.HOLD_SHIFT_DETAILS.getVisualOrderText()));
         }
         else
         {
-            recipe.getMaterials().forEach(material -> components.add(new ClientWorkbenchRecipeIngredientTooltip(material)));
+            recipe.getMaterials().forEach(material -> components.add(new ClientWorkbenchRecipeIngredientTooltip(this.menu, material)));
         }
         ClientServices.PLATFORM.renderTooltip(graphics, this.font, components, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE);
     }
@@ -114,9 +121,13 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     {
         if(button == GLFW.GLFW_MOUSE_BUTTON_LEFT && this.hoveredIndex != -1)
         {
-            this.selectedIndex = this.hoveredIndex;
-            this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-            return true;
+            WorkbenchCraftingRecipe recipe = this.menu.getRecipes().get(this.hoveredIndex);
+            if(this.menu.canCraft(recipe))
+            {
+                this.selectedIndex = this.hoveredIndex;
+                this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+                return true;
+            }
         }
         return super.mouseClicked(mouseX, mouseY, button);
     }

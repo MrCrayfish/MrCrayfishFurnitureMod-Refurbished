@@ -15,6 +15,7 @@ import com.mrcrayfish.furniture.refurbished.client.gui.toast.ItemToast;
 import com.mrcrayfish.furniture.refurbished.client.particle.ItemFlushParticle;
 import com.mrcrayfish.furniture.refurbished.computer.client.PaddleBallGraphics;
 import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
+import com.mrcrayfish.furniture.refurbished.inventory.WorkbenchMenu;
 import com.mrcrayfish.furniture.refurbished.network.message.*;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
@@ -195,6 +196,15 @@ public class ClientPlayHandler
         if(mc.level != null && mc.level.getBlockEntity(message.getPos()) instanceof IWaterTap tap)
         {
             tap.playWaterAnimation();
+        }
+    }
+
+    public static void handleMessageWorkbenchItemCounts(MessageWorkbench.ItemCounts message)
+    {
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.player != null && mc.player.containerMenu instanceof WorkbenchMenu menu)
+        {
+            menu.updateItemCounts(message.getCounts());
         }
     }
 }

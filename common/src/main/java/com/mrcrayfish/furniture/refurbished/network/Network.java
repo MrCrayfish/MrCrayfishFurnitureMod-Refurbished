@@ -36,6 +36,7 @@ public class Network
             .registerPlayMessage(MessageToolAnimation.class, MessageDirection.PLAY_CLIENT_BOUND)
             .registerPlayMessage(MessageFlushItem.class, MessageDirection.PLAY_CLIENT_BOUND)
             .registerPlayMessage(MessageWaterTapAnimation.class, MessageDirection.PLAY_CLIENT_BOUND)
+            .registerPlayMessage(MessageWorkbench.ItemCounts.class, MessageDirection.PLAY_CLIENT_BOUND)
             .build();
 
     public static void init() {}

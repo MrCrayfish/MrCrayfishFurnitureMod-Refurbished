@@ -16,7 +16,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -35,9 +34,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nullable;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * Author: MrCrayfish
@@ -129,12 +126,12 @@ public class KitchenSinkBlockEntity extends BlockEntity implements IFluidContain
     {
         if(kitchenSink.animationTime > 0)
         {
-            Vec3 tap = Vec3.atBottomCenterOf(pos).add(0, Utils.toPixelUnits(18), 0);
-            tap = tap.relative(state.getValue(KitchenSinkBlock.DIRECTION), Utils.toPixelUnits(2));
+            Vec3 tap = Vec3.atBottomCenterOf(pos).add(0, Utils.pixels(18), 0);
+            tap = tap.relative(state.getValue(KitchenSinkBlock.DIRECTION), Utils.pixels(2));
             for(int i = 0; i < 5; i++)
             {
-                double x = tap.x + Utils.toPixelUnits(0.5) * level.random.nextGaussian();
-                double z = tap.z + Utils.toPixelUnits(0.5) * level.random.nextGaussian();
+                double x = tap.x + Utils.pixels(0.5) * level.random.nextGaussian();
+                double z = tap.z + Utils.pixels(0.5) * level.random.nextGaussian();
                 level.addParticle(ModParticleTypes.TAP_WATER.get(), x, tap.y, z, 0, 0, 0);
             }
             kitchenSink.animationTime--;

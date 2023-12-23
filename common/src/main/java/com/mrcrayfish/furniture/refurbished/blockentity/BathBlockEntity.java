@@ -2,7 +2,6 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.block.BathBlock;
-import com.mrcrayfish.furniture.refurbished.block.KitchenSinkBlock;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.IFluidContainerBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
@@ -17,7 +16,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -167,12 +165,12 @@ public class BathBlockEntity extends BlockEntity implements IFluidContainerBlock
     {
         if(bath.animationTime > 0)
         {
-            Vec3 tap = Vec3.atBottomCenterOf(pos).add(0, Utils.toPixelUnits(18), 0);
-            tap = tap.relative(state.getValue(BathBlock.DIRECTION), Utils.toPixelUnits(2));
+            Vec3 tap = Vec3.atBottomCenterOf(pos).add(0, Utils.pixels(18), 0);
+            tap = tap.relative(state.getValue(BathBlock.DIRECTION), Utils.pixels(2));
             for(int i = 0; i < 5; i++)
             {
-                double x = tap.x + Utils.toPixelUnits(0.5) * level.random.nextGaussian();
-                double z = tap.z + Utils.toPixelUnits(0.5) * level.random.nextGaussian();
+                double x = tap.x + Utils.pixels(0.5) * level.random.nextGaussian();
+                double z = tap.z + Utils.pixels(0.5) * level.random.nextGaussian();
                 level.addParticle(ModParticleTypes.TAP_WATER.get(), x, tap.y, z, 0, 0, 0);
             }
             bath.animationTime--;
