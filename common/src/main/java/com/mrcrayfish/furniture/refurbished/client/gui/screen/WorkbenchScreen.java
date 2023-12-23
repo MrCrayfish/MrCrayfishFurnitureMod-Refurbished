@@ -43,7 +43,6 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     private static final int WINDOW_HEIGHT = 70;
 
     protected double scroll; // 0-1
-    protected int selectedIndex = -1;
     protected int hoveredIndex = -1;
 
     public WorkbenchScreen(WorkbenchMenu menu, Inventory playerInventory, Component title)
@@ -85,7 +84,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         {
             WorkbenchCraftingRecipe recipe = recipes.get(i);
             boolean canCraft = this.menu.canCraft(recipe);
-            boolean selected = i == this.selectedIndex;
+            boolean selected = i == this.menu.getSelectedRecipeIndex();
             int buttonX = this.leftPos + 46 + startIndex % RECIPES_PER_ROW;
             int buttonY = this.topPos + 18 + startIndex / RECIPES_PER_ROW;
             int textureV = !canCraft ? BUTTON_SIZE * 2 : selected ? BUTTON_SIZE : 0;
@@ -122,9 +121,9 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         if(button == GLFW.GLFW_MOUSE_BUTTON_LEFT && this.hoveredIndex != -1)
         {
             WorkbenchCraftingRecipe recipe = this.menu.getRecipes().get(this.hoveredIndex);
-            if(this.menu.canCraft(recipe))
+            if(this.menu.canCraft(recipe) && this.minecraft != null && this.minecraft.gameMode != null)
             {
-                this.selectedIndex = this.hoveredIndex;
+                this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, this.hoveredIndex);
                 this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                 return true;
             }

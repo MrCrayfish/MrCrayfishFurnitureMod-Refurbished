@@ -10,6 +10,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
@@ -66,6 +67,17 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
     }
 
     @Override
+    public boolean clickMenuButton(Player player, int button)
+    {
+        if(button >= 0 && button < this.recipes.size())
+        {
+            this.selectedRecipe.set(button);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public ItemStack quickMoveStack(Player player, int slotIndex)
     {
         ItemStack stack = ItemStack.EMPTY;
@@ -116,6 +128,11 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
     {
         int index = this.selectedRecipe.get();
         return index != -1 ? this.recipes.get(index) : null;
+    }
+
+    public int getSelectedRecipeIndex()
+    {
+        return this.selectedRecipe.get();
     }
 
     public void updateItemCounts(Map<Integer, Integer> counts)
