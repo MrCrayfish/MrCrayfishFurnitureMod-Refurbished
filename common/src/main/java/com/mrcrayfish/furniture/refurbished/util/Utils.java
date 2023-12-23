@@ -14,8 +14,10 @@ import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 /**
  * Author: MrCrayfish
@@ -82,57 +84,67 @@ public class Utils
      * @param containers  an array of container and direction pairs. The direction is the side the container is being accessed. The direction can be null.
      * @return a map containing items and their counts
      */
-    @SafeVarargs
-    public static Map<Item, Integer> countItems(boolean skipDamaged, Pair<Direction, Container>... containers)
+    public static Map<Item, Integer> countItems(boolean skipDamaged, List<Pair<Direction, Container>> containers)
     {
         Map<Item, Integer> map = new Object2IntOpenCustomHashMap<>(ItemHash.INSTANCE);
         for(Pair<Direction, Container> pair : containers)
         {
             Direction direction = pair.first();
-            if(direction != null && pair.second() instanceof WorldlyContainer container)
-            {
-                int[] slots = container.getSlotsForFace(direction);
-                for(int slot : slots)
-                {
-                    ItemStack stack = container.getItem(slot);
-                    if(stack.isEmpty())
-                        continue;
-
-                    if(skipDamaged && stack.isDamaged())
-                        continue;
-
-                    if(!container.canTakeItem(container, slot, stack))
-                        continue;
-
-                    if(!container.canTakeItemThroughFace(slot, stack, direction))
-                        continue;
-
-                    map.merge(stack.getItem(), stack.getCount(), (item, count) -> {
-                        return count + stack.getCount();
-                    });
-                }
-            }
-            else
-            {
-                Container container = pair.second();
-                for(int i = 0; i < container.getContainerSize(); i++)
-                {
-                    ItemStack stack = container.getItem(i);
-                    if(stack.isEmpty())
-                        continue;
-
-                    if(skipDamaged && stack.isDamaged())
-                        continue;
-
-                    if(!container.canTakeItem(container, i, stack))
-                        continue;
-
-                    map.merge(stack.getItem(), stack.getCount(), (item, count) -> {
-                        return count + stack.getCount();
-                    });
-                }
-            }
+            Container container = pair.second();
+            getContainerSlots(container, direction).forEach(slot -> {
+                ItemStack stack = container.getItem(slot);
+                if(stack.isEmpty() || (skipDamaged && stack.isDamaged()))
+                    return;
+                if(!canTakeFromContainer(container, slot, stack, direction))
+                    return;
+                map.merge(stack.getItem(), stack.getCount(), (item, count) -> {
+                    return count + stack.getCount();
+                });
+            });
         }
         return map;
+    }
+
+    /**
+     * Utility method to stream the available slots indexes of a given container, with an optional
+     * direction representing the face of the block the container is being accessed from. This method
+     * handles if the container is an instance of a worldly container, only returning slots that
+     * are accessible from the given face (direction).
+     *
+     * @param container the container that is being accessed.
+     * @param direction the side of the block the container is being accessed from or null.
+     * @return An int stream of available slots
+     */
+    public static IntStream getContainerSlots(Container container, @Nullable Direction direction)
+    {
+        if(direction != null && container instanceof WorldlyContainer worldly)
+        {
+            return IntStream.of(worldly.getSlotsForFace(direction));
+        }
+        return IntStream.range(0, container.getContainerSize());
+    }
+
+    /**
+     * Utility method to determine if the stack in the given slot can be taken from the given container.
+     * This method handles if the container is an instance of a worldly container, and additionally
+     * checks if the item can be taken through the face (direction).
+     *
+     * @param container the container that is being accessed
+     * @param slot      the slot index of the stack being taken
+     * @param stack     the stack that is being taken
+     * @param direction the face of the block the container is being accessed from or null.
+     * @return True if the stack can be taken
+     */
+    public static boolean canTakeFromContainer(Container container, int slot, ItemStack stack, @Nullable Direction direction)
+    {
+        if(container.canTakeItem(container, slot, stack))
+        {
+            if(direction != null && container instanceof WorldlyContainer worldly)
+            {
+                return worldly.canTakeItemThroughFace(slot, stack, direction);
+            }
+            return true;
+        }
+        return false;
     }
 }
