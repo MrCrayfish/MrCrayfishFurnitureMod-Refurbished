@@ -97,9 +97,7 @@ public class Utils
                     return;
                 if(!canTakeFromContainer(container, slot, stack, direction))
                     return;
-                map.merge(stack.getItem(), stack.getCount(), (item, count) -> {
-                    return count + stack.getCount();
-                });
+                map.merge(stack.getItem(), stack.getCount(), Integer::sum);
             });
         }
         return map;
