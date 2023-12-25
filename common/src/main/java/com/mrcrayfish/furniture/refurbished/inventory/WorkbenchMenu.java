@@ -18,6 +18,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -49,9 +52,9 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
         this.workbench = workbench;
         this.player = playerInventory.player;
         this.level = playerInventory.player.level();
-        this.recipes = this.level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.WORKBENCH_CRAFTING.get());
+        this.recipes = this.setupRecipes(this.level);
         this.addContainerSlots(8, 18, 2, 4, 0);
-        this.resultSlot = this.addSlot(new WorkbenchResultSlot(container, 8, 148, 21));
+        this.resultSlot = this.addSlot(new WorkbenchResultSlot(this.container, 8, 148, 21));
         this.addPlayerInventorySlots(8, 111, playerInventory);
         this.addDataSlot(this.selectedRecipe);
     }
@@ -70,6 +73,13 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
     public List<WorkbenchCraftingRecipe> getRecipes()
     {
         return this.recipes;
+    }
+
+    private List<WorkbenchCraftingRecipe> setupRecipes(Level level)
+    {
+        List<WorkbenchCraftingRecipe> recipes = new ArrayList<>(level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.WORKBENCH_CRAFTING.get()));
+        recipes.sort(Comparator.comparing(recipe -> Item.getId(recipe.getResultItem(level.registryAccess()).getItem())));
+        return recipes;
     }
 
     private void updateResultSlot()
