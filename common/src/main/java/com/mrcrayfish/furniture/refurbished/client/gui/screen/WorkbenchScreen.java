@@ -41,8 +41,9 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     private static final int RECIPES_PER_ROW = 4;
     private static final int WINDOW_WIDTH = BUTTON_SIZE * RECIPES_PER_ROW;
     private static final int WINDOW_HEIGHT = 70;
+    private static final int SCROLL_SPEED = 10;
 
-    protected double scroll; // 0-1
+    protected double scroll; // 0 - content height
     protected int hoveredIndex = -1;
 
     public WorkbenchScreen(WorkbenchMenu menu, Inventory playerInventory, Component title)
@@ -77,16 +78,15 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         this.hoveredIndex = -1;
         graphics.enableScissor(this.leftPos + 46, this.topPos + 18, this.leftPos + 46 + WINDOW_WIDTH, this.topPos + 18 + WINDOW_HEIGHT);
         List<WorkbenchCraftingRecipe> recipes = this.menu.getRecipes();
-        int maxScroll = Math.max(0, (recipes.size() / RECIPES_PER_ROW) * BUTTON_SIZE - WINDOW_HEIGHT);
-        int startIndex = (int) ((maxScroll * this.scroll) / BUTTON_SIZE);
-        int endIndex = startIndex + Mth.ceil(WINDOW_HEIGHT / (double) BUTTON_SIZE) + RECIPES_PER_ROW;
+        int startIndex = (int) (this.scroll / BUTTON_SIZE) * RECIPES_PER_ROW;
+        int endIndex = startIndex + Mth.ceil(WINDOW_HEIGHT / (double) BUTTON_SIZE + 1) * RECIPES_PER_ROW;
         for(int i = startIndex; i < endIndex && i < recipes.size(); i++)
         {
             WorkbenchCraftingRecipe recipe = recipes.get(i);
             boolean canCraft = this.menu.canCraft(recipe);
             boolean selected = i == this.menu.getSelectedRecipeIndex();
-            int buttonX = this.leftPos + 46 + startIndex % RECIPES_PER_ROW;
-            int buttonY = this.topPos + 18 + startIndex / RECIPES_PER_ROW;
+            int buttonX = this.leftPos + 46 + (i % RECIPES_PER_ROW) * BUTTON_SIZE;
+            int buttonY = this.topPos + 18 + (i / RECIPES_PER_ROW) * BUTTON_SIZE - (int) this.scroll;
             int textureV = !canCraft ? BUTTON_SIZE * 2 : selected ? BUTTON_SIZE : 0;
             graphics.blit(WORKBENCH_TEXTURE, buttonX, buttonY, 176, textureV, BUTTON_SIZE, BUTTON_SIZE);
             graphics.renderFakeItem(recipe.getResultItem(this.menu.getLevel().registryAccess()), buttonX + 2, buttonY + 2);
@@ -129,5 +129,21 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
             }
         }
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta)
+    {
+        if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, this.leftPos + 46, this.topPos + 18, WINDOW_WIDTH, WINDOW_HEIGHT))
+        {
+            this.scroll = Mth.clamp(this.scroll - delta * SCROLL_SPEED, 0, this.getMaxScroll());
+            return true;
+        }
+        return super.mouseScrolled(mouseX, mouseY, delta);
+    }
+
+    private int getMaxScroll()
+    {
+        return Math.max(0, (int) (Math.ceil(this.menu.getRecipes().size() / (double) RECIPES_PER_ROW) * BUTTON_SIZE) - WINDOW_HEIGHT);
     }
 }
