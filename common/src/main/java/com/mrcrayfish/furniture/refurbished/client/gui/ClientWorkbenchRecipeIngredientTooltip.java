@@ -41,7 +41,7 @@ public class ClientWorkbenchRecipeIngredientTooltip implements ClientTooltipComp
     @Override
     public void renderImage(Font font, int start, int top, GuiGraphics graphics)
     {
-        ItemStack material = this.material.ingredient().getItems()[0].copy();
+        ItemStack material = this.getStack().copy();
         material.setCount(this.material.count());
         graphics.renderFakeItem(material, start, top);
         graphics.renderItemDecorations(font, material, start, top);
