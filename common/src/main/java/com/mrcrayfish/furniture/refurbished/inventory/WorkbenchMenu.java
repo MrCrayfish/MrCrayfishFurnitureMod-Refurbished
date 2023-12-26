@@ -4,14 +4,17 @@ import com.mrcrayfish.furniture.refurbished.blockentity.IWorkbench;
 import com.mrcrayfish.furniture.refurbished.client.ClientWorkbench;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
+import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.crafting.StackedIngredient;
 import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchCraftingRecipe;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
@@ -31,13 +34,14 @@ import java.util.Map;
 public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMenu
 {
     private final IWorkbench workbench;
-    private final Player player;
     private final Level level;
+    private final ContainerLevelAccess access;
     private final List<WorkbenchCraftingRecipe> recipes;
     private final Map<ResourceLocation, Boolean> recipeToCraftable = new HashMap<>();
     private final DataSlot selectedRecipe = DataSlot.standalone();
     private final Slot resultSlot;
     private Map<Integer, Integer> counts = new Int2IntOpenHashMap();
+    private long lastSoundTime;
     private @Nullable Runnable updateCallback;
 
     public WorkbenchMenu(int windowId, Inventory playerInventory)
@@ -52,8 +56,8 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
         workbench.getWorkbenchContainer().startOpen(playerInventory.player);
         this.selectedRecipe.set(-1);
         this.workbench = workbench;
-        this.player = playerInventory.player;
         this.level = playerInventory.player.level();
+        this.access = workbench.createLevelAccess();
         this.recipes = this.setupRecipes(this.level);
         this.addContainerSlots(8, 18, 2, 4, 0);
         this.resultSlot = this.addSlot(new WorkbenchResultSlot(this.container, 8, 188, 21));
@@ -281,6 +285,12 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
         {
             this.workbench.performCraft(recipe);
             WorkbenchMenu.this.updateResultSlot();
+            this.access.execute((level, pos) -> {
+                long time = level.getGameTime();
+                if(this.lastSoundTime != (this.lastSoundTime = time)) {
+                    level.playSound(null, pos, ModSounds.BLOCK_WORKBENCH_CRAFT.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                }
+            });
         }
     }
 }

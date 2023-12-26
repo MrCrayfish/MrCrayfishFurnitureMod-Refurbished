@@ -17,6 +17,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -170,6 +172,12 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     public Container getWorkbenchContainer()
     {
         return this;
+    }
+
+    @Override
+    public ContainerLevelAccess createLevelAccess()
+    {
+        return ContainerLevelAccess.create(Objects.requireNonNull(this.level), this.worldPosition);
     }
 
     @Nullable

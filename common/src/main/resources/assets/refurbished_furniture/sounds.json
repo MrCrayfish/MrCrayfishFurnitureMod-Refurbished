@@ -261,6 +261,13 @@
             "refurbished_furniture:block/drawer/close"
         ]
     },
+    "block.workbench.craft": {
+        "subtitle": "subtitle.refurbished_furniture.workbench.craft",
+        "sounds": [
+            "refurbished_furniture:block/workbench/craft1",
+            "refurbished_furniture:block/workbench/craft2"
+        ]
+    },
     "item.package.open": {
         "subtitle": "subtitle.refurbished_furniture.package_open",
         "sounds": [
