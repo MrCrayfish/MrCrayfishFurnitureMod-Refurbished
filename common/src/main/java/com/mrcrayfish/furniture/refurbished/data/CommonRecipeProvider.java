@@ -205,16 +205,16 @@ public class CommonRecipeProvider
         this.rangeHood(ModBlocks.RANGE_HOOD_LIGHT.get(), ModBlocks.RANGE_HOOD_DARK.get());
         this.fryingPan(ModBlocks.FRYING_PAN.get());
         this.recyclingBin(ModBlocks.RECYCLE_BIN.get());
-        this.cuttingBoard(Blocks.OAK_PLANKS, Blocks.OAK_SLAB, ModBlocks.CUTTING_BOARD_OAK.get());
-        this.cuttingBoard(Blocks.SPRUCE_PLANKS, Blocks.SPRUCE_SLAB, ModBlocks.CUTTING_BOARD_SPRUCE.get());
-        this.cuttingBoard(Blocks.BIRCH_PLANKS, Blocks.BIRCH_SLAB, ModBlocks.CUTTING_BOARD_BIRCH.get());
-        this.cuttingBoard(Blocks.JUNGLE_PLANKS, Blocks.JUNGLE_SLAB, ModBlocks.CUTTING_BOARD_JUNGLE.get());
-        this.cuttingBoard(Blocks.ACACIA_PLANKS, Blocks.ACACIA_SLAB, ModBlocks.CUTTING_BOARD_ACACIA.get());
-        this.cuttingBoard(Blocks.DARK_OAK_PLANKS, Blocks.DARK_OAK_SLAB, ModBlocks.CUTTING_BOARD_DARK_OAK.get());
-        this.cuttingBoard(Blocks.MANGROVE_PLANKS, Blocks.MANGROVE_SLAB, ModBlocks.CUTTING_BOARD_MANGROVE.get());
-        this.cuttingBoard(Blocks.CHERRY_PLANKS, Blocks.CHERRY_SLAB, ModBlocks.CUTTING_BOARD_CHERRY.get());
-        this.cuttingBoard(Blocks.CRIMSON_PLANKS, Blocks.CRIMSON_SLAB, ModBlocks.CUTTING_BOARD_CRIMSON.get());
-        this.cuttingBoard(Blocks.WARPED_PLANKS, Blocks.WARPED_SLAB, ModBlocks.CUTTING_BOARD_WARPED.get());
+        this.cuttingBoard(Blocks.OAK_PLANKS, ModBlocks.CUTTING_BOARD_OAK.get());
+        this.cuttingBoard(Blocks.SPRUCE_PLANKS, ModBlocks.CUTTING_BOARD_SPRUCE.get());
+        this.cuttingBoard(Blocks.BIRCH_PLANKS, ModBlocks.CUTTING_BOARD_BIRCH.get());
+        this.cuttingBoard(Blocks.JUNGLE_PLANKS, ModBlocks.CUTTING_BOARD_JUNGLE.get());
+        this.cuttingBoard(Blocks.ACACIA_PLANKS, ModBlocks.CUTTING_BOARD_ACACIA.get());
+        this.cuttingBoard(Blocks.DARK_OAK_PLANKS, ModBlocks.CUTTING_BOARD_DARK_OAK.get());
+        this.cuttingBoard(Blocks.MANGROVE_PLANKS, ModBlocks.CUTTING_BOARD_MANGROVE.get());
+        this.cuttingBoard(Blocks.CHERRY_PLANKS, ModBlocks.CUTTING_BOARD_CHERRY.get());
+        this.cuttingBoard(Blocks.CRIMSON_PLANKS, ModBlocks.CUTTING_BOARD_CRIMSON.get());
+        this.cuttingBoard(Blocks.WARPED_PLANKS, ModBlocks.CUTTING_BOARD_WARPED.get());
         this.plate(ModBlocks.PLATE.get());
         this.crate(Blocks.OAK_PLANKS, ModBlocks.CRATE_OAK.get());
         this.crate(Blocks.SPRUCE_PLANKS, ModBlocks.CRATE_SPRUCE.get());
@@ -253,9 +253,6 @@ public class CommonRecipeProvider
         this.mailbox(Blocks.CRIMSON_SLAB, Blocks.CRIMSON_PLANKS, Blocks.CRIMSON_FENCE, ModBlocks.MAIL_BOX_CRIMSON.get());
         this.mailbox(Blocks.WARPED_SLAB, Blocks.WARPED_PLANKS, Blocks.WARPED_FENCE, ModBlocks.MAIL_BOX_WARPED.get());
         this.postBox(ModBlocks.POST_BOX.get());
-
-        this.workbenchCrafting(ModBlocks.CHAIR_OAK.get(), 1,
-                Material.of(Blocks.OAK_PLANKS, 2));
 
         this.simpleCombined(ModItems.SWEET_BERRY_JAM.get(), ModItems.TOAST.get(), ModItems.SWEET_BERRY_JAM_TOAST.get(), 1, RecipeCategory.FOOD);
         this.simpleCombined(ModItems.GLOW_BERRY_JAM.get(), ModItems.TOAST.get(), ModItems.GLOW_BERRY_JAM_TOAST.get(), 1, RecipeCategory.FOOD);
@@ -777,115 +774,47 @@ public class CommonRecipeProvider
 
     private void table(Block plank, Block result)
     {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
-                .pattern("PPP")
-                .pattern("P P")
-                .pattern("P P")
-                .define('P', plank)
-                .unlockedBy("has_planks", this.hasItem.apply(plank))
-                .save(this.consumer);
+        this.workbenchCrafting(result, 1, Material.of(plank, 7));
     }
 
     private void chair(Block plank, Block result)
     {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
-                .pattern("P  ")
-                .pattern("PPP")
-                .pattern("P P")
-                .define('P', plank)
-                .unlockedBy("has_planks", this.hasItem.apply(plank))
-                .save(this.consumer);
+        this.workbenchCrafting(result, 1, Material.of(plank, 6));
     }
 
     private void desk(Block plank, Block result)
     {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
-                .pattern("PPP")
-                .pattern("PSP")
-                .pattern("PSP")
-                .define('P', plank)
-                .define('S', Items.STICK)
-                .unlockedBy("has_planks", this.hasItem.apply(plank))
-                .save(this.consumer);
+        this.workbenchCrafting(result, 1, Material.of(plank, 7), Material.of(Items.STICK, 2));
     }
 
     private void drawer(Block plank, Block slab, Block result)
     {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result, 2)
-                .pattern("SSS")
-                .pattern("PCP")
-                .pattern("PPP")
-                .define('S', slab)
-                .define('P', plank)
-                .define('C', Items.CHEST)
-                .unlockedBy("has_planks", this.hasItem.apply(plank))
-                .save(this.consumer);
+        this.workbenchCrafting(result, 1, Material.of(plank, 4), Material.of(slab, 3), Material.of(Items.CHEST, 1));
     }
 
     private void woodenKitchenCabinetry(Block plank, Block slab, Block result)
     {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result, 2)
-                .pattern("SSS")
-                .pattern("PPP")
-                .pattern("PDP")
-                .define('S', slab)
-                .define('P', plank)
-                .define('D', Items.WHITE_DYE)
-                .unlockedBy("has_planks", this.hasItem.apply(plank))
-                .save(this.consumer);
+        this.workbenchCrafting(result, 1, Material.of(plank, 5), Material.of(slab, 3), Material.of(Items.WHITE_DYE, 1));
     }
 
     private void woodenKitchenDrawer(Block plank, Block slab, Block result)
     {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result, 2)
-                .pattern("SSS")
-                .pattern("PCP")
-                .pattern("PDP")
-                .define('S', slab)
-                .define('P', plank)
-                .define('C', Items.CHEST)
-                .define('D', Items.WHITE_DYE)
-                .unlockedBy("has_planks", this.hasItem.apply(plank))
-                .save(this.consumer);
+        this.workbenchCrafting(result, 2, Material.of(plank, 5), Material.of(slab, 3), Material.of(Items.CHEST, 1), Material.of(Items.WHITE_DYE, 1));
     }
 
     private void woodenKitchenSink(Block plank, Block slab, Block result)
     {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
-                .pattern("SIS")
-                .pattern("PQP")
-                .pattern("PDP")
-                .define('S', slab)
-                .define('P', plank)
-                .define('I', Items.COPPER_INGOT)
-                .define('Q', Items.QUARTZ_BLOCK)
-                .define('D', Items.WHITE_DYE)
-                .unlockedBy("has_planks", this.hasItem.apply(plank))
-                .save(this.consumer);
+        this.workbenchCrafting(result, 1, Material.of(plank, 4), Material.of(slab, 2), Material.of(Items.COPPER_INGOT, 1), Material.of(Items.QUARTZ_BLOCK, 1), Material.of(Items.WHITE_DYE, 1));
     }
 
     private void woodenKitchenStorageCabinet(Block plank, Block slab, Block result)
     {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result, 2)
-                .pattern("PPS")
-                .pattern("D S")
-                .pattern("PPS")
-                .define('S', slab)
-                .define('P', plank)
-                .define('D', Items.WHITE_DYE)
-                .unlockedBy("has_planks", this.hasItem.apply(plank))
-                .save(this.consumer);
+        this.workbenchCrafting(result, 2, Material.of(plank, 4), Material.of(slab, 3), Material.of(Items.WHITE_DYE, 1));
     }
 
     private void colouredKitchenCabinetry(Item dye, Block result)
     {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
-                .pattern("D")
-                .pattern("K")
-                .define('D', dye)
-                .define('K', ModTags.Items.WOODEN_KITCHEN_CABINETRY)
-                .unlockedBy("has_dye", this.hasItem.apply(dye))
-                .save(this.consumer);
+        this.workbenchCrafting(result, 1, Material.of(dye, 1), Material.of("wooden_kitchen_cabinetry", ModTags.Items.WOODEN_KITCHEN_CABINETRY, 1));
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
                 .pattern("D")
                 .pattern("K")
@@ -897,13 +826,7 @@ public class CommonRecipeProvider
 
     private void colouredKitchenDrawer(Item dye, Block result)
     {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
-                .pattern("D")
-                .pattern("K")
-                .define('D', dye)
-                .define('K', ModTags.Items.WOODEN_KITCHEN_DRAWERS)
-                .unlockedBy("has_dye", this.hasItem.apply(dye))
-                .save(this.consumer);
+        this.workbenchCrafting(result, 1, Material.of(dye, 1), Material.of("wooden_kitchen_drawers", ModTags.Items.WOODEN_KITCHEN_DRAWERS, 1));
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
                 .pattern("D")
                 .pattern("K")
@@ -915,13 +838,7 @@ public class CommonRecipeProvider
 
     private void colouredKitchenSink(Item dye, Block result)
     {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
-                .pattern("D")
-                .pattern("K")
-                .define('D', dye)
-                .define('K', ModTags.Items.WOODEN_KITCHEN_SINKS)
-                .unlockedBy("has_dye", this.hasItem.apply(dye))
-                .save(this.consumer);
+        this.workbenchCrafting(result, 1, Material.of(dye, 1), Material.of("wooden_kitchen_sinks", ModTags.Items.WOODEN_KITCHEN_SINKS, 1));
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
                 .pattern("D")
                 .pattern("K")
@@ -933,12 +850,7 @@ public class CommonRecipeProvider
 
     private void colouredKitchenStorageCabinet(Item dye, Block result)
     {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
-                .pattern("KD")
-                .define('D', dye)
-                .define('K', ModTags.Items.WOODEN_KITCHEN_STORAGE_CABINETS)
-                .unlockedBy("has_dye", this.hasItem.apply(dye))
-                .save(this.consumer);
+        this.workbenchCrafting(result, 1, Material.of(dye, 1), Material.of("wooden_kitchen_storage_cabinets", ModTags.Items.WOODEN_KITCHEN_STORAGE_CABINETS, 1));
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
                 .pattern("KD")
                 .define('D', dye)
@@ -949,193 +861,82 @@ public class CommonRecipeProvider
 
     private void toaster(Block light, Block dark)
     {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, light)
-                .pattern("IBI")
-                .pattern("IRI")
-                .define('I', Items.IRON_INGOT)
-                .define('B', Items.IRON_BARS)
-                .define('R', Items.REDSTONE)
-                .unlockedBy("has_ingots", this.hasItem.apply(Items.IRON_INGOT))
-                .unlockedBy("has_redstone", this.hasItem.apply(Items.REDSTONE))
-                .save(this.consumer);
-
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
-                .requires(light)
-                .requires(Items.BLACK_DYE)
-                .unlockedBy("has_ingots", this.hasItem.apply(Items.IRON_INGOT))
-                .unlockedBy("has_redstone", this.hasItem.apply(Items.REDSTONE))
-                .save(this.consumer, BuiltInRegistries.ITEM.getKey(dark.asItem()) + "_from_dyeing");
+        this.workbenchCrafting(light, 1, Material.of(Items.IRON_INGOT, 4), Material.of(Items.IRON_BARS, 1), Material.of(Items.REDSTONE, 1));
+        this.workbenchCrafting(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
     }
 
     private void microwave(Block light, Block dark)
     {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, light)
-                .pattern("IGI")
-                .pattern("IRI")
-                .define('I', Items.IRON_INGOT)
-                .define('G', Items.GLASS_PANE)
-                .define('R', Items.REDSTONE)
-                .unlockedBy("has_ingots", this.hasItem.apply(Items.IRON_INGOT))
-                .unlockedBy("has_redstone", this.hasItem.apply(Items.REDSTONE))
-                .save(this.consumer);
-
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
-                .requires(light)
-                .requires(Items.BLACK_DYE)
-                .unlockedBy("has_ingots", this.hasItem.apply(Items.IRON_INGOT))
-                .unlockedBy("has_redstone", this.hasItem.apply(Items.REDSTONE))
-                .save(this.consumer, BuiltInRegistries.ITEM.getKey(dark.asItem()) + "_from_dyeing");
+        this.workbenchCrafting(light, 1, Material.of(Items.IRON_INGOT, 4), Material.of(Items.GLASS_PANE, 1), Material.of(Items.REDSTONE, 1));
+        this.workbenchCrafting(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
     }
 
     private void stove(Block light, Block dark)
     {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, light)
-                .pattern("IBI")
-                .pattern("IFI")
-                .pattern("IRI")
-                .define('I', Items.IRON_INGOT)
-                .define('B', Items.IRON_BARS)
-                .define('F', Items.FURNACE)
-                .define('R', Items.REDSTONE)
-                .unlockedBy("has_ingots", this.hasItem.apply(Items.IRON_INGOT))
-                .unlockedBy("has_redstone", this.hasItem.apply(Items.REDSTONE))
-                .save(this.consumer);
-
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
-                .requires(light)
-                .requires(Items.BLACK_DYE)
-                .unlockedBy("has_ingots", this.hasItem.apply(Items.IRON_INGOT))
-                .unlockedBy("has_redstone", this.hasItem.apply(Items.REDSTONE))
-                .save(this.consumer, BuiltInRegistries.ITEM.getKey(dark.asItem()) + "_from_dyeing");
+        this.workbenchCrafting(light, 1, Material.of(Items.IRON_INGOT, 6), Material.of(Items.IRON_BARS, 1), Material.of(Items.FURNACE, 1), Material.of(Items.REDSTONE, 1));
+        this.workbenchCrafting(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
     }
 
     private void rangeHood(Block light, Block dark)
     {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, light)
-                .pattern(" R ")
-                .pattern("ILI")
-                .define('R', Items.REDSTONE)
-                .define('I', Items.IRON_INGOT)
-                .define('L', Items.REDSTONE_LAMP)
-                .unlockedBy("has_ingots", this.hasItem.apply(Items.IRON_INGOT))
-                .unlockedBy("has_redstone", this.hasItem.apply(Items.REDSTONE))
-                .save(this.consumer);
-
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
-                .requires(light)
-                .requires(Items.BLACK_DYE)
-                .unlockedBy("has_ingots", this.hasItem.apply(Items.IRON_INGOT))
-                .unlockedBy("has_redstone", this.hasItem.apply(Items.REDSTONE))
-                .save(this.consumer, BuiltInRegistries.ITEM.getKey(dark.asItem()) + "_from_dyeing");
+        this.workbenchCrafting(light, 1, Material.of(Items.IRON_INGOT, 2), Material.of(Items.REDSTONE_LAMP, 1), Material.of(Items.REDSTONE, 1));
+        this.workbenchCrafting(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
     }
 
     private void fryingPan(Block result)
     {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
-                .pattern("SII")
-                .define('S', Items.STICK)
-                .define('I', Items.IRON_INGOT)
-                .unlockedBy("has_ingots", this.hasItem.apply(Items.IRON_INGOT))
-                .save(this.consumer);
+        this.workbenchCrafting(result, 1, Material.of(Items.IRON_INGOT, 2), Material.of(Items.STICK, 1));
     }
 
     private void recyclingBin(Block result)
     {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
-                .pattern("III")
-                .pattern("IRI")
-                .pattern("IPI")
-                .define('I', Items.IRON_INGOT)
-                .define('R', Items.REDSTONE)
-                .define('P', Items.PISTON)
-                .unlockedBy("has_ingots", this.hasItem.apply(Items.IRON_INGOT))
-                .unlockedBy("has_redstone", this.hasItem.apply(Items.REDSTONE))
-                .save(this.consumer);
+        this.workbenchCrafting(result, 1, Material.of(Items.IRON_INGOT, 7), Material.of(Items.PISTON, 1), Material.of(Items.REDSTONE, 1));
     }
 
-    private void cuttingBoard(Block slab, Block plank, Block result)
+    private void cuttingBoard(Block plank, Block result)
     {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
-                .pattern("SS")
-                .define('S', slab)
-                .unlockedBy("has_planks", this.hasItem.apply(plank))
-                .unlockedBy("has_slabs", this.hasItem.apply(slab))
-                .save(this.consumer);
+        this.workbenchCrafting(result, 1, Material.of(plank, 2));
     }
 
     private void plate(Block result)
     {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result, 4)
-                .pattern("QQ")
-                .define('Q', Items.QUARTZ_BLOCK)
-                .unlockedBy("has_quartz_block", this.hasItem.apply(Items.QUARTZ_BLOCK))
-                .unlockedBy("has_quartz", this.hasItem.apply(Items.QUARTZ))
-                .save(this.consumer);
+        this.workbenchCrafting(result, 4, Material.of(Items.QUARTZ_BLOCK, 2));
     }
 
     private void crate(Block plank, Block result)
     {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
-                .pattern("PSP")
-                .pattern("SPS")
-                .pattern("PSP")
-                .define('P', plank)
-                .define('S', Items.STICK)
-                .unlockedBy("has_planks", this.hasItem.apply(plank))
-                .save(this.consumer);
+        this.workbenchCrafting(result, 1, Material.of(plank, 5), Material.of(Items.STICK, 4));
     }
 
     private void grill(Item dye, Block result)
     {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
-                .pattern("IBI")
-                .pattern("IDI")
-                .pattern("I I")
-                .define('I', Items.IRON_INGOT)
-                .define('B', Items.IRON_BARS)
-                .define('D', dye)
-                .unlockedBy("has_ingots", this.hasItem.apply(Items.IRON_INGOT))
-                .unlockedBy("has_dye", this.hasItem.apply(dye))
-                .save(this.consumer);
+        this.workbenchCrafting(result, 1, Material.of(Items.IRON_INGOT, 6), Material.of(Items.IRON_BARS, 1), Material.of(dye, 1));
     }
 
     private void mailbox(Block slab, Block plank, Block fence, Block result)
     {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
-                .pattern("SSS")
-                .pattern("PCP")
-                .pattern(" F ")
-                .define('S', slab)
-                .define('P', plank)
-                .define('C', Blocks.CHEST)
-                .define('F', fence)
-                .unlockedBy("has_planks", this.hasItem.apply(plank))
-                .save(this.consumer);
+        this.workbenchCrafting(result, 1, Material.of(plank, 2), Material.of(slab, 3), Material.of(Blocks.CHEST, 1), Material.of(fence, 1));
     }
 
     private void postBox(Block result)
     {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
-                .pattern("DID")
-                .pattern("ICI")
-                .pattern("IBI")
-                .define('D', Items.BLUE_DYE)
-                .define('I', Items.IRON_INGOT)
-                .define('B', Blocks.IRON_BLOCK)
-                .define('C', Blocks.CHEST)
-                .unlockedBy("has_ingots", this.hasItem.apply(Items.IRON_INGOT))
-                .save(this.consumer);
+        this.workbenchCrafting(result, 1, Material.of(Items.IRON_INGOT, 4), Material.of(Blocks.IRON_BLOCK, 1), Material.of(Blocks.CHEST, 1), Material.of(Items.BLUE_DYE, 1));
     }
 
     private void workbenchCrafting(ItemLike result, int count, Material<?> ... materials)
+    {
+        String resultName = result.asItem().toString();
+        this.workbenchCrafting(resultName, result, count, materials);
+    }
+
+    private void workbenchCrafting(String name, ItemLike result, int count, Material<?> ... materials)
     {
         WorkbenchCraftingRecipe.Builder builder = WorkbenchCraftingRecipe.builder(result, count, this.hasItem, this.hasTag);
         for(Material<?> material : materials)
         {
             builder.requiresMaterial(material);
         }
-        String resultName = result.asItem().toString();
-        builder.save(this.consumer, Utils.resource("crafting/" + resultName));
+        builder.save(this.consumer, Utils.resource("crafting/" + name));
     }
 
     private void cooking(String folder, RecipeCategory category, RecipeSerializer<? extends AbstractCookingRecipe> serializer, ItemLike input, ItemLike output, int time, float experience)
