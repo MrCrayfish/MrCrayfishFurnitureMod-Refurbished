@@ -32,9 +32,9 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     public static final ResourceLocation WORKBENCH_TEXTURE = Utils.resource("textures/gui/container/workbench.png");
 
     private static final int BUTTON_SIZE = 20;
-    private static final int RECIPES_PER_ROW = 4;
+    private static final int RECIPES_PER_ROW = 6;
     private static final int WINDOW_WIDTH = BUTTON_SIZE * RECIPES_PER_ROW;
-    private static final int WINDOW_HEIGHT = 70;
+    private static final int WINDOW_HEIGHT = 88;
     private static final int SCROLL_SPEED = 10;
     private static final int SCROLLBAR_HEIGHT = 15;
 
@@ -45,8 +45,16 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     public WorkbenchScreen(WorkbenchMenu menu, Inventory playerInventory, Component title)
     {
         super(menu, playerInventory, title);
-        this.imageHeight = 193;
+        this.imageWidth = 216;
+        this.imageHeight = 211;
+        this.inventoryLabelX = 28;
         this.inventoryLabelY = this.imageHeight - 94;
+    }
+
+    @Override
+    protected int getBannerTop()
+    {
+        return this.topPos - 9;
     }
 
     @Override
@@ -60,8 +68,8 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
     {
-        super.renderBg(graphics, partialTick, mouseX, mouseY);
         graphics.blit(WORKBENCH_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        super.renderBg(graphics, partialTick, mouseX, mouseY);
         this.renderScrollbar(graphics, mouseY);
         this.renderRecipes(graphics, partialTick, mouseX, mouseY);
         if(this.hoveredIndex != -1)
@@ -72,9 +80,8 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
 
     private void renderScrollbar(GuiGraphics graphics, int mouseY)
     {
-        int textureU = this.getMaxScroll() > 0 ? 176 : 188;
-        //System.out.println(this.getScrollbarPosition(mouseY));
-        graphics.blit(WORKBENCH_TEXTURE, this.leftPos + 129, this.topPos + 18 + this.getScrollbarPosition(mouseY), textureU, 60, 12, SCROLLBAR_HEIGHT);
+        int textureU = this.getMaxScroll() > 0 ? 216 : 228;
+        graphics.blit(WORKBENCH_TEXTURE, this.leftPos + 169, this.topPos + 18 + this.getScrollbarPosition(mouseY), textureU, 60, 12, SCROLLBAR_HEIGHT);
     }
 
     private void renderRecipes(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
@@ -85,6 +92,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         double scroll = this.getScrollAmount(mouseY);
         int startIndex = (int) (scroll / BUTTON_SIZE) * RECIPES_PER_ROW;
         int endIndex = startIndex + Mth.ceil(WINDOW_HEIGHT / (double) BUTTON_SIZE + 1) * RECIPES_PER_ROW;
+        boolean mouseInWindow = ScreenHelper.isMouseWithinBounds(mouseX, mouseY, this.leftPos + 46, this.topPos + 18, WINDOW_WIDTH, WINDOW_HEIGHT);
         for(int i = startIndex; i < endIndex && i < recipes.size(); i++)
         {
             WorkbenchCraftingRecipe recipe = recipes.get(i);
@@ -93,9 +101,9 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
             int buttonX = this.leftPos + 46 + (i % RECIPES_PER_ROW) * BUTTON_SIZE;
             int buttonY = this.topPos + 18 + (i / RECIPES_PER_ROW) * BUTTON_SIZE - (int) scroll;
             int textureV = !canCraft ? BUTTON_SIZE * 2 : selected ? BUTTON_SIZE : 0;
-            graphics.blit(WORKBENCH_TEXTURE, buttonX, buttonY, 176, textureV, BUTTON_SIZE, BUTTON_SIZE);
+            graphics.blit(WORKBENCH_TEXTURE, buttonX, buttonY, 216, textureV, BUTTON_SIZE, BUTTON_SIZE);
             graphics.renderFakeItem(recipe.getResultItem(this.menu.getLevel().registryAccess()), buttonX + 2, buttonY + 2);
-            if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, buttonX, buttonY, BUTTON_SIZE, BUTTON_SIZE))
+            if(mouseInWindow && ScreenHelper.isMouseWithinBounds(mouseX, mouseY, buttonX, buttonY, BUTTON_SIZE, BUTTON_SIZE))
             {
                 this.hoveredIndex = i;
             }
@@ -136,7 +144,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
                 }
             }
 
-            if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, this.leftPos + 129, this.topPos + 18 + this.getScrollbarPosition((int) mouseY), 12, SCROLLBAR_HEIGHT))
+            if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, this.leftPos + 169, this.topPos + 18 + this.getScrollbarPosition((int) mouseY), 12, SCROLLBAR_HEIGHT))
             {
                 this.clickedY = (int) mouseY;
                 return true;

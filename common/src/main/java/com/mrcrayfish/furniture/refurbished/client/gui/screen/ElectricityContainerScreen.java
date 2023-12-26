@@ -40,7 +40,7 @@ public abstract class ElectricityContainerScreen<T extends AbstractContainerMenu
             int contentWidth = iconSize + 3 + messageWidth;
             int bannerWidth = padding + contentWidth + padding;
             int bannerStart = this.leftPos + (this.imageWidth - bannerWidth) / 2;
-            int bannerTop = this.topPos - 22;
+            int bannerTop = this.getBannerTop();
 
             // Draw background
             graphics.blit(TEXTURE, bannerStart, bannerTop, 0, 46, 4, 18, 64, 64);
@@ -54,7 +54,7 @@ public abstract class ElectricityContainerScreen<T extends AbstractContainerMenu
             graphics.drawString(this.minecraft.font, Components.GUI_NO_POWER, bannerStart + padding + iconSize + 3, bannerTop + 5, 0xFFFFFFFF);
 
             // Set tooltip if the mouse is hovering the banner
-            if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, bannerStart, bannerTop, bannerWidth, 15))
+            if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, bannerStart, bannerTop, bannerWidth, 18))
             {
                 Tooltip tooltip = ScreenHelper.createMultilineTooltip(List.of(
                     Components.GUI_NO_POWER.plainCopy().withStyle(ChatFormatting.RED),
@@ -63,5 +63,10 @@ public abstract class ElectricityContainerScreen<T extends AbstractContainerMenu
                 this.setTooltipForNextRenderPass(tooltip, DefaultTooltipPositioner.INSTANCE, false);this.setTooltipForNextRenderPass(tooltip, DefaultTooltipPositioner.INSTANCE, false);
             }
         }
+    }
+
+    protected int getBannerTop()
+    {
+        return this.topPos - 22;
     }
 }

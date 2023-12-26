@@ -58,7 +58,7 @@ public class ClientWorkbenchRecipeTooltip implements ClientTooltipComponent
             pose.pushPose();
             pose.translate(0, 0, 200);
             boolean checked = this.menu.hasMaterials(material);
-            graphics.blit(WorkbenchScreen.WORKBENCH_TEXTURE, start + i * 18, top, checked ? 202 : 196, 0, 6, 5);
+            graphics.blit(WorkbenchScreen.WORKBENCH_TEXTURE, start + i * 18, top, checked ? 242 : 236, 0, 6, 5);
             pose.popPose();
         }
     }
