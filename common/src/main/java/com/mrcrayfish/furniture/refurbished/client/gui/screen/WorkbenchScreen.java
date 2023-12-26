@@ -137,7 +137,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     private void renderScrollbar(GuiGraphics graphics, int mouseY)
     {
         int textureU = this.getMaxScroll() > 0 ? 216 : 228;
-        graphics.blit(WORKBENCH_TEXTURE, this.leftPos + 169, this.topPos + 18 + this.getScrollbarPosition(mouseY), textureU, 60, 12, SCROLLBAR_HEIGHT);
+        graphics.blit(WORKBENCH_TEXTURE, this.leftPos + 169, this.topPos + 18 + this.getScrollbarPosition(mouseY), textureU, 40, 12, SCROLLBAR_HEIGHT);
     }
 
     private void renderRecipes(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
@@ -157,8 +157,9 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
             boolean selected = recipeIndex == this.menu.getSelectedRecipeIndex();
             int buttonX = this.leftPos + 46 + (i % RECIPES_PER_ROW) * BUTTON_SIZE;
             int buttonY = this.topPos + 18 + (i / RECIPES_PER_ROW) * BUTTON_SIZE - (int) scroll;
-            int textureV = !canCraft ? BUTTON_SIZE * 2 : selected ? BUTTON_SIZE : 0;
-            graphics.blit(WORKBENCH_TEXTURE, buttonX, buttonY, 216, textureV, BUTTON_SIZE, BUTTON_SIZE);
+            int textureU = 216 + (!canCraft ? BUTTON_SIZE : 0);
+            int textureV = selected ? BUTTON_SIZE : 0;
+            graphics.blit(WORKBENCH_TEXTURE, buttonX, buttonY, textureU, textureV, BUTTON_SIZE, BUTTON_SIZE);
             graphics.renderFakeItem(recipe.getResultItem(this.menu.getLevel().registryAccess()), buttonX + 2, buttonY + 2);
             if(mouseInWindow && ScreenHelper.isMouseWithinBounds(mouseX, mouseY, buttonX, buttonY, BUTTON_SIZE, BUTTON_SIZE))
             {
@@ -192,8 +193,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         {
             if(this.hoveredIndex != -1)
             {
-                WorkbenchCraftingRecipe recipe = this.menu.getRecipes().get(this.hoveredIndex);
-                if(this.menu.canCraft(recipe) && this.minecraft != null && this.minecraft.gameMode != null)
+                if(this.minecraft != null && this.minecraft.gameMode != null)
                 {
                     this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, this.hoveredIndex);
                     this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
@@ -239,7 +239,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
 
     private int getMaxScroll()
     {
-        return Math.max(0, (int) (Math.ceil(this.menu.getRecipes().size() / (double) RECIPES_PER_ROW) * BUTTON_SIZE) - WINDOW_HEIGHT);
+        return Math.max(0, (int) (Math.ceil(this.displayRecipes.size() / (double) RECIPES_PER_ROW) * BUTTON_SIZE) - WINDOW_HEIGHT);
     }
 
     private int getScrollbarPosition(int mouseY)
