@@ -240,6 +240,7 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
         Direction direction = this.getDirection();
         this.getContainer(direction.getCounterClockWise()).ifPresent(list::add);
         this.getContainer(direction.getClockWise()).ifPresent(list::add);
+        Optional.ofNullable(this.getUser()).ifPresent(player -> list.add(Pair.of(null, player.getInventory())));
         return list;
     }
 
