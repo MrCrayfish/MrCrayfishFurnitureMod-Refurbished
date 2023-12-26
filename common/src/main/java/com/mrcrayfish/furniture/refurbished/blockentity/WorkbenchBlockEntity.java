@@ -6,11 +6,9 @@ import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchCraftingRecipe;
 import com.mrcrayfish.furniture.refurbished.inventory.WorkbenchMenu;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageWorkbench;
-import com.mrcrayfish.furniture.refurbished.util.ItemHash;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -43,7 +41,7 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
 {
     protected @Nullable Player currentUser;
     protected int updateTimer;
-    protected Map<Item, Integer> counts = new Object2IntOpenCustomHashMap<>(ItemHash.INSTANCE);
+    protected int countsHash;
 
     public WorkbenchBlockEntity(BlockPos pos, BlockState state)
     {
@@ -134,11 +132,15 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     private void update()
     {
         Player player = this.getUser();
-        if(player != null && this.updateTimer++ % 4 == 0) // Only send every four ticks
+        if(player != null && this.updateTimer++ % 4 == 0) // Only check every four ticks
         {
-            this.counts = Utils.countItems(true, this.getSupplyContainers());
+            Map<Item, Integer> newCounts = Utils.countItems(true, this.getSupplyContainers());
+            int hash = newCounts.hashCode();
+            if(hash == this.countsHash) // Don't send update if same
+                return;
+            this.countsHash = hash;
             Map<Integer, Integer> map = new Int2IntOpenHashMap();
-            for(Map.Entry<Item, Integer> entry : this.counts.entrySet())
+            for(Map.Entry<Item, Integer> entry : newCounts.entrySet())
             {
                 map.put(Item.getId(entry.getKey()), entry.getValue());
             }

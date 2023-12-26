@@ -109,6 +109,11 @@ public class WorkbenchCraftingRecipe implements Recipe<Container>
         return this.materials;
     }
 
+    public int getResultId()
+    {
+        return Item.getId(this.result.getItem());
+    }
+
     public static Builder builder(ItemLike result, int count, Function<ItemLike, CriterionTriggerInstance> hasItem, Function<TagKey<Item>, CriterionTriggerInstance> hasTag)
     {
         return new Builder(result.asItem(), count, hasItem, hasTag);

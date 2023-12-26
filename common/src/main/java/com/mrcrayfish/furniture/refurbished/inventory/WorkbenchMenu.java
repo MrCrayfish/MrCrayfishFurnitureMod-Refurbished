@@ -7,6 +7,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.StackedIngredient;
 import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchCraftingRecipe;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -19,8 +20,8 @@ import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,10 +34,11 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
     private final Player player;
     private final Level level;
     private final List<WorkbenchCraftingRecipe> recipes;
+    private final Map<ResourceLocation, Boolean> recipeToCraftable = new HashMap<>();
     private final DataSlot selectedRecipe = DataSlot.standalone();
     private final Slot resultSlot;
     private Map<Integer, Integer> counts = new Int2IntOpenHashMap();
-    private int updateTimer;
+    private @Nullable Runnable updateCallback;
 
     public WorkbenchMenu(int windowId, Inventory playerInventory)
     {
@@ -78,7 +80,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
     private List<WorkbenchCraftingRecipe> setupRecipes(Level level)
     {
         List<WorkbenchCraftingRecipe> recipes = new ArrayList<>(level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.WORKBENCH_CRAFTING.get()));
-        recipes.sort(Comparator.comparing(recipe -> Item.getId(recipe.getResultItem(level.registryAccess()).getItem())));
+        recipes.sort(Comparator.comparing(WorkbenchCraftingRecipe::getResultId));
         return recipes;
     }
 
@@ -213,18 +215,23 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
     public void updateItemCounts(Map<Integer, Integer> counts)
     {
         this.counts = counts;
+        this.recipeToCraftable.clear();
+        if(this.updateCallback != null)
+        {
+            this.updateCallback.run();
+        }
     }
 
     public boolean canCraft(WorkbenchCraftingRecipe recipe)
     {
-        for(StackedIngredient material : recipe.getMaterials())
-        {
-            if(!this.hasMaterials(material))
-            {
-                return false;
+        return this.recipeToCraftable.computeIfAbsent(recipe.getId(), id -> {
+            for(StackedIngredient material : recipe.getMaterials()) {
+                if(!this.hasMaterials(material)) {
+                    return false;
+                }
             }
-        }
-        return true;
+            return true;
+        });
     }
 
     public boolean hasMaterials(StackedIngredient material)
@@ -238,6 +245,11 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
             }
         }
         return true;
+    }
+
+    public void setUpdateCallback(Runnable callback)
+    {
+        this.updateCallback = callback;
     }
 
     private class WorkbenchResultSlot extends Slot
