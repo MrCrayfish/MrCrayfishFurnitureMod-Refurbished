@@ -50,15 +50,15 @@ public class ClientWorkbenchRecipeTooltip implements ClientTooltipComponent
             StackedIngredient material = materials.get(i);
             ItemStack copy = this.getStack(material).copy();
             copy.setCount(material.count());
-            graphics.renderFakeItem(copy, start + i * 16, top);
-            graphics.renderItemDecorations(font, copy, start + i * 16, top);
+            graphics.renderFakeItem(copy, start + i * 18, top);
+            graphics.renderItemDecorations(font, copy, start + i * 18, top);
 
             // Draw check or cross depending on if we have the materials
             PoseStack pose = graphics.pose();
             pose.pushPose();
             pose.translate(0, 0, 200);
             boolean checked = this.menu.hasMaterials(material);
-            graphics.blit(WorkbenchScreen.WORKBENCH_TEXTURE, start, top, checked ? 202 : 196, 0, 6, 5);
+            graphics.blit(WorkbenchScreen.WORKBENCH_TEXTURE, start + i * 18, top, checked ? 202 : 196, 0, 6, 5);
             pose.popPose();
         }
     }
