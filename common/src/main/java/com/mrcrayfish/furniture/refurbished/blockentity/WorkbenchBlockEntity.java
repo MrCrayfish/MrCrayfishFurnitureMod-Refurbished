@@ -125,20 +125,20 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
         }
     }
 
-    public static void serverTick(Level level, BlockPos pos, BlockState state, WorkbenchBlockEntity workbench)
+    public static void sendCountsToUser(Level level, BlockPos pos, BlockState state, WorkbenchBlockEntity workbench)
     {
         ElectricityModuleLootBlockEntity.serverTick(level, pos, state, workbench);
-        workbench.update();
+        workbench.sendCountsToUser(false);
     }
 
-    private void update()
+    public void sendCountsToUser(boolean force)
     {
         Player player = this.getUser();
-        if(player != null && this.updateTimer++ % 4 == 0) // Only check every four ticks
+        if(player != null && (this.updateTimer++ % 4 == 0 || force)) // Only check every four ticks
         {
             Map<Item, Integer> newCounts = Utils.countItems(true, this.getSupplyContainers());
             int hash = newCounts.hashCode();
-            if(hash == this.countsHash) // Don't send update if same
+            if(hash == this.countsHash && !force) // Don't send update if same
                 return;
             this.countsHash = hash;
             Map<Integer, Integer> map = new Int2IntOpenHashMap();

@@ -103,7 +103,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     protected void init()
     {
         super.init();
-        this.craftableOnlyButton = this.addRenderableWidget(new CraftableButton(this.leftPos + 184, this.topPos + 44, 26, 16, false));
+        this.craftableOnlyButton = this.addRenderableWidget(new CraftableButton(this.leftPos + 184, this.topPos + 44, 26, 16, craftableOnly));
         this.craftableOnlyButton.initTextureValues(152, 41, 28, 18, VanillaTextures.RECIPE_BOOK);
     }
 

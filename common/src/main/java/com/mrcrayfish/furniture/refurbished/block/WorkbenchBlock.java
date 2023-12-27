@@ -2,7 +2,6 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.mrcrayfish.furniture.refurbished.blockentity.CeilingFanBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.WorkbenchBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import net.minecraft.core.BlockPos;
@@ -11,7 +10,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -49,7 +47,10 @@ public class WorkbenchBlock extends FurnitureHorizontalBlock implements EntityBl
         {
             if(!workbench.isOccupied())
             {
-                player.openMenu(workbench);
+                if(player.openMenu(workbench).isPresent())
+                {
+                    workbench.sendCountsToUser(true);
+                }
                 return InteractionResult.CONSUME;
             }
         }
@@ -74,7 +75,7 @@ public class WorkbenchBlock extends FurnitureHorizontalBlock implements EntityBl
     {
         if(!level.isClientSide())
         {
-            return createTickerHelper(type, workbench, WorkbenchBlockEntity::serverTick);
+            return createTickerHelper(type, workbench, WorkbenchBlockEntity::sendCountsToUser);
         }
         return null;
     }
