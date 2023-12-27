@@ -162,6 +162,7 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
         }
     }
 
+
     @Override
     public boolean canCraft(WorkbenchCraftingRecipe recipe)
     {
@@ -186,18 +187,30 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
         // Find the items we are going to consume. This has been made complicated since it accepts tags.
         Map<Item, Integer> counts = Utils.countItems(true, this.getSupplyContainers());
         Map<Item, Integer> materials = new HashMap<>();
-        outer: for(StackedIngredient material : recipe.getMaterials())
+        for(StackedIngredient material : recipe.getMaterials())
         {
+            int remaining = material.count();
             for(ItemStack stack : material.ingredient().getItems())
             {
-                Integer count = counts.get(stack.getItem());
-                if(count != null && count >= material.count())
+                Item item = stack.getItem();
+                int count = counts.getOrDefault(item, 0);
+                count -= materials.getOrDefault(item, 0);
+                if(count > 0)
                 {
-                    materials.put(stack.getItem(), material.count());
-                    continue outer;
+                    if(count >= remaining)
+                    {
+                        materials.merge(item, remaining, Integer::sum);
+                        remaining = 0;
+                        break;
+                    }
+                    materials.merge(item, count, Integer::sum);
+                    remaining -= count;
                 }
             }
-            return null;
+            if(remaining > 0)
+            {
+                return null;
+            }
         }
         return materials;
     }

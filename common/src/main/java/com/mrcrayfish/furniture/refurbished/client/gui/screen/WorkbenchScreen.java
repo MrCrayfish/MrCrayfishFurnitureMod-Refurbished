@@ -181,7 +181,8 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         }
         else
         {
-            recipe.getMaterials().forEach(material -> components.add(new ClientWorkbenchRecipeIngredientTooltip(this.menu, material)));
+            Map<Integer, Integer> counted = new HashMap<>();
+            recipe.getMaterials().forEach(material -> components.add(new ClientWorkbenchRecipeIngredientTooltip(this.menu, material, counted)));
         }
         ClientServices.PLATFORM.renderTooltip(graphics, this.font, components, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE);
     }

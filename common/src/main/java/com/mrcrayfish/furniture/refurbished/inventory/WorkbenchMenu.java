@@ -7,6 +7,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.crafting.StackedIngredient;
 import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchCraftingRecipe;
+import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
@@ -229,8 +230,9 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
     public boolean canCraft(WorkbenchCraftingRecipe recipe)
     {
         return this.recipeToCraftable.computeIfAbsent(recipe.getId(), id -> {
+            Map<Integer, Integer> found = new HashMap<>();
             for(StackedIngredient material : recipe.getMaterials()) {
-                if(!this.hasMaterials(material)) {
+                if(!this.hasMaterials(material, found)) {
                     return false;
                 }
             }
@@ -238,17 +240,27 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
         });
     }
 
-    public boolean hasMaterials(StackedIngredient material)
+    public boolean hasMaterials(StackedIngredient material, Map<Integer, Integer> counted)
     {
+        int remaining = material.count();
         for(ItemStack stack : material.ingredient().getItems())
         {
-            Integer count = this.counts.get(Item.getId(stack.getItem()));
-            if(count == null || count < material.count())
+            int itemId = Item.getId(stack.getItem());
+            int count = this.counts.getOrDefault(itemId, 0);
+            count -= counted.getOrDefault(itemId, 0); // Remove already counted items
+            if(count > 0)
             {
-                return false;
+                if(count >= remaining)
+                {
+                    counted.merge(itemId, remaining, Integer::sum);
+                    remaining = 0;
+                    break;
+                }
+                counted.merge(itemId, count, Integer::sum);
+                remaining -= count;
             }
         }
-        return true;
+        return remaining <= 0;
     }
 
     public void setUpdateCallback(Runnable callback)

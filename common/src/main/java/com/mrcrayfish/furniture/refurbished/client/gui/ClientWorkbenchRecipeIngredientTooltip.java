@@ -12,6 +12,8 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.Map;
+
 /**
  * Author: MrCrayfish
  */
@@ -19,11 +21,13 @@ public class ClientWorkbenchRecipeIngredientTooltip implements ClientTooltipComp
 {
     private final WorkbenchMenu menu;
     private final StackedIngredient material;
+    private final Map<Integer, Integer> counted;
 
-    public ClientWorkbenchRecipeIngredientTooltip(WorkbenchMenu menu, StackedIngredient material)
+    public ClientWorkbenchRecipeIngredientTooltip(WorkbenchMenu menu, StackedIngredient material, Map<Integer, Integer> counted)
     {
         this.menu = menu;
         this.material = material;
+        this.counted = counted;
     }
 
     @Override
@@ -52,7 +56,7 @@ public class ClientWorkbenchRecipeIngredientTooltip implements ClientTooltipComp
         PoseStack pose = graphics.pose();
         pose.pushPose();
         pose.translate(0, 0, 200);
-        boolean checked = this.menu.hasMaterials(this.material);
+        boolean checked = this.menu.hasMaterials(this.material, this.counted);
         graphics.blit(WorkbenchScreen.WORKBENCH_TEXTURE, start, top, checked ? 246 : 240, 40, 6, 5);
         pose.popPose();
     }

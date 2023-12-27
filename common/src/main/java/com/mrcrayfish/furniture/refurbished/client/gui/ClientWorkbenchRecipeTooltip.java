@@ -11,6 +11,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +45,7 @@ public class ClientWorkbenchRecipeTooltip implements ClientTooltipComponent
     @Override
     public void renderImage(Font font, int start, int top, GuiGraphics graphics)
     {
+        Map<Integer, Integer> counted = new HashMap<>();
         List<StackedIngredient> materials = this.recipe.getMaterials();
         for(int i = 0; i < materials.size(); i++)
         {
@@ -57,7 +59,7 @@ public class ClientWorkbenchRecipeTooltip implements ClientTooltipComponent
             PoseStack pose = graphics.pose();
             pose.pushPose();
             pose.translate(0, 0, 200);
-            boolean checked = this.menu.hasMaterials(material);
+            boolean checked = this.menu.hasMaterials(material, counted);
             graphics.blit(WorkbenchScreen.WORKBENCH_TEXTURE, start + i * 18, top, checked ? 246 : 240, 40, 6, 5);
             pose.popPose();
         }
