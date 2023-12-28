@@ -1,8 +1,9 @@
 {
 	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
 	"textures": {
-		"saw": "block/stonecutter_saw",
-		"texture": "refurbished_furniture:block/workbench"
+		"particle": "refurbished_furniture:block/spruce_particle",
+		"texture": "refurbished_furniture:block/workbench",
+		"saw": "minecraft:block/stonecutter_saw"
 	},
 	"elements": [
 		{
