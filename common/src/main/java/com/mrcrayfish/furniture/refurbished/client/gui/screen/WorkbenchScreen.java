@@ -13,6 +13,7 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.StateSwitchingButton;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
@@ -264,9 +265,13 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
 
     private class CraftableButton extends StateSwitchingButton
     {
+        private static final Component VANILLA_ONLY_CRAFTABLE = Component.translatable("gui.recipebook.toggleRecipes.craftable");
+        private static final Component VANILLA_ALL_RECIPES = Component.translatable("gui.recipebook.toggleRecipes.all");
+
         public CraftableButton(int x, int y, int width, int height, boolean state)
         {
             super(x, y, width, height, state);
+            this.updateTooltip();
         }
 
         @Override
@@ -275,6 +280,12 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
             this.isStateTriggered = !this.isStateTriggered;
             WorkbenchScreen.craftableOnly = this.isStateTriggered;
             WorkbenchScreen.this.updateRecipes();
+            this.updateTooltip();
+        }
+
+        private void updateTooltip()
+        {
+            this.setTooltip(Tooltip.create(this.isStateTriggered ? VANILLA_ONLY_CRAFTABLE : VANILLA_ALL_RECIPES));
         }
     }
 }
