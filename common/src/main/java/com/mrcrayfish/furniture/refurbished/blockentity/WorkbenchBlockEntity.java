@@ -281,6 +281,8 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
         List<Pair<Direction, Container>> list = new ArrayList<>();
         list.add(Pair.of(null, this));
         Direction direction = this.getDirection();
+        this.getContainer(direction).ifPresent(list::add);
+        this.getContainer(direction.getOpposite()).ifPresent(list::add);
         this.getContainer(direction.getCounterClockWise()).ifPresent(list::add);
         this.getContainer(direction.getClockWise()).ifPresent(list::add);
         Optional.ofNullable(this.getUser()).ifPresent(player -> list.add(Pair.of(null, player.getInventory())));
