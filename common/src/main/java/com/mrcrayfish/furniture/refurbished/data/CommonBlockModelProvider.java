@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.data;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.block.*;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
+import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchCraftingRecipe;
 import com.mrcrayfish.furniture.refurbished.data.model.ExtraModel;
 import com.mrcrayfish.furniture.refurbished.data.model.ModelTemplate;
 import com.mrcrayfish.furniture.refurbished.data.model.PreparedMultiPartBlockState;
@@ -487,6 +488,7 @@ public class CommonBlockModelProvider
         this.television(ModBlocks.TELEVISION.get());
         this.computer(ModBlocks.COMPUTER.get());
         this.doorMat(ModBlocks.DOOR_MAT.get());
+        this.workbench(ModBlocks.WORKBENCH.get());
     }
 
     private ResourceLocation blockTexture(Block block)
@@ -1594,6 +1596,20 @@ public class CommonBlockModelProvider
         state.createVariant().prop(DoorMatBlock.DIRECTION, Direction.EAST).addExistingModel(ModelTemplate.DOOR_MAT.stateModel().setYRotation(VariantProperties.Rotation.R90));
         state.createVariant().prop(DoorMatBlock.DIRECTION, Direction.SOUTH).addExistingModel(ModelTemplate.DOOR_MAT.stateModel().setYRotation(VariantProperties.Rotation.R180));
         state.createVariant().prop(DoorMatBlock.DIRECTION, Direction.WEST).addExistingModel(ModelTemplate.DOOR_MAT.stateModel().setYRotation(VariantProperties.Rotation.R270));
+        this.variantStateConsumer.accept(state);
+    }
+
+    private void workbench(WorkbenchBlock block)
+    {
+        PreparedVariantBlockState state = new PreparedVariantBlockState(block);
+        state.createVariant().prop(WorkbenchBlock.DIRECTION, Direction.NORTH).prop(WorkbenchBlock.POWERED, false).addExistingModel(ModelTemplate.WORKBENCH_OFF.stateModel().setYRotation(VariantProperties.Rotation.R0));
+        state.createVariant().prop(WorkbenchBlock.DIRECTION, Direction.EAST).prop(WorkbenchBlock.POWERED, false).addExistingModel(ModelTemplate.WORKBENCH_OFF.stateModel().setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(WorkbenchBlock.DIRECTION, Direction.SOUTH).prop(WorkbenchBlock.POWERED, false).addExistingModel(ModelTemplate.WORKBENCH_OFF.stateModel().setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(WorkbenchBlock.DIRECTION, Direction.WEST).prop(WorkbenchBlock.POWERED, false).addExistingModel(ModelTemplate.WORKBENCH_OFF.stateModel().setYRotation(VariantProperties.Rotation.R270));
+        state.createVariant().prop(WorkbenchBlock.DIRECTION, Direction.NORTH).prop(WorkbenchBlock.POWERED, true).addExistingModel(ModelTemplate.WORKBENCH_ON.stateModel().setYRotation(VariantProperties.Rotation.R0)).markAsItem();
+        state.createVariant().prop(WorkbenchBlock.DIRECTION, Direction.EAST).prop(WorkbenchBlock.POWERED, true).addExistingModel(ModelTemplate.WORKBENCH_ON.stateModel().setYRotation(VariantProperties.Rotation.R90));
+        state.createVariant().prop(WorkbenchBlock.DIRECTION, Direction.SOUTH).prop(WorkbenchBlock.POWERED, true).addExistingModel(ModelTemplate.WORKBENCH_ON.stateModel().setYRotation(VariantProperties.Rotation.R180));
+        state.createVariant().prop(WorkbenchBlock.DIRECTION, Direction.WEST).prop(WorkbenchBlock.POWERED, true).addExistingModel(ModelTemplate.WORKBENCH_ON.stateModel().setYRotation(VariantProperties.Rotation.R270));
         this.variantStateConsumer.accept(state);
     }
 }

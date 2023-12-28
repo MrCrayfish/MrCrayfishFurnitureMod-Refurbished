@@ -302,6 +302,7 @@ public class ClientBootstrap
         register.apply(ModBlocks.LATTICE_FENCE_GATE_CRIMSON.get(), RenderType.cutout());
         register.apply(ModBlocks.LATTICE_FENCE_GATE_WARPED.get(), RenderType.cutout());
         register.apply(ModBlocks.TELEVISION.get(), RenderType.cutout());
+        register.apply(ModBlocks.WORKBENCH.get(), RenderType.cutout());
     }
 
     public static void registerParticleProviders(ParticleProviderRegister register)

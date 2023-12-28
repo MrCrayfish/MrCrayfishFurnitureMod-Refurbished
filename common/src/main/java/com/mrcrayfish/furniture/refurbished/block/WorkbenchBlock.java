@@ -10,11 +10,13 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -31,13 +33,14 @@ public class WorkbenchBlock extends FurnitureHorizontalBlock implements EntityBl
     public WorkbenchBlock(Properties properties)
     {
         super(properties);
-        this.registerDefaultState(this.getStateDefinition().any().setValue(DIRECTION, Direction.NORTH));
+        this.registerDefaultState(this.getStateDefinition().any().setValue(DIRECTION, Direction.NORTH).setValue(POWERED, false));
     }
 
     @Override
     protected Map<BlockState, VoxelShape> generateShapes(ImmutableList<BlockState> states)
     {
-        return ImmutableMap.copyOf(states.stream().collect(Collectors.toMap(state -> state, o -> Shapes.block())));
+        VoxelShape baseShape = Block.box(0, 0, 0, 16, 13, 16);
+        return ImmutableMap.copyOf(states.stream().collect(Collectors.toMap(state -> state, o -> baseShape)));
     }
 
     @Override
@@ -55,6 +58,13 @@ public class WorkbenchBlock extends FurnitureHorizontalBlock implements EntityBl
             }
         }
         return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
+    {
+        super.createBlockStateDefinition(builder);
+        builder.add(POWERED);
     }
 
     @Nullable

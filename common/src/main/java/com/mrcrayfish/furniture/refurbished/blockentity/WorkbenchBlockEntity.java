@@ -76,13 +76,22 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     @Override
     public boolean isPowered()
     {
+        BlockState state = this.getBlockState();
+        if(state.hasProperty(WorkbenchBlock.POWERED))
+        {
+            return state.getValue(WorkbenchBlock.POWERED);
+        }
         return false;
     }
 
     @Override
     public void setPowered(boolean powered)
     {
-
+        BlockState state = this.getBlockState();
+        if(state.hasProperty(WorkbenchBlock.POWERED))
+        {
+            this.level.setBlock(this.worldPosition, state.setValue(WorkbenchBlock.POWERED, powered), Block.UPDATE_ALL);
+        }
     }
 
     @Override

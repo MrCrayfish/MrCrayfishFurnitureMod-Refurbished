@@ -1,0 +1,21 @@
+{
+	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
+	"textures": {
+		"texture": "refurbished_furniture:block/workbench"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 13, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [-86, 0, 0]},
+			"faces": {
+				"north": {"uv": [4, 0, 8, 6.5], "texture": "#texture"},
+				"east": {"uv": [4, 6.5, 8, 13], "texture": "#texture"},
+				"south": {"uv": [8, 0, 12, 6.5], "texture": "#texture"},
+				"west": {"uv": [8, 6.5, 12, 13], "texture": "#texture"},
+				"up": {"uv": [4, 8, 0, 0], "texture": "#texture"},
+				"down": {"uv": [4, 8, 0, 16], "texture": "#texture"}
+			}
+		}
+	]
+}

@@ -185,6 +185,8 @@ public class ModelTemplate
     public static final ModelTemplate COMPUTER_OFF = block("computer_off");
     public static final ModelTemplate COMPUTER_ON = block("computer_on");
     public static final ModelTemplate DOOR_MAT = block("door_mat");
+    public static final ModelTemplate WORKBENCH_OFF = block("workbench_off");
+    public static final ModelTemplate WORKBENCH_ON = block("workbench_on");
 
     public static final ModelTemplate FRIDGE = item("fridge", TextureSlot.TEXTURE);
     public static final ModelTemplate CEILING_FAN = item("ceiling_fan", TextureSlot.TEXTURE);
