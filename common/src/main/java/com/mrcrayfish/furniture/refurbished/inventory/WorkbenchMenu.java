@@ -51,13 +51,13 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
 
     public WorkbenchMenu(int windowId, Inventory playerInventory)
     {
-        this(windowId, playerInventory, new ClientWorkbench(new SimpleContainer(9)), new SimpleContainerData(1));
+        this(windowId, playerInventory, new ClientWorkbench(new SimpleContainer(11)), new SimpleContainerData(1));
     }
 
     public WorkbenchMenu(int windowId, Inventory playerInventory, IWorkbench workbench, ContainerData data)
     {
         super(ModMenuTypes.WORKBENCH.get(), windowId, workbench.getWorkbenchContainer());
-        checkContainerSize(workbench.getWorkbenchContainer(), 9);
+        checkContainerSize(workbench.getWorkbenchContainer(), 11);
         checkContainerDataCount(data, 1);
         workbench.getWorkbenchContainer().startOpen(playerInventory.player);
         this.selectedRecipe.set(-1);
@@ -66,7 +66,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
         this.access = workbench.createLevelAccess();
         this.data = data;
         this.recipes = this.setupRecipes(this.level);
-        this.addContainerSlots(8, 18, 2, 4, 0);
+        this.addContainerSlots(8, 18, 2, 5, 0);
         this.resultSlot = this.addSlot(new WorkbenchResultSlot(this.container, 8, 188, 21));
         this.addPlayerInventorySlots(28, 129, playerInventory);
         this.addDataSlot(this.selectedRecipe);
@@ -105,7 +105,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
                 WorkbenchCraftingRecipe recipe = this.recipes.get(this.selectedRecipe.get());
                 if(this.workbench.canCraft(recipe))
                 {
-                    ItemStack result = this.getSlot(8).getItem();
+                    ItemStack result = this.getSlot(WorkbenchBlockEntity.RESULT_SLOT).getItem();
                     ItemStack output = recipe.getResultItem(this.level.registryAccess());
                     if(!ItemStack.matches(result, output))
                     {

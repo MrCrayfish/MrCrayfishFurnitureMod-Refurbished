@@ -46,6 +46,7 @@ import java.util.Optional;
 public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity implements IWorkbench
 {
     public static final int DATA_POWERED = 0;
+    public static final int RESULT_SLOT = 10;
 
     protected @Nullable Player currentUser;
     protected int updateTimer;
@@ -62,7 +63,7 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
 
     public WorkbenchBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
     {
-        super(type, pos, state, 9);
+        super(type, pos, state, 11);
     }
 
     @Override
