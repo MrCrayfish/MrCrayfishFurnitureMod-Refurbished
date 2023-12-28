@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.inventory;
 
 import com.mrcrayfish.furniture.refurbished.blockentity.IWorkbench;
+import com.mrcrayfish.furniture.refurbished.blockentity.WorkbenchBlockEntity;
 import com.mrcrayfish.furniture.refurbished.client.ClientWorkbench;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
@@ -15,8 +16,10 @@ import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.DataSlot;
+import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -37,6 +40,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
     private final IWorkbench workbench;
     private final Level level;
     private final ContainerLevelAccess access;
+    private final ContainerData data;
     private final List<WorkbenchCraftingRecipe> recipes;
     private final Map<ResourceLocation, Boolean> recipeToCraftable = new HashMap<>();
     private final DataSlot selectedRecipe = DataSlot.standalone();
@@ -47,23 +51,26 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
 
     public WorkbenchMenu(int windowId, Inventory playerInventory)
     {
-        this(windowId, playerInventory, new ClientWorkbench(new SimpleContainer(9)));
+        this(windowId, playerInventory, new ClientWorkbench(new SimpleContainer(9)), new SimpleContainerData(1));
     }
 
-    public WorkbenchMenu(int windowId, Inventory playerInventory, IWorkbench workbench)
+    public WorkbenchMenu(int windowId, Inventory playerInventory, IWorkbench workbench, ContainerData data)
     {
         super(ModMenuTypes.WORKBENCH.get(), windowId, workbench.getWorkbenchContainer());
         checkContainerSize(workbench.getWorkbenchContainer(), 9);
+        checkContainerDataCount(data, 1);
         workbench.getWorkbenchContainer().startOpen(playerInventory.player);
         this.selectedRecipe.set(-1);
         this.workbench = workbench;
         this.level = playerInventory.player.level();
         this.access = workbench.createLevelAccess();
+        this.data = data;
         this.recipes = this.setupRecipes(this.level);
         this.addContainerSlots(8, 18, 2, 4, 0);
         this.resultSlot = this.addSlot(new WorkbenchResultSlot(this.container, 8, 188, 21));
         this.addPlayerInventorySlots(28, 129, playerInventory);
         this.addDataSlot(this.selectedRecipe);
+        this.addDataSlots(this.data);
     }
 
     /**
@@ -93,7 +100,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
     {
         if(!this.level.isClientSide())
         {
-            if(this.selectedRecipe.get() != -1)
+            if(this.isPowered() && this.selectedRecipe.get() != -1)
             {
                 WorkbenchCraftingRecipe recipe = this.recipes.get(this.selectedRecipe.get());
                 if(this.workbench.canCraft(recipe))
@@ -202,7 +209,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
     @Override
     public boolean isPowered()
     {
-        return false;
+        return this.data.get(WorkbenchBlockEntity.DATA_POWERED) != 0;
     }
 
     @Nullable
@@ -229,7 +236,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
 
     public boolean canCraft(WorkbenchCraftingRecipe recipe)
     {
-        return this.recipeToCraftable.computeIfAbsent(recipe.getId(), id -> {
+        return this.isPowered() && this.recipeToCraftable.computeIfAbsent(recipe.getId(), id -> {
             Map<Integer, Integer> found = new HashMap<>();
             for(StackedIngredient material : recipe.getMaterials()) {
                 if(!this.hasMaterials(material, found)) {

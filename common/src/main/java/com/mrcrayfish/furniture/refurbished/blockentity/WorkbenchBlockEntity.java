@@ -1,8 +1,11 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.mrcrayfish.furniture.refurbished.block.ElectricityGeneratorBlock;
+import com.mrcrayfish.furniture.refurbished.block.WorkbenchBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.crafting.StackedIngredient;
 import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchCraftingRecipe;
+import com.mrcrayfish.furniture.refurbished.inventory.BuildableContainerData;
 import com.mrcrayfish.furniture.refurbished.inventory.WorkbenchMenu;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageWorkbench;
@@ -17,6 +20,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -41,9 +45,15 @@ import java.util.Optional;
  */
 public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity implements IWorkbench
 {
+    public static final int DATA_POWERED = 0;
+
     protected @Nullable Player currentUser;
     protected int updateTimer;
     protected int countsHash;
+
+    protected final ContainerData data = new BuildableContainerData(builder -> {
+        builder.add(DATA_POWERED, () -> this.isPowered() ? 1 : 0, value -> {});
+    });
 
     public WorkbenchBlockEntity(BlockPos pos, BlockState state)
     {
@@ -70,7 +80,7 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     @Override
     protected AbstractContainerMenu createMenu(int windowId, Inventory playerInventory)
     {
-        return new WorkbenchMenu(windowId, playerInventory, this);
+        return new WorkbenchMenu(windowId, playerInventory, this, this.data);
     }
 
     @Override
@@ -175,7 +185,7 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     @Override
     public boolean canCraft(WorkbenchCraftingRecipe recipe)
     {
-        return this.getConsumedMaterialItems(recipe) != null;
+        return this.isPowered() && this.getConsumedMaterialItems(recipe) != null;
     }
 
     @Override

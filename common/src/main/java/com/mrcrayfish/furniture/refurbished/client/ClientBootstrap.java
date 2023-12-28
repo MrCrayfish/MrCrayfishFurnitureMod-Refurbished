@@ -139,6 +139,7 @@ public class ClientBootstrap
         register.apply(ModBlockEntities.COMPUTER.get(), ComputerBlockEntityRenderer::new);
         register.apply(ModBlockEntities.DOOR_MAT.get(), DoorMatBlockEntityRenderer::new);
         register.apply(ModBlockEntities.STOVE.get(), ElectricBlockEntityRenderer::new);
+        register.apply(ModBlockEntities.WORKBENCH.get(), ElectricBlockEntityRenderer::new);
     }
 
     public static void registerEntityRenderers(EntityRendererRegister register)
