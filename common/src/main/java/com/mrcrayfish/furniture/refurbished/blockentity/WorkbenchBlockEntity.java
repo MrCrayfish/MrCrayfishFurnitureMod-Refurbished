@@ -119,6 +119,18 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
         this.setUser(null);
     }
 
+    @Override
+    public boolean canTakeItem(Container container, int slotIndex, ItemStack stack)
+    {
+        return slotIndex != RESULT_SLOT;
+    }
+
+    @Override
+    public boolean canPlaceItem(int slotIndex, ItemStack stack)
+    {
+        return slotIndex != RESULT_SLOT;
+    }
+
     public boolean isOccupied()
     {
         return this.getUser() != null;
