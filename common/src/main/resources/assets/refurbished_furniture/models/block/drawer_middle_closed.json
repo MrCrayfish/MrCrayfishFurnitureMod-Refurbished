@@ -24,7 +24,6 @@
 		{
 			"from": [0, 14, 15],
 			"to": [16, 14, 16],
-			"rotation": {"angle": 0, "axis": "y", "origin": [0, 14, 15]},
 			"faces": {
 				"down": {"uv": [12, 8, 16, 8.25], "texture": "#texture"}
 			}

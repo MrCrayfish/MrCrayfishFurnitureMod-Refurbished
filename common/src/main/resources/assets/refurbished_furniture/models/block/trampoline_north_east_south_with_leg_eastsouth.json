@@ -4,7 +4,6 @@
 		{
 			"from": [0, 10, 0],
 			"to": [3, 13, 16],
-			"rotation": {"angle": 0, "axis": "y", "origin": [-128, 0, -48]},
 			"faces": {
 				"east": {"uv": [1.5, 6.25, 9.5, 7], "texture": "#texture", "tintindex": 0},
 				"south": {"uv": [16, 5, 17.5, 5.75], "texture": "#texture", "tintindex": 0},
@@ -16,7 +15,6 @@
 		{
 			"from": [3, 11, 0],
 			"to": [16, 12, 16],
-			"rotation": {"angle": 0, "axis": "y", "origin": [-128, 0, -48]},
 			"faces": {
 				"up": {"uv": [9.5, 4.75, 3, 0.75], "texture": "#texture"},
 				"down": {"uv": [9.5, 0.75, 3, 4.75], "texture": "#texture"}
@@ -25,7 +23,6 @@
 		{
 			"from": [13, 0, 13],
 			"to": [15, 2, 16],
-			"rotation": {"angle": 0, "axis": "y", "origin": [-205, 0, 11]},
 			"faces": {
 				"north": {"uv": [9.5, 11.75, 8.5, 12.25], "texture": "#texture"},
 				"east": {"uv": [3, 11.75, 1.5, 12.25], "texture": "#texture"},
@@ -37,7 +34,6 @@
 		{
 			"from": [13, 10, 13],
 			"to": [16, 13, 16],
-			"rotation": {"angle": 0, "axis": "y", "origin": [-221, 0, 11]},
 			"faces": {
 				"north": {"uv": [9.5, 7, 11, 7.75], "texture": "#texture", "tintindex": 0},
 				"west": {"uv": [0, 7.75, 1.5, 8.5], "texture": "#texture", "tintindex": 0},
@@ -48,7 +44,6 @@
 		{
 			"from": [13, 2, 13],
 			"to": [15, 10, 15],
-			"rotation": {"angle": 0, "axis": "y", "origin": [-205, 0, 27]},
 			"faces": {
 				"north": {"uv": [3.5, 9.25, 4.5, 11.25], "texture": "#texture"},
 				"east": {"uv": [2.5, 9.25, 3.5, 11.25], "texture": "#texture"},
@@ -59,7 +54,6 @@
 		{
 			"from": [1, 0, 1],
 			"to": [3, 2, 15],
-			"rotation": {"angle": 0, "axis": "y", "origin": [-128, 0, -48]},
 			"faces": {
 				"east": {"uv": [1.5, 12.25, 8.5, 12.75], "texture": "#texture"},
 				"west": {"uv": [1.5, 11.75, 8.5, 12.25], "texture": "#texture"},
@@ -70,7 +64,6 @@
 		{
 			"from": [1, 0, 0],
 			"to": [3, 2, 1],
-			"rotation": {"angle": 0, "axis": "y", "origin": [-128, 0, -48]},
 			"faces": {
 				"east": {"uv": [5.5, 10.75, 6, 11.25], "texture": "#texture"},
 				"south": {"uv": [8.5, 11.25, 9.5, 11.75], "texture": "#texture"},
@@ -82,7 +75,6 @@
 		{
 			"from": [1, 0, 15],
 			"to": [3, 2, 16],
-			"rotation": {"angle": 0, "axis": "y", "origin": [-128, 0, -48]},
 			"faces": {
 				"east": {"uv": [8.5, 12.75, 9, 13.25], "texture": "#texture"},
 				"west": {"uv": [8.5, 12.25, 9, 12.75], "texture": "#texture"},

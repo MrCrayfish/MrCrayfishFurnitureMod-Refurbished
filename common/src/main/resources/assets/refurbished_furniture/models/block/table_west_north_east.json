@@ -4,7 +4,6 @@
 		{
 			"from": [0, 12, 15],
 			"to": [16, 14, 15],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, -25]},
 			"faces": {
 				"north": {"uv": [14.75, 3.5, 12.75, 4], "texture": "#texture"},
 				"south": {"uv": [14.75, 3.5, 12.75, 4], "texture": "#texture"}
@@ -13,7 +12,6 @@
 		{
 			"from": [0, 14, 0],
 			"to": [16, 15.99, 17],
-			"rotation": {"angle": 0, "axis": "y", "origin": [-18, 0, -30]},
 			"faces": {
 				"south": {"uv": [13.75, 3, 15.75, 3.4975], "texture": "#texture"},
 				"up": {"uv": [6.5, 8.75, 8.5, 13], "texture": "#texture", "tintindex": 0},
