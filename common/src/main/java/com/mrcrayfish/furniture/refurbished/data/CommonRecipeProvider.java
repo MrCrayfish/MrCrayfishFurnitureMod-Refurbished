@@ -19,6 +19,7 @@ import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.data.recipes.SingleItemRecipeBuilder;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -55,6 +56,57 @@ public class CommonRecipeProvider
 
     public void run()
     {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.WORKBENCH.get())
+                .pattern("SBS")
+                .pattern("PRP")
+                .pattern("PIP")
+                .define('S', ItemTags.WOODEN_SLABS)
+                .define('P', ItemTags.PLANKS)
+                .define('B', Items.STONECUTTER)
+                .define('R', Items.REDSTONE_BLOCK)
+                .define('I', Items.IRON_INGOT)
+                .unlockedBy("has_slabs", this.hasTag.apply(ItemTags.WOODEN_SLABS))
+                .unlockedBy("has_planks", this.hasTag.apply(ItemTags.PLANKS))
+                .unlockedBy("has_redstone", this.hasItem.apply(Items.REDSTONE))
+                .unlockedBy("has_iron_ingot", this.hasItem.apply(Items.IRON_INGOT))
+                .save(this.consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.WRENCH.get())
+                .pattern(" I ")
+                .pattern("SII")
+                .pattern("LS ")
+                .define('I', Items.IRON_INGOT)
+                .define('S', Items.STRING)
+                .define('L', Items.LEATHER)
+                .unlockedBy("has_iron_ingot", this.hasItem.apply(Items.IRON_INGOT))
+                .unlockedBy("has_string", this.hasItem.apply(Items.STRING))
+                .unlockedBy("has_leather", this.hasItem.apply(Items.LEATHER))
+                .save(this.consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.SPATULA.get())
+                .pattern(" I ")
+                .pattern("SIS")
+                .pattern(" L ")
+                .define('I', Items.IRON_INGOT)
+                .define('S', Items.STRING)
+                .define('L', Items.LEATHER)
+                .unlockedBy("has_iron_ingot", this.hasItem.apply(Items.IRON_INGOT))
+                .unlockedBy("has_string", this.hasItem.apply(Items.STRING))
+                .unlockedBy("has_leather", this.hasItem.apply(Items.LEATHER))
+                .save(this.consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.KNIFE.get())
+                .pattern(" S ")
+                .pattern("LII")
+                .pattern(" S ")
+                .define('I', Items.IRON_INGOT)
+                .define('S', Items.STRING)
+                .define('L', Items.LEATHER)
+                .unlockedBy("has_iron_ingot", this.hasItem.apply(Items.IRON_INGOT))
+                .unlockedBy("has_string", this.hasItem.apply(Items.STRING))
+                .unlockedBy("has_leather", this.hasItem.apply(Items.LEATHER))
+                .save(this.consumer);
+
         this.table(Blocks.OAK_PLANKS, ModBlocks.TABLE_OAK.get());
         this.table(Blocks.SPRUCE_PLANKS, ModBlocks.TABLE_SPRUCE.get());
         this.table(Blocks.BIRCH_PLANKS, ModBlocks.TABLE_BIRCH.get());
