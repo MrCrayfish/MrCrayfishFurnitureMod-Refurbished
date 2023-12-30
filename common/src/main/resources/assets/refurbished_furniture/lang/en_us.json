@@ -523,6 +523,7 @@
     "gui.refurbished_furniture.progress": "%s %s %s",
     "gui.refurbished_furniture.hold_for_details": "Hold %s for Details",
     "gui.refurbished_furniture.shift": "SHIFT",
+    "gui.refurbished_furniture.show_all_categories": "Show All",
     "subtitle.refurbished_furniture.package_open": "Package Opening",
     "computer_program.refurbished_furniture.paddle_ball": "Paddle Ball",
     "computer_program.refurbished_furniture.paddle_ball.play_ai": "Play vs AI",

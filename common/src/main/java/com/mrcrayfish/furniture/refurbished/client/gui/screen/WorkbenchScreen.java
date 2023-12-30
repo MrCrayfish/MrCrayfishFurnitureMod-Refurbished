@@ -7,12 +7,15 @@ import com.mrcrayfish.furniture.refurbished.client.gui.ClientWorkbenchRecipeIngr
 import com.mrcrayfish.furniture.refurbished.client.gui.ClientWorkbenchRecipeTooltip;
 import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import com.mrcrayfish.furniture.refurbished.client.util.VanillaTextures;
+import com.mrcrayfish.furniture.refurbished.core.ModTags;
 import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchCraftingRecipe;
 import com.mrcrayfish.furniture.refurbished.inventory.WorkbenchMenu;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StateSwitchingButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -21,12 +24,15 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
@@ -49,10 +55,18 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     private static final int WINDOW_HEIGHT = 88;
     private static final int SCROLL_SPEED = 10;
     private static final int SCROLLBAR_HEIGHT = 15;
+    private static final int SCROLLBAR_AREA = 106;
+    private static final Category CATEGORY_ALL = new Category();
+    private static final Category CATEGORY_GENERAL = new Category(ModTags.Items.GENERAL, ModTags.Items.BEDROOM);
+    private static final Category CATEGORY_KITCHEN = new Category(ModTags.Items.KITCHEN);
+    private static final Category CATEGORY_OUTDOORS = new Category(ModTags.Items.OUTDOORS);
+    private static final Category CATEGORY_BATHROOM = new Category(ModTags.Items.BATHROOM);
+    private static final Category CATEGORY_ELECTRONICS = new Category(ModTags.Items.ELECTRONICS);
+    private static final List<Category> CATEGORIES = List.of(CATEGORY_ALL, CATEGORY_GENERAL, CATEGORY_KITCHEN, CATEGORY_OUTDOORS, CATEGORY_BATHROOM, CATEGORY_ELECTRONICS);
     private static boolean craftableOnly; // Persistent
 
     protected final Map<ResourceLocation, Integer> recipeToIndex;
-    protected List<WorkbenchCraftingRecipe> displayRecipes = new ArrayList<>();
+    protected final List<WorkbenchCraftingRecipe> displayRecipes = new ArrayList<>();
     protected StateSwitchingButton craftableOnlyButton;
     protected double scroll; // 0 - content height
     protected int hoveredIndex = -1;
@@ -62,7 +76,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     {
         super(menu, playerInventory, title);
         this.imageWidth = 216;
-        this.imageHeight = 211;
+        this.imageHeight = 229;
         this.inventoryLabelX = 28;
         this.inventoryLabelY = this.imageHeight - 94;
         this.menu.setUpdateCallback(this::updateRecipes);
@@ -93,6 +107,14 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
             }
             this.displayRecipes.add(recipe);
         }
+        for(Category category : CATEGORIES)
+        {
+            if(category.isEnabled())
+            {
+                this.displayRecipes.removeIf(recipe -> !category.in(recipe.getResult()));
+                break;
+            }
+        }
         this.displayRecipes.sort(Comparator.comparing(WorkbenchCraftingRecipe::getResultId));
     }
 
@@ -108,12 +130,12 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         super.init();
         this.craftableOnlyButton = this.addRenderableWidget(new CraftableButton(this.leftPos + 184, this.topPos + 44, 26, 16, craftableOnly));
         this.craftableOnlyButton.initTextureValues(152, 41, 28, 18, VanillaTextures.RECIPE_BOOK);
-    }
-
-    @Override
-    protected void containerTick()
-    {
-
+        this.addRenderableWidget(new CategoryButton(this.leftPos + 46, this.topPos + 108, 236, 55, CATEGORY_ALL));
+        this.addRenderableWidget(new CategoryButton(this.leftPos + 66, this.topPos + 108, 236, 69, CATEGORY_GENERAL));
+        this.addRenderableWidget(new CategoryButton(this.leftPos + 86, this.topPos + 108, 236, 83, CATEGORY_KITCHEN));
+        this.addRenderableWidget(new CategoryButton(this.leftPos + 106, this.topPos + 108, 236, 97, CATEGORY_OUTDOORS));
+        this.addRenderableWidget(new CategoryButton(this.leftPos + 126, this.topPos + 108, 236, 111, CATEGORY_BATHROOM));
+        this.addRenderableWidget(new CategoryButton(this.leftPos + 146, this.topPos + 108, 236, 125, CATEGORY_ELECTRONICS));
     }
 
     @Override
@@ -249,6 +271,11 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         return super.mouseScrolled(mouseX, mouseY, delta);
     }
 
+    private void updateScroll()
+    {
+        this.scroll = Mth.clamp(this.scroll, 0, this.getMaxScroll());
+    }
+
     private double getScrollAmount(int mouseY)
     {
         return Mth.clamp(this.scroll + this.getScrollbarDelta(mouseY), 0, this.getMaxScroll());
@@ -261,12 +288,12 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
 
     private int getScrollbarPosition(int mouseY)
     {
-        return (int) ((this.getScrollAmount(mouseY) / this.getMaxScroll()) * (WINDOW_HEIGHT - SCROLLBAR_HEIGHT));
+        return (int) ((this.getScrollAmount(mouseY) / this.getMaxScroll()) * (SCROLLBAR_AREA - SCROLLBAR_HEIGHT));
     }
 
     private int getScrollbarDelta(int mouseY)
     {
-        double scrollPerUnit = this.getMaxScroll() / (double) (WINDOW_HEIGHT - SCROLLBAR_HEIGHT);
+        double scrollPerUnit = this.getMaxScroll() / (double) (SCROLLBAR_AREA - SCROLLBAR_HEIGHT);
         return this.clickedY != -1 ? (int) ((mouseY - this.clickedY) * scrollPerUnit) : 0;
     }
 
@@ -312,6 +339,94 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         private void updateTooltip()
         {
             this.setTooltip(Tooltip.create(this.isStateTriggered ? VANILLA_ONLY_CRAFTABLE : VANILLA_ALL_RECIPES));
+        }
+    }
+
+    public static class Category
+    {
+        private final TagKey<Item>[] tags;
+        private boolean enabled;
+
+        @SafeVarargs
+        private Category(TagKey<Item> ... tags)
+        {
+            this.tags = tags;
+            this.enabled = tags.length == 0;
+        }
+
+        public boolean isEnabled()
+        {
+            return this.enabled;
+        }
+
+        public void setEnabled(boolean enabled)
+        {
+            this.enabled = enabled;
+        }
+
+        public boolean in(ItemStack result)
+        {
+            if(this.tags.length == 0)
+            {
+                return true;
+            }
+            for(TagKey<Item> tag : this.tags)
+            {
+                if(result.is(tag))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    public class CategoryButton extends Button
+    {
+        private final int iconU;
+        private final int iconV;
+        private final Category category;
+
+        protected CategoryButton(int x, int y, int iconU, int iconV, Category category)
+        {
+            super(x, y, 20, 16, CommonComponents.EMPTY, btn -> {
+                ((CategoryButton) btn).toggle();
+            }, DEFAULT_NARRATION);
+            this.iconU = iconU;
+            this.iconV = iconV;
+            this.category = category;
+            this.updateTooltip();
+        }
+
+        private void updateTooltip()
+        {
+            if(this.category.tags.length > 0)
+            {
+                ResourceLocation tagId = this.category.tags[0].location();
+                String tooltipTitle = String.format("filterCategory.%s.%s", tagId.getNamespace(), tagId.getPath().replace("/", "."));
+                String tooltipDesc = tooltipTitle + ".desc";
+                this.setTooltip(ScreenHelper.createMultilineTooltip(List.of(Component.translatable(tooltipTitle), Component.translatable(tooltipDesc).withStyle(ChatFormatting.GRAY))));
+            }
+            else
+            {
+                this.setTooltip(Tooltip.create(Components.GUI_SHOW_ALL_CATEGORIES));
+            }
+        }
+
+        private void toggle()
+        {
+            CATEGORIES.forEach(c -> c.setEnabled(false));
+            this.category.enabled = true;
+            WorkbenchScreen.this.updateRecipes();
+            WorkbenchScreen.this.updateScroll();
+        }
+
+        @Override
+        protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+        {
+            int textureV = this.isHovered ? 87 : this.category.enabled ? 71 : 55;
+            graphics.blit(WORKBENCH_TEXTURE, this.getX(), this.getY(), 216, textureV, 20, 16);
+            graphics.blit(WORKBENCH_TEXTURE, this.getX() + 3, this.getY() + 1, this.iconU, this.iconV, 14, 14);
         }
     }
 }
