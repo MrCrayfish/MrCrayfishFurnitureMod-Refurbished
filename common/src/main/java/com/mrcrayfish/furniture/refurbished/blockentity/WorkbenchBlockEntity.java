@@ -1,6 +1,5 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
-import com.mrcrayfish.furniture.refurbished.block.ElectricityGeneratorBlock;
 import com.mrcrayfish.furniture.refurbished.block.WorkbenchBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.crafting.StackedIngredient;
@@ -16,6 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -87,6 +87,11 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     protected AbstractContainerMenu createMenu(int windowId, Inventory playerInventory)
     {
         return new WorkbenchMenu(windowId, playerInventory, this, this.data);
+    }
+
+    public void writeMenuData(FriendlyByteBuf buffer)
+    {
+        buffer.writeVarInt(this.selectedRecipe.get());
     }
 
     @Override
@@ -198,7 +203,6 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
             this.removeItems(items);
         }
     }
-
 
     @Override
     public boolean canCraft(WorkbenchCraftingRecipe recipe)

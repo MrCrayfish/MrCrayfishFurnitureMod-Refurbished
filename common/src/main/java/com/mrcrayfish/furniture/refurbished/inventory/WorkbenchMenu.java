@@ -8,8 +8,8 @@ import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.crafting.StackedIngredient;
 import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchCraftingRecipe;
-import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
@@ -49,9 +49,10 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
     private long lastSoundTime;
     private @Nullable Runnable updateCallback;
 
-    public WorkbenchMenu(int windowId, Inventory playerInventory)
+    public WorkbenchMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data)
     {
         this(windowId, playerInventory, new ClientWorkbench(new SimpleContainer(11)), new SimpleContainerData(1));
+        this.selectedRecipe.set(data.readVarInt());
     }
 
     public WorkbenchMenu(int windowId, Inventory playerInventory, IWorkbench workbench, ContainerData data)

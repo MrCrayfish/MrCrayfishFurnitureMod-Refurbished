@@ -2,10 +2,12 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mrcrayfish.framework.api.FrameworkAPI;
 import com.mrcrayfish.furniture.refurbished.blockentity.WorkbenchBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -50,7 +52,7 @@ public class WorkbenchBlock extends FurnitureHorizontalBlock implements EntityBl
         {
             if(!workbench.isOccupied())
             {
-                if(player.openMenu(workbench).isPresent())
+                if(FrameworkAPI.openMenuWithData((ServerPlayer) player, workbench, workbench::writeMenuData).isPresent())
                 {
                     workbench.sendCountsToUser(true);
                 }

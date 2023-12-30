@@ -74,6 +74,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
             return ImmutableMap.copyOf(map);
         });
         this.updateRecipes();
+        this.scrollToSelected();
     }
 
     private void updateRecipes()
@@ -253,6 +254,17 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     {
         double scrollPerUnit = this.getMaxScroll() / (double) (WINDOW_HEIGHT - SCROLLBAR_HEIGHT);
         return this.clickedY != -1 ? (int) ((mouseY - this.clickedY) * scrollPerUnit) : 0;
+    }
+
+    private void scrollToSelected()
+    {
+        int selectedIndex = this.menu.getSelectedRecipeIndex();
+        if(selectedIndex >= 0 && selectedIndex < this.displayRecipes.size())
+        {
+            int newScroll = (selectedIndex / RECIPES_PER_ROW) * BUTTON_SIZE;
+            newScroll -= (WINDOW_HEIGHT - BUTTON_SIZE) / 2;
+            this.scroll = Mth.clamp(newScroll, 0, this.getMaxScroll());
+        }
     }
 
     @Override
