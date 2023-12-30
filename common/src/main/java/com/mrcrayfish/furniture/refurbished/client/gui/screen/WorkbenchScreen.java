@@ -208,7 +208,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     {
         if(button == GLFW.GLFW_MOUSE_BUTTON_LEFT)
         {
-            if(this.hoveredIndex != -1)
+            if(this.menu.isPowered() && this.hoveredIndex != -1)
             {
                 if(this.minecraft != null && this.minecraft.gameMode != null)
                 {
