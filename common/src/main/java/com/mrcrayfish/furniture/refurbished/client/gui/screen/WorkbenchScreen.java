@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 
 import com.google.common.collect.ImmutableMap;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.client.gui.ClientWorkbenchRecipeIngredientTooltip;
 import com.mrcrayfish.furniture.refurbished.client.gui.ClientWorkbenchRecipeTooltip;
@@ -98,7 +99,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     @Override
     protected int getBannerTop()
     {
-        return this.topPos - 9;
+        return this.topPos + 52;
     }
 
     @Override
@@ -121,7 +122,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         this.renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTick);
         this.renderTooltip(graphics, mouseX, mouseY);
-        if(this.hoveredIndex != -1)
+        if(this.menu.isPowered() && this.hoveredIndex != -1)
         {
             this.renderRecipeTooltip(graphics, mouseX, mouseY, this.hoveredIndex);
         }
@@ -131,9 +132,10 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
     {
         graphics.blit(WORKBENCH_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
-        super.renderBg(graphics, partialTick, mouseX, mouseY);
         this.renderScrollbar(graphics, mouseY);
         this.renderRecipes(graphics, partialTick, mouseX, mouseY);
+        this.renderOverlay(graphics);
+        super.renderBg(graphics, partialTick, mouseX, mouseY);
     }
 
     private void renderScrollbar(GuiGraphics graphics, int mouseY)
@@ -169,6 +171,15 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
             }
         }
         graphics.disableScissor();
+    }
+
+    private void renderOverlay(GuiGraphics graphics)
+    {
+        PoseStack pose = graphics.pose();
+        pose.pushPose();
+        pose.translate(0, 0, 200);
+        graphics.fill(this.leftPos + 46, this.topPos + 18, this.leftPos + 46 + WINDOW_WIDTH, this.topPos + 18 + WINDOW_HEIGHT, 0xAA000000);
+        pose.popPose();
     }
 
     private void renderRecipeTooltip(GuiGraphics graphics, int mouseX, int mouseY, int recipeIndex)
@@ -242,7 +253,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
 
     private int getMaxScroll()
     {
-        return Math.max(0, (int) (Math.ceil(this.displayRecipes.size() / (double) RECIPES_PER_ROW) * BUTTON_SIZE) - WINDOW_HEIGHT);
+        return !this.menu.isPowered() ? 0 : Math.max(0, (int) (Math.ceil(this.displayRecipes.size() / (double) RECIPES_PER_ROW) * BUTTON_SIZE) - WINDOW_HEIGHT);
     }
 
     private int getScrollbarPosition(int mouseY)

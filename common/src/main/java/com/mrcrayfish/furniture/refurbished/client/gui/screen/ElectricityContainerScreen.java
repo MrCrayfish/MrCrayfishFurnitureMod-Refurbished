@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.IconButton;
 import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
@@ -34,6 +35,10 @@ public abstract class ElectricityContainerScreen<T extends AbstractContainerMenu
     {
         if(!this.menu.isPowered())
         {
+            PoseStack pose = graphics.pose();
+            pose.pushPose();
+            pose.translate(0, 0, 250);
+
             int iconSize = 10;
             int padding = 5;
             int messageWidth = this.minecraft.font.width(Components.GUI_NO_POWER);
@@ -62,6 +67,8 @@ public abstract class ElectricityContainerScreen<T extends AbstractContainerMenu
                 ));
                 this.setTooltipForNextRenderPass(tooltip, DefaultTooltipPositioner.INSTANCE, false);this.setTooltipForNextRenderPass(tooltip, DefaultTooltipPositioner.INSTANCE, false);
             }
+
+            pose.popPose();
         }
     }
 

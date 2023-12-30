@@ -53,6 +53,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
     {
         this(windowId, playerInventory, new ClientWorkbench(new SimpleContainer(11)), new SimpleContainerData(1));
         this.selectedRecipe.set(data.readVarInt());
+        this.data.set(WorkbenchBlockEntity.DATA_POWERED, data.readVarInt());
     }
 
     public WorkbenchMenu(int windowId, Inventory playerInventory, IWorkbench workbench, ContainerData data)

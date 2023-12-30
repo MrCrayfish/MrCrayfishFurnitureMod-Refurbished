@@ -92,6 +92,7 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     public void writeMenuData(FriendlyByteBuf buffer)
     {
         buffer.writeVarInt(this.selectedRecipe.get());
+        buffer.writeVarInt(this.isPowered() ? 1 : 0);
     }
 
     @Override
