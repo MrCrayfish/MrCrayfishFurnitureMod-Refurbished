@@ -67,7 +67,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
         this.data = data;
         this.recipes = this.setupRecipes(this.level);
         this.addContainerSlots(8, 18, 2, 5, 0);
-        this.resultSlot = this.addSlot(new WorkbenchResultSlot(this.container, 8, 188, 21));
+        this.resultSlot = this.addSlot(new WorkbenchResultSlot(this.container, WorkbenchBlockEntity.RESULT_SLOT, 188, 21));
         this.addPlayerInventorySlots(28, 129, playerInventory);
         this.addDataSlot(this.selectedRecipe);
         this.addDataSlots(this.data);
