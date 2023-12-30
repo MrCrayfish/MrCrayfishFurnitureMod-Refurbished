@@ -41,9 +41,9 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
     private final Level level;
     private final ContainerLevelAccess access;
     private final ContainerData data;
+    private final DataSlot selectedRecipe;
     private final List<WorkbenchCraftingRecipe> recipes;
     private final Map<ResourceLocation, Boolean> recipeToCraftable = new HashMap<>();
-    private final DataSlot selectedRecipe = DataSlot.standalone();
     private final Slot resultSlot;
     private Map<Integer, Integer> counts = new Int2IntOpenHashMap();
     private long lastSoundTime;
@@ -60,11 +60,11 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
         checkContainerSize(workbench.getWorkbenchContainer(), 11);
         checkContainerDataCount(data, 1);
         workbench.getWorkbenchContainer().startOpen(playerInventory.player);
-        this.selectedRecipe.set(-1);
         this.workbench = workbench;
         this.level = playerInventory.player.level();
         this.access = workbench.createLevelAccess();
         this.data = data;
+        this.selectedRecipe = workbench.getSelectedRecipeData();
         this.recipes = this.setupRecipes(this.level);
         this.addContainerSlots(8, 18, 2, 5, 0);
         this.resultSlot = this.addSlot(new WorkbenchResultSlot(this.container, WorkbenchBlockEntity.RESULT_SLOT, 188, 21));

@@ -4,12 +4,14 @@ import com.mrcrayfish.furniture.refurbished.blockentity.IWorkbench;
 import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchCraftingRecipe;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.DataSlot;
 
 /**
  * Author: MrCrayfish
  */
 public class ClientWorkbench implements IWorkbench
 {
+    private final DataSlot selectedRecipe = DataSlot.standalone();
     private final Container container;
 
     public ClientWorkbench(Container container)
@@ -24,6 +26,12 @@ public class ClientWorkbench implements IWorkbench
     public boolean canCraft(WorkbenchCraftingRecipe recipe)
     {
         return true;
+    }
+
+    @Override
+    public DataSlot getSelectedRecipeData()
+    {
+        return this.selectedRecipe;
     }
 
     @Override

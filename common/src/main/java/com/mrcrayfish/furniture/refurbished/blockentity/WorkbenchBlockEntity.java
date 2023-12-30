@@ -14,6 +14,8 @@ import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -22,6 +24,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -52,6 +55,7 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     protected int updateTimer;
     protected int countsHash;
 
+    protected final DataSlot selectedRecipe = DataSlot.standalone();
     protected final ContainerData data = new BuildableContainerData(builder -> {
         builder.add(DATA_POWERED, () -> this.isPowered() ? 1 : 0, value -> {});
     });
@@ -64,6 +68,7 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     public WorkbenchBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
     {
         super(type, pos, state, 11);
+        this.selectedRecipe.set(-1);
     }
 
     @Override
@@ -202,6 +207,12 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     }
 
     @Override
+    public DataSlot getSelectedRecipeData()
+    {
+        return this.selectedRecipe;
+    }
+
+    @Override
     public Container getWorkbenchContainer()
     {
         return this;
@@ -331,5 +342,22 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
             return state.getValue(BlockStateProperties.HORIZONTAL_FACING);
         }
         return Direction.NORTH;
+    }
+
+    @Override
+    public void load(CompoundTag tag)
+    {
+        super.load(tag);
+        if(tag.contains("SelectedRecipe", Tag.TAG_INT))
+        {
+            this.selectedRecipe.set(tag.getInt("SelectedRecipe"));
+        }
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag tag)
+    {
+        super.saveAdditional(tag);
+        tag.putInt("SelectedRecipe", this.selectedRecipe.get());
     }
 }
