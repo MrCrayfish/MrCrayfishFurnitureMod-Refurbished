@@ -175,11 +175,14 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
 
     private void renderOverlay(GuiGraphics graphics)
     {
-        PoseStack pose = graphics.pose();
-        pose.pushPose();
-        pose.translate(0, 0, 200);
-        graphics.fill(this.leftPos + 46, this.topPos + 18, this.leftPos + 46 + WINDOW_WIDTH, this.topPos + 18 + WINDOW_HEIGHT, 0xAA000000);
-        pose.popPose();
+        if(!this.menu.isPowered())
+        {
+            PoseStack pose = graphics.pose();
+            pose.pushPose();
+            pose.translate(0, 0, 200);
+            graphics.fill(this.leftPos + 46, this.topPos + 18, this.leftPos + 46 + WINDOW_WIDTH, this.topPos + 18 + WINDOW_HEIGHT, 0xAA000000);
+            pose.popPose();
+        }
     }
 
     private void renderRecipeTooltip(GuiGraphics graphics, int mouseX, int mouseY, int recipeIndex)
