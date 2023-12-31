@@ -56,6 +56,24 @@ public class CommonRecipeProvider
 
     public void run()
     {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get())
+                .pattern("III")
+                .pattern("IRI")
+                .pattern("IFI")
+                .define('I', Items.IRON_INGOT)
+                .define('R', Items.REDSTONE_BLOCK)
+                .define('F', Items.BLAST_FURNACE)
+                .unlockedBy("has_iron_ingot", this.hasItem.apply(Items.IRON_INGOT))
+                .unlockedBy("has_redstone", this.hasItem.apply(Items.REDSTONE))
+                .save(this.consumer);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModBlocks.ELECTRICITY_GENERATOR_DARK.get())
+                .requires(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get())
+                .requires(Items.BLACK_DYE)
+                .unlockedBy("has_iron_ingot", this.hasItem.apply(Items.IRON_INGOT))
+                .unlockedBy("has_redstone", this.hasItem.apply(Items.REDSTONE))
+                .save(this.consumer);
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.WORKBENCH.get())
                 .pattern("SBS")
                 .pattern("PRP")

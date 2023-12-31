@@ -56,6 +56,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     private static final int SCROLL_SPEED = 10;
     private static final int SCROLLBAR_HEIGHT = 15;
     private static final int SCROLLBAR_AREA = 106;
+
     private static final Category CATEGORY_ALL = new Category();
     private static final Category CATEGORY_GENERAL = new Category(ModTags.Items.GENERAL, ModTags.Items.BEDROOM);
     private static final Category CATEGORY_KITCHEN = new Category(ModTags.Items.KITCHEN);
@@ -63,6 +64,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     private static final Category CATEGORY_BATHROOM = new Category(ModTags.Items.BATHROOM);
     private static final Category CATEGORY_ELECTRONICS = new Category(ModTags.Items.ELECTRONICS);
     private static final List<Category> CATEGORIES = List.of(CATEGORY_ALL, CATEGORY_GENERAL, CATEGORY_KITCHEN, CATEGORY_OUTDOORS, CATEGORY_BATHROOM, CATEGORY_ELECTRONICS);
+
     private static boolean craftableOnly; // Persistent
 
     protected final Map<ResourceLocation, Integer> recipeToIndex;
