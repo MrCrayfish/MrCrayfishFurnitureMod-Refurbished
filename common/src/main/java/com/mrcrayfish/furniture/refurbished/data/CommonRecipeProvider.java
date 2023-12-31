@@ -7,7 +7,6 @@ import com.mrcrayfish.furniture.refurbished.core.ModRecipeSerializers;
 import com.mrcrayfish.furniture.refurbished.core.ModTags;
 import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardCombiningRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.RecycleBinRecyclingRecipe;
-import com.mrcrayfish.furniture.refurbished.crafting.StackedIngredient;
 import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchCraftingRecipe;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.advancements.CriterionTriggerInstance;
@@ -155,56 +154,56 @@ public class CommonRecipeProvider
         this.desk(Blocks.CHERRY_PLANKS, ModBlocks.DESK_CHERRY.get());
         this.desk(Blocks.CRIMSON_PLANKS, ModBlocks.DESK_CRIMSON.get());
         this.desk(Blocks.WARPED_PLANKS, ModBlocks.DESK_WARPED.get());
-        this.drawer(Blocks.OAK_PLANKS, Blocks.OAK_SLAB, ModBlocks.DRAWER_OAK.get());
-        this.drawer(Blocks.SPRUCE_PLANKS, Blocks.SPRUCE_SLAB, ModBlocks.DRAWER_SPRUCE.get());
-        this.drawer(Blocks.BIRCH_PLANKS, Blocks.BIRCH_SLAB, ModBlocks.DRAWER_BIRCH.get());
-        this.drawer(Blocks.JUNGLE_PLANKS, Blocks.JUNGLE_SLAB, ModBlocks.DRAWER_JUNGLE.get());
-        this.drawer(Blocks.ACACIA_PLANKS, Blocks.ACACIA_SLAB, ModBlocks.DRAWER_ACACIA.get());
-        this.drawer(Blocks.DARK_OAK_PLANKS, Blocks.DARK_OAK_SLAB, ModBlocks.DRAWER_DARK_OAK.get());
-        this.drawer(Blocks.MANGROVE_PLANKS, Blocks.MANGROVE_SLAB, ModBlocks.DRAWER_MANGROVE.get());
-        this.drawer(Blocks.CHERRY_PLANKS, Blocks.CHERRY_SLAB, ModBlocks.DRAWER_CHERRY.get());
-        this.drawer(Blocks.CRIMSON_PLANKS, Blocks.CRIMSON_SLAB, ModBlocks.DRAWER_CRIMSON.get());
-        this.drawer(Blocks.WARPED_PLANKS, Blocks.WARPED_SLAB, ModBlocks.DRAWER_WARPED.get());
-        this.woodenKitchenCabinetry(Blocks.OAK_PLANKS, Blocks.OAK_SLAB, ModBlocks.KITCHEN_CABINETRY_OAK.get());
-        this.woodenKitchenCabinetry(Blocks.SPRUCE_PLANKS, Blocks.SPRUCE_SLAB, ModBlocks.KITCHEN_CABINETRY_SPRUCE.get());
-        this.woodenKitchenCabinetry(Blocks.BIRCH_PLANKS, Blocks.BIRCH_SLAB, ModBlocks.KITCHEN_CABINETRY_BIRCH.get());
-        this.woodenKitchenCabinetry(Blocks.JUNGLE_PLANKS, Blocks.JUNGLE_SLAB, ModBlocks.KITCHEN_CABINETRY_JUNGLE.get());
-        this.woodenKitchenCabinetry(Blocks.ACACIA_PLANKS, Blocks.ACACIA_SLAB, ModBlocks.KITCHEN_CABINETRY_ACACIA.get());
-        this.woodenKitchenCabinetry(Blocks.DARK_OAK_PLANKS, Blocks.DARK_OAK_SLAB, ModBlocks.KITCHEN_CABINETRY_DARK_OAK.get());
-        this.woodenKitchenCabinetry(Blocks.MANGROVE_PLANKS, Blocks.MANGROVE_SLAB, ModBlocks.KITCHEN_CABINETRY_MANGROVE.get());
-        this.woodenKitchenCabinetry(Blocks.CHERRY_PLANKS, Blocks.CHERRY_SLAB, ModBlocks.KITCHEN_CABINETRY_CHERRY.get());
-        this.woodenKitchenCabinetry(Blocks.CRIMSON_PLANKS, Blocks.CRIMSON_SLAB, ModBlocks.KITCHEN_CABINETRY_CRIMSON.get());
-        this.woodenKitchenCabinetry(Blocks.WARPED_PLANKS, Blocks.WARPED_SLAB, ModBlocks.KITCHEN_CABINETRY_WARPED.get());
-        this.woodenKitchenDrawer(Blocks.OAK_PLANKS, Blocks.OAK_SLAB, ModBlocks.KITCHEN_DRAWER_OAK.get());
-        this.woodenKitchenDrawer(Blocks.SPRUCE_PLANKS, Blocks.SPRUCE_SLAB, ModBlocks.KITCHEN_DRAWER_SPRUCE.get());
-        this.woodenKitchenDrawer(Blocks.BIRCH_PLANKS, Blocks.BIRCH_SLAB, ModBlocks.KITCHEN_DRAWER_BIRCH.get());
-        this.woodenKitchenDrawer(Blocks.JUNGLE_PLANKS, Blocks.JUNGLE_SLAB, ModBlocks.KITCHEN_DRAWER_JUNGLE.get());
-        this.woodenKitchenDrawer(Blocks.ACACIA_PLANKS, Blocks.ACACIA_SLAB, ModBlocks.KITCHEN_DRAWER_ACACIA.get());
-        this.woodenKitchenDrawer(Blocks.DARK_OAK_PLANKS, Blocks.DARK_OAK_SLAB, ModBlocks.KITCHEN_DRAWER_DARK_OAK.get());
-        this.woodenKitchenDrawer(Blocks.MANGROVE_PLANKS, Blocks.MANGROVE_SLAB, ModBlocks.KITCHEN_DRAWER_MANGROVE.get());
-        this.woodenKitchenDrawer(Blocks.CHERRY_PLANKS, Blocks.CHERRY_SLAB, ModBlocks.KITCHEN_DRAWER_CHERRY.get());
-        this.woodenKitchenDrawer(Blocks.CRIMSON_PLANKS, Blocks.CRIMSON_SLAB, ModBlocks.KITCHEN_DRAWER_CRIMSON.get());
-        this.woodenKitchenDrawer(Blocks.WARPED_PLANKS, Blocks.WARPED_SLAB, ModBlocks.KITCHEN_DRAWER_WARPED.get());
-        this.woodenKitchenSink(Blocks.OAK_PLANKS, Blocks.OAK_SLAB, ModBlocks.KITCHEN_SINK_OAK.get());
-        this.woodenKitchenSink(Blocks.SPRUCE_PLANKS, Blocks.SPRUCE_SLAB, ModBlocks.KITCHEN_SINK_SPRUCE.get());
-        this.woodenKitchenSink(Blocks.BIRCH_PLANKS, Blocks.BIRCH_SLAB, ModBlocks.KITCHEN_SINK_BIRCH.get());
-        this.woodenKitchenSink(Blocks.JUNGLE_PLANKS, Blocks.JUNGLE_SLAB, ModBlocks.KITCHEN_SINK_JUNGLE.get());
-        this.woodenKitchenSink(Blocks.ACACIA_PLANKS, Blocks.ACACIA_SLAB, ModBlocks.KITCHEN_SINK_ACACIA.get());
-        this.woodenKitchenSink(Blocks.DARK_OAK_PLANKS, Blocks.DARK_OAK_SLAB, ModBlocks.KITCHEN_SINK_DARK_OAK.get());
-        this.woodenKitchenSink(Blocks.MANGROVE_PLANKS, Blocks.MANGROVE_SLAB, ModBlocks.KITCHEN_SINK_MANGROVE.get());
-        this.woodenKitchenSink(Blocks.CHERRY_PLANKS, Blocks.CHERRY_SLAB, ModBlocks.KITCHEN_SINK_CHERRY.get());
-        this.woodenKitchenSink(Blocks.CRIMSON_PLANKS, Blocks.CRIMSON_SLAB, ModBlocks.KITCHEN_SINK_CRIMSON.get());
-        this.woodenKitchenSink(Blocks.WARPED_PLANKS, Blocks.WARPED_SLAB, ModBlocks.KITCHEN_SINK_WARPED.get());
-        this.woodenKitchenStorageCabinet(Blocks.OAK_PLANKS, Blocks.OAK_SLAB, ModBlocks.KITCHEN_STORAGE_CABINET_OAK.get());
-        this.woodenKitchenStorageCabinet(Blocks.SPRUCE_PLANKS, Blocks.SPRUCE_SLAB, ModBlocks.KITCHEN_STORAGE_CABINET_SPRUCE.get());
-        this.woodenKitchenStorageCabinet(Blocks.BIRCH_PLANKS, Blocks.BIRCH_SLAB, ModBlocks.KITCHEN_STORAGE_CABINET_BIRCH.get());
-        this.woodenKitchenStorageCabinet(Blocks.JUNGLE_PLANKS, Blocks.JUNGLE_SLAB, ModBlocks.KITCHEN_STORAGE_CABINET_JUNGLE.get());
-        this.woodenKitchenStorageCabinet(Blocks.ACACIA_PLANKS, Blocks.ACACIA_SLAB, ModBlocks.KITCHEN_STORAGE_CABINET_ACACIA.get());
-        this.woodenKitchenStorageCabinet(Blocks.DARK_OAK_PLANKS, Blocks.DARK_OAK_SLAB, ModBlocks.KITCHEN_STORAGE_CABINET_DARK_OAK.get());
-        this.woodenKitchenStorageCabinet(Blocks.MANGROVE_PLANKS, Blocks.MANGROVE_SLAB, ModBlocks.KITCHEN_STORAGE_CABINET_MANGROVE.get());
-        this.woodenKitchenStorageCabinet(Blocks.CHERRY_PLANKS, Blocks.CHERRY_SLAB, ModBlocks.KITCHEN_STORAGE_CABINET_CHERRY.get());
-        this.woodenKitchenStorageCabinet(Blocks.CRIMSON_PLANKS, Blocks.CRIMSON_SLAB, ModBlocks.KITCHEN_STORAGE_CABINET_CRIMSON.get());
-        this.woodenKitchenStorageCabinet(Blocks.WARPED_PLANKS, Blocks.WARPED_SLAB, ModBlocks.KITCHEN_STORAGE_CABINET_WARPED.get());
+        this.drawer(Blocks.OAK_PLANKS, ModBlocks.DRAWER_OAK.get());
+        this.drawer(Blocks.SPRUCE_PLANKS, ModBlocks.DRAWER_SPRUCE.get());
+        this.drawer(Blocks.BIRCH_PLANKS, ModBlocks.DRAWER_BIRCH.get());
+        this.drawer(Blocks.JUNGLE_PLANKS, ModBlocks.DRAWER_JUNGLE.get());
+        this.drawer(Blocks.ACACIA_PLANKS, ModBlocks.DRAWER_ACACIA.get());
+        this.drawer(Blocks.DARK_OAK_PLANKS, ModBlocks.DRAWER_DARK_OAK.get());
+        this.drawer(Blocks.MANGROVE_PLANKS, ModBlocks.DRAWER_MANGROVE.get());
+        this.drawer(Blocks.CHERRY_PLANKS, ModBlocks.DRAWER_CHERRY.get());
+        this.drawer(Blocks.CRIMSON_PLANKS, ModBlocks.DRAWER_CRIMSON.get());
+        this.drawer(Blocks.WARPED_PLANKS, ModBlocks.DRAWER_WARPED.get());
+        this.woodenKitchenCabinetry(Blocks.OAK_PLANKS, ModBlocks.KITCHEN_CABINETRY_OAK.get());
+        this.woodenKitchenCabinetry(Blocks.SPRUCE_PLANKS, ModBlocks.KITCHEN_CABINETRY_SPRUCE.get());
+        this.woodenKitchenCabinetry(Blocks.BIRCH_PLANKS, ModBlocks.KITCHEN_CABINETRY_BIRCH.get());
+        this.woodenKitchenCabinetry(Blocks.JUNGLE_PLANKS, ModBlocks.KITCHEN_CABINETRY_JUNGLE.get());
+        this.woodenKitchenCabinetry(Blocks.ACACIA_PLANKS, ModBlocks.KITCHEN_CABINETRY_ACACIA.get());
+        this.woodenKitchenCabinetry(Blocks.DARK_OAK_PLANKS, ModBlocks.KITCHEN_CABINETRY_DARK_OAK.get());
+        this.woodenKitchenCabinetry(Blocks.MANGROVE_PLANKS, ModBlocks.KITCHEN_CABINETRY_MANGROVE.get());
+        this.woodenKitchenCabinetry(Blocks.CHERRY_PLANKS, ModBlocks.KITCHEN_CABINETRY_CHERRY.get());
+        this.woodenKitchenCabinetry(Blocks.CRIMSON_PLANKS, ModBlocks.KITCHEN_CABINETRY_CRIMSON.get());
+        this.woodenKitchenCabinetry(Blocks.WARPED_PLANKS, ModBlocks.KITCHEN_CABINETRY_WARPED.get());
+        this.woodenKitchenDrawer(Blocks.OAK_PLANKS, ModBlocks.KITCHEN_DRAWER_OAK.get());
+        this.woodenKitchenDrawer(Blocks.SPRUCE_PLANKS, ModBlocks.KITCHEN_DRAWER_SPRUCE.get());
+        this.woodenKitchenDrawer(Blocks.BIRCH_PLANKS, ModBlocks.KITCHEN_DRAWER_BIRCH.get());
+        this.woodenKitchenDrawer(Blocks.JUNGLE_PLANKS, ModBlocks.KITCHEN_DRAWER_JUNGLE.get());
+        this.woodenKitchenDrawer(Blocks.ACACIA_PLANKS, ModBlocks.KITCHEN_DRAWER_ACACIA.get());
+        this.woodenKitchenDrawer(Blocks.DARK_OAK_PLANKS, ModBlocks.KITCHEN_DRAWER_DARK_OAK.get());
+        this.woodenKitchenDrawer(Blocks.MANGROVE_PLANKS, ModBlocks.KITCHEN_DRAWER_MANGROVE.get());
+        this.woodenKitchenDrawer(Blocks.CHERRY_PLANKS, ModBlocks.KITCHEN_DRAWER_CHERRY.get());
+        this.woodenKitchenDrawer(Blocks.CRIMSON_PLANKS, ModBlocks.KITCHEN_DRAWER_CRIMSON.get());
+        this.woodenKitchenDrawer(Blocks.WARPED_PLANKS, ModBlocks.KITCHEN_DRAWER_WARPED.get());
+        this.woodenKitchenSink(Blocks.OAK_PLANKS, ModBlocks.KITCHEN_SINK_OAK.get());
+        this.woodenKitchenSink(Blocks.SPRUCE_PLANKS, ModBlocks.KITCHEN_SINK_SPRUCE.get());
+        this.woodenKitchenSink(Blocks.BIRCH_PLANKS, ModBlocks.KITCHEN_SINK_BIRCH.get());
+        this.woodenKitchenSink(Blocks.JUNGLE_PLANKS, ModBlocks.KITCHEN_SINK_JUNGLE.get());
+        this.woodenKitchenSink(Blocks.ACACIA_PLANKS, ModBlocks.KITCHEN_SINK_ACACIA.get());
+        this.woodenKitchenSink(Blocks.DARK_OAK_PLANKS, ModBlocks.KITCHEN_SINK_DARK_OAK.get());
+        this.woodenKitchenSink(Blocks.MANGROVE_PLANKS, ModBlocks.KITCHEN_SINK_MANGROVE.get());
+        this.woodenKitchenSink(Blocks.CHERRY_PLANKS, ModBlocks.KITCHEN_SINK_CHERRY.get());
+        this.woodenKitchenSink(Blocks.CRIMSON_PLANKS, ModBlocks.KITCHEN_SINK_CRIMSON.get());
+        this.woodenKitchenSink(Blocks.WARPED_PLANKS, ModBlocks.KITCHEN_SINK_WARPED.get());
+        this.woodenKitchenStorageCabinet(Blocks.OAK_PLANKS, ModBlocks.KITCHEN_STORAGE_CABINET_OAK.get());
+        this.woodenKitchenStorageCabinet(Blocks.SPRUCE_PLANKS, ModBlocks.KITCHEN_STORAGE_CABINET_SPRUCE.get());
+        this.woodenKitchenStorageCabinet(Blocks.BIRCH_PLANKS, ModBlocks.KITCHEN_STORAGE_CABINET_BIRCH.get());
+        this.woodenKitchenStorageCabinet(Blocks.JUNGLE_PLANKS, ModBlocks.KITCHEN_STORAGE_CABINET_JUNGLE.get());
+        this.woodenKitchenStorageCabinet(Blocks.ACACIA_PLANKS, ModBlocks.KITCHEN_STORAGE_CABINET_ACACIA.get());
+        this.woodenKitchenStorageCabinet(Blocks.DARK_OAK_PLANKS, ModBlocks.KITCHEN_STORAGE_CABINET_DARK_OAK.get());
+        this.woodenKitchenStorageCabinet(Blocks.MANGROVE_PLANKS, ModBlocks.KITCHEN_STORAGE_CABINET_MANGROVE.get());
+        this.woodenKitchenStorageCabinet(Blocks.CHERRY_PLANKS, ModBlocks.KITCHEN_STORAGE_CABINET_CHERRY.get());
+        this.woodenKitchenStorageCabinet(Blocks.CRIMSON_PLANKS, ModBlocks.KITCHEN_STORAGE_CABINET_CRIMSON.get());
+        this.woodenKitchenStorageCabinet(Blocks.WARPED_PLANKS, ModBlocks.KITCHEN_STORAGE_CABINET_WARPED.get());
         this.colouredKitchenCabinetry(Items.WHITE_DYE, ModBlocks.KITCHEN_CABINETRY_WHITE.get());
         this.colouredKitchenCabinetry(Items.ORANGE_DYE, ModBlocks.KITCHEN_CABINETRY_ORANGE.get());
         this.colouredKitchenCabinetry(Items.MAGENTA_DYE, ModBlocks.KITCHEN_CABINETRY_MAGENTA.get());
@@ -312,16 +311,16 @@ public class CommonRecipeProvider
         this.grill(Items.GREEN_DYE, ModBlocks.GRILL_GREEN.get());
         this.grill(Items.RED_DYE, ModBlocks.GRILL_RED.get());
         this.grill(Items.BLACK_DYE, ModBlocks.GRILL_BLACK.get());
-        this.mailbox(Blocks.OAK_SLAB, Blocks.OAK_PLANKS, Blocks.OAK_FENCE, ModBlocks.MAIL_BOX_OAK.get());
-        this.mailbox(Blocks.SPRUCE_SLAB, Blocks.SPRUCE_PLANKS, Blocks.SPRUCE_FENCE, ModBlocks.MAIL_BOX_SPRUCE.get());
-        this.mailbox(Blocks.BIRCH_SLAB, Blocks.BIRCH_PLANKS, Blocks.BIRCH_FENCE, ModBlocks.MAIL_BOX_BIRCH.get());
-        this.mailbox(Blocks.JUNGLE_SLAB, Blocks.JUNGLE_PLANKS, Blocks.JUNGLE_FENCE, ModBlocks.MAIL_BOX_JUNGLE.get());
-        this.mailbox(Blocks.ACACIA_SLAB, Blocks.ACACIA_PLANKS, Blocks.ACACIA_FENCE, ModBlocks.MAIL_BOX_ACACIA.get());
-        this.mailbox(Blocks.DARK_OAK_SLAB, Blocks.DARK_OAK_PLANKS, Blocks.DARK_OAK_FENCE, ModBlocks.MAIL_BOX_DARK_OAK.get());
-        this.mailbox(Blocks.MANGROVE_SLAB, Blocks.MANGROVE_PLANKS, Blocks.MANGROVE_FENCE, ModBlocks.MAIL_BOX_MANGROVE.get());
-        this.mailbox(Blocks.CHERRY_SLAB, Blocks.CHERRY_PLANKS, Blocks.CHERRY_FENCE, ModBlocks.MAIL_BOX_CHERRY.get());
-        this.mailbox(Blocks.CRIMSON_SLAB, Blocks.CRIMSON_PLANKS, Blocks.CRIMSON_FENCE, ModBlocks.MAIL_BOX_CRIMSON.get());
-        this.mailbox(Blocks.WARPED_SLAB, Blocks.WARPED_PLANKS, Blocks.WARPED_FENCE, ModBlocks.MAIL_BOX_WARPED.get());
+        this.mailbox(Blocks.OAK_PLANKS, ModBlocks.MAIL_BOX_OAK.get());
+        this.mailbox(Blocks.SPRUCE_PLANKS, ModBlocks.MAIL_BOX_SPRUCE.get());
+        this.mailbox(Blocks.BIRCH_PLANKS, ModBlocks.MAIL_BOX_BIRCH.get());
+        this.mailbox(Blocks.JUNGLE_PLANKS, ModBlocks.MAIL_BOX_JUNGLE.get());
+        this.mailbox(Blocks.ACACIA_PLANKS, ModBlocks.MAIL_BOX_ACACIA.get());
+        this.mailbox(Blocks.DARK_OAK_PLANKS, ModBlocks.MAIL_BOX_DARK_OAK.get());
+        this.mailbox(Blocks.MANGROVE_PLANKS, ModBlocks.MAIL_BOX_MANGROVE.get());
+        this.mailbox(Blocks.CHERRY_PLANKS, ModBlocks.MAIL_BOX_CHERRY.get());
+        this.mailbox(Blocks.CRIMSON_PLANKS, ModBlocks.MAIL_BOX_CRIMSON.get());
+        this.mailbox(Blocks.WARPED_PLANKS, ModBlocks.MAIL_BOX_WARPED.get());
         this.postBox(ModBlocks.POST_BOX.get());
 
         this.simpleCombined(ModItems.SWEET_BERRY_JAM.get(), ModItems.TOAST.get(), ModItems.SWEET_BERRY_JAM_TOAST.get(), 1, RecipeCategory.FOOD);
@@ -844,42 +843,42 @@ public class CommonRecipeProvider
 
     private void table(Block plank, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(plank, 7));
+        this.workbenchCrafting(result, 1, Material.of(plank, 6));
     }
 
     private void chair(Block plank, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(plank, 6));
+        this.workbenchCrafting(result, 1, Material.of(plank, 4));
     }
 
     private void desk(Block plank, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(plank, 7), Material.of(Items.STICK, 2));
+        this.workbenchCrafting(result, 1, Material.of(plank, 6));
     }
 
-    private void drawer(Block plank, Block slab, Block result)
+    private void drawer(Block plank, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(plank, 4), Material.of(slab, 3), Material.of(Items.CHEST, 1));
+        this.workbenchCrafting(result, 1, Material.of(plank, 10));
     }
 
-    private void woodenKitchenCabinetry(Block plank, Block slab, Block result)
+    private void woodenKitchenCabinetry(Block plank, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(plank, 5), Material.of(slab, 3), Material.of(Items.WHITE_DYE, 1));
+        this.workbenchCrafting(result, 2, Material.of(plank, 8), Material.of(Items.WHITE_DYE, 1));
     }
 
-    private void woodenKitchenDrawer(Block plank, Block slab, Block result)
+    private void woodenKitchenDrawer(Block plank, Block result)
     {
-        this.workbenchCrafting(result, 2, Material.of(plank, 5), Material.of(slab, 3), Material.of(Items.CHEST, 1), Material.of(Items.WHITE_DYE, 1));
+        this.workbenchCrafting(result, 2, Material.of(plank, 12), Material.of(Items.WHITE_DYE, 1));
     }
 
-    private void woodenKitchenSink(Block plank, Block slab, Block result)
+    private void woodenKitchenSink(Block plank, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(plank, 4), Material.of(slab, 2), Material.of(Items.COPPER_INGOT, 1), Material.of(Items.QUARTZ_BLOCK, 1), Material.of(Items.WHITE_DYE, 1));
+        this.workbenchCrafting(result, 1, Material.of(plank, 10), Material.of(Items.COPPER_INGOT, 1), Material.of(Items.QUARTZ_BLOCK, 1), Material.of(Items.WHITE_DYE, 1));
     }
 
-    private void woodenKitchenStorageCabinet(Block plank, Block slab, Block result)
+    private void woodenKitchenStorageCabinet(Block plank, Block result)
     {
-        this.workbenchCrafting(result, 2, Material.of(plank, 4), Material.of(slab, 3), Material.of(Items.WHITE_DYE, 1));
+        this.workbenchCrafting(result, 2, Material.of(plank, 12), Material.of(Items.WHITE_DYE, 1));
     }
 
     private void colouredKitchenCabinetry(Item dye, Block result)
@@ -931,36 +930,36 @@ public class CommonRecipeProvider
 
     private void toaster(Block light, Block dark)
     {
-        this.workbenchCrafting(light, 1, Material.of(Items.IRON_INGOT, 4), Material.of(Items.IRON_BARS, 1), Material.of(Items.REDSTONE, 1));
+        this.workbenchCrafting(light, 1, Material.of(Items.IRON_INGOT, 4), Material.of(Items.REDSTONE, 2));
         this.workbenchCrafting(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
     }
 
     private void microwave(Block light, Block dark)
     {
-        this.workbenchCrafting(light, 1, Material.of(Items.IRON_INGOT, 4), Material.of(Items.GLASS_PANE, 1), Material.of(Items.REDSTONE, 1));
+        this.workbenchCrafting(light, 1, Material.of(Items.IRON_INGOT, 6), Material.of(Items.GLASS, 1), Material.of(Items.REDSTONE, 4));
         this.workbenchCrafting(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
     }
 
     private void stove(Block light, Block dark)
     {
-        this.workbenchCrafting(light, 1, Material.of(Items.IRON_INGOT, 6), Material.of(Items.IRON_BARS, 1), Material.of(Items.FURNACE, 1), Material.of(Items.REDSTONE, 1));
+        this.workbenchCrafting(light, 1, Material.of(Items.IRON_INGOT, 12), Material.of(Items.GLASS, 1), Material.of(Items.REDSTONE, 6));
         this.workbenchCrafting(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
     }
 
     private void rangeHood(Block light, Block dark)
     {
-        this.workbenchCrafting(light, 1, Material.of(Items.IRON_INGOT, 2), Material.of(Items.REDSTONE_LAMP, 1), Material.of(Items.REDSTONE, 1));
+        this.workbenchCrafting(light, 1, Material.of(Items.IRON_INGOT, 2), Material.of(Items.REDSTONE, 2));
         this.workbenchCrafting(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
     }
 
     private void fryingPan(Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(Items.IRON_INGOT, 2), Material.of(Items.STICK, 1));
+        this.workbenchCrafting(result, 1, Material.of(Items.IRON_INGOT, 3), Material.of(Items.LEATHER, 1), Material.of(Items.BLACK_DYE, 1));
     }
 
     private void recyclingBin(Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(Items.IRON_INGOT, 7), Material.of(Items.PISTON, 1), Material.of(Items.REDSTONE, 1));
+        this.workbenchCrafting(result, 1, Material.of(Items.IRON_INGOT, 8), Material.of(Items.PISTON, 1), Material.of(Items.REDSTONE, 2));
     }
 
     private void cuttingBoard(Block plank, Block result)
@@ -970,27 +969,27 @@ public class CommonRecipeProvider
 
     private void plate(Block result)
     {
-        this.workbenchCrafting(result, 4, Material.of(Items.QUARTZ_BLOCK, 2));
+        this.workbenchCrafting(result, 4, Material.of(Items.QUARTZ_BLOCK, 1));
     }
 
     private void crate(Block plank, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(plank, 5), Material.of(Items.STICK, 4));
+        this.workbenchCrafting(result, 1, Material.of(plank, 8));
     }
 
     private void grill(Item dye, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(Items.IRON_INGOT, 6), Material.of(Items.IRON_BARS, 1), Material.of(dye, 1));
+        this.workbenchCrafting(result, 1, Material.of(Items.IRON_INGOT, 8), Material.of(dye, 1));
     }
 
-    private void mailbox(Block slab, Block plank, Block fence, Block result)
+    private void mailbox(Block plank, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(plank, 2), Material.of(slab, 3), Material.of(Blocks.CHEST, 1), Material.of(fence, 1));
+        this.workbenchCrafting(result, 1, Material.of(plank, 8));
     }
 
     private void postBox(Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(Items.IRON_INGOT, 4), Material.of(Blocks.IRON_BLOCK, 1), Material.of(Blocks.CHEST, 1), Material.of(Items.BLUE_DYE, 1));
+        this.workbenchCrafting(result, 1, Material.of(Items.IRON_INGOT, 10), Material.of("planks", ItemTags.PLANKS, 8), Material.of(Items.BLUE_DYE, 1));
     }
 
     private void workbenchCrafting(ItemLike result, int count, Material<?> ... materials)
