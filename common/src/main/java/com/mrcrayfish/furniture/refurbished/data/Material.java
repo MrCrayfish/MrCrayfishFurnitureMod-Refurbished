@@ -49,6 +49,11 @@ public abstract sealed class Material<T>
         return new ItemValue(item.asItem(), count);
     }
 
+    public static Material<?> of(String name, ItemLike item, int count)
+    {
+        return new ItemValue(name, item.asItem(), count);
+    }
+
     public static Material<?> of(String name, TagKey<Item> tag, int count)
     {
         return new TagValue(name, tag, count);
@@ -59,6 +64,11 @@ public abstract sealed class Material<T>
         public ItemValue(Item item, int count)
         {
             super(item.toString(), item, count);
+        }
+
+        public ItemValue(String name, Item item, int count)
+        {
+            super(name, item, count);
         }
 
         @Override
