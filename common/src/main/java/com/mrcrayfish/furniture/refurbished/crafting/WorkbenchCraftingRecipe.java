@@ -43,6 +43,7 @@ import java.util.stream.StreamSupport;
  */
 public class WorkbenchCraftingRecipe implements Recipe<Container>
 {
+    // TODO allow recipe to change sound (drill for wood, saw for stone, weld for electronics)
     private final ResourceLocation id;
     private final NonNullList<StackedIngredient> materials;
     private final ItemStack result;

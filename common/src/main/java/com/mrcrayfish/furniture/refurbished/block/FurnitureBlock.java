@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
+import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
@@ -73,10 +74,15 @@ public abstract class FurnitureBlock extends Block
     {
         if(!state.is(newState.getBlock()))
         {
-            if(level.getBlockEntity(pos) instanceof Container container)
+            BlockEntity blockEntity = level.getBlockEntity(pos);
+            if(blockEntity instanceof Container container)
             {
                 Containers.dropContents(level, pos, container);
                 level.updateNeighbourForOutputSignal(pos, this);
+            }
+            if(blockEntity instanceof IElectricityNode node)
+            {
+                node.onDestroyed();
             }
         }
         super.onRemove(state, level, pos, newState, isMoving);

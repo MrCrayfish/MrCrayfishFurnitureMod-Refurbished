@@ -61,19 +61,6 @@ public class LampBlock extends FurnitureBlock implements EntityBlock, BlockTagSu
     }
 
     @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving)
-    {
-        if(!state.is(newState.getBlock()))
-        {
-            if(level.getBlockEntity(pos) instanceof IElectricityNode node)
-            {
-                node.onDestroyed();
-            }
-        }
-        super.onRemove(state, level, pos, newState, isMoving);
-    }
-
-    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
     {
         super.createBlockStateDefinition(builder);
