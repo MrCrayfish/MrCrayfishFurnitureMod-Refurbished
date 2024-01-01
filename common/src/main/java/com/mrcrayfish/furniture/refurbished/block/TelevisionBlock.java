@@ -6,9 +6,12 @@ import com.mrcrayfish.furniture.refurbished.blockentity.CeilingFanBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.ElectricityGeneratorBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.TelevisionBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
+import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -25,13 +28,14 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish
  */
-public class TelevisionBlock extends FurnitureHorizontalBlock implements EntityBlock
+public class TelevisionBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
 {
     public TelevisionBlock(Properties properties)
     {
@@ -102,5 +106,11 @@ public class TelevisionBlock extends FurnitureHorizontalBlock implements EntityB
     public static int light(BlockState state)
     {
         return state.getValue(POWERED) ? 8 : 0;
+    }
+
+    @Override
+    public List<TagKey<Block>> getTags()
+    {
+        return List.of(BlockTags.MINEABLE_WITH_PICKAXE);
     }
 }

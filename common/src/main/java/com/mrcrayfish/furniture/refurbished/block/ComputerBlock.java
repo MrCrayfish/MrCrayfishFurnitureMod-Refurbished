@@ -6,10 +6,13 @@ import com.mrcrayfish.furniture.refurbished.blockentity.ComputerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.FreezerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.TelevisionBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
+import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -25,13 +28,14 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish
  */
-public class ComputerBlock extends FurnitureHorizontalBlock implements EntityBlock
+public class ComputerBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
 {
     // TODO if player in chair, make arms reach the keyboard when using computer. use synced data key
 
@@ -92,5 +96,11 @@ public class ComputerBlock extends FurnitureHorizontalBlock implements EntityBlo
             return createTickerHelper(type, computer, ComputerBlockEntity::serverTick);
         }
         return null;
+    }
+
+    @Override
+    public List<TagKey<Block>> getTags()
+    {
+        return List.of(BlockTags.MINEABLE_WITH_PICKAXE);
     }
 }

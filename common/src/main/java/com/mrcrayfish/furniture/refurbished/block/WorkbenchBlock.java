@@ -5,9 +5,12 @@ import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.framework.api.FrameworkAPI;
 import com.mrcrayfish.furniture.refurbished.blockentity.WorkbenchBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
+import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -24,13 +27,14 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish
  */
-public class WorkbenchBlock extends FurnitureHorizontalBlock implements EntityBlock
+public class WorkbenchBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
 {
     public WorkbenchBlock(Properties properties)
     {
@@ -90,5 +94,11 @@ public class WorkbenchBlock extends FurnitureHorizontalBlock implements EntityBl
             return createTickerHelper(type, workbench, WorkbenchBlockEntity::sendCountsToUser);
         }
         return null;
+    }
+
+    @Override
+    public List<TagKey<Block>> getTags()
+    {
+        return List.of(BlockTags.MINEABLE_WITH_AXE);
     }
 }

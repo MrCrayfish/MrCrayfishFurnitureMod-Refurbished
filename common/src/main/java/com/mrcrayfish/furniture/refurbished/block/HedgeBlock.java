@@ -1,7 +1,10 @@
 package com.mrcrayfish.furniture.refurbished.block;
 
+import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
@@ -14,10 +17,12 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 
+import java.util.List;
+
 /**
  * Author: MrCrayfish
  */
-public class HedgeBlock extends CrossCollisionBlock
+public class HedgeBlock extends CrossCollisionBlock implements BlockTagSupplier
 {
     private final LeafType type;
 
@@ -78,5 +83,11 @@ public class HedgeBlock extends CrossCollisionBlock
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
     {
         builder.add(NORTH, EAST, WEST, SOUTH, WATERLOGGED);
+    }
+
+    @Override
+    public List<TagKey<Block>> getTags()
+    {
+        return List.of(BlockTags.MINEABLE_WITH_HOE);
     }
 }
