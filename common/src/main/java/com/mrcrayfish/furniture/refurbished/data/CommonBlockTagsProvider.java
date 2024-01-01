@@ -25,6 +25,8 @@ public class CommonBlockTagsProvider
             Block block = (Block) entry.get();
             if(block instanceof BlockTagSupplier provider) {
                 provider.getTags().forEach(key -> builder.apply(key).add(block));
+            } else {
+                throw new IllegalArgumentException("Block doesn't implement BlockTagSupplier: " + entry.getId());
             }
         });
         builder.apply(BlockTags.COMBINATION_STEP_SOUND_BLOCKS)
