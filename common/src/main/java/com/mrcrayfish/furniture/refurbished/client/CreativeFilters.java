@@ -33,6 +33,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -170,18 +171,18 @@ public class CreativeFilters
     {
         Set<Item> seenItems = new HashSet<>();
         LinkedHashSet<ItemStack> categorisedItems = new LinkedHashSet<>();
-        this.categories.stream().filter(FilterCategory::isEnabled).forEach(category -> {
-            category.getItems().ifPresent(items -> items.forEach(item -> {
-                if(!seenItems.contains(item)) {
-                    categorisedItems.add(new ItemStack(item));
+        ModCreativeTabs.MAIN.get().getDisplayItems().forEach(stack -> {
+            this.categories.stream().filter(FilterCategory::isEnabled).forEach(category -> {
+                Item item = stack.getItem();
+                if(!seenItems.contains(item) && stack.is(category.tag)) {
+                    categorisedItems.add(stack.copy());
                     seenItems.add(item);
                 }
-            }));
+            });
         });
         NonNullList<ItemStack> items = screen.getMenu().items;
         items.clear();
         items.addAll(categorisedItems);
-        items.sort(Comparator.comparingInt(o -> Item.getId(o.getItem())));
         screen.getMenu().scrollTo(0);
     }
 
