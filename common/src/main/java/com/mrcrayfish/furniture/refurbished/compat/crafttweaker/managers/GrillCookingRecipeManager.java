@@ -19,8 +19,8 @@ import org.openzen.zencode.java.ZenCodeType;
  * Author: MrCrayfish
  */
 @ZenRegister
-@Document("mods/RefurbishedFurniture/Grill")
-@ZenCodeType.Name("mods.refurbished_furniture.Grill")
+@Document("mods/RefurbishedFurniture/Grill/Cooking")
+@ZenCodeType.Name("mods.refurbished_furniture.GrillCooking")
 public class GrillCookingRecipeManager implements IRecipeManager<GrillCookingRecipe>
 {
     @ZenCodeType.Method

@@ -26,8 +26,8 @@ import java.util.List;
  * Author: MrCrayfish
  */
 @ZenRegister
-@Document("mods/RefurbishedFurniture/RecycleBin")
-@ZenCodeType.Name("mods.refurbished_furniture.RecycleBin")
+@Document("mods/RefurbishedFurniture/RecycleBin/Recycling")
+@ZenCodeType.Name("mods.refurbished_furniture.RecycleBinRecycling")
 public class RecycleBinRecyclingRecipeManager implements IRecipeManager<RecycleBinRecyclingRecipe>
 {
     @ZenCodeType.Method

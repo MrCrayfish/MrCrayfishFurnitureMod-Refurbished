@@ -19,8 +19,8 @@ import org.openzen.zencode.java.ZenCodeType;
  * Author: MrCrayfish
  */
 @ZenRegister
-@Document("mods/RefurbishedFurniture/FryingPan")
-@ZenCodeType.Name("mods.refurbished_furniture.FryingPan")
+@Document("mods/RefurbishedFurniture/FryingPan/Cooking")
+@ZenCodeType.Name("mods.refurbished_furniture.FryingPanCooking")
 public class FryingPanCookingRecipeManager implements IRecipeManager<FryingPanCookingRecipe>
 {
     @ZenCodeType.Method

@@ -19,8 +19,8 @@ import org.openzen.zencode.java.ZenCodeType;
  * Author: MrCrayfish
  */
 @ZenRegister
-@Document("mods/RefurbishedFurniture/Microwave")
-@ZenCodeType.Name("mods.refurbished_furniture.Microwave")
+@Document("mods/RefurbishedFurniture/Microwave/Heating")
+@ZenCodeType.Name("mods.refurbished_furniture.MicrowaveHeating")
 public class MicrowaveHeatingRecipeManager implements IRecipeManager<MicrowaveHeatingRecipe>
 {
     @ZenCodeType.Method

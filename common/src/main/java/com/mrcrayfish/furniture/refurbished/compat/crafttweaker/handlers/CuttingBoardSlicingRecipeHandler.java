@@ -20,7 +20,7 @@ import java.util.Optional;
  * Author: MrCrayfish
  */
 @IRecipeHandler.For(CuttingBoardSlicingRecipe.class)
-public class CuttingBoardRecipeHandler implements IRecipeHandler<CuttingBoardSlicingRecipe>
+public class CuttingBoardSlicingRecipeHandler implements IRecipeHandler<CuttingBoardSlicingRecipe>
 {
     @Override
     public String dumpToCommandString(IRecipeManager<? super CuttingBoardSlicingRecipe> manager, CuttingBoardSlicingRecipe recipe)

@@ -18,8 +18,8 @@ import org.openzen.zencode.java.ZenCodeType;
  * Author: MrCrayfish
  */
 @ZenRegister
-@Document("mods/RefurbishedFurniture/Toaster")
-@ZenCodeType.Name("mods.refurbished_furniture.Toaster")
+@Document("mods/RefurbishedFurniture/Toaster/Heating")
+@ZenCodeType.Name("mods.refurbished_furniture.ToasterHeating")
 public class ToasterHeatingRecipeManager implements IRecipeManager<ToasterHeatingRecipe>
 {
     @ZenCodeType.Method

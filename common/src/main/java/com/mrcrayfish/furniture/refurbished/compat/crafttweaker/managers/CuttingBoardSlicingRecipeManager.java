@@ -17,9 +17,9 @@ import org.openzen.zencode.java.ZenCodeType;
  * Author: MrCrayfish
  */
 @ZenRegister
-@Document("mods/RefurbishedFurniture/CuttingBoard")
-@ZenCodeType.Name("mods.refurbished_furniture.CuttingBoard")
-public class CuttingBoardRecipeManager implements IRecipeManager<CuttingBoardSlicingRecipe>
+@Document("mods/RefurbishedFurniture/CuttingBoard/Slicing")
+@ZenCodeType.Name("mods.refurbished_furniture.CuttingBoardSlicing")
+public class CuttingBoardSlicingRecipeManager implements IRecipeManager<CuttingBoardSlicingRecipe>
 {
     @ZenCodeType.Method
     public void addRecipe(String name, IIngredient input, IItemStack output)

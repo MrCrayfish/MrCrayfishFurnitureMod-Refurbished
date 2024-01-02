@@ -19,8 +19,8 @@ import org.openzen.zencode.java.ZenCodeType;
  * Author: MrCrayfish
  */
 @ZenRegister
-@Document("mods/RefurbishedFurniture/Freezer")
-@ZenCodeType.Name("mods.refurbished_furniture.Freezer")
+@Document("mods/RefurbishedFurniture/Freezer/Solidifying")
+@ZenCodeType.Name("mods.refurbished_furniture.FreezerSolidifying")
 public class FreezerSolidifyingRecipeManager implements IRecipeManager<FreezerSolidifyingRecipe>
 {
     @ZenCodeType.Method
