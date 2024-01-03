@@ -40,7 +40,20 @@ public class CuttingBoardCombiningRecipeHandler implements IRecipeHandler<Cuttin
     @Override
     public <U extends Recipe<?>> boolean doesConflict(IRecipeManager<? super CuttingBoardCombiningRecipe> manager, CuttingBoardCombiningRecipe firstRecipe, U secondRecipe)
     {
-        return !(secondRecipe instanceof CuttingBoardSlicingRecipe);
+        if(!(secondRecipe instanceof CuttingBoardCombiningRecipe))
+            return false;
+        NonNullList<Ingredient> firstIngredients = firstRecipe.getIngredients();
+        NonNullList<Ingredient> secondIngredients = secondRecipe.getIngredients();
+        int minSize = Math.min(firstIngredients.size(), secondIngredients.size());
+        for(int i = 0; i < minSize; i++)
+        {
+            if(Collections.disjoint(firstIngredients.get(i).getStackingIds(), secondIngredients.get(i).getStackingIds()))
+            {
+                Plugin.LOGGER.error("Cutting Board combining inputs cannot be empty");
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
