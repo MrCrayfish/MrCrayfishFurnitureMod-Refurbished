@@ -33,7 +33,7 @@ public class CuttingBoardCombiningCategory implements IRecipeCategory<CuttingBoa
 
     public CuttingBoardCombiningCategory(IGuiHelper helper)
     {
-        this.background = helper.createDrawable(Plugin.TEXTURES, 157, 151, 99, 105);
+        this.background = helper.createDrawable(Plugin.TEXTURES, 157, 156, 99, 100);
         this.icon = helper.createDrawableItemStack(new ItemStack(ModBlocks.CUTTING_BOARD_OAK.get()));
     }
 
@@ -67,8 +67,8 @@ public class CuttingBoardCombiningCategory implements IRecipeCategory<CuttingBoa
         NonNullList<Ingredient> ingredients = recipe.getIngredients();
         for(int i = 0; i < ingredients.size(); i++)
         {
-            builder.addSlot(RecipeIngredientRole.INPUT, 25, 74 - i * 17).addIngredients(ingredients.get(i));
+            builder.addSlot(RecipeIngredientRole.INPUT, 25, 69 - i * 16).addIngredients(ingredients.get(i));
         }
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 77, 74).addItemStack(Plugin.getResult(recipe));
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 77, 69).addItemStack(Plugin.getResult(recipe));
     }
 }
