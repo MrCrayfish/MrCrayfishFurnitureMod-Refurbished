@@ -1,13 +1,13 @@
 package com.mrcrayfish.furniture.refurbished.core;
 
+import com.google.common.base.Suppliers;
 import com.mrcrayfish.framework.api.registry.RegistryContainer;
 import com.mrcrayfish.framework.api.registry.RegistryEntry;
-import com.mrcrayfish.furniture.refurbished.util.LazyValue;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.block.SoundType;
-import org.apache.commons.lang3.concurrent.ConcurrentException;
-import org.apache.commons.lang3.concurrent.LazyInitializer;
+
+import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish
@@ -71,7 +71,7 @@ public class ModSounds
     public static final RegistryEntry<SoundEvent> UI_PADDLE_BALL_RETRO_WIN = RegistryEntry.soundEvent(Utils.resource("ui.paddle_ball.retro_win"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> UI_PADDLE_BALL_RETRO_LOSE = RegistryEntry.soundEvent(Utils.resource("ui.paddle_ball.retro_lose"), id -> () -> SoundEvent.createVariableRangeEvent(id));
 
-    public static final LazyValue<SoundType> SOUND_TYPE_FRYING_PAN = new LazyValue<>(() -> {
+    public static final Supplier<SoundType> SOUND_TYPE_FRYING_PAN = Suppliers.memoize(() -> {
         return new SoundType(1.0F, 1.0F, ModSounds.BLOCK_FRYING_PAN_BREAK.get(), ModSounds.BLOCK_FRYING_PAN_STEP.get(), ModSounds.BLOCK_FRYING_PAN_PLACE.get(), ModSounds.BLOCK_FRYING_PAN_HIT.get(), ModSounds.BLOCK_FRYING_PAN_PLACE.get());
     });
 }
