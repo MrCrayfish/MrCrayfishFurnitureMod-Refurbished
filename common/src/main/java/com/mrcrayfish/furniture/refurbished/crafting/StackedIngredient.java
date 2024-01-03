@@ -42,6 +42,11 @@ public record StackedIngredient(Ingredient ingredient, int count)
         return new StackedIngredient(Ingredient.of(stack), stack.getCount());
     }
 
+    public static StackedIngredient of(Ingredient ingredient, int count)
+    {
+        return new StackedIngredient(ingredient, count);
+    }
+
     public void toNetwork(FriendlyByteBuf buffer)
     {
         this.ingredient.toNetwork(buffer);
