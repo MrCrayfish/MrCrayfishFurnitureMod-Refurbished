@@ -7,9 +7,7 @@ import com.blamejared.crafttweaker.api.recipe.component.IDecomposedRecipe;
 import com.blamejared.crafttweaker.api.recipe.handler.IRecipeHandler;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker.api.util.StringUtil;
-import com.mrcrayfish.furniture.refurbished.compat.jei.Plugin;
 import com.mrcrayfish.furniture.refurbished.crafting.StackedIngredient;
-import com.mrcrayfish.furniture.refurbished.crafting.ToasterHeatingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchCraftingRecipe;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
@@ -33,7 +31,7 @@ public class WorkbenchCraftingRecipeHandler implements IRecipeHandler<WorkbenchC
         return String.format("%s.addRecipe(%s, %s, %s);",
                 manager.getCommandString(),
                 StringUtil.quoteAndEscape(recipe.getId()),
-                IItemStack.ofMutable(Plugin.getResult(recipe)).getCommandString(),
+                IItemStack.ofMutable(recipe.getResult()).getCommandString(),
                 "[" + String.join(", ", recipe.getMaterials().stream().map(v -> IIngredient.fromIngredient(v.ingredient()).mul(v.count()).getCommandString()).toArray(String[]::new)) + "]");
     }
 
@@ -51,7 +49,7 @@ public class WorkbenchCraftingRecipeHandler implements IRecipeHandler<WorkbenchC
                         .map(stack -> IIngredient.fromIngredient(stack.ingredient()).mul(stack.count()))
                         .map(v -> (IIngredient) v)
                         .collect(Collectors.toList()))
-                .with(BuiltinRecipeComponents.Output.ITEMS, IItemStack.ofMutable(Plugin.getResult(recipe))).build();
+                .with(BuiltinRecipeComponents.Output.ITEMS, IItemStack.ofMutable(recipe.getResult())).build();
         return Optional.of(decomposedRecipe);
     }
 

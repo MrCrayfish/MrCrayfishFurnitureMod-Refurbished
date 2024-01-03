@@ -6,18 +6,16 @@ import com.blamejared.crafttweaker.api.recipe.component.BuiltinRecipeComponents;
 import com.blamejared.crafttweaker.api.recipe.component.IDecomposedRecipe;
 import com.blamejared.crafttweaker.api.recipe.handler.IRecipeHandler;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
-import com.blamejared.crafttweaker.api.util.IngredientUtil;
 import com.blamejared.crafttweaker.api.util.StringUtil;
-import com.mrcrayfish.furniture.refurbished.compat.jei.Plugin;
+import com.mrcrayfish.furniture.refurbished.compat.crafttweaker.Plugin;
 import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardCombiningRecipe;
-import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardSlicingRecipe;
+import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -33,7 +31,7 @@ public class CuttingBoardCombiningRecipeHandler implements IRecipeHandler<Cuttin
         return String.format("%s.addRecipe(%s, %s, %s);",
                 manager.getCommandString(),
                 StringUtil.quoteAndEscape(recipe.getId()),
-                IItemStack.ofMutable(Plugin.getResult(recipe)).getCommandString(),
+                IItemStack.ofMutable(recipe.getOutput()).getCommandString(),
                 "[" + String.join(", ", recipe.getIngredients().stream().map(ingredient -> IIngredient.fromIngredient(ingredient).getCommandString()).toArray(String[]::new)) + "]");
     }
 
@@ -61,7 +59,7 @@ public class CuttingBoardCombiningRecipeHandler implements IRecipeHandler<Cuttin
     {
         IDecomposedRecipe decomposedRecipe = IDecomposedRecipe.builder()
                 .with(BuiltinRecipeComponents.Input.INGREDIENTS, recipe.getIngredients().stream().map(IIngredient::fromIngredient).collect(Collectors.toList()))
-                .with(BuiltinRecipeComponents.Output.ITEMS, IItemStack.ofMutable(Plugin.getResult(recipe)))
+                .with(BuiltinRecipeComponents.Output.ITEMS, IItemStack.ofMutable(recipe.getOutput()))
                 .build();
         return Optional.of(decomposedRecipe);
     }

@@ -102,6 +102,11 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
         return NonNullList.of(Ingredient.EMPTY, this.inputs);
     }
 
+    public ItemStack getOutput()
+    {
+        return this.output;
+    }
+
     public boolean completelyMatches(Container container)
     {
         if(this.inputs.length <= container.getContainerSize())
