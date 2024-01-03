@@ -41,12 +41,50 @@ import net.minecraft.world.phys.Vec3;
  */
 public class Bootstrap
 {
-    // TODO fix unknown recipe spam on launch
-
     public static void init()
     {
         Network.init();
 
+        registerDispenserBehaviours();
+        registerCauldronBehaviours();
+        registerFrameworkEvents();
+
+        FrameworkAPI.registerSyncedDataKey(Seat.LOCK_YAW);
+
+        Computer computer = Computer.get();
+        computer.installProgram(Utils.resource("paddle_ball"), PaddleBall::new);
+        computer.installService(PaddleBall.SERVICE);
+    }
+
+    private static void registerFrameworkEvents()
+    {
+        // Link Manager and Delivery Service events
+        TickEvents.START_SERVER.register(server -> {
+            DeliveryService.get(server).ifPresent(DeliveryService::serverTick);
+            Computer.get().getServices().forEach(IService::tick);
+        });
+        TickEvents.START_LEVEL.register(level -> {
+            if(level instanceof ServerLevel serverLevel) {
+                ElectricityTicker.get(serverLevel).startLevelTick();
+            }
+        });
+        TickEvents.END_PLAYER.register(player -> {
+            MinecraftServer server = player.getServer();
+            if(server != null) {
+                LinkManager.get(server).ifPresent(manager -> manager.onPlayerTick(player));
+            }
+        });
+        PlayerEvents.LOGGED_OUT.register(player -> {
+            MinecraftServer server = player.getServer();
+            if(server != null) {
+                DeliveryService.get(server).ifPresent(service -> service.playerLoggedOut(player));
+                LinkManager.get(server).ifPresent(manager -> manager.onPlayerLoggedOut(player));
+            }
+        });
+    }
+
+    private static void registerDispenserBehaviours()
+    {
         // Allows a spatula in a dispenser to flip items on the grill
         DispenserBlock.registerBehavior(ModItems.SPATULA::get, (source, stack) -> {
             Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
@@ -98,7 +136,10 @@ public class Bootstrap
             });
             return ItemStack.EMPTY;
         });
+    }
 
+    private static void registerCauldronBehaviours()
+    {
         // Adds the ability to remove the art from door mats by interacting with a water cauldron
         CauldronInteraction.WATER.put(ModBlocks.DOOR_MAT.get().asItem(), (state, level, pos, player, hand, stack) -> {
             Block block = Block.byItem(stack.getItem());
@@ -123,35 +164,5 @@ public class Bootstrap
             }
             return InteractionResult.PASS;
         });
-
-        // Link Manager and Delivery Service events
-        TickEvents.START_SERVER.register(server -> {
-            DeliveryService.get(server).ifPresent(DeliveryService::serverTick);
-            Computer.get().getServices().forEach(IService::tick);
-        });
-        TickEvents.START_LEVEL.register(level -> {
-            if(level instanceof ServerLevel serverLevel) {
-                ElectricityTicker.get(serverLevel).startLevelTick();
-            }
-        });
-        TickEvents.END_PLAYER.register(player -> {
-            MinecraftServer server = player.getServer();
-            if(server != null) {
-                LinkManager.get(server).ifPresent(manager -> manager.onPlayerTick(player));
-            }
-        });
-        PlayerEvents.LOGGED_OUT.register(player -> {
-            MinecraftServer server = player.getServer();
-            if(server != null) {
-                DeliveryService.get(server).ifPresent(service -> service.playerLoggedOut(player));
-                LinkManager.get(server).ifPresent(manager -> manager.onPlayerLoggedOut(player));
-            }
-        });
-
-        FrameworkAPI.registerSyncedDataKey(Seat.LOCK_YAW);
-
-        Computer computer = Computer.get();
-        computer.installProgram(Utils.resource("paddle_ball"), PaddleBall::new);
-        computer.installService(PaddleBall.SERVICE);
     }
 }

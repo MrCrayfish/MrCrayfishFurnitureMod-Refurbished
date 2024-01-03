@@ -19,9 +19,6 @@ import net.minecraft.world.level.material.MapColor;
 @RegistryContainer
 public class ModBlocks
 {
-    // TODO TABLE SAW NOW, HAS A CONTAINER, CAN PULL ITEMS FROM ADJACENT STORAGE CONTAINERS
-
-    // TODO rearrange order of blocks to better reflect categories
     public static final RegistryEntry<WorkbenchBlock> WORKBENCH = RegistryEntry.blockWithItem(Utils.resource("workbench"), () -> new WorkbenchBlock(BlockBehaviour.Properties.of().mapColor(Blocks.OAK_PLANKS.defaultMapColor()).instrument(NoteBlockInstrument.BASS).strength(2.0F).sound(SoundType.WOOD)));
     public static final RegistryEntry<ChairBlock> CHAIR_OAK = RegistryEntry.blockWithItem(Utils.resource("oak_chair"), () -> new ChairBlock(WoodType.OAK, BlockBehaviour.Properties.of().mapColor(Blocks.OAK_PLANKS.defaultMapColor()).instrument(NoteBlockInstrument.BASS).strength(2.0F).sound(SoundType.WOOD).ignitedByLava()));
     public static final RegistryEntry<ChairBlock> CHAIR_SPRUCE = RegistryEntry.blockWithItem(Utils.resource("spruce_chair"), () -> new ChairBlock(WoodType.SPRUCE, BlockBehaviour.Properties.of().mapColor(Blocks.SPRUCE_PLANKS.defaultMapColor()).instrument(NoteBlockInstrument.BASS).strength(2.0F).sound(SoundType.WOOD).ignitedByLava()));

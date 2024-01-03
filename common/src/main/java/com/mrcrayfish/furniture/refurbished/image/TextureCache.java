@@ -14,8 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-// TODO docs
-
 /**
  * Keeps track of currently drawn PaletteImages and manages load/unload from memory
  * <p>
