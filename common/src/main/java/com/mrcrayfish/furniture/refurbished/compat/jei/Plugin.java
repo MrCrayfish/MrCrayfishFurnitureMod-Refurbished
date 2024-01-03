@@ -8,6 +8,7 @@ import com.mrcrayfish.furniture.refurbished.compat.jei.categories.GrillCookingCa
 import com.mrcrayfish.furniture.refurbished.compat.jei.categories.MicrowaveHeatingCategory;
 import com.mrcrayfish.furniture.refurbished.compat.jei.categories.RecycleBinRecyclingCategory;
 import com.mrcrayfish.furniture.refurbished.compat.jei.categories.ToasterToastingCategory;
+import com.mrcrayfish.furniture.refurbished.compat.jei.categories.WorkbenchCraftingCategory;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
@@ -51,6 +52,7 @@ import java.util.stream.StreamSupport;
 public class Plugin implements IModPlugin
 {
     public static final ResourceLocation TEXTURES = Utils.resource("textures/gui/jei.png");
+    public static final ResourceLocation TEXTURES_2 = Utils.resource("textures/gui/jei2.png");
     public static final DecimalFormat FORMATTER = new DecimalFormat("0.##s");
 
     @Override
@@ -71,6 +73,7 @@ public class Plugin implements IModPlugin
         registration.addRecipeCategories(new ToasterToastingCategory(helper));
         registration.addRecipeCategories(new GrillCookingCategory(helper));
         registration.addRecipeCategories(new CuttingBoardCombiningCategory(helper));
+        registration.addRecipeCategories(new WorkbenchCraftingCategory(helper));
     }
 
     @Override
@@ -85,6 +88,7 @@ public class Plugin implements IModPlugin
         registration.addRecipes(ToasterToastingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.TOASTER_HEATING.get()));
         registration.addRecipes(GrillCookingCategory.TYPE, this.getGrillRecipes(manager));
         registration.addRecipes(CuttingBoardCombiningCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.CUTTING_BOARD_COMBINING.get()));
+        registration.addRecipes(WorkbenchCraftingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.WORKBENCH_CRAFTING.get()));
 
         // TODO ingredient info
         //registration.addIngredientInfo(new ItemStack(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get()), VanillaTypes.ITEM_STACK, Utils.translation("jei_ingredient_info", "electricity_generator"));
