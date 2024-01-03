@@ -12,8 +12,10 @@ import net.minecraft.resources.ResourceLocation;
  */
 public class Network
 {
-    public static final FrameworkNetwork PLAY = FrameworkAPI
-            .createNetworkBuilder(new ResourceLocation(Constants.MOD_ID, "play"), 1)
+    public static FrameworkNetwork play;
+
+    public static void init() {
+        Network.play = FrameworkAPI.createNetworkBuilder(new ResourceLocation(Constants.MOD_ID, "play"), 1)
             .registerPlayMessage(MessageSyncFluid.class, MessageDirection.PLAY_CLIENT_BOUND)
             .registerPlayMessage(MessageFlipAnimation.class, MessageDirection.PLAY_CLIENT_BOUND)
             .registerPlayMessage(MessageSetName.class, MessageDirection.PLAY_SERVER_BOUND)
@@ -38,11 +40,10 @@ public class Network
             .registerPlayMessage(MessageWaterTapAnimation.class, MessageDirection.PLAY_CLIENT_BOUND)
             .registerPlayMessage(MessageWorkbench.ItemCounts.class, MessageDirection.PLAY_CLIENT_BOUND)
             .build();
-
-    public static void init() {}
+    }
 
     public static FrameworkNetwork getPlay()
     {
-        return PLAY;
+        return play;
     }
 }
