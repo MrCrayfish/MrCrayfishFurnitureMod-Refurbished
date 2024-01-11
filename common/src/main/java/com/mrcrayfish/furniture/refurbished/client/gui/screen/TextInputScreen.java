@@ -51,12 +51,7 @@ public class TextInputScreen extends Screen
         int startX = (this.width - WINDOW_WIDTH) / 2;
         int startY = (this.height - WINDOW_HEIGHT) / 2;
         this.addRenderableWidget(this.editBox = new EditBox(this.minecraft.font, startX + 6, startY + 20, WINDOW_WIDTH - 12, 20, this.hint));
-        this.editBox.setResponder(s -> {
-            boolean valid = this.validator.apply(s);
-            this.editBox.setTextColor(valid ? 0xFFFFFF : 0xFF0000);
-            this.acceptButton.active = valid;
-            this.input = s;
-        });
+        this.editBox.setResponder(this::updateAcceptButton);
         if(!this.input.isBlank())
         {
             this.editBox.setValue(this.input);
@@ -69,6 +64,15 @@ public class TextInputScreen extends Screen
                 this.minecraft.setScreen(null);
             }
         }).pos(startX + (WINDOW_WIDTH - 12) / 2 + 2 + 6, startY + 45).size((WINDOW_WIDTH - 12) / 2 - 2, 20).build());
+        this.updateAcceptButton(this.input);
+    }
+
+    private void updateAcceptButton(String input)
+    {
+        boolean valid = this.validator.apply(input);
+        this.editBox.setTextColor(valid ? 0xFFFFFF : 0xFF0000);
+        this.acceptButton.active = valid;
+        this.input = input;
     }
 
     @Override
