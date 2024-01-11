@@ -4,6 +4,7 @@ import com.mrcrayfish.furniture.refurbished.block.CeilingFanBlock;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
+import com.mrcrayfish.furniture.refurbished.platform.Services;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -117,7 +118,10 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implemen
             Direction direction = this.getDirection();
             AABB box = this.getDamageBox(direction).move(this.getBlockPos());
             List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, box);
-            entities.forEach(entity -> entity.hurt(level.damageSources().generic(), 0.5F));
+            entities.forEach(entity -> {
+                entity.hurt(level.damageSources().generic(), 0.5F);
+                entity.setLastHurtByMob(entity); // Is this going to be a problem?
+            });
         }
     }
 
