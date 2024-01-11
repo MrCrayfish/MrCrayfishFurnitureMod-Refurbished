@@ -120,7 +120,7 @@ public class Config
             @ConfigProperty(name = "maximumNodesInNetwork", comment = """
                 The maximum amount of nodes in a network that can be powered by an electricity
                 source, like the electricity generator.""")
-            public final IntProperty maximumNodesInNetwork = IntProperty.create(50);
+            public final IntProperty maximumNodesInNetwork = IntProperty.create(50, 1, 512);
         }
 
         public static class RecycleBin
