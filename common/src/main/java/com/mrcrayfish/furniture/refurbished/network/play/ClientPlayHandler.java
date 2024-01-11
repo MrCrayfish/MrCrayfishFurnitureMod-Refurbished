@@ -8,6 +8,7 @@ import com.mrcrayfish.furniture.refurbished.blockentity.TelevisionBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.IFluidContainerBlock;
 import com.mrcrayfish.furniture.refurbished.client.ClientComputer;
+import com.mrcrayfish.furniture.refurbished.client.FurnitureScreens;
 import com.mrcrayfish.furniture.refurbished.client.LinkHandler;
 import com.mrcrayfish.furniture.refurbished.client.ToolAnimationRenderer;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.PostBoxScreen;
@@ -16,6 +17,7 @@ import com.mrcrayfish.furniture.refurbished.client.particle.ItemFlushParticle;
 import com.mrcrayfish.furniture.refurbished.computer.client.PaddleBallGraphics;
 import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.WorkbenchMenu;
+import com.mrcrayfish.furniture.refurbished.mail.Mailbox;
 import com.mrcrayfish.furniture.refurbished.network.message.*;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
@@ -206,5 +208,10 @@ public class ClientPlayHandler
         {
             menu.updateItemCounts(message.getCounts());
         }
+    }
+
+    public static void handleMessageNameMailbox(MessageNameMailbox message)
+    {
+        FurnitureScreens.openNameableScreen(message.getPos(), Utils.translation("gui", "set_mailbox_name"), Mailbox.MAX_NAME_LENGTH);
     }
 }

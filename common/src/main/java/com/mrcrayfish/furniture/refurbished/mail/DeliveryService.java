@@ -141,6 +141,21 @@ public class DeliveryService extends SavedData
     }
 
     /**
+     * Determines if the given player can create/place a mailbox. Mailboxes are limited per player,
+     * as specified by a maximum count in the config.
+     *
+     * @param player the player to test
+     * @return True if the player can place a mailbox
+     */
+    public boolean canCreateMailbox(Player player)
+    {
+        long count = this.mailboxes.values().stream()
+                .filter(box -> player.getUUID().equals(box.owner().getValue()))
+                .count();
+        return Config.SERVER.mailing.maxMailboxesPerPlayer.get() > count;
+    }
+
+    /**
      * Gets an existing or creates a new mailbox for the given mailbox block entity. This method is
      * responsible for registering mailboxes into the delivery system and is called when a player
      * placing a new mailbox block. The mailbox is initially unclaimed but is immediately claimed

@@ -97,24 +97,15 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     private void updateRecipes()
     {
         this.displayRecipes.clear();
+        Category selectedCategory = CATEGORIES.stream().filter(Category::isEnabled).findFirst().orElse(CATEGORY_ALL);
         for(WorkbenchCraftingRecipe recipe : this.menu.getRecipes())
         {
-            if(craftableOnly)
-            {
-                if(this.menu.canCraft(recipe))
-                {
-                    this.displayRecipes.add(recipe);
-                }
+            if(!selectedCategory.in(recipe.getResult()))
                 continue;
-            }
-            this.displayRecipes.add(recipe);
-        }
-        for(Category category : CATEGORIES)
-        {
-            if(category.isEnabled())
+
+            if(!craftableOnly || this.menu.canCraft(recipe))
             {
-                this.displayRecipes.removeIf(recipe -> !category.in(recipe.getResult()));
-                break;
+                this.displayRecipes.add(recipe);
             }
         }
         this.displayRecipes.sort(Comparator.comparing(WorkbenchCraftingRecipe::getResultId));

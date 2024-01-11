@@ -60,6 +60,10 @@ public class Config
 
         public static class Mailing
         {
+            @ConfigProperty(name = "maxMailboxesPerPlayer", comment = """
+                The maximum amount of mailboxes a player is allowed to register/own.""")
+            public final IntProperty maxMailboxesPerPlayer = IntProperty.create(16, 1, Integer.MAX_VALUE);
+
             @ConfigProperty(name = "mailboxInventoryRows", comment = """
                 The amount of inventory rows in a mailbox. If you change this value from a larger to
                 a smaller value, items contained in the removed rows will be deleted. Use caution

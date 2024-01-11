@@ -7,10 +7,13 @@ import com.mrcrayfish.furniture.refurbished.client.FurnitureScreens;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
 import com.mrcrayfish.furniture.refurbished.mail.Mailbox;
+import com.mrcrayfish.furniture.refurbished.network.Network;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageNameMailbox;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
@@ -18,6 +21,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -67,22 +71,16 @@ public class MailboxBlock extends FurnitureHorizontalBlock implements EntityBloc
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack)
     {
-        if(entity instanceof Player player)
+        if(entity instanceof ServerPlayer player)
         {
-            if(!level.isClientSide())
+            if(level.getBlockEntity(pos) instanceof MailboxBlockEntity mailbox)
             {
-                if(level.getBlockEntity(pos) instanceof MailboxBlockEntity mailbox)
-                {
-                    mailbox.getMailbox().owner().setValue(player.getUUID());
-                    DeliveryService.get(((ServerLevel) level).getServer()).ifPresent(service -> {
-                        service.markMailboxAsPendingName(player, level, pos);
-                    });
-                }
+                mailbox.getMailbox().owner().setValue(player.getUUID());
+                DeliveryService.get(((ServerLevel) level).getServer()).ifPresent(service -> {
+                    service.markMailboxAsPendingName(player, level, pos);
+                });
             }
-            else
-            {
-                FurnitureScreens.openNameableScreen(pos, Utils.translation("gui", "set_mailbox_name"), Mailbox.MAX_NAME_LENGTH);
-            }
+            Network.getPlay().sendToPlayer(() -> player, new MessageNameMailbox(pos));
         }
     }
 
