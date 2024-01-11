@@ -8,6 +8,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.DoorHingeSide;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.ArrayList;
@@ -30,12 +31,16 @@ public abstract class KitchenStorageCabinetBlock extends StorageCabinetBlock imp
     {
         VoxelShape baseShape = Block.box(2, 0, 0, 16, 16, 16);
         VoxelShape openShape = Block.box(4, 0, 0, 16, 16, 16);
-        VoxelShape doorShape = Block.box(-12, 0, 0, 4, 16, 2);
+        VoxelShape leftDoorShape = Block.box(-12, 0, 0, 4, 16, 2);
+        VoxelShape rightDoorShape = Block.box(-12, 0, 14, 4, 16, 16);
         return ImmutableMap.copyOf(states.stream().collect(Collectors.toMap(state -> state, state -> {
             boolean open = state.getValue(OPEN);
             List<VoxelShape> shapes = new ArrayList<>();
             shapes.add(VoxelShapeHelper.rotateHorizontally(open ? openShape : baseShape, state.getValue(DIRECTION)));
-            if(open) shapes.add(VoxelShapeHelper.rotateHorizontally(doorShape, state.getValue(DIRECTION)));
+            if(open) {
+                VoxelShape door = state.getValue(HINGE) == DoorHingeSide.LEFT ? leftDoorShape : rightDoorShape;
+                shapes.add(VoxelShapeHelper.rotateHorizontally(door, state.getValue(DIRECTION)));
+            }
             return VoxelShapeHelper.combine(shapes);
         })));
     }
