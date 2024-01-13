@@ -22,25 +22,13 @@ import net.minecraft.world.item.crafting.RecipeType;
 @RegistryContainer
 public class ModRecipeTypes
 {
-    public static final RegistryEntry<RecipeType<WorkbenchCraftingRecipe>> WORKBENCH_CRAFTING = create("workbench_crafting");
-    public static final RegistryEntry<RecipeType<GrillCookingRecipe>> GRILL_COOKING = create("grill_cooking");
-    public static final RegistryEntry<RecipeType<FreezerSolidifyingRecipe>> FREEZER_SOLIDIFYING = create("freezer_solidifying");
-    public static final RegistryEntry<RecipeType<ToasterHeatingRecipe>> TOASTER_HEATING = create("toaster_heating");
-    public static final RegistryEntry<RecipeType<CuttingBoardSlicingRecipe>> CUTTING_BOARD_SLICING = create("cutting_board_slicing");
-    public static final RegistryEntry<RecipeType<CuttingBoardCombiningRecipe>> CUTTING_BOARD_COMBINING = create("cutting_board_combining");
-    public static final RegistryEntry<RecipeType<MicrowaveHeatingRecipe>> MICROWAVE_HEATING = create("microwave_heating");
-    public static final RegistryEntry<RecipeType<FryingPanCookingRecipe>> FRYING_PAN_COOKING = create("frying_pan_cooking");
-    public static final RegistryEntry<RecipeType<RecycleBinRecyclingRecipe>> RECYCLE_BIN_RECYCLING = create("recycle_bin_recycling");
-
-    // This should just be in Framework
-    private static <T extends Recipe<?>> RegistryEntry<RecipeType<T>> create(String name)
-    {
-        ResourceLocation id = Utils.resource(name);
-        return RegistryEntry.recipeType(id, () -> new RecipeType<>() {
-            @Override
-            public String toString() {
-                return id.getPath();
-            }
-        });
-    }
+    public static final RegistryEntry<RecipeType<WorkbenchCraftingRecipe>> WORKBENCH_CRAFTING = RegistryEntry.recipeType(Utils.resource("workbench_crafting"));
+    public static final RegistryEntry<RecipeType<GrillCookingRecipe>> GRILL_COOKING = RegistryEntry.recipeType(Utils.resource("grill_cooking"));
+    public static final RegistryEntry<RecipeType<FreezerSolidifyingRecipe>> FREEZER_SOLIDIFYING = RegistryEntry.recipeType(Utils.resource("freezer_solidifying"));
+    public static final RegistryEntry<RecipeType<ToasterHeatingRecipe>> TOASTER_HEATING = RegistryEntry.recipeType(Utils.resource("toaster_heating"));
+    public static final RegistryEntry<RecipeType<CuttingBoardSlicingRecipe>> CUTTING_BOARD_SLICING = RegistryEntry.recipeType(Utils.resource("cutting_board_slicing"));
+    public static final RegistryEntry<RecipeType<CuttingBoardCombiningRecipe>> CUTTING_BOARD_COMBINING = RegistryEntry.recipeType(Utils.resource("cutting_board_combining"));
+    public static final RegistryEntry<RecipeType<MicrowaveHeatingRecipe>> MICROWAVE_HEATING = RegistryEntry.recipeType(Utils.resource("microwave_heating"));
+    public static final RegistryEntry<RecipeType<FryingPanCookingRecipe>> FRYING_PAN_COOKING = RegistryEntry.recipeType(Utils.resource("frying_pan_cooking"));
+    public static final RegistryEntry<RecipeType<RecycleBinRecyclingRecipe>> RECYCLE_BIN_RECYCLING = RegistryEntry.recipeType(Utils.resource("recycle_bin_recycling"));
 }
