@@ -151,6 +151,11 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         this.renderRecipes(graphics, partialTick, mouseX, mouseY);
         this.renderOverlay(graphics);
         super.renderBg(graphics, partialTick, mouseX, mouseY);
+
+        if(this.isHovering(199, 5, 10, 10, mouseX, mouseY))
+        {
+            this.setTooltipForNextRenderPass(ScreenHelper.createMultilineTooltip(List.of(Utils.translation("gui", "how_to").withStyle(ChatFormatting.GOLD), Utils.translation("gui", "workbench_info"))).toCharSequence(this.minecraft));
+        }
     }
 
     private void renderScrollbar(GuiGraphics graphics, int mouseY)
