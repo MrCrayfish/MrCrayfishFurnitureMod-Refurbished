@@ -447,6 +447,10 @@ public class CommonRecipeProvider
         this.ceilingFan(Blocks.CHERRY_PLANKS, ModBlocks.CEILING_FAN_CHERRY_LIGHT.get(), ModBlocks.CEILING_FAN_CHERRY_DARK.get());
         this.ceilingFan(Blocks.CRIMSON_PLANKS, ModBlocks.CEILING_FAN_CRIMSON_LIGHT.get(), ModBlocks.CEILING_FAN_CRIMSON_DARK.get());
         this.ceilingFan(Blocks.WARPED_PLANKS, ModBlocks.CEILING_FAN_WARPED_LIGHT.get(), ModBlocks.CEILING_FAN_WARPED_DARK.get());
+        this.ceilingLight(ModBlocks.CEILING_LIGHT_LIGHT.get(), ModBlocks.CEILING_LIGHT_DARK.get());
+        this.lightswitch(ModBlocks.LIGHTSWITCH_LIGHT.get(), ModBlocks.LIGHTSWITCH_DARK.get());
+        this.doorbell(ModBlocks.DOORBELL.get());
+        this.fridge(ModItems.FRIDGE_LIGHT.get(), ModItems.FRIDGE_DARK.get());
         this.storageCabinet(Blocks.OAK_PLANKS, ModBlocks.STORAGE_CABINET_OAK.get());
         this.storageCabinet(Blocks.SPRUCE_PLANKS, ModBlocks.STORAGE_CABINET_SPRUCE.get());
         this.storageCabinet(Blocks.BIRCH_PLANKS, ModBlocks.STORAGE_CABINET_BIRCH.get());
@@ -545,7 +549,10 @@ public class CommonRecipeProvider
         this.colouredBath(Items.GREEN_DYE, ModBlocks.BATH_GREEN.get());
         this.colouredBath(Items.RED_DYE, ModBlocks.BATH_RED.get());
         this.colouredBath(Items.BLACK_DYE, ModBlocks.BATH_BLACK.get());
-        
+        this.television(ModBlocks.TELEVISION.get());
+        this.computer(ModBlocks.COMPUTER.get());
+
+        // Shapeless
         this.simpleCombined(ModItems.SWEET_BERRY_JAM.get(), ModItems.TOAST.get(), ModItems.SWEET_BERRY_JAM_TOAST.get(), 1, RecipeCategory.FOOD);
         this.simpleCombined(ModItems.GLOW_BERRY_JAM.get(), ModItems.TOAST.get(), ModItems.GLOW_BERRY_JAM_TOAST.get(), 1, RecipeCategory.FOOD);
 
@@ -1312,7 +1319,7 @@ public class CommonRecipeProvider
 
     private void lamp(Item dye, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of("planks", ItemTags.PLANKS, 2), Material.of(Items.REDSTONE, 4), Material.of(Items.GLOWSTONE, 1), Material.of(Items.WHITE_WOOL, 1), Material.of(dye, 1));
+        this.workbenchCrafting(result, 1, Material.of("planks", ItemTags.PLANKS, 2), Material.of(Items.REDSTONE, 4), Material.of(Items.GLOWSTONE_DUST, 4), Material.of(Items.WHITE_WOOL, 1), Material.of(dye, 1));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, result)
                 .requires(dye)
                 .requires(ModTags.Items.LAMPS)
@@ -1322,7 +1329,7 @@ public class CommonRecipeProvider
 
     private void ceilingFan(Block plank, Block light, Block dark)
     {
-        this.workbenchCrafting(light, 1, Material.of(Items.IRON_INGOT, 3), Material.of(plank, 4), Material.of(Items.REDSTONE, 4), Material.of(Items.GLOWSTONE, 1));
+        this.workbenchCrafting(light, 1, Material.of(Items.IRON_INGOT, 3), Material.of(plank, 4), Material.of(Items.REDSTONE, 4), Material.of(Items.GLOWSTONE_DUST, 4));
         this.workbenchCrafting(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
                 .requires(light)
@@ -1330,6 +1337,35 @@ public class CommonRecipeProvider
                 .unlockedBy("has_ceiling_fan", this.hasItem.apply(light))
                 .unlockedBy("has_dye", this.hasItem.apply(Items.BLACK_DYE))
                 .save(this.consumer);
+    }
+
+    private void ceilingLight(Block light, Block dark)
+    {
+        this.workbenchCrafting(light, 1, Material.of(Items.IRON_INGOT, 2), Material.of(Items.REDSTONE, 3), Material.of(Items.GLOWSTONE_DUST, 4));
+        this.workbenchCrafting(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
+                .requires(light)
+                .requires(Items.BLACK_DYE)
+                .unlockedBy("has_ceiling_light", this.hasItem.apply(light))
+                .unlockedBy("has_dye", this.hasItem.apply(Items.BLACK_DYE))
+                .save(this.consumer);
+    }
+
+    private void lightswitch(Block light, Block dark)
+    {
+        this.workbenchCrafting(light, 1, Material.of(Items.IRON_INGOT, 2), Material.of(Items.REDSTONE, 3));
+        this.workbenchCrafting(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
+                .requires(light)
+                .requires(Items.BLACK_DYE)
+                .unlockedBy("has_lightswitch", this.hasItem.apply(light))
+                .unlockedBy("has_dye", this.hasItem.apply(Items.BLACK_DYE))
+                .save(this.consumer);
+    }
+
+    private void doorbell(Block light)
+    {
+        this.workbenchCrafting(light, 1, Material.of(Items.IRON_INGOT, 2), Material.of(Items.REDSTONE, 3), Material.of(Items.GOLD_INGOT, 1));
     }
 
     private void storageCabinet(Block plank, Block result)
@@ -1376,6 +1412,28 @@ public class CommonRecipeProvider
     private void colouredBath(Item dye, Block result)
     {
         this.workbenchCrafting(result, 1, Material.of("baths", ModTags.Items.WOODEN_BATHS, 1), Material.of(dye, 1));
+    }
+
+    private void fridge(Item light, Item dark)
+    {
+        this.workbenchCrafting(light, 1, Material.of(Items.IRON_INGOT, 9), Material.of(Items.COPPER_INGOT, 3), Material.of(Items.REDSTONE, 4));
+        this.workbenchCrafting(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
+                .requires(light)
+                .requires(Items.BLACK_DYE)
+                .unlockedBy("has_fridge", this.hasItem.apply(light))
+                .unlockedBy("has_dye", this.hasItem.apply(Items.BLACK_DYE))
+                .save(this.consumer);
+    }
+
+    private void television(Block result)
+    {
+        this.workbenchCrafting(result, 1, Material.of(Items.IRON_INGOT, 8), Material.of(Items.COPPER_INGOT, 2), Material.of(Blocks.GLASS, 1), Material.of(Items.REDSTONE, 16), Material.of(Items.AMETHYST_SHARD, 2));
+    }
+
+    private void computer(Block result)
+    {
+        this.workbenchCrafting(result, 1, Material.of(Items.IRON_INGOT, 12), Material.of(Items.COPPER_INGOT, 3), Material.of(Blocks.GLASS, 1), Material.of(Items.REDSTONE, 24), Material.of(Items.AMETHYST_SHARD, 2));
     }
 
     private void workbenchCrafting(ItemLike result, int count, Material<?> ... materials)
