@@ -33,7 +33,7 @@ public class PlateBlockEntityRenderer implements BlockEntityRenderer<PlateBlockE
         poseStack.pushPose();
         poseStack.translate(0.5, 0.03125 + 0.015625, 0.5);
         poseStack.mulPose(plate.getPlacedDirection().getRotation());
-        poseStack.scale(0.5F, 0.5F, 0.5F);
+        poseStack.scale(0.499F, 0.499F, 0.499F);
         this.renderer.renderStatic(stack, ItemDisplayContext.FIXED, light, overlay, poseStack, source, plate.getLevel(), 0);
         poseStack.popPose();
     }
