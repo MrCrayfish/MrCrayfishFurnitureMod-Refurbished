@@ -526,6 +526,7 @@
     "gui.refurbished_furniture.shift": "SHIFT",
     "gui.refurbished_furniture.show_all_categories": "Show All",
     "gui.refurbished_furniture.mail_box_limit": "You've reached your limit on Mailboxes",
+    "gui.refurbished_furniture.booting": "Booting...",
     "subtitle.refurbished_furniture.package_open": "Package Opening",
     "computer_program.refurbished_furniture.paddle_ball": "Paddle Ball",
     "computer_program.refurbished_furniture.paddle_ball.play_ai": "Play vs AI",

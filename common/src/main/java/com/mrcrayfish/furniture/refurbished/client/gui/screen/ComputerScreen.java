@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 
+import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.client.ClientComputer;
 import com.mrcrayfish.furniture.refurbished.computer.client.Desktop;
 import com.mrcrayfish.furniture.refurbished.computer.client.Window;
@@ -20,6 +21,7 @@ import net.minecraft.world.entity.player.Inventory;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * Author: MrCrayfish
@@ -31,9 +33,12 @@ public class ComputerScreen extends ElectricityContainerScreen<ComputerMenu>
     private static final int DISPLAY_TOP = 15;
     public static final int DISPLAY_WIDTH = 226;
     public static final int DISPLAY_HEIGHT = 120;
+    private static final int LOADING_TIME = 40;
+    private static final int LOADING_BAR_WIDTH = 100;
 
     private final Desktop desktop;
     private @Nullable Window window;
+    private int loading = LOADING_TIME;
 
     public ComputerScreen(ComputerMenu menu, Inventory playerInventory, Component title)
     {
@@ -111,6 +116,20 @@ public class ComputerScreen extends ElectricityContainerScreen<ComputerMenu>
         int displayTop = this.topPos + DISPLAY_TOP;
         int displayEnd = displayLeft + DISPLAY_WIDTH;
         int displayBottom = displayTop + DISPLAY_HEIGHT;
+
+        // Draw booting screen
+        if(this.loading > 0)
+        {
+            float time = (LOADING_TIME - (this.loading - this.minecraft.getFrameTime())) / (float) LOADING_TIME;
+            int loadingBarStart = displayLeft + (DISPLAY_WIDTH - LOADING_BAR_WIDTH) / 2;
+            int loadingBarWidth = (int) (LOADING_BAR_WIDTH * time);
+            graphics.fill(loadingBarStart - 1, displayBottom - 31, loadingBarStart + LOADING_BAR_WIDTH + 1, displayBottom - 23, 0xFF47403E);
+            graphics.fill(loadingBarStart, displayBottom - 30, loadingBarStart + loadingBarWidth, displayBottom - 24, 0xFFFFFFFF);
+            graphics.drawCenteredString(this.font, Components.GUI_BOOTING, displayLeft + DISPLAY_WIDTH / 2, displayBottom - 42, 0xFFFFFFFF);
+            graphics.blit(TEXTURE, displayLeft + (DISPLAY_WIDTH - 32) / 2, displayTop + 23, 32, 36, 0, this.imageHeight, 16, 18, 256, 256);
+            return;
+        }
+
         graphics.enableScissor(displayLeft, displayTop, displayEnd, displayBottom);
         this.desktop.render(graphics, mouseX, mouseY, partialTick);
         Window window = this.getOrCreateWindow();
@@ -121,10 +140,23 @@ public class ComputerScreen extends ElectricityContainerScreen<ComputerMenu>
     @Override
     protected void containerTick()
     {
+        if(this.loading > 0)
+        {
+            this.loading--;
+            return;
+        }
         if(this.window != null)
         {
             this.window.tick();
         }
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button)
+    {
+        if(this.loading > 0)
+            return false;
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
@@ -154,5 +186,11 @@ public class ComputerScreen extends ElectricityContainerScreen<ComputerMenu>
     public void removeWidgets(IWidgetGroup group)
     {
         group.getWidgets().forEach(this::removeWidget);
+    }
+
+    @Override
+    public List<? extends GuiEventListener> children()
+    {
+        return super.children();
     }
 }
