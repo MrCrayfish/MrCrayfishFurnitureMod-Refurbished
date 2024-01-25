@@ -48,4 +48,12 @@ public interface IPaintable
      * @param state true to allow editing, false to disallow
      */
     void setEditable(boolean state);
+
+    /**
+     * Determines if the doormat is still valid to paint
+     *
+     * @param player a player instance to test
+     * @return True if the player can still paint
+     */
+    boolean isValid(Player player);
 }

@@ -752,7 +752,7 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
     @Override
     public boolean stillValid(Player player)
     {
-        return this.level.getBlockEntity(this.worldPosition) == this && player.distanceToSqr(this.worldPosition.getX() + 0.5, this.worldPosition.getY() + 0.5, this.worldPosition.getZ() + 0.5) <= 64;
+        return Container.stillValidBlockEntity(this, player);
     }
 
     @Override

@@ -10,6 +10,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -82,6 +83,12 @@ public class DoorMatBlockEntity extends BlockEntity implements MenuProvider, IPa
             this.finalised = true;
             this.setChanged();
         }
+    }
+
+    @Override
+    public boolean isValid(Player player)
+    {
+        return Container.stillValidBlockEntity(this, player) && player.equals(this.getPainter());
     }
 
     @Override

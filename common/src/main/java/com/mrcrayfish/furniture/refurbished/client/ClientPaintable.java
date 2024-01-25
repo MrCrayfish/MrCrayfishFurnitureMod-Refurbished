@@ -51,4 +51,10 @@ public class ClientPaintable implements IPaintable
 
     @Override
     public void setEditable(boolean state) {}
+
+    @Override
+    public boolean isValid(Player player)
+    {
+        return player.equals(this.player);
+    }
 }

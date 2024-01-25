@@ -53,9 +53,9 @@ public class ServerPlayHandler
 
     public static void handleMessageSendPackage(MessageSendPackage message, @Nullable ServerPlayer player, MessageContext context)
     {
-        if(player != null && player.containerMenu instanceof PostBoxMenu postBox)
+        if(player != null && player.containerMenu instanceof PostBoxMenu menu)
         {
-            Container container = postBox.getContainer();
+            Container container = menu.getContainer();
             if(container.isEmpty())
                 return;
 
