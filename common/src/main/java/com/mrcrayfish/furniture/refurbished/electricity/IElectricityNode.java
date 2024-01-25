@@ -11,9 +11,12 @@ import net.minecraft.world.phys.AABB;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayDeque;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish
@@ -256,6 +259,11 @@ public interface IElectricityNode
         return this.getInteractBox().move(this.getPosition());
     }
 
+    static List<IElectricityNode> searchNodes(IElectricityNode start)
+    {
+        return searchNodes(start, Config.SERVER.electricity.maximumDaisyChain.get(), Config.SERVER.electricity.maximumNodesInNetwork.get(), node -> true, node -> true);
+    }
+
     /**
      * Performs a breadth first search beginning from the given start node. This search has been
      * modified and requires specifying a maximum depth. This means if the amount of required steps
@@ -263,22 +271,16 @@ public interface IElectricityNode
      * and it's connections won't be searched.
      *
      * @param start the node to begin the search from
-     * @param found a set for storing found nodes
      * @param maxDepth the maximum depth this search can travel
-     * @param predicate a predicate determining if a node can be searched
-     * @return See {@link SearchResult}
+     * @param maxSize the maximum amount of nodes that can be found
+     * @param searchPredicate a predicate determining if a node can be searched
+     * @return A list of all nodes that were searched and passed the match predicate
      */
-    static SearchResult searchNodes(IElectricityNode start, Set<IElectricityNode> found, int maxDepth, Predicate<IElectricityNode> predicate)
+    static List<IElectricityNode> searchNodes(IElectricityNode start, int maxDepth, int maxSize, Predicate<IElectricityNode> searchPredicate, Predicate<IElectricityNode> matchPredicate)
     {
-        // Add start to found if predicate matches
-        if(predicate.test(start))
-        {
-            found.add(start);
-        }
-
+        Set<IElectricityNode> searched = new HashSet<>(List.of(start));
         // Creating the queue with an initial size equal to the maximum nodes in a network
         // prevents expensive calls to grow the capacity.
-        int maxSize = Config.SERVER.electricity.maximumNodesInNetwork.get();
         Queue<Pair<IElectricityNode, Integer>> queue = new ArrayDeque<>(maxSize);
         queue.add(Pair.of(start, 0));
         while(!queue.isEmpty())
@@ -289,13 +291,13 @@ public interface IElectricityNode
             for(Connection connection : node.getConnections())
             {
                 IElectricityNode other = connection.getNodeB(node.getLevel());
-                if(other == null || found.contains(other))
+                if(other == null || searched.contains(other))
                     continue;
 
-                if(!predicate.test(other))
-                    continue;
+                searched.add(other);
 
-                found.add(other);
+                if(!searchPredicate.test(other))
+                    continue;
 
                 int nextDepth = currentDepth + 1;
                 if(nextDepth >= maxDepth || !other.canPowerTraverse())
@@ -304,20 +306,6 @@ public interface IElectricityNode
                 queue.add(Pair.of(other, nextDepth));
             }
         }
-        return found.size() > maxSize ? SearchResult.OVERLOADED : SearchResult.SUCCESS;
-    }
-
-    enum SearchResult
-    {
-        /**
-         * If the search was successful
-         */
-        SUCCESS,
-
-        /**
-         * If the node count is more than the maximum allowed.
-         * See {@link Config.Server.Electricity#maximumNodesInNetwork}
-         */
-        OVERLOADED
+        return searched.stream().filter(matchPredicate).collect(Collectors.toList());
     }
 }

@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -71,9 +72,8 @@ public interface ISourceNode extends IElectricityNode
         if(this.isPowered() && !this.isOverloaded())
         {
             //long time = Util.getNanos();
-            Set<IElectricityNode> nodes = new ObjectOpenHashSet<>();
-            SearchResult result = IElectricityNode.searchNodes(this, nodes, Config.SERVER.electricity.maximumDaisyChain.get(), node -> !node.isSource());
-            if(result == SearchResult.OVERLOADED)
+            List<IElectricityNode> nodes = IElectricityNode.searchNodes(this, Config.SERVER.electricity.maximumDaisyChain.get(), Config.SERVER.electricity.maximumNodesInNetwork.get(), node -> !node.isSource(), node -> true);
+            if(nodes.size() > Config.SERVER.electricity.maximumNodesInNetwork.get())
             {
                 this.setOverloaded(true);
                 this.onOverloaded();

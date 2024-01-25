@@ -11,7 +11,6 @@ import com.mrcrayfish.furniture.refurbished.inventory.ElectricityGeneratorMenu;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import it.unimi.dsi.fastutil.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -28,7 +27,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * Author: MrCrayfish
@@ -153,8 +152,8 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
         this.enabled = !this.enabled;
         if(this.enabled)
         {
-            Pair<SearchResult, Set<IElectricityNode>> result = this.search();
-            if(result.left() == SearchResult.SUCCESS)
+            Pair<Boolean, List<IElectricityNode>> result = this.search();
+            if(!result.left())
             {
                 if(this.overloaded)
                 {
@@ -176,12 +175,11 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
         this.setChanged();
     }
 
-    private Pair<SearchResult, Set<IElectricityNode>> search()
+    private Pair<Boolean, List<IElectricityNode>> search()
     {
-        Set<IElectricityNode> nodes = new ObjectOpenHashSet<>();
-        SearchResult result = IElectricityNode.searchNodes(this, nodes, Config.SERVER.electricity.maximumDaisyChain.get(), node -> !node.isSource());
+        List<IElectricityNode> nodes = IElectricityNode.searchNodes(this, Config.SERVER.electricity.maximumDaisyChain.get(), Config.SERVER.electricity.maximumNodesInNetwork.get(), node -> !node.isSource(), node -> !node.isSource());
         this.nodeCount = nodes.size();
-        return Pair.of(result, nodes);
+        return Pair.of(nodes.size() > Config.SERVER.electricity.maximumNodesInNetwork.get(), nodes);
     }
 
     @Override
@@ -190,8 +188,8 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
         this.processTick();
         if(this.isPowered() && !this.isOverloaded())
         {
-            Pair<SearchResult, Set<IElectricityNode>> result = this.search();
-            if(result.left() == SearchResult.OVERLOADED)
+            Pair<Boolean, List<IElectricityNode>> result = this.search();
+            if(result.left())
             {
                 this.setOverloaded(true);
                 this.onOverloaded();
