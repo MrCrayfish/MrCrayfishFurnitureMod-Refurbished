@@ -8,22 +8,6 @@ plugins {
 archivesBaseName = "${mod_id}-fabric"
 version = "${minecraft_version}-${mod_version}"
 
-sourceSets {
-    testMod {
-        compileClasspath += main.compileClasspath
-        runtimeClasspath += main.runtimeClasspath
-        compileClasspath += test.compileClasspath
-        runtimeClasspath += test.runtimeClasspath
-    }
-    main {
-        resources {
-            srcDirs += [
-                'src/generated'
-            ]
-        }
-    }
-}
-
 configurations {
     implementation.extendsFrom library
 }
@@ -40,15 +24,12 @@ dependencies {
     modCompileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
     modCompileOnly "mezz.jei:jei-${minecraft_version}-fabric-api:${jei_version}"
     modRuntimeOnly "mezz.jei:jei-${minecraft_version}-fabric:${jei_version}"
-    testModRuntimeOnly "mezz.jei:jei-${minecraft_version}-fabric:${jei_version}"
 
     // CraftTweaker
     modCompileOnly "com.blamejared.crafttweaker:CraftTweaker-common-${minecraft_version}:${crafttweaker_version}"
     modRuntimeOnly "com.blamejared.crafttweaker:CraftTweaker-fabric-${minecraft_version}:${crafttweaker_version}"
 
     implementation project(":common")
-    testModImplementation sourceSets.main.output
-    testModImplementation sourceSets.test.output
 }
 
 loom {
@@ -65,11 +46,6 @@ loom {
             ideConfigGenerated(true)
             runDir("run")
         }
-        testModClient {
-            inherit client
-            setConfigName("Fabric Test Client")
-            setSource(sourceSets.testMod)
-        }
         server {
             server()
             setConfigName("Fabric Server")
@@ -77,15 +53,17 @@ loom {
             runDir("run")
         }
         datagen {
-            inherit testModClient
+            inherit client
             setConfigName("Fabric Data")
             vmArg "-Dfabric-api.datagen"
-            vmArg "-Dfabric-api.datagen.output-dir=${file("src/generated")}"
+            vmArg "-Dfabric-api.datagen.output-dir=${file("src/generated/resources")}"
             vmArg "-Dfabric-api.datagen.modid=${mod_id}"
             runDir "build/datagen"
         }
     }
 }
+
+sourceSets.main.resources.srcDir 'src/generated/resources'
 
 tasks.withType(JavaCompile).configureEach {
     source(project(":common").sourceSets.main.allSource)

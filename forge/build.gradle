@@ -11,10 +11,7 @@ version = "${minecraft_version}-${mod_version}"
 mixin {
     add(sourceSets.main, "${mod_id}.refmap.json")
     config("${mod_id}.forge.mixins.json")
-    config "${mod_id}.common.mixins.json"
-    /*if(project(":common").file("${mod_id}.common.mixins.json").exists()) {
-        config "${mod_id}.common.mixins.json"
-    }*/
+    config("${mod_id}.common.mixins.json")
 }
 
 minecraft {
@@ -94,23 +91,22 @@ dependencies {
     runtimeOnly fg.deobf("com.mrcrayfish:catalogue-forge:${minecraft_version}-1.7.1")
     runtimeOnly fg.deobf("maven.modrinth:farmers-delight:1.20.1-1.2.3")
 
-    // JEI
-    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
-    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
+    compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
 
-    // CraftTweaker
-    compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-common-${minecraft_version}:${crafttweaker_version}")
+    compileOnly "com.blamejared.crafttweaker:CraftTweaker-common-${minecraft_version}:${crafttweaker_version}"
     runtimeOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}")
 
     compileOnly project(":common")
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
 }
 
-tasks.withType(JavaCompile).configureEach {
+Spec<Task> notTest = { Task it -> !it.name.contains("Test") } as Spec<Task>
+
+tasks.withType(JavaCompile).matching(notTest).configureEach {
     source(project(":common").sourceSets.main.allSource)
 }
-tasks.withType(Javadoc).configureEach {
+tasks.withType(Javadoc).matching(notTest).configureEach {
     source(project(":common").sourceSets.main.allJava)
 }
 tasks.named("sourcesJar", Jar) {
