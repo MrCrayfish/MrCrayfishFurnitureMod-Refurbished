@@ -77,9 +77,26 @@ subprojects {
     }
 
     processResources {
+        def expandProps = [
+            "minecraft_version": minecraft_version,
+            "forge_version": forge_version,
+            "fabric_version": fabric_version,
+            "fabric_loader_version": fabric_loader_version,
+            "framework_version": framework_version,
+            "mod_name": mod_name,
+            "mod_version": mod_version,
+            "mod_author": mod_author,
+            "mod_id": mod_id,
+            "mod_license": mod_license,
+            "mod_desc": mod_desc,
+            "mod_homepage": mod_homepage,
+            "mod_source": mod_source,
+            "mod_issues": mod_issues
+        ]
         filesMatching(['pack.mcmeta', 'fabric.mod.json', 'META-INF/mods.toml', '*.mixins.json']) {
-            expand project.properties
+            expand expandProps
         }
+        inputs.properties(expandProps)
     }
 
     // Disables Gradle's custom module metadata from being published to maven. The
