@@ -1,3 +1,6 @@
+import net.minecraftforge.gradle.common.tasks.SignJar
+import org.apache.commons.io.FilenameUtils
+
 plugins {
     id 'idea'
     id 'maven-publish'
@@ -169,14 +172,17 @@ signing {
     sign publishing.publications.mavenJava
 }
 
-task signJar(type: net.minecraftforge.gradle.common.tasks.SignJar, dependsOn: jar) {
+tasks.register('signJar', SignJar) {
+    dependsOn jar
     onlyIf {
-        hasProperty('keyStore') || System.getenv("KEYSTORE")
+        project.hasProperty('keyStore') || System.getenv("KEYSTORE")
     }
     keyStore = findProperty('keyStore') ?: System.getenv("KEYSTORE")
     alias = findProperty('keyStoreAlias') ?: System.getenv("KEYSTORE_ALIAS")
     storePass = findProperty('keyStorePass') ?: System.getenv("KEYSTORE_PASS")
-    inputFile = outputFile = jar.archiveFile
+    inputFile = jar.archiveFile
+    def name = FilenameUtils.removeExtension(jar.archiveFile.get().getAsFile().getName());
+    outputFile = layout.buildDirectory.file("libs/%s-signed.jar".formatted(name));
 }
 
 jar.finalizedBy 'signJar'
