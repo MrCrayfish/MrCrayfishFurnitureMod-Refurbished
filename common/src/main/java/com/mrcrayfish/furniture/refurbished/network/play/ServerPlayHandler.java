@@ -4,6 +4,7 @@ import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.blockentity.INameable;
 import com.mrcrayfish.furniture.refurbished.blockentity.IPaintable;
+import com.mrcrayfish.furniture.refurbished.computer.app.HomeControl;
 import com.mrcrayfish.furniture.refurbished.computer.app.PaddleBall;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.electricity.Connection;
@@ -18,6 +19,7 @@ import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageClearMessage;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageComputerOpenProgram;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageDeleteLink;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageHomeControl;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSendPackage;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSetName;
 import com.mrcrayfish.furniture.refurbished.network.message.MessagePaddleBall;
@@ -143,6 +145,17 @@ public class ServerPlayHandler
                 paintable.setImage(message.getImage());
                 paintable.setEditable(false);
                 player.closeContainer();
+            }
+        }
+    }
+
+    public static void handleMessageHomeKitToggle(MessageHomeControl.Toggle message, ServerPlayer player)
+    {
+        if(player != null && player.containerMenu instanceof ComputerMenu menu)
+        {
+            if(menu.getComputer().getProgram() instanceof HomeControl program)
+            {
+                program.toggleDevice(message.getPos());
             }
         }
     }

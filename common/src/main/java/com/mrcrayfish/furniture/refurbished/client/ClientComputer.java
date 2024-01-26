@@ -7,6 +7,7 @@ import com.mrcrayfish.furniture.refurbished.computer.Display;
 import com.mrcrayfish.furniture.refurbished.computer.Program;
 import com.mrcrayfish.furniture.refurbished.computer.client.DisplayableProgram;
 import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
@@ -17,13 +18,21 @@ import javax.annotation.Nullable;
  */
 public class ClientComputer implements IComputer
 {
+    private final BlockPos pos;
     private final Player player;
     private DisplayableProgram<?> displayable;
     private ComputerScreen screen;
 
-    public ClientComputer(Player player)
+    public ClientComputer(BlockPos pos, Player player)
     {
+        this.pos = pos;
         this.player = player;
+    }
+
+    @Override
+    public BlockPos getComputerPos()
+    {
+        return this.pos;
     }
 
     @Override

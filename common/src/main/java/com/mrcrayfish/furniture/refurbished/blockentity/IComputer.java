@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.mrcrayfish.furniture.refurbished.computer.Program;
 import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
@@ -12,6 +13,11 @@ import javax.annotation.Nullable;
  */
 public interface IComputer
 {
+    /**
+     * @return The block position of the computer
+     */
+    BlockPos getComputerPos();
+
     /**
      * Sets the player that is using this computer or null if player stopped using
      *

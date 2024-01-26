@@ -300,7 +300,7 @@ public interface IElectricityNode
                     continue;
 
                 int nextDepth = currentDepth + 1;
-                if(nextDepth >= maxDepth || !other.canPowerTraverse())
+                if(nextDepth >= maxDepth)
                     continue;
 
                 queue.add(Pair.of(other, nextDepth));

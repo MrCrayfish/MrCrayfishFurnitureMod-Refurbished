@@ -9,6 +9,7 @@ import com.mrcrayfish.furniture.refurbished.blockentity.FryingPanBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.GrillBlockEntity;
 import com.mrcrayfish.furniture.refurbished.computer.Computer;
 import com.mrcrayfish.furniture.refurbished.computer.IService;
+import com.mrcrayfish.furniture.refurbished.computer.app.HomeControl;
 import com.mrcrayfish.furniture.refurbished.computer.app.PaddleBall;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
@@ -53,6 +54,7 @@ public class Bootstrap
 
         Computer computer = Computer.get();
         computer.installProgram(Utils.resource("paddle_ball"), PaddleBall::new);
+        computer.installProgram(Utils.resource("home_control"), HomeControl::new);
         computer.installService(PaddleBall.SERVICE);
     }
 

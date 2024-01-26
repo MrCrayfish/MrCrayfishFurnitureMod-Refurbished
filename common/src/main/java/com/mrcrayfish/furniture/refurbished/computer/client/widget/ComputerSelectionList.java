@@ -17,15 +17,15 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
     protected int contentPadding = 2;
     protected int scrollBarWidth = 6;
     protected int outlineColour = 0xFF47403E;
-    protected int backgroundColour = 0xFF222225;
+    protected int backgroundColour = 0xFF262626;
     protected int scrollBarColour = 0xFF47403E;
-    protected int scrollBarHighlightColour = 0xFF222225;
+    protected int scrollBarHighlightColour = 0xFF332E2D;
     protected int itemSpacing = 2;
     protected boolean scrolling;
 
-    public ComputerSelectionList(Minecraft mc, int width, int height, int $$3, int $$4, int itemHeight)
+    public ComputerSelectionList(int width, int height, int $$3, int $$4, int itemHeight)
     {
-        super(mc, width, height, $$3, $$4, itemHeight);
+        super(Minecraft.getInstance(), width, height, $$3, $$4, itemHeight);
     }
 
     public void setPosition(int x, int y)
@@ -154,7 +154,7 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
         graphics.fill(this.x0 + 1, this.y0 + 1, this.x1 - 1, this.y1 - 1, this.backgroundColour);
 
         // Draw items
-        graphics.enableScissor(this.getRowLeft(), this.y0 + 1, this.getRowRight(), this.y1 - 1);
+        graphics.enableScissor(this.getRowLeft() - 1, this.y0 + 1, this.getRowRight() + 1, this.y1 - 1);
         this.renderList(graphics, mouseX, mouseY, partialTick);
         graphics.disableScissor();
 
@@ -197,6 +197,15 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
             break;
         }
 
+    }
+
+    @Override
+    protected void renderSelection(GuiGraphics graphics, int top, int rowWidth, int itemHeight, int outlineColour, int innerColour)
+    {
+        int start = this.getRowLeft();
+        int end = this.getRowRight();
+        graphics.fill(start - 1, top - 1, end + 1, top + itemHeight + 1, outlineColour);
+        //graphics.fill(start + 1, top - 1, end - 1, top + itemHeight + 1, innerColour);
     }
 
     @Override

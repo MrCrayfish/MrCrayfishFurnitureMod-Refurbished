@@ -177,7 +177,7 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
 
     private Pair<Boolean, List<IElectricityNode>> search()
     {
-        List<IElectricityNode> nodes = IElectricityNode.searchNodes(this, Config.SERVER.electricity.maximumDaisyChain.get(), Config.SERVER.electricity.maximumNodesInNetwork.get(), node -> !node.isSource(), node -> !node.isSource());
+        List<IElectricityNode> nodes = IElectricityNode.searchNodes(this, Config.SERVER.electricity.maximumDaisyChain.get(), Config.SERVER.electricity.maximumNodesInNetwork.get(), node -> !node.isSource() && node.canPowerTraverse(), node -> !node.isSource());
         this.nodeCount = nodes.size();
         return Pair.of(nodes.size() > Config.SERVER.electricity.maximumNodesInNetwork.get(), nodes);
     }

@@ -66,6 +66,12 @@ public class ComputerBlockEntity extends ElectricityModuleBlockEntity implements
     }
 
     @Override
+    public BlockPos getComputerPos()
+    {
+        return this.worldPosition;
+    }
+
+    @Override
     public void setUser(@Nullable Player player)
     {
         this.currentUser = player;

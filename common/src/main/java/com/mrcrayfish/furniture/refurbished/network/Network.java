@@ -34,6 +34,7 @@ public class Network
             .registerPlayMessage(MessagePaddleBall.BallUpdate.class, MessageDirection.PLAY_CLIENT_BOUND)
             .registerPlayMessage(MessagePaddleBall.OpponentName.class, MessageDirection.PLAY_CLIENT_BOUND)
             .registerPlayMessage(MessagePaddleBall.Event.class, MessageDirection.PLAY_CLIENT_BOUND)
+            .registerPlayMessage(MessageHomeControl.Toggle.class, MessageDirection.PLAY_SERVER_BOUND)
             .registerPlayMessage(MessageUpdatePainting.class, MessageDirection.PLAY_SERVER_BOUND)
             .registerPlayMessage(MessageToolAnimation.class, MessageDirection.PLAY_CLIENT_BOUND)
             .registerPlayMessage(MessageFlushItem.class, MessageDirection.PLAY_CLIENT_BOUND)

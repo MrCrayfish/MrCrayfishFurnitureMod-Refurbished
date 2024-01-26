@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mrcrayfish.framework.api.FrameworkAPI;
 import com.mrcrayfish.furniture.refurbished.blockentity.ComputerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.FreezerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.TelevisionBlockEntity;
@@ -57,10 +58,12 @@ public class ComputerBlock extends FurnitureHorizontalBlock implements EntityBlo
     {
         if(state.getValue(DIRECTION).getOpposite() == result.getDirection())
         {
-            if(!level.isClientSide() && level.getBlockEntity(pos) instanceof ComputerBlockEntity computer && !computer.isBeingUsed())
+            if(!level.isClientSide() && level.getBlockEntity(pos) instanceof ComputerBlockEntity computer && computer.isPowered() && !computer.isBeingUsed())
             {
-                player.openMenu(computer);
-                computer.syncStateToPlayer(player);
+                if(FrameworkAPI.openMenuWithData((ServerPlayer) player, computer, buf -> buf.writeBlockPos(pos)).isPresent())
+                {
+                    computer.syncStateToPlayer(player);
+                }
                 return InteractionResult.CONSUME;
             }
             return InteractionResult.SUCCESS;

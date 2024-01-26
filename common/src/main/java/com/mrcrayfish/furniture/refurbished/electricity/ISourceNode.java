@@ -72,7 +72,7 @@ public interface ISourceNode extends IElectricityNode
         if(this.isPowered() && !this.isOverloaded())
         {
             //long time = Util.getNanos();
-            List<IElectricityNode> nodes = IElectricityNode.searchNodes(this, Config.SERVER.electricity.maximumDaisyChain.get(), Config.SERVER.electricity.maximumNodesInNetwork.get(), node -> !node.isSource(), node -> true);
+            List<IElectricityNode> nodes = IElectricityNode.searchNodes(this, Config.SERVER.electricity.maximumDaisyChain.get(), Config.SERVER.electricity.maximumNodesInNetwork.get(), node -> !node.isSource() && node.canPowerTraverse(), node -> true);
             if(nodes.size() > Config.SERVER.electricity.maximumNodesInNetwork.get())
             {
                 this.setOverloaded(true);
