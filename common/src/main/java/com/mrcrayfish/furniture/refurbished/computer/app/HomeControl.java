@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,7 +33,7 @@ public class HomeControl extends Program
             int maxDepth = Config.SERVER.electricity.maximumDaisyChain.get();
             int maxSize = Config.SERVER.electricity.maximumNodesInNetwork.get();
             return IElectricityNode.searchNodes(computerBlockEntity, maxDepth, maxSize, IElectricityNode::isPowered, node -> node instanceof IHomeControlDevice)
-                    .stream().map(node -> (IHomeControlDevice) node).collect(Collectors.toList());
+                    .stream().map(node -> (IHomeControlDevice) node).sorted(Comparator.comparing(device -> device.getDeviceName().getString())).collect(Collectors.toList());
         }
         return Collections.emptyList();
     }
@@ -47,5 +48,10 @@ public class HomeControl extends Program
                 device.toggleDevicePower();
             }
         }
+    }
+
+    public void updateDevices(boolean state)
+    {
+        this.findDevices().forEach(device -> device.setDevicePower(state));
     }
 }

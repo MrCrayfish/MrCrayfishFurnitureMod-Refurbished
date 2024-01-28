@@ -24,4 +24,7 @@ public class Components
     public static final Component HOLD_SHIFT_DETAILS = Utils.translation("gui", "hold_for_details", Utils.translation("gui", "shift").withStyle(ChatFormatting.GOLD).withStyle(ChatFormatting.BOLD));
     public static final Function<Integer, Component> GUI_MAIL_BOX_LIMIT = maxCount -> Utils.translation("gui", "mail_box_limit", maxCount);
     public static final Component GUI_BOOTING = Utils.translation("gui", "booting");
+    public static final Component GUI_TURN_ON_ALL = Utils.translation("gui", "turn_on_all");
+    public static final Component GUI_TURN_OFF_ALL = Utils.translation("gui", "turn_off_all");
+    public static final Component GUI_HOME_CONTROL_INFO = Utils.translation("gui", "home_control_info");
 }

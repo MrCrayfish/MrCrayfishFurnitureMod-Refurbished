@@ -14,5 +14,7 @@ public interface IHomeControlDevice
 
     void toggleDevicePower();
 
+    void setDevicePower(boolean power);
+
     Component getDeviceName();
 }

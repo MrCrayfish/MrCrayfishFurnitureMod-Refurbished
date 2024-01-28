@@ -149,13 +149,24 @@ public class ServerPlayHandler
         }
     }
 
-    public static void handleMessageHomeKitToggle(MessageHomeControl.Toggle message, ServerPlayer player)
+    public static void handleMessageHomeControlToggle(MessageHomeControl.Toggle message, ServerPlayer player)
     {
         if(player != null && player.containerMenu instanceof ComputerMenu menu)
         {
             if(menu.getComputer().getProgram() instanceof HomeControl program)
             {
                 program.toggleDevice(message.getPos());
+            }
+        }
+    }
+
+    public static void handleMessageHomeControlUpdateAll(MessageHomeControl.UpdateAll message, ServerPlayer player)
+    {
+        if(player != null && player.containerMenu instanceof ComputerMenu menu)
+        {
+            if(menu.getComputer().getProgram() instanceof HomeControl program)
+            {
+                program.updateDevices(message.getState());
             }
         }
     }

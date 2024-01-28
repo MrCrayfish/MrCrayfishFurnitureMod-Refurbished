@@ -69,6 +69,16 @@ public class LightswitchBlockEntity extends ElectricityModuleBlockEntity impleme
     }
 
     @Override
+    public void setDevicePower(boolean power)
+    {
+        BlockState state = this.getBlockState();
+        if(state.hasProperty(LightswitchBlock.ENABLED))
+        {
+            this.level.setBlock(this.worldPosition, state.setValue(LightswitchBlock.ENABLED, power), Block.UPDATE_ALL);
+        }
+    }
+
+    @Override
     public Component getDeviceName()
     {
         // TODO custom names

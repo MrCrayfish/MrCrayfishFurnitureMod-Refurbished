@@ -37,13 +37,49 @@ public class MessageHomeControl
         @Override
         public void handle(Toggle message, MessageContext context)
         {
-            context.execute(() -> ServerPlayHandler.handleMessageHomeKitToggle(message, context.getPlayer()));
+            context.execute(() -> ServerPlayHandler.handleMessageHomeControlToggle(message, context.getPlayer()));
             context.setHandled(true);
         }
 
         public BlockPos getPos()
         {
             return this.pos;
+        }
+    }
+
+    public static class UpdateAll extends PlayMessage<UpdateAll>
+    {
+        private boolean state;
+
+        public UpdateAll() {}
+
+        public UpdateAll(boolean state)
+        {
+            this.state = state;
+        }
+
+        @Override
+        public void encode(UpdateAll message, FriendlyByteBuf buffer)
+        {
+            buffer.writeBoolean(message.state);
+        }
+
+        @Override
+        public UpdateAll decode(FriendlyByteBuf buffer)
+        {
+            return new UpdateAll(buffer.readBoolean());
+        }
+
+        @Override
+        public void handle(UpdateAll message, MessageContext context)
+        {
+            context.execute(() -> ServerPlayHandler.handleMessageHomeControlUpdateAll(message, context.getPlayer()));
+            context.setHandled(true);
+        }
+
+        public boolean getState()
+        {
+            return this.state;
         }
     }
 }

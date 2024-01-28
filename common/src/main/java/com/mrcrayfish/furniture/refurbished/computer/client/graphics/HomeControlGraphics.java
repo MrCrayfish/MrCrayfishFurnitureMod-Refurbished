@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.computer.client.graphics;
 
+import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.blockentity.IHomeControlDevice;
 import com.mrcrayfish.furniture.refurbished.computer.app.HomeControl;
 import com.mrcrayfish.furniture.refurbished.computer.client.DisplayableProgram;
@@ -29,21 +30,44 @@ public class HomeControlGraphics extends DisplayableProgram<HomeControl>
     {
         private final HomeControlGraphics graphics;
         private final ComputerSelectionList<DeviceItem> devices;
+        private final ComputerButton turnOnAllButton;
+        private final ComputerButton turnOffAllButton;
+        private final ComputerButton infoButton;
 
         public Home(HomeControlGraphics graphics)
         {
             this.graphics = graphics;
-            this.devices = this.addWidget(new ComputerSelectionList<>(graphics.getWidth() - 10, graphics.getHeight() - 30, 25, 100, 20));
+            this.devices = this.addWidget(new ComputerSelectionList<>(graphics.getWidth() - 10, graphics.getHeight() - 30, 25, 100, 16));
             this.devices.setRenderSelection(false);
             graphics.getProgram().findDevices().forEach(device -> {
                 this.devices.children().add(new DeviceItem(device));
             });
+            this.turnOnAllButton = this.addWidget(new ComputerButton(60, 14, Components.GUI_TURN_ON_ALL, btn -> {
+                Network.getPlay().sendToServer(new MessageHomeControl.UpdateAll(true));
+            }));
+            this.turnOnAllButton.setTextColour(0xFF376337);
+            this.turnOnAllButton.setTextHighlightColour(0xFF376337);
+            this.turnOnAllButton.setOutlineColour(0xFF222225);
+            this.turnOnAllButton.setBackgroundHighlightColour(0xFF332E2D);
+            this.turnOffAllButton = this.addWidget(new ComputerButton(60, 14, Components.GUI_TURN_OFF_ALL, btn -> {
+                Network.getPlay().sendToServer(new MessageHomeControl.UpdateAll(false));
+            }));
+            this.turnOffAllButton.setTextColour(0xFF653938);
+            this.turnOffAllButton.setTextHighlightColour(0xFF653938);
+            this.turnOffAllButton.setOutlineColour(0xFF222225);
+            this.turnOffAllButton.setBackgroundHighlightColour(0xFF332E2D);
+            this.infoButton = this.addWidget(new ComputerButton(13, 14, Component.literal("i"), btn -> {
+                graphics.setScene(new Info(graphics));
+            }));
         }
 
         @Override
         public void updateWidgets(int contentStart, int contentTop)
         {
             this.devices.setPosition(contentStart + 5, contentTop + 25);
+            this.turnOnAllButton.setPosition(contentStart + 5, contentTop + 3);
+            this.turnOffAllButton.setPosition(contentStart + 5 + this.turnOnAllButton.getWidth() + 2, contentTop + 3);
+            this.infoButton.setPosition(contentStart + this.graphics.getWidth() - 5 - this.infoButton.getWidth(), contentTop + 3);
         }
 
         @Override
@@ -53,18 +77,30 @@ public class HomeControlGraphics extends DisplayableProgram<HomeControl>
         }
     }
 
-    public static class AddDevice extends Scene
+    public static class Info extends Scene
     {
+        private final HomeControlGraphics graphics;
+        private final ComputerButton backButton;
+
+        public Info(HomeControlGraphics graphics)
+        {
+            this.graphics = graphics;
+            this.backButton = this.addWidget(new ComputerButton(14, 14, Component.literal("<"), btn -> {
+                graphics.setScene(new Home(graphics));
+            }));
+        }
+
         @Override
         public void updateWidgets(int contentStart, int contentTop)
         {
-
+            this.backButton.setPosition(contentStart + 5, contentTop + 3);
         }
 
         @Override
         public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
         {
-
+            graphics.fill(0, 0, this.graphics.getWidth(), 20, 0xFF262626);
+            graphics.drawWordWrap(Minecraft.getInstance().font, Components.GUI_HOME_CONTROL_INFO, 5, 25, this.graphics.getWidth() - 10, 0xFF47403E);
         }
     }
 
@@ -76,7 +112,7 @@ public class HomeControlGraphics extends DisplayableProgram<HomeControl>
         public DeviceItem(IHomeControlDevice device)
         {
             this.device = device;
-            this.button = new ComputerButton(50, 16, Component.literal("Toggle"), btn -> {
+            this.button = new ComputerButton(50, 14, Component.literal("Toggle"), btn -> {
                 Network.getPlay().sendToServer(new MessageHomeControl.Toggle(this.device.getDevicePos()));
             });
             this.button.setBackgroundHighlightColour(0xFF332E2D);
@@ -101,8 +137,8 @@ public class HomeControlGraphics extends DisplayableProgram<HomeControl>
         {
             this.updateButtonLabel();
             graphics.fill(left, top, left + rowWidth, top + rowHeight, 0xFF47403E);
-            graphics.drawString(Minecraft.getInstance().font, this.device.getDeviceName(), left + 5, top + 6, 0xFF222225, false);
-            this.button.setPosition(left + rowWidth - this.button.getWidth() - 2, top + 2);
+            graphics.drawString(Minecraft.getInstance().font, this.device.getDeviceName(), left + 5, top + 4, 0xFF222225, false);
+            this.button.setPosition(left + rowWidth - this.button.getWidth() - 1, top + 1);
             this.button.render(graphics, mouseX, mouseY, partialTick);
         }
 
