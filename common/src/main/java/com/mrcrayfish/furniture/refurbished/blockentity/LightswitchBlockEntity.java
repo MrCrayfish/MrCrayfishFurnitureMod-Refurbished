@@ -1,18 +1,25 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
-import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.block.LightswitchBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.Nameable;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+
+import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish
  */
-public class LightswitchBlockEntity extends ElectricityModuleBlockEntity implements IHomeControlDevice
+public class LightswitchBlockEntity extends ElectricityModuleBlockEntity implements IHomeControlDevice, Nameable
 {
+    @Nullable
+    private Component name;
+
     public LightswitchBlockEntity(BlockPos pos, BlockState state)
     {
         super(ModBlockEntities.LIGHTSWITCH.get(), pos, state);
@@ -81,7 +88,54 @@ public class LightswitchBlockEntity extends ElectricityModuleBlockEntity impleme
     @Override
     public Component getDeviceName()
     {
-        // TODO custom names
+        if(this.hasCustomName())
+        {
+            return this.getCustomName();
+        }
+        return this.getName();
+    }
+
+    @Override
+    public Component getName()
+    {
         return this.getBlockState().getBlock().getName();
+    }
+
+    @Override
+    public Component getDisplayName()
+    {
+        return this.name != null ? this.name : this.getName();
+    }
+
+    @Nullable
+    @Override
+    public Component getCustomName()
+    {
+        return this.name;
+    }
+
+    public void setCustomName(@Nullable Component name)
+    {
+        this.name = name;
+    }
+
+    @Override
+    public void load(CompoundTag tag)
+    {
+        super.load(tag);
+        if(tag.contains("CustomName", Tag.TAG_STRING))
+        {
+            this.name = Component.Serializer.fromJson(tag.getString("CustomName"));
+        }
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag tag)
+    {
+        super.saveAdditional(tag);
+        if(this.name != null)
+        {
+            tag.putString("CustomName", Component.Serializer.toJson(this.name));
+        }
     }
 }

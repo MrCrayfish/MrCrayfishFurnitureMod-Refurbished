@@ -29,7 +29,9 @@ public class CommonLootTableProvider
             // TODO system to customise instead of dropping self
             Registration.get(Registries.BLOCK).stream().filter(entry -> entry.getId().getNamespace().equals(Constants.MOD_ID)).forEach(entry -> {
                 net.minecraft.world.level.block.Block block = (net.minecraft.world.level.block.Block) entry.get();
-                if(block instanceof DoorMatBlock) {
+                if(block instanceof DropWithName) {
+                    builder.custom(block, createDropWithName(block));
+                } else if(block instanceof DoorMatBlock) {
                     builder.custom(block, createDoorMatLootPool(block));
                 } else {
                     builder.self(block);
@@ -40,6 +42,11 @@ public class CommonLootTableProvider
         private static LootPool.Builder createDoorMatLootPool(net.minecraft.world.level.block.Block block)
         {
             return LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)).add(LootItem.lootTableItem(block).apply(CopyNbtFunction.copyData(ContextNbtProvider.BLOCK_ENTITY).copy("Image", "BlockEntityTag.Image").copy("Finalised", "BlockEntityTag.Finalised")));
+        }
+
+        private static LootPool.Builder createDropWithName(net.minecraft.world.level.block.Block block)
+        {
+            return LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)).add(LootItem.lootTableItem(block).apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY)));
         }
     }
 

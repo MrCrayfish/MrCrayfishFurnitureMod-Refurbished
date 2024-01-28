@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.furniture.refurbished.blockentity.LightswitchBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
+import com.mrcrayfish.furniture.refurbished.data.DropWithName;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
@@ -16,10 +17,14 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BarrelBlockEntity;
+import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -40,7 +45,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class LightswitchBlock extends FurnitureAttachedFaceBlock implements EntityBlock, BlockTagSupplier
+public class LightswitchBlock extends FurnitureAttachedFaceBlock implements EntityBlock, BlockTagSupplier, DropWithName
 {
     public static final BooleanProperty ENABLED = BlockStateProperties.ENABLED;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
@@ -126,6 +131,15 @@ public class LightswitchBlock extends FurnitureAttachedFaceBlock implements Enti
         super.createBlockStateDefinition(builder);
         builder.add(ENABLED);
         builder.add(POWERED);
+    }
+
+    @Override
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack)
+    {
+        if(stack.hasCustomHoverName() && level.getBlockEntity(pos) instanceof LightswitchBlockEntity light)
+        {
+            light.setCustomName(stack.getHoverName());
+        }
     }
 
     @Nullable
