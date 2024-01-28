@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.compat.jei;
 
+import com.mrcrayfish.furniture.refurbished.client.gui.screen.ComputerScreen;
 import com.mrcrayfish.furniture.refurbished.compat.jei.categories.CuttingBoardCombiningCategory;
 import com.mrcrayfish.furniture.refurbished.compat.jei.categories.CuttingBoardSlicingCategory;
 import com.mrcrayfish.furniture.refurbished.compat.jei.categories.FreezerSolidifyingCategory;
@@ -16,7 +17,10 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.gui.handlers.IGuiProperties;
+import mezz.jei.api.gui.handlers.IScreenHandler;
 import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
@@ -38,6 +42,7 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
+import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -101,6 +106,20 @@ public class Plugin implements IModPlugin
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.ELECTRICITY_GENERATOR_DARK.get()), RecipeTypes.FUELING);
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.FRYING_PAN.get()), RecipeTypes.CAMPFIRE_COOKING);
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.GRILL_RED.get()), RecipeTypes.CAMPFIRE_COOKING);
+    }
+
+    @Override
+    public void registerGuiHandlers(IGuiHandlerRegistration registration)
+    {
+        registration.addGuiScreenHandler(ComputerScreen.class, new IScreenHandler<>()
+        {
+            // Return null to prevent JEI showing when using computer
+            @Override
+            public @Nullable IGuiProperties apply(ComputerScreen guiScreen)
+            {
+                return null;
+            }
+        });
     }
 
     private List<AbstractCookingRecipe> getFryingPanRecipes(RecipeManager manager)
