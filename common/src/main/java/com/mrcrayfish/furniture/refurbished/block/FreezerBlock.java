@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.block;
 
 import com.mrcrayfish.furniture.refurbished.blockentity.FreezerBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.LightswitchBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -70,6 +71,10 @@ public class FreezerBlock extends FridgeBlock
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity entity, ItemStack stack)
     {
         level.setBlock(pos.above(), this.fridge.get().defaultBlockState().setValue(DIRECTION, state.getValue(DIRECTION)), Block.UPDATE_ALL);
+        if(stack.hasCustomHoverName() && level.getBlockEntity(pos) instanceof FreezerBlockEntity freezer)
+        {
+            freezer.setCustomName(stack.getHoverName());
+        }
     }
 
     @Override

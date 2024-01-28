@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.mrcrayfish.furniture.refurbished.block.FreezerBlock;
+import com.mrcrayfish.furniture.refurbished.block.LightswitchBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
@@ -15,6 +16,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
@@ -24,10 +26,12 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
+import javax.annotation.Nullable;
+
 /**
  * Author: MrCrayfish
  */
-public class FreezerBlockEntity extends ElectricityModuleProcessingContainerBlockEntity implements IPowerSwitch
+public class FreezerBlockEntity extends ElectricityModuleProcessingContainerBlockEntity implements IPowerSwitch, IHomeControlDevice, Nameable
 {
     public static final int[] INPUT_SLOTS = new int[]{0};
     public static final int[] OUTPUT_SLOTS = new int[]{1};
@@ -37,6 +41,7 @@ public class FreezerBlockEntity extends ElectricityModuleProcessingContainerBloc
     public static final int DATA_MAX_PROCESS_TIME = 3;
 
     protected boolean enabled;
+    protected @Nullable Component name;
 
     protected final ContainerData data = new BuildableContainerData(builder -> {
         builder.add(DATA_POWERED, () -> powered ? 1 : 0, value -> {});
@@ -159,5 +164,67 @@ public class FreezerBlockEntity extends ElectricityModuleProcessingContainerBloc
         CompoundTag tag = super.getUpdateTag();
         tag.putBoolean("Enabled", this.enabled);
         return tag;
+    }
+
+    @Override
+    public BlockPos getDevicePos()
+    {
+        return this.worldPosition;
+    }
+
+    @Override
+    public boolean isDeviceEnabled()
+    {
+        return this.enabled;
+    }
+
+    @Override
+    public void toggleDeviceState()
+    {
+        this.enabled = !this.enabled;
+        this.setChanged();
+        this.syncNodeData();
+    }
+
+    @Override
+    public void setDeviceState(boolean enabled)
+    {
+        this.enabled = enabled;
+        this.setChanged();
+        this.syncNodeData();
+    }
+
+    @Override
+    public Component getDeviceName()
+    {
+        if(this.hasCustomName())
+        {
+            return this.getCustomName();
+        }
+        return this.getName();
+    }
+
+    @Override
+    public Component getName()
+    {
+        return this.getBlockState().getBlock().getName();
+    }
+
+    @Override
+    public Component getDisplayName()
+    {
+        return this.name != null ? this.name : this.getName();
+    }
+
+    @Nullable
+    @Override
+    public Component getCustomName()
+    {
+        return this.name;
+    }
+
+    public void setCustomName(@Nullable Component name)
+    {
+        this.name = name;
     }
 }

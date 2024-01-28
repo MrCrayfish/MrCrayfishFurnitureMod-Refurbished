@@ -10,11 +10,11 @@ public interface IHomeControlDevice
 {
     BlockPos getDevicePos();
 
-    boolean isDevicePowered();
+    boolean isDeviceEnabled();
 
-    void toggleDevicePower();
+    void toggleDeviceState();
 
-    void setDevicePower(boolean power);
+    void setDeviceState(boolean enabled);
 
     Component getDeviceName();
 }

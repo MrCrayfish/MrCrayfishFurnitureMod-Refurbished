@@ -121,9 +121,9 @@ public class HomeControlGraphics extends DisplayableProgram<HomeControl>
 
         private void updateButtonLabel()
         {
-            this.button.setMessage(this.device.isDevicePowered() ? CommonComponents.OPTION_ON : CommonComponents.OPTION_OFF);
-            this.button.setTextColour(this.device.isDevicePowered() ? 0xFF376337 : 0xFF653938);
-            this.button.setTextHighlightColour(this.device.isDevicePowered() ? 0xFF376337 : 0xFF653938);
+            this.button.setMessage(this.device.isDeviceEnabled() ? CommonComponents.OPTION_ON : CommonComponents.OPTION_OFF);
+            this.button.setTextColour(this.device.isDeviceEnabled() ? 0xFF376337 : 0xFF653938);
+            this.button.setTextHighlightColour(this.device.isDeviceEnabled() ? 0xFF376337 : 0xFF653938);
         }
 
         @Override

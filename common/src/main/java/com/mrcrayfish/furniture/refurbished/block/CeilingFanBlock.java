@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.block;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.furniture.refurbished.blockentity.CeilingFanBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.LightswitchBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
@@ -13,7 +14,9 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -94,6 +97,15 @@ public class CeilingFanBlock extends FurnitureBlock implements EntityBlock, Bloc
         builder.add(FACING);
         builder.add(POWERED);
         builder.add(LIT);
+    }
+
+    @Override
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack)
+    {
+        if(stack.hasCustomHoverName() && level.getBlockEntity(pos) instanceof CeilingFanBlockEntity ceilingFan)
+        {
+            ceilingFan.setCustomName(stack.getHoverName());
+        }
     }
 
     @Nullable

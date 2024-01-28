@@ -45,13 +45,13 @@ public class HomeControl extends Program
             Player player = this.computer.getUser();
             if(player != null && player.level().getBlockEntity(pos) instanceof IHomeControlDevice device)
             {
-                device.toggleDevicePower();
+                device.toggleDeviceState();
             }
         }
     }
 
     public void updateDevices(boolean state)
     {
-        this.findDevices().forEach(device -> device.setDevicePower(state));
+        this.findDevices().forEach(device -> device.setDeviceState(state));
     }
 }

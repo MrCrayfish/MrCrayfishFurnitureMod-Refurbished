@@ -24,6 +24,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
+import net.minecraft.world.Nameable;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -49,7 +50,7 @@ import java.util.Set;
 /**
  * Author: MrCrayfish
  */
-public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity implements IProcessingBlock, IPowerSwitch, ILevelAudio
+public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity implements IProcessingBlock, IPowerSwitch, ILevelAudio, IHomeControlDevice, Nameable
 {
     private static final Set<ItemLike> INVALID_ITEMS = Util.make(() -> {
         ImmutableSet.Builder<ItemLike> builder = ImmutableSet.builder();
@@ -103,6 +104,7 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
     protected long seed = this.random.nextLong();
     protected @Nullable Item inputCache;
     protected @Nullable List<ItemStack> outputCache;
+    protected @Nullable Component name;
 
     protected final ContainerData data = new BuildableContainerData(builder -> {
         builder.add(DATA_ENABLED, () -> enabled ? 1 : 0, value -> {});
@@ -528,5 +530,67 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
             }
         }
         return true;
+    }
+
+    @Override
+    public BlockPos getDevicePos()
+    {
+        return this.worldPosition;
+    }
+
+    @Override
+    public boolean isDeviceEnabled()
+    {
+        return this.enabled;
+    }
+
+    @Override
+    public void toggleDeviceState()
+    {
+        this.enabled = !this.enabled;
+        this.setChanged();
+        this.syncNodeData();
+    }
+
+    @Override
+    public void setDeviceState(boolean enabled)
+    {
+        this.enabled = enabled;
+        this.setChanged();
+        this.syncNodeData();
+    }
+
+    @Override
+    public Component getDeviceName()
+    {
+        if(this.hasCustomName())
+        {
+            return this.getCustomName();
+        }
+        return this.getName();
+    }
+
+    @Override
+    public Component getName()
+    {
+        return this.getBlockState().getBlock().getName();
+    }
+
+    @Override
+    public Component getDisplayName()
+    {
+        return this.name != null ? this.name : this.getName();
+    }
+
+    @Nullable
+    @Override
+    public Component getCustomName()
+    {
+        return this.name;
+    }
+
+    public void setCustomName(@Nullable Component name)
+    {
+        this.name = name;
     }
 }

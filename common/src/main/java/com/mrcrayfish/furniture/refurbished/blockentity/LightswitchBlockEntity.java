@@ -57,7 +57,7 @@ public class LightswitchBlockEntity extends ElectricityModuleBlockEntity impleme
     }
 
     @Override
-    public boolean isDevicePowered()
+    public boolean isDeviceEnabled()
     {
         BlockState state = this.getBlockState();
         return state.hasProperty(LightswitchBlock.ENABLED) && state.getValue(LightswitchBlock.ENABLED);
@@ -65,7 +65,7 @@ public class LightswitchBlockEntity extends ElectricityModuleBlockEntity impleme
 
     @Override
     @SuppressWarnings("DataFlowIssue")
-    public void toggleDevicePower()
+    public void toggleDeviceState()
     {
         BlockState state = this.getBlockState();
         if(state.hasProperty(LightswitchBlock.ENABLED))
@@ -76,12 +76,12 @@ public class LightswitchBlockEntity extends ElectricityModuleBlockEntity impleme
     }
 
     @Override
-    public void setDevicePower(boolean power)
+    public void setDeviceState(boolean enabled)
     {
         BlockState state = this.getBlockState();
         if(state.hasProperty(LightswitchBlock.ENABLED))
         {
-            this.level.setBlock(this.worldPosition, state.setValue(LightswitchBlock.ENABLED, power), Block.UPDATE_ALL);
+            this.level.setBlock(this.worldPosition, state.setValue(LightswitchBlock.ENABLED, enabled), Block.UPDATE_ALL);
         }
     }
 

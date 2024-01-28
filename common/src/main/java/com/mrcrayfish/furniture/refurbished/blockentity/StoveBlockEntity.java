@@ -15,6 +15,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
+import net.minecraft.world.Nameable;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -32,7 +33,7 @@ import java.lang.ref.WeakReference;
 /**
  * Author: MrCrayfish
  */
-public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implements IProcessingBlock, IHeatingSource, IPowerSwitch
+public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implements IProcessingBlock, IHeatingSource, IPowerSwitch, IHomeControlDevice, Nameable
 {
     public static final int DATA_POWERED = 0;
     public static final int DATA_ENABLED = 1;
@@ -44,6 +45,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     protected WeakReference<ICookingBlock> cookingBlockRef;
     protected boolean sync;
     protected @Nullable StoveContainer container;
+    protected @Nullable Component name;
 
     protected final ContainerData data = new BuildableContainerData(builder -> {
         builder.add(DATA_POWERED, () -> isPowered() ? 1 : 0, value -> {});
@@ -392,5 +394,67 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
         this.level.setBlock(this.worldPosition, this.getBlockState().setValue(StoveBlock.LIT, this.isPowered() && this.enabled), Block.UPDATE_ALL);
         this.setChanged();
         this.sync();
+    }
+
+    @Override
+    public BlockPos getDevicePos()
+    {
+        return this.worldPosition;
+    }
+
+    @Override
+    public boolean isDeviceEnabled()
+    {
+        return this.enabled;
+    }
+
+    @Override
+    public void toggleDeviceState()
+    {
+        this.enabled = !this.enabled;
+        this.setChanged();
+        this.syncNodeData();
+    }
+
+    @Override
+    public void setDeviceState(boolean enabled)
+    {
+        this.enabled = enabled;
+        this.setChanged();
+        this.syncNodeData();
+    }
+
+    @Override
+    public Component getDeviceName()
+    {
+        if(this.hasCustomName())
+        {
+            return this.getCustomName();
+        }
+        return this.getName();
+    }
+
+    @Override
+    public Component getName()
+    {
+        return this.getBlockState().getBlock().getName();
+    }
+
+    @Override
+    public Component getDisplayName()
+    {
+        return this.name != null ? this.name : this.getName();
+    }
+
+    @Nullable
+    @Override
+    public Component getCustomName()
+    {
+        return this.name;
+    }
+
+    public void setCustomName(@Nullable Component name)
+    {
+        this.name = name;
     }
 }

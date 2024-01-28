@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.mrcrayfish.furniture.refurbished.block.CeilingFanBlock;
+import com.mrcrayfish.furniture.refurbished.block.LightswitchBlock;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
@@ -8,9 +9,11 @@ import com.mrcrayfish.furniture.refurbished.platform.Services;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -19,12 +22,13 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
  * Author: MrCrayfish
  */
-public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implements ILevelAudio
+public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implements ILevelAudio, IHomeControlDevice, Nameable
 {
     private static final float MAX_SPEED = 50F;
     private static final float ACCELERATION = 1.25F;
@@ -44,6 +48,7 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implemen
     private float bladeSpeed;
     private float bladeRotation;
     private float lastBladeRotation;
+    protected @Nullable Component name;
 
     public CeilingFanBlockEntity(BlockPos pos, BlockState state)
     {
@@ -219,5 +224,73 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implemen
         {
             this.bladeSpeed = MAX_SPEED;
         }
+    }
+
+    @Override
+    public BlockPos getDevicePos()
+    {
+        return this.worldPosition;
+    }
+
+    @Override
+    public boolean isDeviceEnabled()
+    {
+        BlockState state = this.getBlockState();
+        return state.hasProperty(CeilingFanBlock.ENABLED) && state.getValue(CeilingFanBlock.ENABLED);
+    }
+
+    @Override
+    public void toggleDeviceState()
+    {
+        BlockState state = this.getBlockState();
+        if(state.hasProperty(CeilingFanBlock.ENABLED))
+        {
+            boolean enabled = state.getValue(CeilingFanBlock.ENABLED);
+            this.level.setBlock(this.worldPosition, state.setValue(CeilingFanBlock.ENABLED, !enabled), Block.UPDATE_ALL);
+        }
+    }
+
+    @Override
+    public void setDeviceState(boolean enabled)
+    {
+        BlockState state = this.getBlockState();
+        if(state.hasProperty(CeilingFanBlock.ENABLED))
+        {
+            this.level.setBlock(this.worldPosition, state.setValue(CeilingFanBlock.ENABLED, enabled), Block.UPDATE_ALL);
+        }
+    }
+
+    @Override
+    public Component getDeviceName()
+    {
+        if(this.hasCustomName())
+        {
+            return this.getCustomName();
+        }
+        return this.getName();
+    }
+
+    @Override
+    public Component getName()
+    {
+        return this.getBlockState().getBlock().getName();
+    }
+
+    @Override
+    public Component getDisplayName()
+    {
+        return this.name != null ? this.name : this.getName();
+    }
+
+    @Nullable
+    @Override
+    public Component getCustomName()
+    {
+        return this.name;
+    }
+
+    public void setCustomName(@Nullable Component name)
+    {
+        this.name = name;
     }
 }
