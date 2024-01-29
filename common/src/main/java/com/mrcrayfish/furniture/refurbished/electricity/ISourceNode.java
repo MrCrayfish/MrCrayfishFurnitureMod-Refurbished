@@ -1,14 +1,12 @@
 package com.mrcrayfish.furniture.refurbished.electricity;
 
 import com.mrcrayfish.furniture.refurbished.Config;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Author: MrCrayfish
@@ -72,7 +70,7 @@ public interface ISourceNode extends IElectricityNode
         if(this.isPowered() && !this.isOverloaded())
         {
             //long time = Util.getNanos();
-            List<IElectricityNode> nodes = IElectricityNode.searchNodes(this, Config.SERVER.electricity.maximumDaisyChain.get(), Config.SERVER.electricity.maximumNodesInNetwork.get(), node -> !node.isSource() && node.canPowerTraverse(), node -> true);
+            List<IElectricityNode> nodes = IElectricityNode.searchNodes(this, Config.SERVER.electricity.maximumDaisyChain.get(), Config.SERVER.electricity.maximumNodesInNetwork.get(), false, node -> !node.isSource() && node.canPowerTraverse(), node -> true);
             if(nodes.size() > Config.SERVER.electricity.maximumNodesInNetwork.get())
             {
                 this.setOverloaded(true);

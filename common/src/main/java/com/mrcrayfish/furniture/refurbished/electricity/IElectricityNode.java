@@ -261,7 +261,7 @@ public interface IElectricityNode
 
     static List<IElectricityNode> searchNodes(IElectricityNode start)
     {
-        return searchNodes(start, Config.SERVER.electricity.maximumDaisyChain.get(), Config.SERVER.electricity.maximumNodesInNetwork.get(), node -> true, node -> true);
+        return searchNodes(start, Config.SERVER.electricity.maximumDaisyChain.get(), Config.SERVER.electricity.maximumNodesInNetwork.get(), false, node -> true, node -> true);
     }
 
     /**
@@ -270,20 +270,21 @@ public interface IElectricityNode
      * to reach a node from the provided beginning node is more than maxDepth, the node will be ignored
      * and it's connections won't be searched.
      *
-     * @param start the node to begin the search from
-     * @param maxDepth the maximum depth this search can travel
-     * @param maxSize the maximum amount of nodes that can be found
+     * @param start           the node to begin the search from
+     * @param maxDepth        the maximum depth this search can travel
+     * @param maxSize         the maximum amount of nodes that can be found
+     * @param cancelAtLimit
      * @param searchPredicate a predicate determining if a node can be searched
      * @return A list of all nodes that were searched and passed the match predicate
      */
-    static List<IElectricityNode> searchNodes(IElectricityNode start, int maxDepth, int maxSize, Predicate<IElectricityNode> searchPredicate, Predicate<IElectricityNode> matchPredicate)
+    static List<IElectricityNode> searchNodes(IElectricityNode start, int maxDepth, int maxSize, boolean cancelAtLimit, Predicate<IElectricityNode> searchPredicate, Predicate<IElectricityNode> matchPredicate)
     {
         Set<IElectricityNode> searched = new HashSet<>(List.of(start));
         // Creating the queue with an initial size equal to the maximum nodes in a network
         // prevents expensive calls to grow the capacity.
         Queue<Pair<IElectricityNode, Integer>> queue = new ArrayDeque<>(maxSize);
         queue.add(Pair.of(start, 0));
-        while(!queue.isEmpty())
+        search: while(!queue.isEmpty())
         {
             Pair<IElectricityNode, Integer> pair = queue.poll();
             IElectricityNode node = pair.getLeft();
@@ -295,6 +296,9 @@ public interface IElectricityNode
                     continue;
 
                 searched.add(other);
+
+                if(cancelAtLimit && searched.size() >= maxSize)
+                    break search;
 
                 if(!searchPredicate.test(other))
                     continue;
