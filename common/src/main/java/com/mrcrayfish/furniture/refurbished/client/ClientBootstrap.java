@@ -33,7 +33,7 @@ import com.mrcrayfish.furniture.refurbished.client.renderer.entity.SeatRenderer;
 import com.mrcrayfish.furniture.refurbished.computer.Display;
 import com.mrcrayfish.furniture.refurbished.computer.app.HomeControl;
 import com.mrcrayfish.furniture.refurbished.computer.app.PaddleBall;
-import com.mrcrayfish.furniture.refurbished.computer.client.PaddleBallGraphics;
+import com.mrcrayfish.furniture.refurbished.computer.client.graphics.PaddleBallGraphics;
 import com.mrcrayfish.furniture.refurbished.computer.client.graphics.HomeControlGraphics;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;

@@ -1,9 +1,11 @@
-package com.mrcrayfish.furniture.refurbished.computer.client;
+package com.mrcrayfish.furniture.refurbished.computer.client.graphics;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.client.util.AudioHelper;
 import com.mrcrayfish.furniture.refurbished.computer.app.PaddleBall;
+import com.mrcrayfish.furniture.refurbished.computer.client.DisplayableProgram;
+import com.mrcrayfish.furniture.refurbished.computer.client.Scene;
 import com.mrcrayfish.furniture.refurbished.computer.client.widget.ComputerButton;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.network.Network;

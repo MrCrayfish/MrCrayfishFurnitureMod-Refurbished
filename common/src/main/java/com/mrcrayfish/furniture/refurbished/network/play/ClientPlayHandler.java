@@ -14,7 +14,7 @@ import com.mrcrayfish.furniture.refurbished.client.ToolAnimationRenderer;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.PostBoxScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.toast.ItemToast;
 import com.mrcrayfish.furniture.refurbished.client.particle.ItemFlushParticle;
-import com.mrcrayfish.furniture.refurbished.computer.client.PaddleBallGraphics;
+import com.mrcrayfish.furniture.refurbished.computer.client.graphics.PaddleBallGraphics;
 import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.WorkbenchMenu;
 import com.mrcrayfish.furniture.refurbished.mail.Mailbox;
