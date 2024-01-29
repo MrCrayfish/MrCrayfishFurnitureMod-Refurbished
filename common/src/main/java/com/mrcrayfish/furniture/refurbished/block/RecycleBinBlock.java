@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.furniture.refurbished.blockentity.MicrowaveBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.RecycleBinBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
+import com.mrcrayfish.furniture.refurbished.data.DropWithName;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,7 +35,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class RecycleBinBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
+public class RecycleBinBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier, DropWithName
 {
     public RecycleBinBlock(Properties properties)
     {

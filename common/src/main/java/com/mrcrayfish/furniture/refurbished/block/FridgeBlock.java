@@ -3,7 +3,9 @@ package com.mrcrayfish.furniture.refurbished.block;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.furniture.refurbished.blockentity.BasicLootBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.FreezerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.FridgeBlockEntity;
+import com.mrcrayfish.furniture.refurbished.data.DropWithName;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
@@ -13,7 +15,9 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -31,7 +35,7 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
-public class FridgeBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
+public class FridgeBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier, DropWithName
 {
     protected final MetalType type;
 
@@ -94,6 +98,15 @@ public class FridgeBlock extends FurnitureHorizontalBlock implements EntityBlock
     {
         super.createBlockStateDefinition(builder);
         builder.add(OPEN);
+    }
+
+    @Override
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity entity, ItemStack stack)
+    {
+        if(stack.hasCustomHoverName() && level.getBlockEntity(pos) instanceof FridgeBlockEntity fridge)
+        {
+            fridge.setCustomName(stack.getHoverName());
+        }
     }
 
     @Nullable

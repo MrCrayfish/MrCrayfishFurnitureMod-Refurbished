@@ -6,6 +6,7 @@ import com.mrcrayfish.furniture.refurbished.blockentity.BasicLootBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.CeilingFanBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.MicrowaveBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
+import com.mrcrayfish.furniture.refurbished.data.DropWithName;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
@@ -37,7 +38,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class MicrowaveBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
+public class MicrowaveBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier, DropWithName
 {
     private final MetalType type;
 

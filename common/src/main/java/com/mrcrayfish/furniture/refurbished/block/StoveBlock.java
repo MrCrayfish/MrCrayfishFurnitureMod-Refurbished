@@ -8,6 +8,7 @@ import com.mrcrayfish.furniture.refurbished.blockentity.RecycleBinBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.StoveBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.StoveContainer;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
+import com.mrcrayfish.furniture.refurbished.data.DropWithName;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
@@ -45,7 +46,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class StoveBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier, WorldlyContainerHolder
+public class StoveBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier, WorldlyContainerHolder, DropWithName
 {
     private final MetalType type;
 
