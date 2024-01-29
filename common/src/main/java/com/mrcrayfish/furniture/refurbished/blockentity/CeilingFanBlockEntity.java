@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implements ILevelAudio, IHomeControlDevice, Nameable
+public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implements ILevelAudio
 {
     private static final float MAX_SPEED = 50F;
     private static final float ACCELERATION = 1.25F;
@@ -224,73 +224,5 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implemen
         {
             this.bladeSpeed = MAX_SPEED;
         }
-    }
-
-    @Override
-    public BlockPos getDevicePos()
-    {
-        return this.worldPosition;
-    }
-
-    @Override
-    public boolean isDeviceEnabled()
-    {
-        BlockState state = this.getBlockState();
-        return state.hasProperty(CeilingFanBlock.ENABLED) && state.getValue(CeilingFanBlock.ENABLED);
-    }
-
-    @Override
-    public void toggleDeviceState()
-    {
-        BlockState state = this.getBlockState();
-        if(state.hasProperty(CeilingFanBlock.ENABLED))
-        {
-            boolean enabled = state.getValue(CeilingFanBlock.ENABLED);
-            this.level.setBlock(this.worldPosition, state.setValue(CeilingFanBlock.ENABLED, !enabled), Block.UPDATE_ALL);
-        }
-    }
-
-    @Override
-    public void setDeviceState(boolean enabled)
-    {
-        BlockState state = this.getBlockState();
-        if(state.hasProperty(CeilingFanBlock.ENABLED))
-        {
-            this.level.setBlock(this.worldPosition, state.setValue(CeilingFanBlock.ENABLED, enabled), Block.UPDATE_ALL);
-        }
-    }
-
-    @Override
-    public Component getDeviceName()
-    {
-        if(this.hasCustomName())
-        {
-            return this.getCustomName();
-        }
-        return this.getName();
-    }
-
-    @Override
-    public Component getName()
-    {
-        return this.getBlockState().getBlock().getName();
-    }
-
-    @Override
-    public Component getDisplayName()
-    {
-        return this.name != null ? this.name : this.getName();
-    }
-
-    @Nullable
-    @Override
-    public Component getCustomName()
-    {
-        return this.name;
-    }
-
-    public void setCustomName(@Nullable Component name)
-    {
-        this.name = name;
     }
 }

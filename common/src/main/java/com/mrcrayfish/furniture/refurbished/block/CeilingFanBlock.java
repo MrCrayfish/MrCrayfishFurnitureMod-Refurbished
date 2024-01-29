@@ -99,15 +99,6 @@ public class CeilingFanBlock extends FurnitureBlock implements EntityBlock, Bloc
         builder.add(LIT);
     }
 
-    @Override
-    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack)
-    {
-        if(stack.hasCustomHoverName() && level.getBlockEntity(pos) instanceof CeilingFanBlockEntity ceilingFan)
-        {
-            ceilingFan.setCustomName(stack.getHoverName());
-        }
-    }
-
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
