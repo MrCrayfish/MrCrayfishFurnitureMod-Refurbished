@@ -26,6 +26,7 @@ public class ProgramShortcutButton extends ComputerButton
         this.icon = icon;
         this.setOutlineColour(0x00000000);
         this.setBackgroundColour(0x00000000);
+        this.setBackgroundHighlightColour(0xFF59504E);
     }
 
     @Override
