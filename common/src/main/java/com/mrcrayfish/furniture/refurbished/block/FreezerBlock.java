@@ -70,7 +70,9 @@ public class FreezerBlock extends FridgeBlock
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity entity, ItemStack stack)
     {
-        level.setBlock(pos.above(), this.fridge.get().defaultBlockState().setValue(DIRECTION, state.getValue(DIRECTION)), Block.UPDATE_ALL);
+        BlockState fridge = this.fridge.get().defaultBlockState().setValue(DIRECTION, state.getValue(DIRECTION));
+        level.setBlock(pos.above(), fridge, Block.UPDATE_ALL);
+        fridge.getBlock().setPlacedBy(level, pos.above(), fridge, entity, stack);
         if(stack.hasCustomHoverName() && level.getBlockEntity(pos) instanceof FreezerBlockEntity freezer)
         {
             freezer.setCustomName(stack.getHoverName());
