@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.computer.client.widget;
 
+import com.mrcrayfish.furniture.refurbished.client.gui.IOverrideGetEntry;
 import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -10,7 +11,7 @@ import org.lwjgl.glfw.GLFW;
 /**
  * Author: MrCrayfish
  */
-public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> extends ObjectSelectionList<E>
+public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> extends ObjectSelectionList<E> implements IOverrideGetEntry<E>
 {
     private static final int OUTLINE_SIZE = 1;
 
@@ -232,5 +233,32 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
             }
         }
         return false;
+    }
+
+    @Override
+    public E getEntry(double mouseX, double mouseY)
+    {
+        if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, this.x0, this.y0, this.x1 - this.x0, this.y1 - this.y0))
+        {
+            int rowLeft = this.getRowLeft();
+            int rowWidth = this.getRowWidth();
+            int rowHeight = this.itemHeight;
+            int rowCount = this.getItemCount();
+            int startIndex = Math.max(0, (int) ((this.getScrollAmount() - this.contentPadding) / (rowHeight + this.itemSpacing)));
+            for(int i = startIndex; i < rowCount; i++)
+            {
+                int rowTop = this.getRowTop(i);
+                if(rowTop <= this.y1)
+                {
+                    if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, rowLeft, rowTop, rowWidth, rowHeight))
+                    {
+                        return this.getEntry(i);
+                    }
+                    continue;
+                }
+                break;
+            }
+        }
+        return null;
     }
 }
