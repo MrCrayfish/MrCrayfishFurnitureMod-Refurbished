@@ -113,6 +113,18 @@ public class LightswitchBlock extends FurnitureAttachedFaceBlock implements Enti
     }
 
     @Override
+    public boolean hasAnalogOutputSignal(BlockState state)
+    {
+        return true;
+    }
+
+    @Override
+    public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos)
+    {
+        return state.getValue(ENABLED) ? 1 : 0;
+    }
+
+    @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving)
     {
         if(!state.is(newState.getBlock()))
