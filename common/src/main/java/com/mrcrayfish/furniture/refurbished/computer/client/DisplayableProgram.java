@@ -14,8 +14,8 @@ import javax.annotation.Nullable;
  */
 public abstract class DisplayableProgram<T extends Program>
 {
-    private static final int MAX_CONTENT_WIDTH = ComputerScreen.DISPLAY_WIDTH - 2;
-    private static final int MAX_CONTENT_HEIGHT = ComputerScreen.DISPLAY_HEIGHT - Window.TITLE_BAR_HEIGHT - 3;
+    protected static final int MAX_CONTENT_WIDTH = ComputerScreen.DISPLAY_WIDTH - 2;
+    protected static final int MAX_CONTENT_HEIGHT = ComputerScreen.DISPLAY_HEIGHT - Window.TITLE_BAR_HEIGHT - 3;
 
     protected final T program;
     protected final int width;

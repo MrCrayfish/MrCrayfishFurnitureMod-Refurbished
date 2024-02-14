@@ -31,8 +31,12 @@ import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.*;
 import com.mrcrayfish.furniture.refurbished.client.renderer.entity.SeatRenderer;
 import com.mrcrayfish.furniture.refurbished.computer.Display;
+import com.mrcrayfish.furniture.refurbished.computer.app.CoinMiner;
 import com.mrcrayfish.furniture.refurbished.computer.app.HomeControl;
+import com.mrcrayfish.furniture.refurbished.computer.app.Marketplace;
 import com.mrcrayfish.furniture.refurbished.computer.app.PaddleBall;
+import com.mrcrayfish.furniture.refurbished.computer.client.graphics.CoinMinerGraphics;
+import com.mrcrayfish.furniture.refurbished.computer.client.graphics.MarketplaceGraphics;
 import com.mrcrayfish.furniture.refurbished.computer.client.graphics.PaddleBallGraphics;
 import com.mrcrayfish.furniture.refurbished.computer.client.graphics.HomeControlGraphics;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
@@ -102,6 +106,8 @@ public class ClientBootstrap
         // Bind computer programs to graphics handler
         Display.get().bind(PaddleBall.class, PaddleBallGraphics::new);
         Display.get().bind(HomeControl.class, HomeControlGraphics::new);
+        Display.get().bind(Marketplace.class, MarketplaceGraphics::new);
+        Display.get().bind(CoinMiner.class, CoinMinerGraphics::new);
     }
 
     public static void registerScreens(ScreenRegister register)

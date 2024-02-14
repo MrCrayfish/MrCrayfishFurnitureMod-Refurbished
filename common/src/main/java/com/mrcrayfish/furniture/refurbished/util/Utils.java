@@ -17,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 /**
@@ -101,6 +102,23 @@ public class Utils
             });
         }
         return map;
+    }
+
+    /**
+     * Collects a sum of the stack count of the items inside the container that
+     * match the given item.
+     * @param item the item to find
+     * @param container the container to search
+     * @return the sum of the
+     */
+    public static int countItem(Item item, Container container)
+    {
+        return IntStream.range(0, container.getContainerSize())
+            .mapToObj(container::getItem)
+            .filter(stack -> stack.is(item))
+            .map(ItemStack::getCount)
+            .reduce(Integer::sum)
+            .orElse(0);
     }
 
     /**
