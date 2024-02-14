@@ -28,12 +28,12 @@ import java.util.List;
  */
 public class ComputerScreen extends ElectricityContainerScreen<ComputerMenu>
 {
-    private static final ResourceLocation TEXTURE = Utils.resource("textures/gui/container/computer.png");
+    public static final ResourceLocation TEXTURE = Utils.resource("textures/gui/container/computer.png");
     private static final int DISPLAY_LEFT = 15;
     private static final int DISPLAY_TOP = 15;
     public static final int DISPLAY_WIDTH = 226;
     public static final int DISPLAY_HEIGHT = 120;
-    private static final int LOADING_TIME = 40;
+    private static final int LOADING_TIME = 20;
     private static final int LOADING_BAR_WIDTH = 100;
 
     private final Desktop desktop;

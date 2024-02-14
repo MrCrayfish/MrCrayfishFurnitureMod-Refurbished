@@ -6,10 +6,16 @@ import com.mrcrayfish.furniture.refurbished.computer.Display;
 import com.mrcrayfish.furniture.refurbished.computer.client.widget.ProgramShortcutButton;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageComputerOpenProgram;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,6 +74,19 @@ public class Desktop
     {
         graphics.fill(this.displayStart, this.displayTop, this.displayStart + this.displayWidth, this.displayTop + this.displayHeight, 0xFF262626);
         this.shortcuts.forEach(shortcut -> shortcut.render(graphics, mouseX, mouseY, partialTick));
+
+        // Draw fake taskbar
+        graphics.fill(this.displayStart, this.displayTop + this.displayHeight - 16, this.displayStart + this.displayWidth, this.displayTop + this.displayHeight, 0xFF5A534F);
+        graphics.fill(this.displayStart, this.displayTop + this.displayHeight - 16 + 2, this.displayStart + this.displayWidth, this.displayTop + this.displayHeight, 0xFF332E2D);
+
+        // Draw time
+        Font font = Minecraft.getInstance().font;
+        String timeLabel = this.getDayTimeLabel();
+        int width = font.width(timeLabel);
+        graphics.drawString(font, timeLabel, this.displayStart + this.displayWidth - width - 5, this.displayTop + this.displayHeight - 11, 0xFFFFFFFF, false);
+
+        // Draw logo
+        graphics.blit(ComputerScreen.TEXTURE, this.displayStart, this.displayTop + this.displayHeight - 24, 32, 36, 0, 150, 16, 18, 256, 256);
     }
 
     private Component getProgramName(ResourceLocation id)
@@ -78,5 +97,19 @@ public class Desktop
     public List<ProgramShortcutButton> getShortcuts()
     {
         return this.shortcuts;
+    }
+
+    private String getDayTimeLabel()
+    {
+        Level level = Minecraft.getInstance().level;
+        if(level != null)
+        {
+            // 6000 to offset midnight to be exactly when the moon is directly up
+            long time = (level.getDayTime() + 6000L) % 24000L;
+            long hours = time / 1000L;
+            long minutes = 60 * (time % 1000L) / 1000L;
+            return "%d:%02d".formatted(hours, minutes);
+        }
+        return "";
     }
 }
