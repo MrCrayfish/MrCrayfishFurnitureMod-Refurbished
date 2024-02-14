@@ -27,6 +27,9 @@ public class ProgramShortcutButton extends ComputerButton
         this.setOutlineColour(0x00000000);
         this.setBackgroundColour(0x00000000);
         this.setBackgroundHighlightColour(0xFF59504E);
+        this.setBackgroundDisabledColour(0x00000000);
+        this.setOutlineDisabledColour(0x00000000);
+        this.setTextDisabledColour(0x5559504E);
     }
 
     @Override
