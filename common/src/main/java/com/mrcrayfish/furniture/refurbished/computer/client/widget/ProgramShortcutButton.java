@@ -52,7 +52,7 @@ public class ProgramShortcutButton extends ComputerButton
         int labelY = this.getY() + this.height - font.lineHeight;
         pose.translate(labelX, labelY, 0);
         pose.scale(scale, scale, scale);
-        graphics.drawString(Minecraft.getInstance().font, this.getMessage(), 0, 0, 0xFFFFFFFF, false);
+        graphics.drawString(Minecraft.getInstance().font, this.getMessage(), 0, 0, this.getTextColour(), false);
         pose.popPose();
     }
 
