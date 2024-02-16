@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.client.util;
 
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -73,5 +74,22 @@ public class ScreenHelper
     public static boolean isMouseWithinBounds(double mouseX, double mouseY, int x, int y, int width, int height)
     {
         return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
+    }
+
+    /**
+     * Fill a rectangle on the screen with one pixel rounded corners.
+     *
+     * @param graphics a gui graphics instance
+     * @param x        the x position of the rectangle
+     * @param y        the y position of the rectangle
+     * @param width    the width of the rectangle
+     * @param height   the height of the rectangle
+     * @param colour   the colour to fill the rectangle
+     */
+    public static void fillRounded(GuiGraphics graphics, int x, int y, int width, int height, int colour)
+    {
+        graphics.fill(x, y + 1, x + 1, y + height - 1, colour);
+        graphics.fill(x + 1, y, x + width - 1, y + height, colour);
+        graphics.fill(x + width - 1, y + 1, x + width, y + height - 1, colour);
     }
 }

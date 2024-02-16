@@ -5,6 +5,7 @@ import com.mrcrayfish.framework.api.event.PlayerEvents;
 import com.mrcrayfish.framework.api.event.TickEvents;
 import com.mrcrayfish.furniture.refurbished.block.StoveBlock;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
+import com.mrcrayfish.furniture.refurbished.client.gui.overlay.CuttingBoardHelperOverlay;
 import com.mrcrayfish.furniture.refurbished.client.gui.overlay.NodeIndicatorOverlay;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.ComputerScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.DoorMatScreen;
@@ -360,6 +361,7 @@ public class ClientBootstrap
     public static void registerHudOverlays(HudOverlayRegister register)
     {
         register.apply(Utils.resource("power_indicator"), new NodeIndicatorOverlay());
+        register.apply(Utils.resource("cutting_board_helper"), new CuttingBoardHelperOverlay());
     }
 
     public static void registerRecipeBookCategories(RecipeCategoryRegister register)

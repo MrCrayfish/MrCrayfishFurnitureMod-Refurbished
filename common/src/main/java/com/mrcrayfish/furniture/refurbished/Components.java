@@ -27,4 +27,6 @@ public class Components
     public static final Component GUI_TURN_ON_ALL = Utils.translation("gui", "turn_on_all");
     public static final Component GUI_TURN_OFF_ALL = Utils.translation("gui", "turn_off_all");
     public static final Component GUI_HOME_CONTROL_INFO = Utils.translation("gui", "home_control_info");
+    public static final Component GUI_SLICEABLE = Utils.translation("gui", "sliceable");
+    public static final Component GUI_PLACEABLE = Utils.translation("gui", "placeable");
 }
