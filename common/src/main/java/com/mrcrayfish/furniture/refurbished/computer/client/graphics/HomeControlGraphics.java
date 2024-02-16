@@ -42,14 +42,14 @@ public class HomeControlGraphics extends DisplayableProgram<HomeControl>
             graphics.getProgram().findDevices().forEach(device -> {
                 this.devices.children().add(new DeviceItem(device));
             });
-            this.turnOnAllButton = this.addWidget(new ComputerButton(60, 14, Components.GUI_TURN_ON_ALL, btn -> {
+            this.turnOnAllButton = this.addWidget(new ComputerButton(60, 14, graphics.translation("turn_on_all"), btn -> {
                 Network.getPlay().sendToServer(new MessageHomeControl.UpdateAll(true));
             }));
             this.turnOnAllButton.setTextColour(0xFF376337);
             this.turnOnAllButton.setTextHighlightColour(0xFF376337);
             this.turnOnAllButton.setOutlineColour(0xFF222225);
             this.turnOnAllButton.setBackgroundHighlightColour(0xFF332E2D);
-            this.turnOffAllButton = this.addWidget(new ComputerButton(60, 14, Components.GUI_TURN_OFF_ALL, btn -> {
+            this.turnOffAllButton = this.addWidget(new ComputerButton(60, 14, graphics.translation("turn_off_all"), btn -> {
                 Network.getPlay().sendToServer(new MessageHomeControl.UpdateAll(false));
             }));
             this.turnOffAllButton.setTextColour(0xFF653938);
@@ -81,6 +81,7 @@ public class HomeControlGraphics extends DisplayableProgram<HomeControl>
     {
         private final HomeControlGraphics graphics;
         private final ComputerButton backButton;
+        private final Component infoText;
 
         public Info(HomeControlGraphics graphics)
         {
@@ -88,6 +89,7 @@ public class HomeControlGraphics extends DisplayableProgram<HomeControl>
             this.backButton = this.addWidget(new ComputerButton(14, 14, Component.literal("<"), btn -> {
                 graphics.setScene(new Home(graphics));
             }));
+            this.infoText = graphics.translation("info");
         }
 
         @Override
@@ -100,7 +102,7 @@ public class HomeControlGraphics extends DisplayableProgram<HomeControl>
         public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
         {
             graphics.fill(0, 0, this.graphics.getWidth(), 20, 0xFF262626);
-            graphics.drawWordWrap(Minecraft.getInstance().font, Components.GUI_HOME_CONTROL_INFO, 5, 25, this.graphics.getWidth() - 10, 0xFF47403E);
+            graphics.drawWordWrap(Minecraft.getInstance().font, this.infoText, 5, 25, this.graphics.getWidth() - 10, 0xFF47403E);
         }
     }
 
