@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.overlay;
 
 import com.mrcrayfish.furniture.refurbished.Components;
+import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.blockentity.CuttingBoardBlockEntity;
 import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
@@ -35,6 +36,9 @@ public class CuttingBoardHelperOverlay implements IHudOverlay
     @Override
     public void draw(GuiGraphics graphics, float partialTick)
     {
+        if(!Config.CLIENT.showCuttingBoardHelper.get())
+            return;
+
         Minecraft mc = Minecraft.getInstance();
         if(mc.level == null || mc.hitResult == null || mc.player == null)
             return;
