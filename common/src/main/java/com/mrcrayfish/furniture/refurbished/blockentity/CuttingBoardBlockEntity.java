@@ -16,13 +16,13 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -33,6 +33,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -45,6 +47,7 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
     private final RecipeManager.CachedCheck<Container, ? extends SingleItemRecipe> slicingRecipeCache;
     private final RecipeManager.CachedCheck<Container, CuttingBoardCombiningRecipe> combiningRecipeCache;
     private final RecipeManager.CachedCheck<Container, ? extends SingleItemRecipe> outputCache;
+    protected final int useableContainerSize;
     protected boolean sync;
     protected boolean canExtract;
     protected boolean placedByPlayer;
@@ -56,7 +59,8 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
 
     public CuttingBoardBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int containerSize, RecipeType<? extends SingleItemRecipe> slicingRecipeType, RecipeType<CuttingBoardCombiningRecipe> combiningRecipeType)
     {
-        super(type, pos, state, containerSize);
+        super(type, pos, state, containerSize + 1);
+        this.useableContainerSize = containerSize;
         this.slicingRecipeCache = RecipeManager.createCheck(slicingRecipeType);
         this.combiningRecipeCache = RecipeManager.createCheck(combiningRecipeType);
         this.outputCache = RecipeManager.createCheck(slicingRecipeType);
@@ -231,7 +235,7 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
      */
     public int getHeadIndex()
     {
-        for(int i = this.containerSize - 1; i >= 0; i--)
+        for(int i = this.useableContainerSize - 1; i >= 0; i--)
         {
             if(!this.getItem(i).isEmpty())
             {
@@ -244,13 +248,13 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
     @Override
     public boolean canPlaceItem(int slotIndex, ItemStack stack)
     {
-        return slotIndex >= 0 && slotIndex < this.containerSize && slotIndex == this.getPlaceIndex() && this.isSlotInsertable(slotIndex) && this.canPlaceOnTop(stack);
+        return slotIndex >= 0 && slotIndex < this.useableContainerSize && slotIndex == this.getPlaceIndex() && this.isSlotInsertable(slotIndex) && this.canPlaceOnTop(stack);
     }
 
     @Override
     public boolean canTakeItem(Container container, int slotIndex, ItemStack stack)
     {
-        if(slotIndex >= 0 && slotIndex < this.containerSize && slotIndex == this.getHeadIndex() && this.canExtract)
+        if(slotIndex >= 0 && slotIndex < this.useableContainerSize && slotIndex == this.getHeadIndex() && this.canExtract)
         {
             return this.outputCache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level)).isEmpty();
         }
@@ -270,8 +274,12 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
     @Override
     public ItemStack removeItem(int slotIndex, int count)
     {
-        this.canExtract = false;
-        return super.removeItem(slotIndex, count);
+        ItemStack stack = super.removeItem(slotIndex, count);
+        if(this.isEmpty())
+        {
+            this.canExtract = false;
+        }
+        return stack;
     }
 
     @Override
@@ -324,7 +332,7 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
     private Optional<CuttingBoardCombiningRecipe> getNextCombiningRecipe(ItemStack stack)
     {
         int placeIndex = this.getPlaceIndex();
-        if(placeIndex >= this.containerSize)
+        if(placeIndex >= this.useableContainerSize)
             return Optional.empty();
 
         Container container = new SimpleContainer(placeIndex + 1);
@@ -352,6 +360,8 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
 
         Level level = Objects.requireNonNull(this.level);
         ItemStack stack = recipe.assemble(this, level.registryAccess());
+        List<ItemStack> remainingItems = this.getCraftingRemainingItems();
+
         this.clearContent();
         this.spawnSliceParticles(stack);
         this.spawnMagicParticles();
@@ -359,15 +369,41 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
         Vec3 center = Vec3.atBottomCenterOf(this.worldPosition);
         level.playSound(null, center.x, center.y, center.z, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 1.0F, 1.0F);
 
-
         if(spawnIntoLevel)
         {
             this.spawnItemIntoLevel(level, stack);
+            remainingItems.forEach(item -> this.spawnItemIntoLevel(this.level, item));
             return;
         }
 
+        // Add the result and remaining items back onto the cutting board
         this.setItem(0, stack);
+        for(int i = 0; i < remainingItems.size() && i < this.useableContainerSize; i++)
+        {
+            this.setItem(i + 1, remainingItems.get(i));
+        }
+
+        // Finally allow hoppers to extract items
         this.canExtract = true;
+    }
+
+    private List<ItemStack> getCraftingRemainingItems()
+    {
+        // Collect remaining items
+        List<ItemStack> remainingItems = new ArrayList<>();
+        for(int i = 0; i < this.useableContainerSize; i++)
+        {
+            ItemStack stack = this.getItem(i);
+            if(!stack.isEmpty() && stack.getItem().hasCraftingRemainingItem())
+            {
+                Item item = stack.getItem().getCraftingRemainingItem();
+                if(item != null)
+                {
+                    remainingItems.add(new ItemStack(item));
+                }
+            }
+        }
+        return remainingItems;
     }
 
     @Override
