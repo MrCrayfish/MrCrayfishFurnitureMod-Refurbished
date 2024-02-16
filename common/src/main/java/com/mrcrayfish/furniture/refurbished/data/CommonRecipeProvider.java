@@ -565,8 +565,6 @@ public class CommonRecipeProvider
         this.toasterHeating(ModItems.BREAD_SLICE.get(), ModItems.TOAST.get(), 300, 0.5F);
 
         // Slicing
-        this.cuttingBoardSlicing(Blocks.MELON, Items.MELON_SLICE, 6);
-        this.cuttingBoardSlicing(Items.APPLE, Items.DIAMOND, 8);
         this.cuttingBoardSlicing(Items.BREAD, ModItems.BREAD_SLICE.get(), 6);
 
         // Combining
@@ -576,11 +574,6 @@ public class CommonRecipeProvider
         this.cuttingBoardCombining(ModItems.GLOW_BERRY_JAM_TOAST.get(), 1,
                 Ingredient.of(ModItems.GLOW_BERRY_JAM.get()),
                 Ingredient.of(ModItems.TOAST.get()));
-        this.cuttingBoardCombining(Items.DIAMOND, 10,
-                Ingredient.of(Items.APPLE),
-                Ingredient.of(Items.APPLE),
-                Ingredient.of(Items.APPLE),
-                Ingredient.of(Items.APPLE));
 
         // Heating
         this.microwaveHeating(Items.POTATO, Items.BAKED_POTATO, 200, 0.5F);
