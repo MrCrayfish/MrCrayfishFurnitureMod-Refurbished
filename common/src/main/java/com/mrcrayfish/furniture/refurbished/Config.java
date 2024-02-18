@@ -32,8 +32,9 @@ public class Config
         public final IntProperty electricityViewDistance = IntProperty.create(48, 1, 128);
 
         @ConfigProperty(name = "showCuttingBoardHelper", comment = """
-            If enabled, shows an overlay on the HUD to help with cutting board slicing and combining recipes""")
-        public final BoolProperty showCuttingBoardHelper = BoolProperty.create(true);
+            If enabled, shows an overlay on the HUD to help with cutting board slicing and combining recipes.
+            Note: This is an experimental feature.""")
+        public final BoolProperty showCuttingBoardHelper = BoolProperty.create(false);
     }
 
     public static class Server
