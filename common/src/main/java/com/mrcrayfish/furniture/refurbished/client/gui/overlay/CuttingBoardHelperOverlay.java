@@ -19,9 +19,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -30,7 +33,7 @@ import java.util.stream.Stream;
  */
 public class CuttingBoardHelperOverlay implements IHudOverlay
 {
-    private static final int COLUMNS = 6;
+    private static final int COLUMNS = 7;
     private static final int TITLE_HEIGHT = 13;
 
     @Override
@@ -57,7 +60,7 @@ public class CuttingBoardHelperOverlay implements IHudOverlay
 
         // Get stream of combinable recipes and filter recipes that match the currently placed items
         Stream<Item> combinable = recipes.stream()
-            .filter(recipe -> recipe.matches(container, mc.level))
+            .filter(recipe -> recipe.matches(container, mc.level) && placeIndex < recipe.getIngredients().size())
             .flatMap(recipe -> Stream.of(recipe.getIngredients().get(placeIndex).getItems()))
             .map(ItemStack::getItem);
 
@@ -67,25 +70,27 @@ public class CuttingBoardHelperOverlay implements IHudOverlay
             .map(ItemStack::getItem);
 
         Stream<Item> items = placeIndex == 0 ? Stream.concat(combinable, sliceable) : combinable;
-        List<Item> placeable = items.distinct().toList();
+        List<Item> placeable = items.distinct()
+            .sorted(Comparator.comparing(Item::getId))
+            .toList();
 
         boolean drawPlaceableElement = !placeable.isEmpty();
         boolean drawSliceableElement = this.canSlice(cuttingBoard);
-        int areaWidth = COLUMNS * 18;
+        int areaWidth = COLUMNS * 18 + 8;
         int areaHeight = this.getAreaHeight(placeable, drawPlaceableElement, drawSliceableElement);
-        int areaStart = 20;
+        int areaStart = 5;
         int areaTop = (graphics.guiHeight() - areaHeight) / 2;
 
         if(drawPlaceableElement)
         {
             int elementHeight = this.getPlaceableHeight(placeable);
-            ScreenHelper.fillRounded(graphics, areaStart, areaTop, areaWidth, elementHeight, 0x77000000);
-            ScreenHelper.fillRounded(graphics, areaStart, areaTop, areaWidth, TITLE_HEIGHT, 0x77000000);
+            ScreenHelper.fillRounded(graphics, areaStart, areaTop, areaWidth, elementHeight, 0x99000000);
+            ScreenHelper.fillRounded(graphics, areaStart, areaTop, areaWidth, TITLE_HEIGHT, 0x99000000);
             graphics.drawCenteredString(Minecraft.getInstance().font, Components.GUI_PLACEABLE, areaStart + areaWidth / 2, areaTop + 2, 0xFFFFFFFF);
             for(int i = 0; i < placeable.size(); i++)
             {
-                int x = areaStart + (i % COLUMNS) * 18 + 1;
-                int y = areaTop + (i / COLUMNS) * 18 + 1 + TITLE_HEIGHT;
+                int x = areaStart + (i % COLUMNS) * 18 + 1 + 4;
+                int y = areaTop + (i / COLUMNS) * 18 + 1 + 4 + TITLE_HEIGHT;
                 graphics.renderFakeItem(new ItemStack(placeable.get(i)), x, y);
             }
         }
@@ -114,7 +119,7 @@ public class CuttingBoardHelperOverlay implements IHudOverlay
 
     private int getPlaceableHeight(List<Item> placeable)
     {
-        return ((placeable.size() / COLUMNS) + 1) * 18 + 1 + TITLE_HEIGHT;
+        return ((placeable.size() / COLUMNS) + 1) * 18 + 1 + 8 + TITLE_HEIGHT;
     }
 
     private boolean canSlice(CuttingBoardBlockEntity entity)
