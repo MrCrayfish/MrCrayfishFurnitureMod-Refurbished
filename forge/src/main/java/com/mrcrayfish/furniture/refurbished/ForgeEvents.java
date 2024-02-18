@@ -69,7 +69,7 @@ public class ForgeEvents
         {
             if(!level.isClientSide())
             {
-                cuttingBoard.placeItem(ItemStack.EMPTY);
+                cuttingBoard.removeItem();
             }
             event.setCanceled(true);
         }

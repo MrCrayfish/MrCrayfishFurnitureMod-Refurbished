@@ -87,12 +87,10 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
 
     /**
      * Places the given item onto the cutting board. The item will only be placed if it has a
-     * cutting board recipe. If an item is already placed on the cutting board, that item will be
-     * removed instead. The given input item will not be placed onto the cutting board in the same
-     * action of removing an existing item on the board.
+     * cutting board recipe.
      *
      * @param heldItem the item to place on the cutting board
-     * @return True if an item was placed or removed from the board
+     * @return True if an item was placed
      */
     public boolean placeItem(ItemStack heldItem)
     {
@@ -108,6 +106,14 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
             this.playPlaceIngredientSound(1.0F);
             return true;
         }
+        return false;
+    }
+
+    /**
+     * Removes the item on the top of the stack and spawns it into the level
+     */
+    public void removeItem()
+    {
         int removeIndex = this.getHeadIndex();
         if(removeIndex >= 0 && !this.getItem(removeIndex).isEmpty())
         {
@@ -115,9 +121,7 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
             this.spawnItemIntoLevel(this.level, stack);
             this.setItem(removeIndex, ItemStack.EMPTY);
             this.canExtract = false;
-            return true;
         }
-        return false;
     }
 
     /**
