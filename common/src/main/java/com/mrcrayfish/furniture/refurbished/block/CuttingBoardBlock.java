@@ -65,23 +65,22 @@ public class CuttingBoardBlock extends FurnitureHorizontalBlock implements Entit
         if(level.getBlockEntity(pos) instanceof CuttingBoardBlockEntity cuttingBoard)
         {
             ItemStack heldItem = player.getItemInHand(hand);
-            if(!level.isClientSide())
+            if(heldItem.is(Services.TAG.getToolKnivesTag()))
             {
-                if(heldItem.is(Services.TAG.getToolKnivesTag()))
+                boolean dropAsEntity = !Services.ENTITY.isFakePlayer(player);
+                if(cuttingBoard.sliceItem(level, dropAsEntity))
                 {
-                    boolean dropAsEntity = !Services.ENTITY.isFakePlayer(player);
-                    if(cuttingBoard.sliceItem(level, dropAsEntity))
+                    if(!level.isClientSide())
                     {
                         heldItem.hurtAndBreak(1, player, (player1) -> player1.broadcastBreakEvent(hand));
-                        return InteractionResult.CONSUME;
                     }
-                }
-                else if(cuttingBoard.placeItem(heldItem))
-                {
-                    return InteractionResult.CONSUME;
+                    return InteractionResult.sidedSuccess(level.isClientSide());
                 }
             }
-            return InteractionResult.SUCCESS;
+            else if(cuttingBoard.placeItem(heldItem))
+            {
+                return InteractionResult.sidedSuccess(level.isClientSide());
+            }
         }
         return InteractionResult.PASS;
     }

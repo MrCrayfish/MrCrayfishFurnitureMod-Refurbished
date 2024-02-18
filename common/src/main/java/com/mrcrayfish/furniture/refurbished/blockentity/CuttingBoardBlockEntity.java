@@ -100,10 +100,13 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
             ItemStack copy = heldItem.copy();
             copy.setCount(1);
             heldItem.shrink(1);
-            this.placedByPlayer = true;
-            this.canExtract = false;
+            if(!this.level.isClientSide())
+            {
+                this.placedByPlayer = true;
+                this.canExtract = false;
+                this.playPlaceIngredientSound(1.0F);
+            }
             this.setItem(placeIndex, copy);
-            this.playPlaceIngredientSound(1.0F);
             return true;
         }
         return false;
@@ -136,9 +139,12 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
         Optional<? extends SingleItemRecipe> recipe = this.getSlicingRecipe(input);
         if(recipe.isPresent())
         {
-            level.playSound(null, this.worldPosition, ModSounds.ITEM_KNIFE_CHOP.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
-            this.spawnSliceParticles(input);
-            this.spawnSliceResultFromRecipe(sliceIndex, recipe.get(), spawnIntoLevel);
+            if(!this.level.isClientSide())
+            {
+                level.playSound(null, this.worldPosition, ModSounds.ITEM_KNIFE_CHOP.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                this.spawnSliceParticles(input);
+                this.spawnSliceResultFromRecipe(sliceIndex, recipe.get(), spawnIntoLevel);
+            }
             return true;
         }
         return false;
