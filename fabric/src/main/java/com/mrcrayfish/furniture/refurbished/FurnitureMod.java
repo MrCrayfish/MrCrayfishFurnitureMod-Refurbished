@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished;
 
 import com.mrcrayfish.framework.FrameworkSetup;
 import com.mrcrayfish.furniture.refurbished.block.StorageJarBlock;
+import com.mrcrayfish.furniture.refurbished.blockentity.CuttingBoardBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.StorageJarBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
@@ -50,6 +51,12 @@ public class FurnitureMod implements ModInitializer, DataGeneratorEntrypoint
                 if(level.getBlockEntity(pos) instanceof StorageJarBlockEntity storageJar && !storageJar.isEmpty()) {
                     if(!level.isClientSide()) {
                         storageJar.popItem(player.getDirection().getOpposite());
+                    }
+                    return InteractionResult.SUCCESS;
+                }
+                else if(level.getBlockEntity(pos) instanceof CuttingBoardBlockEntity cuttingBoard && !cuttingBoard.isEmpty()) {
+                    if(!level.isClientSide()) {
+                        cuttingBoard.placeItem(ItemStack.EMPTY);
                     }
                     return InteractionResult.SUCCESS;
                 }
