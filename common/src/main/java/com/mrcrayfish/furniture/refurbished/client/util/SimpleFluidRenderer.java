@@ -41,7 +41,7 @@ public class SimpleFluidRenderer
             Fluid fluid = container.getStoredFluid();
             TextureAtlasSprite[] sprites = ClientServices.PLATFORM.getFluidSprites(fluid, level, pos, fluid.defaultFluidState());
             TextureAtlasSprite still = sprites[0];
-            int colour = fluid.isSame(Fluids.LAVA) ? 0xFFFFFF : BiomeColors.getAverageWaterColor(level, pos);
+            int colour = fluid.isSame(Fluids.WATER) ? BiomeColors.getAverageWaterColor(level, pos) : 0xFFFFFF;
             float red = FastColor.ARGB32.red(colour) / 255F;
             float green = FastColor.ARGB32.green(colour) / 255F;
             float blue = FastColor.ARGB32.blue(colour) / 255F;
