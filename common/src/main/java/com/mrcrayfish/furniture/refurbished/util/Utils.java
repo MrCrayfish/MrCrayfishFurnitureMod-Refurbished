@@ -1,23 +1,26 @@
 package com.mrcrayfish.furniture.refurbished.util;
 
+import com.google.gson.JsonObject;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.material.Fluid;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 /**
@@ -162,5 +165,20 @@ public class Utils
             return true;
         }
         return false;
+    }
+
+    public static Ingredient getIngredient(JsonObject object, String key)
+    {
+        if(GsonHelper.isArrayNode(object, key))
+        {
+            return Ingredient.fromJson(GsonHelper.getAsJsonArray(object, key), false);
+        }
+        return Ingredient.fromJson(GsonHelper.getAsJsonObject(object, key), false);
+    }
+
+    public static Fluid getFluid(JsonObject object, String key)
+    {
+        ResourceLocation id = new ResourceLocation(GsonHelper.getAsString(object, key));
+        return BuiltInRegistries.FLUID.getOptional(id).orElseThrow(() -> new RuntimeException("The fluid '%s' does not exist".formatted(id)));
     }
 }

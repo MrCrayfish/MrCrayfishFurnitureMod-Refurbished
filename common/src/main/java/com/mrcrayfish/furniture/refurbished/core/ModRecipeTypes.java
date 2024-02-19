@@ -2,15 +2,7 @@ package com.mrcrayfish.furniture.refurbished.core;
 
 import com.mrcrayfish.framework.api.registry.RegistryContainer;
 import com.mrcrayfish.framework.api.registry.RegistryEntry;
-import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardCombiningRecipe;
-import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardSlicingRecipe;
-import com.mrcrayfish.furniture.refurbished.crafting.FreezerSolidifyingRecipe;
-import com.mrcrayfish.furniture.refurbished.crafting.FryingPanCookingRecipe;
-import com.mrcrayfish.furniture.refurbished.crafting.GrillCookingRecipe;
-import com.mrcrayfish.furniture.refurbished.crafting.MicrowaveHeatingRecipe;
-import com.mrcrayfish.furniture.refurbished.crafting.RecycleBinRecyclingRecipe;
-import com.mrcrayfish.furniture.refurbished.crafting.ToasterHeatingRecipe;
-import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchCraftingRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.*;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
@@ -31,4 +23,5 @@ public class ModRecipeTypes
     public static final RegistryEntry<RecipeType<MicrowaveHeatingRecipe>> MICROWAVE_HEATING = RegistryEntry.recipeType(Utils.resource("microwave_heating"));
     public static final RegistryEntry<RecipeType<FryingPanCookingRecipe>> FRYING_PAN_COOKING = RegistryEntry.recipeType(Utils.resource("frying_pan_cooking"));
     public static final RegistryEntry<RecipeType<RecycleBinRecyclingRecipe>> RECYCLE_BIN_RECYCLING = RegistryEntry.recipeType(Utils.resource("recycle_bin_recycling"));
+    public static final RegistryEntry<RecipeType<SinkFluidMixingRecipe>> SINK_FLUID_MIXING = RegistryEntry.recipeType(Utils.resource("sink_fluid_mixing"));
 }

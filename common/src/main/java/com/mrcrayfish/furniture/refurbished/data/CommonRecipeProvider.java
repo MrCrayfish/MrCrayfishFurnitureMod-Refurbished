@@ -1499,6 +1499,13 @@ public class CommonRecipeProvider
         builder.save(this.consumer, Utils.resource("combining/" + baseName));
     }
 
+    private void sinkFluidMixing(Fluid fluid, Ingredient catalyst, ItemStack result)
+    {
+        String baseName = result.getItem().toString();
+        SinkFluidMixingRecipe.Builder builder = SinkFluidMixingRecipe.Builder.from(fluid, catalyst, result);
+        builder.save(this.consumer, Utils.resource("fluid_mixing/" + baseName));
+    }
+
     private Set<Item> recycledItems = new HashSet<>();
 
     private void recycleBinSalvaging(ItemLike baseItem, ItemStack ... outputItems)
