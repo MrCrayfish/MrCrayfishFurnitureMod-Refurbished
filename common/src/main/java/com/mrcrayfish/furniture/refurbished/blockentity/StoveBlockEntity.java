@@ -1,14 +1,18 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.furniture.refurbished.block.StoveBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
+import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.inventory.BuildableContainerData;
 import com.mrcrayfish.furniture.refurbished.inventory.StoveMenu;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -16,10 +20,16 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.Nameable;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -29,15 +39,26 @@ import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.IntStream;
 
 /**
  * Author: MrCrayfish
  */
+@SuppressWarnings("UnstableApiUsage")
 public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implements IProcessingBlock, IHeatingSource, IPowerSwitch, IHomeControlDevice, Nameable
 {
     public static final int DATA_POWERED = 0;
     public static final int DATA_ENABLED = 1;
+    public static final int DATA_PROGRESS_1 = 2;
+    public static final int DATA_PROGRESS_2 = 3;
+    public static final int DATA_PROGRESS_3 = 4;
+    public static final int DATA_TOTAL_PROGRESS_1 = 5;
+    public static final int DATA_TOTAL_PROGRESS_2 = 6;
+    public static final int DATA_TOTAL_PROGRESS_3 = 7;
 
+    protected final ImmutableList<CookingSpace> spaces;
     protected boolean enabled;
     protected boolean processing;
     protected int totalProcessingTime;
@@ -48,8 +69,14 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     protected @Nullable Component name;
 
     protected final ContainerData data = new BuildableContainerData(builder -> {
-        builder.add(DATA_POWERED, () -> isPowered() ? 1 : 0, value -> {});
+        builder.add(DATA_POWERED, () -> this.isPowered() ? 1 : 0, value -> {});
         builder.add(DATA_ENABLED, () -> enabled ? 1 : 0, value -> {});
+        builder.add(DATA_PROGRESS_1, () -> this.getCookingSpaces(0).bakingTime, value -> {});
+        builder.add(DATA_PROGRESS_2, () -> this.getCookingSpaces(1).bakingTime, value -> {});
+        builder.add(DATA_PROGRESS_3, () -> this.getCookingSpaces(2).bakingTime, value -> {});
+        builder.add(DATA_TOTAL_PROGRESS_1, () -> this.getCookingSpaces(0).totalBakingTime, value -> {});
+        builder.add(DATA_TOTAL_PROGRESS_2, () -> this.getCookingSpaces(1).totalBakingTime, value -> {});
+        builder.add(DATA_TOTAL_PROGRESS_3, () -> this.getCookingSpaces(2).totalBakingTime, value -> {});
     });
 
     public StoveBlockEntity(BlockPos pos, BlockState state)
@@ -60,6 +87,16 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     public StoveBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
     {
         super(type, pos, state, 6);
+        this.spaces = Util.make(() -> {
+            ImmutableList.Builder<CookingSpace> builder = ImmutableList.builderWithExpectedSize(3);
+            IntStream.range(0, 3).forEach(i -> builder.add(new CookingSpace(i, i + 3, ModRecipeTypes.OVEN_BAKING.get())));
+            return builder.build();
+        });
+    }
+
+    private CookingSpace getCookingSpaces(int index)
+    {
+        return this.spaces.get(index);
     }
 
     @Override
@@ -198,6 +235,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     {
         ElectricityModuleLootBlockEntity.serverTick(level, pos, state, stove);
         stove.processTick();
+        stove.spaces.forEach(IProcessingBlock::processTick);
         if(stove.sync)
         {
             BlockEntityHelper.sendCustomUpdate(stove, stove.getUpdateTag());
@@ -353,6 +391,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
         {
             this.enabled = tag.getBoolean("Enabled");
         }
+        this.readCookingSpaces(tag);
     }
 
     @Override
@@ -363,6 +402,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
         tag.putInt("TotalProcessingTime", this.totalProcessingTime);
         tag.putInt("ProcessingTime", this.processingTime);
         tag.putBoolean("Enabled", this.enabled);
+        this.writeCookingSpaces(tag);
     }
 
     @Override
@@ -456,5 +496,212 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     public void setCustomName(@Nullable Component name)
     {
         this.name = name;
+    }
+
+    /**
+     * Writes the Cooking Spaces to NBT.
+     *
+     * @param compound the compound tag to save the data to
+     * @return the compound tag the data saved to
+     */
+    private CompoundTag writeCookingSpaces(CompoundTag compound)
+    {
+        ListTag list = new ListTag();
+        for(int i = 0; i < this.spaces.size(); i++)
+        {
+            CompoundTag tag = new CompoundTag();
+            this.spaces.get(i).writeToTag(tag);
+            tag.putInt("Position", i);
+            list.add(tag);
+        }
+        compound.put("CookingSpaces", list);
+        return compound;
+    }
+
+    /**
+     * Reads the Cooking Spaces from NBT. This method has been designed to accept partial data.
+     * This means it can read the data from one cooking space and not reset/affect the other spaces.
+     * This use case is used for reading sync data, while still being a general method to read all
+     * the cooking spaces.
+     *
+     * @param compound the compound tag to read from
+     */
+    private void readCookingSpaces(CompoundTag compound)
+    {
+        if(compound.contains("CookingSpaces", Tag.TAG_LIST))
+        {
+            ListTag list = compound.getList("CookingSpaces", Tag.TAG_COMPOUND);
+            list.forEach(nbt -> {
+                CompoundTag tag = (CompoundTag) nbt;
+                if(tag.contains("Position", Tag.TAG_INT)) {
+                    int position = tag.getInt("Position");
+                    if(position >= 0 && position < this.spaces.size()) {
+                        this.spaces.get(position).readFromTag(tag);
+                    }
+                }
+            });
+        }
+    }
+
+    protected class CookingSpace implements IProcessingBlock
+    {
+        private final int inputIndex;
+        private final int outputIndex;
+        private final RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> inputRecipeCache;
+        private int totalBakingTime;
+        private int bakingTime;
+
+        public CookingSpace(int inputIndex, int outputIndex, RecipeType<? extends AbstractCookingRecipe> recipeType)
+        {
+            this.inputIndex = inputIndex;
+            this.outputIndex = outputIndex;
+            this.inputRecipeCache = RecipeManager.createCheck(recipeType);
+        }
+
+        @Override
+        public int getEnergy()
+        {
+            return 0;
+        }
+
+        @Override
+        public void addEnergy(int energy) {}
+
+        @Override
+        public boolean requiresEnergy()
+        {
+            return false;
+        }
+
+        @Override
+        public int retrieveEnergy(boolean simulate)
+        {
+            return 0;
+        }
+
+        @Override
+        public int updateAndGetTotalProcessingTime()
+        {
+            int time = 0;
+            Optional<? extends AbstractCookingRecipe> optional = this.getRecipe();
+            if(optional.isPresent())
+            {
+                time = Math.max(time, optional.get().getCookingTime());
+            }
+            if(this.totalBakingTime != time)
+            {
+                this.totalBakingTime = time;
+            }
+            return this.totalBakingTime;
+        }
+
+        @Override
+        public int getTotalProcessingTime()
+        {
+            return this.totalBakingTime;
+        }
+
+        @Override
+        public int getProcessingTime()
+        {
+            return this.bakingTime;
+        }
+
+        @Override
+        public void setProcessingTime(int time)
+        {
+            this.bakingTime = time;
+        }
+
+        @Override
+        public void onCompleteProcess()
+        {
+            ItemStack stack = StoveBlockEntity.this.getItem(this.inputIndex);
+            if(!stack.isEmpty())
+            {
+                Item remainingItem = stack.getItem().getCraftingRemainingItem();
+                Optional<? extends AbstractCookingRecipe> optional = this.getRecipe();
+                Level level = Objects.requireNonNull(StoveBlockEntity.this.getLevel());
+                ItemStack result = optional.map(recipe -> recipe.getResultItem(level.registryAccess())).orElse(ItemStack.EMPTY);
+                stack.shrink(1);
+                if(!result.isEmpty())
+                {
+                    ItemStack copy = result.copy();
+                    ItemStack outputStack = StoveBlockEntity.this.getItem(this.outputIndex);
+                    if(outputStack.isEmpty())
+                    {
+                        StoveBlockEntity.this.setItem(this.outputIndex, copy);
+                        return;
+                    }
+                    else if(ItemStack.matches(copy, outputStack) && outputStack.getCount() < outputStack.getMaxStackSize())
+                    {
+                        outputStack.grow(1);
+                    }
+                    if(remainingItem != null)
+                    {
+                        StoveBlockEntity.this.setItem(this.inputIndex, new ItemStack(remainingItem));
+                    }
+                }
+            }
+        }
+
+        @Override
+        public boolean canProcess()
+        {
+            if(!StoveBlockEntity.this.isPowered() || !StoveBlockEntity.this.enabled)
+                return false;
+
+            ItemStack stack = StoveBlockEntity.this.getItem(this.inputIndex);
+            if(!stack.isEmpty())
+            {
+                Optional<? extends AbstractCookingRecipe> optional = this.getRecipe();
+                if(optional.isEmpty())
+                {
+                    return false;
+                }
+
+                Level level = Objects.requireNonNull(StoveBlockEntity.this.getLevel());
+                ItemStack result = optional.get().getResultItem(level.registryAccess());
+                return this.canOutput(result);
+            }
+            return false;
+        }
+
+        private boolean canOutput(ItemStack result)
+        {
+            if(result.isEmpty())
+                return false;
+            ItemStack stack = StoveBlockEntity.this.getItem(this.outputIndex);
+            return stack.isEmpty() || ItemStack.isSameItemSameTags(result, stack) && stack.getCount() < stack.getMaxStackSize();
+        }
+
+        private Optional<? extends AbstractCookingRecipe> getRecipe()
+        {
+            ItemStack stack = StoveBlockEntity.this.getItem(this.inputIndex);
+            if(!stack.isEmpty())
+            {
+                Level level = StoveBlockEntity.this.getLevel();
+                return this.inputRecipeCache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(level));
+            }
+            return Optional.empty();
+        }
+
+        public void writeToTag(CompoundTag tag)
+        {
+            tag.putInt("CookingTime", this.bakingTime);
+            tag.putInt("TotalCookingTime", this.totalBakingTime);
+        }
+
+        public void readFromTag(CompoundTag tag)
+        {
+            if(tag.contains("CookingTime", Tag.TAG_INT))
+            {
+                this.bakingTime = tag.getInt("CookingTime");
+            }
+            if(tag.contains("TotalCookingTime", Tag.TAG_INT))
+            {
+                this.totalBakingTime = tag.getInt("TotalCookingTime");
+            }
+        }
     }
 }

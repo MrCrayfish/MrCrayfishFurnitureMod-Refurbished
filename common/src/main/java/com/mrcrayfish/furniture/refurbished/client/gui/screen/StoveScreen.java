@@ -53,5 +53,15 @@ public class StoveScreen extends ElectricityContainerScreen<StoveMenu>
 
         int offset = this.menu.isPowered() && this.menu.isEnabled() ? (int) (Util.getMillis() / 100) % 3 : 0;
         graphics.blit(TEXTURE, this.leftPos + 32, this.topPos + 23, 176, 16 + offset * 40, 40, 40);
+
+        for(int i = 0; i < 3; i++)
+        {
+            int progress = this.menu.getBakingProgress(i);
+            int totalProgress = this.menu.getTotalBakingProgress(i);
+            if(totalProgress == 0)
+                continue;
+            int height = (int) Math.ceil(16 * (progress / (float) totalProgress));
+            graphics.blit(TEXTURE, this.leftPos + 84 + i * 18, this.topPos + 36, 190, 0, 17, height);
+        }
     }
 }

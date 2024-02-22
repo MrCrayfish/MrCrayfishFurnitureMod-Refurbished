@@ -1,10 +1,10 @@
 package com.mrcrayfish.furniture.refurbished.inventory;
 
 import com.mrcrayfish.furniture.refurbished.blockentity.IPowerSwitch;
-import com.mrcrayfish.furniture.refurbished.blockentity.RecycleBinBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.StoveBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
-import com.mrcrayfish.furniture.refurbished.inventory.slot.FuelSlot;
+import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
+import com.mrcrayfish.furniture.refurbished.inventory.slot.ResultSlot;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -14,6 +14,7 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 /**
  * Author: MrCrayfish
@@ -21,21 +22,23 @@ import net.minecraft.world.item.ItemStack;
 public class StoveMenu extends SimpleContainerMenu implements IPowerSwitchMenu, IElectricityMenu
 {
     private final ContainerData data;
+    private final Level level;
 
     public StoveMenu(int windowId, Inventory playerInventory)
     {
-        this(windowId, playerInventory, new SimpleContainer(6), new SimpleContainerData(2));
+        this(windowId, playerInventory, new SimpleContainer(6), new SimpleContainerData(8));
     }
 
     public StoveMenu(int windowId, Inventory playerInventory, Container container, ContainerData data)
     {
         super(ModMenuTypes.STOVE.get(), windowId, container);
         checkContainerSize(container, 6);
-        checkContainerDataCount(data, 2);
+        checkContainerDataCount(data, 8);
         container.startOpen(playerInventory.player);
         this.data = data;
+        this.level = playerInventory.player.level();
         this.addContainerSlots(85, 18, 3, 1, 0);
-        this.addContainerSlots(85, 54, 3, 1, 3);
+        this.addContainerSlots(85, 54, 3, 1, 3, ResultSlot::new);
         this.addPlayerInventorySlots(8, 84, playerInventory);
         this.addDataSlots(data);
     }
@@ -56,9 +59,9 @@ public class StoveMenu extends SimpleContainerMenu implements IPowerSwitchMenu, 
                     return ItemStack.EMPTY;
                 }
             }
-            else if(this.isFuel(slotStack))
+            else if(this.isRecipe(slotStack))
             {
-                if(!this.moveItemStackTo(slotStack, 0, this.container.getContainerSize(), false))
+                if(!this.moveItemStackTo(slotStack, 0, 3, false))
                 {
                     return ItemStack.EMPTY;
                 }
@@ -87,9 +90,29 @@ public class StoveMenu extends SimpleContainerMenu implements IPowerSwitchMenu, 
         return stack;
     }
 
-    private boolean isFuel(ItemStack stack)
+    private boolean isRecipe(ItemStack stack)
     {
-        return Services.ITEM.getBurnTime(stack, null) > 0;
+        return this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.OVEN_BAKING.get(), new SimpleContainer(stack), this.level).isPresent();
+    }
+
+    public int getBakingProgress(int index)
+    {
+        return switch(index) {
+            case 0 -> this.data.get(StoveBlockEntity.DATA_PROGRESS_1);
+            case 1 -> this.data.get(StoveBlockEntity.DATA_PROGRESS_2);
+            case 2 -> this.data.get(StoveBlockEntity.DATA_PROGRESS_3);
+            default -> 0;
+        };
+    }
+
+    public int getTotalBakingProgress(int index)
+    {
+        return switch(index) {
+            case 0 -> this.data.get(StoveBlockEntity.DATA_TOTAL_PROGRESS_1);
+            case 1 -> this.data.get(StoveBlockEntity.DATA_TOTAL_PROGRESS_2);
+            case 2 -> this.data.get(StoveBlockEntity.DATA_TOTAL_PROGRESS_3);
+            default -> 0;
+        };
     }
 
     @Override

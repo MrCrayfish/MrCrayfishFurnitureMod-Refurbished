@@ -41,5 +41,9 @@ public class SimpleCookingRecipeBuilderMixin
         {
             cir.setReturnValue(CookingBookCategory.FOOD);
         }
+        else if(serializer == ModRecipeSerializers.OVEN_BAKING.get())
+        {
+            cir.setReturnValue(CookingBookCategory.FOOD);
+        }
     }
 }
