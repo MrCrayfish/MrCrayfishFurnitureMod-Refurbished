@@ -24,4 +24,5 @@ public class ModRecipeTypes
     public static final RegistryEntry<RecipeType<FryingPanCookingRecipe>> FRYING_PAN_COOKING = RegistryEntry.recipeType(Utils.resource("frying_pan_cooking"));
     public static final RegistryEntry<RecipeType<RecycleBinRecyclingRecipe>> RECYCLE_BIN_RECYCLING = RegistryEntry.recipeType(Utils.resource("recycle_bin_recycling"));
     public static final RegistryEntry<RecipeType<SinkFluidMixingRecipe>> SINK_FLUID_MIXING = RegistryEntry.recipeType(Utils.resource("sink_fluid_mixing"));
+    public static final RegistryEntry<RecipeType<OvenBakingRecipe>> OVEN_BAKING = RegistryEntry.recipeType(Utils.resource("oven_baking"));
 }

@@ -1517,6 +1517,11 @@ public class CommonRecipeProvider
     {
         this.cooking("frying", RecipeCategory.FOOD, ModRecipeSerializers.FRYING_PAN_RECIPE.get(), baseItem, heatedItem, heatingTime, experience);
     }
+    
+    private void ovenBaking(ItemLike baseItem, ItemLike heatedItem, int heatingTime, float experience)
+    {
+        this.cooking("baking", RecipeCategory.FOOD, ModRecipeSerializers.OVEN_BAKING.get(), baseItem, heatedItem, heatingTime, experience);
+    }
 
     private void cuttingBoardSlicing(ItemLike baseItem, ItemLike resultItem, int resultCount)
     {

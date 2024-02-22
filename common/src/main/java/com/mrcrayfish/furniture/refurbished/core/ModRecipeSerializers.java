@@ -27,4 +27,5 @@ public class ModRecipeSerializers
     public static final RegistryEntry<RecycleBinRecyclingRecipe.Serializer> RECYCLE_BIN_RECIPE = RegistryEntry.recipeSerializer(Utils.resource("recycle_bin_recycling"), RecycleBinRecyclingRecipe.Serializer::new);
     public static final RegistryEntry<RecipeSerializer<DoorMatCopyRecipe>> DOOR_MAT_COPY_RECIPE = RegistryEntry.recipeSerializer(Utils.resource("crafting_special_door_mat_copy"), () -> new SimpleCraftingRecipeSerializer<>(DoorMatCopyRecipe::new));
     public static final RegistryEntry<RecipeSerializer<SinkFluidMixingRecipe>> SINK_FLUID_MIXING_RECIPE = RegistryEntry.recipeSerializer(Utils.resource("fluid_mixing"), SinkFluidMixingRecipe.Serializer::new);
+    public static final RegistryEntry<RecipeSerializer<OvenBakingRecipe>> OVEN_BAKING = RegistryEntry.recipeSerializer(Utils.resource("oven_baking"), () -> Services.RECIPE.createSimpleCookingSerializer(OvenBakingRecipe::new, 300));
 }
