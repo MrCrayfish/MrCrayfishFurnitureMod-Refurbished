@@ -606,6 +606,12 @@ public class CommonRecipeProvider
         this.cuttingBoardSlicing(Items.PITCHER_PLANT, Items.CYAN_DYE, 3);
 
         // Combining
+        this.cuttingBoardCombining(ModItems.WHEAT_FLOUR.get(), 1,
+                Ingredient.of(Items.WHEAT),
+                Ingredient.of(Items.WHEAT),
+                Ingredient.of(Items.WHEAT),
+                Ingredient.of(Items.WHEAT),
+                Ingredient.of(Items.BOWL));
         this.cuttingBoardCombining(ModItems.SWEET_BERRY_JAM_TOAST.get(), 1,
                 Ingredient.of(ModItems.SWEET_BERRY_JAM.get()),
                 Ingredient.of(ModItems.TOAST.get()));
@@ -619,6 +625,9 @@ public class CommonRecipeProvider
         // Frying
         this.fryingPanCooking(Items.SWEET_BERRIES, ModItems.SWEET_BERRY_JAM.get(), 400, 0.5F);
         this.fryingPanCooking(Items.GLOW_BERRIES, ModItems.GLOW_BERRY_JAM.get(), 400, 0.5F);
+
+        // Baking
+        this.ovenBaking(Items.WATER_BUCKET, ModItems.SEA_SALT.get(), 1200, 0.5F);
 
         // Recycling
         this.recycleBinSalvaging(Items.OAK_STAIRS, new ItemStack(Items.OAK_PLANKS, 1));
@@ -1517,7 +1526,7 @@ public class CommonRecipeProvider
     {
         this.cooking("frying", RecipeCategory.FOOD, ModRecipeSerializers.FRYING_PAN_RECIPE.get(), baseItem, heatedItem, heatingTime, experience);
     }
-    
+
     private void ovenBaking(ItemLike baseItem, ItemLike heatedItem, int heatingTime, float experience)
     {
         this.cooking("baking", RecipeCategory.FOOD, ModRecipeSerializers.OVEN_BAKING.get(), baseItem, heatedItem, heatingTime, experience);
