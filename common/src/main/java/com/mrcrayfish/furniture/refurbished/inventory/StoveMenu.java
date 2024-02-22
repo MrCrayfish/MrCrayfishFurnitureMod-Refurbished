@@ -24,16 +24,18 @@ public class StoveMenu extends SimpleContainerMenu implements IPowerSwitchMenu, 
 
     public StoveMenu(int windowId, Inventory playerInventory)
     {
-        this(windowId, playerInventory, new SimpleContainer(1), new SimpleContainerData(2));
+        this(windowId, playerInventory, new SimpleContainer(6), new SimpleContainerData(2));
     }
 
     public StoveMenu(int windowId, Inventory playerInventory, Container container, ContainerData data)
     {
         super(ModMenuTypes.STOVE.get(), windowId, container);
-        checkContainerSize(container, 1);
+        checkContainerSize(container, 6);
         checkContainerDataCount(data, 2);
         container.startOpen(playerInventory.player);
         this.data = data;
+        this.addContainerSlots(85, 18, 3, 1, 0);
+        this.addContainerSlots(85, 54, 3, 1, 3);
         this.addPlayerInventorySlots(8, 84, playerInventory);
         this.addDataSlots(data);
     }

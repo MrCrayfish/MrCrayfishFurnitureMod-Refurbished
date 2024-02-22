@@ -59,7 +59,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
 
     public StoveBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
     {
-        super(type, pos, state, 1);
+        super(type, pos, state, 6);
     }
 
     @Override
