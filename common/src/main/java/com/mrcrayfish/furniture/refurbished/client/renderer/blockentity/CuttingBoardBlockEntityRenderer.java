@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.mrcrayfish.furniture.refurbished.block.CuttingBoardBlock;
 import com.mrcrayfish.furniture.refurbished.blockentity.CuttingBoardBlockEntity;
+import com.mrcrayfish.furniture.refurbished.core.ModTags;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -43,10 +44,19 @@ public class CuttingBoardBlockEntityRenderer implements BlockEntityRenderer<Cutt
             {
                 this.random.setSeed(cuttingBoard.getBlockPos().hashCode() + i);
                 poseStack.pushPose();
-                poseStack.mulPose(Axis.ZP.rotation((float) this.random.nextGaussian() * Mth.PI * 0.025F));
+                if(stack.is(ModTags.Items.DISPLAY_AS_BLOCK))
+                {
+                    poseStack.mulPose(Axis.XP.rotation(Mth.HALF_PI));
+                    poseStack.scale(0.5F, 0.5F, 0.5F);
+                    poseStack.translate(0, 0.5 - 0.0625, 0);
+                }
+                else
+                {
+                    poseStack.mulPose(Axis.ZP.rotation((float) this.random.nextGaussian() * Mth.PI * 0.025F));
+                }
                 this.renderer.renderStatic(stack, ItemDisplayContext.NONE, light, overlay, poseStack, source, cuttingBoard.getLevel(), 0);
                 poseStack.popPose();
-                poseStack.translate(0, 0, 0.0625);
+                poseStack.translate(0, 0, stack.is(ModTags.Items.DISPLAY_AS_BLOCK) ? 0.5 : 0.0625);
             }
         }
         poseStack.popPose();

@@ -41,6 +41,7 @@ public class ModTags
         public static final TagKey<Item> WOODEN_TOILETS = tag("wooden_toilets");
         public static final TagKey<Item> WOODEN_BASINS = tag("wooden_basins");
         public static final TagKey<Item> WOODEN_BATHS = tag("wooden_baths");
+        public static final TagKey<Item> DISPLAY_AS_BLOCK = tag("display_as_block");
 
         private static TagKey<Item> tag(String name)
         {
