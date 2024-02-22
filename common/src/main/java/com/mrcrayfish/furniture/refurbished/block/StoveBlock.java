@@ -10,6 +10,7 @@ import com.mrcrayfish.furniture.refurbished.blockentity.StoveContainer;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.data.DropWithName;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
+import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -141,7 +142,7 @@ public class StoveBlock extends FurnitureHorizontalBlock implements EntityBlock,
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
     {
-        return new StoveBlockEntity(pos, state);
+        return Services.BLOCK_ENTITY.createStoveBlockEntity(pos, state);
     }
 
     @Nullable
