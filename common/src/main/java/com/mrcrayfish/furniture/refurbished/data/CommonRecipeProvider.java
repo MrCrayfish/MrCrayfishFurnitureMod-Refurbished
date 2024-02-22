@@ -615,6 +615,10 @@ public class CommonRecipeProvider
                 Ingredient.of(Items.WHEAT),
                 Ingredient.of(Items.WHEAT),
                 Ingredient.of(Items.BOWL));
+        this.cuttingBoardCombining(ModItems.CHEESE_SANDWICH.get(), 1,
+                Ingredient.of(ModItems.BREAD_SLICE.get()),
+                Ingredient.of(ModItems.CHEESE.get()),
+                Ingredient.of(ModItems.BREAD_SLICE.get()));
         this.cuttingBoardCombining(ModItems.SWEET_BERRY_JAM_TOAST.get(), 1,
                 Ingredient.of(ModItems.SWEET_BERRY_JAM.get()),
                 Ingredient.of(ModItems.TOAST.get()));

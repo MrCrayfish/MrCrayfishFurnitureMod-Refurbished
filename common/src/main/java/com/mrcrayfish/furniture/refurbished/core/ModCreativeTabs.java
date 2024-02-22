@@ -475,11 +475,12 @@ public class ModCreativeTabs
             output.accept(ModItems.SEA_SALT.get());
             output.accept(ModItems.WHEAT_FLOUR.get());
             output.accept(ModItems.CHEESE.get());
+            output.accept(ModItems.SWEET_BERRY_JAM.get());
+            output.accept(ModItems.GLOW_BERRY_JAM.get());
             output.accept(ModItems.BREAD_SLICE.get());
             output.accept(ModItems.TOAST.get());
-            output.accept(ModItems.SWEET_BERRY_JAM.get());
+            output.accept(ModItems.CHEESE_SANDWICH.get());
             output.accept(ModItems.SWEET_BERRY_JAM_TOAST.get());
-            output.accept(ModItems.GLOW_BERRY_JAM.get());
             output.accept(ModItems.GLOW_BERRY_JAM_TOAST.get());
         });
     });

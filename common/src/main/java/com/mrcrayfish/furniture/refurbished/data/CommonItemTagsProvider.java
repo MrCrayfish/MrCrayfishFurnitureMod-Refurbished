@@ -738,11 +738,12 @@ public class CommonItemTagsProvider
         food.add(ModItems.SEA_SALT.get());
         food.add(ModItems.WHEAT_FLOUR.get());
         food.add(ModItems.CHEESE.get());
+        food.add(ModItems.SWEET_BERRY_JAM.get());
+        food.add(ModItems.GLOW_BERRY_JAM.get());
         food.add(ModItems.BREAD_SLICE.get());
         food.add(ModItems.TOAST.get());
-        food.add(ModItems.SWEET_BERRY_JAM.get());
+        food.add(ModItems.CHEESE_SANDWICH.get());
         food.add(ModItems.SWEET_BERRY_JAM_TOAST.get());
-        food.add(ModItems.GLOW_BERRY_JAM.get());
         food.add(ModItems.GLOW_BERRY_JAM_TOAST.get());
 
         TagBuilder<Item> items = builder.apply(ModTags.Items.ITEMS);
