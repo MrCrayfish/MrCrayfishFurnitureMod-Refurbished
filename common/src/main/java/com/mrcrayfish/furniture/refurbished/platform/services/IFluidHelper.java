@@ -28,4 +28,6 @@ public interface IFluidHelper
     InteractionResult performInteractionWithBlock(Player player, InteractionHand hand, Level level, BlockPos pos, Direction face);
 
     boolean isFluidContainerItem(ItemStack stack);
+
+    Fluid getMilkFluid();
 }

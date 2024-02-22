@@ -64,6 +64,12 @@ public class FabricFluidHelper implements IFluidHelper
         return !stack.isEmpty() && FluidStorage.ITEM.find(stack, ContainerItemContext.withConstant(stack)) != null;
     }
 
+    @Override
+    public Fluid getMilkFluid()
+    {
+        return null; // TODO milk fluid for fabric
+    }
+
     public static class FabricFluidContainer extends FluidContainer
     {
         private final SingleFluidStorage tank;

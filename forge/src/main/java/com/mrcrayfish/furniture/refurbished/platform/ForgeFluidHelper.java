@@ -13,6 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
@@ -57,6 +58,12 @@ public class ForgeFluidHelper implements IFluidHelper
     public boolean isFluidContainerItem(ItemStack stack)
     {
         return !stack.isEmpty() && stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent();
+    }
+
+    @Override
+    public Fluid getMilkFluid()
+    {
+        return ForgeMod.MILK.get();
     }
 
     public static class ForgeFluidContainer extends FluidContainer

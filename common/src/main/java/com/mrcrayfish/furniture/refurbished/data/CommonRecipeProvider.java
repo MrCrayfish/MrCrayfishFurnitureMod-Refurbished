@@ -7,7 +7,9 @@ import com.mrcrayfish.furniture.refurbished.core.ModRecipeSerializers;
 import com.mrcrayfish.furniture.refurbished.core.ModTags;
 import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardCombiningRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.RecycleBinRecyclingRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.SinkFluidMixingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchCraftingRecipe;
+import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -29,6 +31,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Fluid;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -628,6 +631,8 @@ public class CommonRecipeProvider
 
         // Baking
         this.ovenBaking(Items.WATER_BUCKET, ModItems.SEA_SALT.get(), 1200, 0.5F);
+
+        this.sinkFluidMixing(Services.FLUID.getMilkFluid(), Ingredient.of(ModItems.SEA_SALT.get()), new ItemStack(ModItems.CHEESE.get(), 2));
 
         // Recycling
         this.recycleBinSalvaging(Items.OAK_STAIRS, new ItemStack(Items.OAK_PLANKS, 1));
