@@ -565,7 +565,45 @@ public class CommonRecipeProvider
         this.toasterHeating(ModItems.BREAD_SLICE.get(), ModItems.TOAST.get(), 300, 0.5F);
 
         // Slicing
+        this.cuttingBoardSlicing(Blocks.MELON, Items.MELON_SLICE, 9);
         this.cuttingBoardSlicing(Items.BREAD, ModItems.BREAD_SLICE.get(), 6);
+        this.cuttingBoardSlicing(Blocks.GRASS, Items.WHEAT_SEEDS, 1);
+        this.cuttingBoardSlicing(Blocks.DEAD_BUSH, Items.STICK, 2);
+        this.cuttingBoardSlicing(Items.BONE, Items.BONE_MEAL, 4);
+        this.cuttingBoardSlicing(Items.FEATHER, Items.STRING, 1);
+        this.cuttingBoardSlicing(Blocks.COBWEB, Items.STRING, 2);
+        this.cuttingBoardSlicing(Blocks.PUMPKIN, Items.PUMPKIN_SEEDS, 5);
+        this.cuttingBoardSlicing(Blocks.HONEYCOMB_BLOCK, Items.HONEYCOMB, 4);
+        this.cuttingBoardSlicing(Blocks.MANGROVE_ROOTS, Items.STICK, 8);
+        this.cuttingBoardSlicing(Blocks.SLIME_BLOCK, Items.SLIME_BALL, 9);
+        this.cuttingBoardSlicing(Items.SPIDER_EYE, Items.RED_DYE, 1);
+        this.cuttingBoardSlicing(Items.ROTTEN_FLESH, Items.BROWN_DYE, 1);
+        this.cuttingBoardSlicing(Items.SWEET_BERRIES, Items.RED_DYE, 1);
+        this.cuttingBoardSlicing(Items.GLOW_BERRIES, Items.ORANGE_DYE, 1);
+        this.cuttingBoardSlicing(Items.DRIED_KELP, Items.BLACK_DYE, 1);
+        this.cuttingBoardSlicing(Items.SEAGRASS, Items.GREEN_DYE, 1);
+        this.cuttingBoardSlicing(Items.LILY_PAD, Items.GREEN_DYE, 1);
+        this.cuttingBoardSlicing(Items.DANDELION, Items.YELLOW_DYE, 2);
+        this.cuttingBoardSlicing(Items.POPPY, Items.RED_DYE, 2);
+        this.cuttingBoardSlicing(Items.BLUE_ORCHID, Items.LIGHT_BLUE_DYE, 2);
+        this.cuttingBoardSlicing(Items.ALLIUM, Items.MAGENTA_DYE, 2);
+        this.cuttingBoardSlicing(Items.AZURE_BLUET, Items.LIGHT_GRAY_DYE, 2);
+        this.cuttingBoardSlicing(Items.RED_TULIP, Items.RED_DYE, 2);
+        this.cuttingBoardSlicing(Items.ORANGE_TULIP, Items.ORANGE_DYE, 2);
+        this.cuttingBoardSlicing(Items.WHITE_TULIP, Items.WHITE_DYE, 2);
+        this.cuttingBoardSlicing(Items.PINK_TULIP, Items.PINK_DYE, 2);
+        this.cuttingBoardSlicing(Items.OXEYE_DAISY, Items.WHITE_DYE, 2);
+        this.cuttingBoardSlicing(Items.CORNFLOWER, Items.BLUE_DYE, 2);
+        this.cuttingBoardSlicing(Items.LILY_OF_THE_VALLEY, Items.WHITE_DYE, 2);
+        this.cuttingBoardSlicing(Items.TORCHFLOWER, Items.ORANGE_DYE, 2);
+        this.cuttingBoardSlicing(Items.WITHER_ROSE, Items.BLACK_DYE, 2);
+        this.cuttingBoardSlicing(Items.PINK_PETALS, Items.PINK_DYE, 2);
+        this.cuttingBoardSlicing(Items.SPORE_BLOSSOM, Items.PINK_DYE, 2);
+        this.cuttingBoardSlicing(Items.SUNFLOWER, Items.YELLOW_DYE, 3);
+        this.cuttingBoardSlicing(Items.LILAC, Items.MAGENTA_DYE, 3);
+        this.cuttingBoardSlicing(Items.ROSE_BUSH, Items.RED_DYE, 3);
+        this.cuttingBoardSlicing(Items.PEONY, Items.PINK_DYE, 3);
+        this.cuttingBoardSlicing(Items.PITCHER_PLANT, Items.CYAN_DYE, 3);
 
         // Combining
         this.cuttingBoardCombining(ModItems.SWEET_BERRY_JAM_TOAST.get(), 1,
@@ -1452,7 +1490,7 @@ public class CommonRecipeProvider
         SimpleCookingRecipeBuilder
                 .generic(Ingredient.of(input), category, output, experience, time, serializer)
                 .unlockedBy("has_" + baseName, this.hasItem.apply(input))
-                .save(this.consumer, Utils.resource(folder + "/" + resultName));
+                .save(this.consumer, Utils.resource(folder + "/" + resultName + "_from_" + baseName));
     }
 
     private void grillCooking(ItemLike rawItem, ItemLike cookedItem, int cookingTime, float experience)
@@ -1485,7 +1523,7 @@ public class CommonRecipeProvider
         String baseName = baseItem.asItem().toString();
         String resultName = resultItem.asItem().toString();
         SingleItemRecipeBuilder builder = new SingleItemRecipeBuilder(RecipeCategory.MISC, ModRecipeSerializers.CUTTING_BOARD_SLICING_RECIPE.get(), Ingredient.of(baseItem), resultItem, resultCount);
-        builder.unlockedBy("has_" + baseName, this.hasItem.apply(baseItem)).save(this.consumer, Utils.resource("slicing/" + resultName));
+        builder.unlockedBy("has_" + baseName, this.hasItem.apply(baseItem)).save(this.consumer, Utils.resource("slicing/" + resultName + "_from_" + baseName));
     }
 
     private void cuttingBoardCombining(ItemLike combinedItem, int count, Ingredient ... inputs)
