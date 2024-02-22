@@ -472,6 +472,7 @@ public class ModCreativeTabs
             output.accept(ModItems.TELEVISION_REMOTE.get());
             output.accept(ModBlocks.COMPUTER.get());
             output.accept(ModBlocks.WORKBENCH.get());
+            output.accept(ModItems.SEA_SALT.get());
             output.accept(ModItems.BREAD_SLICE.get());
             output.accept(ModItems.TOAST.get());
             output.accept(ModItems.SWEET_BERRY_JAM.get());

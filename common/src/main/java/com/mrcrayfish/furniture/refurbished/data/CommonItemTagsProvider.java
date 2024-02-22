@@ -735,6 +735,7 @@ public class CommonItemTagsProvider
         storage.add(ModBlocks.KITCHEN_STORAGE_CABINET_BLACK.get().asItem());
 
         TagBuilder<Item> food = builder.apply(ModTags.Items.FOOD);
+        food.add(ModItems.SEA_SALT.get());
         food.add(ModItems.BREAD_SLICE.get());
         food.add(ModItems.TOAST.get());
         food.add(ModItems.SWEET_BERRY_JAM.get());
