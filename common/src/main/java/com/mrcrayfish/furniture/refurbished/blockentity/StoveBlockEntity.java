@@ -11,6 +11,7 @@ import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -49,6 +50,8 @@ import java.util.stream.IntStream;
 @SuppressWarnings("UnstableApiUsage")
 public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implements IProcessingBlock, IHeatingSource, IPowerSwitch, IHomeControlDevice, Nameable
 {
+    public static final int[] INPUT_SLOTS = new int[]{0, 1, 2};
+    public static final int[] OUTPUT_SLOTS = new int[]{3, 4, 5};
     public static final int DATA_POWERED = 0;
     public static final int DATA_ENABLED = 1;
     public static final int DATA_PROGRESS_1 = 2;
@@ -97,6 +100,16 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     private CookingSpace getCookingSpaces(int index)
     {
         return this.spaces.get(index);
+    }
+
+    @Override
+    public int[] getSlotsForFace(Direction direction)
+    {
+        if(direction == Direction.DOWN)
+        {
+            return OUTPUT_SLOTS;
+        }
+        return INPUT_SLOTS;
     }
 
     @Override
