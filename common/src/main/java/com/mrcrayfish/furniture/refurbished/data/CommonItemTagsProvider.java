@@ -743,6 +743,7 @@ public class CommonItemTagsProvider
         food.add(ModItems.BREAD_SLICE.get());
         food.add(ModItems.TOAST.get());
         food.add(ModItems.CHEESE_SANDWICH.get());
+        food.add(ModItems.CHEESE_TOASTIE.get());
         food.add(ModItems.SWEET_BERRY_JAM_TOAST.get());
         food.add(ModItems.GLOW_BERRY_JAM_TOAST.get());
 

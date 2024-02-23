@@ -566,6 +566,7 @@ public class CommonRecipeProvider
 
         // Toasting
         this.toasterHeating(ModItems.BREAD_SLICE.get(), ModItems.TOAST.get(), 300, 0.5F);
+        this.toasterHeating(ModItems.CHEESE_SANDWICH.get(), ModItems.CHEESE_TOASTIE.get(), 400, 0.5F);
 
         // Slicing
         this.cuttingBoardSlicing(Blocks.MELON, Items.MELON_SLICE, 9);
@@ -632,10 +633,12 @@ public class CommonRecipeProvider
         // Frying
         this.fryingPanCooking(Items.SWEET_BERRIES, ModItems.SWEET_BERRY_JAM.get(), 400, 0.5F);
         this.fryingPanCooking(Items.GLOW_BERRIES, ModItems.GLOW_BERRY_JAM.get(), 400, 0.5F);
+        this.fryingPanCooking(ModItems.CHEESE_SANDWICH.get(), ModItems.CHEESE_TOASTIE.get(), 400, 0.5F);
 
         // Baking
         this.ovenBaking(Items.WATER_BUCKET, ModItems.SEA_SALT.get(), 1200, 0.5F);
 
+        // Fluid Mixing
         this.sinkFluidMixing(Services.FLUID.getMilkFluid(), Ingredient.of(ModItems.SEA_SALT.get()), new ItemStack(ModItems.CHEESE.get(), 2));
 
         // Recycling

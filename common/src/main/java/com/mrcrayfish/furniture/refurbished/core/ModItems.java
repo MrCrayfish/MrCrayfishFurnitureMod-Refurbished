@@ -35,6 +35,6 @@ public class ModItems
     public static final RegistryEntry<Item> WHEAT_FLOUR = RegistryEntry.item(Utils.resource("wheat_flour"), () -> new Item(new Item.Properties().craftRemainder(Items.BOWL)));
     public static final RegistryEntry<Item> CHEESE = RegistryEntry.item(Utils.resource("cheese"), () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(2).saturationMod(0.6F).build())));
     public static final RegistryEntry<Item> CHEESE_SANDWICH = RegistryEntry.item(Utils.resource("cheese_sandwich"), () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(6).saturationMod(0.5F).build())));
-    //public static final RegistryEntry<Item> CHEESE_SANDWICH = RegistryEntry.item(Utils.resource("cheese_sandwich"), () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(6).saturationMod(0.5F).build())));
+    public static final RegistryEntry<Item> CHEESE_TOASTIE = RegistryEntry.item(Utils.resource("cheese_toastie"), () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(6).saturationMod(0.7F).build())));
     public static final RegistryEntry<TelevisionRemoteItem> TELEVISION_REMOTE = RegistryEntry.item(Utils.resource("television_remote"), () -> new TelevisionRemoteItem(new Item.Properties().stacksTo(1)));
 }
