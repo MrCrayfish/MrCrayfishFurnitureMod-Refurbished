@@ -1,15 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.compat.jei;
 
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.ComputerScreen;
-import com.mrcrayfish.furniture.refurbished.compat.jei.categories.CuttingBoardCombiningCategory;
-import com.mrcrayfish.furniture.refurbished.compat.jei.categories.CuttingBoardSlicingCategory;
-import com.mrcrayfish.furniture.refurbished.compat.jei.categories.FreezerSolidifyingCategory;
-import com.mrcrayfish.furniture.refurbished.compat.jei.categories.FryingPanCookingCategory;
-import com.mrcrayfish.furniture.refurbished.compat.jei.categories.GrillCookingCategory;
-import com.mrcrayfish.furniture.refurbished.compat.jei.categories.MicrowaveHeatingCategory;
-import com.mrcrayfish.furniture.refurbished.compat.jei.categories.RecycleBinRecyclingCategory;
-import com.mrcrayfish.furniture.refurbished.compat.jei.categories.ToasterToastingCategory;
-import com.mrcrayfish.furniture.refurbished.compat.jei.categories.WorkbenchCraftingCategory;
+import com.mrcrayfish.furniture.refurbished.compat.jei.categories.*;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
@@ -79,6 +71,7 @@ public class Plugin implements IModPlugin
         registration.addRecipeCategories(new GrillCookingCategory(helper));
         registration.addRecipeCategories(new CuttingBoardCombiningCategory(helper));
         registration.addRecipeCategories(new WorkbenchCraftingCategory(helper));
+        registration.addRecipeCategories(new OvenBakingCategory(helper));
     }
 
     @Override
@@ -94,6 +87,7 @@ public class Plugin implements IModPlugin
         registration.addRecipes(GrillCookingCategory.TYPE, this.getGrillRecipes(manager));
         registration.addRecipes(CuttingBoardCombiningCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.CUTTING_BOARD_COMBINING.get()));
         registration.addRecipes(WorkbenchCraftingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.WORKBENCH_CRAFTING.get()));
+        registration.addRecipes(OvenBakingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.OVEN_BAKING.get()));
 
         // TODO ingredient info
         //registration.addIngredientInfo(new ItemStack(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get()), VanillaTypes.ITEM_STACK, Utils.translation("jei_ingredient_info", "electricity_generator"));
