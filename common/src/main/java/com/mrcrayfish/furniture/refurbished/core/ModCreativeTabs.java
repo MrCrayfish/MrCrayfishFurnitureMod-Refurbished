@@ -243,8 +243,6 @@ public class ModCreativeTabs
             output.accept(ModBlocks.KITCHEN_STORAGE_CABINET_BLACK.get());
             output.accept(ModBlocks.FRIDGE_LIGHT.get());
             output.accept(ModBlocks.FRIDGE_DARK.get());
-            output.accept(ModBlocks.FREEZER_LIGHT.get());
-            output.accept(ModBlocks.FREEZER_DARK.get());
             output.accept(ModBlocks.TOASTER_LIGHT.get());
             output.accept(ModBlocks.TOASTER_DARK.get());
             output.accept(ModBlocks.MICROWAVE_LIGHT.get());
