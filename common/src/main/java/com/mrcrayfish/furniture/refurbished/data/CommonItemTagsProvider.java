@@ -1024,6 +1024,6 @@ public class CommonItemTagsProvider
         blockDisplay.add(Items.PUMPKIN);
         blockDisplay.add(Items.MELON);
         blockDisplay.add(Items.SLIME_BLOCK);
-        blockDisplay.add(Items.HONEYCOMB);
+        blockDisplay.add(Items.HONEYCOMB_BLOCK);
     }
 }
