@@ -301,25 +301,24 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
     protected boolean canOutput(ItemStack input, ItemStack result)
     {
         if(result.isEmpty())
-        {
             return false;
-        }
+
+        int count = 0;
         int[] slots = this.getOutputSlots();
         for(int slot : slots)
         {
             ItemStack stack = this.getItem(slot);
-            if(stack.isEmpty() || ItemStack.isSameItemSameTags(result, stack) && stack.getCount() < stack.getMaxStackSize())
-            {
+            if(stack.isEmpty())
                 return true;
-            }
 
             // Special case where input can output to itself, instead of a different slot
             if(this.isOutputInput(slot) && input.getItem().getCraftingRemainingItem() == null)
-            {
                 return true;
-            }
+
+            if(ItemStack.isSameItemSameTags(result, stack))
+                count += (stack.getMaxStackSize() - stack.getCount());
         }
-        return false;
+        return count >= result.getCount();
     }
 
     /**
@@ -355,8 +354,14 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
             }
             else if(ItemStack.matches(result, stack) && stack.getCount() < stack.getMaxStackSize())
             {
-                stack.grow(1);
-                return;
+                // Find the highest count of the result that can be pushed into this stack
+                int count = Math.min(result.getCount(), stack.getMaxStackSize() - stack.getCount());
+                stack.grow(count);
+                result.shrink(count);
+
+                // Break if empty
+                if(result.isEmpty())
+                    return;
             }
         }
     }
