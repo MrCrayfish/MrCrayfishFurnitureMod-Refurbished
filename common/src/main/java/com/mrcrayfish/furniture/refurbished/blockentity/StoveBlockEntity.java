@@ -5,6 +5,7 @@ import com.mrcrayfish.furniture.refurbished.block.StoveBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
+import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import com.mrcrayfish.furniture.refurbished.inventory.BuildableContainerData;
 import com.mrcrayfish.furniture.refurbished.inventory.StoveMenu;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
@@ -560,11 +561,11 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     {
         private final int inputIndex;
         private final int outputIndex;
-        private final RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> inputRecipeCache;
+        private final RecipeManager.CachedCheck<Container, ? extends ProcessingRecipe> inputRecipeCache;
         private int totalBakingTime;
         private int bakingTime;
 
-        public CookingSpace(int inputIndex, int outputIndex, RecipeType<? extends AbstractCookingRecipe> recipeType)
+        public CookingSpace(int inputIndex, int outputIndex, RecipeType<? extends ProcessingRecipe> recipeType)
         {
             this.inputIndex = inputIndex;
             this.outputIndex = outputIndex;
@@ -596,10 +597,10 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
         public int updateAndGetTotalProcessingTime()
         {
             int time = 0;
-            Optional<? extends AbstractCookingRecipe> optional = this.getRecipe();
+            Optional<? extends ProcessingRecipe> optional = this.getRecipe();
             if(optional.isPresent())
             {
-                time = Math.max(time, optional.get().getCookingTime());
+                time = Math.max(time, optional.get().getProcessTime());
             }
             if(this.totalBakingTime != time)
             {
@@ -633,7 +634,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
             if(!stack.isEmpty())
             {
                 Item remainingItem = stack.getItem().getCraftingRemainingItem();
-                Optional<? extends AbstractCookingRecipe> optional = this.getRecipe();
+                Optional<? extends ProcessingRecipe> optional = this.getRecipe();
                 Level level = Objects.requireNonNull(StoveBlockEntity.this.getLevel());
                 ItemStack result = optional.map(recipe -> recipe.getResultItem(level.registryAccess())).orElse(ItemStack.EMPTY);
                 stack.shrink(1);
@@ -667,7 +668,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
             ItemStack stack = StoveBlockEntity.this.getItem(this.inputIndex);
             if(!stack.isEmpty())
             {
-                Optional<? extends AbstractCookingRecipe> optional = this.getRecipe();
+                Optional<? extends ProcessingRecipe> optional = this.getRecipe();
                 if(optional.isEmpty())
                 {
                     return false;
@@ -688,7 +689,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
             return stack.isEmpty() || ItemStack.isSameItemSameTags(result, stack) && stack.getCount() < stack.getMaxStackSize();
         }
 
-        private Optional<? extends AbstractCookingRecipe> getRecipe()
+        private Optional<? extends ProcessingRecipe> getRecipe()
         {
             ItemStack stack = StoveBlockEntity.this.getItem(this.inputIndex);
             if(!stack.isEmpty())

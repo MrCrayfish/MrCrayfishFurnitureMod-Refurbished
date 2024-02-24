@@ -12,26 +12,16 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 /**
  * Author: MrCrayfish
  */
-public class OvenBakingRecipe extends AbstractCookingRecipe
+public class OvenBakingRecipe extends ProcessingRecipe
 {
-    public OvenBakingRecipe(ResourceLocation id, String name, CookingBookCategory category, Ingredient ingredient, ItemStack stack, float experience, int cookingTime)
+    public OvenBakingRecipe(ResourceLocation id, Ingredient ingredient, ItemStack stack, int processTime)
     {
-        super(ModRecipeTypes.OVEN_BAKING.get(), id, name, category, ingredient, stack, experience, cookingTime);
+        super(ModRecipeTypes.OVEN_BAKING.get(), id, ingredient, stack, processTime);
     }
 
     @Override
     public RecipeSerializer<?> getSerializer()
     {
         return ModRecipeSerializers.OVEN_BAKING.get();
-    }
-
-    public Ingredient getInput()
-    {
-        return this.ingredient;
-    }
-
-    public ItemStack getOutput()
-    {
-        return this.result;
     }
 }

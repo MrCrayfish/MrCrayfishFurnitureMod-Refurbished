@@ -638,7 +638,7 @@ public class CommonRecipeProvider
         this.fryingPanCooking(ModItems.CHEESE_SANDWICH.get(), ModItems.CHEESE_TOASTIE.get(), 400, 0.5F);
 
         // Baking
-        this.ovenBaking(Items.WATER_BUCKET, ModItems.SEA_SALT.get(), 1200, 0.5F);
+        this.ovenBaking(Items.WATER_BUCKET, ModItems.SEA_SALT.get(), 4, 1200);
 
         // Fluid Mixing
         this.sinkFluidMixing(Services.FLUID.getMilkFluid(), Ingredient.of(ModItems.SEA_SALT.get()), new ItemStack(ModItems.CHEESE.get(), 2));
@@ -1547,9 +1547,9 @@ public class CommonRecipeProvider
         this.cooking("frying", RecipeCategory.FOOD, ModRecipeSerializers.FRYING_PAN_RECIPE.get(), baseItem, heatedItem, heatingTime, experience);
     }
 
-    private void ovenBaking(ItemLike baseItem, ItemLike heatedItem, int heatingTime, float experience)
+    private void ovenBaking(ItemLike baseItem, ItemLike bakedItem, int count, int bakingTime)
     {
-        this.cooking("baking", RecipeCategory.FOOD, ModRecipeSerializers.OVEN_BAKING.get(), baseItem, heatedItem, heatingTime, experience);
+        this.processing("baking", ModRecipeSerializers.OVEN_BAKING.get(), Ingredient.of(baseItem), bakedItem, count, bakingTime);
     }
 
     private void cuttingBoardSlicing(ItemLike baseItem, ItemLike resultItem, int resultCount)
