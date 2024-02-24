@@ -6,6 +6,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeSerializers;
 import com.mrcrayfish.furniture.refurbished.core.ModTags;
 import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardCombiningRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.RecycleBinRecyclingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.SinkFluidMixingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchCraftingRecipe;
@@ -20,6 +21,7 @@ import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.data.recipes.SingleItemRecipeBuilder;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -1512,6 +1514,12 @@ public class CommonRecipeProvider
                 .generic(Ingredient.of(input), category, output, experience, time, serializer)
                 .unlockedBy("has_" + baseName, this.hasItem.apply(input))
                 .save(this.consumer, Utils.resource(folder + "/" + resultName + "_from_" + baseName));
+    }
+
+    private void processing(String folder, RecipeSerializer<? extends ProcessingRecipe> serializer, Ingredient input, ItemLike output, int count, int time)
+    {
+        ResourceLocation recipeId = Utils.resource(folder + "/" + output.asItem());
+        ProcessingRecipe.builder(input, new ItemStack(output, count), time, serializer).save(this.consumer, recipeId);
     }
 
     private void grillCooking(ItemLike rawItem, ItemLike cookedItem, int cookingTime, float experience)
