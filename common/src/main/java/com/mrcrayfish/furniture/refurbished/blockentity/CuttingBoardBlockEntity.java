@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
@@ -454,5 +455,27 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
     public CompoundTag getUpdateTag()
     {
         return this.saveWithoutMetadata();
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag tag)
+    {
+        super.saveAdditional(tag);
+        tag.putBoolean("CanExtract", this.canExtract);
+        tag.putBoolean("PlacedByPlayer", this.placedByPlayer);
+    }
+
+    @Override
+    public void load(CompoundTag compound)
+    {
+        super.load(compound);
+        if(compound.contains("CanExtract", Tag.TAG_BYTE))
+        {
+            this.canExtract = compound.getBoolean("CanExtract");
+        }
+        if(compound.contains("PlacedByPlayer", Tag.TAG_BYTE))
+        {
+            this.placedByPlayer = compound.getBoolean("PlacedByPlayer");
+        }
     }
 }
