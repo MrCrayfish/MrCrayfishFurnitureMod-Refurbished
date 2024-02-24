@@ -31,7 +31,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class FreezerBlockEntity extends ElectricityModuleProcessingContainerBlockEntity implements IPowerSwitch, IHomeControlDevice, Nameable
+public class FreezerBlockEntity extends ElectricityModuleProcessingContainerBlockEntity implements IPowerSwitch, IHomeControlDevice
 {
     public static final int[] INPUT_SLOTS = new int[]{0};
     public static final int[] OUTPUT_SLOTS = new int[]{1};
@@ -201,30 +201,6 @@ public class FreezerBlockEntity extends ElectricityModuleProcessingContainerBloc
         {
             return this.getCustomName();
         }
-        return this.getName();
-    }
-
-    @Override
-    public Component getName()
-    {
         return this.getBlockState().getBlock().getName();
-    }
-
-    @Override
-    public Component getDisplayName()
-    {
-        return this.name != null ? this.name : this.getName();
-    }
-
-    @Nullable
-    @Override
-    public Component getCustomName()
-    {
-        return this.name;
-    }
-
-    public void setCustomName(@Nullable Component name)
-    {
-        this.name = name;
     }
 }
