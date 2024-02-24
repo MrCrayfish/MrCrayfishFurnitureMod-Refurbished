@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.platform;
 
+import com.mrcrayfish.furniture.refurbished.FurnitureMod;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
 import com.mrcrayfish.furniture.refurbished.platform.services.IFluidHelper;
 import it.unimi.dsi.fastutil.Pair;
@@ -67,7 +68,7 @@ public class FabricFluidHelper implements IFluidHelper
     @Override
     public Fluid getMilkFluid()
     {
-        return null; // TODO milk fluid for fabric
+        return FurnitureMod.MILK;
     }
 
     public static class FabricFluidContainer extends FluidContainer
