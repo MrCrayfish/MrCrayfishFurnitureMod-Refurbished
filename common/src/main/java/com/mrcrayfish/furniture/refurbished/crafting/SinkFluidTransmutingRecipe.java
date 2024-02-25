@@ -6,6 +6,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeBuilder;
@@ -45,6 +46,11 @@ public class SinkFluidTransmutingRecipe extends SingleItemRecipe
     public Ingredient getCatalyst()
     {
         return this.ingredient;
+    }
+
+    public ItemStack getResult()
+    {
+        return this.result;
     }
 
     @Override
