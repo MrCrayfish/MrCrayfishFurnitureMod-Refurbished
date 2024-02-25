@@ -8,7 +8,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModTags;
 import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardCombiningRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.RecycleBinRecyclingRecipe;
-import com.mrcrayfish.furniture.refurbished.crafting.SinkFluidMixingRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.SinkFluidTransmutingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchCraftingRecipe;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
@@ -641,7 +641,7 @@ public class CommonRecipeProvider
         this.ovenBaking(Items.WATER_BUCKET, ModItems.SEA_SALT.get(), 4, 1200);
 
         // Fluid Mixing
-        this.sinkFluidMixing(Services.FLUID.getMilkFluid(), Ingredient.of(ModItems.SEA_SALT.get()), new ItemStack(ModItems.CHEESE.get(), 2));
+        this.sinkFluidTransmuting(Services.FLUID.getMilkFluid(), Ingredient.of(ModItems.SEA_SALT.get()), new ItemStack(ModItems.CHEESE.get(), 2));
 
         // Recycling
         this.recycleBinSalvaging(Items.OAK_STAIRS, new ItemStack(Items.OAK_PLANKS, 1));
@@ -1571,11 +1571,11 @@ public class CommonRecipeProvider
         builder.save(this.consumer, Utils.resource("combining/" + baseName));
     }
 
-    private void sinkFluidMixing(Fluid fluid, Ingredient catalyst, ItemStack result)
+    private void sinkFluidTransmuting(Fluid fluid, Ingredient catalyst, ItemStack result)
     {
         String baseName = result.getItem().toString();
-        SinkFluidMixingRecipe.Builder builder = SinkFluidMixingRecipe.Builder.from(fluid, catalyst, result);
-        builder.save(this.consumer, Utils.resource("fluid_mixing/" + baseName));
+        SinkFluidTransmutingRecipe.Builder builder = SinkFluidTransmutingRecipe.Builder.from(fluid, catalyst, result);
+        builder.save(this.consumer, Utils.resource("fluid_transmuting/" + baseName));
     }
 
     private Set<Item> recycledItems = new HashSet<>();

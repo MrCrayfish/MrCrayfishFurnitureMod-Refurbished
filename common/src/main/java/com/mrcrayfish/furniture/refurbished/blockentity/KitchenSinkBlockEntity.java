@@ -8,7 +8,7 @@ import com.mrcrayfish.furniture.refurbished.blockentity.fluid.IFluidContainerBlo
 import com.mrcrayfish.furniture.refurbished.core.ModParticleTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
-import com.mrcrayfish.furniture.refurbished.crafting.SinkFluidMixingRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.SinkFluidTransmutingRecipe;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageWaterTapAnimation;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
@@ -86,10 +86,10 @@ public class KitchenSinkBlockEntity extends BlockEntity implements IFluidContain
     {
         Level level = player.level();
         ItemStack heldStack = player.getItemInHand(hand);
-        Optional<SinkFluidMixingRecipe> optional = level.getRecipeManager().getRecipeFor(ModRecipeTypes.SINK_FLUID_MIXING.get(), new SimpleContainer(heldStack), player.level());
+        Optional<SinkFluidTransmutingRecipe> optional = level.getRecipeManager().getRecipeFor(ModRecipeTypes.SINK_FLUID_TRANSMUTING.get(), new SimpleContainer(heldStack), player.level());
         if(optional.isPresent() && result.getDirection() != Direction.DOWN)
         {
-            SinkFluidMixingRecipe recipe = optional.get();
+            SinkFluidTransmutingRecipe recipe = optional.get();
             if(this.tank.getStoredAmount() >= FluidContainer.BUCKET_CAPACITY && this.tank.getStoredFluid().isSame(recipe.getFluid()))
             {
                 // Consume held item and if present, return remaining crafting item

@@ -26,13 +26,13 @@ import java.util.function.Consumer;
 /**
  * Author: MrCrayfish
  */
-public class SinkFluidMixingRecipe extends SingleItemRecipe
+public class SinkFluidTransmutingRecipe extends SingleItemRecipe
 {
     private final Fluid fluid;
 
-    public SinkFluidMixingRecipe(ResourceLocation id, Fluid fluid, Ingredient catalyst, ItemStack result)
+    public SinkFluidTransmutingRecipe(ResourceLocation id, Fluid fluid, Ingredient catalyst, ItemStack result)
     {
-        super(ModRecipeTypes.SINK_FLUID_MIXING.get(), ModRecipeSerializers.SINK_FLUID_MIXING_RECIPE.get(), id, "", catalyst, result);
+        super(ModRecipeTypes.SINK_FLUID_TRANSMUTING.get(), ModRecipeSerializers.SINK_FLUID_TRANSMUTING_RECIPE.get(), id, "", catalyst, result);
         this.fluid = fluid;
     }
 
@@ -47,20 +47,20 @@ public class SinkFluidMixingRecipe extends SingleItemRecipe
         return this.fluid;
     }
 
-    public static class Serializer implements RecipeSerializer<SinkFluidMixingRecipe>
+    public static class Serializer implements RecipeSerializer<SinkFluidTransmutingRecipe>
     {
         @Override
-        public SinkFluidMixingRecipe fromJson(ResourceLocation id, JsonObject object)
+        public SinkFluidTransmutingRecipe fromJson(ResourceLocation id, JsonObject object)
         {
             Fluid fluid = Utils.getFluid(object, "fluid");
             Ingredient catalyst = Utils.getIngredient(object, "catalyst");
             String itemId = GsonHelper.getAsString(object, "result");
             int count = GsonHelper.getAsInt(object, "count");
             ItemStack result = new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(itemId)), count);
-            return new SinkFluidMixingRecipe(id, fluid, catalyst, result);
+            return new SinkFluidTransmutingRecipe(id, fluid, catalyst, result);
         }
 
-        public static void toJson(SinkFluidMixingRecipe.Result result, JsonObject object)
+        public static void toJson(SinkFluidTransmutingRecipe.Result result, JsonObject object)
         {
             object.addProperty("fluid", BuiltInRegistries.FLUID.getKey(result.fluid).toString());
             object.add("catalyst", result.catalyst.toJson());
@@ -69,16 +69,16 @@ public class SinkFluidMixingRecipe extends SingleItemRecipe
         }
 
         @Override
-        public SinkFluidMixingRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buffer)
+        public SinkFluidTransmutingRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buffer)
         {
             Fluid fluid = BuiltInRegistries.FLUID.get(buffer.readResourceLocation());
             Ingredient catalyst = Ingredient.fromNetwork(buffer);
             ItemStack result = buffer.readItem();
-            return new SinkFluidMixingRecipe(id, fluid, catalyst, result);
+            return new SinkFluidTransmutingRecipe(id, fluid, catalyst, result);
         }
 
         @Override
-        public void toNetwork(FriendlyByteBuf buffer, SinkFluidMixingRecipe recipe)
+        public void toNetwork(FriendlyByteBuf buffer, SinkFluidTransmutingRecipe recipe)
         {
             buffer.writeResourceLocation(BuiltInRegistries.FLUID.getKey(recipe.fluid));
             recipe.ingredient.toNetwork(buffer);
@@ -120,7 +120,7 @@ public class SinkFluidMixingRecipe extends SingleItemRecipe
         @Override
         public void save(Consumer<FinishedRecipe> consumer, ResourceLocation id)
         {
-            consumer.accept(new SinkFluidMixingRecipe.Result(id, this.fluid, this.catalyst, this.result));
+            consumer.accept(new SinkFluidTransmutingRecipe.Result(id, this.fluid, this.catalyst, this.result));
         }
 
         public static Builder from(Fluid fluid, Ingredient catalyst, ItemStack result)
@@ -153,13 +153,13 @@ public class SinkFluidMixingRecipe extends SingleItemRecipe
         @Override
         public RecipeSerializer<?> getType()
         {
-            return ModRecipeSerializers.SINK_FLUID_MIXING_RECIPE.get();
+            return ModRecipeSerializers.SINK_FLUID_TRANSMUTING_RECIPE.get();
         }
 
         @Override
         public void serializeRecipeData(JsonObject object)
         {
-            SinkFluidMixingRecipe.Serializer.toJson(this, object);
+            SinkFluidTransmutingRecipe.Serializer.toJson(this, object);
         }
 
         @Nullable
