@@ -472,6 +472,7 @@ public class ModCreativeTabs
             output.accept(ModBlocks.WORKBENCH.get());
             output.accept(ModItems.SEA_SALT.get());
             output.accept(ModItems.WHEAT_FLOUR.get());
+            output.accept(ModItems.WHEAT_DOUGH.get());
             output.accept(ModItems.CHEESE.get());
             output.accept(ModItems.SWEET_BERRY_JAM.get());
             output.accept(ModItems.GLOW_BERRY_JAM.get());

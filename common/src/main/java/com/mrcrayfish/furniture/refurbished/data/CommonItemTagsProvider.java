@@ -737,6 +737,7 @@ public class CommonItemTagsProvider
         TagBuilder<Item> food = builder.apply(ModTags.Items.FOOD);
         food.add(ModItems.SEA_SALT.get());
         food.add(ModItems.WHEAT_FLOUR.get());
+        food.add(ModItems.WHEAT_DOUGH.get());
         food.add(ModItems.CHEESE.get());
         food.add(ModItems.SWEET_BERRY_JAM.get());
         food.add(ModItems.GLOW_BERRY_JAM.get());
