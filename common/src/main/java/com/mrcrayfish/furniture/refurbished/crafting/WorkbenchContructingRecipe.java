@@ -23,7 +23,6 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -36,12 +35,11 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.IntStream;
-import java.util.stream.StreamSupport;
 
 /**
  * Author: MrCrayfish
  */
-public class WorkbenchCraftingRecipe implements Recipe<Container>
+public class WorkbenchContructingRecipe implements Recipe<Container>
 {
     // TODO allow recipe to change sound (drill for wood, saw for stone, weld for electronics)
     private final ResourceLocation id;
@@ -49,7 +47,7 @@ public class WorkbenchCraftingRecipe implements Recipe<Container>
     private final ItemStack result;
     private final boolean notification;
 
-    public WorkbenchCraftingRecipe(ResourceLocation id, NonNullList<StackedIngredient> materials, ItemStack result, boolean notification)
+    public WorkbenchContructingRecipe(ResourceLocation id, NonNullList<StackedIngredient> materials, ItemStack result, boolean notification)
     {
         this.id = id;
         this.materials = materials;
@@ -66,7 +64,7 @@ public class WorkbenchCraftingRecipe implements Recipe<Container>
     @Override
     public RecipeType<?> getType()
     {
-        return ModRecipeTypes.WORKBENCH_CRAFTING.get();
+        return ModRecipeTypes.WORKBENCH_CONSTRUCTING.get();
     }
 
     @Override
@@ -125,9 +123,9 @@ public class WorkbenchCraftingRecipe implements Recipe<Container>
         return new Builder(result.asItem(), count, hasItem, hasTag);
     }
 
-    public static class Serializer implements RecipeSerializer<WorkbenchCraftingRecipe>
+    public static class Serializer implements RecipeSerializer<WorkbenchContructingRecipe>
     {
-        public static void toJson(WorkbenchCraftingRecipe.Result result, JsonObject object)
+        public static void toJson(WorkbenchContructingRecipe.Result result, JsonObject object)
         {
             JsonArray materialsArray = new JsonArray();
             for(StackedIngredient ingredient : result.materials)
@@ -141,7 +139,7 @@ public class WorkbenchCraftingRecipe implements Recipe<Container>
         }
 
         @Override
-        public WorkbenchCraftingRecipe fromJson(ResourceLocation id, JsonObject object)
+        public WorkbenchContructingRecipe fromJson(ResourceLocation id, JsonObject object)
         {
             JsonArray materialArray = GsonHelper.getAsJsonArray(object, "materials");
             NonNullList<StackedIngredient> materials = NonNullList.withSize(materialArray.size(), StackedIngredient.EMPTY);
@@ -151,22 +149,22 @@ public class WorkbenchCraftingRecipe implements Recipe<Container>
             // TODO error out here iuf item not found
             ItemStack result = new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(inputString)), count);
             boolean notification = GsonHelper.getAsBoolean(object, "show_notification", true);
-            return new WorkbenchCraftingRecipe(id, materials, result, notification);
+            return new WorkbenchContructingRecipe(id, materials, result, notification);
         }
 
         @Override
-        public WorkbenchCraftingRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buffer)
+        public WorkbenchContructingRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buffer)
         {
             int materialCount = buffer.readInt();
             NonNullList<StackedIngredient> materials = NonNullList.withSize(materialCount, StackedIngredient.EMPTY);
             IntStream.range(0, materialCount).forEach(value -> materials.set(value, StackedIngredient.fromNetwork(buffer)));
             ItemStack result = buffer.readItem();
             boolean notification = buffer.readBoolean();
-            return new WorkbenchCraftingRecipe(id, materials, result, notification);
+            return new WorkbenchContructingRecipe(id, materials, result, notification);
         }
 
         @Override
-        public void toNetwork(FriendlyByteBuf buffer, WorkbenchCraftingRecipe recipe)
+        public void toNetwork(FriendlyByteBuf buffer, WorkbenchContructingRecipe recipe)
         {
             buffer.writeInt(recipe.materials.size());
             recipe.materials.forEach(ingredient -> ingredient.toNetwork(buffer));
@@ -288,7 +286,7 @@ public class WorkbenchCraftingRecipe implements Recipe<Container>
         @Override
         public void serializeRecipeData(JsonObject object)
         {
-            WorkbenchCraftingRecipe.Serializer.toJson(this, object);
+            WorkbenchContructingRecipe.Serializer.toJson(this, object);
         }
 
         @Nullable

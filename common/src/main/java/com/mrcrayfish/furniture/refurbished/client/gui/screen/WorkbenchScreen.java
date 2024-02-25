@@ -8,7 +8,7 @@ import com.mrcrayfish.furniture.refurbished.client.gui.ClientWorkbenchRecipeTool
 import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import com.mrcrayfish.furniture.refurbished.client.util.VanillaTextures;
 import com.mrcrayfish.furniture.refurbished.core.ModTags;
-import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchCraftingRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchContructingRecipe;
 import com.mrcrayfish.furniture.refurbished.inventory.WorkbenchMenu;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
@@ -68,7 +68,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     private static boolean craftableOnly; // Persistent
 
     protected final Map<ResourceLocation, Integer> recipeToIndex;
-    protected final List<WorkbenchCraftingRecipe> displayRecipes = new ArrayList<>();
+    protected final List<WorkbenchContructingRecipe> displayRecipes = new ArrayList<>();
     protected StateSwitchingButton craftableOnlyButton;
     protected double scroll; // 0 - content height
     protected int hoveredIndex = -1;
@@ -84,7 +84,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         this.menu.setUpdateCallback(this::updateRecipes);
         this.recipeToIndex = Util.make(() -> {
             Map<ResourceLocation, Integer> map = new HashMap<>();
-            List<WorkbenchCraftingRecipe> recipes = menu.getRecipes();
+            List<WorkbenchContructingRecipe> recipes = menu.getRecipes();
             for(int i = 0; i < recipes.size(); i++) {
                 map.put(recipes.get(i).getId(), i);
             }
@@ -98,7 +98,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     {
         this.displayRecipes.clear();
         Category selectedCategory = CATEGORIES.stream().filter(Category::isEnabled).findFirst().orElse(CATEGORY_ALL);
-        for(WorkbenchCraftingRecipe recipe : this.menu.getRecipes())
+        for(WorkbenchContructingRecipe recipe : this.menu.getRecipes())
         {
             if(!selectedCategory.in(recipe.getResult()))
                 continue;
@@ -108,7 +108,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
                 this.displayRecipes.add(recipe);
             }
         }
-        this.displayRecipes.sort(Comparator.comparing(WorkbenchCraftingRecipe::getResultId));
+        this.displayRecipes.sort(Comparator.comparing(WorkbenchContructingRecipe::getResultId));
     }
 
     @Override
@@ -168,14 +168,14 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     {
         this.hoveredIndex = -1;
         graphics.enableScissor(this.leftPos + 46, this.topPos + 18, this.leftPos + 46 + WINDOW_WIDTH, this.topPos + 18 + WINDOW_HEIGHT);
-        List<WorkbenchCraftingRecipe> recipes = this.displayRecipes;
+        List<WorkbenchContructingRecipe> recipes = this.displayRecipes;
         double scroll = this.getScrollAmount(mouseY);
         int startIndex = (int) (scroll / BUTTON_SIZE) * RECIPES_PER_ROW;
         int endIndex = startIndex + Mth.ceil(WINDOW_HEIGHT / (double) BUTTON_SIZE + 1) * RECIPES_PER_ROW;
         boolean mouseInWindow = ScreenHelper.isMouseWithinBounds(mouseX, mouseY, this.leftPos + 46, this.topPos + 18, WINDOW_WIDTH, WINDOW_HEIGHT);
         for(int i = startIndex; i < endIndex && i < recipes.size(); i++)
         {
-            WorkbenchCraftingRecipe recipe = recipes.get(i);
+            WorkbenchContructingRecipe recipe = recipes.get(i);
             int recipeIndex = this.recipeToIndex.get(recipe.getId());
             boolean canCraft = this.menu.canCraft(recipe);
             boolean selected = recipeIndex == this.menu.getSelectedRecipeIndex();
@@ -207,7 +207,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
 
     private void renderRecipeTooltip(GuiGraphics graphics, int mouseX, int mouseY, int recipeIndex)
     {
-        WorkbenchCraftingRecipe recipe = this.menu.getRecipes().get(recipeIndex);
+        WorkbenchContructingRecipe recipe = this.menu.getRecipes().get(recipeIndex);
         List<ClientTooltipComponent> components = new ArrayList<>();
         components.add(new ClientTextTooltip(recipe.getResultItem(this.menu.getLevel().registryAccess()).getHoverName().getVisualOrderText()));
         if(!Screen.hasShiftDown())

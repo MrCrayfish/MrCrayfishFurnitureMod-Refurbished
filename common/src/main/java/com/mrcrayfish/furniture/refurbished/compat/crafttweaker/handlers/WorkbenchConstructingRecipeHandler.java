@@ -8,7 +8,7 @@ import com.blamejared.crafttweaker.api.recipe.handler.IRecipeHandler;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker.api.util.StringUtil;
 import com.mrcrayfish.furniture.refurbished.crafting.StackedIngredient;
-import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchCraftingRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchContructingRecipe;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -22,11 +22,11 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-@IRecipeHandler.For(WorkbenchCraftingRecipe.class)
-public class WorkbenchCraftingRecipeHandler implements IRecipeHandler<WorkbenchCraftingRecipe>
+@IRecipeHandler.For(WorkbenchContructingRecipe.class)
+public class WorkbenchConstructingRecipeHandler implements IRecipeHandler<WorkbenchContructingRecipe>
 {
     @Override
-    public String dumpToCommandString(IRecipeManager<? super WorkbenchCraftingRecipe> manager, WorkbenchCraftingRecipe recipe)
+    public String dumpToCommandString(IRecipeManager<? super WorkbenchContructingRecipe> manager, WorkbenchContructingRecipe recipe)
     {
         return String.format("%s.addRecipe(%s, %s, %s);",
                 manager.getCommandString(),
@@ -36,13 +36,13 @@ public class WorkbenchCraftingRecipeHandler implements IRecipeHandler<WorkbenchC
     }
 
     @Override
-    public <U extends Recipe<?>> boolean doesConflict(IRecipeManager<? super WorkbenchCraftingRecipe> manager, WorkbenchCraftingRecipe firstRecipe, U secondRecipe)
+    public <U extends Recipe<?>> boolean doesConflict(IRecipeManager<? super WorkbenchContructingRecipe> manager, WorkbenchContructingRecipe firstRecipe, U secondRecipe)
     {
         return false;
     }
 
     @Override
-    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super WorkbenchCraftingRecipe> manager, WorkbenchCraftingRecipe recipe)
+    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super WorkbenchContructingRecipe> manager, WorkbenchContructingRecipe recipe)
     {
         IDecomposedRecipe decomposedRecipe = IDecomposedRecipe.builder()
                 .with(BuiltinRecipeComponents.Input.INGREDIENTS, recipe.getMaterials().stream()
@@ -54,13 +54,13 @@ public class WorkbenchCraftingRecipeHandler implements IRecipeHandler<WorkbenchC
     }
 
     @Override
-    public Optional<WorkbenchCraftingRecipe> recompose(IRecipeManager<? super WorkbenchCraftingRecipe> manager, ResourceLocation name, IDecomposedRecipe recipe)
+    public Optional<WorkbenchContructingRecipe> recompose(IRecipeManager<? super WorkbenchContructingRecipe> manager, ResourceLocation name, IDecomposedRecipe recipe)
     {
         NonNullList<StackedIngredient> materials = recipe.getOrThrow(BuiltinRecipeComponents.Input.INGREDIENTS).stream()
                 .map(IIngredient::asIIngredientWithAmount)
                 .map(v -> StackedIngredient.of(v.getIngredient().asVanillaIngredient(), v.getAmount()))
                 .collect(NonNullList::create, AbstractList::add, AbstractCollection::addAll);
         ItemStack result = recipe.getOrThrowSingle(BuiltinRecipeComponents.Output.ITEMS).getInternal();
-        return Optional.of(new WorkbenchCraftingRecipe(name, materials, result, false));
+        return Optional.of(new WorkbenchContructingRecipe(name, materials, result, false));
     }
 }

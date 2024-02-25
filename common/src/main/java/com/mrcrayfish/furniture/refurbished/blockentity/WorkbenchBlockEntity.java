@@ -3,7 +3,7 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 import com.mrcrayfish.furniture.refurbished.block.WorkbenchBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.crafting.StackedIngredient;
-import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchCraftingRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchContructingRecipe;
 import com.mrcrayfish.furniture.refurbished.inventory.BuildableContainerData;
 import com.mrcrayfish.furniture.refurbished.inventory.WorkbenchMenu;
 import com.mrcrayfish.furniture.refurbished.network.Network;
@@ -196,7 +196,7 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     }
 
     @Override
-    public void performCraft(WorkbenchCraftingRecipe recipe)
+    public void performCraft(WorkbenchContructingRecipe recipe)
     {
         Map<Item, Integer> items = this.getConsumedMaterialItems(recipe);
         if(items != null)
@@ -206,7 +206,7 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     }
 
     @Override
-    public boolean canCraft(WorkbenchCraftingRecipe recipe)
+    public boolean canCraft(WorkbenchContructingRecipe recipe)
     {
         return this.isPowered() && this.getConsumedMaterialItems(recipe) != null;
     }
@@ -230,7 +230,7 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     }
 
     @Nullable
-    private Map<Item, Integer> getConsumedMaterialItems(WorkbenchCraftingRecipe recipe)
+    private Map<Item, Integer> getConsumedMaterialItems(WorkbenchContructingRecipe recipe)
     {
         // Find the items we are going to consume. This has been made complicated since it accepts tags.
         Map<Item, Integer> counts = Utils.countItems(true, this.getSupplyContainers());

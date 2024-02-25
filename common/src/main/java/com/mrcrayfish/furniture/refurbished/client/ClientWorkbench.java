@@ -1,7 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
 import com.mrcrayfish.furniture.refurbished.blockentity.IWorkbench;
-import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchCraftingRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchContructingRecipe;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.DataSlot;
@@ -20,10 +20,10 @@ public class ClientWorkbench implements IWorkbench
     }
 
     @Override
-    public void performCraft(WorkbenchCraftingRecipe recipe) {}
+    public void performCraft(WorkbenchContructingRecipe recipe) {}
 
     @Override
-    public boolean canCraft(WorkbenchCraftingRecipe recipe)
+    public boolean canCraft(WorkbenchContructingRecipe recipe)
     {
         return true;
     }

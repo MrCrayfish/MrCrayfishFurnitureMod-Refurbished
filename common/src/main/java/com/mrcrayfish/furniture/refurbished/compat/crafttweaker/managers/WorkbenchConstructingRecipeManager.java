@@ -10,7 +10,7 @@ import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.StackedIngredient;
-import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchCraftingRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchContructingRecipe;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.openzen.zencode.java.ZenCodeType;
@@ -23,9 +23,9 @@ import java.util.Arrays;
  * Author: MrCrayfish
  */
 @ZenRegister
-@Document("mods/RefurbishedFurniture/Workbench/Crafting")
-@ZenCodeType.Name("mods.refurbished_furniture.WorkbenchCrafting")
-public class WorkbenchCraftingRecipeManager implements IRecipeManager<WorkbenchCraftingRecipe>
+@Document("mods/RefurbishedFurniture/Workbench/Constructing")
+@ZenCodeType.Name("mods.refurbished_furniture.WorkbenchConstructing")
+public class WorkbenchConstructingRecipeManager implements IRecipeManager<WorkbenchContructingRecipe>
 {
     @ZenCodeType.Method
     public void addRecipe(String name, IItemStack result, IIngredient[] materials, @ZenCodeType.OptionalBoolean boolean notification)
@@ -34,12 +34,12 @@ public class WorkbenchCraftingRecipeManager implements IRecipeManager<WorkbenchC
                 .map(IIngredient::asIIngredientWithAmount)
                 .map(v -> StackedIngredient.of(v.getIngredient().asVanillaIngredient(), v.getAmount()))
                 .collect(NonNullList::create, AbstractList::add, AbstractCollection::addAll);
-        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new WorkbenchCraftingRecipe(CraftTweakerConstants.rl(name), ingredients, result.getInternal(), notification)));
+        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new WorkbenchContructingRecipe(CraftTweakerConstants.rl(name), ingredients, result.getInternal(), notification)));
     }
 
     @Override
-    public RecipeType<WorkbenchCraftingRecipe> getRecipeType()
+    public RecipeType<WorkbenchContructingRecipe> getRecipeType()
     {
-        return ModRecipeTypes.WORKBENCH_CRAFTING.get();
+        return ModRecipeTypes.WORKBENCH_CONSTRUCTING.get();
     }
 }

@@ -3,7 +3,7 @@ package com.mrcrayfish.furniture.refurbished.client.gui;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.WorkbenchScreen;
 import com.mrcrayfish.furniture.refurbished.crafting.StackedIngredient;
-import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchCraftingRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchContructingRecipe;
 import com.mrcrayfish.furniture.refurbished.inventory.WorkbenchMenu;
 import net.minecraft.Util;
 import net.minecraft.client.gui.Font;
@@ -21,9 +21,9 @@ import java.util.Map;
 public class ClientWorkbenchRecipeTooltip implements ClientTooltipComponent
 {
     private final WorkbenchMenu menu;
-    private final WorkbenchCraftingRecipe recipe;
+    private final WorkbenchContructingRecipe recipe;
 
-    public ClientWorkbenchRecipeTooltip(WorkbenchMenu menu, WorkbenchCraftingRecipe recipe)
+    public ClientWorkbenchRecipeTooltip(WorkbenchMenu menu, WorkbenchContructingRecipe recipe)
     {
         this.menu = menu;
         this.recipe = recipe;

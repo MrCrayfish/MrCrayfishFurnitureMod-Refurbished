@@ -4,7 +4,7 @@ import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.compat.jei.Plugin;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.crafting.StackedIngredient;
-import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchCraftingRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchContructingRecipe;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import it.unimi.dsi.fastutil.Pair;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -19,7 +19,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.Vec2;
 import org.joml.Vector2i;
 
 import java.util.ArrayList;
@@ -29,16 +28,16 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class WorkbenchCraftingCategory extends FurnitureRecipeCategory<WorkbenchCraftingRecipe>
+public class WorkbenchConstructingCategory extends FurnitureRecipeCategory<WorkbenchContructingRecipe>
 {
-    public static final RecipeType<WorkbenchCraftingRecipe> TYPE = RecipeType.create(Constants.MOD_ID, "workbench_crafting", WorkbenchCraftingRecipe.class);
+    public static final RecipeType<WorkbenchContructingRecipe> TYPE = RecipeType.create(Constants.MOD_ID, "workbench_constructing", WorkbenchContructingRecipe.class);
 
     private final IGuiHelper helper;
     private final IDrawable background;
     private final IDrawable icon;
     private List<Pair<Vector2i, IDrawable>> slots = new ArrayList<>();
 
-    public WorkbenchCraftingCategory(IGuiHelper helper)
+    public WorkbenchConstructingCategory(IGuiHelper helper)
     {
         this.helper = helper;
         this.background = helper.createDrawable(Plugin.TEXTURES_2, 0, 0, 118, 64);
@@ -46,7 +45,7 @@ public class WorkbenchCraftingCategory extends FurnitureRecipeCategory<Workbench
     }
 
     @Override
-    public RecipeType<WorkbenchCraftingRecipe> getRecipeType()
+    public RecipeType<WorkbenchContructingRecipe> getRecipeType()
     {
         return TYPE;
     }
@@ -54,7 +53,7 @@ public class WorkbenchCraftingCategory extends FurnitureRecipeCategory<Workbench
     @Override
     public Component getTitle()
     {
-        return Utils.translation("jei_category", "workbench_crafting");
+        return Utils.translation("jei_category", "workbench_constructing");
     }
 
     @Override
@@ -70,7 +69,7 @@ public class WorkbenchCraftingCategory extends FurnitureRecipeCategory<Workbench
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, WorkbenchCraftingRecipe recipe, IFocusGroup focuses)
+    public void setRecipe(IRecipeLayoutBuilder builder, WorkbenchContructingRecipe recipe, IFocusGroup focuses)
     {
         this.slots.clear();
         NonNullList<StackedIngredient> materials = recipe.getMaterials();
@@ -97,7 +96,7 @@ public class WorkbenchCraftingCategory extends FurnitureRecipeCategory<Workbench
     }
 
     @Override
-    public void draw(WorkbenchCraftingRecipe recipe, IRecipeSlotsView view, GuiGraphics graphics, double mouseX, double mouseY)
+    public void draw(WorkbenchContructingRecipe recipe, IRecipeSlotsView view, GuiGraphics graphics, double mouseX, double mouseY)
     {
         this.slots.forEach(pair -> {
             Vector2i pos = pair.left();

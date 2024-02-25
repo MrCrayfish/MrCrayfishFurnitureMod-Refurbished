@@ -8,7 +8,6 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
-import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.handlers.IGuiProperties;
 import mezz.jei.api.gui.handlers.IScreenHandler;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -16,7 +15,6 @@ import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
-import mezz.jei.api.registration.IVanillaCategoryExtensionRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -33,7 +31,6 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
@@ -70,7 +67,7 @@ public class Plugin implements IModPlugin
         registration.addRecipeCategories(new ToasterToastingCategory(helper));
         registration.addRecipeCategories(new GrillCookingCategory(helper));
         registration.addRecipeCategories(new CuttingBoardCombiningCategory(helper));
-        registration.addRecipeCategories(new WorkbenchCraftingCategory(helper));
+        registration.addRecipeCategories(new WorkbenchConstructingCategory(helper));
         registration.addRecipeCategories(new OvenBakingCategory(helper));
     }
 
@@ -86,7 +83,7 @@ public class Plugin implements IModPlugin
         registration.addRecipes(ToasterToastingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.TOASTER_HEATING.get()));
         registration.addRecipes(GrillCookingCategory.TYPE, this.getGrillRecipes(manager));
         registration.addRecipes(CuttingBoardCombiningCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.CUTTING_BOARD_COMBINING.get()));
-        registration.addRecipes(WorkbenchCraftingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.WORKBENCH_CRAFTING.get()));
+        registration.addRecipes(WorkbenchConstructingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.WORKBENCH_CONSTRUCTING.get()));
         registration.addRecipes(OvenBakingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.OVEN_BAKING.get()));
 
         // TODO ingredient info

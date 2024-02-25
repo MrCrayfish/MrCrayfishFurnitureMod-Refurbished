@@ -9,7 +9,7 @@ import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardCombiningRecipe
 import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.RecycleBinRecyclingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.SinkFluidTransmutingRecipe;
-import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchCraftingRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchContructingRecipe;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.advancements.CriterionTriggerInstance;
@@ -1127,47 +1127,47 @@ public class CommonRecipeProvider
 
     private void table(Block plank, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(plank, 6));
+        this.workbenchConstructing(result, 1, Material.of(plank, 6));
     }
 
     private void chair(Block plank, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(plank, 4));
+        this.workbenchConstructing(result, 1, Material.of(plank, 4));
     }
 
     private void desk(Block plank, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(plank, 6));
+        this.workbenchConstructing(result, 1, Material.of(plank, 6));
     }
 
     private void drawer(Block plank, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(plank, 10));
+        this.workbenchConstructing(result, 1, Material.of(plank, 10));
     }
 
     private void woodenKitchenCabinetry(Block plank, Block result)
     {
-        this.workbenchCrafting(result, 2, Material.of(plank, 8), Material.of(Items.WHITE_DYE, 1));
+        this.workbenchConstructing(result, 2, Material.of(plank, 8), Material.of(Items.WHITE_DYE, 1));
     }
 
     private void woodenKitchenDrawer(Block plank, Block result)
     {
-        this.workbenchCrafting(result, 2, Material.of(plank, 12), Material.of(Items.WHITE_DYE, 1));
+        this.workbenchConstructing(result, 2, Material.of(plank, 12), Material.of(Items.WHITE_DYE, 1));
     }
 
     private void woodenKitchenSink(Block plank, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(plank, 10), Material.of(Items.COPPER_INGOT, 1), Material.of(Items.QUARTZ_BLOCK, 1), Material.of(Items.WHITE_DYE, 1));
+        this.workbenchConstructing(result, 1, Material.of(plank, 10), Material.of(Items.COPPER_INGOT, 1), Material.of(Items.QUARTZ_BLOCK, 1), Material.of(Items.WHITE_DYE, 1));
     }
 
     private void woodenKitchenStorageCabinet(Block plank, Block result)
     {
-        this.workbenchCrafting(result, 2, Material.of(plank, 12), Material.of(Items.WHITE_DYE, 1));
+        this.workbenchConstructing(result, 2, Material.of(plank, 12), Material.of(Items.WHITE_DYE, 1));
     }
 
     private void colouredKitchenCabinetry(Item dye, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(dye, 1), Material.of("wooden_kitchen_cabinetry", ModTags.Items.WOODEN_KITCHEN_CABINETRY, 1));
+        this.workbenchConstructing(result, 1, Material.of(dye, 1), Material.of("wooden_kitchen_cabinetry", ModTags.Items.WOODEN_KITCHEN_CABINETRY, 1));
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
                 .pattern("D")
                 .pattern("K")
@@ -1179,7 +1179,7 @@ public class CommonRecipeProvider
 
     private void colouredKitchenDrawer(Item dye, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(dye, 1), Material.of("wooden_kitchen_drawers", ModTags.Items.WOODEN_KITCHEN_DRAWERS, 1));
+        this.workbenchConstructing(result, 1, Material.of(dye, 1), Material.of("wooden_kitchen_drawers", ModTags.Items.WOODEN_KITCHEN_DRAWERS, 1));
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
                 .pattern("D")
                 .pattern("K")
@@ -1191,7 +1191,7 @@ public class CommonRecipeProvider
 
     private void colouredKitchenSink(Item dye, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(dye, 1), Material.of("wooden_kitchen_sinks", ModTags.Items.WOODEN_KITCHEN_SINKS, 1));
+        this.workbenchConstructing(result, 1, Material.of(dye, 1), Material.of("wooden_kitchen_sinks", ModTags.Items.WOODEN_KITCHEN_SINKS, 1));
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
                 .pattern("D")
                 .pattern("K")
@@ -1203,7 +1203,7 @@ public class CommonRecipeProvider
 
     private void colouredKitchenStorageCabinet(Item dye, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(dye, 1), Material.of("wooden_kitchen_storage_cabinets", ModTags.Items.WOODEN_KITCHEN_STORAGE_CABINETS, 1));
+        this.workbenchConstructing(result, 1, Material.of(dye, 1), Material.of("wooden_kitchen_storage_cabinets", ModTags.Items.WOODEN_KITCHEN_STORAGE_CABINETS, 1));
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
                 .pattern("KD")
                 .define('D', dye)
@@ -1214,8 +1214,8 @@ public class CommonRecipeProvider
 
     private void toaster(Block light, Block dark)
     {
-        this.workbenchCrafting(light, 1, Material.of(Items.IRON_INGOT, 4), Material.of(Items.REDSTONE, 2));
-        this.workbenchCrafting(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
+        this.workbenchConstructing(light, 1, Material.of(Items.IRON_INGOT, 4), Material.of(Items.REDSTONE, 2));
+        this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
                 .requires(light)
                 .requires(Items.BLACK_DYE)
@@ -1226,8 +1226,8 @@ public class CommonRecipeProvider
 
     private void microwave(Block light, Block dark)
     {
-        this.workbenchCrafting(light, 1, Material.of(Items.IRON_INGOT, 6), Material.of(Items.GLASS, 1), Material.of(Items.REDSTONE, 4));
-        this.workbenchCrafting(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
+        this.workbenchConstructing(light, 1, Material.of(Items.IRON_INGOT, 6), Material.of(Items.GLASS, 1), Material.of(Items.REDSTONE, 4));
+        this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
                 .requires(light)
                 .requires(Items.BLACK_DYE)
@@ -1238,8 +1238,8 @@ public class CommonRecipeProvider
 
     private void stove(Block light, Block dark)
     {
-        this.workbenchCrafting(light, 1, Material.of(Items.IRON_INGOT, 12), Material.of(Items.GLASS, 1), Material.of(Items.REDSTONE, 6));
-        this.workbenchCrafting(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
+        this.workbenchConstructing(light, 1, Material.of(Items.IRON_INGOT, 12), Material.of(Items.GLASS, 1), Material.of(Items.REDSTONE, 6));
+        this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
                 .requires(light)
                 .requires(Items.BLACK_DYE)
@@ -1250,8 +1250,8 @@ public class CommonRecipeProvider
 
     private void rangeHood(Block light, Block dark)
     {
-        this.workbenchCrafting(light, 1, Material.of(Items.IRON_INGOT, 2), Material.of(Items.REDSTONE, 2));
-        this.workbenchCrafting(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
+        this.workbenchConstructing(light, 1, Material.of(Items.IRON_INGOT, 2), Material.of(Items.REDSTONE, 2));
+        this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
                 .requires(light)
                 .requires(Items.BLACK_DYE)
@@ -1262,32 +1262,32 @@ public class CommonRecipeProvider
 
     private void fryingPan(Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(Items.IRON_INGOT, 3), Material.of(Items.LEATHER, 1), Material.of(Items.BLACK_DYE, 1));
+        this.workbenchConstructing(result, 1, Material.of(Items.IRON_INGOT, 3), Material.of(Items.LEATHER, 1), Material.of(Items.BLACK_DYE, 1));
     }
 
     private void recyclingBin(Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(Items.IRON_INGOT, 8), Material.of(Items.PISTON, 1), Material.of(Items.REDSTONE, 2));
+        this.workbenchConstructing(result, 1, Material.of(Items.IRON_INGOT, 8), Material.of(Items.PISTON, 1), Material.of(Items.REDSTONE, 2));
     }
 
     private void cuttingBoard(Block plank, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(plank, 2));
+        this.workbenchConstructing(result, 1, Material.of(plank, 2));
     }
 
     private void plate(Block result)
     {
-        this.workbenchCrafting(result, 4, Material.of(Items.QUARTZ_BLOCK, 1));
+        this.workbenchConstructing(result, 4, Material.of(Items.QUARTZ_BLOCK, 1));
     }
 
     private void crate(Block plank, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(plank, 8));
+        this.workbenchConstructing(result, 1, Material.of(plank, 8));
     }
 
     private void grill(Item dye, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(Items.IRON_INGOT, 8), Material.of(dye, 1));
+        this.workbenchConstructing(result, 1, Material.of(Items.IRON_INGOT, 8), Material.of(dye, 1));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, result)
                 .requires(dye)
                 .requires(ModTags.Items.GRILLS)
@@ -1297,7 +1297,7 @@ public class CommonRecipeProvider
 
     private void cooler(Item dye, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of("planks", ItemTags.PLANKS, 4), Material.of(Items.WHITE_DYE, 1), Material.of("colouring_dye", dye, 1));
+        this.workbenchConstructing(result, 1, Material.of("planks", ItemTags.PLANKS, 4), Material.of(Items.WHITE_DYE, 1), Material.of("colouring_dye", dye, 1));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, result)
                 .requires(dye)
                 .requires(ModTags.Items.COOLERS)
@@ -1308,17 +1308,17 @@ public class CommonRecipeProvider
 
     private void mailbox(Block plank, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(plank, 8));
+        this.workbenchConstructing(result, 1, Material.of(plank, 8));
     }
 
     private void postBox(Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(Items.IRON_INGOT, 10), Material.of("planks", ItemTags.PLANKS, 8), Material.of(Items.BLUE_DYE, 1));
+        this.workbenchConstructing(result, 1, Material.of(Items.IRON_INGOT, 10), Material.of("planks", ItemTags.PLANKS, 8), Material.of(Items.BLUE_DYE, 1));
     }
 
     private void trampoline(Item dye, Block result)
     {
-        this.workbenchCrafting(result, 4, Material.of(Items.IRON_INGOT, 4), Material.of(Items.STRING, 8), Material.of(dye, 1), Material.of(Items.SLIME_BALL, 1));
+        this.workbenchConstructing(result, 4, Material.of(Items.IRON_INGOT, 4), Material.of(Items.STRING, 8), Material.of(dye, 1), Material.of(Items.SLIME_BALL, 1));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, result)
                 .requires(dye)
                 .requires(ModTags.Items.TRAMPOLINES)
@@ -1328,32 +1328,32 @@ public class CommonRecipeProvider
 
     private void hedge(Block leaf, Block result)
     {
-        this.workbenchCrafting(result, 8, Material.of(leaf, 6));
+        this.workbenchConstructing(result, 8, Material.of(leaf, 6));
     }
 
     private void steppingStone(Block stone, Block result)
     {
-        this.workbenchCrafting(result, 4, Material.of(stone, 1));
+        this.workbenchConstructing(result, 4, Material.of(stone, 1));
     }
 
     private void latticeFence(Block plank, Block result)
     {
-        this.workbenchCrafting(result, 3, Material.of(plank, 4), Material.of(Items.STICK, 4));
+        this.workbenchConstructing(result, 3, Material.of(plank, 4), Material.of(Items.STICK, 4));
     }
 
     private void latticeFenceGate(Block plank, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(plank, 2), Material.of(Items.STICK, 4));
+        this.workbenchConstructing(result, 1, Material.of(plank, 2), Material.of(Items.STICK, 4));
     }
 
     private void doorMat(Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(Items.WHEAT, 8));
+        this.workbenchConstructing(result, 1, Material.of(Items.WHEAT, 8));
     }
 
     private void sofa(Item dye, Block result)
     {
-        this.workbenchCrafting(result, 2, Material.of("planks", ItemTags.PLANKS, 6), Material.of(Items.WHEAT, 16), Material.of(Items.WHITE_WOOL, 2), Material.of(dye, 1));
+        this.workbenchConstructing(result, 2, Material.of("planks", ItemTags.PLANKS, 6), Material.of(Items.WHEAT, 16), Material.of(Items.WHITE_WOOL, 2), Material.of(dye, 1));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, result)
                 .requires(dye)
                 .requires(ModTags.Items.SOFAS)
@@ -1363,7 +1363,7 @@ public class CommonRecipeProvider
 
     private void stool(Item dye, Block result)
     {
-        this.workbenchCrafting(result, 2, Material.of("planks", ItemTags.PLANKS, 3), Material.of(Items.WHEAT, 8), Material.of(Items.WHITE_WOOL, 1), Material.of(dye, 1));
+        this.workbenchConstructing(result, 2, Material.of("planks", ItemTags.PLANKS, 3), Material.of(Items.WHEAT, 8), Material.of(Items.WHITE_WOOL, 1), Material.of(dye, 1));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, result)
                 .requires(dye)
                 .requires(ModTags.Items.STOOLS)
@@ -1373,7 +1373,7 @@ public class CommonRecipeProvider
 
     private void lamp(Item dye, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of("planks", ItemTags.PLANKS, 2), Material.of(Items.REDSTONE, 4), Material.of(Items.GLOWSTONE_DUST, 4), Material.of(Items.WHITE_WOOL, 1), Material.of(dye, 1));
+        this.workbenchConstructing(result, 1, Material.of("planks", ItemTags.PLANKS, 2), Material.of(Items.REDSTONE, 4), Material.of(Items.GLOWSTONE_DUST, 4), Material.of(Items.WHITE_WOOL, 1), Material.of(dye, 1));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, result)
                 .requires(dye)
                 .requires(ModTags.Items.LAMPS)
@@ -1383,8 +1383,8 @@ public class CommonRecipeProvider
 
     private void ceilingFan(Block plank, Block light, Block dark)
     {
-        this.workbenchCrafting(light, 1, Material.of(Items.IRON_INGOT, 3), Material.of(plank, 4), Material.of(Items.REDSTONE, 4), Material.of(Items.GLOWSTONE_DUST, 4));
-        this.workbenchCrafting(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
+        this.workbenchConstructing(light, 1, Material.of(Items.IRON_INGOT, 3), Material.of(plank, 4), Material.of(Items.REDSTONE, 4), Material.of(Items.GLOWSTONE_DUST, 4));
+        this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
                 .requires(light)
                 .requires(Items.BLACK_DYE)
@@ -1395,8 +1395,8 @@ public class CommonRecipeProvider
 
     private void ceilingLight(Block light, Block dark)
     {
-        this.workbenchCrafting(light, 1, Material.of(Items.IRON_INGOT, 2), Material.of(Items.REDSTONE, 3), Material.of(Items.GLOWSTONE_DUST, 4));
-        this.workbenchCrafting(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
+        this.workbenchConstructing(light, 1, Material.of(Items.IRON_INGOT, 2), Material.of(Items.REDSTONE, 3), Material.of(Items.GLOWSTONE_DUST, 4));
+        this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
                 .requires(light)
                 .requires(Items.BLACK_DYE)
@@ -1407,8 +1407,8 @@ public class CommonRecipeProvider
 
     private void lightswitch(Block light, Block dark)
     {
-        this.workbenchCrafting(light, 1, Material.of(Items.IRON_INGOT, 2), Material.of(Items.REDSTONE, 3));
-        this.workbenchCrafting(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
+        this.workbenchConstructing(light, 1, Material.of(Items.IRON_INGOT, 2), Material.of(Items.REDSTONE, 3));
+        this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
                 .requires(light)
                 .requires(Items.BLACK_DYE)
@@ -1419,27 +1419,27 @@ public class CommonRecipeProvider
 
     private void doorbell(Block light)
     {
-        this.workbenchCrafting(light, 1, Material.of(Items.IRON_INGOT, 2), Material.of(Items.REDSTONE, 3), Material.of(Items.GOLD_INGOT, 1));
+        this.workbenchConstructing(light, 1, Material.of(Items.IRON_INGOT, 2), Material.of(Items.REDSTONE, 3), Material.of(Items.GOLD_INGOT, 1));
     }
 
     private void storageCabinet(Block plank, Block result)
     {
-        this.workbenchCrafting(result, 2, Material.of(plank, 8), Material.of(Items.IRON_INGOT, 1));
+        this.workbenchConstructing(result, 2, Material.of(plank, 8), Material.of(Items.IRON_INGOT, 1));
     }
 
     private void storageJar(Block plank, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(plank, 2), Material.of(Items.GLASS, 1));
+        this.workbenchConstructing(result, 1, Material.of(plank, 2), Material.of(Items.GLASS, 1));
     }
 
     private void woodenToilet(Block plank, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(plank, 3), Material.of(Items.QUARTZ_BLOCK, 5), Material.of(Items.IRON_INGOT, 1), Material.of(Items.COPPER_INGOT, 1));
+        this.workbenchConstructing(result, 1, Material.of(plank, 3), Material.of(Items.QUARTZ_BLOCK, 5), Material.of(Items.IRON_INGOT, 1), Material.of(Items.COPPER_INGOT, 1));
     }
 
     private void colouredToilet(Item dye, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of("toilets", ModTags.Items.WOODEN_TOILETS, 1), Material.of(dye, 1));
+        this.workbenchConstructing(result, 1, Material.of("toilets", ModTags.Items.WOODEN_TOILETS, 1), Material.of(dye, 1));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, result)
                 .requires(ModTags.Items.WOODEN_TOILETS)
                 .requires(dye)
@@ -1450,28 +1450,28 @@ public class CommonRecipeProvider
 
     private void woodenBasin(Block plank, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(plank, 3), Material.of(Items.QUARTZ_BLOCK, 4), Material.of(Items.IRON_INGOT, 2), Material.of(Items.COPPER_INGOT, 1));
+        this.workbenchConstructing(result, 1, Material.of(plank, 3), Material.of(Items.QUARTZ_BLOCK, 4), Material.of(Items.IRON_INGOT, 2), Material.of(Items.COPPER_INGOT, 1));
     }
 
     private void colouredBasin(Item dye, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of("basins", ModTags.Items.WOODEN_BASINS, 1), Material.of(dye, 1));
+        this.workbenchConstructing(result, 1, Material.of("basins", ModTags.Items.WOODEN_BASINS, 1), Material.of(dye, 1));
     }
 
     private void woodenBath(Block plank, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(plank, 5), Material.of(Items.QUARTZ_BLOCK, 8), Material.of(Items.IRON_INGOT, 2), Material.of(Items.COPPER_INGOT, 1));
+        this.workbenchConstructing(result, 1, Material.of(plank, 5), Material.of(Items.QUARTZ_BLOCK, 8), Material.of(Items.IRON_INGOT, 2), Material.of(Items.COPPER_INGOT, 1));
     }
 
     private void colouredBath(Item dye, Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of("baths", ModTags.Items.WOODEN_BATHS, 1), Material.of(dye, 1));
+        this.workbenchConstructing(result, 1, Material.of("baths", ModTags.Items.WOODEN_BATHS, 1), Material.of(dye, 1));
     }
 
     private void fridge(Item light, Item dark)
     {
-        this.workbenchCrafting(light, 1, Material.of(Items.IRON_INGOT, 9), Material.of(Items.COPPER_INGOT, 3), Material.of(Items.REDSTONE, 4));
-        this.workbenchCrafting(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
+        this.workbenchConstructing(light, 1, Material.of(Items.IRON_INGOT, 9), Material.of(Items.COPPER_INGOT, 3), Material.of(Items.REDSTONE, 4));
+        this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
                 .requires(light)
                 .requires(Items.BLACK_DYE)
@@ -1482,28 +1482,28 @@ public class CommonRecipeProvider
 
     private void television(Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(Items.IRON_INGOT, 8), Material.of(Items.COPPER_INGOT, 2), Material.of(Blocks.GLASS, 1), Material.of(Items.REDSTONE, 16), Material.of(Items.AMETHYST_SHARD, 2));
+        this.workbenchConstructing(result, 1, Material.of(Items.IRON_INGOT, 8), Material.of(Items.COPPER_INGOT, 2), Material.of(Blocks.GLASS, 1), Material.of(Items.REDSTONE, 16), Material.of(Items.AMETHYST_SHARD, 2));
     }
 
     private void computer(Block result)
     {
-        this.workbenchCrafting(result, 1, Material.of(Items.IRON_INGOT, 12), Material.of(Items.COPPER_INGOT, 3), Material.of(Blocks.GLASS, 1), Material.of(Items.REDSTONE, 24), Material.of(Items.AMETHYST_SHARD, 2));
+        this.workbenchConstructing(result, 1, Material.of(Items.IRON_INGOT, 12), Material.of(Items.COPPER_INGOT, 3), Material.of(Blocks.GLASS, 1), Material.of(Items.REDSTONE, 24), Material.of(Items.AMETHYST_SHARD, 2));
     }
 
-    private void workbenchCrafting(ItemLike result, int count, Material<?> ... materials)
+    private void workbenchConstructing(ItemLike result, int count, Material<?> ... materials)
     {
         String resultName = result.asItem().toString();
-        this.workbenchCrafting(resultName, result, count, materials);
+        this.workbenchConstructing(resultName, result, count, materials);
     }
 
-    private void workbenchCrafting(String name, ItemLike result, int count, Material<?> ... materials)
+    private void workbenchConstructing(String name, ItemLike result, int count, Material<?> ... materials)
     {
-        WorkbenchCraftingRecipe.Builder builder = WorkbenchCraftingRecipe.builder(result, count, this.hasItem, this.hasTag);
+        WorkbenchContructingRecipe.Builder builder = WorkbenchContructingRecipe.builder(result, count, this.hasItem, this.hasTag);
         for(Material<?> material : materials)
         {
             builder.requiresMaterial(material);
         }
-        builder.save(this.consumer, Utils.resource("crafting/" + name));
+        builder.save(this.consumer, Utils.resource("constructing/" + name));
     }
 
     private void cooking(String folder, RecipeCategory category, RecipeSerializer<? extends AbstractCookingRecipe> serializer, ItemLike input, ItemLike output, int time, float experience)

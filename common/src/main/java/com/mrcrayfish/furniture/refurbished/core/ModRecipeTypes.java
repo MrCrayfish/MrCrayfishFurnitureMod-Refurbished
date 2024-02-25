@@ -12,7 +12,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 @RegistryContainer
 public class ModRecipeTypes
 {
-    public static final RegistryEntry<RecipeType<WorkbenchCraftingRecipe>> WORKBENCH_CRAFTING = RegistryEntry.recipeType(Utils.resource("workbench_crafting"));
+    public static final RegistryEntry<RecipeType<WorkbenchContructingRecipe>> WORKBENCH_CONSTRUCTING = RegistryEntry.recipeType(Utils.resource("workbench_constructing"));
     public static final RegistryEntry<RecipeType<GrillCookingRecipe>> GRILL_COOKING = RegistryEntry.recipeType(Utils.resource("grill_cooking"));
     public static final RegistryEntry<RecipeType<FreezerSolidifyingRecipe>> FREEZER_SOLIDIFYING = RegistryEntry.recipeType(Utils.resource("freezer_solidifying"));
     public static final RegistryEntry<RecipeType<ToasterHeatingRecipe>> TOASTER_HEATING = RegistryEntry.recipeType(Utils.resource("toaster_heating"));

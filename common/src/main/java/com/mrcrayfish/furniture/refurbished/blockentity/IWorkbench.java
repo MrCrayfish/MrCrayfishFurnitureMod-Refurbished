@@ -1,6 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
-import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchCraftingRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchContructingRecipe;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.DataSlot;
@@ -10,9 +10,9 @@ import net.minecraft.world.inventory.DataSlot;
  */
 public interface IWorkbench
 {
-    void performCraft(WorkbenchCraftingRecipe recipe);
+    void performCraft(WorkbenchContructingRecipe recipe);
 
-    boolean canCraft(WorkbenchCraftingRecipe recipe);
+    boolean canCraft(WorkbenchContructingRecipe recipe);
 
     DataSlot getSelectedRecipeData();
 
