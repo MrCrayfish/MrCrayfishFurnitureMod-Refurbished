@@ -5,6 +5,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModRecipeSerializers;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeBuilder;
@@ -36,15 +37,20 @@ public class SinkFluidTransmutingRecipe extends SingleItemRecipe
         this.fluid = fluid;
     }
 
+    public Fluid getFluid()
+    {
+        return this.fluid;
+    }
+
+    public Ingredient getCatalyst()
+    {
+        return this.ingredient;
+    }
+
     @Override
     public boolean matches(Container container, Level level)
     {
         return this.ingredient.test(container.getItem(0));
-    }
-
-    public Fluid getFluid()
-    {
-        return this.fluid;
     }
 
     public static class Serializer implements RecipeSerializer<SinkFluidTransmutingRecipe>
