@@ -612,6 +612,7 @@ public class CommonRecipeProvider
         this.cuttingBoardSlicing(Items.PEONY, Items.PINK_DYE, 3);
         this.cuttingBoardSlicing(Items.PITCHER_PLANT, Items.CYAN_DYE, 3);
         this.cuttingBoardSlicing(ModItems.COOKED_VEGETABLE_PIZZA.get(), ModItems.VEGETABLE_PIZZA_SLICE.get(), 6);
+        this.cuttingBoardSlicing(ModItems.COOKED_MEATLOVERS_PIZZA.get(), ModItems.MEATLOVERS_PIZZA_SLICE.get(), 6);
 
         // Combining
         this.cuttingBoardCombining(ModItems.WHEAT_FLOUR.get(), 1,
@@ -635,6 +636,12 @@ public class CommonRecipeProvider
                 Ingredient.of(Items.POTATO),
                 Ingredient.of(Items.BEETROOT),
                 Ingredient.of(Items.CARROT),
+                Ingredient.of(ModItems.DOUGH.get()));
+        this.cuttingBoardCombining(ModItems.RAW_MEATLOVERS_PIZZA.get(), 1,
+                Ingredient.of(ModItems.CHEESE.get()),
+                Ingredient.of(Items.COOKED_PORKCHOP),
+                Ingredient.of(Items.COOKED_CHICKEN),
+                Ingredient.of(Items.COOKED_BEEF),
                 Ingredient.of(ModItems.DOUGH.get()));
 
         // Heating

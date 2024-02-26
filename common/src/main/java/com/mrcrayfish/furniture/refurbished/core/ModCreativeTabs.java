@@ -485,6 +485,9 @@ public class ModCreativeTabs
             output.accept(ModItems.RAW_VEGETABLE_PIZZA.get());
             output.accept(ModItems.COOKED_VEGETABLE_PIZZA.get());
             output.accept(ModItems.VEGETABLE_PIZZA_SLICE.get());
+            output.accept(ModItems.RAW_MEATLOVERS_PIZZA.get());
+            output.accept(ModItems.COOKED_MEATLOVERS_PIZZA.get());
+            output.accept(ModItems.MEATLOVERS_PIZZA_SLICE.get());
         });
     });
 }

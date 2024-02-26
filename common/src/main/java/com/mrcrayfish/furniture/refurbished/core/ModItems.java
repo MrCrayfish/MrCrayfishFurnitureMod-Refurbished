@@ -7,6 +7,8 @@ import com.mrcrayfish.furniture.refurbished.item.PackageItem;
 import com.mrcrayfish.furniture.refurbished.item.TelevisionRemoteItem;
 import com.mrcrayfish.furniture.refurbished.item.WrenchItem;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -40,5 +42,8 @@ public class ModItems
     public static final RegistryEntry<Item> RAW_VEGETABLE_PIZZA = RegistryEntry.item(Utils.resource("raw_vegetable_pizza"), () -> new Item(new Item.Properties()));
     public static final RegistryEntry<Item> COOKED_VEGETABLE_PIZZA = RegistryEntry.item(Utils.resource("cooked_vegetable_pizza"), () -> new Item(new Item.Properties()));
     public static final RegistryEntry<Item> VEGETABLE_PIZZA_SLICE = RegistryEntry.item(Utils.resource("vegetable_pizza_slice"), () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(5).saturationMod(0.8F).build())));
+    public static final RegistryEntry<Item> RAW_MEATLOVERS_PIZZA = RegistryEntry.item(Utils.resource("raw_meatlovers_pizza"), () -> new Item(new Item.Properties()));
+    public static final RegistryEntry<Item> COOKED_MEATLOVERS_PIZZA = RegistryEntry.item(Utils.resource("cooked_meatlovers_pizza"), () -> new Item(new Item.Properties()));
+    public static final RegistryEntry<Item> MEATLOVERS_PIZZA_SLICE = RegistryEntry.item(Utils.resource("meatlovers_pizza_slice"), () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(8).saturationMod(0.8F).effect(new MobEffectInstance(MobEffects.DIG_SPEED, 100), 1.0F).build())));
     public static final RegistryEntry<TelevisionRemoteItem> TELEVISION_REMOTE = RegistryEntry.item(Utils.resource("television_remote"), () -> new TelevisionRemoteItem(new Item.Properties().stacksTo(1)));
 }

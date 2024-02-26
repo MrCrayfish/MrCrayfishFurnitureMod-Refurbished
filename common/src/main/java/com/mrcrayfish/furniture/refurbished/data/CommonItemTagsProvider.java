@@ -750,6 +750,9 @@ public class CommonItemTagsProvider
         food.add(ModItems.RAW_VEGETABLE_PIZZA.get());
         food.add(ModItems.COOKED_VEGETABLE_PIZZA.get());
         food.add(ModItems.VEGETABLE_PIZZA_SLICE.get());
+        food.add(ModItems.RAW_MEATLOVERS_PIZZA.get());
+        food.add(ModItems.COOKED_MEATLOVERS_PIZZA.get());
+        food.add(ModItems.MEATLOVERS_PIZZA_SLICE.get());
 
         TagBuilder<Item> items = builder.apply(ModTags.Items.ITEMS);
         items.add(ModItems.SPATULA.get());
