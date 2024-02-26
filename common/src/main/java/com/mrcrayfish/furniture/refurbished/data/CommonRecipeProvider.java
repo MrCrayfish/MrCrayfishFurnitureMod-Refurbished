@@ -611,6 +611,7 @@ public class CommonRecipeProvider
         this.cuttingBoardSlicing(Items.ROSE_BUSH, Items.RED_DYE, 3);
         this.cuttingBoardSlicing(Items.PEONY, Items.PINK_DYE, 3);
         this.cuttingBoardSlicing(Items.PITCHER_PLANT, Items.CYAN_DYE, 3);
+        this.cuttingBoardSlicing(ModItems.COOKED_VEGETABLE_PIZZA.get(), ModItems.VEGETABLE_PIZZA_SLICE.get(), 6);
 
         // Combining
         this.cuttingBoardCombining(ModItems.WHEAT_FLOUR.get(), 1,
@@ -629,6 +630,12 @@ public class CommonRecipeProvider
         this.cuttingBoardCombining(ModItems.GLOW_BERRY_JAM_TOAST.get(), 1,
                 Ingredient.of(ModItems.GLOW_BERRY_JAM.get()),
                 Ingredient.of(ModItems.TOAST.get()));
+        this.cuttingBoardCombining(ModItems.RAW_VEGETABLE_PIZZA.get(), 1,
+                Ingredient.of(ModItems.CHEESE.get()),
+                Ingredient.of(Items.POTATO),
+                Ingredient.of(Items.BEETROOT),
+                Ingredient.of(Items.CARROT),
+                Ingredient.of(ModItems.DOUGH.get()));
 
         // Heating
         this.microwaveHeating(Items.POTATO, Items.BAKED_POTATO, 200, 0.5F);
@@ -640,6 +647,7 @@ public class CommonRecipeProvider
 
         // Baking
         this.ovenBaking(Items.WATER_BUCKET, ModItems.SEA_SALT.get(), 4, 1200);
+        this.ovenBaking(ModItems.RAW_VEGETABLE_PIZZA.get(), ModItems.COOKED_VEGETABLE_PIZZA.get(), 1, 1200);
 
         // Fluid Mixing
         this.sinkFluidTransmuting(Services.FLUID.getMilkFluid(), Ingredient.of(ModItems.SEA_SALT.get()), new ItemStack(ModItems.CHEESE.get(), 2));

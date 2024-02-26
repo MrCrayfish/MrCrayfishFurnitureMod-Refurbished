@@ -747,6 +747,9 @@ public class CommonItemTagsProvider
         food.add(ModItems.CHEESE_TOASTIE.get());
         food.add(ModItems.SWEET_BERRY_JAM_TOAST.get());
         food.add(ModItems.GLOW_BERRY_JAM_TOAST.get());
+        food.add(ModItems.RAW_VEGETABLE_PIZZA.get());
+        food.add(ModItems.COOKED_VEGETABLE_PIZZA.get());
+        food.add(ModItems.VEGETABLE_PIZZA_SLICE.get());
 
         TagBuilder<Item> items = builder.apply(ModTags.Items.ITEMS);
         items.add(ModItems.SPATULA.get());

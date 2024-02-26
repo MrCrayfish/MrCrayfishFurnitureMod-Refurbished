@@ -482,6 +482,9 @@ public class ModCreativeTabs
             output.accept(ModItems.CHEESE_TOASTIE.get());
             output.accept(ModItems.SWEET_BERRY_JAM_TOAST.get());
             output.accept(ModItems.GLOW_BERRY_JAM_TOAST.get());
+            output.accept(ModItems.RAW_VEGETABLE_PIZZA.get());
+            output.accept(ModItems.COOKED_VEGETABLE_PIZZA.get());
+            output.accept(ModItems.VEGETABLE_PIZZA_SLICE.get());
         });
     });
 }

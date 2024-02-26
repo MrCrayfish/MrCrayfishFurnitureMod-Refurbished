@@ -1,0 +1,7 @@
+{
+    "credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
+    "parent": "minecraft:item/generated",
+    "textures": {
+        "layer0": "refurbished_furniture:item/vegetable_pizza_slice"
+    }
+}
