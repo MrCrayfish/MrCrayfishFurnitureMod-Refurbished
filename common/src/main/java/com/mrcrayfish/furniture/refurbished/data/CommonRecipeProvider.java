@@ -616,7 +616,7 @@ public class CommonRecipeProvider
 
         // Combining
         this.cuttingBoardCombining(ModItems.WHEAT_FLOUR.get(), 1,
-                Ingredient.of(Items.WHEAT),
+                Ingredient.of(ModItems.SEA_SALT.get()),
                 Ingredient.of(Items.WHEAT),
                 Ingredient.of(Items.WHEAT),
                 Ingredient.of(Items.WHEAT),
