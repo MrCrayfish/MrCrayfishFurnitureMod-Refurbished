@@ -655,6 +655,7 @@ public class CommonRecipeProvider
         // Baking
         this.ovenBaking(Items.WATER_BUCKET, ModItems.SEA_SALT.get(), 4, 1200);
         this.ovenBaking(ModItems.RAW_VEGETABLE_PIZZA.get(), ModItems.COOKED_VEGETABLE_PIZZA.get(), 1, 1200);
+        this.ovenBaking(ModItems.RAW_MEATLOVERS_PIZZA.get(), ModItems.COOKED_MEATLOVERS_PIZZA.get(), 1, 1200);
 
         // Fluid Mixing
         this.sinkFluidTransmuting(Services.FLUID.getMilkFluid(), Ingredient.of(ModItems.SEA_SALT.get()), new ItemStack(ModItems.CHEESE.get(), 2));
