@@ -653,6 +653,7 @@ public class CommonRecipeProvider
         this.fryingPanCooking(ModItems.CHEESE_SANDWICH.get(), ModItems.CHEESE_TOASTIE.get(), 400, 0.5F);
 
         // Baking
+        this.ovenBaking(Items.POTATO, Items.BAKED_POTATO, 1, 200);
         this.ovenBaking(Items.WATER_BUCKET, ModItems.SEA_SALT.get(), 4, 1200);
         this.ovenBaking(ModItems.RAW_VEGETABLE_PIZZA.get(), ModItems.COOKED_VEGETABLE_PIZZA.get(), 1, 1200);
         this.ovenBaking(ModItems.RAW_MEATLOVERS_PIZZA.get(), ModItems.COOKED_MEATLOVERS_PIZZA.get(), 1, 1200);
