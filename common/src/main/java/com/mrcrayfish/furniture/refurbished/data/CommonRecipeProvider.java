@@ -643,7 +643,7 @@ public class CommonRecipeProvider
 
         // Fluid Mixing
         this.sinkFluidTransmuting(Services.FLUID.getMilkFluid(), Ingredient.of(ModItems.SEA_SALT.get()), new ItemStack(ModItems.CHEESE.get(), 2));
-        this.sinkFluidTransmuting(Fluids.WATER, Ingredient.of(ModItems.WHEAT_FLOUR.get()), new ItemStack(ModItems.WHEAT_DOUGH.get()));
+        this.sinkFluidTransmuting(Fluids.WATER, Ingredient.of(ModItems.WHEAT_FLOUR.get()), new ItemStack(ModItems.DOUGH.get()));
 
         // Recycling
         this.recycleBinSalvaging(Items.OAK_STAIRS, new ItemStack(Items.OAK_PLANKS, 1));

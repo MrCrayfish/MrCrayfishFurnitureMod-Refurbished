@@ -33,7 +33,7 @@ public class ModItems
     public static final RegistryEntry<Item> GLOW_BERRY_JAM_TOAST = RegistryEntry.item(Utils.resource("glow_berry_jam_toast"), () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(6).saturationMod(0.6F).build())));
     public static final RegistryEntry<Item> SEA_SALT = RegistryEntry.item(Utils.resource("sea_salt"), () -> new Item(new Item.Properties()));
     public static final RegistryEntry<Item> WHEAT_FLOUR = RegistryEntry.item(Utils.resource("wheat_flour"), () -> new Item(new Item.Properties().craftRemainder(Items.BOWL)));
-    public static final RegistryEntry<Item> WHEAT_DOUGH = RegistryEntry.item(Utils.resource("wheat_dough"), () -> new Item(new Item.Properties()));
+    public static final RegistryEntry<Item> DOUGH = RegistryEntry.item(Utils.resource("dough"), () -> new Item(new Item.Properties()));
     public static final RegistryEntry<Item> CHEESE = RegistryEntry.item(Utils.resource("cheese"), () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(2).saturationMod(0.6F).build())));
     public static final RegistryEntry<Item> CHEESE_SANDWICH = RegistryEntry.item(Utils.resource("cheese_sandwich"), () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(6).saturationMod(0.5F).build())));
     public static final RegistryEntry<Item> CHEESE_TOASTIE = RegistryEntry.item(Utils.resource("cheese_toastie"), () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(6).saturationMod(0.7F).build())));
