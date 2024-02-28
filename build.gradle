@@ -107,7 +107,7 @@ subprojects {
     }
 }
 
-task incrementBuild {
+tasks.register('incrementBuild') {
     doLast {
         int version = file('/release_build').text.toInteger()
         file('/release_build').text = version + 1
