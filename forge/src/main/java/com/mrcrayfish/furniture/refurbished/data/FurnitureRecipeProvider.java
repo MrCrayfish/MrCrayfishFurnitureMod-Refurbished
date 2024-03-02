@@ -1,12 +1,10 @@
 package com.mrcrayfish.furniture.refurbished.data;
 
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
 import net.minecraftforge.common.crafting.conditions.ModLoadedCondition;
-
-import java.util.function.Consumer;
 
 /**
  * Author: MrCrayfish
@@ -19,17 +17,13 @@ public class FurnitureRecipeProvider extends RecipeProvider
     }
 
     @Override
-    protected void buildRecipes(Consumer<FinishedRecipe> consumer)
+    protected void buildRecipes(RecipeOutput output)
     {
-        new CommonRecipeProvider(consumer, (modId, recipeName, builder) -> {
-            // Need to accept a custom consumer to get access to advancement id
-            builder.save(recipe -> {
-                ConditionalRecipe.builder()
-                    .addCondition(new ModLoadedCondition(modId))
-                    .addRecipe(recipe)
-                    .generateAdvancement(recipe.getAdvancementId())
-                    .build(consumer, recipeName);
-            }, recipeName);
+        new CommonRecipeProvider(output, (modId, recipeName, builder) -> {
+            ConditionalRecipe.builder()
+                .mainCondition(new ModLoadedCondition(modId))
+                .recipe(builder::save)
+                .save(output, recipeName);
         }, RecipeProvider::has, RecipeProvider::has).run();
     }
 }

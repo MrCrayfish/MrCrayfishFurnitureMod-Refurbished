@@ -3,10 +3,8 @@ package com.mrcrayfish.furniture.refurbished.data;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
-
-import java.util.function.Consumer;
 
 /**
  * Author: MrCrayfish
@@ -19,10 +17,10 @@ public class FurnitureRecipeProvider extends FabricRecipeProvider
     }
 
     @Override
-    public void buildRecipes(Consumer<FinishedRecipe> consumer)
+    public void buildRecipes(RecipeOutput output)
     {
-        new CommonRecipeProvider(consumer, (modId, recipeName, builder) -> {
-            builder.save(this.withConditions(consumer, DefaultResourceConditions.allModsLoaded(modId)), recipeName);
+        new CommonRecipeProvider(output, (modId, recipeName, builder) -> {
+            builder.save(this.withConditions(output, DefaultResourceConditions.allModsLoaded(modId)), recipeName);
         }, RecipeProvider::has, RecipeProvider::has).run();
     }
 }

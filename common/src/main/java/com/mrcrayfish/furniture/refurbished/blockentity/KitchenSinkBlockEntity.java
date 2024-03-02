@@ -27,6 +27,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LevelEvent;
@@ -86,7 +87,7 @@ public class KitchenSinkBlockEntity extends BlockEntity implements IFluidContain
     {
         Level level = player.level();
         ItemStack heldStack = player.getItemInHand(hand);
-        Optional<SinkFluidTransmutingRecipe> optional = level.getRecipeManager().getRecipeFor(ModRecipeTypes.SINK_FLUID_TRANSMUTING.get(), new SimpleContainer(heldStack), player.level());
+        Optional<SinkFluidTransmutingRecipe> optional = level.getRecipeManager().getRecipeFor(ModRecipeTypes.SINK_FLUID_TRANSMUTING.get(), new SimpleContainer(heldStack), player.level()).map(RecipeHolder::value);
         if(optional.isPresent() && result.getDirection() != Direction.DOWN)
         {
             SinkFluidTransmutingRecipe recipe = optional.get();

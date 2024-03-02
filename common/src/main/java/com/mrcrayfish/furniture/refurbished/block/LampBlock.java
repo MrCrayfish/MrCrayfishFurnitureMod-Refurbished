@@ -2,6 +2,8 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.blockentity.LightingBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
@@ -35,6 +37,12 @@ import java.util.stream.Collectors;
  */
 public class LampBlock extends FurnitureBlock implements EntityBlock, BlockTagSupplier
 {
+    private static final MapCodec<LampBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
+        return builder.group(DyeColor.CODEC.fieldOf("color").forGetter(block -> {
+            return block.color;
+        }), propertiesCodec()).apply(builder, LampBlock::new);
+    });
+
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
     private final DyeColor color;
@@ -49,6 +57,12 @@ public class LampBlock extends FurnitureBlock implements EntityBlock, BlockTagSu
     public DyeColor getDyeColor()
     {
         return this.color;
+    }
+
+    @Override
+    protected MapCodec<LampBlock> codec()
+    {
+        return CODEC;
     }
 
     @Override

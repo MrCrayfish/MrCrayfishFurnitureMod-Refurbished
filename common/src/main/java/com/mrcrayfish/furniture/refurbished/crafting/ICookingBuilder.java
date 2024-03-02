@@ -11,5 +11,5 @@ import net.minecraft.world.item.crafting.Ingredient;
  */
 public interface ICookingBuilder<T extends AbstractCookingRecipe>
 {
-    T create(ResourceLocation id, String name, CookingBookCategory category, Ingredient ingredient, ItemStack stack, float experience, int cookingTime);
+    T create(String name, CookingBookCategory category, Ingredient ingredient, ItemStack stack, float experience, int cookingTime);
 }

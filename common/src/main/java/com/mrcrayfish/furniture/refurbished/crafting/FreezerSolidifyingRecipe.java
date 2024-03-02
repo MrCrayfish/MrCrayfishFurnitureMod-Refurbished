@@ -14,9 +14,9 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
  */
 public class FreezerSolidifyingRecipe extends AbstractCookingRecipe
 {
-    public FreezerSolidifyingRecipe(ResourceLocation id, String name, CookingBookCategory category, Ingredient ingredient, ItemStack stack, float experience, int cookingTime)
+    public FreezerSolidifyingRecipe(String group, CookingBookCategory category, Ingredient ingredient, ItemStack stack, float experience, int cookingTime)
     {
-        super(ModRecipeTypes.FREEZER_SOLIDIFYING.get(), id, name, category, ingredient, stack, experience, cookingTime);
+        super(ModRecipeTypes.FREEZER_SOLIDIFYING.get(), group, category, ingredient, stack, experience, cookingTime);
     }
 
     @Override

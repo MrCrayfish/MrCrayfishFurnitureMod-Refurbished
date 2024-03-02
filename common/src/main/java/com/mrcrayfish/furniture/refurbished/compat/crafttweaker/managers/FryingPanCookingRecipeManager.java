@@ -11,7 +11,9 @@ import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.FreezerSolidifyingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.FryingPanCookingRecipe;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.CookingBookCategory;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -21,16 +23,16 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenRegister
 @Document("mods/RefurbishedFurniture/FryingPan/Cooking")
 @ZenCodeType.Name("mods.refurbished_furniture.FryingPanCooking")
-public class FryingPanCookingRecipeManager implements IRecipeManager<FryingPanCookingRecipe>
+public class FryingPanCookingRecipeManager implements IRecipeManager<AbstractCookingRecipe>
 {
     @ZenCodeType.Method
     public void addRecipe(String name, IIngredient input, IItemStack output, @ZenCodeType.OptionalFloat float experience, @ZenCodeType.OptionalInt(200) int cookingTime)
     {
-        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new FryingPanCookingRecipe(CraftTweakerConstants.rl(name), "", CookingBookCategory.MISC, input.asVanillaIngredient(), output.getInternal(), experience, cookingTime)));
+        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new RecipeHolder<>(CraftTweakerConstants.rl(name), new FryingPanCookingRecipe("", CookingBookCategory.MISC, input.asVanillaIngredient(), output.getInternal(), experience, cookingTime))));
     }
 
     @Override
-    public RecipeType<FryingPanCookingRecipe> getRecipeType()
+    public RecipeType<AbstractCookingRecipe> getRecipeType()
     {
         return ModRecipeTypes.FRYING_PAN_COOKING.get();
     }

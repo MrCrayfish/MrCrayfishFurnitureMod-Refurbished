@@ -11,6 +11,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -34,9 +35,14 @@ public class LinkManager extends SavedData
         ServerLevel level = server.getLevel(Level.OVERWORLD);
         if(level != null)
         {
-            return Optional.of(level.getDataStorage().computeIfAbsent(tag -> new LinkManager(), LinkManager::new, STORAGE_ID));
+            return Optional.of(level.getDataStorage().computeIfAbsent(createFactory(), STORAGE_ID));
         }
         return Optional.empty();
+    }
+
+    public static SavedData.Factory<LinkManager> createFactory()
+    {
+        return new SavedData.Factory<>(LinkManager::new, tag -> new LinkManager(), DataFixTypes.SAVED_DATA_FORCED_CHUNKS);
     }
 
     private final Map<UUID, BlockPos> lastNodeMap = new HashMap<>();

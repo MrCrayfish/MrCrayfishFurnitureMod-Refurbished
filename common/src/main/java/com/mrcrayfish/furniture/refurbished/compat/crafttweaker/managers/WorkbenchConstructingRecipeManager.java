@@ -12,6 +12,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.StackedIngredient;
 import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchContructingRecipe;
 import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -34,7 +35,7 @@ public class WorkbenchConstructingRecipeManager implements IRecipeManager<Workbe
                 .map(IIngredient::asIIngredientWithAmount)
                 .map(v -> StackedIngredient.of(v.getIngredient().asVanillaIngredient(), v.getAmount()))
                 .collect(NonNullList::create, AbstractList::add, AbstractCollection::addAll);
-        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new WorkbenchContructingRecipe(CraftTweakerConstants.rl(name), ingredients, result.getInternal(), notification)));
+        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new RecipeHolder<>(CraftTweakerConstants.rl(name), new WorkbenchContructingRecipe(ingredients, result.getInternal(), notification))));
     }
 
     @Override

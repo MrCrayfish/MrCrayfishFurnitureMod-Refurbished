@@ -169,11 +169,12 @@ public class Utils
 
     public static Ingredient getIngredient(JsonObject object, String key)
     {
-        if(GsonHelper.isArrayNode(object, key))
+        /*if(GsonHelper.isArrayNode(object, key))
         {
             return Ingredient.fromJson(GsonHelper.getAsJsonArray(object, key), false);
         }
-        return Ingredient.fromJson(GsonHelper.getAsJsonObject(object, key), false);
+        return Ingredient.fromJson(GsonHelper.getAsJsonObject(object, key), false);*/
+        return null;
     }
 
     public static ItemStack getItemStack(JsonObject object, String key)

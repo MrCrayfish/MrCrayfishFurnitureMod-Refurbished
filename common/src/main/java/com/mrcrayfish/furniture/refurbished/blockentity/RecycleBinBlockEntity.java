@@ -33,6 +33,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
@@ -478,7 +479,7 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
      */
     private Optional<RecycleBinRecyclingRecipe> getRecipe(ItemStack stack)
     {
-        return this.recipeCache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level));
+        return this.recipeCache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level)).map(RecipeHolder::value);
     }
 
     /**

@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mojang.serialization.MapCodec;
 import com.mrcrayfish.furniture.refurbished.blockentity.PlateBlockEntity;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.entity.Seat;
@@ -40,6 +41,8 @@ import java.util.stream.Collectors;
  */
 public class PlateBlock extends FallingBlock implements EntityBlock, BlockTagSupplier
 {
+    private static final MapCodec<PlateBlock> CODEC = simpleCodec(PlateBlock::new);
+
     protected final Map<BlockState, VoxelShape> shapes;
 
     public PlateBlock(Properties properties)
@@ -52,6 +55,12 @@ public class PlateBlock extends FallingBlock implements EntityBlock, BlockTagSup
     {
         VoxelShape baseShape = Block.box(3, 0, 3, 13, 1.5, 13);
         return ImmutableMap.copyOf(states.stream().collect(Collectors.toMap(state -> state, state -> baseShape)));
+    }
+
+    @Override
+    protected MapCodec<PlateBlock> codec()
+    {
+        return CODEC;
     }
 
     @Override

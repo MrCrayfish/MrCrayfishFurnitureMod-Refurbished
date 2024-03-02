@@ -15,6 +15,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
@@ -56,17 +57,17 @@ public class CuttingBoardHelperOverlay implements IHudOverlay
         int placeIndex = cuttingBoard.getPlaceIndex();
         Container container = new SimpleContainer(placeIndex);
         IntStream.range(0, placeIndex).forEach(index -> container.setItem(index, cuttingBoard.getItem(index)));
-        List<CuttingBoardCombiningRecipe> recipes = mc.level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.CUTTING_BOARD_COMBINING.get());
+        List<RecipeHolder<CuttingBoardCombiningRecipe>> recipes = mc.level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.CUTTING_BOARD_COMBINING.get());
 
         // Get stream of combinable recipes and filter recipes that match the currently placed items
         Stream<Item> combinable = recipes.stream()
-            .filter(recipe -> recipe.matches(container, mc.level) && placeIndex < recipe.getIngredients().size())
-            .flatMap(recipe -> Stream.of(recipe.getIngredients().get(placeIndex).getItems()))
+            .filter(holder -> holder.value().matches(container, mc.level) && placeIndex < holder.value().getIngredients().size())
+            .flatMap(holder -> Stream.of(holder.value().getIngredients().get(placeIndex).getItems()))
             .map(ItemStack::getItem);
 
         // Get stream of slicing recipes
         Stream<Item> sliceable = mc.level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.CUTTING_BOARD_SLICING.get()).stream()
-            .flatMap(recipe -> Stream.of(recipe.getIngredients().get(0).getItems()))
+            .flatMap(holder -> Stream.of(holder.value().getIngredients().get(0).getItems()))
             .map(ItemStack::getItem);
 
         Stream<Item> items = placeIndex == 0 ? Stream.concat(combinable, sliceable) : combinable;
@@ -128,8 +129,7 @@ public class CuttingBoardHelperOverlay implements IHudOverlay
         if(entity.getHeadIndex() == 0 && !placedItem.isEmpty())
         {
             Level level = Objects.requireNonNull(entity.getLevel());
-            Optional<CuttingBoardSlicingRecipe> optional = level.getRecipeManager().getRecipeFor(ModRecipeTypes.CUTTING_BOARD_SLICING.get(), new SimpleContainer(placedItem), level);
-            return optional.isPresent();
+            return level.getRecipeManager().getRecipeFor(ModRecipeTypes.CUTTING_BOARD_SLICING.get(), new SimpleContainer(placedItem), level).isPresent();
         }
         return false;
     }

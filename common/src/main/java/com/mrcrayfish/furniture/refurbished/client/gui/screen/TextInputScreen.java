@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 
 import com.google.common.base.MoreObjects;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -15,6 +16,7 @@ import java.util.function.Function;
  */
 public class TextInputScreen extends Screen
 {
+    private static final ResourceLocation WINDOW_SPRITE = Utils.resource("window");
     public static final ResourceLocation RECIPE_BOOK_TEXTURE = new ResourceLocation("textures/gui/recipe_book.png");
     public static final int WINDOW_WIDTH = 160;
     public static final int WINDOW_HEIGHT = 72;
@@ -76,19 +78,13 @@ public class TextInputScreen extends Screen
     }
 
     @Override
-    public void tick()
-    {
-        this.editBox.tick();
-    }
-
-    @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
         // x, y, width, height, corner_size, sub_image_width, sub_image_height, sub_image_u, sub_image_v
-        this.renderBackground(graphics);
+        this.renderDirtBackground(graphics);
         int startX = (this.width - WINDOW_WIDTH) / 2;
         int startY = (this.height - WINDOW_HEIGHT) / 2;
-        graphics.blitNineSliced(RECIPE_BOOK_TEXTURE, startX, startY, WINDOW_WIDTH, WINDOW_HEIGHT, 4, 32, 32, 82, 208);
+        graphics.blitSprite(WINDOW_SPRITE, startX, startY, WINDOW_WIDTH, WINDOW_HEIGHT); // TODO test this new sprite system
         graphics.drawString(this.minecraft.font, this.title, startX + 6, startY + 7, 0x404040, false);
         super.render(graphics, mouseX, mouseY, partialTick);
     }

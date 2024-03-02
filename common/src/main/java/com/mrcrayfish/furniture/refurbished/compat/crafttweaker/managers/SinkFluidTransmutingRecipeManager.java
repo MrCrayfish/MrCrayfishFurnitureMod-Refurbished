@@ -12,6 +12,7 @@ import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.OvenBakingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.SinkFluidTransmutingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -26,7 +27,7 @@ public class SinkFluidTransmutingRecipeManager implements IRecipeManager<SinkFlu
     @ZenCodeType.Method
     public void addRecipe(String name, IFluidStack fluid, IIngredient catalyst, IItemStack output, @ZenCodeType.OptionalInt(300) int processTime)
     {
-        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new SinkFluidTransmutingRecipe(CraftTweakerConstants.rl(name), fluid.getFluid(), catalyst.asVanillaIngredient(), output.getInternal())));
+        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new RecipeHolder<>(CraftTweakerConstants.rl(name), new SinkFluidTransmutingRecipe(fluid.getFluid(), catalyst.asVanillaIngredient(), output.getInternal()))));
     }
 
     @Override

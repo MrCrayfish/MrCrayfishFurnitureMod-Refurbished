@@ -2,6 +2,8 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.entity.Seat;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
@@ -34,6 +36,12 @@ import java.util.stream.Collectors;
  */
 public class SofaBlock extends FurnitureHorizontalBlock implements BlockTagSupplier
 {
+    private static final MapCodec<SofaBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
+        return builder.group(DyeColor.CODEC.fieldOf("color").forGetter(block -> {
+            return block.color;
+        }), propertiesCodec()).apply(builder, SofaBlock::new);
+    });
+
     public static final EnumProperty<Shape> SHAPE = EnumProperty.create("shape", Shape.class);
 
     private final DyeColor color;
@@ -47,6 +55,12 @@ public class SofaBlock extends FurnitureHorizontalBlock implements BlockTagSuppl
     public DyeColor getDyeColor()
     {
         return this.color;
+    }
+
+    @Override
+    protected MapCodec<SofaBlock> codec()
+    {
+        return CODEC;
     }
 
     @Override

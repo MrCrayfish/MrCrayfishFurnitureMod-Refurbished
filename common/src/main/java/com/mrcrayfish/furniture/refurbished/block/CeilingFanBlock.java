@@ -2,6 +2,9 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.blockentity.CeilingFanBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.LightswitchBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
@@ -40,6 +43,14 @@ import java.util.stream.Collectors;
  */
 public class CeilingFanBlock extends FurnitureBlock implements EntityBlock, BlockTagSupplier
 {
+    private static final MapCodec<CeilingFanBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
+        return builder.group(WoodType.CODEC.fieldOf("wood_type").forGetter(block -> {
+            return block.woodType;
+        }), MetalType.CODEC.fieldOf("metal_type").forGetter(block -> {
+            return block.metalType;
+        }), propertiesCodec()).apply(builder, CeilingFanBlock::new);
+    });
+
     private final WoodType woodType;
     private final MetalType metalType;
 
@@ -59,6 +70,12 @@ public class CeilingFanBlock extends FurnitureBlock implements EntityBlock, Bloc
     public MetalType getMetalType()
     {
         return this.metalType;
+    }
+
+    @Override
+    protected MapCodec<CeilingFanBlock> codec()
+    {
+        return CODEC;
     }
 
     @Override

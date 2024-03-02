@@ -19,9 +19,9 @@ import net.minecraft.world.level.Level;
  */
 public class DoorMatCopyRecipe extends CustomRecipe
 {
-    public DoorMatCopyRecipe(ResourceLocation id, CraftingBookCategory category)
+    public DoorMatCopyRecipe(CraftingBookCategory category)
     {
-        super(id, category);
+        super(category);
     }
 
     @Override

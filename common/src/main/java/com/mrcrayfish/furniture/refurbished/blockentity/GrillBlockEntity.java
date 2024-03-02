@@ -37,6 +37,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ChunkPos;
@@ -462,7 +463,7 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
 
     private Optional<? extends AbstractCookingRecipe> getRecipeFromCache(RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> cache, ItemStack stack)
     {
-        return cache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level));
+        return cache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level)).map(RecipeHolder::value);
     }
 
     @Override

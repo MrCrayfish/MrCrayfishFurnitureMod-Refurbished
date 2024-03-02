@@ -122,18 +122,11 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
     }
 
     @Override
-    protected void containerTick()
-    {
-        this.searchEditBox.tick();
-        this.messageEditBox.tick();
-    }
-
-    @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
         this.sendButton.active = this.selected != null && !this.menu.getContainer().isEmpty();
         this.searchEditBox.setTextColor(this.searchEditBox.getValue().isEmpty() && !this.searchEditBox.isFocused() ? 0x707070 : 0xE0E0E0);
-        this.renderBackground(graphics);
+        this.renderDirtBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTick);
         this.renderTooltip(graphics, mouseX, mouseY);
     }
@@ -171,7 +164,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
             if(optional.isPresent())
             {
                 PlayerInfo info = this.getPlayerInfo(optional.get());
-                PlayerFaceRenderer.draw(graphics, info.getSkinLocation(), entryX + 3, entryY + 3, 8);
+                PlayerFaceRenderer.draw(graphics, info.getSkin(), entryX + 3, entryY + 3, 8);
             }
 
             // Draw the name of the mailbox
@@ -266,14 +259,14 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double amount)
+    public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY)
     {
         if(this.isHovering(CONTAINER_LEFT, CONTAINER_TOP, CONTAINER_WIDTH, CONTAINER_HEIGHT, mouseX, mouseY))
         {
-            this.scroll((int) (-SCROLL_SPEED * amount));
+            this.scroll((int) (-SCROLL_SPEED * deltaY));
             return true;
         }
-        return super.mouseScrolled(mouseX, mouseY, amount);
+        return super.mouseScrolled(mouseX, mouseY, deltaX, deltaY);
     }
 
     /**

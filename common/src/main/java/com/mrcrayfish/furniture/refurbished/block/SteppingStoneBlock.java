@@ -2,11 +2,14 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
@@ -25,6 +28,12 @@ import java.util.stream.Collectors;
  */
 public class SteppingStoneBlock extends FurnitureHorizontalBlock implements BlockTagSupplier
 {
+    private static final MapCodec<SteppingStoneBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
+        return builder.group(StoneType.CODEC.fieldOf("stone_type").forGetter(block -> {
+            return block.type;
+        }), propertiesCodec()).apply(builder, SteppingStoneBlock::new);
+    });
+
     private final StoneType type;
 
     public SteppingStoneBlock(StoneType type, Properties properties)
@@ -37,6 +46,12 @@ public class SteppingStoneBlock extends FurnitureHorizontalBlock implements Bloc
     public StoneType getStoneType()
     {
         return this.type;
+    }
+
+    @Override
+    protected MapCodec<SteppingStoneBlock> codec()
+    {
+        return CODEC;
     }
 
     @Override

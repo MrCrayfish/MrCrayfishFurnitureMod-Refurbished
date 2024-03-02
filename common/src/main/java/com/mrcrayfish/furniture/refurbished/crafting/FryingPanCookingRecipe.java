@@ -14,9 +14,9 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
  */
 public class FryingPanCookingRecipe extends AbstractCookingRecipe
 {
-    public FryingPanCookingRecipe(ResourceLocation id, String name, CookingBookCategory category, Ingredient ingredient, ItemStack stack, float experience, int cookingTime)
+    public FryingPanCookingRecipe(String group, CookingBookCategory category, Ingredient ingredient, ItemStack stack, float experience, int cookingTime)
     {
-        super(ModRecipeTypes.FRYING_PAN_COOKING.get(), id, name, category, ingredient, stack, experience, cookingTime);
+        super(ModRecipeTypes.FRYING_PAN_COOKING.get(), group, category, ingredient, stack, experience, cookingTime);
     }
 
     @Override

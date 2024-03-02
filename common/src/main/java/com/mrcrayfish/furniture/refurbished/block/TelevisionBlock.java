@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mojang.serialization.MapCodec;
 import com.mrcrayfish.furniture.refurbished.blockentity.CeilingFanBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.ElectricityGeneratorBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.TelevisionBlockEntity;
@@ -37,10 +38,18 @@ import java.util.stream.Collectors;
  */
 public class TelevisionBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
 {
+    private static final MapCodec<TelevisionBlock> CODEC = simpleCodec(TelevisionBlock::new);
+
     public TelevisionBlock(Properties properties)
     {
         super(properties);
         this.registerDefaultState(this.getStateDefinition().any().setValue(DIRECTION, Direction.NORTH).setValue(POWERED, false));
+    }
+
+    @Override
+    protected MapCodec<TelevisionBlock> codec()
+    {
+        return CODEC;
     }
 
     @Override

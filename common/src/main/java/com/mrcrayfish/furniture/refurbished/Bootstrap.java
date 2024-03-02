@@ -93,25 +93,25 @@ public class Bootstrap
     {
         // Allows a spatula in a dispenser to flip items on the grill
         DispenserBlock.registerBehavior(ModItems.SPATULA::get, (source, stack) -> {
-            Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
+            Direction direction = source.state().getValue(DispenserBlock.FACING);
 
             // Handle interaction with grill
-            BlockPos pos = source.getPos().relative(direction).below();
-            if(source.getLevel().getBlockEntity(pos) instanceof GrillBlockEntity grill) {
+            BlockPos pos = source.pos().relative(direction).below();
+            if(source.level().getBlockEntity(pos) instanceof GrillBlockEntity grill) {
                 if(grill.flipItems()) {
-                    FryingPanBlock.playSpatulaScoopSound(source.getLevel(), pos.above(), 0);
-                    Network.getPlay().sendToTrackingBlockEntity(() -> grill, new MessageToolAnimation(MessageToolAnimation.Tool.SPATULA, source.getPos(), direction));
+                    FryingPanBlock.playSpatulaScoopSound(source.level(), pos.above(), 0);
+                    Network.getPlay().sendToTrackingBlockEntity(() -> grill, new MessageToolAnimation(MessageToolAnimation.Tool.SPATULA, source.pos(), direction));
                     return stack;
                 }
             }
 
             // Handle interaction with frying pan
-            pos = source.getPos().relative(direction);
-            if(source.getLevel().getBlockEntity(pos) instanceof FryingPanBlockEntity fryingPan) {
+            pos = source.pos().relative(direction);
+            if(source.level().getBlockEntity(pos) instanceof FryingPanBlockEntity fryingPan) {
                 if(fryingPan.isFlippingNeeded()) {
                     fryingPan.flipItem();
-                    FryingPanBlock.playSpatulaScoopSound(source.getLevel(), pos, 0.1875);
-                    Network.getPlay().sendToTrackingBlockEntity(() -> fryingPan, new MessageToolAnimation(MessageToolAnimation.Tool.SPATULA, source.getPos(), direction));
+                    FryingPanBlock.playSpatulaScoopSound(source.level(), pos, 0.1875);
+                    Network.getPlay().sendToTrackingBlockEntity(() -> fryingPan, new MessageToolAnimation(MessageToolAnimation.Tool.SPATULA, source.pos(), direction));
                     return stack;
                 }
             }
@@ -120,14 +120,14 @@ public class Bootstrap
 
         // Allows a knife in a dispenser to slice items on the cutting board
         DispenserBlock.registerBehavior(ModItems.KNIFE::get, (source, stack) -> {
-            Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
-            BlockPos pos = source.getPos().relative(direction);
-            if(source.getLevel().getBlockEntity(pos) instanceof CuttingBoardBlockEntity cuttingBoard) {
-                if(cuttingBoard.sliceItem(source.getLevel(), false)) {
-                    if(stack.hurt(1, source.getLevel().random, null)) {
+            Direction direction = source.state().getValue(DispenserBlock.FACING);
+            BlockPos pos = source.pos().relative(direction);
+            if(source.level().getBlockEntity(pos) instanceof CuttingBoardBlockEntity cuttingBoard) {
+                if(cuttingBoard.sliceItem(source.level(), false)) {
+                    if(stack.hurt(1, source.level().random, null)) {
                         stack.setCount(0);
                     }
-                    Network.getPlay().sendToTrackingBlockEntity(() -> cuttingBoard, new MessageToolAnimation(MessageToolAnimation.Tool.KNIFE, source.getPos(), direction));
+                    Network.getPlay().sendToTrackingBlockEntity(() -> cuttingBoard, new MessageToolAnimation(MessageToolAnimation.Tool.KNIFE, source.pos(), direction));
                 }
             }
             return stack;
@@ -135,10 +135,10 @@ public class Bootstrap
 
         // Spawns the items contained in a package into the level
         DispenserBlock.registerBehavior(ModItems.PACKAGE::get, (source, stack) -> {
-            Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
-            Vec3 pos = source.getPos().relative(direction).getCenter();
+            Direction direction = source.state().getValue(DispenserBlock.FACING);
+            Vec3 pos = source.pos().relative(direction).getCenter();
             PackageItem.getPackagedItems(stack).forEach(s -> {
-                Containers.dropItemStack(source.getLevel(), pos.x, pos.y, pos.z, s);
+                Containers.dropItemStack(source.level(), pos.x, pos.y, pos.z, s);
             });
             return ItemStack.EMPTY;
         });
@@ -147,7 +147,7 @@ public class Bootstrap
     private static void registerCauldronBehaviours()
     {
         // Adds the ability to remove the art from door mats by interacting with a water cauldron
-        CauldronInteraction.WATER.put(ModBlocks.DOOR_MAT.get().asItem(), (state, level, pos, player, hand, stack) -> {
+        CauldronInteraction.WATER.map().put(ModBlocks.DOOR_MAT.get().asItem(), (state, level, pos, player, hand, stack) -> {
             Block block = Block.byItem(stack.getItem());
             if(block == ModBlocks.DOOR_MAT.get()) {
                 CompoundTag tag = BlockItem.getBlockEntityData(stack);

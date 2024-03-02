@@ -2,6 +2,8 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.blockentity.ElectricityGeneratorBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
@@ -24,6 +26,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -39,6 +42,12 @@ import java.util.stream.Collectors;
  */
 public class ElectricityGeneratorBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
 {
+    private static final MapCodec<ElectricityGeneratorBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
+        return builder.group(MetalType.CODEC.fieldOf("metal_type").forGetter(block -> {
+            return block.type;
+        }), propertiesCodec()).apply(builder, ElectricityGeneratorBlock::new);
+    });
+
     private final MetalType type;
 
     public ElectricityGeneratorBlock(MetalType type, Properties properties)
@@ -51,6 +60,12 @@ public class ElectricityGeneratorBlock extends FurnitureHorizontalBlock implemen
     public MetalType getMetalType()
     {
         return this.type;
+    }
+
+    @Override
+    protected MapCodec<ElectricityGeneratorBlock> codec()
+    {
+        return CODEC;
     }
 
     @Override

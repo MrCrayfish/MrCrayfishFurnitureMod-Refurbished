@@ -8,8 +8,10 @@ import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.blockentity.RecycleBinBlockEntity;
 import com.mrcrayfish.furniture.refurbished.crafting.RecycleBinRecyclingRecipe;
+import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
 
@@ -37,12 +39,13 @@ public class ActionAddItemsToRecycleBinOutput implements IAction, IRuntimeAction
     public void apply()
     {
         RecipeList<RecycleBinRecyclingRecipe> list = this.manager.getRecipeList();
-        RecycleBinRecyclingRecipe recipe = list.get(this.id);
-        List<ItemStack> newOutput = new ArrayList<>(List.of(recipe.getOutputs()));
+        RecipeHolder<RecycleBinRecyclingRecipe> holder = list.get(this.id);
+        NonNullList<ItemStack> newOutput = NonNullList.create();
+        newOutput.addAll(holder.value().getOutput());
         this.output.forEach(iStack -> newOutput.add(iStack.getInternal()));
-        RecycleBinRecyclingRecipe newRecipe = new RecycleBinRecyclingRecipe(this.id, recipe.getInput(), newOutput.toArray(ItemStack[]::new));
+        RecycleBinRecyclingRecipe newRecipe = new RecycleBinRecyclingRecipe(holder.value().getInput(), newOutput);
         list.remove(this.id);
-        list.add(this.id, newRecipe);
+        list.add(this.id, new RecipeHolder<>(this.id, newRecipe));
     }
 
     @Override
@@ -67,8 +70,8 @@ public class ActionAddItemsToRecycleBinOutput implements IAction, IRuntimeAction
             return false;
         }
 
-        RecycleBinRecyclingRecipe recipe = this.manager.getRecipeList().get(this.id);
-        List<ItemStack> outputs = List.of(recipe.getOutputs());
+        RecipeHolder<RecycleBinRecyclingRecipe> recipe = this.manager.getRecipeList().get(this.id);
+        List<ItemStack> outputs = recipe.value().getOutput();
         for(IItemStack stack : this.output)
         {
             if(outputs.stream().anyMatch(stack1 -> ItemStack.isSameItemSameTags(stack1, stack.getInternal())))

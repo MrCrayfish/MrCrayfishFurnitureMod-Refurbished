@@ -419,10 +419,11 @@ public class CreativeFilters
             BufferUploader.drawWithShader(builder.end());
         }
 
-        @Override
+        // TODO check
+        /*@Override
         protected ClientTooltipPositioner createTooltipPositioner()
         {
             return DefaultTooltipPositioner.INSTANCE;
-        }
+        }*/
     }
 }

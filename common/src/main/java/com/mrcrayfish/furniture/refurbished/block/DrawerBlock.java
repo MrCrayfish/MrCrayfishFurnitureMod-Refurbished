@@ -2,6 +2,8 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.blockentity.DrawerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
@@ -33,10 +35,22 @@ import java.util.Map;
  */
 public class DrawerBlock extends DeskBlock implements EntityBlock
 {
+    private static final MapCodec<DrawerBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
+        return builder.group(WoodType.CODEC.fieldOf("wood_type").forGetter(block -> {
+            return block.type;
+        }), propertiesCodec()).apply(builder, DrawerBlock::new);
+    });
+
     public DrawerBlock(WoodType type, BlockBehaviour.Properties properties)
     {
         super(type, properties);
         this.registerDefaultState(this.getStateDefinition().any().setValue(DIRECTION, Direction.NORTH).setValue(LEFT, false).setValue(RIGHT, false).setValue(OPEN, false));
+    }
+
+    @Override
+    protected MapCodec<DrawerBlock> codec()
+    {
+        return CODEC;
     }
 
     @Override

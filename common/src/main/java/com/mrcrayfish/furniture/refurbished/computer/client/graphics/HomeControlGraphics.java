@@ -38,7 +38,7 @@ public class HomeControlGraphics extends DisplayableProgram<HomeControl>
         {
             this.graphics = graphics;
             this.devices = this.addWidget(new ComputerSelectionList<>(graphics.getWidth() - 10, graphics.getHeight() - 30, 25, 100, 16));
-            this.devices.setRenderSelection(false);
+            //this.devices.setRenderSelection(false); // TODO wat happen to dis
             graphics.getProgram().findDevices().forEach(device -> {
                 this.devices.children().add(new DeviceItem(device));
             });

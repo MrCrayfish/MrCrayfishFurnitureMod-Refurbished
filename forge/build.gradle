@@ -2,14 +2,16 @@ import net.minecraftforge.gradle.common.tasks.SignJar
 import org.apache.commons.io.FilenameUtils
 
 plugins {
-    id 'idea'
+    id 'java'
+    id 'eclipse'
     id 'maven-publish'
-    id 'net.minecraftforge.gradle'
-    id 'org.spongepowered.mixin'
+    id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
+    id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
 }
 
-archivesBaseName = "${mod_id}-forge"
-version = "${minecraft_version}-${mod_version}"
+base {
+    archivesName = "${mod_id}-forge"
+}
 
 mixin {
     add(sourceSets.main, "${mod_id}.refmap.json")
@@ -19,6 +21,8 @@ mixin {
 
 minecraft {
     mappings channel: 'official', version: minecraft_version
+
+    copyIdeResources = true
 
     if (file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
         accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
@@ -91,8 +95,8 @@ dependencies {
     implementation fg.deobf("com.mrcrayfish:framework-forge:${minecraft_version}-${framework_version}")
 
     // Runtime mods
-    runtimeOnly fg.deobf("com.mrcrayfish:catalogue-forge:${minecraft_version}-1.7.1")
-    runtimeOnly fg.deobf("maven.modrinth:farmers-delight:1.20.1-1.2.3")
+    runtimeOnly fg.deobf("com.mrcrayfish:catalogue-forge:${minecraft_version}-1.9.1")
+    compileOnly fg.deobf("maven.modrinth:farmers-delight:1.20.1-1.2.3")
 
     compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
@@ -104,12 +108,12 @@ dependencies {
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
 }
 
-Spec<Task> notTest = { Task it -> !it.name.contains("Test") } as Spec<Task>
+Spec<Task> notForge = { Task it -> !it.name.startsWith("forge") && !it.name.contains("Test") } as Spec<Task>
 
-tasks.withType(JavaCompile).matching(notTest).configureEach {
+tasks.withType(JavaCompile).matching(notForge).configureEach {
     source(project(":common").sourceSets.main.allSource)
 }
-tasks.withType(Javadoc).matching(notTest).configureEach {
+tasks.withType(Javadoc).matching(notForge).configureEach {
     source(project(":common").sourceSets.main.allJava)
 }
 tasks.named("sourcesJar", Jar) {
@@ -187,3 +191,9 @@ tasks.register('signJar', SignJar) {
 
 jar.finalizedBy 'signJar'
 signJar.mustRunAfter 'reobfJar'
+
+sourceSets.each {
+    def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
+    it.output.resourcesDir = dir
+    it.java.destinationDirectory = dir
+}

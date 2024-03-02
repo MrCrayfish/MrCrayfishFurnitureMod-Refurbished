@@ -1,5 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.block;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -13,6 +15,12 @@ import java.util.List;
  */
 public class ColouredKitchenDrawerBlock extends KitchenDrawerBlock implements BlockTagSupplier
 {
+    private static final MapCodec<ColouredKitchenDrawerBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
+        return builder.group(DyeColor.CODEC.fieldOf("color").forGetter(block -> {
+            return block.color;
+        }), propertiesCodec()).apply(builder, ColouredKitchenDrawerBlock::new);
+    });
+
     private final DyeColor color;
 
     public ColouredKitchenDrawerBlock(DyeColor color, Properties properties)
@@ -24,6 +32,12 @@ public class ColouredKitchenDrawerBlock extends KitchenDrawerBlock implements Bl
     public DyeColor getDyeColor()
     {
         return this.color;
+    }
+
+    @Override
+    protected MapCodec<ColouredKitchenDrawerBlock> codec()
+    {
+        return CODEC;
     }
 
     @Override

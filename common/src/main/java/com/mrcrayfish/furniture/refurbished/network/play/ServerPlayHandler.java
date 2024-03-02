@@ -28,6 +28,7 @@ import com.mrcrayfish.furniture.refurbished.network.message.MessageUpdatePaintin
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -41,21 +42,21 @@ import javax.annotation.Nullable;
  */
 public class ServerPlayHandler
 {
-    public static void handleMessageSetName(MessageSetName message, @Nullable ServerPlayer player)
+    public static void handleMessageSetName(MessageSetName message, @Nullable Player player)
     {
         if(player == null)
             return;
 
         Level level = player.level();
-        if(level.isLoaded(message.getPos()) && level.getBlockEntity(message.getPos()) instanceof INameable nameable)
+        if(level.isLoaded(message.pos()) && level.getBlockEntity(message.pos()) instanceof INameable nameable && player instanceof ServerPlayer serverPlayer)
         {
-            nameable.setName(player, message.getName().trim());
+            nameable.setName(serverPlayer, message.name().trim());
         }
     }
 
-    public static void handleMessageSendPackage(MessageSendPackage message, @Nullable ServerPlayer player, MessageContext context)
+    public static void handleMessageSendPackage(MessageSendPackage message, @Nullable Player player, MessageContext context)
     {
-        if(player != null && player.containerMenu instanceof PostBoxMenu menu)
+        if(player instanceof ServerPlayer serverPlayer && serverPlayer.containerMenu instanceof PostBoxMenu menu)
         {
             Container container = menu.getContainer();
             if(container.isEmpty())
@@ -71,22 +72,22 @@ public class ServerPlayHandler
                 }
             }
 
-            DeliveryService.get(player.server).ifPresent(service -> {
-                ItemStack stack = PackageItem.create(container, message.getMessage(), player.getGameProfile().getName());
-                if(service.sendMail(message.getMailboxId(), stack)) {
+            DeliveryService.get(serverPlayer.server).ifPresent(service -> {
+                ItemStack stack = PackageItem.create(container, message.message(), player.getGameProfile().getName());
+                if(service.sendMail(message.mailboxId(), stack)) {
                     container.clearContent();
-                    Network.getPlay().sendToPlayer(() -> player, new MessageClearMessage());
+                    Network.getPlay().sendToPlayer(() -> serverPlayer, new MessageClearMessage());
                 }
             });
         }
     }
 
-    public static void handleMessageDeleteLink(MessageDeleteLink message, @Nullable ServerPlayer player)
+    public static void handleMessageDeleteLink(MessageDeleteLink message, @Nullable Player player)
     {
         if(player != null && player.getMainHandItem().is(ModItems.WRENCH.get()))
         {
             Level level = player.level();
-            Connection c = Connection.of(message.getPosA(), message.getPosB());
+            Connection c = Connection.of(message.a(), message.b());
             if(level.isLoaded(c.getPosA()) && level.isLoaded(c.getPosB()))
             {
                 // Check if the player is near the nodes that are being disconnected
@@ -107,7 +108,7 @@ public class ServerPlayHandler
         }
     }
 
-    public static void handleMessageToggleSwitch(MessageTogglePower message, ServerPlayer player)
+    public static void handleMessageToggleSwitch(MessageTogglePower message, @Nullable Player player)
     {
         if(player != null && player.containerMenu instanceof IPowerSwitchMenu menu)
         {
@@ -115,26 +116,26 @@ public class ServerPlayHandler
         }
     }
 
-    public static void handleMessageTennisGame(MessagePaddleBall.Action message, ServerPlayer player)
+    public static void handleMessageTennisGame(MessagePaddleBall.Action message, @Nullable Player player)
     {
         if(player != null && player.containerMenu instanceof ComputerMenu menu)
         {
             if(menu.getComputer().getProgram() instanceof PaddleBall game)
             {
-                game.update(message.getMode(), message.getData());
+                game.update(message.action(), message.data());
             }
         }
     }
 
-    public static void handleMessageComputerOpenProgram(MessageComputerOpenProgram message, ServerPlayer player)
+    public static void handleMessageComputerOpenProgram(MessageComputerOpenProgram message, @Nullable Player player)
     {
         if(player != null && player.containerMenu instanceof ComputerMenu menu)
         {
-            menu.getComputer().launchProgram(message.getId());
+            menu.getComputer().launchProgram(message.id());
         }
     }
 
-    public static void handleMessageUpdatePainting(MessageUpdatePainting message, ServerPlayer player)
+    public static void handleMessageUpdatePainting(MessageUpdatePainting message, @Nullable Player player)
     {
         // TODO could be interface for paintable menu when needed
         if(player != null && player.containerMenu instanceof DoorMatMenu menu)
@@ -142,31 +143,35 @@ public class ServerPlayHandler
             IPaintable paintable = menu.getPaintable();
             if(paintable.isEditable())
             {
-                paintable.setImage(message.getImage());
+                paintable.setImage(message.image());
                 paintable.setEditable(false);
-                player.closeContainer();
+                if(player instanceof ServerPlayer serverPlayer)
+                {
+                    serverPlayer.closeContainer();
+                }
+
             }
         }
     }
 
-    public static void handleMessageHomeControlToggle(MessageHomeControl.Toggle message, ServerPlayer player)
+    public static void handleMessageHomeControlToggle(MessageHomeControl.Toggle message, @Nullable Player player)
     {
         if(player != null && player.containerMenu instanceof ComputerMenu menu)
         {
             if(menu.getComputer().getProgram() instanceof HomeControl program)
             {
-                program.toggleDevice(message.getPos());
+                program.toggleDevice(message.pos());
             }
         }
     }
 
-    public static void handleMessageHomeControlUpdateAll(MessageHomeControl.UpdateAll message, ServerPlayer player)
+    public static void handleMessageHomeControlUpdateAll(MessageHomeControl.UpdateAll message, @Nullable Player player)
     {
         if(player != null && player.containerMenu instanceof ComputerMenu menu)
         {
             if(menu.getComputer().getProgram() instanceof HomeControl program)
             {
-                program.updateDevices(message.getState());
+                program.updateDevices(message.state());
             }
         }
     }

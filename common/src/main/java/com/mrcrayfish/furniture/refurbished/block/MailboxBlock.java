@@ -2,6 +2,8 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.blockentity.MailboxBlockEntity;
 import com.mrcrayfish.furniture.refurbished.client.FurnitureScreens;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
@@ -45,6 +47,12 @@ import java.util.stream.Collectors;
  */
 public class MailboxBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
 {
+    private static final MapCodec<MailboxBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
+        return builder.group(WoodType.CODEC.fieldOf("wood_type").forGetter(block -> {
+            return block.type;
+        }), propertiesCodec()).apply(builder, MailboxBlock::new);
+    });
+
     private final WoodType type;
 
     public MailboxBlock(WoodType type, Properties properties)
@@ -57,6 +65,12 @@ public class MailboxBlock extends FurnitureHorizontalBlock implements EntityBloc
     public WoodType getWoodType()
     {
         return this.type;
+    }
+
+    @Override
+    protected MapCodec<MailboxBlock> codec()
+    {
+        return CODEC;
     }
 
     @Override

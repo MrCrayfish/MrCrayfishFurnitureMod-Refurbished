@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.data;
 
 import com.mrcrayfish.furniture.refurbished.crafting.StackedIngredient;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -27,7 +28,7 @@ public abstract sealed class Material<T>
 
     public abstract StackedIngredient asStackedIngredient();
 
-    public abstract CriterionTriggerInstance createTrigger(Function<ItemLike, CriterionTriggerInstance> hasItem, Function<TagKey<Item>, CriterionTriggerInstance> hasTag);
+    public abstract Criterion<?> createTrigger(Function<ItemLike, Criterion<?>> hasItem, Function<TagKey<Item>, Criterion<?>> hasTag);
 
     public String getName()
     {
@@ -78,7 +79,7 @@ public abstract sealed class Material<T>
         }
 
         @Override
-        public CriterionTriggerInstance createTrigger(Function<ItemLike, CriterionTriggerInstance> hasItem, Function<TagKey<Item>, CriterionTriggerInstance> hasTag)
+        public Criterion<?> createTrigger(Function<ItemLike, Criterion<?>> hasItem, Function<TagKey<Item>, Criterion<?>> hasTag)
         {
             return hasItem.apply(this.t);
         }
@@ -98,7 +99,7 @@ public abstract sealed class Material<T>
         }
 
         @Override
-        public CriterionTriggerInstance createTrigger(Function<ItemLike, CriterionTriggerInstance> hasItem, Function<TagKey<Item>, CriterionTriggerInstance> hasTag)
+        public Criterion<?> createTrigger(Function<ItemLike, Criterion<?>> hasItem, Function<TagKey<Item>, Criterion<?>> hasTag)
         {
             return hasTag.apply(this.t);
         }

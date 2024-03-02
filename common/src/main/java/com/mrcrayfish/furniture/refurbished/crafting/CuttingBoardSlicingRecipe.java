@@ -14,9 +14,9 @@ import net.minecraft.world.level.Level;
  */
 public class CuttingBoardSlicingRecipe extends SingleItemRecipe
 {
-    public CuttingBoardSlicingRecipe(ResourceLocation id, String group, Ingredient input, ItemStack result)
+    public CuttingBoardSlicingRecipe(String group, Ingredient input, ItemStack result)
     {
-        super(ModRecipeTypes.CUTTING_BOARD_SLICING.get(), ModRecipeSerializers.CUTTING_BOARD_SLICING_RECIPE.get(), id, group, input, result);
+        super(ModRecipeTypes.CUTTING_BOARD_SLICING.get(), ModRecipeSerializers.CUTTING_BOARD_SLICING_RECIPE.get(), group, input, result);
     }
 
     @Override

@@ -2,6 +2,8 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.framework.api.FrameworkAPI;
 import com.mrcrayfish.furniture.refurbished.blockentity.ComputerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.FreezerBlockEntity;
@@ -17,6 +19,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -38,12 +41,20 @@ import java.util.stream.Collectors;
  */
 public class ComputerBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
 {
+    private static final MapCodec<ComputerBlock> CODEC = simpleCodec(ComputerBlock::new);
+
     // TODO if player in chair, make arms reach the keyboard when using computer. use synced data key
 
     public ComputerBlock(Properties properties)
     {
         super(properties);
         this.registerDefaultState(this.getStateDefinition().any().setValue(DIRECTION, Direction.NORTH).setValue(POWERED, false));
+    }
+
+    @Override
+    protected MapCodec<ComputerBlock> codec()
+    {
+        return CODEC;
     }
 
     @Override

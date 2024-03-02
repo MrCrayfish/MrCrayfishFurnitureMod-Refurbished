@@ -60,9 +60,10 @@ public class IconButton extends Button
         renderScrollingString(graphics, mc.font, this.label, iconX + 14, iconY + 1, this.width, this.height, labelColour);
     }
 
-    @Override
+    // TODO what appen to dis thing
+    /*@Override
     protected ClientTooltipPositioner createTooltipPositioner()
     {
         return DefaultTooltipPositioner.INSTANCE;
-    }
+    }*/
 }

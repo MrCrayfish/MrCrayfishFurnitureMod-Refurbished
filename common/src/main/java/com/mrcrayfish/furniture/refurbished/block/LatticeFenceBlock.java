@@ -1,5 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.block;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -25,6 +27,12 @@ import java.util.List;
  */
 public class LatticeFenceBlock extends CrossCollisionBlock implements BlockTagSupplier
 {
+    private static final MapCodec<LatticeFenceBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
+        return builder.group(WoodType.CODEC.fieldOf("wood_type").forGetter(block -> {
+            return block.type;
+        }), propertiesCodec()).apply(builder, LatticeFenceBlock::new);
+    });
+
     private final WoodType type;
 
     public LatticeFenceBlock(WoodType type, Properties properties)
@@ -37,6 +45,12 @@ public class LatticeFenceBlock extends CrossCollisionBlock implements BlockTagSu
     public WoodType getWoodType()
     {
         return this.type;
+    }
+
+    @Override
+    protected MapCodec<LatticeFenceBlock> codec()
+    {
+        return CODEC;
     }
 
     @Override

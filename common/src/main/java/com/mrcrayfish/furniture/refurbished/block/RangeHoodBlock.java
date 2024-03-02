@@ -2,6 +2,8 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.blockentity.RangeHoodBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
@@ -29,6 +31,12 @@ import java.util.stream.Collectors;
  */
 public class RangeHoodBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
 {
+    private static final MapCodec<RangeHoodBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
+        return builder.group(MetalType.CODEC.fieldOf("metal_type").forGetter(block -> {
+            return block.type;
+        }), propertiesCodec()).apply(builder, RangeHoodBlock::new);
+    });
+
     private final MetalType type;
 
     public RangeHoodBlock(MetalType type, Properties properties)
@@ -41,6 +49,12 @@ public class RangeHoodBlock extends FurnitureHorizontalBlock implements EntityBl
     public MetalType getMetalType()
     {
         return this.type;
+    }
+
+    @Override
+    protected MapCodec<RangeHoodBlock> codec()
+    {
+        return CODEC;
     }
 
     @Override

@@ -2,6 +2,8 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.blockentity.LightswitchBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
@@ -23,6 +25,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.FaceAttachedHorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BarrelBlockEntity;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -47,6 +50,12 @@ import java.util.stream.Collectors;
  */
 public class LightswitchBlock extends FurnitureAttachedFaceBlock implements EntityBlock, BlockTagSupplier, DropWithName
 {
+    private static final MapCodec<LightswitchBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
+        return builder.group(MetalType.CODEC.fieldOf("metal_type").forGetter(block -> {
+            return block.type;
+        }), propertiesCodec()).apply(builder, LightswitchBlock::new);
+    });
+
     public static final BooleanProperty ENABLED = BlockStateProperties.ENABLED;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
@@ -62,6 +71,12 @@ public class LightswitchBlock extends FurnitureAttachedFaceBlock implements Enti
     public MetalType getMetalType()
     {
         return this.type;
+    }
+
+    @Override
+    protected MapCodec<LightswitchBlock> codec()
+    {
+        return CODEC;
     }
 
     @Override

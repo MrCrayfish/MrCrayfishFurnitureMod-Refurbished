@@ -10,6 +10,7 @@ import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardSlicingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -24,7 +25,7 @@ public class CuttingBoardSlicingRecipeManager implements IRecipeManager<CuttingB
     @ZenCodeType.Method
     public void addRecipe(String name, IIngredient input, IItemStack output)
     {
-        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new CuttingBoardSlicingRecipe(CraftTweakerConstants.rl(name), "", input.asVanillaIngredient(), output.getInternal())));
+        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new RecipeHolder<>(CraftTweakerConstants.rl(name), new CuttingBoardSlicingRecipe("", input.asVanillaIngredient(), output.getInternal()))));
     }
 
     @Override

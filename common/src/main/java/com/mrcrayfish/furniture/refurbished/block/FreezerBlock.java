@@ -1,9 +1,12 @@
 package com.mrcrayfish.furniture.refurbished.block;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.blockentity.FreezerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.LightswitchBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -26,6 +29,14 @@ import java.util.function.Supplier;
  */
 public class FreezerBlock extends FridgeBlock
 {
+    private static final MapCodec<FridgeBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
+        return builder.group(MetalType.CODEC.fieldOf("metal_type").forGetter(block -> {
+            return block.type;
+        }), propertiesCodec(), BuiltInRegistries.BLOCK.byNameCodec().xmap(block -> (Supplier<Block>) () -> block, Supplier::get).fieldOf("fridge").forGetter(block -> {
+            return ((FreezerBlock) block).fridge;
+        })).apply(builder, FreezerBlock::new);
+    });
+
     private final Supplier<Block> fridge;
 
     public FreezerBlock(MetalType type, Properties properties, Supplier<Block> fridge)
@@ -37,6 +48,12 @@ public class FreezerBlock extends FridgeBlock
     public Supplier<Block> getFridge()
     {
         return this.fridge;
+    }
+
+    @Override
+    protected MapCodec<FridgeBlock> codec()
+    {
+        return CODEC;
     }
 
     @Override

@@ -29,6 +29,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ChunkPos;
@@ -300,7 +301,7 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
      */
     private Optional<? extends AbstractCookingRecipe> getRecipe(RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> cache, ItemStack stack)
     {
-        return cache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level));
+        return cache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level)).map(RecipeHolder::value);
     }
 
     /**

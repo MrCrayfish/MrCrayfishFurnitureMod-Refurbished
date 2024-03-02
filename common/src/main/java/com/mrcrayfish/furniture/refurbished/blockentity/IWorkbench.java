@@ -4,15 +4,16 @@ import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchContructingRecipe;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.DataSlot;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 /**
  * Author: MrCrayfish
  */
 public interface IWorkbench
 {
-    void performCraft(WorkbenchContructingRecipe recipe);
+    void performCraft(RecipeHolder<WorkbenchContructingRecipe> recipe);
 
-    boolean canCraft(WorkbenchContructingRecipe recipe);
+    boolean canCraft(RecipeHolder<WorkbenchContructingRecipe> recipe);
 
     DataSlot getSelectedRecipeData();
 

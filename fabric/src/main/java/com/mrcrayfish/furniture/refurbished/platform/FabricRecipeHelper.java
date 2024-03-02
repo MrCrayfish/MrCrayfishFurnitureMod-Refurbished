@@ -21,6 +21,6 @@ public class FabricRecipeHelper implements IRecipeHelper
     @Override
     public <T extends SingleItemRecipe> SingleItemRecipe.Serializer<T> createSingleItemSerializer(ISingleBuilder<T> builder)
     {
-        return new SingleItemRecipe.Serializer<>(builder::create);
+        return new SingleItemRecipe.Serializer<>(builder::create){};
     }
 }

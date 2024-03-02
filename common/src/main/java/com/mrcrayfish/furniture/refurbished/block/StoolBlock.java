@@ -2,6 +2,8 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.entity.Seat;
 import net.minecraft.core.BlockPos;
@@ -26,6 +28,12 @@ import java.util.stream.Collectors;
  */
 public class StoolBlock extends FurnitureBlock implements BlockTagSupplier
 {
+    private static final MapCodec<StoolBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
+        return builder.group(DyeColor.CODEC.fieldOf("color").forGetter(block -> {
+            return block.color;
+        }), propertiesCodec()).apply(builder, StoolBlock::new);
+    });
+
     private final DyeColor color;
 
     public StoolBlock(DyeColor color, Properties properties)
@@ -37,6 +45,12 @@ public class StoolBlock extends FurnitureBlock implements BlockTagSupplier
     public DyeColor getDyeColor()
     {
         return this.color;
+    }
+
+    @Override
+    protected MapCodec<StoolBlock> codec()
+    {
+        return CODEC;
     }
 
     @Override

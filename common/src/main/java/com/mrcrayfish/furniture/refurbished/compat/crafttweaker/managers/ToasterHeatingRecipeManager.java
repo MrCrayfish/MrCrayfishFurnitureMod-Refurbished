@@ -11,6 +11,7 @@ import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.ToasterHeatingRecipe;
 import net.minecraft.world.item.crafting.CookingBookCategory;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -25,7 +26,7 @@ public class ToasterHeatingRecipeManager implements IRecipeManager<ToasterHeatin
     @ZenCodeType.Method
     public void addRecipe(String name, IIngredient input, IItemStack output, @ZenCodeType.OptionalFloat float experience, @ZenCodeType.OptionalInt(200) int cookingTime)
     {
-        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new ToasterHeatingRecipe(CraftTweakerConstants.rl(name), "", CookingBookCategory.MISC, input.asVanillaIngredient(), output.getInternal(), experience, cookingTime)));
+        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new RecipeHolder<>(CraftTweakerConstants.rl(name), new ToasterHeatingRecipe("", CookingBookCategory.MISC, input.asVanillaIngredient(), output.getInternal(), experience, cookingTime))));
     }
 
     @Override

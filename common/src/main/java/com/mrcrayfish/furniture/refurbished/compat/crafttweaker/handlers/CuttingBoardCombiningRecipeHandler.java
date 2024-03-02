@@ -10,10 +10,12 @@ import com.blamejared.crafttweaker.api.util.StringUtil;
 import com.mrcrayfish.furniture.refurbished.compat.crafttweaker.Plugin;
 import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardCombiningRecipe;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -26,13 +28,14 @@ import java.util.stream.Collectors;
 public class CuttingBoardCombiningRecipeHandler implements IRecipeHandler<CuttingBoardCombiningRecipe>
 {
     @Override
-    public String dumpToCommandString(IRecipeManager<? super CuttingBoardCombiningRecipe> manager, CuttingBoardCombiningRecipe recipe)
+    public String dumpToCommandString(IRecipeManager<? super CuttingBoardCombiningRecipe> manager, RegistryAccess registryAccess, RecipeHolder<CuttingBoardCombiningRecipe> holder)
     {
+
         return String.format("%s.addRecipe(%s, %s, %s);",
-                manager.getCommandString(),
-                StringUtil.quoteAndEscape(recipe.getId()),
-                IItemStack.ofMutable(recipe.getOutput()).getCommandString(),
-                "[" + String.join(", ", recipe.getIngredients().stream().map(ingredient -> IIngredient.fromIngredient(ingredient).getCommandString()).toArray(String[]::new)) + "]");
+            manager.getCommandString(),
+            StringUtil.quoteAndEscape(holder.id()),
+            IItemStack.ofMutable(holder.value().getOutput()).getCommandString(),
+            "[" + String.join(", ", holder.value().getIngredients().stream().map(ingredient -> IIngredient.fromIngredient(ingredient).getCommandString()).toArray(String[]::new)) + "]");
     }
 
     @Override
@@ -55,20 +58,20 @@ public class CuttingBoardCombiningRecipeHandler implements IRecipeHandler<Cuttin
     }
 
     @Override
-    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super CuttingBoardCombiningRecipe> manager, CuttingBoardCombiningRecipe recipe)
+    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super CuttingBoardCombiningRecipe> manager, RegistryAccess registryAccess, CuttingBoardCombiningRecipe recipe)
     {
         IDecomposedRecipe decomposedRecipe = IDecomposedRecipe.builder()
-                .with(BuiltinRecipeComponents.Input.INGREDIENTS, recipe.getIngredients().stream().map(IIngredient::fromIngredient).collect(Collectors.toList()))
-                .with(BuiltinRecipeComponents.Output.ITEMS, IItemStack.ofMutable(recipe.getOutput()))
-                .build();
+            .with(BuiltinRecipeComponents.Input.INGREDIENTS, recipe.getIngredients().stream().map(IIngredient::fromIngredient).collect(Collectors.toList()))
+            .with(BuiltinRecipeComponents.Output.ITEMS, IItemStack.ofMutable(recipe.getOutput()))
+            .build();
         return Optional.of(decomposedRecipe);
     }
 
     @Override
-    public Optional<CuttingBoardCombiningRecipe> recompose(IRecipeManager<? super CuttingBoardCombiningRecipe> manager, ResourceLocation id, IDecomposedRecipe recipe)
+    public Optional<CuttingBoardCombiningRecipe> recompose(IRecipeManager<? super CuttingBoardCombiningRecipe> manager, RegistryAccess registryAccess, IDecomposedRecipe recipe)
     {
         Ingredient[] inputs = recipe.getOrThrow(BuiltinRecipeComponents.Input.INGREDIENTS).stream().map(IIngredient::asVanillaIngredient).toArray(Ingredient[]::new);
         ItemStack output = recipe.getOrThrowSingle(BuiltinRecipeComponents.Output.ITEMS).getInternal();
-        return Optional.of(new CuttingBoardCombiningRecipe(id, inputs, output));
+        return Optional.of(new CuttingBoardCombiningRecipe(NonNullList.of(Ingredient.EMPTY, inputs), output));
     }
 }

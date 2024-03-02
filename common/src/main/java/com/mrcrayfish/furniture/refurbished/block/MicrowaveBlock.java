@@ -2,6 +2,8 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.blockentity.BasicLootBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.CeilingFanBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.MicrowaveBlockEntity;
@@ -27,6 +29,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
@@ -40,6 +43,12 @@ import java.util.stream.Collectors;
  */
 public class MicrowaveBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier, DropWithName
 {
+    private static final MapCodec<MicrowaveBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
+        return builder.group(MetalType.CODEC.fieldOf("metal_type").forGetter(block -> {
+            return block.type;
+        }), propertiesCodec()).apply(builder, MicrowaveBlock::new);
+    });
+
     private final MetalType type;
 
     public MicrowaveBlock(MetalType type, Properties properties)
@@ -52,6 +61,12 @@ public class MicrowaveBlock extends FurnitureHorizontalBlock implements EntityBl
     public MetalType getMetalType()
     {
         return this.type;
+    }
+
+    @Override
+    protected MapCodec<MicrowaveBlock> codec()
+    {
+        return CODEC;
     }
 
     @Override

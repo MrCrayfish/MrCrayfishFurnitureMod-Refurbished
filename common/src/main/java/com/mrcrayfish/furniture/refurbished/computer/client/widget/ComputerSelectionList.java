@@ -24,17 +24,16 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
     protected int itemSpacing = 2;
     protected boolean scrolling;
 
-    public ComputerSelectionList(int width, int height, int $$3, int $$4, int itemHeight)
+    public ComputerSelectionList(int width, int height, int x, int y, int itemHeight)
     {
-        super(Minecraft.getInstance(), width, height, $$3, $$4, itemHeight);
+        super(Minecraft.getInstance(), width, height, y, itemHeight);
+        this.setPosition(x, y);
     }
 
     public void setPosition(int x, int y)
     {
-        this.x0 = x;
-        this.x1 = x + this.width;
-        this.y0 = y;
-        this.y1 = y + this.height;
+        this.setPosition(x, y);
+        this.setSize(this.width, this.height);
     }
 
     public void setContentPadding(int contentPadding)
@@ -75,7 +74,7 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
     @Override
     public boolean isMouseOver(double mouseX, double mouseY)
     {
-        return mouseY >= this.y0 && mouseY <= this.y1 && mouseX >= this.x0 && mouseX <= this.x1;
+        return mouseY >= this.getY() && mouseY <= this.getY() + this.getHeight() && mouseX >= this.getX() && mouseX <= this.getX() + this.getWidth();
     }
 
     @Override
@@ -87,7 +86,7 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
     @Override
     public int getRowLeft()
     {
-        return this.x0 + OUTLINE_SIZE + this.contentPadding;
+        return this.getX() + OUTLINE_SIZE + this.contentPadding;
     }
 
     @Override
@@ -95,21 +94,21 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
     {
         if(this.getMaxScroll() > 0)
         {
-            return this.x1 - this.contentPadding - OUTLINE_SIZE - this.contentPadding - this.scrollBarWidth - this.contentPadding - OUTLINE_SIZE;
+            return this.getX() + this.getWidth() - this.contentPadding - OUTLINE_SIZE - this.contentPadding - this.scrollBarWidth - this.contentPadding - OUTLINE_SIZE;
         }
-        return this.x1 - this.contentPadding - OUTLINE_SIZE;
+        return this.getX() + this.getWidth() - this.contentPadding - OUTLINE_SIZE;
     }
 
     @Override
     protected int getRowTop(int index)
     {
-        return this.y0 + OUTLINE_SIZE + this.contentPadding - (int) this.getScrollAmount() + index * this.itemHeight + index * this.itemSpacing;
+        return this.getY() + OUTLINE_SIZE + this.contentPadding - (int) this.getScrollAmount() + index * this.itemHeight + index * this.itemSpacing;
     }
 
     @Override
     protected int getScrollbarPosition()
     {
-        return this.x1 - this.scrollBarWidth - this.contentPadding - OUTLINE_SIZE;
+        return this.getX() + this.getWidth() - this.scrollBarWidth - this.contentPadding - OUTLINE_SIZE;
     }
 
     private int getScrollbarHeight()
@@ -119,7 +118,6 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
         return Mth.clamp(scrollBarHeight, 32, scrollAreaHeight);
     }
 
-    @Override
     public int getScrollBottom()
     {
         return (int) this.getScrollAmount() - this.height;
@@ -132,7 +130,7 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
 
     public int getScrollAreaTop()
     {
-        return this.y0 + OUTLINE_SIZE + this.contentPadding;
+        return this.getY() + OUTLINE_SIZE + this.contentPadding;
     }
 
     @Override
@@ -148,14 +146,14 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
         // Draw outlines and background
-        graphics.fill(this.x0, this.y0, this.x1, this.y1, this.outlineColour);
-        graphics.fill(this.x0 + 1, this.y0 + 1, this.x1 - 1, this.y1 - 1, this.backgroundColour);
+        graphics.fill(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), this.outlineColour);
+        graphics.fill(this.getX() + 1, this.getY() + 1, this.getX() + this.getWidth() - 1, this.getY() + this.getHeight() - 1, this.backgroundColour);
 
         // Draw items
-        graphics.enableScissor(this.getRowLeft() - 1, this.y0 + 1, this.getRowRight() + 1, this.y1 - 1);
+        graphics.enableScissor(this.getRowLeft() - 1, this.getY() + 1, this.getRowRight() + 1, this.getY() + this.getHeight() - 1);
         this.renderList(graphics, mouseX, mouseY, partialTick);
         graphics.disableScissor();
 
@@ -164,7 +162,7 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
         if(maxScroll > 0)
         {
             // Draw divider between items and scroll bar
-            graphics.fill(this.getScrollbarPosition() - this.contentPadding - 1, this.y0 + 1, this.getScrollbarPosition() - this.contentPadding, this.y1 - 1, this.outlineColour);
+            graphics.fill(this.getScrollbarPosition() - this.contentPadding - 1, this.getY() + 1, this.getScrollbarPosition() - this.contentPadding, this.getY() + this.getHeight() - 1, this.outlineColour);
 
             // Draw scroll bar
             int scrollBarStart = this.getScrollbarPosition();
@@ -189,7 +187,7 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
         for(int i = startIndex; i < rowCount; i++)
         {
             int rowTop = this.getRowTop(i);
-            if(rowTop <= this.y1)
+            if(rowTop <= this.getY() + this.getHeight())
             {
                 this.renderItem(graphics, mouseX, mouseY, partialTick, i, rowLeft, rowTop, rowWidth, rowHeight);
                 continue;
@@ -238,7 +236,7 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
     @Override
     public E getEntry(double mouseX, double mouseY)
     {
-        if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, this.x0, this.y0, this.x1 - this.x0, this.y1 - this.y0))
+        if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, this.getX(), this.getY(), this.getWidth(), this.getHeight()))
         {
             int rowLeft = this.getRowLeft();
             int rowWidth = this.getRowWidth();
@@ -248,7 +246,7 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
             for(int i = startIndex; i < rowCount; i++)
             {
                 int rowTop = this.getRowTop(i);
-                if(rowTop <= this.y1)
+                if(rowTop <= this.getY() + this.getHeight())
                 {
                     if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, rowLeft, rowTop, rowWidth, rowHeight))
                     {

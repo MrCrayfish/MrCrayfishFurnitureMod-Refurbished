@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mojang.serialization.MapCodec;
 import com.mrcrayfish.furniture.refurbished.blockentity.PostBoxBlockEntity;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
@@ -33,10 +34,18 @@ import java.util.stream.Collectors;
  */
 public class PostBoxBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
 {
+    private static final MapCodec<PostBoxBlock> CODEC = simpleCodec(PostBoxBlock::new);
+
     public PostBoxBlock(Properties properties)
     {
         super(properties);
         this.registerDefaultState(this.getStateDefinition().any().setValue(DIRECTION, Direction.NORTH));
+    }
+
+    @Override
+    protected MapCodec<PostBoxBlock> codec()
+    {
+        return CODEC;
     }
 
     @Override

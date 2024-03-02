@@ -43,7 +43,7 @@ public class ElectricityGeneratorScreen extends AbstractContainerScreen<Electric
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
         this.slider.setEnabled(this.menu.isEnabled());
-        this.renderBackground(graphics);
+        this.renderDirtBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTick);
         this.renderTooltip(graphics, mouseX, mouseY);
     }

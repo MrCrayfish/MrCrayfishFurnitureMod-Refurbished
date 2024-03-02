@@ -24,9 +24,9 @@ public class CreativeModeInventoryScreenMixin
     private static CreativeModeTab selectedTab;
 
     @Inject(method = "mouseScrolled", at = @At(value = "HEAD"), cancellable = true)
-    private void refurbishedFurnitureMouseScrollHead(double mouseX, double mouseY, double scroll, CallbackInfoReturnable<Boolean> cir)
+    private void refurbishedFurnitureMouseScrollHead(double mouseX, double mouseY, double scrollX, double scrollY, CallbackInfoReturnable<Boolean> cir)
     {
-        if(CreativeFilters.get().onMouseScroll(mouseX, mouseY, scroll))
+        if(CreativeFilters.get().onMouseScroll(mouseX, mouseY, scrollY))
         {
             cir.setReturnValue(true);
         }

@@ -10,9 +10,11 @@ import com.blamejared.crafttweaker.api.util.StringUtil;
 import com.mrcrayfish.furniture.refurbished.crafting.StackedIngredient;
 import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchContructingRecipe;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.AbstractCollection;
 import java.util.AbstractList;
@@ -26,13 +28,14 @@ import java.util.stream.Collectors;
 public class WorkbenchConstructingRecipeHandler implements IRecipeHandler<WorkbenchContructingRecipe>
 {
     @Override
-    public String dumpToCommandString(IRecipeManager<? super WorkbenchContructingRecipe> manager, WorkbenchContructingRecipe recipe)
+    public String dumpToCommandString(IRecipeManager<? super WorkbenchContructingRecipe> manager, RegistryAccess registryAccess, RecipeHolder<WorkbenchContructingRecipe> holder)
     {
         return String.format("%s.addRecipe(%s, %s, %s);",
-                manager.getCommandString(),
-                StringUtil.quoteAndEscape(recipe.getId()),
-                IItemStack.ofMutable(recipe.getResult()).getCommandString(),
-                "[" + String.join(", ", recipe.getMaterials().stream().map(v -> IIngredient.fromIngredient(v.ingredient()).mul(v.count()).getCommandString()).toArray(String[]::new)) + "]");
+            manager.getCommandString(),
+            StringUtil.quoteAndEscape(holder.id()),
+            IItemStack.ofMutable(holder.value().getResult()).getCommandString(),
+            "[" + String.join(", ", holder.value().getMaterials().stream().map(v -> IIngredient.fromIngredient(v.ingredient()).mul(v.count()).getCommandString()).toArray(String[]::new)) + "]"
+        );
     }
 
     @Override
@@ -42,25 +45,25 @@ public class WorkbenchConstructingRecipeHandler implements IRecipeHandler<Workbe
     }
 
     @Override
-    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super WorkbenchContructingRecipe> manager, WorkbenchContructingRecipe recipe)
+    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super WorkbenchContructingRecipe> manager, RegistryAccess registryAccess, WorkbenchContructingRecipe recipe)
     {
         IDecomposedRecipe decomposedRecipe = IDecomposedRecipe.builder()
-                .with(BuiltinRecipeComponents.Input.INGREDIENTS, recipe.getMaterials().stream()
-                        .map(stack -> IIngredient.fromIngredient(stack.ingredient()).mul(stack.count()))
-                        .map(v -> (IIngredient) v)
-                        .collect(Collectors.toList()))
-                .with(BuiltinRecipeComponents.Output.ITEMS, IItemStack.ofMutable(recipe.getResult())).build();
+            .with(BuiltinRecipeComponents.Input.INGREDIENTS, recipe.getMaterials().stream()
+                .map(stack -> IIngredient.fromIngredient(stack.ingredient()).mul(stack.count()))
+                .map(v -> (IIngredient) v)
+                .collect(Collectors.toList()))
+            .with(BuiltinRecipeComponents.Output.ITEMS, IItemStack.ofMutable(recipe.getResult())).build();
         return Optional.of(decomposedRecipe);
     }
 
     @Override
-    public Optional<WorkbenchContructingRecipe> recompose(IRecipeManager<? super WorkbenchContructingRecipe> manager, ResourceLocation name, IDecomposedRecipe recipe)
+    public Optional<WorkbenchContructingRecipe> recompose(IRecipeManager<? super WorkbenchContructingRecipe> manager, RegistryAccess registryAccess, IDecomposedRecipe recipe)
     {
         NonNullList<StackedIngredient> materials = recipe.getOrThrow(BuiltinRecipeComponents.Input.INGREDIENTS).stream()
-                .map(IIngredient::asIIngredientWithAmount)
-                .map(v -> StackedIngredient.of(v.getIngredient().asVanillaIngredient(), v.getAmount()))
-                .collect(NonNullList::create, AbstractList::add, AbstractCollection::addAll);
+            .map(IIngredient::asIIngredientWithAmount)
+            .map(v -> StackedIngredient.of(v.getIngredient().asVanillaIngredient(), v.getAmount()))
+            .collect(NonNullList::create, AbstractList::add, AbstractCollection::addAll);
         ItemStack result = recipe.getOrThrowSingle(BuiltinRecipeComponents.Output.ITEMS).getInternal();
-        return Optional.of(new WorkbenchContructingRecipe(name, materials, result, false));
+        return Optional.of(new WorkbenchContructingRecipe(materials, result, false));
     }
 }

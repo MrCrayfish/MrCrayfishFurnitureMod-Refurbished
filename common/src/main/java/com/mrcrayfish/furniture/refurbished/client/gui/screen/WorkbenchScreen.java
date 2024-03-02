@@ -18,6 +18,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StateSwitchingButton;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
@@ -33,6 +34,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
@@ -48,6 +50,7 @@ import java.util.Map;
 public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
 {
     public static final ResourceLocation WORKBENCH_TEXTURE = Utils.resource("textures/gui/container/workbench.png");
+    public static final WidgetSprites FILTER_BUTTON_SPRITES = new WidgetSprites(new ResourceLocation("recipe_book/filter_enabled"), new ResourceLocation("recipe_book/filter_disabled"), new ResourceLocation("recipe_book/filter_enabled_highlighted"), new ResourceLocation("recipe_book/filter_disabled_highlighted"));
 
     private static final int BUTTON_SIZE = 20;
     private static final int RECIPES_PER_ROW = 6;
@@ -68,7 +71,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     private static boolean craftableOnly; // Persistent
 
     protected final Map<ResourceLocation, Integer> recipeToIndex;
-    protected final List<WorkbenchContructingRecipe> displayRecipes = new ArrayList<>();
+    protected final List<RecipeHolder<WorkbenchContructingRecipe>> displayRecipes = new ArrayList<>();
     protected StateSwitchingButton craftableOnlyButton;
     protected double scroll; // 0 - content height
     protected int hoveredIndex = -1;
@@ -84,9 +87,9 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         this.menu.setUpdateCallback(this::updateRecipes);
         this.recipeToIndex = Util.make(() -> {
             Map<ResourceLocation, Integer> map = new HashMap<>();
-            List<WorkbenchContructingRecipe> recipes = menu.getRecipes();
+            List<RecipeHolder<WorkbenchContructingRecipe>> recipes = menu.getRecipes();
             for(int i = 0; i < recipes.size(); i++) {
-                map.put(recipes.get(i).getId(), i);
+                map.put(recipes.get(i).id(), i);
             }
             return ImmutableMap.copyOf(map);
         });
@@ -98,17 +101,17 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     {
         this.displayRecipes.clear();
         Category selectedCategory = CATEGORIES.stream().filter(Category::isEnabled).findFirst().orElse(CATEGORY_ALL);
-        for(WorkbenchContructingRecipe recipe : this.menu.getRecipes())
+        for(RecipeHolder<WorkbenchContructingRecipe> holder : this.menu.getRecipes())
         {
-            if(!selectedCategory.in(recipe.getResult()))
+            if(!selectedCategory.in(holder.value().getResult()))
                 continue;
 
-            if(!craftableOnly || this.menu.canCraft(recipe))
+            if(!craftableOnly || this.menu.canCraft(holder))
             {
-                this.displayRecipes.add(recipe);
+                this.displayRecipes.add(holder);
             }
         }
-        this.displayRecipes.sort(Comparator.comparing(WorkbenchContructingRecipe::getResultId));
+        this.displayRecipes.sort(Comparator.comparing(holder -> holder.value().getResultId()));
     }
 
     @Override
@@ -122,7 +125,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     {
         super.init();
         this.craftableOnlyButton = this.addRenderableWidget(new CraftableButton(this.leftPos + 184, this.topPos + 44, 26, 16, craftableOnly));
-        this.craftableOnlyButton.initTextureValues(152, 41, 28, 18, VanillaTextures.RECIPE_BOOK);
+        this.craftableOnlyButton.initTextureValues(FILTER_BUTTON_SPRITES);
         this.addRenderableWidget(new CategoryButton(this.leftPos + 46, this.topPos + 108, 236, 55, CATEGORY_ALL));
         this.addRenderableWidget(new CategoryButton(this.leftPos + 66, this.topPos + 108, 236, 69, CATEGORY_GENERAL));
         this.addRenderableWidget(new CategoryButton(this.leftPos + 86, this.topPos + 108, 236, 83, CATEGORY_KITCHEN));
@@ -134,7 +137,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
-        this.renderBackground(graphics);
+        this.renderDirtBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTick);
         this.renderTooltip(graphics, mouseX, mouseY);
         if(this.menu.isPowered() && this.hoveredIndex != -1)
@@ -168,15 +171,15 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     {
         this.hoveredIndex = -1;
         graphics.enableScissor(this.leftPos + 46, this.topPos + 18, this.leftPos + 46 + WINDOW_WIDTH, this.topPos + 18 + WINDOW_HEIGHT);
-        List<WorkbenchContructingRecipe> recipes = this.displayRecipes;
+        List<RecipeHolder<WorkbenchContructingRecipe>> recipes = this.displayRecipes;
         double scroll = this.getScrollAmount(mouseY);
         int startIndex = (int) (scroll / BUTTON_SIZE) * RECIPES_PER_ROW;
         int endIndex = startIndex + Mth.ceil(WINDOW_HEIGHT / (double) BUTTON_SIZE + 1) * RECIPES_PER_ROW;
         boolean mouseInWindow = ScreenHelper.isMouseWithinBounds(mouseX, mouseY, this.leftPos + 46, this.topPos + 18, WINDOW_WIDTH, WINDOW_HEIGHT);
         for(int i = startIndex; i < endIndex && i < recipes.size(); i++)
         {
-            WorkbenchContructingRecipe recipe = recipes.get(i);
-            int recipeIndex = this.recipeToIndex.get(recipe.getId());
+            RecipeHolder<WorkbenchContructingRecipe> recipe = recipes.get(i);
+            int recipeIndex = this.recipeToIndex.get(recipe.id());
             boolean canCraft = this.menu.canCraft(recipe);
             boolean selected = recipeIndex == this.menu.getSelectedRecipeIndex();
             int buttonX = this.leftPos + 46 + (i % RECIPES_PER_ROW) * BUTTON_SIZE;
@@ -184,7 +187,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
             int textureU = 216 + (!canCraft ? BUTTON_SIZE : 0);
             int textureV = selected ? BUTTON_SIZE : 0;
             graphics.blit(WORKBENCH_TEXTURE, buttonX, buttonY, textureU, textureV, BUTTON_SIZE, BUTTON_SIZE);
-            graphics.renderFakeItem(recipe.getResultItem(this.menu.getLevel().registryAccess()), buttonX + 2, buttonY + 2);
+            graphics.renderFakeItem(recipe.value().getResultItem(this.menu.getLevel().registryAccess()), buttonX + 2, buttonY + 2);
             if(mouseInWindow && ScreenHelper.isMouseWithinBounds(mouseX, mouseY, buttonX, buttonY, BUTTON_SIZE, BUTTON_SIZE))
             {
                 this.hoveredIndex = recipeIndex;
@@ -207,18 +210,18 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
 
     private void renderRecipeTooltip(GuiGraphics graphics, int mouseX, int mouseY, int recipeIndex)
     {
-        WorkbenchContructingRecipe recipe = this.menu.getRecipes().get(recipeIndex);
+        RecipeHolder<WorkbenchContructingRecipe> holder = this.menu.getRecipes().get(recipeIndex);
         List<ClientTooltipComponent> components = new ArrayList<>();
-        components.add(new ClientTextTooltip(recipe.getResultItem(this.menu.getLevel().registryAccess()).getHoverName().getVisualOrderText()));
+        components.add(new ClientTextTooltip(holder.value().getResultItem(this.menu.getLevel().registryAccess()).getHoverName().getVisualOrderText()));
         if(!Screen.hasShiftDown())
         {
-            components.add(new ClientWorkbenchRecipeTooltip(this.menu, recipe));
+            components.add(new ClientWorkbenchRecipeTooltip(this.menu, holder.value()));
             components.add(new ClientTextTooltip(Components.HOLD_SHIFT_DETAILS.getVisualOrderText()));
         }
         else
         {
             Map<Integer, Integer> counted = new HashMap<>();
-            recipe.getMaterials().forEach(material -> components.add(new ClientWorkbenchRecipeIngredientTooltip(this.menu, material, counted)));
+            holder.value().getMaterials().forEach(material -> components.add(new ClientWorkbenchRecipeIngredientTooltip(this.menu, material, counted)));
         }
         ClientServices.PLATFORM.renderTooltip(graphics, this.font, components, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE);
     }
@@ -259,14 +262,14 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta)
+    public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY)
     {
         if(this.clickedY == -1 && ScreenHelper.isMouseWithinBounds(mouseX, mouseY, this.leftPos + 46, this.topPos + 18, WINDOW_WIDTH + 15, WINDOW_HEIGHT))
         {
-            this.scroll = Mth.clamp(this.scroll - delta * SCROLL_SPEED, 0, this.getMaxScroll());
+            this.scroll = Mth.clamp(this.scroll - deltaY * SCROLL_SPEED, 0, this.getMaxScroll());
             return true;
         }
-        return super.mouseScrolled(mouseX, mouseY, delta);
+        return super.mouseScrolled(mouseX, mouseY, deltaX, deltaY);
     }
 
     private void updateScroll()

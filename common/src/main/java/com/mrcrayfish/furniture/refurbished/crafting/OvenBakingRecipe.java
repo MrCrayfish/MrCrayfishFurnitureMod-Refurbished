@@ -14,9 +14,9 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
  */
 public class OvenBakingRecipe extends ProcessingRecipe
 {
-    public OvenBakingRecipe(ResourceLocation id, Ingredient ingredient, ItemStack stack, int processTime)
+    public OvenBakingRecipe(Ingredient ingredient, ItemStack stack, int processTime)
     {
-        super(ModRecipeTypes.OVEN_BAKING.get(), id, ingredient, stack, processTime);
+        super(ModRecipeTypes.OVEN_BAKING.get(), ingredient, stack, processTime);
     }
 
     @Override

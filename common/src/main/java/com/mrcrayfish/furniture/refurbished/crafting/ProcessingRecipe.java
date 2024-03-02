@@ -1,16 +1,14 @@
 package com.mrcrayfish.furniture.refurbished.crafting;
 
-import com.google.gson.JsonObject;
-import com.mrcrayfish.furniture.refurbished.util.Utils;
-import net.minecraft.advancements.CriterionTriggerInstance;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeBuilder;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -21,7 +19,6 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
-import java.util.function.Consumer;
 
 /**
  * Author: MrCrayfish
@@ -29,15 +26,13 @@ import java.util.function.Consumer;
 public abstract class ProcessingRecipe implements Recipe<Container>
 {
     protected final RecipeType<?> type;
-    protected final ResourceLocation id;
     protected final Ingredient input;
     protected final ItemStack output;
     protected final int processTime;
 
-    protected ProcessingRecipe(RecipeType<?> type, ResourceLocation id, Ingredient input, ItemStack output, int processTime)
+    protected ProcessingRecipe(RecipeType<?> type, Ingredient input, ItemStack output, int processTime)
     {
         this.type = type;
-        this.id = id;
         this.input = input;
         this.output = output;
         this.processTime = processTime;
@@ -47,12 +42,6 @@ public abstract class ProcessingRecipe implements Recipe<Container>
     public RecipeType<?> getType()
     {
         return this.type;
-    }
-
-    @Override
-    public ResourceLocation getId()
-    {
-        return this.id;
     }
 
     @Override
@@ -113,38 +102,45 @@ public abstract class ProcessingRecipe implements Recipe<Container>
         return this.processTime;
     }
 
-    public static Builder builder(Ingredient input, ItemStack output, int processTime, RecipeSerializer<? extends ProcessingRecipe> serializer)
+    public static <T extends ProcessingRecipe> Builder<T> builder(Factory<T> factory, Ingredient input, ItemStack output, int processTime)
     {
-        return new Builder(input, output, processTime, serializer);
+        return new Builder<T>(factory, input, output, processTime);
     }
 
     public static class Serializer<T extends ProcessingRecipe> implements RecipeSerializer<T>
     {
         private final Factory<T> factory;
         private final int defaultTime;
+        private final Codec<T> codec;
 
         public Serializer(Factory<T> factory, int defaultTime)
         {
             this.factory = factory;
             this.defaultTime = defaultTime;
+            this.codec = RecordCodecBuilder.create(builder -> {
+                return builder.group(Ingredient.CODEC_NONEMPTY.fieldOf("input").forGetter((recipe) -> {
+                    return recipe.input;
+                }), ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("output").forGetter((recipe) -> {
+                    return recipe.output;
+                }),  Codec.INT.fieldOf("processTime").orElse(this.defaultTime).forGetter(recipe -> {
+                    return recipe.processTime;
+                })).apply(builder, this.factory::create);
+            });
         }
 
         @Override
-        public T fromJson(ResourceLocation id, JsonObject object)
+        public Codec<T> codec()
         {
-            Ingredient input = Utils.getIngredient(object, "input");
-            ItemStack output = Utils.getItemStack(object, "output");
-            int processTime = GsonHelper.getAsInt(object, "processTime", this.defaultTime);
-            return this.factory.create(id, input, output, processTime);
+            return this.codec;
         }
 
         @Override
-        public T fromNetwork(ResourceLocation id, FriendlyByteBuf buf)
+        public T fromNetwork(FriendlyByteBuf buf)
         {
             Ingredient input = Ingredient.fromNetwork(buf);
             ItemStack output = buf.readItem();
             int processTime = buf.readVarInt();
-            return this.factory.create(id, input, output, processTime);
+            return this.factory.create(input, output, processTime);
         }
 
         @Override
@@ -158,32 +154,32 @@ public abstract class ProcessingRecipe implements Recipe<Container>
 
     public interface Factory<T extends ProcessingRecipe>
     {
-        T create(ResourceLocation id, Ingredient input, ItemStack result, int processTime);
+        T create(Ingredient input, ItemStack result, int processTime);
     }
 
-    public static class Builder implements RecipeBuilder
+    public static class Builder<T extends ProcessingRecipe> implements RecipeBuilder
     {
+        protected final Factory<T> factory;
         protected final Ingredient input;
         protected final ItemStack output;
         protected final int processTime;
-        protected final RecipeSerializer<? extends ProcessingRecipe> serializer;
 
-        private Builder(Ingredient input, ItemStack output, int processTime, RecipeSerializer<? extends ProcessingRecipe> serializer)
+        private Builder(Factory<T> factory, Ingredient input, ItemStack output, int processTime)
         {
+            this.factory = factory;
             this.input = input;
             this.output = output;
             this.processTime = processTime;
-            this.serializer = serializer;
         }
 
         @Override
-        public RecipeBuilder unlockedBy(String s, CriterionTriggerInstance instance)
+        public RecipeBuilder unlockedBy(String s, Criterion<?> instance)
         {
             throw new UnsupportedOperationException("Unlocking not supported for ProcessingRecipes");
         }
 
         @Override
-        public RecipeBuilder group(@Nullable String var1)
+        public RecipeBuilder group(@Nullable String group)
         {
             throw new UnsupportedOperationException("Group not supported for ProcessingRecipes");
         }
@@ -195,75 +191,9 @@ public abstract class ProcessingRecipe implements Recipe<Container>
         }
 
         @Override
-        public void save(Consumer<FinishedRecipe> consumer, ResourceLocation id)
+        public void save(RecipeOutput output, ResourceLocation id)
         {
-            consumer.accept(new Result(id, this.input, this.output, this.processTime, this.serializer));
-        }
-    }
-
-    public static class Result implements FinishedRecipe
-    {
-        private final ResourceLocation id;
-        private final Ingredient input;
-        private final ItemStack output;
-        private final int processTime;
-        private final RecipeSerializer<? extends ProcessingRecipe> serializer;
-
-        public Result(ResourceLocation id, Ingredient input, ItemStack output, int processTime, RecipeSerializer<? extends ProcessingRecipe> serializer)
-        {
-            this.id = id;
-            this.input = input;
-            this.output = output;
-            this.processTime = processTime;
-            this.serializer = serializer;
-        }
-
-        @Override
-        public void serializeRecipeData(JsonObject object)
-        {
-            object.add("input", this.input.toJson());
-            String id = BuiltInRegistries.ITEM.getKey(this.output.getItem()).toString();
-            int count = this.output.getCount();
-            if(count == 1)
-            {
-                object.addProperty("output", id);
-            }
-            else
-            {
-                JsonObject itemObject = new JsonObject();
-                itemObject.addProperty("item", id);
-                itemObject.addProperty("count", count);
-                object.add("output", itemObject);
-            }
-            object.addProperty("processTime", this.processTime);
-        }
-
-        @Override
-        public ResourceLocation getId()
-        {
-            return this.id;
-        }
-
-        @Override
-        public RecipeSerializer<?> getType()
-        {
-            return this.serializer;
-        }
-
-        @Nullable
-        @Override
-        public JsonObject serializeAdvancement()
-        {
-            // Not supported
-            return null;
-        }
-
-        @Nullable
-        @Override
-        public ResourceLocation getAdvancementId()
-        {
-            // Not supported
-            return null;
+            output.accept(id, this.factory.create(this.input, this.output, this.processTime), null);
         }
     }
 }

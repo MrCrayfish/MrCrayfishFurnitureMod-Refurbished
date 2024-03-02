@@ -14,9 +14,11 @@ import com.mrcrayfish.furniture.refurbished.compat.crafttweaker.actions.ActionRe
 import com.mrcrayfish.furniture.refurbished.compat.crafttweaker.actions.ActionReplaceItemInRecycleBinOutput;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.RecycleBinRecyclingRecipe;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -35,8 +37,9 @@ public class RecycleBinRecyclingRecipeManager implements IRecipeManager<RecycleB
     {
         if(!this.validate(output))
             return;
-        ItemStack[] outputs = output.stream().map(IItemStack::getInternal).toArray(ItemStack[]::new);
-        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new RecycleBinRecyclingRecipe(CraftTweakerConstants.rl(name), input.getInternal(), outputs)));
+        NonNullList<ItemStack> outputs = NonNullList.create();
+        output.stream().map(IItemStack::getInternal).forEach(outputs::add);
+        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new RecipeHolder<>(CraftTweakerConstants.rl(name), new RecycleBinRecyclingRecipe(input.getInternal(), outputs))));
     }
 
     @ZenCodeType.Method

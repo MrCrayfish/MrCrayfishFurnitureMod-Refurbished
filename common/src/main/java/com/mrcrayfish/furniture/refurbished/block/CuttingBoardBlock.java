@@ -2,6 +2,8 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.blockentity.CuttingBoardBlockEntity;
 import com.mrcrayfish.furniture.refurbished.compat.CompatibilityTags;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
@@ -37,6 +39,12 @@ import java.util.stream.Collectors;
  */
 public class CuttingBoardBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
 {
+    private static final MapCodec<CuttingBoardBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
+        return builder.group(WoodType.CODEC.fieldOf("wood_type").forGetter(block -> {
+            return block.type;
+        }), propertiesCodec()).apply(builder, CuttingBoardBlock::new);
+    });
+
     private final WoodType type;
 
     public CuttingBoardBlock(WoodType type, Properties properties)
@@ -48,6 +56,12 @@ public class CuttingBoardBlock extends FurnitureHorizontalBlock implements Entit
     public WoodType getWoodType()
     {
         return this.type;
+    }
+
+    @Override
+    protected MapCodec<CuttingBoardBlock> codec()
+    {
+        return CODEC;
     }
 
     @Override

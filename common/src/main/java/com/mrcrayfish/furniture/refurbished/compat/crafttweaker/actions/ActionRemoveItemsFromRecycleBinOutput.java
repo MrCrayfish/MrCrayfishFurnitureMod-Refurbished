@@ -7,8 +7,10 @@ import com.blamejared.crafttweaker.api.recipe.RecipeList;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.crafting.RecycleBinRecyclingRecipe;
+import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
 
@@ -36,12 +38,13 @@ public class ActionRemoveItemsFromRecycleBinOutput implements IAction, IRuntimeA
     public void apply()
     {
         RecipeList<RecycleBinRecyclingRecipe> list = this.manager.getRecipeList();
-        RecycleBinRecyclingRecipe recipe = list.get(this.id);
-        List<ItemStack> newOutput = new ArrayList<>(List.of(recipe.getOutputs()));
+        RecipeHolder<RecycleBinRecyclingRecipe> recipe = list.get(this.id);
+        NonNullList<ItemStack> newOutput = NonNullList.create();
+        newOutput.addAll(recipe.value().getOutput());
         newOutput.removeIf(stack -> this.removal.stream().anyMatch(iStack -> ItemStack.isSameItemSameTags(stack, iStack.getInternal())));
-        RecycleBinRecyclingRecipe newRecipe = new RecycleBinRecyclingRecipe(this.id, recipe.getInput(), newOutput.toArray(ItemStack[]::new));
+        RecycleBinRecyclingRecipe newRecipe = new RecycleBinRecyclingRecipe(recipe.value().getInput(), newOutput);
         list.remove(this.id);
-        list.add(this.id, newRecipe);
+        list.add(this.id, new RecipeHolder<>(this.id, newRecipe));
     }
 
     @Override

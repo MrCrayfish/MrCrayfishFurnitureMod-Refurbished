@@ -14,9 +14,9 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
  */
 public class MicrowaveHeatingRecipe extends AbstractCookingRecipe
 {
-    public MicrowaveHeatingRecipe(ResourceLocation id, String name, CookingBookCategory category, Ingredient ingredient, ItemStack stack, float experience, int cookingTime)
+    public MicrowaveHeatingRecipe(String group, CookingBookCategory category, Ingredient ingredient, ItemStack stack, float experience, int cookingTime)
     {
-        super(ModRecipeTypes.MICROWAVE_HEATING.get(), id, name, category, ingredient, stack, experience, cookingTime);
+        super(ModRecipeTypes.MICROWAVE_HEATING.get(), group, category, ingredient, stack, experience, cookingTime);
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.mrcrayfish.furniture.refurbished.network.message;
 
 import com.mojang.authlib.GameProfile;
 import com.mrcrayfish.framework.api.network.MessageContext;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.mrcrayfish.furniture.refurbished.client.ClientMailbox;
 import com.mrcrayfish.furniture.refurbished.mail.IMailbox;
 import com.mrcrayfish.furniture.refurbished.network.play.ClientPlayHandler;
@@ -17,19 +16,9 @@ import java.util.UUID;
 /**
  * Author: MrCrayfish
  */
-public class MessageUpdateMailboxes extends PlayMessage<MessageUpdateMailboxes>
+public record MessageUpdateMailboxes(Collection<? extends IMailbox> mailboxes)
 {
-    private Collection<? extends IMailbox> mailboxes;
-
-    public MessageUpdateMailboxes() {}
-
-    public MessageUpdateMailboxes(Collection<? extends IMailbox> mailboxes)
-    {
-        this.mailboxes = mailboxes;
-    }
-
-    @Override
-    public void encode(MessageUpdateMailboxes message, FriendlyByteBuf buffer)
+    public static void encode(MessageUpdateMailboxes message, FriendlyByteBuf buffer)
     {
         buffer.writeInt(message.mailboxes.size());
         message.mailboxes.forEach(mailbox -> {
@@ -50,8 +39,7 @@ public class MessageUpdateMailboxes extends PlayMessage<MessageUpdateMailboxes>
         });
     }
 
-    @Override
-    public MessageUpdateMailboxes decode(FriendlyByteBuf buffer)
+    public static MessageUpdateMailboxes decode(FriendlyByteBuf buffer)
     {
         List<IMailbox> mailboxes = new ArrayList<>();
         int size = buffer.readInt();
@@ -60,22 +48,16 @@ public class MessageUpdateMailboxes extends PlayMessage<MessageUpdateMailboxes>
             UUID id = buffer.readUUID();
             UUID ownerId = buffer.readBoolean() ? buffer.readUUID() : null;
             String ownerName = ownerId != null && buffer.readBoolean() ? buffer.readUtf() : null;
-            GameProfile profile = ownerId != null ? new GameProfile(ownerId, ownerName) : null;
+            GameProfile profile = ownerId != null && ownerName != null ? new GameProfile(ownerId, ownerName) : null;
             String customName = buffer.readBoolean() ? buffer.readUtf() : null;
             mailboxes.add(new ClientMailbox(id, Optional.ofNullable(profile), Optional.ofNullable(customName)));
         }
         return new MessageUpdateMailboxes(mailboxes);
     }
 
-    @Override
-    public void handle(MessageUpdateMailboxes message, MessageContext context)
+    public static void handle(MessageUpdateMailboxes message, MessageContext context)
     {
         context.execute(() -> ClientPlayHandler.handleMessageUpdateMailboxes(message));
         context.setHandled(true);
-    }
-
-    public Collection<? extends IMailbox> getMailboxes()
-    {
-        return this.mailboxes;
     }
 }

@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mojang.serialization.MapCodec;
 import com.mrcrayfish.furniture.refurbished.blockentity.FryingPanBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.IHeatingSource;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
@@ -44,10 +45,18 @@ import java.util.stream.Collectors;
  */
 public class FryingPanBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
 {
+    private static final MapCodec<FryingPanBlock> CODEC = simpleCodec(FryingPanBlock::new);
+
     public FryingPanBlock(Properties properties)
     {
         super(properties);
         this.registerDefaultState(this.getStateDefinition().any().setValue(DIRECTION, Direction.NORTH).setValue(LIT, false));
+    }
+
+    @Override
+    protected MapCodec<FryingPanBlock> codec()
+    {
+        return CODEC;
     }
 
     @Override

@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
-public class KitchenCabinetryBlock extends FurnitureHorizontalBlock implements IKitchenCabinetry
+public abstract class KitchenCabinetryBlock extends FurnitureHorizontalBlock implements IKitchenCabinetry
 {
     public static final EnumProperty<Shape> SHAPE = EnumProperty.create("shape", Shape.class);
 

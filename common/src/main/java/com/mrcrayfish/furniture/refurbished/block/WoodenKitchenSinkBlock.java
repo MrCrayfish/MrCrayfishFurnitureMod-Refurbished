@@ -1,5 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.block;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -13,6 +15,12 @@ import java.util.List;
  */
 public class WoodenKitchenSinkBlock extends KitchenSinkBlock implements BlockTagSupplier
 {
+    private static final MapCodec<WoodenKitchenSinkBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
+        return builder.group(WoodType.CODEC.fieldOf("wood_type").forGetter(block -> {
+            return block.type;
+        }), propertiesCodec()).apply(builder, WoodenKitchenSinkBlock::new);
+    });
+
     private final WoodType type;
 
     public WoodenKitchenSinkBlock(WoodType type, Properties properties)
@@ -24,6 +32,12 @@ public class WoodenKitchenSinkBlock extends KitchenSinkBlock implements BlockTag
     public WoodType getWoodType()
     {
         return this.type;
+    }
+
+    @Override
+    protected MapCodec<WoodenKitchenSinkBlock> codec()
+    {
+        return CODEC;
     }
 
     @Override

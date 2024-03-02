@@ -5,17 +5,14 @@ import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeSerializers;
 import com.mrcrayfish.furniture.refurbished.core.ModTags;
-import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardCombiningRecipe;
-import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
-import com.mrcrayfish.furniture.refurbished.crafting.RecycleBinRecyclingRecipe;
-import com.mrcrayfish.furniture.refurbished.crafting.SinkFluidTransmutingRecipe;
-import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchContructingRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.*;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
-import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.Criterion;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
@@ -38,7 +35,6 @@ import net.minecraft.world.level.material.Fluids;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -46,14 +42,14 @@ import java.util.function.Function;
  */
 public class CommonRecipeProvider
 {
-    private final Consumer<FinishedRecipe> consumer;
+    private final RecipeOutput output;
     private final ConditionalModConsumer modLoadedConsumer;
-    private final Function<ItemLike, CriterionTriggerInstance> hasItem;
-    private final Function<TagKey<Item>, CriterionTriggerInstance> hasTag;
+    private final Function<ItemLike, Criterion<?>> hasItem;
+    private final Function<TagKey<Item>, Criterion<?>> hasTag;
 
-    public CommonRecipeProvider(Consumer<FinishedRecipe> consumer, ConditionalModConsumer modLoadedConsumer, Function<ItemLike, CriterionTriggerInstance> hasItem, Function<TagKey<Item>, CriterionTriggerInstance> hasTag)
+    public CommonRecipeProvider(RecipeOutput output, ConditionalModConsumer modLoadedConsumer, Function<ItemLike, Criterion<?>> hasItem, Function<TagKey<Item>, Criterion<?>> hasTag)
     {
-        this.consumer = consumer;
+        this.output = output;
         this.modLoadedConsumer = modLoadedConsumer;
         this.hasItem = hasItem;
         this.hasTag = hasTag;
@@ -70,14 +66,14 @@ public class CommonRecipeProvider
                 .define('F', Items.BLAST_FURNACE)
                 .unlockedBy("has_iron_ingot", this.hasItem.apply(Items.IRON_INGOT))
                 .unlockedBy("has_redstone", this.hasItem.apply(Items.REDSTONE))
-                .save(this.consumer);
+                .save(this.output);
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModBlocks.ELECTRICITY_GENERATOR_DARK.get())
                 .requires(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get())
                 .requires(Items.BLACK_DYE)
                 .unlockedBy("has_iron_ingot", this.hasItem.apply(Items.IRON_INGOT))
                 .unlockedBy("has_redstone", this.hasItem.apply(Items.REDSTONE))
-                .save(this.consumer);
+                .save(this.output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.WORKBENCH.get())
                 .pattern("SBS")
@@ -92,7 +88,7 @@ public class CommonRecipeProvider
                 .unlockedBy("has_planks", this.hasTag.apply(ItemTags.PLANKS))
                 .unlockedBy("has_redstone", this.hasItem.apply(Items.REDSTONE))
                 .unlockedBy("has_iron_ingot", this.hasItem.apply(Items.IRON_INGOT))
-                .save(this.consumer);
+                .save(this.output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.WRENCH.get())
                 .pattern(" I ")
@@ -104,7 +100,7 @@ public class CommonRecipeProvider
                 .unlockedBy("has_iron_ingot", this.hasItem.apply(Items.IRON_INGOT))
                 .unlockedBy("has_string", this.hasItem.apply(Items.STRING))
                 .unlockedBy("has_leather", this.hasItem.apply(Items.LEATHER))
-                .save(this.consumer);
+                .save(this.output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.SPATULA.get())
                 .pattern(" I ")
@@ -116,7 +112,7 @@ public class CommonRecipeProvider
                 .unlockedBy("has_iron_ingot", this.hasItem.apply(Items.IRON_INGOT))
                 .unlockedBy("has_string", this.hasItem.apply(Items.STRING))
                 .unlockedBy("has_leather", this.hasItem.apply(Items.LEATHER))
-                .save(this.consumer);
+                .save(this.output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.KNIFE.get())
                 .pattern(" S ")
@@ -128,7 +124,7 @@ public class CommonRecipeProvider
                 .unlockedBy("has_iron_ingot", this.hasItem.apply(Items.IRON_INGOT))
                 .unlockedBy("has_string", this.hasItem.apply(Items.STRING))
                 .unlockedBy("has_leather", this.hasItem.apply(Items.LEATHER))
-                .save(this.consumer);
+                .save(this.output);
 
         this.table(Blocks.OAK_PLANKS, ModBlocks.TABLE_OAK.get());
         this.table(Blocks.SPRUCE_PLANKS, ModBlocks.TABLE_SPRUCE.get());
@@ -574,7 +570,7 @@ public class CommonRecipeProvider
         // Slicing
         this.cuttingBoardSlicing(Blocks.MELON, Items.MELON_SLICE, 9);
         this.cuttingBoardSlicing(Items.BREAD, ModItems.BREAD_SLICE.get(), 6);
-        this.cuttingBoardSlicing(Blocks.GRASS, Items.WHEAT_SEEDS, 1);
+        this.cuttingBoardSlicing(Blocks.SHORT_GRASS, Items.WHEAT_SEEDS, 1);
         this.cuttingBoardSlicing(Blocks.DEAD_BUSH, Items.STICK, 2);
         this.cuttingBoardSlicing(Items.BONE, Items.BONE_MEAL, 4);
         this.cuttingBoardSlicing(Items.FEATHER, Items.STRING, 1);
@@ -1132,7 +1128,7 @@ public class CommonRecipeProvider
         this.recycleBinSalvaging(Items.PIGLIN_BANNER_PATTERN, new ItemStack(Items.PAPER, 1));
         this.recycleBinSalvaging(Items.ENCHANTED_BOOK, new ItemStack(Items.LEATHER, 1), new ItemStack(Items.PAPER, 2));
 
-        SpecialRecipeBuilder.special(ModRecipeSerializers.DOOR_MAT_COPY_RECIPE.get()).save(this.consumer, Constants.MOD_ID + ":door_mat_copy");
+        SpecialRecipeBuilder.special(DoorMatCopyRecipe::new).save(this.output, Constants.MOD_ID + ":door_mat_copy");
     }
 
     private void simpleCombined(ItemLike first, ItemLike second, ItemLike result, int count, RecipeCategory category)
@@ -1141,7 +1137,7 @@ public class CommonRecipeProvider
                 .requires(first).requires(second)
                 .unlockedBy("has_first", this.hasItem.apply(first))
                 .unlockedBy("has_second", this.hasItem.apply(second))
-                .save(this.consumer);
+                .save(this.output);
     }
 
     private void table(Block plank, Block result)
@@ -1193,7 +1189,7 @@ public class CommonRecipeProvider
                 .define('D', dye)
                 .define('K', ModTags.Items.COLOURED_KITCHEN_CABINETRY)
                 .unlockedBy("has_dye", this.hasItem.apply(dye))
-                .save(this.consumer, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
+                .save(this.output, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
     }
 
     private void colouredKitchenDrawer(Item dye, Block result)
@@ -1205,7 +1201,7 @@ public class CommonRecipeProvider
                 .define('D', dye)
                 .define('K', ModTags.Items.COLOURED_KITCHEN_DRAWERS)
                 .unlockedBy("has_dye", this.hasItem.apply(dye))
-                .save(this.consumer, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
+                .save(this.output, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
     }
 
     private void colouredKitchenSink(Item dye, Block result)
@@ -1217,7 +1213,7 @@ public class CommonRecipeProvider
                 .define('D', dye)
                 .define('K', ModTags.Items.COLOURED_KITCHEN_SINKS)
                 .unlockedBy("has_dye", this.hasItem.apply(dye))
-                .save(this.consumer, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
+                .save(this.output, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
     }
 
     private void colouredKitchenStorageCabinet(Item dye, Block result)
@@ -1228,7 +1224,7 @@ public class CommonRecipeProvider
                 .define('D', dye)
                 .define('K', ModTags.Items.COLOURED_KITCHEN_STORAGE_CABINETS)
                 .unlockedBy("has_dye", this.hasItem.apply(dye))
-                .save(this.consumer, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
+                .save(this.output, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
     }
 
     private void toaster(Block light, Block dark)
@@ -1240,7 +1236,7 @@ public class CommonRecipeProvider
                 .requires(Items.BLACK_DYE)
                 .unlockedBy("has_toaster", this.hasItem.apply(light))
                 .unlockedBy("has_dye", this.hasItem.apply(Items.BLACK_DYE))
-                .save(this.consumer);
+                .save(this.output);
     }
 
     private void microwave(Block light, Block dark)
@@ -1252,7 +1248,7 @@ public class CommonRecipeProvider
                 .requires(Items.BLACK_DYE)
                 .unlockedBy("has_microwave", this.hasItem.apply(light))
                 .unlockedBy("has_dye", this.hasItem.apply(Items.BLACK_DYE))
-                .save(this.consumer);
+                .save(this.output);
     }
 
     private void stove(Block light, Block dark)
@@ -1264,7 +1260,7 @@ public class CommonRecipeProvider
                 .requires(Items.BLACK_DYE)
                 .unlockedBy("has_stove", this.hasItem.apply(light))
                 .unlockedBy("has_dye", this.hasItem.apply(Items.BLACK_DYE))
-                .save(this.consumer);
+                .save(this.output);
     }
 
     private void rangeHood(Block light, Block dark)
@@ -1276,7 +1272,7 @@ public class CommonRecipeProvider
                 .requires(Items.BLACK_DYE)
                 .unlockedBy("has_range_hood", this.hasItem.apply(light))
                 .unlockedBy("has_dye", this.hasItem.apply(Items.BLACK_DYE))
-                .save(this.consumer);
+                .save(this.output);
     }
 
     private void fryingPan(Block result)
@@ -1311,7 +1307,7 @@ public class CommonRecipeProvider
                 .requires(dye)
                 .requires(ModTags.Items.GRILLS)
                 .unlockedBy("has_dye", this.hasItem.apply(dye))
-                .save(this.consumer, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
+                .save(this.output, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
     }
 
     private void cooler(Item dye, Block result)
@@ -1321,7 +1317,7 @@ public class CommonRecipeProvider
                 .requires(dye)
                 .requires(ModTags.Items.COOLERS)
                 .unlockedBy("has_dye", this.hasItem.apply(dye))
-                .save(this.consumer, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
+                .save(this.output, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
 
     }
 
@@ -1342,7 +1338,7 @@ public class CommonRecipeProvider
                 .requires(dye)
                 .requires(ModTags.Items.TRAMPOLINES)
                 .unlockedBy("has_dye", this.hasItem.apply(dye))
-                .save(this.consumer, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
+                .save(this.output, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
     }
 
     private void hedge(Block leaf, Block result)
@@ -1377,7 +1373,7 @@ public class CommonRecipeProvider
                 .requires(dye)
                 .requires(ModTags.Items.SOFAS)
                 .unlockedBy("has_dye", this.hasItem.apply(dye))
-                .save(this.consumer, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
+                .save(this.output, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
     }
 
     private void stool(Item dye, Block result)
@@ -1387,7 +1383,7 @@ public class CommonRecipeProvider
                 .requires(dye)
                 .requires(ModTags.Items.STOOLS)
                 .unlockedBy("has_dye", this.hasItem.apply(dye))
-                .save(this.consumer, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
+                .save(this.output, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
     }
 
     private void lamp(Item dye, Block result)
@@ -1397,7 +1393,7 @@ public class CommonRecipeProvider
                 .requires(dye)
                 .requires(ModTags.Items.LAMPS)
                 .unlockedBy("has_dye", this.hasItem.apply(dye))
-                .save(this.consumer, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
+                .save(this.output, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
     }
 
     private void ceilingFan(Block plank, Block light, Block dark)
@@ -1409,7 +1405,7 @@ public class CommonRecipeProvider
                 .requires(Items.BLACK_DYE)
                 .unlockedBy("has_ceiling_fan", this.hasItem.apply(light))
                 .unlockedBy("has_dye", this.hasItem.apply(Items.BLACK_DYE))
-                .save(this.consumer);
+                .save(this.output);
     }
 
     private void ceilingLight(Block light, Block dark)
@@ -1421,7 +1417,7 @@ public class CommonRecipeProvider
                 .requires(Items.BLACK_DYE)
                 .unlockedBy("has_ceiling_light", this.hasItem.apply(light))
                 .unlockedBy("has_dye", this.hasItem.apply(Items.BLACK_DYE))
-                .save(this.consumer);
+                .save(this.output);
     }
 
     private void lightswitch(Block light, Block dark)
@@ -1433,7 +1429,7 @@ public class CommonRecipeProvider
                 .requires(Items.BLACK_DYE)
                 .unlockedBy("has_lightswitch", this.hasItem.apply(light))
                 .unlockedBy("has_dye", this.hasItem.apply(Items.BLACK_DYE))
-                .save(this.consumer);
+                .save(this.output);
     }
 
     private void doorbell(Block light)
@@ -1464,7 +1460,7 @@ public class CommonRecipeProvider
                 .requires(dye)
                 .unlockedBy("has_ceiling_fan", this.hasTag.apply(ModTags.Items.WOODEN_TOILETS))
                 .unlockedBy("has_dye", this.hasItem.apply(dye))
-                .save(this.consumer);
+                .save(this.output);
     }
 
     private void woodenBasin(Block plank, Block result)
@@ -1496,7 +1492,7 @@ public class CommonRecipeProvider
                 .requires(Items.BLACK_DYE)
                 .unlockedBy("has_fridge", this.hasItem.apply(light))
                 .unlockedBy("has_dye", this.hasItem.apply(Items.BLACK_DYE))
-                .save(this.consumer);
+                .save(this.output);
     }
 
     private void television(Block result)
@@ -1522,61 +1518,61 @@ public class CommonRecipeProvider
         {
             builder.requiresMaterial(material);
         }
-        builder.save(this.consumer, Utils.resource("constructing/" + name));
+        builder.save(this.output, Utils.resource("constructing/" + name));
     }
 
-    private void cooking(String folder, RecipeCategory category, RecipeSerializer<? extends AbstractCookingRecipe> serializer, ItemLike input, ItemLike output, int time, float experience)
+    private <T extends AbstractCookingRecipe> void cooking(String folder, RecipeCategory category, RecipeSerializer<T> serializer, AbstractCookingRecipe.Factory<T> factory, ItemLike input, ItemLike output, int time, float experience)
     {
         String baseName = input.asItem().toString();
         String resultName = output.asItem().toString();
         SimpleCookingRecipeBuilder
-                .generic(Ingredient.of(input), category, output, experience, time, serializer)
+                .generic(Ingredient.of(input), category, output, experience, time, serializer, factory)
                 .unlockedBy("has_" + baseName, this.hasItem.apply(input))
-                .save(this.consumer, Utils.resource(folder + "/" + resultName + "_from_" + baseName));
+                .save(this.output, Utils.resource(folder + "/" + resultName + "_from_" + baseName));
     }
 
-    private void processing(String folder, RecipeSerializer<? extends ProcessingRecipe> serializer, Ingredient input, ItemLike output, int count, int time)
+    private <T extends ProcessingRecipe> void processing(ProcessingRecipe.Factory<T> factory, String folder, Ingredient input, ItemLike output, int count, int time)
     {
         ResourceLocation recipeId = Utils.resource(folder + "/" + output.asItem());
-        ProcessingRecipe.builder(input, new ItemStack(output, count), time, serializer).save(this.consumer, recipeId);
+        ProcessingRecipe.builder(factory, input, new ItemStack(output, count), time).save(this.output, recipeId);
     }
 
     private void grillCooking(ItemLike rawItem, ItemLike cookedItem, int cookingTime, float experience)
     {
-        this.cooking("grilling", RecipeCategory.FOOD, ModRecipeSerializers.GRILL_RECIPE.get(), rawItem, cookedItem, cookingTime, experience);
+        this.cooking("grilling", RecipeCategory.FOOD, ModRecipeSerializers.GRILL_RECIPE.get(), GrillCookingRecipe::new, rawItem, cookedItem, cookingTime, experience);
     }
 
     private void freezerSolidifying(ItemLike baseItem, ItemLike frozenItem, int freezeTime, float experience)
     {
-        this.cooking("freezing", RecipeCategory.MISC, ModRecipeSerializers.FREEZER_RECIPE.get(), baseItem, frozenItem, freezeTime, experience);
+        this.cooking("freezing", RecipeCategory.MISC, ModRecipeSerializers.FREEZER_RECIPE.get(), FreezerSolidifyingRecipe::new, baseItem, frozenItem, freezeTime, experience);
     }
 
     private void toasterHeating(ItemLike baseItem, ItemLike heatedItem, int heatingTime, float experience)
     {
-        this.cooking("toasting", RecipeCategory.FOOD, ModRecipeSerializers.TOASTER_RECIPE.get(), baseItem, heatedItem, heatingTime, experience);
+        this.cooking("toasting", RecipeCategory.FOOD, ModRecipeSerializers.TOASTER_RECIPE.get(), ToasterHeatingRecipe::new, baseItem, heatedItem, heatingTime, experience);
     }
 
     private void microwaveHeating(ItemLike baseItem, ItemLike heatedItem, int heatingTime, float experience)
     {
-        this.cooking("heating", RecipeCategory.FOOD, ModRecipeSerializers.MICROWAVE_RECIPE.get(), baseItem, heatedItem, heatingTime, experience);
+        this.cooking("heating", RecipeCategory.FOOD, ModRecipeSerializers.MICROWAVE_RECIPE.get(), MicrowaveHeatingRecipe::new, baseItem, heatedItem, heatingTime, experience);
     }
 
     private void fryingPanCooking(ItemLike baseItem, ItemLike heatedItem, int heatingTime, float experience)
     {
-        this.cooking("frying", RecipeCategory.FOOD, ModRecipeSerializers.FRYING_PAN_RECIPE.get(), baseItem, heatedItem, heatingTime, experience);
+        this.cooking("frying", RecipeCategory.FOOD, ModRecipeSerializers.FRYING_PAN_RECIPE.get(), FryingPanCookingRecipe::new, baseItem, heatedItem, heatingTime, experience);
     }
 
     private void ovenBaking(ItemLike baseItem, ItemLike bakedItem, int count, int bakingTime)
     {
-        this.processing("baking", ModRecipeSerializers.OVEN_BAKING.get(), Ingredient.of(baseItem), bakedItem, count, bakingTime);
+        this.processing(OvenBakingRecipe::new, "baking", Ingredient.of(baseItem), bakedItem, count, bakingTime);
     }
 
     private void cuttingBoardSlicing(ItemLike baseItem, ItemLike resultItem, int resultCount)
     {
         String baseName = baseItem.asItem().toString();
         String resultName = resultItem.asItem().toString();
-        SingleItemRecipeBuilder builder = new SingleItemRecipeBuilder(RecipeCategory.MISC, ModRecipeSerializers.CUTTING_BOARD_SLICING_RECIPE.get(), Ingredient.of(baseItem), resultItem, resultCount);
-        builder.unlockedBy("has_" + baseName, this.hasItem.apply(baseItem)).save(this.consumer, Utils.resource("slicing/" + resultName + "_from_" + baseName));
+        SingleItemRecipeBuilder builder = new SingleItemRecipeBuilder(RecipeCategory.MISC, CuttingBoardSlicingRecipe::new, Ingredient.of(baseItem), resultItem, resultCount);
+        builder.unlockedBy("has_" + baseName, this.hasItem.apply(baseItem)).save(this.output, Utils.resource("slicing/" + resultName + "_from_" + baseName));
     }
 
     private void cuttingBoardCombining(ItemLike combinedItem, int count, Ingredient ... inputs)
@@ -1587,14 +1583,14 @@ public class CommonRecipeProvider
         {
             builder.add(inputs[i]);
         }
-        builder.save(this.consumer, Utils.resource("combining/" + baseName));
+        builder.save(this.output, Utils.resource("combining/" + baseName));
     }
 
     private void sinkFluidTransmuting(Fluid fluid, Ingredient catalyst, ItemStack result)
     {
         String baseName = result.getItem().toString();
         SinkFluidTransmutingRecipe.Builder builder = SinkFluidTransmutingRecipe.Builder.from(fluid, catalyst, result);
-        builder.save(this.consumer, Utils.resource("fluid_transmuting/" + baseName));
+        builder.save(this.output, Utils.resource("fluid_transmuting/" + baseName));
     }
 
     private Set<Item> recycledItems = new HashSet<>();
@@ -1605,8 +1601,8 @@ public class CommonRecipeProvider
             throw new IllegalArgumentException(baseItem.asItem() + " is already recycled");
         }
         String baseName = baseItem.asItem().toString();
-        RecycleBinRecyclingRecipe.Builder builder = new RecycleBinRecyclingRecipe.Builder(baseItem.asItem(), outputItems);
-        builder.save(this.consumer, Utils.resource("recycling/" + baseName));
-        this.recycledItems.add(baseItem.asItem());
+        //RecycleBinRecyclingRecipe.Builder builder = new RecycleBinRecyclingRecipe.Builder(baseItem.asItem(), outputItems);
+        //builder.save(this.output, Utils.resource("recycling/" + baseName));
+        //.recycledItems.add(baseItem.asItem());
     }
 }

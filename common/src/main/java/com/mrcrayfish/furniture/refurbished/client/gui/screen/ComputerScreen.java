@@ -106,7 +106,6 @@ public class ComputerScreen extends ElectricityContainerScreen<ComputerMenu>
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
     {
-        this.renderBackground(graphics);
         super.renderBg(graphics, partialTick, mouseX, mouseY);
 
         // Draw background

@@ -1,9 +1,12 @@
 package com.mrcrayfish.furniture.refurbished.electricity;
 
 import com.mrcrayfish.furniture.refurbished.Constants;
+import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.apache.commons.lang3.mutable.MutableObject;
@@ -29,7 +32,12 @@ public class ElectricityTicker extends SavedData
      */
     public static ElectricityTicker get(ServerLevel level)
     {
-        return level.getDataStorage().computeIfAbsent(tag -> new ElectricityTicker(level, tag), () -> new ElectricityTicker(level), STORAGE_ID);
+        return level.getDataStorage().computeIfAbsent(createFactory(level), STORAGE_ID);
+    }
+
+    public static SavedData.Factory<ElectricityTicker> createFactory(ServerLevel level)
+    {
+        return new SavedData.Factory<>(() -> new ElectricityTicker(level), tag -> new ElectricityTicker(level, tag), DataFixTypes.SAVED_DATA_FORCED_CHUNKS);
     }
 
     private final ServerLevel level;

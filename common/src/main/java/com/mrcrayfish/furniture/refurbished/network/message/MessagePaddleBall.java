@@ -1,7 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.network.message;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.mrcrayfish.furniture.refurbished.computer.app.PaddleBall;
 import com.mrcrayfish.furniture.refurbished.network.play.ClientPlayHandler;
 import com.mrcrayfish.furniture.refurbished.network.play.ServerPlayHandler;
@@ -12,71 +11,31 @@ import net.minecraft.network.FriendlyByteBuf;
  */
 public class MessagePaddleBall
 {
-    public static class PaddlePosition extends PlayMessage<PaddlePosition>
+    public record PaddlePosition(float playerPos, float opponentPos)
     {
-        private float playerPos;
-        private float opponentPos;
-
-        public PaddlePosition() {}
-
-        public PaddlePosition(float playerPos, float opponentPos)
-        {
-            this.playerPos = playerPos;
-            this.opponentPos = opponentPos;
-        }
-
-        @Override
-        public void encode(PaddlePosition message, FriendlyByteBuf buffer)
+        public static void encode(PaddlePosition message, FriendlyByteBuf buffer)
         {
             buffer.writeFloat(message.playerPos);
             buffer.writeFloat(message.opponentPos);
         }
 
-        @Override
-        public PaddlePosition decode(FriendlyByteBuf buffer)
+        public static PaddlePosition decode(FriendlyByteBuf buffer)
         {
             float playerPos = buffer.readFloat();
             float opponentPos = buffer.readFloat();
             return new PaddlePosition(playerPos, opponentPos);
         }
 
-        @Override
-        public void handle(PaddlePosition message, MessageContext context)
+        public static void handle(PaddlePosition message, MessageContext context)
         {
             context.execute(() -> ClientPlayHandler.handleMessageTennisGamePaddlePosition(message));
             context.setHandled(true);
         }
-
-        public float getPlayerPos()
-        {
-            return this.playerPos;
-        }
-
-        public float getOpponentPos()
-        {
-            return this.opponentPos;
-        }
     }
 
-    public static class BallUpdate extends PlayMessage<BallUpdate>
+    public record BallUpdate(float ballX, float ballY, float velocityX, float velocityY)
     {
-        private float ballX;
-        private float ballY;
-        private float velocityX;
-        private float velocityY;
-
-        public BallUpdate() {}
-
-        public BallUpdate(float ballX, float ballY, float velocityX, float velocityY)
-        {
-            this.ballX = ballX;
-            this.ballY = ballY;
-            this.velocityX = velocityX;
-            this.velocityY = velocityY;
-        }
-
-        @Override
-        public void encode(BallUpdate message, FriendlyByteBuf buffer)
+        public static void encode(BallUpdate message, FriendlyByteBuf buffer)
         {
             buffer.writeFloat(message.ballX);
             buffer.writeFloat(message.ballY);
@@ -84,8 +43,7 @@ public class MessagePaddleBall
             buffer.writeFloat(message.velocityY);
         }
 
-        @Override
-        public BallUpdate decode(FriendlyByteBuf buffer)
+        public static BallUpdate decode(FriendlyByteBuf buffer)
         {
             float ballX = buffer.readFloat();
             float ballY = buffer.readFloat();
@@ -94,151 +52,72 @@ public class MessagePaddleBall
             return new BallUpdate(ballX, ballY, velocityX, velocityY);
         }
 
-        @Override
-        public void handle(BallUpdate message, MessageContext context)
+        public static void handle(BallUpdate message, MessageContext context)
         {
             context.execute(() -> ClientPlayHandler.handleMessageTennisGameBallUpdate(message));
             context.setHandled(true);
         }
-
-        public float getBallX()
-        {
-            return this.ballX;
-        }
-
-        public float getBallY()
-        {
-            return this.ballY;
-        }
-
-        public float getVelocityX()
-        {
-            return this.velocityX;
-        }
-
-        public float getVelocityY()
-        {
-            return this.velocityY;
-        }
     }
 
-    public static class Action extends PlayMessage<Action>
+    public record Action(PaddleBall.Action action, byte data)
     {
-        private PaddleBall.Action action;
-        private byte data;
-
-        public Action() {}
-
-        public Action(PaddleBall.Action action, byte data)
-        {
-            this.action = action;
-            this.data = data;
-        }
-
-        @Override
-        public void encode(Action message, FriendlyByteBuf buffer)
+        public static void encode(Action message, FriendlyByteBuf buffer)
         {
             buffer.writeEnum(message.action);
             buffer.writeByte(message.data);
         }
 
-        @Override
-        public Action decode(FriendlyByteBuf buffer)
+        public static Action decode(FriendlyByteBuf buffer)
         {
             PaddleBall.Action action = buffer.readEnum(PaddleBall.Action.class);
             byte data = buffer.readByte();
             return new Action(action, data);
         }
 
-        @Override
-        public void handle(Action message, MessageContext context)
+        public static void handle(Action message, MessageContext context)
         {
-            context.execute(() -> ServerPlayHandler.handleMessageTennisGame(message, context.getPlayer()));
+            context.execute(() -> ServerPlayHandler.handleMessageTennisGame(message, context.getPlayer().orElse(null)));
             context.setHandled(true);
-        }
-
-        public PaddleBall.Action getMode()
-        {
-            return this.action;
-        }
-
-        public byte getData()
-        {
-            return this.data;
         }
     }
 
-    public static class OpponentName extends PlayMessage<OpponentName>
+    public record OpponentName(String name)
     {
-        private String name;
-
-        public OpponentName() {}
-
-        public OpponentName(String name)
-        {
-            this.name = name;
-        }
-
-        @Override
-        public void encode(OpponentName message, FriendlyByteBuf buffer)
+        public static void encode(OpponentName message, FriendlyByteBuf buffer)
         {
             buffer.writeUtf(message.name);
         }
 
-        @Override
-        public OpponentName decode(FriendlyByteBuf buffer)
+        public static OpponentName decode(FriendlyByteBuf buffer)
         {
             String name = buffer.readUtf();
             return new OpponentName(name);
         }
 
-        @Override
-        public void handle(OpponentName message, MessageContext context)
+        public static void handle(OpponentName message, MessageContext context)
         {
             context.execute(() -> ClientPlayHandler.handleMessagePaddleBallOpponentName(message));
             context.setHandled(true);
         }
-
-        public String getName()
-        {
-            return this.name;
-        }
     }
 
-    public static class Event extends PlayMessage<Event>
+    public record Event(byte data)
     {
-        private byte data;
-
-        public Event() {}
-
-        public Event(byte event)
-        {
-            this.data = event;
-        }
-
-        @Override
-        public void encode(Event message, FriendlyByteBuf buffer)
+        public static void encode(Event message, FriendlyByteBuf buffer)
         {
             buffer.writeByte(message.data);
         }
 
-        @Override
-        public Event decode(FriendlyByteBuf buffer)
+        public static Event decode(FriendlyByteBuf buffer)
         {
             byte event = buffer.readByte();
             return new Event(event);
         }
 
-        @Override
-        public void handle(Event message, MessageContext context)
+        public static void handle(Event message, MessageContext context)
         {
             context.execute(() -> ClientPlayHandler.handleMessagePaddleBallEvent(message));
             context.setHandled(true);
-        }
-
-        public byte getEvent()
-        {
-            return this.data;
         }
     }
 }

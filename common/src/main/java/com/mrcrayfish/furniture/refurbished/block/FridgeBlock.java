@@ -2,6 +2,8 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.blockentity.BasicLootBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.FreezerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.FridgeBlockEntity;
@@ -37,6 +39,12 @@ import java.util.Map;
  */
 public class FridgeBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier, DropWithName
 {
+    private static final MapCodec<FridgeBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
+        return builder.group(MetalType.CODEC.fieldOf("metal_type").forGetter(block -> {
+            return block.type;
+        }), propertiesCodec()).apply(builder, FridgeBlock::new);
+    });
+
     protected final MetalType type;
 
     public FridgeBlock(MetalType type, Properties properties)
@@ -49,6 +57,12 @@ public class FridgeBlock extends FurnitureHorizontalBlock implements EntityBlock
     public MetalType getMetalType()
     {
         return this.type;
+    }
+
+    @Override
+    protected MapCodec<FridgeBlock> codec()
+    {
+        return CODEC;
     }
 
     @Override

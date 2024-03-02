@@ -15,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -47,9 +48,14 @@ public class DeliveryService extends SavedData
         ServerLevel level = server.getLevel(Level.OVERWORLD);
         if(level != null)
         {
-            return Optional.of(level.getDataStorage().computeIfAbsent(tag -> new DeliveryService(server, tag), () -> new DeliveryService(server), STORAGE_ID));
+            return Optional.of(level.getDataStorage().computeIfAbsent(createFactory(server), STORAGE_ID));
         }
         return Optional.empty();
+    }
+
+    public static SavedData.Factory<DeliveryService> createFactory(MinecraftServer server)
+    {
+        return new SavedData.Factory<>(() -> new DeliveryService(server), tag -> new DeliveryService(server, tag), DataFixTypes.SAVED_DATA_FORCED_CHUNKS);
     }
 
     private final MinecraftServer server;

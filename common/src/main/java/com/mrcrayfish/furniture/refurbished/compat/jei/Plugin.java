@@ -22,12 +22,14 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ItemLike;
@@ -76,17 +78,17 @@ public class Plugin implements IModPlugin
     public void registerRecipes(IRecipeRegistration registration)
     {
         RecipeManager manager = getRecipeManager();
-        registration.addRecipes(FreezerSolidifyingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.FREEZER_SOLIDIFYING.get()));
-        registration.addRecipes(CuttingBoardSlicingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.CUTTING_BOARD_SLICING.get()));
+        registration.addRecipes(FreezerSolidifyingCategory.TYPE, this.getRecipes(ModRecipeTypes.FREEZER_SOLIDIFYING.get()));
+        registration.addRecipes(CuttingBoardSlicingCategory.TYPE, this.getRecipes(ModRecipeTypes.CUTTING_BOARD_SLICING.get()));
         registration.addRecipes(FryingPanCookingCategory.TYPE, this.getFryingPanRecipes(manager));
-        registration.addRecipes(MicrowaveHeatingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.MICROWAVE_HEATING.get()));
-        registration.addRecipes(RecycleBinRecyclingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.RECYCLE_BIN_RECYCLING.get()));
-        registration.addRecipes(ToasterToastingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.TOASTER_HEATING.get()));
+        registration.addRecipes(MicrowaveHeatingCategory.TYPE, this.getRecipes(ModRecipeTypes.MICROWAVE_HEATING.get()));
+        registration.addRecipes(RecycleBinRecyclingCategory.TYPE, this.getRecipes(ModRecipeTypes.RECYCLE_BIN_RECYCLING.get()));
+        registration.addRecipes(ToasterToastingCategory.TYPE, this.getRecipes(ModRecipeTypes.TOASTER_HEATING.get()));
         registration.addRecipes(GrillCookingCategory.TYPE, this.getGrillRecipes(manager));
-        registration.addRecipes(CuttingBoardCombiningCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.CUTTING_BOARD_COMBINING.get()));
-        registration.addRecipes(WorkbenchConstructingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.WORKBENCH_CONSTRUCTING.get()));
-        registration.addRecipes(OvenBakingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.OVEN_BAKING.get()));
-        registration.addRecipes(SinkFluidTransmutingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.SINK_FLUID_TRANSMUTING.get()));
+        registration.addRecipes(CuttingBoardCombiningCategory.TYPE, this.getRecipes(ModRecipeTypes.CUTTING_BOARD_COMBINING.get()));
+        registration.addRecipes(WorkbenchConstructingCategory.TYPE, this.getRecipes(ModRecipeTypes.WORKBENCH_CONSTRUCTING.get()));
+        registration.addRecipes(OvenBakingCategory.TYPE, this.getRecipes(ModRecipeTypes.OVEN_BAKING.get()));
+        registration.addRecipes(SinkFluidTransmutingCategory.TYPE, this.getRecipes(ModRecipeTypes.SINK_FLUID_TRANSMUTING.get()));
 
         // TODO ingredient info
         //registration.addIngredientInfo(new ItemStack(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get()), VanillaTypes.ITEM_STACK, Utils.translation("jei_ingredient_info", "electricity_generator"));
@@ -115,19 +117,24 @@ public class Plugin implements IModPlugin
         });
     }
 
+    private <C extends Container, T extends Recipe<C>> List<T> getRecipes(RecipeType<T> type)
+    {
+        return getRecipeManager().getAllRecipesFor(type).stream().map(RecipeHolder::value).toList();
+    }
+
     private List<AbstractCookingRecipe> getFryingPanRecipes(RecipeManager manager)
     {
         List<AbstractCookingRecipe> recipes = new ArrayList<>();
-        recipes.addAll(manager.getAllRecipesFor(ModRecipeTypes.FRYING_PAN_COOKING.get()));
-        recipes.addAll(manager.getAllRecipesFor(RecipeType.CAMPFIRE_COOKING));
+        recipes.addAll(this.getRecipes(ModRecipeTypes.FRYING_PAN_COOKING.get()));
+        recipes.addAll(this.getRecipes(RecipeType.CAMPFIRE_COOKING));
         return recipes;
     }
 
     private List<AbstractCookingRecipe> getGrillRecipes(RecipeManager manager)
     {
         List<AbstractCookingRecipe> recipes = new ArrayList<>();
-        recipes.addAll(manager.getAllRecipesFor(ModRecipeTypes.GRILL_COOKING.get()));
-        recipes.addAll(manager.getAllRecipesFor(RecipeType.CAMPFIRE_COOKING));
+        recipes.addAll(this.getRecipes(ModRecipeTypes.GRILL_COOKING.get()));
+        recipes.addAll(this.getRecipes(RecipeType.CAMPFIRE_COOKING));
         return recipes;
     }
 

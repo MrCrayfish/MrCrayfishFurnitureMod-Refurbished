@@ -1,18 +1,17 @@
 package com.mrcrayfish.furniture.refurbished.crafting;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeSerializers;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
-import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeBuilder;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -23,11 +22,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
 import java.util.stream.IntStream;
-import java.util.stream.StreamSupport;
 
 /**
  * Author: MrCrayfish
@@ -36,13 +31,11 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
 {
     public static final int MAX_INGREDIENTS = 5;
 
-    protected final ResourceLocation id;
-    protected final Ingredient[] inputs;
+    protected final NonNullList<Ingredient> inputs;
     protected final ItemStack output;
 
-    public CuttingBoardCombiningRecipe(ResourceLocation id, Ingredient[] inputs, ItemStack output)
+    public CuttingBoardCombiningRecipe(NonNullList<Ingredient> inputs, ItemStack output)
     {
-        this.id = id;
         this.inputs = inputs;
         this.output = output;
     }
@@ -50,9 +43,9 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
     @Override
     public boolean matches(Container container, Level level)
     {
-        for(int i = 0; i < this.inputs.length && i < container.getContainerSize(); i++)
+        for(int i = 0; i < this.inputs.size() && i < container.getContainerSize(); i++)
         {
-            if(!this.inputs[i].test(container.getItem(i)))
+            if(!this.inputs.get(i).test(container.getItem(i)))
             {
                 return false;
             }
@@ -79,12 +72,6 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
     }
 
     @Override
-    public ResourceLocation getId()
-    {
-        return this.id;
-    }
-
-    @Override
     public RecipeSerializer<?> getSerializer()
     {
         return ModRecipeSerializers.CUTTING_BOARD_COMBINING_RECIPE.get();
@@ -99,7 +86,7 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
     @Override
     public NonNullList<Ingredient> getIngredients()
     {
-        return NonNullList.of(Ingredient.EMPTY, this.inputs);
+        return this.inputs;
     }
 
     public ItemStack getOutput()
@@ -109,11 +96,11 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
 
     public boolean completelyMatches(Container container)
     {
-        if(this.inputs.length <= container.getContainerSize())
+        if(this.inputs.size() <= container.getContainerSize())
         {
-            for(int i = 0; i < this.inputs.length; i++)
+            for(int i = 0; i < this.inputs.size(); i++)
             {
-                if(!this.inputs[i].test(container.getItem(i)))
+                if(!this.inputs.get(i).test(container.getItem(i)))
                 {
                     return false;
                 }
@@ -125,47 +112,44 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
 
     public static class Serializer implements RecipeSerializer<CuttingBoardCombiningRecipe>
     {
-        public static void toJson(CuttingBoardCombiningRecipe.Result result, JsonObject object)
+        public static final Codec<CuttingBoardCombiningRecipe> CODEC = RecordCodecBuilder.create(builder -> {
+            return builder.group(Ingredient.CODEC_NONEMPTY.listOf().fieldOf("input").flatXmap(ingredients -> {
+                Ingredient[] inputs = ingredients.stream().filter((ingredient) -> {
+                    return !ingredient.isEmpty();
+                }).toArray(Ingredient[]::new);
+                if(inputs.length > MAX_INGREDIENTS) {
+                    return DataResult.error(() -> "Too many ingredients");
+                } else if(inputs.length == 0) {
+                    return DataResult.error(() -> "No ingredients");
+                }
+                return DataResult.success(NonNullList.of(Ingredient.EMPTY, inputs));
+            }, DataResult::success).forGetter((recipe) -> {
+                return recipe.getIngredients();
+            }), ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter((recipe) -> {
+                return recipe.output;
+            })).apply(builder, CuttingBoardCombiningRecipe::new);
+        });
+
+        @Override
+        public Codec<CuttingBoardCombiningRecipe> codec()
         {
-            JsonArray inputArray = new JsonArray();
-            for(Ingredient ingredient : result.inputs)
-            {
-                inputArray.add(ingredient.toJson());
-            }
-            object.add("input", inputArray);
-            object.addProperty("output", BuiltInRegistries.ITEM.getKey(result.output.getItem()).toString());
-            object.addProperty("count", result.output.getCount());
+            return CODEC;
         }
 
         @Override
-        public CuttingBoardCombiningRecipe fromJson(ResourceLocation id, JsonObject object)
-        {
-            JsonArray inputArray = GsonHelper.getAsJsonArray(object, "input");
-            Ingredient[] inputs = StreamSupport.stream(inputArray.spliterator(), false).map(element -> {
-                return Ingredient.fromJson(element, false);
-            }).toArray(Ingredient[]::new);
-            String outputString = GsonHelper.getAsString(object, "output");
-            Item item = BuiltInRegistries.ITEM.getOptional(new ResourceLocation(outputString)).orElseThrow(() -> new IllegalStateException("Item: " + outputString + " does not exist"));
-            int count = GsonHelper.getAsInt(object, "count", 1);
-            ItemStack output = new ItemStack(item, count);
-            return new CuttingBoardCombiningRecipe(id, inputs, output);
-        }
-
-        @Override
-        public CuttingBoardCombiningRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buffer)
+        public CuttingBoardCombiningRecipe fromNetwork(FriendlyByteBuf buffer)
         {
             int inputCount = buffer.readInt();
-            Ingredient[] inputs = IntStream.range(0, inputCount)
-                    .mapToObj(val -> Ingredient.fromNetwork(buffer))
-                    .toArray(Ingredient[]::new);
+            NonNullList<Ingredient> inputs = NonNullList.withSize(inputCount, Ingredient.EMPTY);
+            IntStream.range(0, inputCount).forEach(i -> inputs.add(Ingredient.fromNetwork(buffer)));
             ItemStack output = buffer.readItem();
-            return new CuttingBoardCombiningRecipe(id, inputs, output);
+            return new CuttingBoardCombiningRecipe(inputs, output);
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, CuttingBoardCombiningRecipe recipe)
         {
-            buffer.writeInt(recipe.inputs.length);
+            buffer.writeInt(recipe.inputs.size());
             for(Ingredient ingredient : recipe.inputs)
             {
                 ingredient.toNetwork(buffer);
@@ -176,7 +160,7 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
 
     public static class Builder implements RecipeBuilder
     {
-        private final List<Ingredient> inputs = new ArrayList<>();
+        private final NonNullList<Ingredient> inputs = NonNullList.create();
         private final ItemStack output;
 
         public Builder(ItemStack output)
@@ -191,7 +175,7 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
         }
 
         @Override
-        public RecipeBuilder unlockedBy(String name, CriterionTriggerInstance trigger)
+        public RecipeBuilder unlockedBy(String name, Criterion<?> criterion)
         {
             throw new UnsupportedOperationException("Cutting Board combining recipes don't support unlocking");
         }
@@ -209,13 +193,13 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
         }
 
         @Override
-        public void save(Consumer<FinishedRecipe> consumer, ResourceLocation id)
+        public void save(RecipeOutput output, ResourceLocation id)
         {
-            this.validate(id);
-            consumer.accept(new CuttingBoardCombiningRecipe.Result(id, this.inputs.toArray(Ingredient[]::new), this.output));
+            this.validate();
+            output.accept(id, new CuttingBoardCombiningRecipe(this.inputs, this.output), null);
         }
 
-        private void validate(ResourceLocation id)
+        private void validate()
         {
             if(this.inputs.size() < 2)
             {
@@ -225,54 +209,6 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
             {
                 throw new IllegalStateException("Cutting Board combining recipe only supports up to " + MAX_INGREDIENTS + " input ingredients");
             }
-        }
-    }
-
-    public static class Result implements FinishedRecipe
-    {
-        private final ResourceLocation id;
-        private final Ingredient[] inputs;
-        private final ItemStack output;
-
-        public Result(ResourceLocation id, Ingredient[] inputs, ItemStack output)
-        {
-            this.id = id;
-            this.inputs = inputs;
-            this.output = output;
-        }
-
-        @Override
-        public ResourceLocation getId()
-        {
-            return this.id;
-        }
-
-        @Override
-        public RecipeSerializer<?> getType()
-        {
-            return ModRecipeSerializers.CUTTING_BOARD_COMBINING_RECIPE.get();
-        }
-
-        @Override
-        public void serializeRecipeData(JsonObject object)
-        {
-            CuttingBoardCombiningRecipe.Serializer.toJson(this, object);
-        }
-
-        @Nullable
-        @Override
-        public JsonObject serializeAdvancement()
-        {
-            // Not supported
-            return null;
-        }
-
-        @Nullable
-        @Override
-        public ResourceLocation getAdvancementId()
-        {
-            // Not supported
-            return null;
         }
     }
 }

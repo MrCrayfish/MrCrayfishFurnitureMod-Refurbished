@@ -1,10 +1,13 @@
 package com.mrcrayfish.furniture.refurbished.block;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
@@ -24,6 +27,12 @@ import java.util.List;
  */
 public class HedgeBlock extends CrossCollisionBlock implements BlockTagSupplier
 {
+    private static final MapCodec<HedgeBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
+        return builder.group(LeafType.CODEC.fieldOf("leaf_type").forGetter(block -> {
+            return block.type;
+        }), propertiesCodec()).apply(builder, HedgeBlock::new);
+    });
+
     private final LeafType type;
 
     public HedgeBlock(LeafType type, Properties properties)
@@ -36,6 +45,12 @@ public class HedgeBlock extends CrossCollisionBlock implements BlockTagSupplier
     public LeafType getLeafType()
     {
         return this.type;
+    }
+
+    @Override
+    protected MapCodec<HedgeBlock> codec()
+    {
+        return CODEC;
     }
 
     @Override

@@ -23,6 +23,7 @@ import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
@@ -31,6 +32,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish
@@ -42,7 +44,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
     private final ContainerLevelAccess access;
     private final ContainerData data;
     private final DataSlot selectedRecipe;
-    private final List<WorkbenchContructingRecipe> recipes;
+    private final List<RecipeHolder<WorkbenchContructingRecipe>> recipes;
     private final Map<ResourceLocation, Boolean> recipeToCraftable = new HashMap<>();
     private final Slot resultSlot;
     private Map<Integer, Integer> counts = new Int2IntOpenHashMap();
@@ -86,16 +88,18 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
     /**
      * @return An immutable list of all workbench crafting recipes
      */
-    public List<WorkbenchContructingRecipe> getRecipes()
+    public List<RecipeHolder<WorkbenchContructingRecipe>> getRecipes()
     {
         return this.recipes;
     }
 
-    private List<WorkbenchContructingRecipe> setupRecipes(Level level)
+    private List<RecipeHolder<WorkbenchContructingRecipe>> setupRecipes(Level level)
     {
-        List<WorkbenchContructingRecipe> recipes = new ArrayList<>(level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.WORKBENCH_CONSTRUCTING.get()));
-        recipes.sort(Comparator.comparing(WorkbenchContructingRecipe::getResultId));
-        return recipes;
+        return level.getRecipeManager()
+            .getAllRecipesFor(ModRecipeTypes.WORKBENCH_CONSTRUCTING.get())
+            .stream()
+            .sorted(Comparator.comparing(holder -> holder.value().getResultId()))
+            .collect(Collectors.toList());
     }
 
     private void updateResultSlot()
@@ -104,11 +108,11 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
         {
             if(this.isPowered() && this.selectedRecipe.get() != -1)
             {
-                WorkbenchContructingRecipe recipe = this.recipes.get(this.selectedRecipe.get());
+                RecipeHolder<WorkbenchContructingRecipe> recipe = this.recipes.get(this.selectedRecipe.get());
                 if(this.workbench.canCraft(recipe))
                 {
                     ItemStack result = this.getSlot(WorkbenchBlockEntity.RESULT_SLOT).getItem();
-                    ItemStack output = recipe.getResultItem(this.level.registryAccess());
+                    ItemStack output = recipe.value().getResultItem(this.level.registryAccess());
                     if(!ItemStack.matches(result, output))
                     {
                         this.resultSlot.set(output.copy());
@@ -215,7 +219,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
     }
 
     @Nullable
-    public WorkbenchContructingRecipe getSelectedRecipe()
+    public RecipeHolder<WorkbenchContructingRecipe> getSelectedRecipe()
     {
         int index = this.selectedRecipe.get();
         return index != -1 ? this.recipes.get(index) : null;
@@ -236,11 +240,11 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
         }
     }
 
-    public boolean canCraft(WorkbenchContructingRecipe recipe)
+    public boolean canCraft(RecipeHolder<WorkbenchContructingRecipe> recipe)
     {
-        return this.isPowered() && this.recipeToCraftable.computeIfAbsent(recipe.getId(), id -> {
+        return this.isPowered() && this.recipeToCraftable.computeIfAbsent(recipe.id(), id -> {
             Map<Integer, Integer> found = new HashMap<>();
-            for(StackedIngredient material : recipe.getMaterials()) {
+            for(StackedIngredient material : recipe.value().getMaterials()) {
                 if(!this.hasMaterials(material, found)) {
                     return false;
                 }
@@ -301,7 +305,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
 
     private void onCraft()
     {
-        WorkbenchContructingRecipe recipe = this.getSelectedRecipe();
+        RecipeHolder<WorkbenchContructingRecipe> recipe = this.getSelectedRecipe();
         if(recipe != null && this.workbench.canCraft(recipe))
         {
             this.workbench.performCraft(recipe);

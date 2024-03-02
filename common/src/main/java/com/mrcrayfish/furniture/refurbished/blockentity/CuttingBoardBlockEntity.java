@@ -25,6 +25,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleItemRecipe;
@@ -319,7 +320,7 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
      */
     private Optional<? extends SingleItemRecipe> getSlicingRecipe(ItemStack stack)
     {
-        return this.slicingRecipeCache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level));
+        return this.slicingRecipeCache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level)).map(RecipeHolder::value);
     }
 
     /**
@@ -328,7 +329,7 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
      */
     private Optional<CuttingBoardCombiningRecipe> getCombiningRecipe()
     {
-        return this.combiningRecipeCache.getRecipeFor(this, Objects.requireNonNull(this.level));
+        return this.combiningRecipeCache.getRecipeFor(this, Objects.requireNonNull(this.level)).map(RecipeHolder::value);
     }
 
     /**
@@ -349,7 +350,7 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
         Container container = new SimpleContainer(placeIndex + 1);
         IntStream.range(0, placeIndex + 1).forEach(index -> container.setItem(index, this.getItem(index)));
         container.setItem(container.getContainerSize() - 1, stack);
-        return this.combiningRecipeCache.getRecipeFor(container, Objects.requireNonNull(this.level));
+        return this.combiningRecipeCache.getRecipeFor(container, Objects.requireNonNull(this.level)).map(RecipeHolder::value);
     }
 
     /**

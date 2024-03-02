@@ -5,6 +5,7 @@ import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchContructingRecipe;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.DataSlot;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 /**
  * Author: MrCrayfish
@@ -20,10 +21,10 @@ public class ClientWorkbench implements IWorkbench
     }
 
     @Override
-    public void performCraft(WorkbenchContructingRecipe recipe) {}
+    public void performCraft(RecipeHolder<WorkbenchContructingRecipe> recipe) {}
 
     @Override
-    public boolean canCraft(WorkbenchContructingRecipe recipe)
+    public boolean canCraft(RecipeHolder<WorkbenchContructingRecipe> recipe)
     {
         return true;
     }

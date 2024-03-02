@@ -2,6 +2,8 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.blockentity.BasicLootBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.ICookingBlock;
 import com.mrcrayfish.furniture.refurbished.blockentity.RecycleBinBlockEntity;
@@ -49,6 +51,12 @@ import java.util.stream.Collectors;
  */
 public class StoveBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier, WorldlyContainerHolder, DropWithName
 {
+    private static final MapCodec<StoveBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
+        return builder.group(MetalType.CODEC.fieldOf("metal_type").forGetter(block -> {
+            return block.type;
+        }), propertiesCodec()).apply(builder, StoveBlock::new);
+    });
+
     private final MetalType type;
 
     public StoveBlock(MetalType type, Properties properties)
@@ -61,6 +69,12 @@ public class StoveBlock extends FurnitureHorizontalBlock implements EntityBlock,
     public MetalType getMetalType()
     {
         return this.type;
+    }
+
+    @Override
+    protected MapCodec<StoveBlock> codec()
+    {
+        return CODEC;
     }
 
     @Override

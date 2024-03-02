@@ -27,6 +27,7 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ChestBlock;
@@ -196,9 +197,9 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     }
 
     @Override
-    public void performCraft(WorkbenchContructingRecipe recipe)
+    public void performCraft(RecipeHolder<WorkbenchContructingRecipe> recipe)
     {
-        Map<Item, Integer> items = this.getConsumedMaterialItems(recipe);
+        Map<Item, Integer> items = this.getConsumedMaterialItems(recipe.value());
         if(items != null)
         {
             this.removeItems(items);
@@ -206,9 +207,9 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     }
 
     @Override
-    public boolean canCraft(WorkbenchContructingRecipe recipe)
+    public boolean canCraft(RecipeHolder<WorkbenchContructingRecipe> recipe)
     {
-        return this.isPowered() && this.getConsumedMaterialItems(recipe) != null;
+        return this.isPowered() && this.getConsumedMaterialItems(recipe.value()) != null;
     }
 
     @Override

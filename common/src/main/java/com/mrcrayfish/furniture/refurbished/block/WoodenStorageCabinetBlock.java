@@ -2,6 +2,8 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.tags.BlockTags;
@@ -23,6 +25,12 @@ import java.util.stream.Collectors;
  */
 public class WoodenStorageCabinetBlock extends StorageCabinetBlock implements BlockTagSupplier
 {
+    private static final MapCodec<WoodenStorageCabinetBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
+        return builder.group(WoodType.CODEC.fieldOf("wood_type").forGetter(block -> {
+            return block.type;
+        }), propertiesCodec()).apply(builder, WoodenStorageCabinetBlock::new);
+    });
+
     private final WoodType type;
 
     public WoodenStorageCabinetBlock(WoodType type, Properties properties)
@@ -34,6 +42,12 @@ public class WoodenStorageCabinetBlock extends StorageCabinetBlock implements Bl
     public WoodType getWoodType()
     {
         return this.type;
+    }
+
+    @Override
+    protected MapCodec<WoodenStorageCabinetBlock> codec()
+    {
+        return CODEC;
     }
 
     @Override

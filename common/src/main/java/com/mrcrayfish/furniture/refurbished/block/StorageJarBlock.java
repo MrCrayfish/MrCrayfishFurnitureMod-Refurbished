@@ -2,6 +2,8 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.blockentity.StorageJarBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
@@ -38,6 +40,12 @@ import java.util.stream.Collectors;
  */
 public class StorageJarBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
 {
+    private static final MapCodec<StorageJarBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
+        return builder.group(WoodType.CODEC.fieldOf("wood_type").forGetter(block -> {
+            return block.type;
+        }), propertiesCodec()).apply(builder, StorageJarBlock::new);
+    });
+
     private final WoodType type;
 
     public StorageJarBlock(WoodType type, Properties properties)
@@ -50,6 +58,12 @@ public class StorageJarBlock extends FurnitureHorizontalBlock implements EntityB
     public WoodType getWoodType()
     {
         return this.type;
+    }
+
+    @Override
+    protected MapCodec<StorageJarBlock> codec()
+    {
+        return CODEC;
     }
 
     @Override

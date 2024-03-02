@@ -45,12 +45,12 @@ public class ClientPlayHandler
     {
         Minecraft mc = Minecraft.getInstance();
         Level level = Objects.requireNonNull(mc.level);
-        if(level.getBlockEntity(message.getPos()) instanceof IFluidContainerBlock block)
+        if(level.getBlockEntity(message.pos()) instanceof IFluidContainerBlock block)
         {
             FluidContainer container = block.getFluidContainer();
             if(container != null)
             {
-                container.handleSync(level, message.getFluid(), message.getAmount());
+                container.handleSync(level, message.fluid(), message.amount());
             }
         }
     }
@@ -59,19 +59,19 @@ public class ClientPlayHandler
     {
         Minecraft mc = Minecraft.getInstance();
         Level level = Objects.requireNonNull(mc.level);
-        if(level.getBlockEntity(message.getPos()) instanceof GrillBlockEntity grill)
+        if(level.getBlockEntity(message.pos()) instanceof GrillBlockEntity grill)
         {
-            grill.playFlipAnimation(message.getIndex());
+            grill.playFlipAnimation(message.index());
         }
-        else if(level.getBlockEntity(message.getPos()) instanceof FryingPanBlockEntity fryingPan)
+        else if(level.getBlockEntity(message.pos()) instanceof FryingPanBlockEntity fryingPan)
         {
-            fryingPan.playFlipAnimation(message.getIndex());
+            fryingPan.playFlipAnimation(message.index());
         }
     }
 
     public static void handleMessageUpdateMailboxes(MessageUpdateMailboxes message)
     {
-        PostBoxScreen.updateMailboxes(message.getMailboxes());
+        PostBoxScreen.updateMailboxes(message.mailboxes());
     }
 
     public static void handleMessageClearMessage(MessageClearMessage message)
@@ -89,23 +89,23 @@ public class ClientPlayHandler
         {
             Minecraft mc = Minecraft.getInstance();
             Component title = Utils.translation("gui", "doorbell_rang");
-            Component description = Component.literal(message.getName());
+            Component description = Component.literal(message.name());
             mc.getToasts().addToast(new ItemToast(title, description, new ItemStack(Items.BELL)));
         }
     }
 
     public static void handleMessageSyncLink(MessageSyncLink message)
     {
-        LinkHandler.get().setLinkingNode(message.getPos());
+        LinkHandler.get().setLinkingNode(message.pos());
     }
 
     public static void handleMessageTelevisionChannel(MessageTelevisionChannel message)
     {
         Minecraft mc = Minecraft.getInstance();
         Level level = Objects.requireNonNull(mc.level);
-        if(level.getBlockEntity(message.getPos()) instanceof TelevisionBlockEntity television)
+        if(level.getBlockEntity(message.pos()) instanceof TelevisionBlockEntity television)
         {
-            television.setChannelFromId(message.getChannel());
+            television.setChannelFromId(message.channel());
         }
     }
 
@@ -115,7 +115,7 @@ public class ClientPlayHandler
         if(mc.player.containerMenu instanceof ComputerMenu menu)
         {
             ClientComputer computer = ((ClientComputer) menu.getComputer());
-            computer.launchProgram(message.getId());
+            computer.launchProgram(message.id());
         }
     }
 
@@ -139,7 +139,7 @@ public class ClientPlayHandler
         PaddleBallGraphics game = getPaddleGame();
         if(game != null)
         {
-            game.updatePaddles(message.getPlayerPos(), message.getOpponentPos());
+            game.updatePaddles(message.playerPos(), message.opponentPos());
         }
     }
 
@@ -148,7 +148,7 @@ public class ClientPlayHandler
         PaddleBallGraphics game = getPaddleGame();
         if(game != null)
         {
-            game.updateBall(message.getBallX(), message.getBallY(), message.getVelocityX(), message.getVelocityY());
+            game.updateBall(message.ballX(), message.ballY(), message.velocityX(), message.velocityY());
         }
     }
 
@@ -157,7 +157,7 @@ public class ClientPlayHandler
         PaddleBallGraphics game = getPaddleGame();
         if(game != null)
         {
-            game.handleEvent(message.getEvent());
+            game.handleEvent(message.data());
         }
     }
 
@@ -166,36 +166,36 @@ public class ClientPlayHandler
         PaddleBallGraphics game = getPaddleGame();
         if(game != null)
         {
-            game.handleOpponentName(message.getName());
+            game.handleOpponentName(message.name());
         }
     }
 
     public static void handleMessageToolAnimation(MessageToolAnimation message)
     {
-        switch(message.getTool())
+        switch(message.tool())
         {
-            case SPATULA -> ToolAnimationRenderer.get().playSpatulaAnimation(message.getPos(), message.getDirection());
-            case KNIFE -> ToolAnimationRenderer.get().playKnifeAnimation(message.getPos(), message.getDirection());
+            case SPATULA -> ToolAnimationRenderer.get().playSpatulaAnimation(message.pos(), message.direction());
+            case KNIFE -> ToolAnimationRenderer.get().playKnifeAnimation(message.pos(), message.direction());
         }
     }
 
     public static void handleMessageFlushItem(MessageFlushItem message)
     {
         Minecraft mc = Minecraft.getInstance();
-        if(mc.level != null && mc.level.getEntity(message.getEntityId()) instanceof ItemEntity entity)
+        if(mc.level != null && mc.level.getEntity(message.entityId()) instanceof ItemEntity entity)
         {
             EntityRenderDispatcher dispatcher = mc.getEntityRenderDispatcher();
             RenderBuffers buffers = mc.renderBuffers();
-            Vec3 pos = Vec3.atCenterOf(message.getPos());
+            Vec3 pos = Vec3.atCenterOf(message.pos());
             mc.particleEngine.add(new ItemFlushParticle(dispatcher, buffers, mc.level, entity, pos));
-            mc.level.removeEntity(message.getEntityId(), Entity.RemovalReason.DISCARDED);
+            mc.level.removeEntity(message.entityId(), Entity.RemovalReason.DISCARDED);
         }
     }
 
     public static void handleMessageWaterTapAnimation(MessageWaterTapAnimation message)
     {
         Minecraft mc = Minecraft.getInstance();
-        if(mc.level != null && mc.level.getBlockEntity(message.getPos()) instanceof IWaterTap tap)
+        if(mc.level != null && mc.level.getBlockEntity(message.pos()) instanceof IWaterTap tap)
         {
             tap.playWaterAnimation();
         }
@@ -206,12 +206,12 @@ public class ClientPlayHandler
         Minecraft mc = Minecraft.getInstance();
         if(mc.player != null && mc.player.containerMenu instanceof WorkbenchMenu menu)
         {
-            menu.updateItemCounts(message.getCounts());
+            menu.updateItemCounts(message.counts());
         }
     }
 
     public static void handleMessageNameMailbox(MessageNameMailbox message)
     {
-        FurnitureScreens.openNameableScreen(message.getPos(), Utils.translation("gui", "set_mailbox_name"), Mailbox.MAX_NAME_LENGTH);
+        FurnitureScreens.openNameableScreen(message.pos(), Utils.translation("gui", "set_mailbox_name"), Mailbox.MAX_NAME_LENGTH);
     }
 }

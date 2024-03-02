@@ -1,7 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.network.message;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.mrcrayfish.furniture.refurbished.network.play.ClientPlayHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -12,21 +11,9 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class MessageComputerState extends PlayMessage<MessageComputerState>
+public record MessageComputerState(BlockPos pos, @Nullable ResourceLocation id)
 {
-    private BlockPos pos;
-    private @Nullable ResourceLocation id;
-
-    public MessageComputerState() {}
-
-    public MessageComputerState(BlockPos pos, @Nullable ResourceLocation id)
-    {
-        this.pos = pos;
-        this.id = id;
-    }
-
-    @Override
-    public void encode(MessageComputerState message, FriendlyByteBuf buffer)
+    public static void encode(MessageComputerState message, FriendlyByteBuf buffer)
     {
         buffer.writeBlockPos(message.pos);
         buffer.writeBoolean(message.id != null);
@@ -36,29 +23,16 @@ public class MessageComputerState extends PlayMessage<MessageComputerState>
         }
     }
 
-    @Override
-    public MessageComputerState decode(FriendlyByteBuf buffer)
+    public static MessageComputerState decode(FriendlyByteBuf buffer)
     {
         BlockPos pos = buffer.readBlockPos();
         ResourceLocation id = buffer.readBoolean() ? buffer.readResourceLocation() : null;
         return new MessageComputerState(pos, id);
     }
 
-    @Override
-    public void handle(MessageComputerState message, MessageContext context)
+    public static void handle(MessageComputerState message, MessageContext context)
     {
         context.execute(() -> ClientPlayHandler.handleMessageComputerState(message));
         context.setHandled(true);
-    }
-
-    public BlockPos getPos()
-    {
-        return this.pos;
-    }
-
-    @Nullable
-    public ResourceLocation getId()
-    {
-        return this.id;
     }
 }

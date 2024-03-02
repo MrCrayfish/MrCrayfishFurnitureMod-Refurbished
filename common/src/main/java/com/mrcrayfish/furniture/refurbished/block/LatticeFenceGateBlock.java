@@ -1,5 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.block;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -14,17 +16,29 @@ import java.util.List;
  */
 public class LatticeFenceGateBlock extends FenceGateBlock implements BlockTagSupplier
 {
+    private static final MapCodec<FenceGateBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
+        return builder.group(WoodType.CODEC.fieldOf("wood_type").forGetter(block -> {
+            return ((LatticeFenceGateBlock) block).type;
+        }), propertiesCodec()).apply(builder, LatticeFenceGateBlock::new);
+    });
+
     private final WoodType type;
 
     public LatticeFenceGateBlock(WoodType type, Properties properties)
     {
-        super(properties, type);
+        super(type, properties);
         this.type = type;
     }
 
     public WoodType getWoodType()
     {
         return this.type;
+    }
+
+    @Override
+    public MapCodec<FenceGateBlock> codec()
+    {
+        return CODEC;
     }
 
     @Override
