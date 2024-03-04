@@ -19,7 +19,7 @@ public interface IBlockEntityHelper
 
     StoveBlockEntity createStoveBlockEntity(BlockPos pos, BlockState state);
 
-    <T extends BaseContainerBlockEntity & WorldlyContainer> void createForgeSidedWrapper(T container, @Nullable Direction side);
+    default <T extends BaseContainerBlockEntity & WorldlyContainer> void createForgeSidedWrapper(T container, @Nullable Direction side) {}
 
-    void reviveForgeCapabilities(BlockEntity blockEntity);
+    default void reviveForgeCapabilities(BlockEntity blockEntity) {}
 }

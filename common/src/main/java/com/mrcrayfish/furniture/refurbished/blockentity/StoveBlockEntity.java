@@ -347,7 +347,6 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
         this.container = null;
     }
 
-    @Nullable
     public WorldlyContainer getContainer()
     {
         if(this.container == null)

@@ -47,5 +47,10 @@ public interface IPlatformHelper
         {
             return this == FABRIC;
         }
+
+        public boolean isNeoForge()
+        {
+            return this == NEOFORGE;
+        }
     }
 }

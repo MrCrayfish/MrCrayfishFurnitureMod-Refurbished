@@ -28,3 +28,4 @@ rootProject.name = 'MrCrayfishFurnitureMod-Refurbished'
 include("common")
 include("fabric")
 include("forge")
+include("neoforge")
