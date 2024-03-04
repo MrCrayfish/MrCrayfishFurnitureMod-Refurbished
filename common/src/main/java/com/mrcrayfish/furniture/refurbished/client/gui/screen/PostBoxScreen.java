@@ -44,7 +44,8 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
 {
     private static final Component MAILBOXES_LABEL = Utils.translation("gui", "mailboxes");
     private static final ResourceLocation POST_BOX_TEXTURE = Utils.resource("textures/gui/container/post_box.png");
-    private static final ResourceLocation VILLAGER_TEXTURE = new ResourceLocation("textures/gui/container/villager2.png");
+    private static final ResourceLocation SCROLLER_SPRITE = new ResourceLocation("container/villager/scroller");
+    private static final ResourceLocation SCROLLER_DISABLED_SPRITE = new ResourceLocation("container/villager/scroller_disabled");
     private static final List<IMailbox> MAILBOX_CACHE = new ArrayList<>();
     private static final Map<UUID, PlayerInfo> PLAYER_INFO_CACHE = new HashMap<>();
 
@@ -126,7 +127,6 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
     {
         this.sendButton.active = this.selected != null && !this.menu.getContainer().isEmpty();
         this.searchEditBox.setTextColor(this.searchEditBox.getValue().isEmpty() && !this.searchEditBox.isFocused() ? 0x707070 : 0xE0E0E0);
-        this.renderDirtBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTick);
         this.renderTooltip(graphics, mouseX, mouseY);
     }
@@ -181,7 +181,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
         graphics.disableScissor();
 
         // Draw scroll bar
-        graphics.blit(VILLAGER_TEXTURE, this.leftPos + CONTAINER_LEFT + CONTAINER_WIDTH + 1, this.topPos + CONTAINER_TOP + this.getScrollBarOffset(mouseY), this.canScroll() ? 0 : SCROLL_BAR_WIDTH, 199, SCROLL_BAR_WIDTH, SCROLL_BAR_HEIGHT, 512, 256);
+        graphics.blitSprite(this.canScroll() ? SCROLLER_SPRITE : SCROLLER_DISABLED_SPRITE, this.leftPos + CONTAINER_LEFT + CONTAINER_WIDTH + 1, this.topPos + CONTAINER_TOP + this.getScrollBarOffset(mouseY), SCROLL_BAR_WIDTH, SCROLL_BAR_HEIGHT);
 
         // Draw icons in item slots
         for(int j = 0; j < 3; j++)

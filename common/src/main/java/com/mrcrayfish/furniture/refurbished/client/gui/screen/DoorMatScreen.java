@@ -90,7 +90,6 @@ public class DoorMatScreen extends AbstractContainerScreen<DoorMatMenu>
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
     {
-        this.renderDirtBackground(graphics);
         graphics.blit(TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
         for(int y = 0; y < this.image.getHeight(); y++)
         {

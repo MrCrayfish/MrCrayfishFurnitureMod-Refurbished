@@ -17,10 +17,13 @@ import com.mrcrayfish.furniture.refurbished.core.ModCreativeTabs;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.core.ModTags;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
@@ -54,6 +57,9 @@ import java.util.function.Consumer;
  */
 public class CreativeFilters
 {
+    private static final ResourceLocation SELECTED_FILTER_TAB = Utils.resource("filter_tab_selected");
+    private static final ResourceLocation UNSELECTED_FILTER_TAB = Utils.resource("filter_tab_unselected");
+
     private static CreativeFilters instance;
 
     public static CreativeFilters get()
@@ -116,6 +122,7 @@ public class CreativeFilters
                     this.onSwitchCreativeTab(tab, creativeScreen);
                     this.lastTab = tab;
                 }
+                this.drawFilterTabTooltips(graphics, mouseX, mouseY);
             }
         });
 
@@ -254,6 +261,20 @@ public class CreativeFilters
         return false;
     }
 
+    private void drawFilterTabTooltips(GuiGraphics graphics, int mouseX, int mouseY)
+    {
+        for(FilterCategory category : this.categories)
+        {
+            FilterTab tab = category.filterTab;
+            if(tab.visible && tab.isHovered())
+            {
+                Minecraft mc = Minecraft.getInstance();
+                graphics.renderTooltip(mc.font, tab.cachedTooltip.toCharSequence(mc), mouseX, mouseY);
+                return;
+            }
+        }
+    }
+
     public static class FilterCategory
     {
         private final TagKey<Item> tag;
@@ -376,6 +397,7 @@ public class CreativeFilters
     private static class FilterTab extends Button
     {
         private final FilterCategory category;
+        private final Tooltip cachedTooltip;
 
         protected FilterTab(int x, int y, FilterCategory category, OnPress onPress)
         {
@@ -385,45 +407,14 @@ public class CreativeFilters
             ResourceLocation tagId = category.getTag().location();
             String tooltipTitle = String.format("filterCategory.%s.%s", tagId.getNamespace(), tagId.getPath().replace("/", "."));
             String tooltipDesc = tooltipTitle + ".desc";
-            this.setTooltip(ScreenHelper.createMultilineTooltip(List.of(Component.translatable(tooltipTitle), Component.translatable(tooltipDesc).withStyle(ChatFormatting.GRAY))));
+            this.cachedTooltip = ScreenHelper.createMultilineTooltip(List.of(Component.translatable(tooltipTitle), Component.translatable(tooltipDesc).withStyle(ChatFormatting.GRAY)));
         }
 
         @Override
         public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
         {
-            int textureX = 26;
-            int textureY = this.category.isEnabled() ? 32 : 0;
-            int textureWidth = this.category.isEnabled() ? 32 : 28;
-            int textureHeight = 26;
-            RenderSystem.setShaderTexture(0, VanillaTextures.CREATIVE_TABS);
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
-            this.drawRotatedTexture(graphics.pose().last().pose(), this.getX(), this.getY(), textureX, textureY, textureWidth, textureHeight);
+            graphics.blitSprite(this.category.isEnabled() ? SELECTED_FILTER_TAB : UNSELECTED_FILTER_TAB, this.getX(), this.getY(), 32, 26);
             graphics.renderItem(this.category.getIcon(), this.getX() + 8, this.getY() + 5);
         }
-
-        /**
-         * Draws a texture that is rotated 90 degrees counter-clockwise.
-         */
-        private void drawRotatedTexture(Matrix4f matrix4f, int x, int y, int textureX, int textureY, int textureWidth, int textureHeight)
-        {
-            float scaleX = (float) 1 / 256;
-            float scaleY = (float) 1 / 256;
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            BufferBuilder builder = Tesselator.getInstance().getBuilder();
-            builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-            builder.vertex(matrix4f, x, y + textureHeight, 0).uv((float) (textureX + textureHeight) * scaleX, (float) textureY * scaleY).endVertex();
-            builder.vertex(matrix4f, x + textureWidth, y + textureHeight, 0).uv((float) (textureX + textureHeight) * scaleX, ((float) textureY + textureWidth) * scaleY).endVertex();
-            builder.vertex(matrix4f, x + textureWidth, y, 0).uv((float) textureX * scaleX, (float) (textureY + textureWidth) * scaleY).endVertex();
-            builder.vertex(matrix4f, x, y, 0).uv((float) textureX * scaleX, (float) textureY * scaleY).endVertex();
-            BufferUploader.drawWithShader(builder.end());
-        }
-
-        // TODO check
-        /*@Override
-        protected ClientTooltipPositioner createTooltipPositioner()
-        {
-            return DefaultTooltipPositioner.INSTANCE;
-        }*/
     }
 }

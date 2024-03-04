@@ -40,7 +40,6 @@ public class FreezerScreen extends ElectricityContainerScreen<FreezerMenu>
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
         this.slider.setEnabled(this.menu.isEnabled());
-        this.renderDirtBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTick);
         this.renderTooltip(graphics, mouseX, mouseY);
     }

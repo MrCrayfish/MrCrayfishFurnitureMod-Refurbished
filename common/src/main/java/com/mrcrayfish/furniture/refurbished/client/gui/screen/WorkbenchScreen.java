@@ -137,7 +137,6 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
-        this.renderDirtBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTick);
         this.renderTooltip(graphics, mouseX, mouseY);
         if(this.menu.isPowered() && this.hoveredIndex != -1)
