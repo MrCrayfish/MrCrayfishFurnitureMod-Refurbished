@@ -5,17 +5,23 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeSerializers;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.data.recipes.RecipeBuilder;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -145,6 +151,59 @@ public class RecycleBinRecyclingRecipe implements Recipe<Container>
             for(ItemStack stack : recipe.output)
             {
                 buffer.writeItem(stack);
+            }
+        }
+    }
+
+    public static class Builder implements RecipeBuilder
+    {
+        private final Item input;
+        private final NonNullList<ItemStack> outputs = NonNullList.create();
+
+        public Builder(Item input)
+        {
+            this.input = input;
+        }
+
+        public void addOutput(ItemStack stack)
+        {
+            this.outputs.add(stack);
+        }
+
+        @Override
+        public RecipeBuilder unlockedBy(String name, Criterion<?> trigger)
+        {
+            throw new UnsupportedOperationException("Recycling Bin recipes don't support unlocking");
+        }
+
+        @Override
+        public RecipeBuilder group(@Nullable String group)
+        {
+            throw new UnsupportedOperationException("Recycling Bin recipes don't support setting the group");
+        }
+
+        @Override
+        public Item getResult()
+        {
+            return this.input;
+        }
+
+        @Override
+        public void save(RecipeOutput output, ResourceLocation id)
+        {
+            this.validate(id);
+            output.accept(id, new RecycleBinRecyclingRecipe(new ItemStack(this.input), this.outputs), null);
+        }
+
+        private void validate(ResourceLocation id)
+        {
+            if(this.outputs.isEmpty())
+            {
+                throw new IllegalStateException("Cannot have an empty output for recycling bin recipe");
+            }
+            if(this.outputs.size() > MAX_OUTPUT_COUNT)
+            {
+                throw new IllegalStateException("Recycling bin recipe only supports up to " + MAX_OUTPUT_COUNT + " outputs");
             }
         }
     }

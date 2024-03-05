@@ -10,6 +10,7 @@ import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -36,6 +37,7 @@ import net.minecraft.world.level.material.Fluids;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * Author: MrCrayfish
@@ -1507,7 +1509,7 @@ public class CommonRecipeProvider
 
     private void workbenchConstructing(ItemLike result, int count, Material<?> ... materials)
     {
-        String resultName = result.asItem().toString();
+        String resultName = Utils.getItemName(result.asItem());
         this.workbenchConstructing(resultName, result, count, materials);
     }
 
@@ -1523,8 +1525,8 @@ public class CommonRecipeProvider
 
     private <T extends AbstractCookingRecipe> void cooking(String folder, RecipeCategory category, RecipeSerializer<T> serializer, AbstractCookingRecipe.Factory<T> factory, ItemLike input, ItemLike output, int time, float experience)
     {
-        String baseName = input.asItem().toString();
-        String resultName = output.asItem().toString();
+        String baseName = Utils.getItemName(input.asItem());
+        String resultName = Utils.getItemName(output.asItem());
         SimpleCookingRecipeBuilder
                 .generic(Ingredient.of(input), category, output, experience, time, serializer, factory)
                 .unlockedBy("has_" + baseName, this.hasItem.apply(input))
@@ -1533,7 +1535,7 @@ public class CommonRecipeProvider
 
     private <T extends ProcessingRecipe> void processing(ProcessingRecipe.Factory<T> factory, String folder, Ingredient input, ItemLike output, int count, int time)
     {
-        ResourceLocation recipeId = Utils.resource(folder + "/" + output.asItem());
+        ResourceLocation recipeId = Utils.resource(folder + "/" + Utils.getItemName(output.asItem()));
         ProcessingRecipe.builder(factory, input, new ItemStack(output, count), time).save(this.output, recipeId);
     }
 
@@ -1569,15 +1571,15 @@ public class CommonRecipeProvider
 
     private void cuttingBoardSlicing(ItemLike baseItem, ItemLike resultItem, int resultCount)
     {
-        String baseName = baseItem.asItem().toString();
-        String resultName = resultItem.asItem().toString();
+        String baseName = Utils.getItemName(baseItem.asItem());
+        String resultName = Utils.getItemName(resultItem.asItem());
         SingleItemRecipeBuilder builder = new SingleItemRecipeBuilder(RecipeCategory.MISC, CuttingBoardSlicingRecipe::new, Ingredient.of(baseItem), resultItem, resultCount);
         builder.unlockedBy("has_" + baseName, this.hasItem.apply(baseItem)).save(this.output, Utils.resource("slicing/" + resultName + "_from_" + baseName));
     }
 
     private void cuttingBoardCombining(ItemLike combinedItem, int count, Ingredient ... inputs)
     {
-        String baseName = combinedItem.asItem().toString();
+        String baseName = Utils.getItemName(combinedItem.asItem());
         CuttingBoardCombiningRecipe.Builder builder = new CuttingBoardCombiningRecipe.Builder(new ItemStack(combinedItem, count));
         for(int i = inputs.length - 1; i >= 0; i--) // Reverse order since the code visualises the stacked items in the level
         {
@@ -1588,7 +1590,7 @@ public class CommonRecipeProvider
 
     private void sinkFluidTransmuting(Fluid fluid, Ingredient catalyst, ItemStack result)
     {
-        String baseName = result.getItem().toString();
+        String baseName = Utils.getItemName(result.getItem());
         SinkFluidTransmutingRecipe.Builder builder = SinkFluidTransmutingRecipe.Builder.from(fluid, catalyst, result);
         builder.save(this.output, Utils.resource("fluid_transmuting/" + baseName));
     }
@@ -1600,9 +1602,10 @@ public class CommonRecipeProvider
         if(this.recycledItems.contains(baseItem.asItem())) {
             throw new IllegalArgumentException(baseItem.asItem() + " is already recycled");
         }
-        String baseName = baseItem.asItem().toString();
-        //RecycleBinRecyclingRecipe.Builder builder = new RecycleBinRecyclingRecipe.Builder(baseItem.asItem(), outputItems);
-        //builder.save(this.output, Utils.resource("recycling/" + baseName));
-        //.recycledItems.add(baseItem.asItem());
+        String baseName = Utils.getItemName(baseItem.asItem());
+        RecycleBinRecyclingRecipe.Builder builder = new RecycleBinRecyclingRecipe.Builder(baseItem.asItem());
+        Stream.of(outputItems).forEach(builder::addOutput);
+        builder.save(this.output, Utils.resource("recycling/" + baseName));
+        this.recycledItems.add(baseItem.asItem());
     }
 }

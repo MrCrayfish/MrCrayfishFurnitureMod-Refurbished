@@ -201,4 +201,9 @@ public class Utils
         ResourceLocation id = new ResourceLocation(GsonHelper.getAsString(object, key));
         return BuiltInRegistries.FLUID.getOptional(id).orElseThrow(() -> new RuntimeException("The fluid '%s' does not exist".formatted(id)));
     }
+
+    public static String getItemName(Item item)
+    {
+        return BuiltInRegistries.ITEM.getKey(item).getPath();
+    }
 }
