@@ -6,6 +6,8 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'signing'
 
+    version = "${minecraft_version}-${mod_version}"
+
     java.toolchain.languageVersion = JavaLanguageVersion.of(17)
     java.withSourcesJar()
     java.withJavadocJar()
