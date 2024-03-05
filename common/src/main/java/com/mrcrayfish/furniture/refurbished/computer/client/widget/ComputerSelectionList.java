@@ -32,7 +32,7 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
 
     public void setPosition(int x, int y)
     {
-        this.setPosition(x, y);
+        super.setPosition(x, y);
         this.setSize(this.width, this.height);
     }
 
