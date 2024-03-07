@@ -1,0 +1,54 @@
+---
+sidebar_position: 2
+sidebar_label: Your First Script
+---
+
+# Your First Script
+
+<div class="alert alert--warning" role="alert">
+  <span>⚠ This tutorial assumes you know the basics of <strong>ZenScript</strong>. You can learn more at CraftTweakers [documentation](https://docs.blamejared.com/1.20.4/en/getting_started).</span>
+</div>
+
+### Create the Script
+
+Inside of your `scripts` directory, create a new file called `tutorial.zs` or whatever you would like to call the script.
+
+### Adding a New Recipe
+
+For this example, we'll be adding a new recipe to the Workbench. The Workbench is a block primarily used for crafting all furniture in the mod.
+To do this, we are going to target the recipe type `refurbished_furniture:workbench_constructing`.
+
+In your script, it should look something like this.
+
+```js title="scripts/tutorial.zs"
+<recipetype:refurbished_furniture:workbench_constructing>
+```
+
+Now we need to call the `addRecipe` function. This function is how you add new recipes. Keep in mind that this function accepts different arguments depending on the recipe type. For workbench constructing recipes, we need an `id`, `result`, and `materials`.
+
+- `id` - A String that represents the name for this recipe
+- `result` - An IItemStack that represents the item that is constructed
+- `materials` - An array of IItemStack or IIngredient that represents the items needed to construct the `result`
+
+<div class="alert alert--info margin-bottom--md" role="alert">
+  <span>ℹ You can learn about the arguments for each recipe type on their indiviual pages. Go to <strong>Recipe Types</strong> for all recipes.</span>
+</div>
+
+
+Let's say we want to add a recipe to construct <strong>10 Diamonds</strong> from <strong>4 Apples</strong> and <strong>2 Sticks</strong>, our arguments will be:
+- `"ez_diamonds"`
+- `<item:minecraft:diamond> * 10`
+- `[<item:minecraft:apple> * 4, <item:minecraft:stick> * 2]`
+
+When we write the `addRecipe` call in the script, it will look like this.
+
+```js title="scripts/tutorial.zs"
+<recipetype:refurbished_furniture:workbench_constructing>.addRecipe("ez_diamonds", <item:minecraft:diamond> * 10, [<item:minecraft:apple> * 4, <item:minecraft:stick> * 2]);
+```
+
+Finally save your script.
+
+### Testing the Recipe
+
+If you successfully completed the above steps, start up your game if you haven't already and load into a world. If you are already loaded into a world, exit back to the main menu and load the world again to refresh recipes. If you open the Workbench, you should see the `ez_diamonds` recipe we above from above.
+
