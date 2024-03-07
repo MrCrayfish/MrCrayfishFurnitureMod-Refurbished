@@ -31,7 +31,7 @@ public interface IElectricityNode
     /**
      * @return The level where the node is located
      */
-    Level getLevel();
+    Level getNodeLevel();
 
     /**
      * @return The block entity that owns this node
@@ -177,7 +177,7 @@ public interface IElectricityNode
      */
     default void removeAllConnections()
     {
-        Level level = this.getLevel();
+        Level level = this.getNodeLevel();
         Set<Connection> connections = this.getConnections();
         connections.forEach(c -> {
             IElectricityNode node = c.getNodeB(level);
@@ -195,7 +195,7 @@ public interface IElectricityNode
      */
     default void updateConnections()
     {
-        Level level = this.getLevel();
+        Level level = this.getNodeLevel();
         this.getConnections().removeIf(c -> {
             if(!c.isConnected(level)) {
                 IElectricityNode node = c.getNodeB(level);
@@ -291,7 +291,7 @@ public interface IElectricityNode
             int currentDepth = pair.getRight();
             for(Connection connection : node.getConnections())
             {
-                IElectricityNode other = connection.getNodeB(node.getLevel());
+                IElectricityNode other = connection.getNodeB(node.getNodeLevel());
                 if(other == null || searched.contains(other))
                     continue;
 

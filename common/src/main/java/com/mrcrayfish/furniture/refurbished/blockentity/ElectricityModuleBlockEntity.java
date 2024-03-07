@@ -30,6 +30,12 @@ public abstract class ElectricityModuleBlockEntity extends BlockEntity implement
     }
 
     @Override
+    public Level getNodeLevel()
+    {
+        return this.level;
+    }
+
+    @Override
     public BlockPos getPosition()
     {
         return this.worldPosition;

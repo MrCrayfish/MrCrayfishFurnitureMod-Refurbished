@@ -63,10 +63,10 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNod
         // Draw highlight colour
         LinkHandler handler = LinkHandler.get();
         boolean isLookingAt = handler.isTargetNode(node);
-        if((isLookingAt && !handler.isLinking() && !node.isConnectionLimit()) || handler.isLinkingNode(node) || handler.canLinkToNode(node.getLevel(), node) && handler.isTargetNode(node))
+        if((isLookingAt && !handler.isLinking() && !node.isConnectionLimit()) || handler.isLinkingNode(node) || handler.canLinkToNode(node.getNodeLevel(), node) && handler.isTargetNode(node))
         {
             AABB box = node.getInteractBox();
-            int color = handler.getLinkColour(node.getLevel());
+            int color = handler.getLinkColour(node.getNodeLevel());
             LinkHandler.drawColouredBox(poseStack, source, box.inflate(0.03125), color, 0.75F);
         }
 
@@ -84,7 +84,7 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNod
                 poseStack.mulPose(Axis.YP.rotation((float) yaw));
                 poseStack.mulPose(Axis.ZP.rotation((float) pitch));
                 boolean selected = !handler.isLinking() && connection.equals(handler.getTargetLink());
-                int color = selected ? ERROR_COLOUR : connection.isPowered(node.getLevel()) ? CONNECTION_COLOUR : DEFAULT_COLOUR;
+                int color = selected ? ERROR_COLOUR : connection.isPowered(node.getNodeLevel()) ? CONNECTION_COLOUR : DEFAULT_COLOUR;
                 float offset = (float) (Math.sin(Util.getMillis() / 500.0) + 1.0F) / 2.0F * 0.2F;
                 AABB connectionBox = new AABB(0, -0.03125, -0.03125, delta.length(), 0.03125, 0.03125);
                 LinkHandler.drawColouredBox(poseStack, source, connectionBox, color, 0.6F + offset);
@@ -106,7 +106,7 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNod
         LinkHandler handler = LinkHandler.get();
         if(handler.isLinking() && !handler.isLinkingNode(node))
         {
-            if(handler.canLinkToNode(node.getLevel(), node))
+            if(handler.canLinkToNode(node.getNodeLevel(), node))
             {
                 return ExtraModels.ELECTRIC_NODE_SUCCESS.getModel();
             }

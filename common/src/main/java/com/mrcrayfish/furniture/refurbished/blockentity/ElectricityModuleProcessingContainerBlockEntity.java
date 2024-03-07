@@ -40,6 +40,12 @@ public abstract class ElectricityModuleProcessingContainerBlockEntity extends Pr
     }
 
     @Override
+    public Level getNodeLevel()
+    {
+        return this.level;
+    }
+
+    @Override
     public BlockPos getPosition()
     {
         return this.worldPosition;
