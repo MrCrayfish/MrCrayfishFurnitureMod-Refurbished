@@ -19,8 +19,10 @@ build
 .gradle
 
 # other
+.docusaurus
 eclipse
 run
+node_modules
 /neoforge/runs/
 /forge/src/generated/
 /fabric/src/generated/
