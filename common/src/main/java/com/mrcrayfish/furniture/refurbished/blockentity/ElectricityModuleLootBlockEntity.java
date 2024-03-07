@@ -30,6 +30,12 @@ public abstract class ElectricityModuleLootBlockEntity extends BasicLootBlockEnt
     }
 
     @Override
+    public Level getNodeLevel()
+    {
+        return this.level;
+    }
+
+    @Override
     public BlockPos getPosition()
     {
         return this.worldPosition;
