@@ -59,7 +59,7 @@ public class TextureCache
      * registered, it will be converted into a dynamic texture and registered into the texture
      * manager before returning the identifier.
      *
-     * @param supplier a supplier returning a palette image
+     * @param paintable a supplier returning a palette image
      * @return a texture id linking to a registered dynamic texture
      */
     @Nullable
