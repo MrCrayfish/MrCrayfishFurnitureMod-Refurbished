@@ -21,6 +21,8 @@ build
 # other
 eclipse
 run
+.docusaurus
+node_modules
 /forge/src/generated/
 /fabric/src/generated/
 /neoforge/
