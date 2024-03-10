@@ -20,6 +20,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -234,7 +235,15 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
             {
                 if(!simulate)
                 {
-                    stack.shrink(1);
+                    Item remainingItem = stack.getItem().getCraftingRemainingItem();
+                    if(stack.getMaxStackSize() == 1 && remainingItem != null)
+                    {
+                        this.setItem(0, new ItemStack(remainingItem));
+                    }
+                    else
+                    {
+                        stack.shrink(1);
+                    }
                     this.totalEnergy = energy;
                 }
                 return energy;
