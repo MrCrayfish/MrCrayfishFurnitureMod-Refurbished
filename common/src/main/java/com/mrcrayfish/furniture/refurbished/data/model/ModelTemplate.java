@@ -46,8 +46,8 @@ public class ModelTemplate
     public static final ModelTemplate DRAWER_LEFT_OPEN = block("drawer_left_open", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate DRAWER_RIGHT_CLOSED = block("drawer_right_closed", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate DRAWER_RIGHT_OPEN = block("drawer_right_open", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
-    public static final ModelTemplate DRAWER_MIDDLE_CLOSED = block("drawer_right_closed", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
-    public static final ModelTemplate DRAWER_MIDDLE_OPEN = block("drawer_right_open", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate DRAWER_MIDDLE_CLOSED = block("drawer_middle_closed", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
+    public static final ModelTemplate DRAWER_MIDDLE_OPEN = block("drawer_middle_open", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate CRATE_CLOSED = block("crate_closed", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate CRATE_OPEN = block("crate_open", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate KITCHEN_CABINETRY_DEFAULT = block("kitchen_cabinetry_default", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
