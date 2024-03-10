@@ -461,10 +461,10 @@ public class ModCreativeTabs
             output.accept(ModItems.WRENCH.get());
             output.accept(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get());
             output.accept(ModBlocks.ELECTRICITY_GENERATOR_DARK.get());
-            output.accept(ModBlocks.LIGHTSWITCH_LIGHT.get());
-            output.accept(ModBlocks.LIGHTSWITCH_DARK.get());
             output.accept(ModBlocks.CEILING_LIGHT_LIGHT.get());
             output.accept(ModBlocks.CEILING_LIGHT_DARK.get());
+            output.accept(ModBlocks.LIGHTSWITCH_LIGHT.get());
+            output.accept(ModBlocks.LIGHTSWITCH_DARK.get());
             output.accept(ModBlocks.DOORBELL.get());
             output.accept(ModBlocks.TELEVISION.get());
             output.accept(ModItems.TELEVISION_REMOTE.get());

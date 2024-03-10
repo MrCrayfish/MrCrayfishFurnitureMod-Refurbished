@@ -536,6 +536,8 @@ public class CommonItemTagsProvider
         electronics.add(ModBlocks.WORKBENCH.get().asItem());
         electronics.add(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get().asItem());
         electronics.add(ModBlocks.ELECTRICITY_GENERATOR_DARK.get().asItem());
+        electronics.add(ModBlocks.LIGHTSWITCH_LIGHT.get().asItem());
+        electronics.add(ModBlocks.LIGHTSWITCH_DARK.get().asItem());
         electronics.add(ModBlocks.DOORBELL.get().asItem());
         electronics.add(ModBlocks.CEILING_LIGHT_LIGHT.get().asItem());
         electronics.add(ModBlocks.CEILING_LIGHT_DARK.get().asItem());
