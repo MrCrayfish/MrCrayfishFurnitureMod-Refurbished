@@ -104,6 +104,14 @@ public class ServerPlayHandler
                     nodeA.removeConnection(c);
                     nodeB.removeConnection(c);
                 }
+                else if(nodeA != null && nodeB == null)
+                {
+                    nodeA.removeConnection(c);
+                }
+                else if(nodeA == null && nodeB != null)
+                {
+                    nodeB.removeConnection(c);
+                }
             }
         }
     }
