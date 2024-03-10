@@ -177,14 +177,12 @@ public interface IElectricityNode
      */
     default void removeAllConnections()
     {
-        Level level = this.getNodeLevel();
         Set<Connection> connections = this.getConnections();
         connections.forEach(c -> {
-            IElectricityNode node = c.getNodeB(level);
-            if(node != null) {
+            c.getOtherNode(this).ifPresent(node -> {
                 node.removeConnection(c);
                 node.syncNodeData();
-            }
+            });
         });
         connections.clear();
     }

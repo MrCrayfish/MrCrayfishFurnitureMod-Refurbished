@@ -102,6 +102,25 @@ public class Connection
         return Optional.empty();
     }
 
+    /**
+     * Gets the electricity node at the end of the connection
+     *
+     * @param node the electricity node at the start of the connection
+     * @return the other electricity node or empty optional
+     */
+    public Optional<IElectricityNode> getOtherNode(IElectricityNode node)
+    {
+        if(this.a.pos.equals(node.getPosition()))
+        {
+            return Optional.ofNullable(this.b.getElectricNode(node.getNodeLevel()));
+        }
+        else if(this.b.pos.equals(node.getPosition()))
+        {
+            return Optional.ofNullable(this.a.getElectricNode(node.getNodeLevel()));
+        }
+        return Optional.empty();
+    }
+
     @Override
     public boolean equals(Object o)
     {
