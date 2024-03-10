@@ -6,6 +6,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.entity.Seat;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -63,7 +64,7 @@ public class StoolBlock extends FurnitureBlock implements BlockTagSupplier
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
     {
-        if(Seat.sit(player, pos, 0.2, null))
+        if(Seat.sit(player, pos, Utils.pixels(8), null))
         {
             return InteractionResult.CONSUME;
         }

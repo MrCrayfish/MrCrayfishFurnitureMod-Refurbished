@@ -8,6 +8,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.core.ModTags;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.entity.Seat;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -106,7 +107,7 @@ public class ChairBlock extends FurnitureHorizontalBlock implements BlockTagSupp
             level.setBlock(pos, state.setValue(TUCKED, !state.getValue(TUCKED)), UPDATE_ALL);
             return InteractionResult.SUCCESS;
         }
-        if(!state.getValue(TUCKED) && Seat.sit(player, pos, 0.375, state.getValue(DIRECTION).getOpposite()))
+        if(!state.getValue(TUCKED) && Seat.sit(player, pos, Utils.pixels(10), state.getValue(DIRECTION).getOpposite()))
         {
             return InteractionResult.CONSUME;
         }

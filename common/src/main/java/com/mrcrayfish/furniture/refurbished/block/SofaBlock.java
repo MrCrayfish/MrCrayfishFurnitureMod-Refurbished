@@ -6,6 +6,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.entity.Seat;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -131,7 +132,7 @@ public class SofaBlock extends FurnitureHorizontalBlock implements BlockTagSuppl
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
     {
-        if(Seat.sit(player, pos, 0.375, state.getValue(DIRECTION).getOpposite()))
+        if(Seat.sit(player, pos, Utils.pixels(10), state.getValue(DIRECTION).getOpposite()))
         {
             return InteractionResult.CONSUME;
         }

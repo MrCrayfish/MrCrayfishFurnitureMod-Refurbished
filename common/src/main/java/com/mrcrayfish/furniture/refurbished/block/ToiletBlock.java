@@ -7,6 +7,7 @@ import com.mrcrayfish.furniture.refurbished.blockentity.ToiletBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
 import com.mrcrayfish.furniture.refurbished.entity.Seat;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -71,7 +72,7 @@ public class ToiletBlock extends FurnitureHorizontalBlock implements EntityBlock
                 }
             }
             Vec3 hit = result.getLocation().subtract(Vec3.atLowerCornerOf(pos));
-            if(hit.y() <= 0.625 && Seat.sit(player, pos, 0.35, state.getValue(DIRECTION).getOpposite()))
+            if(hit.y() <= 0.625 && Seat.sit(player, pos, Utils.pixels(10), state.getValue(DIRECTION).getOpposite()))
             {
                 return InteractionResult.CONSUME;
             }
