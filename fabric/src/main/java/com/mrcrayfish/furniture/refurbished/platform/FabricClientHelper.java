@@ -107,6 +107,6 @@ public class FabricClientHelper implements IClientHelper
     @Override
     public void renderTooltip(GuiGraphics graphics, Font font, List<ClientTooltipComponent> components, int mouseX, int mouseY, ClientTooltipPositioner position)
     {
-        graphics.renderTooltipInternal(font, components, mouseX, mouseX, position);
+        graphics.renderTooltipInternal(font, components, mouseX, mouseY, position);
     }
 }
