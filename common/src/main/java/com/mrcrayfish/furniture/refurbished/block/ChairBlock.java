@@ -111,7 +111,7 @@ public class ChairBlock extends FurnitureHorizontalBlock implements BlockTagSupp
         {
             return InteractionResult.CONSUME;
         }
-        return InteractionResult.PASS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
