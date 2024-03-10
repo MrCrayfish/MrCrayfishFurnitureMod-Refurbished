@@ -14,6 +14,7 @@ public class CompatibilityTags
     public static class Blocks
     {
         public static final TagKey<Block> FARMERS_DELIGHT_HEAT_SOURCES = tag("farmersdelight", "heat_sources");
+        public static final TagKey<Block> CARRY_ON_BLACKLIST = tag("carryon", "block_blacklist");
 
         private static TagKey<Block> tag(String modId, String name)
         {
