@@ -7,9 +7,11 @@ import com.mrcrayfish.furniture.refurbished.block.CuttingBoardBlock;
 import com.mrcrayfish.furniture.refurbished.blockentity.TelevisionBlockEntity;
 import com.mrcrayfish.furniture.refurbished.client.CustomSheets;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
+import com.mrcrayfish.furniture.refurbished.platform.Services;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -40,10 +42,19 @@ public class TelevisionBlockEntityRenderer implements BlockEntityRenderer<Televi
             Matrix4f matrix = poseStack.last().pose();
             VertexConsumer consumer = channelMaterial.buffer(source, ClientServices.PLATFORM::getTelevisionScreenRenderType);
             float offset = 0.003125F;
-            consumer.vertex(matrix, 0.75F + offset, 0.625F + offset, 0).color(255, 255, 255, 255).uv(0, 0).uv2(0xF000F0).normal(0, 1, 0).endVertex();
-            consumer.vertex(matrix, 0.75F + offset, 0.1875F - offset, 0).color(255, 255, 255, 255).uv(0, 1).uv2(0xF000F0).normal(0, 1, 0).endVertex();
-            consumer.vertex(matrix, 0.25F - offset, 0.1875F - offset, 0).color(255, 255, 255, 255).uv(1, 1).uv2(0xF000F0).normal(0, 1, 0).endVertex();
-            consumer.vertex(matrix, 0.25F - offset, 0.625F + offset, 0).color(255, 255, 255, 255).uv(1, 0).uv2(0xF000F0).normal(0, 1, 0).endVertex();
+
+            // Weird hack needed for Fabric. Why lol?
+            TextureAtlasSprite sprite = channelMaterial.sprite();
+            boolean runningFabric = Services.PLATFORM.getPlatform().isFabric();
+            float minU = runningFabric ? sprite.getU0() : 0;
+            float maxU = runningFabric ? sprite.getU1() : 1;
+            float minV = runningFabric ? sprite.getV0() : 0;
+            float maxV = runningFabric ? sprite.getV1() : 1;
+
+            consumer.vertex(matrix, 0.75F + offset, 0.625F + offset, 0).color(255, 255, 255, 255).uv(minU, minV).uv2(0xF000F0).normal(0, 1, 0).endVertex();
+            consumer.vertex(matrix, 0.75F + offset, 0.1875F - offset, 0).color(255, 255, 255, 255).uv(minU, maxV).uv2(0xF000F0).normal(0, 1, 0).endVertex();
+            consumer.vertex(matrix, 0.25F - offset, 0.1875F - offset, 0).color(255, 255, 255, 255).uv(maxU, maxV).uv2(0xF000F0).normal(0, 1, 0).endVertex();
+            consumer.vertex(matrix, 0.25F - offset, 0.625F + offset, 0).color(255, 255, 255, 255).uv(maxU, minV).uv2(0xF000F0).normal(0, 1, 0).endVertex();
 
             poseStack.popPose();
         }
