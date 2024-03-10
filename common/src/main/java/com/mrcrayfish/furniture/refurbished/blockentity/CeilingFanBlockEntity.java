@@ -181,7 +181,7 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implemen
     @Override
     public boolean canPlayAudio()
     {
-        return this.bladeSpeed > 5.0F;
+        return this.bladeSpeed > 5.0F && !this.isRemoved();
     }
 
     @Override
