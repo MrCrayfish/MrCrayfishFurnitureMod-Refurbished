@@ -40,19 +40,19 @@ public class CommonBlockTagsProvider
         builder.apply(CompatibilityTags.Blocks.FARMERS_DELIGHT_HEAT_SOURCES)
                 .add(ModBlocks.STOVE_LIGHT.get())
                 .add(ModBlocks.STOVE_DARK.get());
-        
-        builder.apply(BlockTags.WOODEN_FENCES)
-                .add(ModBlocks.LATTICE_FENCE_OAK.get())
-                .add(ModBlocks.LATTICE_FENCE_SPRUCE.get())
-                .add(ModBlocks.LATTICE_FENCE_BIRCH.get())
-                .add(ModBlocks.LATTICE_FENCE_JUNGLE.get())
-                .add(ModBlocks.LATTICE_FENCE_ACACIA.get())
-                .add(ModBlocks.LATTICE_FENCE_DARK_OAK.get())
-                .add(ModBlocks.LATTICE_FENCE_MANGROVE.get())
-                .add(ModBlocks.LATTICE_FENCE_CHERRY.get())
-                .add(ModBlocks.LATTICE_FENCE_CRIMSON.get())
-                .add(ModBlocks.LATTICE_FENCE_WARPED.get());
-        
+
+        builder.apply(BlockTags.FENCES)
+            .add(ModBlocks.LATTICE_FENCE_OAK.get())
+            .add(ModBlocks.LATTICE_FENCE_SPRUCE.get())
+            .add(ModBlocks.LATTICE_FENCE_BIRCH.get())
+            .add(ModBlocks.LATTICE_FENCE_JUNGLE.get())
+            .add(ModBlocks.LATTICE_FENCE_ACACIA.get())
+            .add(ModBlocks.LATTICE_FENCE_DARK_OAK.get())
+            .add(ModBlocks.LATTICE_FENCE_MANGROVE.get())
+            .add(ModBlocks.LATTICE_FENCE_CHERRY.get())
+            .add(ModBlocks.LATTICE_FENCE_CRIMSON.get())
+            .add(ModBlocks.LATTICE_FENCE_WARPED.get());
+
         builder.apply(BlockTags.FENCE_GATES)
                 .add(ModBlocks.LATTICE_FENCE_GATE_OAK.get())
                 .add(ModBlocks.LATTICE_FENCE_GATE_SPRUCE.get())
