@@ -47,11 +47,27 @@ public class AudioWorldSound extends AbstractTickableSoundInstance
         this.cancel = true;
     }
 
+    private boolean isOutOfRange()
+    {
+        ILevelAudio audio = this.audioBlockRef.get();
+        if(audio != null)
+        {
+            Minecraft mc = Minecraft.getInstance();
+            if(mc.player != null)
+            {
+                Vec3 pos = audio.getAudioPosition();
+                Vec3 eye = mc.player.getEyePosition();
+                return eye.distanceToSqr(pos) > audio.getAudioRadiusSqr();
+            }
+        }
+        return true;
+    }
+
     @Override
     public void tick()
     {
         ILevelAudio audio = this.audioBlockRef.get();
-        if(audio == null || !audio.canPlayAudio() || this.cancel)
+        if(audio == null || !audio.canPlayAudio() || this.isOutOfRange() || this.cancel)
         {
             this.stop();
             return;
