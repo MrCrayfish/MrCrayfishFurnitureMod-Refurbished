@@ -144,7 +144,7 @@ public class FurnitureMod implements ModInitializer, DataGeneratorEntrypoint
         });
 
         AttackBlockCallback.EVENT.register((player, level, hand, pos, direction) -> {
-            if(player.isCreative() && !player.isCrouching()) {
+            if(!player.isCrouching()) {
                 if(level.getBlockEntity(pos) instanceof StorageJarBlockEntity storageJar && !storageJar.isEmpty()) {
                     if(!level.isClientSide()) {
                         storageJar.popItem(player.getDirection().getOpposite());

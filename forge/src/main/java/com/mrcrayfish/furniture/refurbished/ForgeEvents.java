@@ -51,9 +51,6 @@ public class ForgeEvents
         BlockPos pos = event.getPos();
         Player player = event.getEntity();
 
-        if(!player.isCreative())
-            return;
-
         if(player.isCrouching())
             return;
 
