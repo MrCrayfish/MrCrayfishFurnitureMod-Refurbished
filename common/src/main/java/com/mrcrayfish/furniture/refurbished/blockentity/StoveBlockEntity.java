@@ -467,7 +467,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     {
         this.enabled = !this.enabled;
         this.setChanged();
-        this.syncNodeData();
+        BlockEntityHelper.sendCustomUpdate(this, this.getUpdateTag());
     }
 
     @Override
@@ -475,7 +475,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     {
         this.enabled = enabled;
         this.setChanged();
-        this.syncNodeData();
+        BlockEntityHelper.sendCustomUpdate(this, this.getUpdateTag());
     }
 
     @Override
