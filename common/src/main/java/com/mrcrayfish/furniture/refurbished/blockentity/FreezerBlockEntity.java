@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.block.FreezerBlock;
 import com.mrcrayfish.furniture.refurbished.block.LightswitchBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
@@ -201,6 +202,6 @@ public class FreezerBlockEntity extends ElectricityModuleProcessingContainerBloc
         {
             return this.getCustomName();
         }
-        return this.getBlockState().getBlock().getName();
+        return Components.SMART_DEVICE_FREEZER;
     }
 }
