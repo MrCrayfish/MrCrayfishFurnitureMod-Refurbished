@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import net.minecraft.client.renderer.BiomeColors;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -53,7 +54,7 @@ public class SimpleFluidRenderer
             float u1 = still.getU0() + uScale * (float) box.maxX;
             float v0 = still.getV0() + vScale * (float) box.minZ;
             float v1 = still.getV0() + vScale * (float) box.maxZ;
-            RenderType type = RenderType.translucent();
+            RenderType type = RenderType.translucentMovingBlock(); // Hack to fix fluid not rendering with fabulous graphics
             VertexConsumer consumer = source.getBuffer(type);
             Matrix4f matrix = poseStack.last().pose();
             consumer.vertex(matrix, (float) box.minX, offset, (float) box.minZ).color(red, green, blue, 1).uv(u0, v0).uv2(light).normal(0, 1, 0).endVertex();
