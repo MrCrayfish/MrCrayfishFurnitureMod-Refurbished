@@ -142,7 +142,7 @@ public class WorkbenchContructingRecipe implements Recipe<Container>
         {
             int materialCount = buffer.readInt();
             NonNullList<StackedIngredient> materials = NonNullList.withSize(materialCount, StackedIngredient.EMPTY);
-            IntStream.range(0, materialCount).forEach(value -> materials.set(value, StackedIngredient.fromNetwork(buffer)));
+            IntStream.range(0, materialCount).forEach(i -> materials.set(i, StackedIngredient.fromNetwork(buffer)));
             ItemStack result = buffer.readItem();
             boolean notification = buffer.readBoolean();
             return new WorkbenchContructingRecipe(materials, result, notification);

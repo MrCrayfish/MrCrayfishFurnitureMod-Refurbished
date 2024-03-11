@@ -141,7 +141,7 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
         {
             int inputCount = buffer.readInt();
             NonNullList<Ingredient> inputs = NonNullList.withSize(inputCount, Ingredient.EMPTY);
-            IntStream.range(0, inputCount).forEach(i -> inputs.add(Ingredient.fromNetwork(buffer)));
+            IntStream.range(0, inputCount).forEach(i -> inputs.set(i, Ingredient.fromNetwork(buffer)));
             ItemStack output = buffer.readItem();
             return new CuttingBoardCombiningRecipe(inputs, output);
         }

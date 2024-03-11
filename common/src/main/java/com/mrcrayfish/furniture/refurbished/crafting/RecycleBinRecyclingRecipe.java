@@ -139,7 +139,7 @@ public class RecycleBinRecyclingRecipe implements Recipe<Container>
             ItemStack input = buffer.readItem();
             int outputCount = buffer.readInt();
             NonNullList<ItemStack> outputs = NonNullList.withSize(outputCount, ItemStack.EMPTY);
-            IntStream.range(0, outputCount).forEach(i -> outputs.add(buffer.readItem()));
+            IntStream.range(0, outputCount).forEach(i -> outputs.set(i, buffer.readItem()));
             return new RecycleBinRecyclingRecipe(input, outputs);
         }
 
