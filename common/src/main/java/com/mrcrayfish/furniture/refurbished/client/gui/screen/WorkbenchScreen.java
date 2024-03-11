@@ -10,6 +10,8 @@ import com.mrcrayfish.furniture.refurbished.client.util.VanillaTextures;
 import com.mrcrayfish.furniture.refurbished.core.ModTags;
 import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchContructingRecipe;
 import com.mrcrayfish.furniture.refurbished.inventory.WorkbenchMenu;
+import com.mrcrayfish.furniture.refurbished.network.Network;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageWorkbench;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.ChatFormatting;
@@ -234,7 +236,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
             {
                 if(this.minecraft != null && this.minecraft.gameMode != null)
                 {
-                    this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, this.hoveredIndex);
+                    Network.getPlay().sendToServer(new MessageWorkbench.SelectRecipe(this.hoveredIndex));
                     this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                     return true;
                 }

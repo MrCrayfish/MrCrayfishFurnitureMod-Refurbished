@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.network.message;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.furniture.refurbished.network.play.ClientPlayHandler;
+import com.mrcrayfish.furniture.refurbished.network.play.ServerPlayHandler;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import net.minecraft.network.FriendlyByteBuf;
 
@@ -40,6 +41,25 @@ public final class MessageWorkbench
         public static void handle(ItemCounts message, MessageContext context)
         {
             context.execute(() -> ClientPlayHandler.handleMessageWorkbenchItemCounts(message));
+            context.setHandled(true);
+        }
+    }
+
+    public record SelectRecipe(int index)
+    {
+        public static void encode(SelectRecipe message, FriendlyByteBuf buf)
+        {
+            buf.writeVarInt(message.index);
+        }
+
+        public static SelectRecipe decode(FriendlyByteBuf buf)
+        {
+            return new SelectRecipe(buf.readVarInt());
+        }
+
+        public static void handle(SelectRecipe message, MessageContext context)
+        {
+            context.execute(() -> ServerPlayHandler.handleMessageWorkbenchSelectRecipe(message, context.getPlayer().orElse(null)));
             context.setHandled(true);
         }
     }

@@ -13,18 +13,11 @@ import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.DoorMatMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.IPowerSwitchMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.PostBoxMenu;
+import com.mrcrayfish.furniture.refurbished.inventory.WorkbenchMenu;
 import com.mrcrayfish.furniture.refurbished.item.PackageItem;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
 import com.mrcrayfish.furniture.refurbished.network.Network;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageClearMessage;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageComputerOpenProgram;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageDeleteLink;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageHomeControl;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageSendPackage;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageSetName;
-import com.mrcrayfish.furniture.refurbished.network.message.MessagePaddleBall;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageTogglePower;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageUpdatePainting;
+import com.mrcrayfish.furniture.refurbished.network.message.*;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
@@ -180,6 +173,21 @@ public class ServerPlayHandler
             if(menu.getComputer().getProgram() instanceof HomeControl program)
             {
                 program.updateDevices(message.state());
+            }
+        }
+    }
+
+    public static void handleMessageWorkbenchSelectRecipe(MessageWorkbench.SelectRecipe message, @Nullable Player player)
+    {
+        if(player instanceof ServerPlayer serverPlayer)
+        {
+            serverPlayer.resetLastActionTime();
+            if(player.containerMenu instanceof WorkbenchMenu menu && menu.stillValid(player) && !player.isSpectator())
+            {
+                if(menu.clickMenuButton(player, message.index()))
+                {
+                    menu.broadcastChanges();
+                }
             }
         }
     }
