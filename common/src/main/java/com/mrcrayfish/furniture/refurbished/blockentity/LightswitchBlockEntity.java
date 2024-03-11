@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.block.LightswitchBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import net.minecraft.core.BlockPos;
@@ -92,7 +93,7 @@ public class LightswitchBlockEntity extends ElectricityModuleBlockEntity impleme
         {
             return this.getCustomName();
         }
-        return this.getName();
+        return Components.SMART_DEVICE_LIGHTSWITCH;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.google.common.collect.ImmutableList;
+import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.block.StoveBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
@@ -485,7 +486,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
         {
             return this.getCustomName();
         }
-        return this.getName();
+        return Components.SMART_DEVICE_STOVE;
     }
 
     @Override

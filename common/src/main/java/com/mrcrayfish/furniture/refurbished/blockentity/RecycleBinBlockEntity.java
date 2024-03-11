@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.google.common.collect.ImmutableSet;
+import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
@@ -568,7 +569,7 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
         {
             return this.getCustomName();
         }
-        return this.getName();
+        return Components.SMART_DEVICE_RECYCLE_BIN;
     }
 
     @Override

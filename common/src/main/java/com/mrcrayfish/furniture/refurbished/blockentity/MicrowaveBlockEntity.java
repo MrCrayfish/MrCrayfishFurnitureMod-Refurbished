@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.block.LightswitchBlock;
 import com.mrcrayfish.furniture.refurbished.block.MicrowaveBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
@@ -193,7 +194,7 @@ public class MicrowaveBlockEntity extends ElectricityModuleProcessingContainerBl
         {
             return this.getCustomName();
         }
-        return this.getName();
+        return Components.SMART_DEVICE_MICROWAVE;
     }
 
     @Override
