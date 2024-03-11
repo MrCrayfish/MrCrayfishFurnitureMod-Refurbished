@@ -550,7 +550,7 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
     {
         this.enabled = !this.enabled;
         this.setChanged();
-        this.syncNodeData();
+        BlockEntityHelper.sendCustomUpdate(this, this.getUpdateTag());
     }
 
     @Override
@@ -558,7 +558,7 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
     {
         this.enabled = enabled;
         this.setChanged();
-        this.syncNodeData();
+        BlockEntityHelper.sendCustomUpdate(this, this.getUpdateTag());
     }
 
     @Override
