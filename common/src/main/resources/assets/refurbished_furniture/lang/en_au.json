@@ -18,6 +18,8 @@
     "filterCategory.refurbished_furniture.food.desc": "Food and ingredients for cooking",
     "filterCategory.refurbished_furniture.items": "Items",
     "filterCategory.refurbished_furniture.items.desc": "All items. Spatula, pans, toast, and more",
+    "death.attack.refurbished_furniture.ceiling_fan": "%1$s was sliced to death by a ceiling fan",
+    "death.attack.refurbished_furniture.ceiling_fan.player": "%1$s was sliced to death by a ceiling fan",
     "block.refurbished_furniture.workbench": "Workbench",
     "block.refurbished_furniture.oak_table": "Oak Table",
     "block.refurbished_furniture.spruce_table": "Spruce Table",
