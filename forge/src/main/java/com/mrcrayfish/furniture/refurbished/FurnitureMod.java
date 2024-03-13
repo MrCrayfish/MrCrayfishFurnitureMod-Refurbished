@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished;
 
 import com.mrcrayfish.furniture.refurbished.client.ClientBootstrap;
 import com.mrcrayfish.furniture.refurbished.client.ForgeClientEvents;
+import com.mrcrayfish.furniture.refurbished.data.RegistriesProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureBlockTagsProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureItemTagsProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureLootTableProvider;
@@ -10,10 +11,12 @@ import com.mrcrayfish.furniture.refurbished.data.FurnitureRecipeProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.registries.RegistriesDatapackGenerator;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -23,6 +26,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 @Mod(Constants.MOD_ID)
@@ -70,6 +74,7 @@ public class FurnitureMod
         generator.addProvider(event.includeServer(), new FurnitureItemTagsProvider(output, lookupProvider, blockTagsProvider.contentsGetter(), helper));
         generator.addProvider(event.includeServer(), new FurnitureLootTableProvider(output));
         generator.addProvider(event.includeServer(), new FurnitureRecipeProvider(output));
+        generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(output, lookupProvider, RegistriesProvider.BUILDER, Set.of(Constants.MOD_ID)));
         generator.addProvider(event.includeClient(), new FurnitureModelProvider(output, helper));
     }
 }

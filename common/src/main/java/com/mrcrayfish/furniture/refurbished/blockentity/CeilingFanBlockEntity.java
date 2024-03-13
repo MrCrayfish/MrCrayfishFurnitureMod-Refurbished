@@ -124,7 +124,7 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implemen
             AABB box = this.getDamageBox(direction).move(this.getBlockPos());
             List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, box);
             entities.forEach(entity -> {
-                entity.hurt(level.damageSources().generic(), 0.5F);
+                entity.hurt(Services.BLOCK.ceilingFanDamageSource(level), 0.5F);
                 entity.setLastHurtByMob(entity); // Is this going to be a problem?
             });
         }
