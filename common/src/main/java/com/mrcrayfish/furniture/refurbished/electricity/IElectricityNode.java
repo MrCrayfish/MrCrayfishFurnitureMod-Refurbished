@@ -232,6 +232,7 @@ public interface IElectricityNode
             other.connectTo(this);
             this.onConnectedTo(other);
             this.syncNodeData();
+            this.getBlockEntity().setChanged();
             return true;
         }
         return false;
