@@ -110,7 +110,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} MrCrayfish, Inc. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} MrCrayfish. Documentation licensed under CC BY 4.0. Built with Docusaurus.`,
       },
       prism: {
         theme: prismThemes.github,
