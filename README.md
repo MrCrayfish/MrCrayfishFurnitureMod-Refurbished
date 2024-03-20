@@ -42,7 +42,22 @@ You can also generate the data in the same command
 ```
 ./gradlew :forge:Data :fabric:runDatagen :neoforge:runData  build
 ```
-It is important to note that if you build the mod yourself, you will have an unsigned version of the mod. This just means that others will not be able to confirm if the mod has been modified. The officially hosted versions on mrcrayfish.com, CurseForge, and Modrith have been signed will a private key.
+It is important to note that if you build the mod yourself, you will have an unsigned version of the mod. This just means that others will not be able to confirm if the mod has been modified. The officially hosted versions on mrcrayfish.com, CurseForge, and Modrinth have been signed will a private key.
+## License
+The source code of MrCrayfish's Furniture Mod: Refurbished is available under MIT. The Assets are unlicensed and MrCrayfish reserves all rights to them. The Assets are files within the following directories: 
+- `src/common/main/resources/assets`
+- `src/forge/main/resources/assets` 
+- `src/fabric/main/resources/assets`
+- `src/neoforge/main/resources/assets`
+
+You can build the mod from source and include the Assets, however it can only be used strictly for personal use, distribution is not allowed. Versions of the mod without the Assets fall under the terms of MIT. If you have any inquiries on the usage of the Assets, submit a ticket in the [Discord Server](https://discord.gg/mrcrayfish) under `#mod-support`.
+
+Unmodified versions of MrCrayfish's Furniture Mod: Refurbished may be distributed in a CurseForge or Modrinth modpack. You are free to change configuration files and include datapacks for the interest of providing a custom modpack experience without it counting towards a modified version of the mod.
+
+MrCrayfish loves to see community content. You are allowed to create reviews, share gameplay, and develop addons for the mod. Attribution is not required, however linking back to the official project pages is appreciated. Also feel free to share your creations wth MrCrayfish, either on X ([@MrCrayfish](https://twitter.com/MrCrayfish)) or the [Discord Server](https://discord.gg/mrcrayfish).
+
+License notices can be found in `LICENSE` and `ASSETS_LICENSE` in the source files above. They are also packaged with the JAR file for every build of the mod.
+
 ## Documentation
 All documentation can be found on the Wiki.
 ## Screenshots
