@@ -13,7 +13,7 @@ const config = {
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  url: 'https://your-docusaurus-site.example.com',
+  url: 'https://mrcrayfish.github.io/',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/MrCrayfishFurnitureMod-Refurbished/',
@@ -43,17 +43,7 @@ const config = {
       ({
         docs: {
           sidebarPath: './sidebars.js',
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
-        },
-        blog: {
-          showReadingTime: true,
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          editUrl: 'https://github.com/MrCrayfish/MrCrayfishFurnitureMod-Refurbished/tree/documentation',
         },
         theme: {
           customCss: './src/css/custom.css',
@@ -87,7 +77,7 @@ const config = {
             label: 'Datapack',
           },
           {
-            href: 'https://github.com/facebook/docusaurus',
+            href: 'https://github.com/MrCrayfish/MrCrayfishFurnitureMod-Refurbished/tree/documentation',
             label: 'GitHub',
             position: 'right',
           },
