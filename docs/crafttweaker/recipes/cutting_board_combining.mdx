@@ -1,0 +1,64 @@
+---
+sidebar_position: 1
+sidebar_label: Cutting Board (Combining)
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Cutting Board (Combining)
+
+Combining is new system introduced in MrCrayfish's Furniture Mod: Refurbished. It allows the player to stack items on a Cutting Board to craft a new item. The best way to think about this recipe is creating a sandwich, you start by placing a slice of bread, then layer your ingredients, and then finalise it by placing another slice of bread on the top.
+
+## Recipe Manager
+`<recipetype:refurbished_furniture:cutting_board_combining>`
+
+## Functions
+
+### `addRecipe(name, output, input)`
+
+| Paramater |                                           Type                                            | Required |                                                          Description                                                          |
+| :-------: | :---------------------------------------------------------------------------------------: | :------: | :---------------------------------------------------------------------------------------------------------------------------: |
+|   name    |                                          string                                           |   Yes    |                                            The name of the recipe, must be unique.                                            |
+|  output   |      [IItemStack](https://docs.blamejared.com/1.20.4/en/vanilla/api/item/IItemStack)      |   Yes    |                        The item from the result of combinining the `input`, can have an amount and tag                        |
+|   input   | [IIngredient[]](https://docs.blamejared.com/1.20.4/en/vanilla/api/ingredient/IIngredient) |   Yes    | An array of ingredients, where the first is the first item to be placed, the last being the final item to craft the `output`. Must have at least 1 ingredient, with a maximum of 5 ingredients. |
+
+:::warning
+If the `input` of another combining recipe is the same or partially (e.g. the first two ingredients), the recipe registered first or the recipe with the lesser number of inputs will be crafted, making the other recipe impossible to craft. 
+
+**Check the Craftweaker logs for conflcition warnings**
+:::
+
+<Tabs>
+  <TabItem value="zenscript" label="ZenScript" default>
+    ```ts title="%gamedir%/scripts/example.zs"
+    <recipetype:refurbished_furniture:cutting_board_combining>.addRecipe(
+        "easy_diamonds",
+        <item:minecraft:diamond> * 64, 
+        [<item:minecraft:apple>, <item:minecraft:carrot>, <item:minecraft:potato>]
+    );
+    ```
+  </TabItem>
+  <TabItem value="json" label="Datapack Equivelant">
+    ```json title="(ZIP File) 🡢 /data/[namespace]/recipes/combining/easy_diamonds.json"
+    {
+        "type": "refurbished_furniture:cutting_board_combining",
+        "input": [
+            {
+                "item": "minecraft:apple"
+            },
+            {
+                "item": "minecraft:carrot"
+            },
+            {
+                "item": "minecraft:potato"
+            }
+        ],
+        "result": {
+            "item": "minecraft:diamond",
+            "count": 64
+        }
+    }    
+    ```
+  </TabItem>
+</Tabs>

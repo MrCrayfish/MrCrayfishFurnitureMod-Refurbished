@@ -1,0 +1,11 @@
+{
+    "position": 3,
+    "label": "Recipe Types",
+    "collapsible": true,
+    "collapsed": false,
+    "className": "red",
+    "link": {
+      "type": "generated-index",
+      "title": "Recipe Types"
+    }
+  }
