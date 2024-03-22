@@ -1,0 +1,49 @@
+---
+sidebar_position: 2
+sidebar_label: Cutting Board (Slicing)
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Cutting Board (Slicing)
+
+Slicing is system in MrCrayfish's Furniture Mod: Refurbished that allows the player to slice an item on a Cutting Board with a Knife. This recipe can be used to break down an item into multiple items, like slicing a pizza into multiple slices.
+
+## Recipe Manager
+`<recipetype:refurbished_furniture:cutting_board_slicing>`
+
+## Functions
+
+### `addRecipe(name, ingredient, result)`
+
+| Paramater  |                                          Type                                           | Required |                              Description                              |
+| :--------: | :-------------------------------------------------------------------------------------: | :------: | :-------------------------------------------------------------------: |
+|    name    |                                         string                                          |   Yes    |                The name of the recipe, must be unique.                |
+| ingredient | [IIngredient](https://docs.blamejared.com/1.20.4/en/vanilla/api/ingredient/IIngredient) |   Yes    |                        The ingredient to slice                        |
+|   result   |     [IItemStack](https://docs.blamejared.com/1.20.4/en/vanilla/api/item/IItemStack)     |   Yes    | The resulting item from slicing the `ingredient`, can have an amount. |
+
+#### Example
+<Tabs>
+  <TabItem value="zenscript" label="ZenScript" default>
+    ```ts title="%gamedir%/scripts/example.zs"
+    <recipetype:refurbished_furniture:cutting_board_slicing>.addRecipe(
+        "easy_diamonds",
+        <item:minecraft:apple> | <item:minecraft:potato>, 
+        <item:minecraft:diamond> * 64
+    );
+    ```
+  </TabItem>
+  <TabItem value="json" label="Datapack Equivelant">
+    ```json title="(ZIP File) 🡢 /data/[namespace]/recipes/slicing/easy_diamonds.json"
+    {
+        "type": "refurbished_furniture:cutting_board_slicing",
+        "ingredient": {
+            "item": "minecraft:apple"
+        },
+        "result": "minecraft:diamond"
+        "count": 64
+    }    
+    ```
+  </TabItem>
+</Tabs>
