@@ -8,7 +8,7 @@ sidebar_label: Introduction
 From the description of CraftTweaker
 > CraftTweaker is a Minecraft mod which allows modpacks and servers to customize the game. With CraftTweaker you can change recipes, script events, add new commands and even change item properties! When used with other mods the possibilities become endless. Ranging from custom machine recipes to entirely new blocks and items!
 
-If you've ever played a modpack, it's most likely being powered by CraftTweaker to provide a custom experience. 
+If you've ever played a modpack, it's most likely being powered by CraftTweaker to provide a custom experience. MrCrayfish's Furniture Mod: Refurbished now features integration into CraftTweaker to give you more control. You can now easily create, modify, or remove any recipe in the mod.
 
 ## Getting Started
 
