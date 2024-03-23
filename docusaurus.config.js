@@ -77,6 +77,12 @@ const config = {
             label: 'Datapack',
           },
           {
+            type: 'docSidebar',
+            sidebarId: 'addonSidebar',
+            position: 'left',
+            label: 'Addons',
+          },
+          {
             href: 'https://github.com/MrCrayfish/MrCrayfishFurnitureMod-Refurbished/tree/documentation',
             label: 'GitHub',
             position: 'right',
