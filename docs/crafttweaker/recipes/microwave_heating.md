@@ -13,7 +13,7 @@ TODO
 ## Recipe Manager
 `<recipetype:refurbished_furniture:microwave_heating>`
 
-## Functions
+## Custom Functions
 
 ### `addRecipe(name, ingredient, result[, time])`
 
@@ -25,6 +25,35 @@ Adds a new heating recipe to the microwave
 | ingredient | [IIngredient](https://docs.blamejared.com/1.20.4/en/vanilla/api/ingredient/IIngredient) |   Yes    |                       The ingredient to freeze                        |
 |   result   |     [IItemStack](https://docs.blamejared.com/1.20.4/en/vanilla/api/item/IItemStack)     |   Yes    | The resulting item from slicing the `ingredient`, can have an amount. |
 |    time    |                                           int                                           |    No    |        The duration in ticks to freeze the item. Default `200`        |
+
+#### Example
+<Tabs>
+  <TabItem value="zenscript" label="ZenScript" default>
+    ```ts title="%gamedir%/scripts/example.zs"
+    <recipetype:refurbished_furniture:microwave_heating>.addRecipe(
+        "heating/easy_diamonds",
+        <item:minecraft:apple>, 
+        <item:minecraft:diamond> * 64,
+        250
+    );
+    ```
+  </TabItem>
+  <TabItem value="json" label="Datapack Equivelant">
+    ```json title="(ZIP File) 🡢 /data/[namespace]/recipes/heating/easy_diamonds.json"
+    {
+        "type": "refurbished_furniture:microwave_heating",
+        "ingredient": {
+            "item": "minecraft:apple"
+        },
+        "result": {
+            "item": "minecraft:diamond",
+            "count": 64
+        },
+        "time": 250
+    } 
+    ```
+  </TabItem>
+</Tabs>
 
 ---
 

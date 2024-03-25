@@ -13,7 +13,7 @@ TODO
 ## Recipe Manager
 `<recipetype:refurbished_furniture:recycle_bin_recycling>`
 
-## Functions
+## Custom Functions
 
 ### `addRecipe(name, recyclable, scraps[])`
 
@@ -25,6 +25,38 @@ Adds a new recycling recipe to the recycle bin
 | recyclable | [IIngredient](https://docs.blamejared.com/1.20.4/en/vanilla/api/ingredient/IIngredient) |   Yes    |                                       The item that is gong to be recycled                                       |
 |   scraps   |    [IItemStack[]](https://docs.blamejared.com/1.20.4/en/vanilla/api/item/IItemStack)    |   Yes    | The scraps (items) from breaking down the `recyclable`. Must have at least `1` item, and no more than `9` items. |
 
+#### Example
+<Tabs>
+  <TabItem value="zenscript" label="ZenScript" default>
+    ```ts title="%gamedir%/scripts/example.zs"
+    <recipetype:refurbished_furniture:recycle_bin_recycling>.addRecipe(
+        "recycling/jukebox_scrapping",
+        <item:minecraft:jukebox>, 
+        [<item:minecraft:diamond>, <item:minecraft:oak_plank> * 2]
+    );
+    ```
+  </TabItem>
+  <TabItem value="json" label="Datapack Equivelant">
+    ```json title="(ZIP File) 🡢 /data/[namespace]/recipes/recycling/jukebox_scrapping.json"
+    {
+        "type": "refurbished_furniture:recycle_bin_recycling",
+        "recyclable": {
+            "item": "minecraft:jukebox"
+        },
+        "scraps": [
+            {
+                "item": "minecraft:diamond"
+            },
+            {
+                "item": "minecraft:oak_plank",
+                "count": 2
+            }
+        ]
+    } 
+    ```
+  </TabItem>
+</Tabs>
+
 ---
 
 ### `addScrap(id, scrap)`
@@ -33,8 +65,22 @@ Adds an additional item to the scraps of the recipe with the given id. If the re
 
 | Paramater |                                      Type                                       | Required |                              Description                              |
 | :-------: | :-----------------------------------------------------------------------------: | :------: | :-------------------------------------------------------------------: |
-|    id     |                                     string                                      |   Yes    |                The name of the recipe, must be unique.                |
+|    id     |                                     string                                      |   Yes    |                     The id of an existing recipe.                     |
 |   scrap   | [IItemStack](https://docs.blamejared.com/1.20.4/en/vanilla/api/item/IItemStack) |   Yes    | The resulting item from cooking the `ingredient`, can have an amount. |
+
+#### Example
+<Tabs>
+  <TabItem value="zenscript" label="ZenScript" default>
+    ```ts title="%gamedir%/scripts/example.zs"
+    // Add a stick to the scraps when breaking down a jukebox
+    // This recipe comes from the above addRecipe() example.
+    <recipetype:refurbished_furniture:recycle_bin_recycling>.addScrap(
+        "craftteaker:recycling/jukebox_scrapping",
+        <item:minecraft:stick>
+    );
+    ```
+  </TabItem>
+</Tabs>
 
 ---
 
@@ -47,9 +93,23 @@ Adds additional items to the scraps of the recipe with the given id. If the reci
 |    id     |                                      string                                       |   Yes    |                The name of the recipe, must be unique.                |
 |  scraps   | [IItemStack[]](https://docs.blamejared.com/1.20.4/en/vanilla/api/item/IItemStack) |   Yes    | The resulting item from cooking the `ingredient`, can have an amount. |
 
+#### Example
+<Tabs>
+  <TabItem value="zenscript" label="ZenScript" default>
+    ```ts title="%gamedir%/scripts/example.zs"
+    // Add a stick and 2 apples to the scraps when breaking down a jukebox
+    // This recipe comes from the above addRecipe() example.
+    <recipetype:refurbished_furniture:recycle_bin_recycling>.addScrap(
+        "craftteaker:recycling/jukebox_scrapping",
+        [<item:minecraft:stick>, <item:minecraft:apple> * 2]
+    );
+    ```
+  </TabItem>
+</Tabs>
+
 ---
 
-### `removeOutput(id, scrap)`
+### `removeScrap(id, scrap)`
 
 Remove the scrap (item) from the recipe with the given id. If the item does not exist in the scraps, this call will be ignored.
 
@@ -58,9 +118,23 @@ Remove the scrap (item) from the recipe with the given id. If the item does not 
 |    id     |                                     string                                      |   Yes    |                The name of the recipe, must be unique.                |
 |   scrap   | [IItemStack](https://docs.blamejared.com/1.20.4/en/vanilla/api/item/IItemStack) |   Yes    | The resulting item from cooking the `ingredient`, can have an amount. |
 
+#### Example
+<Tabs>
+  <TabItem value="zenscript" label="ZenScript" default>
+    ```ts title="%gamedir%/scripts/example.zs"
+    // Remove diamonds from the scraps when breaking down a jukebox
+    // This recipe comes from the above addRecipe() example.
+    <recipetype:refurbished_furniture:recycle_bin_recycling>.addScrap(
+        "craftteaker:recycling/jukebox_scrapping",
+        <item:minecraft:diamond>
+    );
+    ```
+  </TabItem>
+</Tabs>
+
 ---
 
-### `removeOutput(id, scraps[])`
+### `removeScrap(id, scraps[])`
 
 Removes the scraps (items) from the recipe with the given id. This will remove any items that match from the given scraps. Items that don't exist in the scraps of the matching recipe, will simply be ignored. 
 
@@ -69,9 +143,23 @@ Removes the scraps (items) from the recipe with the given id. This will remove a
 |    id     |                                      string                                       |   Yes    |                The name of the recipe, must be unique.                |
 |  scraps   | [IItemStack[]](https://docs.blamejared.com/1.20.4/en/vanilla/api/item/IItemStack) |   Yes    | The resulting item from cooking the `ingredient`, can have an amount. |
 
+#### Example
+<Tabs>
+  <TabItem value="zenscript" label="ZenScript" default>
+    ```ts title="%gamedir%/scripts/example.zs"
+    // Remove diamond and oak planks from the scraps when breaking down a jukebox
+    // This recipe comes from the above addRecipe() example.
+    <recipetype:refurbished_furniture:recycle_bin_recycling>.addScrap(
+        "craftteaker:recycling/jukebox_scrapping",
+        [<item:minecraft:diamond>, <item:minecraft:oak_plank>]
+    );
+    ```
+  </TabItem>
+</Tabs>
+
 ---
 
-### `replaceOutput(id, from, to)`
+### `replaceScrap(id, from, to)`
 
 Replaces an item in the scraps of the matching recipe with a different item. If the item to replace does not exist, this call will simply be ignored.
 
@@ -80,6 +168,21 @@ Replaces an item in the scraps of the matching recipe with a different item. If 
 |    id     |                                      string                                       |   Yes    |                The name of the recipe, must be unique.                |
 |   from    | [IItemStack[]](https://docs.blamejared.com/1.20.4/en/vanilla/api/item/IItemStack) |   Yes    | The resulting item from cooking the `ingredient`, can have an amount. |
 |    to     | [IItemStack[]](https://docs.blamejared.com/1.20.4/en/vanilla/api/item/IItemStack) |   Yes    | The resulting item from cooking the `ingredient`, can have an amount. |
+
+#### Example
+<Tabs>
+  <TabItem value="zenscript" label="ZenScript" default>
+    ```ts title="%gamedir%/scripts/example.zs"
+    // Replaces diamond with an apple from the scraps when breaking down a jukebox
+    // This recipe comes from the above addRecipe() example.
+    <recipetype:refurbished_furniture:recycle_bin_recycling>.addScrap(
+        "craftteaker:recycling/jukebox_scrapping",
+        <item:minecraft:diamond>,
+        <item:minecraft:apple>
+    );
+    ```
+  </TabItem>
+</Tabs>
 
 ---
 

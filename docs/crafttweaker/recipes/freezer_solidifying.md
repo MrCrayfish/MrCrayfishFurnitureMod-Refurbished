@@ -13,7 +13,7 @@ Solidifying/Freezing is a feature of the Fridge in MrCrayfish's Furniture Mod: R
 ## Recipe Manager
 `<recipetype:refurbished_furniture:freezer_solidifying>`
 
-## Functions
+## Custom Functions
 
 ### `addRecipe(name, ingredient, result[, time])`
 
@@ -34,7 +34,6 @@ Adds a new solidifying recipe to the freezer
         "freezing/easy_diamonds",
         <item:minecraft:apple> | <item:minecraft:potato>, 
         <item:minecraft:diamond> * 64,
-        0.2f,
         500
     );
     ```
@@ -43,17 +42,17 @@ Adds a new solidifying recipe to the freezer
     ```json title="(ZIP File) 🡢 /data/[namespace]/recipes/freezing/easy_diamonds.json"
     {
         "type": "refurbished_furniture:freezer_solidifying",
-        "category": "misc",
-        "cookingtime": 500,
-        "experience": 0.2,
         "ingredient": {
             "item": [
                 "minecraft:apple",
                 "minecraft:potato"
             ]
         },
-        "result": "minecraft:diamond",
-        "count": 64
+        "result": {
+            "item": "minecraft:diamond",
+            "count": 64
+        },
+        "time": 500
     } 
     ```
   </TabItem>
