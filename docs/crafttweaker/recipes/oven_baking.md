@@ -15,11 +15,19 @@ TODO
 
 ## Functions
 
-### `addRecipe(name, input, output[, processTime])`
+### `addRecipe(name, ingredient, result[, time])`
 
-|  Paramater  |                                          Type                                           | Required |                                    Description                                    |
-| :---------: | :-------------------------------------------------------------------------------------: | :------: | :-------------------------------------------------------------------------------: |
-|    name     |                                         string                                          |   Yes    |                      The name of the recipe, must be unique.                      |
-|    input    | [IIngredient](https://docs.blamejared.com/1.20.4/en/vanilla/api/ingredient/IIngredient) |   Yes    |                             The ingredient to freeze                              |
-|   output    |     [IItemStack](https://docs.blamejared.com/1.20.4/en/vanilla/api/item/IItemStack)     |   Yes    |       The resulting item from cooking the `ingredient`, can have an amount.       |
-| cookingTime |                                           int                                           |    No    |              The duration in ticks to cook the item. Default `200`              |
+Adds a new baking recipe to the oven
+
+| Paramater  |                                          Type                                           | Required |                              Description                              |
+| :--------: | :-------------------------------------------------------------------------------------: | :------: | :-------------------------------------------------------------------: |
+|    name    |                                         string                                          |   Yes    |                The name of the recipe, must be unique.                |
+| ingredient | [IIngredient](https://docs.blamejared.com/1.20.4/en/vanilla/api/ingredient/IIngredient) |   Yes    |                       The ingredient to freeze                        |
+|   result   |     [IItemStack](https://docs.blamejared.com/1.20.4/en/vanilla/api/item/IItemStack)     |   Yes    | The resulting item from slicing the `ingredient`, can have an amount. |
+|    time    |                                           int                                           |    No    |        The duration in ticks to freeze the item. Default `200`        |
+
+---
+
+## Learn More
+
+See **Recipe Managers** on the CraftTweaker [documentation](https://docs.blamejared.com/1.20.4/en/tutorial/Recipes/RecipeManagers) for all inbuilt functions.

@@ -13,15 +13,17 @@ Combining is new system introduced in MrCrayfish's Furniture Mod: Refurbished. I
 ## Recipe Manager
 `<recipetype:refurbished_furniture:cutting_board_combining>`
 
-## Functions
+## Custom Functions
 
-### `addRecipe(name, output, input)`
+### `addRecipe(name, result, ingredients)`
 
-| Paramater |                                           Type                                            | Required |                                                                                           Description                                                                                           |
-| :-------: | :---------------------------------------------------------------------------------------: | :------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-|   name    |                                          string                                           |   Yes    |                                                                             The name of the recipe, must be unique.                                                                             |
-|  output   |      [IItemStack](https://docs.blamejared.com/1.20.4/en/vanilla/api/item/IItemStack)      |   Yes    |                                                         The item from the result of combinining the `input`, can have an amount and tag                                                         |
-|   input   | [IIngredient[]](https://docs.blamejared.com/1.20.4/en/vanilla/api/ingredient/IIngredient) |   Yes    | An array of ingredients, where the first is the first item to be placed, the last being the final item to craft the `output`. Must have at least 1 ingredient, with a maximum of 5 ingredients. |
+Adds a new combining recipe to the cutting board
+
+|  Paramater  |                                           Type                                            | Required |                                                                                           Description                                                                                           |
+| :---------: | :---------------------------------------------------------------------------------------: | :------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+|    name     |                                          string                                           |   Yes    |                                                                             The name of the recipe, must be unique.                                                                             |
+|   result    |      [IItemStack](https://docs.blamejared.com/1.20.4/en/vanilla/api/item/IItemStack)      |   Yes    |                                                         The item from the result of combinining the `input`, can have an amount and tag                                                         |
+| ingredients | [IIngredient[]](https://docs.blamejared.com/1.20.4/en/vanilla/api/ingredient/IIngredient) |   Yes    | An array of ingredients, where the first is the first item to be placed, the last being the final item to craft the `output`. Must have at least 1 ingredient, with a maximum of 5 ingredients. |
 
 :::warning
 If the `input` of another combining recipe is the same or partially (e.g. the first two ingredients), the recipe registered first or the recipe with the lesser number of inputs will be crafted, making the other recipe impossible to craft. 
@@ -44,7 +46,7 @@ If the `input` of another combining recipe is the same or partially (e.g. the fi
     ```json title="(ZIP File) 🡢 /data/[namespace]/recipes/combining/easy_diamonds.json"
     {
         "type": "refurbished_furniture:cutting_board_combining",
-        "input": [
+        "ingredients": [
             {
                 "item": "minecraft:apple"
             },
@@ -63,3 +65,9 @@ If the `input` of another combining recipe is the same or partially (e.g. the fi
     ```
   </TabItem>
 </Tabs>
+
+---
+
+## Learn More
+
+See **Recipe Managers** on the CraftTweaker [documentation](https://docs.blamejared.com/1.20.4/en/tutorial/Recipes/RecipeManagers) for all inbuilt functions.

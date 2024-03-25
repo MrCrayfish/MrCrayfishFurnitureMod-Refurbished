@@ -17,9 +17,17 @@ TODO
 
 ### `addRecipe(name, result, materials[], notification]`
 
-|  Paramater  |                                          Type                                           | Required |                                    Description                                    |
-| :---------: | :-------------------------------------------------------------------------------------: | :------: | :-------------------------------------------------------------------------------: |
-|    name     |                                         string                                          |   Yes    |                      The name of the recipe, must be unique.                      |
-|   result    |     [IItemStack](https://docs.blamejared.com/1.20.4/en/vanilla/api/item/IItemStack)     |   Yes    |       The resulting item from cooking the `ingredient`, can have an amount.       |
-|    materials    | [IIngredient[]](https://docs.blamejared.com/1.20.4/en/vanilla/api/ingredient/IIngredient) |   Yes    |                             The ingredient to freeze                              |
-| notification  |                                          boolean                                          |    No    | The amount of experience for successfully frying with this recipe. Default `0`. |
+Adds a new constructing recipe to the workbench
+
+|  Paramater   |                                           Type                                            | Required |                                   Description                                   |
+| :----------: | :---------------------------------------------------------------------------------------: | :------: | :-----------------------------------------------------------------------------: |
+|     name     |                                          string                                           |   Yes    |                     The name of the recipe, must be unique.                     |
+|    result    |      [IItemStack](https://docs.blamejared.com/1.20.4/en/vanilla/api/item/IItemStack)      |   Yes    |      The resulting item from cooking the `ingredient`, can have an amount.      |
+|  materials   | [IIngredient[]](https://docs.blamejared.com/1.20.4/en/vanilla/api/ingredient/IIngredient) |   Yes    |                            The ingredient to freeze                             |
+| notification |                                          boolean                                          |    No    | The amount of experience for successfully frying with this recipe. Default `0`. |
+
+---
+
+## Learn More
+
+See **Recipe Managers** on the CraftTweaker [documentation](https://docs.blamejared.com/1.20.4/en/tutorial/Recipes/RecipeManagers) for all inbuilt functions.
