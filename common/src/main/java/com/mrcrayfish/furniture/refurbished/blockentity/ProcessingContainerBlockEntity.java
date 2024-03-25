@@ -352,7 +352,7 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
                 this.setItem(slot, result);
                 return;
             }
-            else if(ItemStack.matches(result, stack) && stack.getCount() < stack.getMaxStackSize())
+            else if(ItemStack.isSameItemSameTags(result, stack) && stack.getCount() < stack.getMaxStackSize())
             {
                 // Find the highest count of the result that can be pushed into this stack
                 int count = Math.min(result.getCount(), stack.getMaxStackSize() - stack.getCount());
