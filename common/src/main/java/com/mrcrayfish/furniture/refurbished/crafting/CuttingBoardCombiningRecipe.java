@@ -31,21 +31,21 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
 {
     public static final int MAX_INGREDIENTS = 5;
 
-    protected final NonNullList<Ingredient> inputs;
-    protected final ItemStack output;
+    protected final NonNullList<Ingredient> ingredients;
+    protected final ItemStack result;
 
-    public CuttingBoardCombiningRecipe(NonNullList<Ingredient> inputs, ItemStack output)
+    public CuttingBoardCombiningRecipe(NonNullList<Ingredient> ingredients, ItemStack result)
     {
-        this.inputs = inputs;
-        this.output = output;
+        this.ingredients = ingredients;
+        this.result = result;
     }
 
     @Override
     public boolean matches(Container container, Level level)
     {
-        for(int i = 0; i < this.inputs.size() && i < container.getContainerSize(); i++)
+        for(int i = 0; i < this.ingredients.size() && i < container.getContainerSize(); i++)
         {
-            if(!this.inputs.get(i).test(container.getItem(i)))
+            if(!this.ingredients.get(i).test(container.getItem(i)))
             {
                 return false;
             }
@@ -56,7 +56,7 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
     @Override
     public ItemStack assemble(Container container, RegistryAccess access)
     {
-        return this.output.copy();
+        return this.result.copy();
     }
 
     @Override
@@ -68,7 +68,7 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
     @Override
     public ItemStack getResultItem(RegistryAccess access)
     {
-        return this.output;
+        return this.result;
     }
 
     @Override
@@ -86,21 +86,21 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
     @Override
     public NonNullList<Ingredient> getIngredients()
     {
-        return this.inputs;
+        return this.ingredients;
     }
 
-    public ItemStack getOutput()
+    public ItemStack getResult()
     {
-        return this.output;
+        return this.result;
     }
 
     public boolean completelyMatches(Container container)
     {
-        if(this.inputs.size() <= container.getContainerSize())
+        if(this.ingredients.size() <= container.getContainerSize())
         {
-            for(int i = 0; i < this.inputs.size(); i++)
+            for(int i = 0; i < this.ingredients.size(); i++)
             {
-                if(!this.inputs.get(i).test(container.getItem(i)))
+                if(!this.ingredients.get(i).test(container.getItem(i)))
                 {
                     return false;
                 }
@@ -126,7 +126,7 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
             }, DataResult::success).forGetter((recipe) -> {
                 return recipe.getIngredients();
             }), ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter((recipe) -> {
-                return recipe.output;
+                return recipe.result;
             })).apply(builder, CuttingBoardCombiningRecipe::new);
         });
 
@@ -149,12 +149,12 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
         @Override
         public void toNetwork(FriendlyByteBuf buffer, CuttingBoardCombiningRecipe recipe)
         {
-            buffer.writeInt(recipe.inputs.size());
-            for(Ingredient ingredient : recipe.inputs)
+            buffer.writeInt(recipe.ingredients.size());
+            for(Ingredient ingredient : recipe.ingredients)
             {
                 ingredient.toNetwork(buffer);
             }
-            buffer.writeItem(recipe.output);
+            buffer.writeItem(recipe.result);
         }
     }
 

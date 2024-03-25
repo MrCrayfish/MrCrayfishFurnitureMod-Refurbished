@@ -11,7 +11,6 @@ import com.mrcrayfish.furniture.refurbished.compat.crafttweaker.Plugin;
 import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardCombiningRecipe;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -30,11 +29,10 @@ public class CuttingBoardCombiningRecipeHandler implements IRecipeHandler<Cuttin
     @Override
     public String dumpToCommandString(IRecipeManager<? super CuttingBoardCombiningRecipe> manager, RegistryAccess registryAccess, RecipeHolder<CuttingBoardCombiningRecipe> holder)
     {
-
         return String.format("%s.addRecipe(%s, %s, %s);",
             manager.getCommandString(),
             StringUtil.quoteAndEscape(holder.id()),
-            IItemStack.ofMutable(holder.value().getOutput()).getCommandString(),
+            IItemStack.ofMutable(holder.value().getResult()).getCommandString(),
             "[" + String.join(", ", holder.value().getIngredients().stream().map(ingredient -> IIngredient.fromIngredient(ingredient).getCommandString()).toArray(String[]::new)) + "]");
     }
 
@@ -50,6 +48,7 @@ public class CuttingBoardCombiningRecipeHandler implements IRecipeHandler<Cuttin
         {
             if(Collections.disjoint(firstIngredients.get(i).getStackingIds(), secondIngredients.get(i).getStackingIds()))
             {
+                // TODO test
                 Plugin.LOGGER.error("Cutting Board combining inputs cannot be empty");
                 return false;
             }
@@ -62,7 +61,7 @@ public class CuttingBoardCombiningRecipeHandler implements IRecipeHandler<Cuttin
     {
         IDecomposedRecipe decomposedRecipe = IDecomposedRecipe.builder()
             .with(BuiltinRecipeComponents.Input.INGREDIENTS, recipe.getIngredients().stream().map(IIngredient::fromIngredient).collect(Collectors.toList()))
-            .with(BuiltinRecipeComponents.Output.ITEMS, IItemStack.ofMutable(recipe.getOutput()))
+            .with(BuiltinRecipeComponents.Output.ITEMS, IItemStack.ofMutable(recipe.getResult()))
             .build();
         return Optional.of(decomposedRecipe);
     }
@@ -70,8 +69,8 @@ public class CuttingBoardCombiningRecipeHandler implements IRecipeHandler<Cuttin
     @Override
     public Optional<CuttingBoardCombiningRecipe> recompose(IRecipeManager<? super CuttingBoardCombiningRecipe> manager, RegistryAccess registryAccess, IDecomposedRecipe recipe)
     {
-        Ingredient[] inputs = recipe.getOrThrow(BuiltinRecipeComponents.Input.INGREDIENTS).stream().map(IIngredient::asVanillaIngredient).toArray(Ingredient[]::new);
-        ItemStack output = recipe.getOrThrowSingle(BuiltinRecipeComponents.Output.ITEMS).getInternal();
-        return Optional.of(new CuttingBoardCombiningRecipe(NonNullList.of(Ingredient.EMPTY, inputs), output));
+        Ingredient[] ingredients = recipe.getOrThrow(BuiltinRecipeComponents.Input.INGREDIENTS).stream().map(IIngredient::asVanillaIngredient).toArray(Ingredient[]::new);
+        ItemStack result = recipe.getOrThrowSingle(BuiltinRecipeComponents.Output.ITEMS).getInternal();
+        return Optional.of(new CuttingBoardCombiningRecipe(NonNullList.of(Ingredient.EMPTY, ingredients), result));
     }
 }

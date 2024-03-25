@@ -3,20 +3,16 @@ package com.mrcrayfish.furniture.refurbished.data;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
-import com.mrcrayfish.furniture.refurbished.core.ModRecipeSerializers;
 import com.mrcrayfish.furniture.refurbished.core.ModTags;
 import com.mrcrayfish.furniture.refurbished.crafting.*;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
-import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.data.recipes.SingleItemRecipeBuilder;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
@@ -25,9 +21,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -651,10 +645,10 @@ public class CommonRecipeProvider
         this.fryingPanCooking(ModItems.CHEESE_SANDWICH.get(), ModItems.CHEESE_TOASTIE.get(), 400, 0.5F);
 
         // Baking
-        this.ovenBaking(Items.POTATO, Items.BAKED_POTATO, 1, 200);
-        this.ovenBaking(Items.WATER_BUCKET, ModItems.SEA_SALT.get(), 4, 1200);
-        this.ovenBaking(ModItems.RAW_VEGETABLE_PIZZA.get(), ModItems.COOKED_VEGETABLE_PIZZA.get(), 1, 1200);
-        this.ovenBaking(ModItems.RAW_MEATLOVERS_PIZZA.get(), ModItems.COOKED_MEATLOVERS_PIZZA.get(), 1, 1200);
+        this.ovenBaking(Items.POTATO, Items.BAKED_POTATO, 1, 200, 0F);
+        this.ovenBaking(Items.WATER_BUCKET, ModItems.SEA_SALT.get(), 4, 1200, 0F);
+        this.ovenBaking(ModItems.RAW_VEGETABLE_PIZZA.get(), ModItems.COOKED_VEGETABLE_PIZZA.get(), 1, 1200, 0F);
+        this.ovenBaking(ModItems.RAW_MEATLOVERS_PIZZA.get(), ModItems.COOKED_MEATLOVERS_PIZZA.get(), 1, 1200, 0F);
 
         // Fluid Mixing
         this.sinkFluidTransmuting(Services.FLUID.getMilkFluid(), Ingredient.of(ModItems.SEA_SALT.get()), new ItemStack(ModItems.CHEESE.get(), 2));
@@ -1523,48 +1517,38 @@ public class CommonRecipeProvider
         builder.save(this.output, Utils.resource("constructing/" + name));
     }
 
-    private <T extends AbstractCookingRecipe> void cooking(String folder, RecipeCategory category, RecipeSerializer<T> serializer, AbstractCookingRecipe.Factory<T> factory, ItemLike input, ItemLike output, int time, float experience)
+    private <T extends ProcessingRecipe> void processing(ProcessingRecipe.Factory<T> factory, String folder, Ingredient ingredient, ItemLike result, int count, int time)
     {
-        String baseName = Utils.getItemName(input.asItem());
-        String resultName = Utils.getItemName(output.asItem());
-        SimpleCookingRecipeBuilder
-                .generic(Ingredient.of(input), category, output, experience, time, serializer, factory)
-                .unlockedBy("has_" + baseName, this.hasItem.apply(input))
-                .save(this.output, Utils.resource(folder + "/" + resultName + "_from_" + baseName));
-    }
-
-    private <T extends ProcessingRecipe> void processing(ProcessingRecipe.Factory<T> factory, String folder, Ingredient input, ItemLike output, int count, int time)
-    {
-        ResourceLocation recipeId = Utils.resource(folder + "/" + Utils.getItemName(output.asItem()));
-        ProcessingRecipe.builder(factory, input, new ItemStack(output, count), time).save(this.output, recipeId);
+        ResourceLocation recipeId = Utils.resource(folder + "/" + Utils.getItemName(result.asItem()));
+        ProcessingRecipe.builder(factory, ingredient, new ItemStack(result, count), time).save(this.output, recipeId);
     }
 
     private void grillCooking(ItemLike rawItem, ItemLike cookedItem, int cookingTime, float experience)
     {
-        this.cooking("grilling", RecipeCategory.FOOD, ModRecipeSerializers.GRILL_RECIPE.get(), GrillCookingRecipe::new, rawItem, cookedItem, cookingTime, experience);
+        this.processing(GrillCookingRecipe::new, "grilling", Ingredient.of(rawItem), cookedItem, 1, cookingTime);
     }
 
     private void freezerSolidifying(ItemLike baseItem, ItemLike frozenItem, int freezeTime, float experience)
     {
-        this.cooking("freezing", RecipeCategory.MISC, ModRecipeSerializers.FREEZER_RECIPE.get(), FreezerSolidifyingRecipe::new, baseItem, frozenItem, freezeTime, experience);
+        this.processing(FreezerSolidifyingRecipe::new, "freezing", Ingredient.of(baseItem), frozenItem, 1, freezeTime);
     }
 
     private void toasterHeating(ItemLike baseItem, ItemLike heatedItem, int heatingTime, float experience)
     {
-        this.cooking("toasting", RecipeCategory.FOOD, ModRecipeSerializers.TOASTER_RECIPE.get(), ToasterHeatingRecipe::new, baseItem, heatedItem, heatingTime, experience);
+        this.processing(ToasterHeatingRecipe::new, "toasting", Ingredient.of(baseItem), heatedItem, 1, heatingTime);
     }
 
     private void microwaveHeating(ItemLike baseItem, ItemLike heatedItem, int heatingTime, float experience)
     {
-        this.cooking("heating", RecipeCategory.FOOD, ModRecipeSerializers.MICROWAVE_RECIPE.get(), MicrowaveHeatingRecipe::new, baseItem, heatedItem, heatingTime, experience);
+        this.processing(MicrowaveHeatingRecipe::new, "heating", Ingredient.of(baseItem), heatedItem, 1, heatingTime);
     }
 
     private void fryingPanCooking(ItemLike baseItem, ItemLike heatedItem, int heatingTime, float experience)
     {
-        this.cooking("frying", RecipeCategory.FOOD, ModRecipeSerializers.FRYING_PAN_RECIPE.get(), FryingPanCookingRecipe::new, baseItem, heatedItem, heatingTime, experience);
+        this.processing(FryingPanCookingRecipe::new, "frying", Ingredient.of(baseItem), heatedItem, 1, heatingTime);
     }
 
-    private void ovenBaking(ItemLike baseItem, ItemLike bakedItem, int count, int bakingTime)
+    private void ovenBaking(ItemLike baseItem, ItemLike bakedItem, int count, int bakingTime, float experience)
     {
         this.processing(OvenBakingRecipe::new, "baking", Ingredient.of(baseItem), bakedItem, count, bakingTime);
     }
@@ -1604,7 +1588,7 @@ public class CommonRecipeProvider
         }
         String baseName = Utils.getItemName(baseItem.asItem());
         RecycleBinRecyclingRecipe.Builder builder = new RecycleBinRecyclingRecipe.Builder(baseItem.asItem());
-        Stream.of(outputItems).forEach(builder::addOutput);
+        Stream.of(outputItems).forEach(builder::addScrap);
         builder.save(this.output, Utils.resource("recycling/" + baseName));
         this.recycledItems.add(baseItem.asItem());
     }

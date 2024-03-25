@@ -25,9 +25,9 @@ import org.openzen.zencode.java.ZenCodeType;
 public class FreezerSolidifyingRecipeManager implements IRecipeManager<FreezerSolidifyingRecipe>
 {
     @ZenCodeType.Method
-    public void addRecipe(String name, IIngredient input, IItemStack output, @ZenCodeType.OptionalFloat float experience, @ZenCodeType.OptionalInt(200) int cookingTime)
+    public void addRecipe(String name, IIngredient ingredient, IItemStack result, @ZenCodeType.OptionalInt(200) int time)
     {
-        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new RecipeHolder<>(CraftTweakerConstants.rl(name), new FreezerSolidifyingRecipe("", CookingBookCategory.MISC, input.asVanillaIngredient(), output.getInternal(), experience, cookingTime))));
+        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new RecipeHolder<>(CraftTweakerConstants.rl(name), new FreezerSolidifyingRecipe(ingredient.asVanillaIngredient(), result.getInternal(), time))));
     }
 
     @Override

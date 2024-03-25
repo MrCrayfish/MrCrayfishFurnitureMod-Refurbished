@@ -28,8 +28,8 @@ public class RecycleBinRecyclingRecipeHandler implements IRecipeHandler<RecycleB
         return "%s.addRecipe(%s, %s, %s);".formatted(
             manager.getCommandString(),
             StringUtil.quoteAndEscape(holder.id()),
-            IItemStack.ofMutable(holder.value().getInput()).getCommandString(),
-            "[" + String.join(", ", holder.value().getOutput().stream().map(stack -> IItemStack.ofMutable(stack).getCommandString()).toArray(String[]::new)) + "]"
+            IItemStack.ofMutable(holder.value().getRecyclable()).getCommandString(),
+            "[" + String.join(", ", holder.value().getScraps().stream().map(stack -> IItemStack.ofMutable(stack).getCommandString()).toArray(String[]::new)) + "]"
         );
     }
 
@@ -38,15 +38,15 @@ public class RecycleBinRecyclingRecipeHandler implements IRecipeHandler<RecycleB
     {
         if(!(secondRecipe instanceof RecycleBinRecyclingRecipe recyclingRecipe))
             return true;
-        return ItemStack.isSameItem(firstRecipe.getInput(), recyclingRecipe.getInput());
+        return ItemStack.isSameItem(firstRecipe.getRecyclable(), recyclingRecipe.getRecyclable());
     }
 
     @Override
     public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super RecycleBinRecyclingRecipe> manager, RegistryAccess registryAccess, RecycleBinRecyclingRecipe recipe)
     {
         IDecomposedRecipe decomposedRecipe = IDecomposedRecipe.builder()
-            .with(BuiltinRecipeComponents.Input.INGREDIENTS, IItemStack.of(recipe.getInput()))
-            .with(BuiltinRecipeComponents.Output.ITEMS, recipe.getOutput().stream().map(IItemStack::ofMutable).collect(Collectors.toList()))
+            .with(BuiltinRecipeComponents.Input.INGREDIENTS, IItemStack.of(recipe.getRecyclable()))
+            .with(BuiltinRecipeComponents.Output.ITEMS, recipe.getScraps().stream().map(IItemStack::ofMutable).collect(Collectors.toList()))
             .build();
         return Optional.of(decomposedRecipe);
     }
@@ -54,8 +54,8 @@ public class RecycleBinRecyclingRecipeHandler implements IRecipeHandler<RecycleB
     @Override
     public Optional<RecycleBinRecyclingRecipe> recompose(IRecipeManager<? super RecycleBinRecyclingRecipe> manager, RegistryAccess registryAccess, IDecomposedRecipe recipe)
     {
-        ItemStack input = recipe.getOrThrowSingle(BuiltinRecipeComponents.Input.INGREDIENTS).asVanillaIngredient().getItems()[0];
-        ItemStack[] output = recipe.get(BuiltinRecipeComponents.Output.ITEMS).stream().map(IItemStack::getInternal).toArray(ItemStack[]::new);
-        return Optional.of(new RecycleBinRecyclingRecipe(input, NonNullList.of(ItemStack.EMPTY, output)));
+        ItemStack recyclable = recipe.getOrThrowSingle(BuiltinRecipeComponents.Input.INGREDIENTS).asVanillaIngredient().getItems()[0];
+        ItemStack[] scraps = recipe.get(BuiltinRecipeComponents.Output.ITEMS).stream().map(IItemStack::getInternal).toArray(ItemStack[]::new);
+        return Optional.of(new RecycleBinRecyclingRecipe(recyclable, NonNullList.of(ItemStack.EMPTY, scraps)));
     }
 }

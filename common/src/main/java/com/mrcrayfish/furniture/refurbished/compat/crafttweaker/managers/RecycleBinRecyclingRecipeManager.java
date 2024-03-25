@@ -9,9 +9,9 @@ import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.mrcrayfish.furniture.refurbished.blockentity.RecycleBinBlockEntity;
 import com.mrcrayfish.furniture.refurbished.compat.crafttweaker.Plugin;
-import com.mrcrayfish.furniture.refurbished.compat.crafttweaker.actions.ActionAddItemsToRecycleBinOutput;
-import com.mrcrayfish.furniture.refurbished.compat.crafttweaker.actions.ActionRemoveItemsFromRecycleBinOutput;
-import com.mrcrayfish.furniture.refurbished.compat.crafttweaker.actions.ActionReplaceItemInRecycleBinOutput;
+import com.mrcrayfish.furniture.refurbished.compat.crafttweaker.actions.ActionAddItemsToRecycleBinScraps;
+import com.mrcrayfish.furniture.refurbished.compat.crafttweaker.actions.ActionRemoveItemsFromRecycleBinScraps;
+import com.mrcrayfish.furniture.refurbished.compat.crafttweaker.actions.ActionReplaceItemInRecycleBinScraps;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.RecycleBinRecyclingRecipe;
 import net.minecraft.core.NonNullList;
@@ -33,43 +33,43 @@ import java.util.List;
 public class RecycleBinRecyclingRecipeManager implements IRecipeManager<RecycleBinRecyclingRecipe>
 {
     @ZenCodeType.Method
-    public void addRecipe(String name, IItemStack input, List<IItemStack> output)
+    public void addRecipe(String name, IItemStack recyclable, List<IItemStack> scraps)
     {
-        if(!this.validate(output))
+        if(!this.validate(scraps))
             return;
         NonNullList<ItemStack> outputs = NonNullList.create();
-        output.stream().map(IItemStack::getInternal).forEach(outputs::add);
-        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new RecipeHolder<>(CraftTweakerConstants.rl(name), new RecycleBinRecyclingRecipe(input.getInternal(), outputs))));
+        scraps.stream().map(IItemStack::getInternal).forEach(outputs::add);
+        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new RecipeHolder<>(CraftTweakerConstants.rl(name), new RecycleBinRecyclingRecipe(recyclable.getInternal(), outputs))));
     }
 
     @ZenCodeType.Method
-    public void addOutput(String id, IItemStack output)
+    public void addScrap(String id, IItemStack output)
     {
-        CraftTweakerAPI.apply(new ActionAddItemsToRecycleBinOutput(this, new ResourceLocation(id), List.of(output)));
+        CraftTweakerAPI.apply(new ActionAddItemsToRecycleBinScraps(this, new ResourceLocation(id), List.of(output)));
     }
 
     @ZenCodeType.Method
-    public void addOutput(String id, List<IItemStack> output)
+    public void addScrap(String id, List<IItemStack> output)
     {
-        CraftTweakerAPI.apply(new ActionAddItemsToRecycleBinOutput(this, new ResourceLocation(id), output));
+        CraftTweakerAPI.apply(new ActionAddItemsToRecycleBinScraps(this, new ResourceLocation(id), output));
     }
 
     @ZenCodeType.Method
-    public void removeOutput(String id, IItemStack removal)
+    public void removeScrap(String id, IItemStack removal)
     {
-        CraftTweakerAPI.apply(new ActionRemoveItemsFromRecycleBinOutput(this, new ResourceLocation(id), List.of(removal)));
+        CraftTweakerAPI.apply(new ActionRemoveItemsFromRecycleBinScraps(this, new ResourceLocation(id), List.of(removal)));
     }
 
     @ZenCodeType.Method
-    public void removeOutput(String id, List<IItemStack> removal)
+    public void removeScrap(String id, List<IItemStack> removal)
     {
-        CraftTweakerAPI.apply(new ActionRemoveItemsFromRecycleBinOutput(this, new ResourceLocation(id), removal));
+        CraftTweakerAPI.apply(new ActionRemoveItemsFromRecycleBinScraps(this, new ResourceLocation(id), removal));
     }
 
     @ZenCodeType.Method
-    public void replaceOutput(String id, IItemStack from, IItemStack to)
+    public void replaceScrap(String id, IItemStack from, IItemStack to)
     {
-        CraftTweakerAPI.apply(new ActionReplaceItemInRecycleBinOutput(this, new ResourceLocation(id), from, to));
+        CraftTweakerAPI.apply(new ActionReplaceItemInRecycleBinScraps(this, new ResourceLocation(id), from, to));
     }
 
     private boolean validate(List<IItemStack> output)

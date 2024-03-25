@@ -3,7 +3,6 @@ package com.mrcrayfish.furniture.refurbished.compat.jei.categories;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.compat.jei.Plugin;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
-import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardCombiningRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.OvenBakingRecipe;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -17,10 +16,8 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 
 /**
  * Author: MrCrayfish
@@ -68,9 +65,9 @@ public class OvenBakingCategory implements IRecipeCategory<OvenBakingRecipe>
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, OvenBakingRecipe recipe, IFocusGroup focuses)
     {
-        builder.addSlot(RecipeIngredientRole.INPUT, 58, 5).addIngredients(recipe.getInput());
+        builder.addSlot(RecipeIngredientRole.INPUT, 58, 5).addIngredients(recipe.getIngredient());
         builder.addSlot(RecipeIngredientRole.OUTPUT, 58, 41).addItemStack(Plugin.getResult(recipe));
-        this.arrow = this.helper.createAnimatedDrawable(this.helper.createDrawable(Plugin.TEXTURES_2, 160, 0, 17, 16), recipe.getProcessTime(), IDrawableAnimated.StartDirection.TOP, false);
+        this.arrow = this.helper.createAnimatedDrawable(this.helper.createDrawable(Plugin.TEXTURES_2, 160, 0, 17, 16), recipe.getTime(), IDrawableAnimated.StartDirection.TOP, false);
     }
 
     @Override

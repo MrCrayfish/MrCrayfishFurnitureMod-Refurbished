@@ -16,16 +16,17 @@ import net.minecraft.world.item.crafting.SingleItemRecipe;
 @RegistryContainer
 public class ModRecipeSerializers
 {
+    // TODO make naming consistent across all recipes. e.g input vs ingredient and output vs result
     public static final RegistryEntry<WorkbenchContructingRecipe.Serializer> WORKBENCH_RECIPE = RegistryEntry.recipeSerializer(Utils.resource("workbench_constructing"), WorkbenchContructingRecipe.Serializer::new);
-    public static final RegistryEntry<SimpleCookingSerializer<GrillCookingRecipe>> GRILL_RECIPE = RegistryEntry.recipeSerializer(Utils.resource("grill_cooking"), () -> Services.RECIPE.createSimpleCookingSerializer(GrillCookingRecipe::new, 200));
-    public static final RegistryEntry<SimpleCookingSerializer<FreezerSolidifyingRecipe>> FREEZER_RECIPE = RegistryEntry.recipeSerializer(Utils.resource("freezer_solidifying"), () -> Services.RECIPE.createSimpleCookingSerializer(FreezerSolidifyingRecipe::new, 200));
-    public static final RegistryEntry<SimpleCookingSerializer<ToasterHeatingRecipe>> TOASTER_RECIPE = RegistryEntry.recipeSerializer(Utils.resource("toaster_heating"), () -> Services.RECIPE.createSimpleCookingSerializer(ToasterHeatingRecipe::new, 300));
+    public static final RegistryEntry<RecipeSerializer<GrillCookingRecipe>> GRILL_RECIPE = RegistryEntry.recipeSerializer(Utils.resource("grill_cooking"), () -> new ProcessingRecipe.Item.Serializer<>(GrillCookingRecipe::new, 200));
+    public static final RegistryEntry<RecipeSerializer<FreezerSolidifyingRecipe>> FREEZER_RECIPE = RegistryEntry.recipeSerializer(Utils.resource("freezer_solidifying"), () -> new ProcessingRecipe.ItemWithCount.Serializer<>(FreezerSolidifyingRecipe::new, 200));
+    public static final RegistryEntry<RecipeSerializer<ToasterHeatingRecipe>> TOASTER_RECIPE = RegistryEntry.recipeSerializer(Utils.resource("toaster_heating"), () -> new ProcessingRecipe.Item.Serializer<>(ToasterHeatingRecipe::new, 300));
     public static final RegistryEntry<SingleItemRecipe.Serializer<CuttingBoardSlicingRecipe>> CUTTING_BOARD_SLICING_RECIPE = RegistryEntry.recipeSerializer(Utils.resource("cutting_board_slicing"), () -> Services.RECIPE.createSingleItemSerializer(CuttingBoardSlicingRecipe::new));
     public static final RegistryEntry<CuttingBoardCombiningRecipe.Serializer> CUTTING_BOARD_COMBINING_RECIPE = RegistryEntry.recipeSerializer(Utils.resource("cutting_board_combining"), CuttingBoardCombiningRecipe.Serializer::new);
-    public static final RegistryEntry<SimpleCookingSerializer<MicrowaveHeatingRecipe>> MICROWAVE_RECIPE = RegistryEntry.recipeSerializer(Utils.resource("microwave_heating"), () -> Services.RECIPE.createSimpleCookingSerializer(MicrowaveHeatingRecipe::new, 200));
-    public static final RegistryEntry<SimpleCookingSerializer<FryingPanCookingRecipe>> FRYING_PAN_RECIPE = RegistryEntry.recipeSerializer(Utils.resource("frying_pan_cooking"), () -> Services.RECIPE.createSimpleCookingSerializer(FryingPanCookingRecipe::new, 200));
+    public static final RegistryEntry<RecipeSerializer<MicrowaveHeatingRecipe>> MICROWAVE_RECIPE = RegistryEntry.recipeSerializer(Utils.resource("microwave_heating"), () -> new ProcessingRecipe.ItemWithCount.Serializer<>(MicrowaveHeatingRecipe::new, 200));
+    public static final RegistryEntry<RecipeSerializer<FryingPanCookingRecipe>> FRYING_PAN_RECIPE = RegistryEntry.recipeSerializer(Utils.resource("frying_pan_cooking"), () -> new ProcessingRecipe.Item.Serializer<>(FryingPanCookingRecipe::new, 200));
     public static final RegistryEntry<RecycleBinRecyclingRecipe.Serializer> RECYCLE_BIN_RECIPE = RegistryEntry.recipeSerializer(Utils.resource("recycle_bin_recycling"), RecycleBinRecyclingRecipe.Serializer::new);
     public static final RegistryEntry<RecipeSerializer<DoorMatCopyRecipe>> DOOR_MAT_COPY_RECIPE = RegistryEntry.recipeSerializer(Utils.resource("crafting_special_door_mat_copy"), () -> new SimpleCraftingRecipeSerializer<>(DoorMatCopyRecipe::new));
     public static final RegistryEntry<RecipeSerializer<SinkFluidTransmutingRecipe>> SINK_FLUID_TRANSMUTING_RECIPE = RegistryEntry.recipeSerializer(Utils.resource("sink_fluid_transmuting"), SinkFluidTransmutingRecipe.Serializer::new);
-    public static final RegistryEntry<RecipeSerializer<OvenBakingRecipe>> OVEN_BAKING = RegistryEntry.recipeSerializer(Utils.resource("oven_baking"), () -> new ProcessingRecipe.Serializer<>(OvenBakingRecipe::new, 300));
+    public static final RegistryEntry<RecipeSerializer<OvenBakingRecipe>> OVEN_BAKING = RegistryEntry.recipeSerializer(Utils.resource("oven_baking"), () -> new ProcessingRecipe.ItemWithCount.Serializer<>(OvenBakingRecipe::new, 300));
 }

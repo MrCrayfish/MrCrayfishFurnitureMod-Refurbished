@@ -34,13 +34,13 @@ public class RecycleBinRecyclingRecipe implements Recipe<Container>
 {
     public static final int MAX_OUTPUT_COUNT = 9;
 
-    protected final ItemStack input;
-    protected final NonNullList<ItemStack> output;
+    protected final ItemStack recyclable;
+    protected final NonNullList<ItemStack> scraps;
 
-    public RecycleBinRecyclingRecipe(ItemStack input, NonNullList<ItemStack> output)
+    public RecycleBinRecyclingRecipe(ItemStack recyclable, NonNullList<ItemStack> scraps)
     {
-        this.input = input;
-        this.output = output;
+        this.recyclable = recyclable;
+        this.scraps = scraps;
     }
 
     @Override
@@ -58,13 +58,13 @@ public class RecycleBinRecyclingRecipe implements Recipe<Container>
     @Override
     public boolean matches(Container container, Level level)
     {
-        return ItemStack.isSameItem(this.input, container.getItem(0));
+        return ItemStack.isSameItem(this.recyclable, container.getItem(0));
     }
 
     @Override
     public ItemStack assemble(Container container, RegistryAccess access)
     {
-        return this.output.get(0);
+        return this.scraps.get(0);
     }
 
     @Override
@@ -76,17 +76,17 @@ public class RecycleBinRecyclingRecipe implements Recipe<Container>
     @Override
     public ItemStack getResultItem(RegistryAccess access)
     {
-        return this.output.get(0);
+        return this.scraps.get(0);
     }
 
-    public ItemStack getInput()
+    public ItemStack getRecyclable()
     {
-        return this.input;
+        return this.recyclable;
     }
 
-    public NonNullList<ItemStack> getOutput()
+    public NonNullList<ItemStack> getScraps()
     {
-        return this.output;
+        return this.scraps;
     }
 
     /**
@@ -102,7 +102,7 @@ public class RecycleBinRecyclingRecipe implements Recipe<Container>
      */
     public List<ItemStack> createRandomisedOutput(RandomSource random, float chance)
     {
-        return this.output.stream().map(stack -> {
+        return this.scraps.stream().map(stack -> {
             return random.nextFloat() < chance ? stack.copy() : null;
         }).filter(Objects::nonNull).collect(Collectors.toList());
     }
@@ -110,20 +110,20 @@ public class RecycleBinRecyclingRecipe implements Recipe<Container>
     public static class Serializer implements RecipeSerializer<RecycleBinRecyclingRecipe>
     {
         public static final Codec<RecycleBinRecyclingRecipe> CODEC = RecordCodecBuilder.create(builder -> {
-            return builder.group(ItemStack.SINGLE_ITEM_CODEC.fieldOf("input").forGetter(recipe -> {
-                return recipe.input;
-            }), ItemStack.SINGLE_ITEM_CODEC.listOf().fieldOf("output").flatXmap(items -> { // TODO change to allow nbt
+            return builder.group(ItemStack.SINGLE_ITEM_CODEC.fieldOf("recyclable").forGetter(recipe -> {
+                return recipe.recyclable;
+            }), ItemStack.SINGLE_ITEM_CODEC.listOf().fieldOf("scraps").flatXmap(items -> { // TODO change to allow nbt
                 ItemStack[] inputs = items.stream().filter((ingredient) -> {
                     return !ingredient.isEmpty();
                 }).toArray(ItemStack[]::new);
                 if(inputs.length > MAX_OUTPUT_COUNT) {
-                    return DataResult.error(() -> "Too many ingredients");
+                    return DataResult.error(() -> "Too many scraps");
                 } else if(inputs.length == 0) {
-                    return DataResult.error(() -> "No ingredients");
+                    return DataResult.error(() -> "No scraps");
                 }
                 return DataResult.success(NonNullList.of(ItemStack.EMPTY, inputs));
             }, DataResult::success).forGetter((recipe) -> {
-                return recipe.getOutput();
+                return recipe.getScraps();
             })).apply(builder, RecycleBinRecyclingRecipe::new);
         });
 
@@ -136,19 +136,19 @@ public class RecycleBinRecyclingRecipe implements Recipe<Container>
         @Override
         public RecycleBinRecyclingRecipe fromNetwork(FriendlyByteBuf buffer)
         {
-            ItemStack input = buffer.readItem();
-            int outputCount = buffer.readInt();
-            NonNullList<ItemStack> outputs = NonNullList.withSize(outputCount, ItemStack.EMPTY);
-            IntStream.range(0, outputCount).forEach(i -> outputs.set(i, buffer.readItem()));
-            return new RecycleBinRecyclingRecipe(input, outputs);
+            ItemStack recyclable = buffer.readItem();
+            int scrapCount = buffer.readInt();
+            NonNullList<ItemStack> scraps = NonNullList.withSize(scrapCount, ItemStack.EMPTY);
+            IntStream.range(0, scrapCount).forEach(i -> scraps.set(i, buffer.readItem()));
+            return new RecycleBinRecyclingRecipe(recyclable, scraps);
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, RecycleBinRecyclingRecipe recipe)
         {
-            buffer.writeItem(recipe.input);
-            buffer.writeInt(recipe.output.size());
-            for(ItemStack stack : recipe.output)
+            buffer.writeItem(recipe.recyclable);
+            buffer.writeInt(recipe.scraps.size());
+            for(ItemStack stack : recipe.scraps)
             {
                 buffer.writeItem(stack);
             }
@@ -157,17 +157,17 @@ public class RecycleBinRecyclingRecipe implements Recipe<Container>
 
     public static class Builder implements RecipeBuilder
     {
-        private final Item input;
-        private final NonNullList<ItemStack> outputs = NonNullList.create();
+        private final Item recyclable;
+        private final NonNullList<ItemStack> scraps = NonNullList.create();
 
-        public Builder(Item input)
+        public Builder(Item recyclable)
         {
-            this.input = input;
+            this.recyclable = recyclable;
         }
 
-        public void addOutput(ItemStack stack)
+        public void addScrap(ItemStack stack)
         {
-            this.outputs.add(stack);
+            this.scraps.add(stack);
         }
 
         @Override
@@ -185,25 +185,25 @@ public class RecycleBinRecyclingRecipe implements Recipe<Container>
         @Override
         public Item getResult()
         {
-            return this.input;
+            return this.recyclable;
         }
 
         @Override
         public void save(RecipeOutput output, ResourceLocation id)
         {
             this.validate(id);
-            output.accept(id, new RecycleBinRecyclingRecipe(new ItemStack(this.input), this.outputs), null);
+            output.accept(id, new RecycleBinRecyclingRecipe(new ItemStack(this.recyclable), this.scraps), null);
         }
 
         private void validate(ResourceLocation id)
         {
-            if(this.outputs.isEmpty())
+            if(this.scraps.isEmpty())
             {
                 throw new IllegalStateException("Cannot have an empty output for recycling bin recipe");
             }
-            if(this.outputs.size() > MAX_OUTPUT_COUNT)
+            if(this.scraps.size() > MAX_OUTPUT_COUNT)
             {
-                throw new IllegalStateException("Recycling bin recipe only supports up to " + MAX_OUTPUT_COUNT + " outputs");
+                throw new IllegalStateException("Recycling bin recipe only supports up to " + MAX_OUTPUT_COUNT + " scraps");
             }
         }
     }

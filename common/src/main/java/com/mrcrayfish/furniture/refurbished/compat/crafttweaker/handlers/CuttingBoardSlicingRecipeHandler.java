@@ -10,7 +10,6 @@ import com.blamejared.crafttweaker.api.util.IngredientUtil;
 import com.blamejared.crafttweaker.api.util.StringUtil;
 import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardSlicingRecipe;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -30,8 +29,8 @@ public class CuttingBoardSlicingRecipeHandler implements IRecipeHandler<CuttingB
         return "%s.addRecipe(%s, %s, %s);".formatted(
             manager.getCommandString(),
             StringUtil.quoteAndEscape(holder.id()),
-            IIngredient.fromIngredient(holder.value().getInput()).getCommandString(),
-            IItemStack.ofMutable(holder.value().getOutput()).getCommandString()
+            IIngredient.fromIngredient(holder.value().getIngredient()).getCommandString(),
+            IItemStack.ofMutable(holder.value().getResult()).getCommandString()
         );
     }
 
@@ -41,16 +40,15 @@ public class CuttingBoardSlicingRecipeHandler implements IRecipeHandler<CuttingB
         if(!(secondRecipe instanceof CuttingBoardSlicingRecipe slicingRecipe))
             return true;
         // Cutting board recipes are conflicting if the input is the same
-        return IngredientUtil.canConflict(firstRecipe.getInput(), slicingRecipe.getInput());
+        return IngredientUtil.canConflict(firstRecipe.getIngredient(), slicingRecipe.getIngredient());
     }
 
     @Override
     public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super CuttingBoardSlicingRecipe> manager, RegistryAccess registryAccess, CuttingBoardSlicingRecipe recipe)
     {
         IDecomposedRecipe decomposedRecipe = IDecomposedRecipe.builder()
-            .with(BuiltinRecipeComponents.Input.INGREDIENTS, IIngredient.fromIngredient(recipe.getInput()))
-            .with(BuiltinRecipeComponents.Output.ITEMS, IItemStack.ofMutable(recipe.getOutput()))
-            .with(BuiltinRecipeComponents.Metadata.GROUP, recipe.getGroup())
+            .with(BuiltinRecipeComponents.Input.INGREDIENTS, IIngredient.fromIngredient(recipe.getIngredient()))
+            .with(BuiltinRecipeComponents.Output.ITEMS, IItemStack.ofMutable(recipe.getResult()))
             .build();
         return Optional.of(decomposedRecipe);
     }
@@ -58,9 +56,8 @@ public class CuttingBoardSlicingRecipeHandler implements IRecipeHandler<CuttingB
     @Override
     public Optional<CuttingBoardSlicingRecipe> recompose(IRecipeManager<? super CuttingBoardSlicingRecipe> manager, RegistryAccess registryAccess, IDecomposedRecipe recipe)
     {
-        Ingredient input = recipe.getOrThrowSingle(BuiltinRecipeComponents.Input.INGREDIENTS).asVanillaIngredient();
-        String group = recipe.getOrThrowSingle(BuiltinRecipeComponents.Metadata.GROUP);
-        ItemStack output = recipe.getOrThrowSingle(BuiltinRecipeComponents.Output.ITEMS).getInternal();
-        return Optional.of(new CuttingBoardSlicingRecipe(group, input, output));
+        Ingredient ingredient = recipe.getOrThrowSingle(BuiltinRecipeComponents.Input.INGREDIENTS).asVanillaIngredient();
+        ItemStack result = recipe.getOrThrowSingle(BuiltinRecipeComponents.Output.ITEMS).getInternal();
+        return Optional.of(new CuttingBoardSlicingRecipe(ingredient, result));
     }
 }

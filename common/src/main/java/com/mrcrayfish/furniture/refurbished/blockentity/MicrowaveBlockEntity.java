@@ -7,6 +7,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
+import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import com.mrcrayfish.furniture.refurbished.inventory.BuildableContainerData;
 import com.mrcrayfish.furniture.refurbished.inventory.MicrowaveMenu;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
@@ -56,7 +57,7 @@ public class MicrowaveBlockEntity extends ElectricityModuleProcessingContainerBl
         this(ModBlockEntities.MICROWAVE.get(), pos, state, ModRecipeTypes.MICROWAVE_HEATING.get());
     }
 
-    public MicrowaveBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, RecipeType<? extends AbstractCookingRecipe> recipeType)
+    public MicrowaveBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, RecipeType<? extends ProcessingRecipe> recipeType)
     {
         super(type, pos, state, 2, recipeType);
     }

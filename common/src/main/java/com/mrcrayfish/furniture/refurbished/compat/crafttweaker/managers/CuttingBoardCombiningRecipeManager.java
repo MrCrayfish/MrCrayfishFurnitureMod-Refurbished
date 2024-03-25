@@ -29,13 +29,13 @@ import java.util.List;
 public class CuttingBoardCombiningRecipeManager implements IRecipeManager<CuttingBoardCombiningRecipe>
 {
     @ZenCodeType.Method
-    public void addRecipe(String name, IItemStack output, IIngredient[] input)
+    public void addRecipe(String name, IItemStack result, IIngredient[] ingredients)
     {
-        if(!this.validate(input))
+        if(!this.validate(ingredients))
             return;
-        NonNullList<Ingredient> ingredients = NonNullList.create();
-        Arrays.stream(input).map(IIngredient::asVanillaIngredient).forEach(ingredients::add);
-        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new RecipeHolder<>(CraftTweakerConstants.rl(name), new CuttingBoardCombiningRecipe(ingredients, output.getInternal()))));
+        NonNullList<Ingredient> ingredientList = NonNullList.create();
+        Arrays.stream(ingredients).map(IIngredient::asVanillaIngredient).forEach(ingredientList::add);
+        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new RecipeHolder<>(CraftTweakerConstants.rl(name), new CuttingBoardCombiningRecipe(ingredientList, result.getInternal()))));
     }
 
     @Override

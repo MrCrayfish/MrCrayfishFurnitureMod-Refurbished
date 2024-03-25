@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import com.mrcrayfish.furniture.refurbished.electricity.Connection;
 import com.mrcrayfish.furniture.refurbished.electricity.IModuleNode;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
@@ -28,7 +29,7 @@ public abstract class ElectricityModuleProcessingContainerBlockEntity extends Pr
     protected boolean powered;
     protected boolean receivingPower;
 
-    protected ElectricityModuleProcessingContainerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int containerSize, RecipeType<? extends AbstractCookingRecipe> recipeType)
+    protected ElectricityModuleProcessingContainerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int containerSize, RecipeType<? extends ProcessingRecipe> recipeType)
     {
         super(type, pos, state, containerSize, recipeType);
     }

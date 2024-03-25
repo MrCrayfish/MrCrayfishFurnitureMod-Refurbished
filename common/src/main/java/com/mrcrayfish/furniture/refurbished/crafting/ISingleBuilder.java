@@ -1,6 +1,5 @@
 package com.mrcrayfish.furniture.refurbished.crafting;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.SingleItemRecipe;
@@ -10,5 +9,5 @@ import net.minecraft.world.item.crafting.SingleItemRecipe;
  */
 public interface ISingleBuilder<T extends SingleItemRecipe>
 {
-    T create(String group, Ingredient input, ItemStack result);
+    T create(String group, Ingredient ingredient, ItemStack result);
 }

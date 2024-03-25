@@ -373,7 +373,10 @@ public class ClientBootstrap
         register.apply(ModRecipeTypes.CUTTING_BOARD_SLICING.get(), recipe -> RecipeBookCategories.UNKNOWN);
         register.apply(ModRecipeTypes.CUTTING_BOARD_COMBINING.get(), recipe -> RecipeBookCategories.UNKNOWN);
         register.apply(ModRecipeTypes.MICROWAVE_HEATING.get(), recipe -> RecipeBookCategories.UNKNOWN);
+        register.apply(ModRecipeTypes.OVEN_BAKING.get(), recipe -> RecipeBookCategories.UNKNOWN);
+        register.apply(ModRecipeTypes.SINK_FLUID_TRANSMUTING.get(), recipe -> RecipeBookCategories.UNKNOWN);
         register.apply(ModRecipeTypes.FRYING_PAN_COOKING.get(), recipe -> RecipeBookCategories.UNKNOWN);
         register.apply(ModRecipeTypes.RECYCLE_BIN_RECYCLING.get(), recipe -> RecipeBookCategories.UNKNOWN);
+        register.apply(ModRecipeTypes.WORKBENCH_CONSTRUCTING.get(), recipe -> RecipeBookCategories.UNKNOWN);
     }
 }

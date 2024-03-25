@@ -11,47 +11,50 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish
  */
-public class ActionRemoveItemsFromRecycleBinOutput implements IAction, IRuntimeAction
+public class ActionReplaceItemInRecycleBinScraps implements IAction, IRuntimeAction
 {
     private final IRecipeManager<RecycleBinRecyclingRecipe> manager;
     private final ResourceLocation id;
-    private final List<IItemStack> removal;
+    private final IItemStack from;
+    private final IItemStack to;
 
-    public ActionRemoveItemsFromRecycleBinOutput(IRecipeManager<RecycleBinRecyclingRecipe> manager, ResourceLocation id, List<IItemStack> removal)
+    public ActionReplaceItemInRecycleBinScraps(IRecipeManager<RecycleBinRecyclingRecipe> manager, ResourceLocation id, IItemStack from, IItemStack to)
     {
         this.manager = manager;
         this.id = id;
-        this.removal = removal;
+        this.from = from;
+        this.to = to;
     }
 
     @Override
     public void apply()
     {
         RecipeList<RecycleBinRecyclingRecipe> list = this.manager.getRecipeList();
-        RecipeHolder<RecycleBinRecyclingRecipe> recipe = list.get(this.id);
+        RecipeHolder<RecycleBinRecyclingRecipe> holder = list.get(this.id);
         NonNullList<ItemStack> newOutput = NonNullList.create();
-        newOutput.addAll(recipe.value().getOutput());
-        newOutput.removeIf(stack -> this.removal.stream().anyMatch(iStack -> ItemStack.isSameItemSameTags(stack, iStack.getInternal())));
-        RecycleBinRecyclingRecipe newRecipe = new RecycleBinRecyclingRecipe(recipe.value().getInput(), newOutput);
+        newOutput.addAll(holder.value().getScraps());
+        for(int i = 0; i < newOutput.size(); i++)
+        {
+            ItemStack stack = newOutput.get(i);
+            if(ItemStack.isSameItemSameTags(stack, this.from.getInternal()))
+            {
+                newOutput.set(i, this.to.getInternal());
+                break;
+            }
+        }
         list.remove(this.id);
-        list.add(this.id, new RecipeHolder<>(this.id, newRecipe));
+        list.add(this.id, new RecipeHolder<>(this.id, new RecycleBinRecyclingRecipe(holder.value().getRecyclable(), newOutput)));
     }
 
     @Override
     public String describe()
     {
-        String items = "[" + StringUtils.join(this.removal.stream().map(IItemStack::getCommandString).collect(Collectors.toList()), ", ") + "]";
-        return "Removing the items '%s' from the output of the recycling bin recipe '%s'".formatted(items, this.id);
+        return "Replacing the item '%s' with '%s' from the scraps of the recycling bin recipe '%s'".formatted(this.from.getCommandString(), this.to.getCommandString(), this.id);
     }
 
     @Override

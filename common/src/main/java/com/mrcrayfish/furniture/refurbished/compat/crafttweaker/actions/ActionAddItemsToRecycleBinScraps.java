@@ -15,24 +15,23 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish
  */
-public class ActionAddItemsToRecycleBinOutput implements IAction, IRuntimeAction
+public class ActionAddItemsToRecycleBinScraps implements IAction, IRuntimeAction
 {
     private final IRecipeManager<RecycleBinRecyclingRecipe> manager;
     private final ResourceLocation id;
-    private final List<IItemStack> output;
+    private final List<IItemStack> add;
 
-    public ActionAddItemsToRecycleBinOutput(IRecipeManager<RecycleBinRecyclingRecipe> manager, ResourceLocation id, List<IItemStack> output)
+    public ActionAddItemsToRecycleBinScraps(IRecipeManager<RecycleBinRecyclingRecipe> manager, ResourceLocation id, List<IItemStack> add)
     {
         this.manager = manager;
         this.id = id;
-        this.output = output;
+        this.add = add;
     }
 
     @Override
@@ -41,9 +40,9 @@ public class ActionAddItemsToRecycleBinOutput implements IAction, IRuntimeAction
         RecipeList<RecycleBinRecyclingRecipe> list = this.manager.getRecipeList();
         RecipeHolder<RecycleBinRecyclingRecipe> holder = list.get(this.id);
         NonNullList<ItemStack> newOutput = NonNullList.create();
-        newOutput.addAll(holder.value().getOutput());
-        this.output.forEach(iStack -> newOutput.add(iStack.getInternal()));
-        RecycleBinRecyclingRecipe newRecipe = new RecycleBinRecyclingRecipe(holder.value().getInput(), newOutput);
+        newOutput.addAll(holder.value().getScraps());
+        this.add.forEach(iStack -> newOutput.add(iStack.getInternal()));
+        RecycleBinRecyclingRecipe newRecipe = new RecycleBinRecyclingRecipe(holder.value().getRecyclable(), newOutput);
         list.remove(this.id);
         list.add(this.id, new RecipeHolder<>(this.id, newRecipe));
     }
@@ -51,8 +50,8 @@ public class ActionAddItemsToRecycleBinOutput implements IAction, IRuntimeAction
     @Override
     public String describe()
     {
-        String items = "[" + StringUtils.join(this.output.stream().map(IItemStack::getCommandString).collect(Collectors.toList()), ", ") + "]";
-        return "Adding the items '%s' to the output of the recycling bin '%s'".formatted(items, this.id);
+        String items = "[" + StringUtils.join(this.add.stream().map(IItemStack::getCommandString).collect(Collectors.toList()), ", ") + "]";
+        return "Adding the items '%s' to the scraps of the recycling bin recipe '%s'".formatted(items, this.id);
     }
 
     @Override
@@ -71,26 +70,26 @@ public class ActionAddItemsToRecycleBinOutput implements IAction, IRuntimeAction
         }
 
         RecipeHolder<RecycleBinRecyclingRecipe> recipe = this.manager.getRecipeList().get(this.id);
-        List<ItemStack> outputs = recipe.value().getOutput();
-        for(IItemStack stack : this.output)
+        List<ItemStack> outputs = recipe.value().getScraps();
+        for(IItemStack stack : this.add)
         {
             if(outputs.stream().anyMatch(stack1 -> ItemStack.isSameItemSameTags(stack1, stack.getInternal())))
             {
-                logger.error("Cannot add the item '{}' to the output as the item already exists in the output", stack.getCommandString());
+                logger.error("Cannot add the item '{}' to the scraps as the item already exists in the scraps", stack.getCommandString());
                 return false;
             }
 
             if(RecycleBinBlockEntity.isInvalidItem(stack.getInternal()))
             {
-                logger.error("'{}' is not an acceptable item for a recycling bin recipe output", stack.getCommandString());
+                logger.error("'{}' is not an acceptable item for a recycling bin recipe scraps", stack.getCommandString());
                 return false;
             }
         }
 
-        if(outputs.size() + this.output.size() > RecycleBinRecyclingRecipe.MAX_OUTPUT_COUNT)
+        if(outputs.size() + this.add.size() > RecycleBinRecyclingRecipe.MAX_OUTPUT_COUNT)
         {
-            String items = "[" + StringUtils.join(this.output.stream().map(IItemStack::getCommandString).collect(Collectors.toList()), ", ") + "]";
-            logger.error("Cannot add the items '{}' as it will exceed the maximum number of allow output items (max: {})", items, RecycleBinRecyclingRecipe.MAX_OUTPUT_COUNT);
+            String items = "[" + StringUtils.join(this.add.stream().map(IItemStack::getCommandString).collect(Collectors.toList()), ", ") + "]";
+            logger.error("Cannot add the items '{}' as it will exceed the maximum number of allow scrap items (max: {})", items, RecycleBinRecyclingRecipe.MAX_OUTPUT_COUNT);
             return false;
         }
 
