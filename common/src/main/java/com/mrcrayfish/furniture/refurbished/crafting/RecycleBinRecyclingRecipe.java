@@ -8,10 +8,13 @@ import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
@@ -24,6 +27,7 @@ import net.minecraft.world.level.Level;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -33,6 +37,14 @@ import java.util.stream.IntStream;
 public class RecycleBinRecyclingRecipe implements Recipe<Container>
 {
     public static final int MAX_OUTPUT_COUNT = 9;
+    public static final Codec<ItemStack> ITEMSTACK = RecordCodecBuilder.create(builder -> {
+        return builder.group(
+            BuiltInRegistries.ITEM.holderByNameCodec().fieldOf("item").forGetter(ItemStack::getItemHolder),
+            Codec.INT.optionalFieldOf("count", 1).forGetter(ItemStack::getCount),
+            CompoundTag.CODEC.optionalFieldOf("tag").forGetter(stack -> {
+                return Optional.ofNullable(stack.getTag());
+            })).apply(builder, ItemStack::new);
+    });
 
     protected final ItemStack recyclable;
     protected final NonNullList<ItemStack> scraps;
@@ -112,7 +124,7 @@ public class RecycleBinRecyclingRecipe implements Recipe<Container>
         public static final Codec<RecycleBinRecyclingRecipe> CODEC = RecordCodecBuilder.create(builder -> {
             return builder.group(ItemStack.SINGLE_ITEM_CODEC.fieldOf("recyclable").forGetter(recipe -> {
                 return recipe.recyclable;
-            }), ItemStack.SINGLE_ITEM_CODEC.listOf().fieldOf("scraps").flatXmap(items -> { // TODO change to allow nbt
+            }), ITEMSTACK.listOf().fieldOf("scraps").flatXmap(items -> {
                 ItemStack[] inputs = items.stream().filter((ingredient) -> {
                     return !ingredient.isEmpty();
                 }).toArray(ItemStack[]::new);
