@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished;
 
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
+import com.mrcrayfish.furniture.refurbished.blockentity.fluid.IFluidContainerBlock;
 import com.mrcrayfish.furniture.refurbished.client.ClientBootstrap;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureBlockTagsProvider;
@@ -15,17 +16,22 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.registries.RegistriesDatapackGenerator;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.IBlockCapabilityProvider;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.EmptyFluidHandler;
 import net.neoforged.neoforge.items.wrapper.InvWrapper;
 import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
@@ -80,11 +86,17 @@ public class FurnitureMod
             return context == Direction.DOWN ? new SidedInvWrapper(entity, Direction.DOWN) : new SidedInvWrapper(entity, Direction.UP);
         });
 
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, ModBlockEntities.BATH.get(), (entity, context) -> {
+        this.registerFluidHandler(event, ModBlockEntities.BATH.get());
+        this.registerFluidHandler(event, ModBlockEntities.KITCHEN_SINK.get());
+        this.registerFluidHandler(event, ModBlockEntities.BASIN.get());
+        this.registerFluidHandler(event, ModBlockEntities.TOILET.get());
+    }
+
+    private <T extends BlockEntity & IFluidContainerBlock> void registerFluidHandler(RegisterCapabilitiesEvent event, BlockEntityType<T> type)
+    {
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, type, (entity, context) -> {
             FluidContainer container = entity.getFluidContainer();
             return container != null ? ((NeoForgeFluidHelper.NeoForgeFluidContainer) container).getTank() : EmptyFluidHandler.INSTANCE;
         });
-
-        // TODO register remaining
     }
 }
