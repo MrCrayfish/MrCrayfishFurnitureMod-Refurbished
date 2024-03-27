@@ -113,7 +113,7 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
     public static class Serializer implements RecipeSerializer<CuttingBoardCombiningRecipe>
     {
         public static final Codec<CuttingBoardCombiningRecipe> CODEC = RecordCodecBuilder.create(builder -> {
-            return builder.group(Ingredient.CODEC_NONEMPTY.listOf().fieldOf("input").flatXmap(ingredients -> {
+            return builder.group(Ingredient.CODEC_NONEMPTY.listOf().fieldOf("ingredients").flatXmap(ingredients -> {
                 Ingredient[] inputs = ingredients.stream().filter((ingredient) -> {
                     return !ingredient.isEmpty();
                 }).toArray(Ingredient[]::new);
@@ -139,11 +139,11 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
         @Override
         public CuttingBoardCombiningRecipe fromNetwork(FriendlyByteBuf buffer)
         {
-            int inputCount = buffer.readInt();
-            NonNullList<Ingredient> inputs = NonNullList.withSize(inputCount, Ingredient.EMPTY);
-            IntStream.range(0, inputCount).forEach(i -> inputs.set(i, Ingredient.fromNetwork(buffer)));
-            ItemStack output = buffer.readItem();
-            return new CuttingBoardCombiningRecipe(inputs, output);
+            int ingredientCount = buffer.readInt();
+            NonNullList<Ingredient> ingredients = NonNullList.withSize(ingredientCount, Ingredient.EMPTY);
+            IntStream.range(0, ingredientCount).forEach(i -> ingredients.set(i, Ingredient.fromNetwork(buffer)));
+            ItemStack result = buffer.readItem();
+            return new CuttingBoardCombiningRecipe(ingredients, result);
         }
 
         @Override
@@ -160,17 +160,17 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
 
     public static class Builder implements RecipeBuilder
     {
-        private final NonNullList<Ingredient> inputs = NonNullList.create();
-        private final ItemStack output;
+        private final NonNullList<Ingredient> ingredients = NonNullList.create();
+        private final ItemStack result;
 
         public Builder(ItemStack output)
         {
-            this.output = output;
+            this.result = output;
         }
 
         public Builder add(Ingredient ingredient)
         {
-            this.inputs.add(ingredient);
+            this.ingredients.add(ingredient);
             return this;
         }
 
@@ -189,23 +189,23 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
         @Override
         public Item getResult()
         {
-            return this.output.getItem();
+            return this.result.getItem();
         }
 
         @Override
         public void save(RecipeOutput output, ResourceLocation id)
         {
             this.validate();
-            output.accept(id, new CuttingBoardCombiningRecipe(this.inputs, this.output), null);
+            output.accept(id, new CuttingBoardCombiningRecipe(this.ingredients, this.result), null);
         }
 
         private void validate()
         {
-            if(this.inputs.size() < 2)
+            if(this.ingredients.size() < 2)
             {
                 throw new IllegalStateException("Cutting Board combining recipe must have at least 2 input ingredients");
             }
-            if(this.inputs.size() > MAX_INGREDIENTS)
+            if(this.ingredients.size() > MAX_INGREDIENTS)
             {
                 throw new IllegalStateException("Cutting Board combining recipe only supports up to " + MAX_INGREDIENTS + " input ingredients");
             }

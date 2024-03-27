@@ -43,27 +43,27 @@ public class RecycleBinRecyclingRecipeManager implements IRecipeManager<RecycleB
     }
 
     @ZenCodeType.Method
-    public void addScrap(String id, IItemStack output)
+    public void addScrap(String id, IItemStack item)
     {
-        CraftTweakerAPI.apply(new ActionAddItemsToRecycleBinScraps(this, new ResourceLocation(id), List.of(output)));
+        CraftTweakerAPI.apply(new ActionAddItemsToRecycleBinScraps(this, new ResourceLocation(id), List.of(item)));
     }
 
     @ZenCodeType.Method
-    public void addScrap(String id, List<IItemStack> output)
+    public void addScrap(String id, List<IItemStack> items)
     {
-        CraftTweakerAPI.apply(new ActionAddItemsToRecycleBinScraps(this, new ResourceLocation(id), output));
+        CraftTweakerAPI.apply(new ActionAddItemsToRecycleBinScraps(this, new ResourceLocation(id), items));
     }
 
     @ZenCodeType.Method
-    public void removeScrap(String id, IItemStack removal)
+    public void removeScrap(String id, IItemStack item)
     {
-        CraftTweakerAPI.apply(new ActionRemoveItemsFromRecycleBinScraps(this, new ResourceLocation(id), List.of(removal)));
+        CraftTweakerAPI.apply(new ActionRemoveItemsFromRecycleBinScraps(this, new ResourceLocation(id), List.of(item)));
     }
 
     @ZenCodeType.Method
-    public void removeScrap(String id, List<IItemStack> removal)
+    public void removeScrap(String id, List<IItemStack> items)
     {
-        CraftTweakerAPI.apply(new ActionRemoveItemsFromRecycleBinScraps(this, new ResourceLocation(id), removal));
+        CraftTweakerAPI.apply(new ActionRemoveItemsFromRecycleBinScraps(this, new ResourceLocation(id), items));
     }
 
     @ZenCodeType.Method
@@ -72,19 +72,19 @@ public class RecycleBinRecyclingRecipeManager implements IRecipeManager<RecycleB
         CraftTweakerAPI.apply(new ActionReplaceItemInRecycleBinScraps(this, new ResourceLocation(id), from, to));
     }
 
-    private boolean validate(List<IItemStack> output)
+    private boolean validate(List<IItemStack> items)
     {
-        if(output.isEmpty())
+        if(items.isEmpty())
         {
             Plugin.LOGGER.error("Recycling bin output items cannot be empty");
             return false;
         }
-        if(output.size() > RecycleBinRecyclingRecipe.MAX_OUTPUT_COUNT)
+        if(items.size() > RecycleBinRecyclingRecipe.MAX_OUTPUT_COUNT)
         {
             Plugin.LOGGER.error("Recycling bin output can only have between 1 and " + RecycleBinRecyclingRecipe.MAX_OUTPUT_COUNT + " items");
             return false;
         }
-        for(IItemStack iStack : output)
+        for(IItemStack iStack : items)
         {
             ItemStack stack = iStack.getInternal();
             if(RecycleBinBlockEntity.isInvalidItem(stack))
