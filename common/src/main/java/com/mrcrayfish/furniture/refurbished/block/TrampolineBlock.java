@@ -4,13 +4,16 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.core.ModParticleTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
+import com.mrcrayfish.furniture.refurbished.network.Network;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -18,6 +21,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -245,7 +249,16 @@ public class TrampolineBlock extends FurnitureBlock implements BlockTagSupplier
     private void spawnBounceParticle(Level level, Entity bouncingEntity, BlockPos pos, boolean superBounce)
     {
         if(!level.isClientSide())
+        {
+            // Special case because animals don't trigger client side
+            if(!(bouncingEntity instanceof Player) && bouncingEntity instanceof LivingEntity)
+            {
+                ParticleOptions particle = superBounce ? ModParticleTypes.SUPER_BOUNCE.get() : ModParticleTypes.BOUNCE.get();
+                Vec3 particlePos = Vec3.upFromBottomCenterOf(pos, 0.82);
+                ((ServerLevel) level).sendParticles(particle, bouncingEntity.xo, particlePos.y, bouncingEntity.zo, 0, 0, 0, 0, 0);
+            }
             return;
+        }
 
         ParticleOptions particle = superBounce ? ModParticleTypes.SUPER_BOUNCE.get() : ModParticleTypes.BOUNCE.get();
         Vec3 particlePos = Vec3.upFromBottomCenterOf(pos, 0.82);
