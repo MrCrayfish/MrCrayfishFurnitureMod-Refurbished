@@ -28,7 +28,7 @@ public class FurnitureItemTagsProvider extends ItemTagsProvider
         CommonItemTagsProvider.accept(key -> new PlatformTagBuilder<>(this.tag(key)));
 
         // Allows knife to be used with farmers delight and other mods
-        this.tag(CompatibilityTags.Items.FORGE_TOOLS_KNIVES)
+        this.tag(CompatibilityTags.Items.NEOFORGE_TOOLS_KNIVES)
                 .addTag(ModTags.Items.TOOLS_KNIVES);
     }
 }
