@@ -17,10 +17,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.Container;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -35,7 +37,7 @@ import javax.annotation.Nullable;
 public class FreezerBlockEntity extends ElectricityModuleProcessingContainerBlockEntity implements IPowerSwitch, IHomeControlDevice
 {
     public static final int[] INPUT_SLOTS = new int[]{0};
-    public static final int[] OUTPUT_SLOTS = new int[]{1};
+    public static final int[] OUTPUT_SLOTS = new int[]{0, 1};
     public static final int DATA_POWERED = 0;
     public static final int DATA_ENABLED = 1;
     public static final int DATA_PROCESS_TIME = 2;
@@ -101,6 +103,12 @@ public class FreezerBlockEntity extends ElectricityModuleProcessingContainerBloc
     public int[] getEnergySlots()
     {
         return NO_SLOTS;
+    }
+
+    @Override
+    public boolean canTakeItem(Container container, int slotIndex, ItemStack stack)
+    {
+        return slotIndex != 0 || !this.isRecipe(stack);
     }
 
     @Override
