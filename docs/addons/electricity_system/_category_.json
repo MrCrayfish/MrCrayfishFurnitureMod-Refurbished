@@ -1,0 +1,11 @@
+{
+    "position": 2,
+    "label": "Electricity System",
+    "collapsible": true,
+    "collapsed": true,
+    "className": "red",
+    "link": {
+      "type": "generated-index",
+      "title": "Electricity"
+    }
+  }

@@ -1,0 +1,72 @@
+---
+sidebar_position: 1
+sidebar_label: Getting Started
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Introduction
+
+:::warning
+Creating an addon requires that you have a good understanding of Java and creating Minecraft mods. The tutorials in this section will not cover basic topics like setting up development environments, and adding new items/blocks into the game. You should already understand that before proceeding.
+:::
+
+MrCrayfish's Furniture Mod: Refurbished has been written from the ground up to modernise it's codebase and support the creation of addons. This section hopes to provide a clear understanding of the available features you can use to create your own addon. The mod currently supports the ability to add new computer applications, electricity blocks, TV channels, and generate recipe data.
+
+## 🙋‍♂️ Getting Started
+
+Add the following code to the `repositories` section in your `build.gradle`. You will need to provide a personal GitHub token to access the artifacts. You can do that by the properties `gpr.user` (GitHub username) and `gpr.key` (personal access token) into `gradle.properties`, which is located in your `GRADLE_HOME` directory. You can generate your GitHub token [here](https://github.com/settings/tokens). 
+
+If you are using CI build system, define the environment variables `GPR_USER` and `GPR_KEY` accordingly instead of gradle properties.
+
+```groovy title="build.gradle"
+maven {
+    name = "MrCrayfish (GitHub)"
+    url = "https://maven.pkg.github.com/MrCrayfish/Maven"
+    credentials {
+        username = project.findProperty("gpr.user") ?: System.getenv("GPR_USER")
+        password = project.findProperty("gpr.key") ?: System.getenv("GPR_KEY")
+    }
+    content {
+        includeGroup "com.mrcrayfish"
+    }
+}
+```
+Then add the following to the `dependencies` section in your `build.gradle`.
+<Tabs>
+  <TabItem value="forge" label="Forge" default>
+    ```groovy title="build.gradle"
+    compileOnly fg.deobf("com.mrcrayfish:refurbished_furniture-common:<minecraft_version>-<mod_version>")
+    runtimeOnly fg.deobf("com.mrcrayfish:refurbished_furniture-forge:<minecraft_version>-<mod_version>")
+    ```
+  </TabItem>
+  <TabItem value="fabric" label="Fabric">
+    ```groovy title="build.gradle"
+    modCompileOnly "com.mrcrayfish:refurbished_furniture-common:<minecraft_version>-<mod_version>"
+    modRuntimeOnly "com.mrcrayfish:refurbished_furniture-fabric:<minecraft_version>-<mod_version>"
+    ```
+  </TabItem>
+  <TabItem value="neoforge" label="NeoForge">
+    ```groovy title="build.gradle"
+    compileOnly "com.mrcrayfish:refurbished_furniture-common:<minecraft_version>-<mod_version>"
+    runtimeOnly "com.mrcrayfish:refurbished_furniture-neoforge:<minecraft_version>-<mod_version>"
+    ```
+  </TabItem>
+</Tabs>
+
+## ✨ Congratulations
+
+You are now ready to develop an addon. You can now proceed to one of the guides:
+
+- [Electricity System](/docs/category/electricity-system)
+- [Computer Applications](/docs/category/computer-applications)
+- [TV Channels](/docs/category/tv-channels)
+
+## 📦 Known Addons
+
+These addon mods have been developed by our great community. Their source code is available to help you develop your own addon.
+
+*No listed mods. Submit PR on GitHub to get your mod listed here*
+
+`<mod name> - [CurseForge](link)/[Modrinth](link) - [GitHub](link)`

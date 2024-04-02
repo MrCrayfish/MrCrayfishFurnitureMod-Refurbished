@@ -1,0 +1,11 @@
+{
+    "position": 3,
+    "label": "Computer Applications",
+    "collapsible": true,
+    "collapsed": true,
+    "className": "red",
+    "link": {
+      "type": "generated-index",
+      "title": "Computer Applications"
+    }
+  }

@@ -39,7 +39,7 @@ const AddonDocumentationList = [
         Java <span class="badge badge--danger">Advanced</span>
       </>
     ),
-    link: '/docs/datapack',
+    link: '/docs/addons',
     description: (
       <>
         Expand on the developer friendly base of MrCrayfish's Furntiure Mod: Refurbished. Learn how 
