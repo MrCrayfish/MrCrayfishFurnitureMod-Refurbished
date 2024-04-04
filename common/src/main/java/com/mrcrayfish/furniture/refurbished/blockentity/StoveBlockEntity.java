@@ -74,7 +74,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     protected @Nullable Component name;
 
     protected final ContainerData data = new BuildableContainerData(builder -> {
-        builder.add(DATA_POWERED, () -> this.isPowered() ? 1 : 0, value -> {});
+        builder.add(DATA_POWERED, () -> this.isNodePowered() ? 1 : 0, value -> {});
         builder.add(DATA_ENABLED, () -> enabled ? 1 : 0, value -> {});
         builder.add(DATA_PROGRESS_1, () -> this.getCookingSpaces(0).bakingTime, value -> {});
         builder.add(DATA_PROGRESS_2, () -> this.getCookingSpaces(1).bakingTime, value -> {});
@@ -216,7 +216,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     @Override
     public boolean canProcess()
     {
-        if(!this.isPowered() || !this.enabled) return false;
+        if(!this.isNodePowered() || !this.enabled) return false;
         ICookingBlock block = this.getCookingBlock();
         return block != null && block.canCook();
     }
@@ -420,14 +420,14 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     }
 
     @Override
-    public boolean isPowered()
+    public boolean isNodePowered()
     {
         BlockState state = this.getBlockState();
         return state.hasProperty(StoveBlock.POWERED) && state.getValue(StoveBlock.POWERED);
     }
 
     @Override
-    public void setPowered(boolean powered)
+    public void setNodePowered(boolean powered)
     {
         BlockState state = this.getBlockState();
         if(state.hasProperty(StoveBlock.POWERED))
@@ -445,7 +445,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     public void toggle()
     {
         this.enabled = !this.enabled;
-        this.level.setBlock(this.worldPosition, this.getBlockState().setValue(StoveBlock.LIT, this.isPowered() && this.enabled), Block.UPDATE_ALL);
+        this.level.setBlock(this.worldPosition, this.getBlockState().setValue(StoveBlock.LIT, this.isNodePowered() && this.enabled), Block.UPDATE_ALL);
         this.setChanged();
         this.sync();
     }
@@ -661,7 +661,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
         @Override
         public boolean canProcess()
         {
-            if(!StoveBlockEntity.this.isPowered() || !StoveBlockEntity.this.enabled)
+            if(!StoveBlockEntity.this.isNodePowered() || !StoveBlockEntity.this.enabled)
                 return false;
 
             ItemStack stack = StoveBlockEntity.this.getItem(this.inputIndex);

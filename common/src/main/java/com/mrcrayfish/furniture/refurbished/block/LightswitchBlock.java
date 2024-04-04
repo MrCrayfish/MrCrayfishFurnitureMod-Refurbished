@@ -143,7 +143,7 @@ public class LightswitchBlock extends FurnitureAttachedFaceBlock implements Enti
         {
             if(level.getBlockEntity(pos) instanceof IElectricityNode node)
             {
-                node.onDestroyed();
+                node.onNodeDestroyed();
             }
         }
         super.onRemove(state, level, pos, newState, isMoving);

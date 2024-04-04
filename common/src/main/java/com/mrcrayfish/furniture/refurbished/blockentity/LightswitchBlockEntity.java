@@ -27,14 +27,14 @@ public class LightswitchBlockEntity extends ElectricityModuleBlockEntity impleme
     }
 
     @Override
-    public boolean canPowerTraverse()
+    public boolean canPowerTraverseNode()
     {
         BlockState state = this.getBlockState();
         return state.hasProperty(LightswitchBlock.ENABLED) && state.getValue(LightswitchBlock.ENABLED);
     }
 
     @Override
-    public boolean isPowered()
+    public boolean isNodePowered()
     {
         BlockState state = this.getBlockState();
         return state.hasProperty(LightswitchBlock.POWERED) && state.getValue(LightswitchBlock.POWERED);
@@ -42,7 +42,7 @@ public class LightswitchBlockEntity extends ElectricityModuleBlockEntity impleme
 
     @Override
     @SuppressWarnings("DataFlowIssue")
-    public void setPowered(boolean powered)
+    public void setNodePowered(boolean powered)
     {
         BlockState state = this.getBlockState();
         if(state.hasProperty(LightswitchBlock.POWERED))

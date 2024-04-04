@@ -36,39 +36,39 @@ public abstract class ElectricityModuleLootBlockEntity extends BasicLootBlockEnt
     }
 
     @Override
-    public BlockPos getPosition()
+    public BlockPos getNodePosition()
     {
         return this.worldPosition;
     }
 
     @Override
-    public BlockEntity getBlockEntity()
+    public BlockEntity getNodeOwner()
     {
         return this;
     }
 
     @Override
-    public Set<Connection> getConnections()
+    public Set<Connection> getNodeConnections()
     {
         return this.connections;
     }
 
     @Override
-    public void setReceivingPower(boolean power)
+    public void setNodeReceivingPower(boolean power)
     {
         this.receivingPower = power;
     }
 
     @Override
-    public boolean isReceivingPower()
+    public boolean isNodeReceivingPower()
     {
         return this.receivingPower;
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, ElectricityModuleLootBlockEntity module)
     {
-        module.updatePoweredState();
-        module.setReceivingPower(false);
+        module.updateNodePoweredState();
+        module.setNodeReceivingPower(false);
     }
 
     @Override

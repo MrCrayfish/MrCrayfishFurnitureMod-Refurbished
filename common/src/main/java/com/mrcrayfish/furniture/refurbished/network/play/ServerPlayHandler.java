@@ -92,18 +92,18 @@ public class ServerPlayHandler
 
                 IElectricityNode nodeA = c.getNodeA(level);
                 IElectricityNode nodeB = c.getNodeB(level);
-                if(nodeA != null && nodeB != null && nodeA.isConnectedTo(nodeB))
+                if(nodeA != null && nodeB != null && nodeA.isConnectedToNode(nodeB))
                 {
-                    nodeA.removeConnection(c);
-                    nodeB.removeConnection(c);
+                    nodeA.removeNodeConnection(c);
+                    nodeB.removeNodeConnection(c);
                 }
                 else if(nodeA != null && nodeB == null)
                 {
-                    nodeA.removeConnection(c);
+                    nodeA.removeNodeConnection(c);
                 }
                 else if(nodeA == null && nodeB != null)
                 {
-                    nodeB.removeConnection(c);
+                    nodeB.removeNodeConnection(c);
                 }
             }
         }

@@ -1,7 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.mrcrayfish.furniture.refurbished.block.CeilingFanBlock;
-import com.mrcrayfish.furniture.refurbished.block.LightswitchBlock;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
@@ -14,7 +13,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -58,14 +56,14 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implemen
     }
 
     @Override
-    public boolean isPowered()
+    public boolean isNodePowered()
     {
         BlockState state = this.getBlockState();
         return state.hasProperty(BlockStateProperties.POWERED) && state.getValue(BlockStateProperties.POWERED);
     }
 
     @Override
-    public void setPowered(boolean powered)
+    public void setNodePowered(boolean powered)
     {
         BlockState state = this.getBlockState();
         if(state.hasProperty(BlockStateProperties.POWERED))
@@ -80,7 +78,7 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implemen
     private void updateAnimation()
     {
         this.lastBladeRotation = this.bladeRotation;
-        if(this.isPowered())
+        if(this.isNodePowered())
         {
             this.bladeSpeed = Math.min(this.bladeSpeed + ACCELERATION, MAX_SPEED);
         }
@@ -119,7 +117,7 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implemen
      */
     private void performDamage(Level level)
     {
-        if(this.isPowered())
+        if(this.isNodePowered())
         {
             Direction direction = this.getDirection();
             AABB box = this.getDamageBox(direction).move(this.getBlockPos());
@@ -221,7 +219,7 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implemen
         super.setLevel(level);
 
         // Sets the initial speed on load
-        if(level.isClientSide() && this.isPowered())
+        if(level.isClientSide() && this.isNodePowered())
         {
             this.bladeSpeed = MAX_SPEED;
         }

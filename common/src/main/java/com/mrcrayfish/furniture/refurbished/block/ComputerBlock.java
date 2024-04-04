@@ -17,7 +17,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -64,7 +63,7 @@ public class ComputerBlock extends FurnitureHorizontalEntityBlock implements Blo
     {
         if(state.getValue(DIRECTION).getOpposite() == result.getDirection())
         {
-            if(!level.isClientSide() && level.getBlockEntity(pos) instanceof ComputerBlockEntity computer && computer.isPowered() && !computer.isBeingUsed())
+            if(!level.isClientSide() && level.getBlockEntity(pos) instanceof ComputerBlockEntity computer && computer.isNodePowered() && !computer.isBeingUsed())
             {
                 if(FrameworkAPI.openMenuWithData((ServerPlayer) player, computer, buf -> buf.writeBlockPos(pos)).isPresent())
                 {

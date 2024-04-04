@@ -20,7 +20,6 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -50,9 +49,9 @@ public class ToasterBlockEntity extends ElectricityModuleProcessingContainerBloc
     }
 
     @Override
-    public void setPowered(boolean powered)
+    public void setNodePowered(boolean powered)
     {
-        super.setPowered(powered);
+        super.setNodePowered(powered);
         if(!powered && this.isHeating())
         {
             this.setHeating(false);
@@ -64,7 +63,7 @@ public class ToasterBlockEntity extends ElectricityModuleProcessingContainerBloc
      */
     public void startHeating()
     {
-        if(!this.heating && this.canProcessInput() && this.isPowered())
+        if(!this.heating && this.canProcessInput() && this.isNodePowered())
         {
             this.setHeating(true);
         }
@@ -76,7 +75,7 @@ public class ToasterBlockEntity extends ElectricityModuleProcessingContainerBloc
      */
     public boolean toggleHeating()
     {
-        if(this.heating || (this.canProcessInput() && this.isPowered()))
+        if(this.heating || (this.canProcessInput() && this.isNodePowered()))
         {
             this.setHeating(!this.heating);
             return true;

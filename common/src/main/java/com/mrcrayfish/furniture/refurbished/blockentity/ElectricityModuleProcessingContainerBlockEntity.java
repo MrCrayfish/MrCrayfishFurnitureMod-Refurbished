@@ -9,7 +9,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -47,31 +46,31 @@ public abstract class ElectricityModuleProcessingContainerBlockEntity extends Pr
     }
 
     @Override
-    public BlockPos getPosition()
+    public BlockPos getNodePosition()
     {
         return this.worldPosition;
     }
 
     @Override
-    public BlockEntity getBlockEntity()
+    public BlockEntity getNodeOwner()
     {
         return this;
     }
 
     @Override
-    public boolean isSource()
+    public boolean isSourceNode()
     {
         return false;
     }
 
     @Override
-    public boolean isPowered()
+    public boolean isNodePowered()
     {
         return this.powered;
     }
 
     @Override
-    public void setPowered(boolean powered)
+    public void setNodePowered(boolean powered)
     {
         this.powered = powered;
         this.setChanged();
@@ -82,27 +81,27 @@ public abstract class ElectricityModuleProcessingContainerBlockEntity extends Pr
     }
 
     @Override
-    public Set<Connection> getConnections()
+    public Set<Connection> getNodeConnections()
     {
         return this.connections;
     }
 
     @Override
-    public void setReceivingPower(boolean power)
+    public void setNodeReceivingPower(boolean power)
     {
         this.receivingPower = power;
     }
 
     @Override
-    public boolean isReceivingPower()
+    public boolean isNodeReceivingPower()
     {
         return this.receivingPower;
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, ElectricityModuleProcessingContainerBlockEntity module)
     {
-        module.updatePoweredState();
-        module.setReceivingPower(false);
+        module.updateNodePoweredState();
+        module.setNodeReceivingPower(false);
         ProcessingContainerBlockEntity.serverTick(level, pos, state, module);
     }
 
@@ -128,7 +127,7 @@ public abstract class ElectricityModuleProcessingContainerBlockEntity extends Pr
     @Override
     public void syncNodeData()
     {
-        this.updateConnections();
+        this.updateNodeConnections();
         BlockEntityHelper.sendCustomUpdate(this, this.getUpdateTag());
     }
 

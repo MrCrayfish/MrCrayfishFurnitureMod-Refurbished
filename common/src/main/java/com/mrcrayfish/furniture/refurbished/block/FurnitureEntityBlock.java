@@ -74,7 +74,7 @@ public abstract class FurnitureEntityBlock extends BaseEntityBlock implements Bl
             }
             if(blockEntity instanceof IElectricityNode node)
             {
-                node.onDestroyed();
+                node.onNodeDestroyed();
             }
         }
         super.onRemove(state, level, pos, newState, isMoving);

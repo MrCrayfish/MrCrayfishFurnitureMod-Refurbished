@@ -1,10 +1,8 @@
 package com.mrcrayfish.furniture.refurbished.electricity;
 
 import com.mrcrayfish.furniture.refurbished.Constants;
-import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -60,7 +58,7 @@ public class ElectricityTicker extends SavedData
      */
     public void addSourceNode(ISourceNode node)
     {
-        this.sources.put(node.getPosition(), new MutableObject<>(new WeakReference<>(node)));
+        this.sources.put(node.getNodePosition(), new MutableObject<>(new WeakReference<>(node)));
     }
 
     /**
@@ -82,7 +80,7 @@ public class ElectricityTicker extends SavedData
                 continue;
             }
 
-            node.earlyLevelTick();
+            node.earlyNodeLevelTick();
         }
     }
 
@@ -102,7 +100,7 @@ public class ElectricityTicker extends SavedData
         if(sourceRef != null)
         {
             ISourceNode node = sourceRef.get();
-            if(node != null && node.isValid())
+            if(node != null && node.isNodeValid())
             {
                 return node;
             }
@@ -111,7 +109,7 @@ public class ElectricityTicker extends SavedData
         if(this.level.isLoaded(pos))
         {
             BlockEntity entity = this.level.getBlockEntity(pos);
-            if(entity instanceof ISourceNode node && node.isValid())
+            if(entity instanceof ISourceNode node && node.isNodeValid())
             {
                 mutableObj.setValue(new WeakReference<>(node));
                 return node;

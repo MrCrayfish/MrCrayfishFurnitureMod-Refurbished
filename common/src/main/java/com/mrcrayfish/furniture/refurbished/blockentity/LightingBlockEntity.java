@@ -17,14 +17,14 @@ public class LightingBlockEntity extends ElectricityModuleBlockEntity
     }
 
     @Override
-    public boolean isPowered()
+    public boolean isNodePowered()
     {
         BlockState state = this.getBlockState();
         return state.hasProperty(BlockStateProperties.POWERED) && state.getValue(BlockStateProperties.POWERED);
     }
 
     @Override
-    public void setPowered(boolean powered)
+    public void setNodePowered(boolean powered)
     {
         BlockState state = this.getBlockState();
         if(state.hasProperty(BlockStateProperties.POWERED))

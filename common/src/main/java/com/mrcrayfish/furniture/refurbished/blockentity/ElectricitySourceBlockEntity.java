@@ -30,31 +30,31 @@ public abstract class ElectricitySourceBlockEntity extends BlockEntity implement
     }
 
     @Override
-    public BlockPos getPosition()
+    public BlockPos getNodePosition()
     {
         return this.worldPosition;
     }
 
     @Override
-    public BlockEntity getBlockEntity()
+    public BlockEntity getNodeOwner()
     {
         return this;
     }
 
     @Override
-    public Set<Connection> getConnections()
+    public Set<Connection> getNodeConnections()
     {
         return this.connections;
     }
 
     @Override
-    public void setOverloaded(boolean overloaded)
+    public void setNodeOverloaded(boolean overloaded)
     {
         this.overloaded = overloaded;
     }
 
     @Override
-    public boolean isOverloaded()
+    public boolean isNodeOverloaded()
     {
         return this.overloaded;
     }
@@ -63,7 +63,7 @@ public abstract class ElectricitySourceBlockEntity extends BlockEntity implement
     public void setLevel(Level level)
     {
         super.setLevel(level);
-        this.registerTicker(level);
+        this.registerSourceNodeTicker(level);
     }
 
     @Override

@@ -53,7 +53,7 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNod
         // Draw node model
         poseStack.pushPose();
         poseStack.translate(0.5F, 0.5F, 0.5F);
-        float scale = node.isSource() ? POWER_NODE_SCALE : 1.0F;
+        float scale = node.isSourceNode() ? POWER_NODE_SCALE : 1.0F;
         poseStack.scale(scale, scale, scale);
         VertexConsumer consumer = source.getBuffer(ClientServices.PLATFORM.getElectrictyNodeRenderType());
         BakedModel model = getNodeModel(node);
@@ -63,9 +63,9 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNod
         // Draw highlight colour
         LinkHandler handler = LinkHandler.get();
         boolean isLookingAt = handler.isTargetNode(node);
-        if((isLookingAt && !handler.isLinking() && !node.isConnectionLimit()) || handler.isLinkingNode(node) || handler.canLinkToNode(node.getNodeLevel(), node) && handler.isTargetNode(node))
+        if((isLookingAt && !handler.isLinking() && !node.isNodeConnectionLimitReached()) || handler.isLinkingNode(node) || handler.canLinkToNode(node.getNodeLevel(), node) && handler.isTargetNode(node))
         {
-            AABB box = node.getInteractBox();
+            AABB box = node.getNodeInteractBox();
             int color = handler.getLinkColour(node.getNodeLevel());
             LinkHandler.drawColouredBox(poseStack, source, box.inflate(0.03125), color, 0.75F);
         }
@@ -73,7 +73,7 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNod
         // Draw connections
         poseStack.pushPose();
         poseStack.translate(0.5F, 0.5F, 0.5F);
-        for(Connection connection : node.getConnections())
+        for(Connection connection : node.getNodeConnections())
         {
             if(!DRAWN_CONNECTIONS.contains(connection))
             {
@@ -98,7 +98,7 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNod
 
     private static BakedModel getNodeModel(IElectricityNode node)
     {
-        if(node.isConnectionLimit())
+        if(node.isNodeConnectionLimitReached())
         {
             return ExtraModels.ELECTRIC_NODE_ERROR.getModel();
         }
@@ -113,7 +113,7 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNod
             return ExtraModels.ELECTRIC_NODE_ERROR.getModel();
         }
 
-        if(node.isSource())
+        if(node.isSourceNode())
         {
             return ExtraModels.ELECTRIC_NODE_POWER.getModel();
         }

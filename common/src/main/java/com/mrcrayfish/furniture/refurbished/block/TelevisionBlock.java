@@ -17,7 +17,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -60,7 +59,7 @@ public class TelevisionBlock extends FurnitureHorizontalEntityBlock implements B
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
     {
-        if(level.getBlockEntity(pos) instanceof TelevisionBlockEntity television && television.isPowered())
+        if(level.getBlockEntity(pos) instanceof TelevisionBlockEntity television && television.isNodePowered())
         {
             if(!level.isClientSide())
             {
