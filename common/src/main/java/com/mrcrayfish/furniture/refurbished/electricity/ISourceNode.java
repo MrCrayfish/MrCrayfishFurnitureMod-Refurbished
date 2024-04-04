@@ -1,6 +1,8 @@
 package com.mrcrayfish.furniture.refurbished.electricity;
 
 import com.mrcrayfish.furniture.refurbished.Config;
+import net.minecraft.SharedConstants;
+import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -34,6 +36,14 @@ public interface ISourceNode extends IElectricityNode
      */
     default void onOverloaded() {}
 
+    /**
+     * @return The maximum electricity nodes this source can supply
+     */
+    default int getMaxPowerableNodes()
+    {
+        return Config.SERVER.electricity.maximumNodesInNetwork.get();
+    }
+
     @Override
     default boolean isSource()
     {
@@ -61,28 +71,6 @@ public interface ISourceNode extends IElectricityNode
         return false;
     }
 
-    /**
-     * An early tick called at the start of the level tick before other block entities are ticked
-     */
-    default void earlyLevelTick()
-    {
-        // TODO figure out way to cache this instead of searching again every tick
-        if(this.isPowered() && !this.isOverloaded())
-        {
-            //long time = Util.getNanos();
-            List<IElectricityNode> nodes = IElectricityNode.searchNodes(this, Config.SERVER.electricity.maximumDaisyChain.get(), Config.SERVER.electricity.maximumNodesInNetwork.get(), false, node -> !node.isSource() && node.canPowerTraverse(), node -> true);
-            if(nodes.size() > Config.SERVER.electricity.maximumNodesInNetwork.get())
-            {
-                this.setOverloaded(true);
-                this.onOverloaded();
-                return;
-            }
-            nodes.forEach(node -> node.setReceivingPower(true));
-            //long searchTime = Util.getNanos() - time;
-            //System.out.println("Search time: " + searchTime);
-        }
-    }
-
     @Override
     default void readNodeNbt(CompoundTag tag)
     {
@@ -98,6 +86,28 @@ public interface ISourceNode extends IElectricityNode
     }
 
     /**
+     * An early tick called at the start of the level tick before other block entities are ticked
+     */
+    default void earlyLevelTick()
+    {
+        // TODO figure out way to cache this instead of searching again every tick
+        if(this.isPowered() && !this.isOverloaded())
+        {
+            //long time = Util.getNanos();
+            NodeSearchResult result = this.search();
+            if(result.overloaded())
+            {
+                this.setOverloaded(true);
+                this.onOverloaded();
+                return;
+            }
+            result.nodes().forEach(node -> node.setReceivingPower(true));
+            //long searchTime = Util.getNanos() - time;
+            //System.out.println("Search time: " + searchTime);
+        }
+    }
+
+    /**
      * Registers this source node into the electricity ticker handler
      *
      * @param level the level of this source node
@@ -108,5 +118,18 @@ public interface ISourceNode extends IElectricityNode
         {
             ElectricityTicker.get(serverLevel).addSourceNode(this);
         }
+    }
+
+    /**
+     * The default search algorithm for locating electricity nodes. See {@link IElectricityNode#searchNodes}
+     * for more information on how searching works.
+     *
+     * @return a result of all found nodes and if it's overloaded
+     */
+    default NodeSearchResult search()
+    {
+        List<IElectricityNode> nodes = IElectricityNode.searchNodes(this, Config.SERVER.electricity.maximumDaisyChain.get(), this.getMaxPowerableNodes(), false, node -> !node.isSource() && node.canPowerTraverse(), node -> !node.isSource());
+        boolean overloaded = nodes.size() > this.getMaxPowerableNodes();
+        return new NodeSearchResult(overloaded, nodes);
     }
 }

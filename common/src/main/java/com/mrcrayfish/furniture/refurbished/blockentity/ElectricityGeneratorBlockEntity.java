@@ -5,12 +5,11 @@ import com.mrcrayfish.furniture.refurbished.block.ElectricityGeneratorBlock;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
-import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
+import com.mrcrayfish.furniture.refurbished.electricity.NodeSearchResult;
 import com.mrcrayfish.furniture.refurbished.inventory.BuildableContainerData;
 import com.mrcrayfish.furniture.refurbished.inventory.ElectricityGeneratorMenu;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
-import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -27,8 +26,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.List;
 
 /**
  * Author: MrCrayfish
@@ -153,8 +150,8 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
         this.enabled = !this.enabled;
         if(this.enabled)
         {
-            Pair<Boolean, List<IElectricityNode>> result = this.search();
-            if(!result.left())
+            NodeSearchResult result = this.search();
+            if(!result.overloaded())
             {
                 if(this.overloaded)
                 {
@@ -176,28 +173,12 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
         this.setChanged();
     }
 
-    private Pair<Boolean, List<IElectricityNode>> search()
-    {
-        List<IElectricityNode> nodes = IElectricityNode.searchNodes(this, Config.SERVER.electricity.maximumDaisyChain.get(), Config.SERVER.electricity.maximumNodesInNetwork.get(), false, node -> !node.isSource() && node.canPowerTraverse(), node -> !node.isSource());
-        this.nodeCount = nodes.size();
-        return Pair.of(nodes.size() > Config.SERVER.electricity.maximumNodesInNetwork.get(), nodes);
-    }
-
     @Override
-    public void earlyLevelTick()
+    public NodeSearchResult search()
     {
-        this.processTick();
-        if(this.isPowered() && !this.isOverloaded())
-        {
-            Pair<Boolean, List<IElectricityNode>> result = this.search();
-            if(result.left())
-            {
-                this.setOverloaded(true);
-                this.onOverloaded();
-                return;
-            }
-            result.right().forEach(node -> node.setReceivingPower(true));
-        }
+        NodeSearchResult result = super.search();
+        this.nodeCount = result.nodes().size();
+        return result;
     }
 
     @Override
