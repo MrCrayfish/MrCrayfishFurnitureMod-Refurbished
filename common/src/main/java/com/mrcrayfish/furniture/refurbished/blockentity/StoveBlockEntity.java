@@ -633,7 +633,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
             ItemStack stack = StoveBlockEntity.this.getItem(this.inputIndex);
             if(!stack.isEmpty())
             {
-                Item remainingItem = stack.getItem().getCraftingRemainingItem();
+                Item remainingItem = stack.getMaxStackSize() == 1 ? stack.getItem().getCraftingRemainingItem() : null;
                 Optional<? extends ProcessingRecipe> optional = this.getRecipe();
                 Level level = Objects.requireNonNull(StoveBlockEntity.this.getLevel());
                 ItemStack result = optional.map(recipe -> recipe.getResultItem(level.registryAccess())).orElse(ItemStack.EMPTY);
@@ -645,11 +645,10 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
                     if(outputStack.isEmpty())
                     {
                         StoveBlockEntity.this.setItem(this.outputIndex, copy);
-                        return;
                     }
-                    else if(ItemStack.matches(copy, outputStack) && outputStack.getCount() < outputStack.getMaxStackSize())
+                    else if(ItemStack.isSameItemSameTags(copy, outputStack) && outputStack.getCount() + copy.getCount() <= outputStack.getMaxStackSize())
                     {
-                        outputStack.grow(1);
+                        outputStack.grow(copy.getCount());
                     }
                     if(remainingItem != null)
                     {
@@ -686,7 +685,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
             if(result.isEmpty())
                 return false;
             ItemStack stack = StoveBlockEntity.this.getItem(this.outputIndex);
-            return stack.isEmpty() || ItemStack.isSameItemSameTags(result, stack) && stack.getCount() < stack.getMaxStackSize();
+            return stack.isEmpty() || ItemStack.isSameItemSameTags(result, stack) && stack.getCount() + result.getCount() <= stack.getMaxStackSize();
         }
 
         private Optional<? extends ProcessingRecipe> getRecipe()
