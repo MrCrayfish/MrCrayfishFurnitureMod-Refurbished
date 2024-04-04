@@ -5,7 +5,6 @@ import com.mrcrayfish.furniture.refurbished.blockentity.StoveBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.inventory.slot.ResultSlot;
-import com.mrcrayfish.furniture.refurbished.platform.Services;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -132,7 +131,7 @@ public class StoveMenu extends SimpleContainerMenu implements IPowerSwitchMenu, 
     {
         if(this.container instanceof IPowerSwitch powerSwitch)
         {
-            powerSwitch.toggle();
+            powerSwitch.togglePower();
         }
     }
 }

@@ -5,5 +5,5 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
  */
 public interface IPowerSwitch
 {
-    void toggle();
+    void togglePower();
 }

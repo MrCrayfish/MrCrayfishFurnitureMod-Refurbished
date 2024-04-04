@@ -122,7 +122,7 @@ public class FreezerMenu extends SimpleContainerMenu implements IPowerSwitchMenu
     {
         if(this.container instanceof IPowerSwitch powerSwitch)
         {
-            powerSwitch.toggle();
+            powerSwitch.togglePower();
         }
     }
 }

@@ -125,7 +125,7 @@ public class ElectricityGeneratorMenu extends SimpleContainerMenu implements IPo
     {
         if(this.container instanceof IPowerSwitch powerSwitch)
         {
-            powerSwitch.toggle();
+            powerSwitch.togglePower();
         }
     }
 }

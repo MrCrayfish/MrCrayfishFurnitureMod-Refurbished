@@ -1,6 +1,5 @@
 package com.mrcrayfish.furniture.refurbished.inventory;
 
-import com.mrcrayfish.furniture.refurbished.blockentity.FreezerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.IPowerSwitch;
 import com.mrcrayfish.furniture.refurbished.blockentity.MicrowaveBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
@@ -123,7 +122,7 @@ public class MicrowaveMenu extends SimpleContainerMenu implements IPowerSwitchMe
     {
         if(this.container instanceof IPowerSwitch powerSwitch)
         {
-            powerSwitch.toggle();
+            powerSwitch.togglePower();
         }
     }
 }

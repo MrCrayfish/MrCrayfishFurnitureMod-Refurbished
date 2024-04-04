@@ -143,7 +143,7 @@ public class FreezerBlockEntity extends ElectricityModuleProcessingContainerBloc
     }
 
     @Override
-    public void toggle()
+    public void togglePower()
     {
         this.enabled = !this.enabled;
         this.setChanged();

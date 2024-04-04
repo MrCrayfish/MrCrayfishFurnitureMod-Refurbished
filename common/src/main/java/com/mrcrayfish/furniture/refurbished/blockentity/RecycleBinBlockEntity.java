@@ -310,7 +310,7 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
     }
 
     @Override
-    public void toggle()
+    public void togglePower()
     {
         this.enabled = !this.enabled;
         this.setChanged();
