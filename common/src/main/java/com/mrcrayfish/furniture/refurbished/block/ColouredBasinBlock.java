@@ -35,7 +35,7 @@ public class ColouredBasinBlock extends BasinBlock implements BlockTagSupplier
     }
 
     @Override
-    protected MapCodec<? extends Block> codec()
+    protected MapCodec<ColouredBasinBlock> codec()
     {
         return CODEC;
     }
