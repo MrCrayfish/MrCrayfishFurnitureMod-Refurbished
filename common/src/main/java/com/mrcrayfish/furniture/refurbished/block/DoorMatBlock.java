@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class DoorMatBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
+public class DoorMatBlock extends FurnitureHorizontalEntityBlock implements BlockTagSupplier
 {
     private static final MapCodec<DoorMatBlock> CODEC = simpleCodec(DoorMatBlock::new);
 

@@ -7,7 +7,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.blockentity.ElectricityGeneratorBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
-import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -26,7 +25,6 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -40,7 +38,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class ElectricityGeneratorBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
+public class ElectricityGeneratorBlock extends FurnitureHorizontalEntityBlock implements BlockTagSupplier
 {
     private static final MapCodec<ElectricityGeneratorBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
         return builder.group(MetalType.CODEC.fieldOf("metal_type").forGetter(block -> {
@@ -102,15 +100,9 @@ public class ElectricityGeneratorBlock extends FurnitureHorizontalBlock implemen
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
     {
-        return createTicker(level, type, ModBlockEntities.ELECTRICITY_GENERATOR.get());
-    }
-
-    @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends ElectricityGeneratorBlockEntity> generator)
-    {
         if(level.isClientSide())
         {
-            return createTickerHelper(type, generator, ElectricityGeneratorBlockEntity::clientTick);
+            return createTicker(type, ModBlockEntities.ELECTRICITY_GENERATOR.get(), ElectricityGeneratorBlockEntity::clientTick);
         }
         return null;
     }

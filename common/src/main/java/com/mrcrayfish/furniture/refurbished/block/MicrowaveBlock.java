@@ -5,7 +5,6 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.blockentity.BasicLootBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.CeilingFanBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.MicrowaveBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.data.DropWithName;
@@ -29,7 +28,6 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
@@ -41,7 +39,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class MicrowaveBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier, DropWithName
+public class MicrowaveBlock extends FurnitureHorizontalEntityBlock implements BlockTagSupplier, DropWithName
 {
     private static final MapCodec<MicrowaveBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
         return builder.group(MetalType.CODEC.fieldOf("metal_type").forGetter(block -> {
@@ -128,15 +126,9 @@ public class MicrowaveBlock extends FurnitureHorizontalBlock implements EntityBl
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
     {
-        return createTicker(level, type, ModBlockEntities.MICROWAVE.get());
-    }
-
-    @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends MicrowaveBlockEntity> microwave)
-    {
         if(!level.isClientSide())
         {
-            return createTickerHelper(type, microwave, MicrowaveBlockEntity::serverTick);
+            return createTicker(type, ModBlockEntities.MICROWAVE.get(), MicrowaveBlockEntity::serverTick);
         }
         return null;
     }

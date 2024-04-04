@@ -5,9 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.blockentity.CuttingBoardBlockEntity;
-import com.mrcrayfish.furniture.refurbished.compat.CompatibilityTags;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
-import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
@@ -37,7 +35,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class CuttingBoardBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
+public class CuttingBoardBlock extends FurnitureHorizontalEntityBlock implements BlockTagSupplier
 {
     private static final MapCodec<CuttingBoardBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
         return builder.group(WoodType.CODEC.fieldOf("wood_type").forGetter(block -> {
@@ -109,15 +107,9 @@ public class CuttingBoardBlock extends FurnitureHorizontalBlock implements Entit
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
     {
-        return createTicker(level, type, ModBlockEntities.CUTTING_BOARD.get());
-    }
-
-    @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends CuttingBoardBlockEntity> cuttingBoard)
-    {
         if(!level.isClientSide())
         {
-            return createTickerHelper(type, cuttingBoard, CuttingBoardBlockEntity::serverTick);
+            return createTicker(type, ModBlockEntities.CUTTING_BOARD.get(), CuttingBoardBlockEntity::serverTick);
         }
         return null;
     }

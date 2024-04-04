@@ -5,10 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.blockentity.BasicLootBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.ICookingBlock;
-import com.mrcrayfish.furniture.refurbished.blockentity.RecycleBinBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.StoveBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.StoveContainer;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.data.DropWithName;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
@@ -19,8 +16,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.CompoundContainer;
-import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.WorldlyContainer;
@@ -49,7 +44,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class StoveBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier, WorldlyContainerHolder, DropWithName
+public class StoveBlock extends FurnitureHorizontalEntityBlock implements BlockTagSupplier, WorldlyContainerHolder, DropWithName
 {
     private static final MapCodec<StoveBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
         return builder.group(MetalType.CODEC.fieldOf("metal_type").forGetter(block -> {
@@ -162,15 +157,9 @@ public class StoveBlock extends FurnitureHorizontalBlock implements EntityBlock,
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
     {
-        return createTicker(level, type, ModBlockEntities.STOVE.get());
-    }
-
-    @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends StoveBlockEntity> cuttingBoard)
-    {
         if(!level.isClientSide())
         {
-            return createTickerHelper(type, cuttingBoard, StoveBlockEntity::serverTick);
+            return createTicker(type, ModBlockEntities.STOVE.get(), StoveBlockEntity::serverTick);
         }
         return null;
     }

@@ -2,7 +2,6 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.mrcrayfish.furniture.refurbished.blockentity.BasinBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.BathBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
@@ -48,7 +47,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public abstract class BathBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
+public abstract class BathBlock extends FurnitureHorizontalEntityBlock implements BlockTagSupplier
 {
     protected static final VoxelShape BASE_SHAPE = Block.box(0, 2, 0, 32, 16, 16);
     protected static final VoxelShape COLLISION_SHAPE = Shapes.join(BASE_SHAPE, Block.box(2, 4, 2, 28, 16, 14), BooleanOp.ONLY_FIRST);
@@ -155,15 +154,9 @@ public abstract class BathBlock extends FurnitureHorizontalBlock implements Enti
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
     {
-        return createTicker(level, type, ModBlockEntities.BATH.get());
-    }
-
-    @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends BathBlockEntity> bath)
-    {
         if(level.isClientSide())
         {
-            return createTickerHelper(type, bath, BathBlockEntity::clientTick);
+            return createTicker(type, ModBlockEntities.BATH.get(), BathBlockEntity::clientTick);
         }
         return null;
     }

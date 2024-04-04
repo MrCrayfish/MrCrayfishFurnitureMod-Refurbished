@@ -73,8 +73,7 @@ public abstract class ElectricityModuleBlockEntity extends BlockEntity implement
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, ElectricityModuleBlockEntity module)
     {
-        module.updatePoweredState();
-        module.setReceivingPower(false);
+        IModuleNode.serverTick(level, pos, state, module);
     }
 
     @Override

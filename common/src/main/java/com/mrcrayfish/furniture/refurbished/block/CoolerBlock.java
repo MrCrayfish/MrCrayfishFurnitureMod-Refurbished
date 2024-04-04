@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class CoolerBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
+public class CoolerBlock extends FurnitureHorizontalEntityBlock implements BlockTagSupplier
 {
     private static final MapCodec<CoolerBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
         return builder.group(DyeColor.CODEC.fieldOf("color").forGetter(block -> {

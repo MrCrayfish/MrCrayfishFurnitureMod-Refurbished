@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mojang.serialization.MapCodec;
 import com.mrcrayfish.framework.api.FrameworkAPI;
 import com.mrcrayfish.furniture.refurbished.blockentity.WorkbenchBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
@@ -15,6 +16,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -23,7 +25,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
@@ -34,12 +35,20 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class WorkbenchBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
+public class WorkbenchBlock extends FurnitureHorizontalEntityBlock implements BlockTagSupplier
 {
+    private static final MapCodec<WorkbenchBlock> CODEC = simpleCodec(WorkbenchBlock::new);
+
     public WorkbenchBlock(Properties properties)
     {
         super(properties);
         this.registerDefaultState(this.getStateDefinition().any().setValue(DIRECTION, Direction.NORTH).setValue(POWERED, false));
+    }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec()
+    {
+        return CODEC;
     }
 
     @Override
@@ -83,15 +92,9 @@ public class WorkbenchBlock extends FurnitureHorizontalBlock implements EntityBl
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
     {
-        return createTicker(level, type, ModBlockEntities.WORKBENCH.get());
-    }
-
-    @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends WorkbenchBlockEntity> workbench)
-    {
         if(!level.isClientSide())
         {
-            return createTickerHelper(type, workbench, WorkbenchBlockEntity::sendCountsToUser);
+            return createTicker(type, ModBlockEntities.WORKBENCH.get(), WorkbenchBlockEntity::sendCountsToUser);
         }
         return null;
     }

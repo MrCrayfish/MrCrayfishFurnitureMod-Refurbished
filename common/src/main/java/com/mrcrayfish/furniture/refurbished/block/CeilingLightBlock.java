@@ -8,6 +8,7 @@ import com.mrcrayfish.furniture.refurbished.blockentity.LightingBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
+import com.mrcrayfish.furniture.refurbished.electricity.IModuleNode;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -113,15 +114,9 @@ public class CeilingLightBlock extends FurnitureAttachedFaceBlock implements Ent
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
     {
-        return createTicker(level, type, ModBlockEntities.LIGHTING.get());
-    }
-
-    @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends LightingBlockEntity> ceilingLight)
-    {
         if(!level.isClientSide())
         {
-            return createTickerHelper(type, ceilingLight, LightingBlockEntity::serverTick);
+            return FurnitureEntityBlock.createTicker(type, ModBlockEntities.LIGHTING.get(), IModuleNode::serverTick);
         }
         return null;
     }

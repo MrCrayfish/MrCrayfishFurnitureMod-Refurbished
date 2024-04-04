@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 import com.mrcrayfish.furniture.refurbished.computer.Computer;
 import com.mrcrayfish.furniture.refurbished.computer.Program;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
+import com.mrcrayfish.furniture.refurbished.electricity.IModuleNode;
 import com.mrcrayfish.furniture.refurbished.inventory.BuildableContainerData;
 import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
 import com.mrcrayfish.furniture.refurbished.network.Network;
@@ -204,8 +205,8 @@ public class ComputerBlockEntity extends ElectricityModuleBlockEntity implements
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, ComputerBlockEntity computer)
     {
+        IModuleNode.serverTick(level, pos, state, computer);
         computer.tickProgram();
-        ElectricityModuleBlockEntity.serverTick(level, pos, state, computer);
     }
 
     private void setPowerState(boolean powered)

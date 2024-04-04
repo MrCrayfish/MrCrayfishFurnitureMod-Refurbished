@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class GrillBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
+public class GrillBlock extends FurnitureHorizontalEntityBlock implements BlockTagSupplier
 {
     private static final MapCodec<GrillBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
         return builder.group(DyeColor.CODEC.fieldOf("color").forGetter(block -> {
@@ -146,20 +146,11 @@ public class GrillBlock extends FurnitureHorizontalBlock implements EntityBlock,
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
     {
-        return createTicker(level, type, ModBlockEntities.GRILL.get());
-    }
-
-    @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends GrillBlockEntity> grill)
-    {
         if(level.isClientSide())
         {
-            return createTickerHelper(type, grill, GrillBlockEntity::clientTick);
+            return createTicker(type, ModBlockEntities.GRILL.get(), GrillBlockEntity::clientTick);
         }
-        else
-        {
-            return createTickerHelper(type, grill, GrillBlockEntity::serverTick);
-        }
+        return createTicker(type, ModBlockEntities.GRILL.get(), GrillBlockEntity::serverTick);
     }
 
     @Override

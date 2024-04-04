@@ -3,14 +3,10 @@ package com.mrcrayfish.furniture.refurbished.block;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.framework.api.FrameworkAPI;
 import com.mrcrayfish.furniture.refurbished.blockentity.ComputerBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.FreezerBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.TelevisionBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
-import com.mrcrayfish.furniture.refurbished.network.Network;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -19,7 +15,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -39,7 +34,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class ComputerBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
+public class ComputerBlock extends FurnitureHorizontalEntityBlock implements BlockTagSupplier
 {
     private static final MapCodec<ComputerBlock> CODEC = simpleCodec(ComputerBlock::new);
 
@@ -99,15 +94,9 @@ public class ComputerBlock extends FurnitureHorizontalBlock implements EntityBlo
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
     {
-        return createTicker(level, type, ModBlockEntities.COMPUTER.get());
-    }
-
-    @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends ComputerBlockEntity> computer)
-    {
         if(!level.isClientSide())
         {
-            return createTickerHelper(type, computer, ComputerBlockEntity::serverTick);
+            return createTicker(type, ModBlockEntities.COMPUTER.get(), ComputerBlockEntity::serverTick);
         }
         return null;
     }

@@ -37,7 +37,7 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
-public class FridgeBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier, DropWithName
+public class FridgeBlock extends FurnitureHorizontalEntityBlock implements BlockTagSupplier, DropWithName
 {
     private static final MapCodec<FridgeBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
         return builder.group(MetalType.CODEC.fieldOf("metal_type").forGetter(block -> {

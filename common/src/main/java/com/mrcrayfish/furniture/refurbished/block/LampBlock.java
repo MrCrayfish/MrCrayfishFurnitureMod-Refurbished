@@ -7,10 +7,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.blockentity.LightingBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
-import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
+import com.mrcrayfish.furniture.refurbished.electricity.IModuleNode;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
@@ -22,7 +21,6 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -35,7 +33,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class LampBlock extends FurnitureBlock implements EntityBlock, BlockTagSupplier
+public class LampBlock extends FurnitureEntityBlock implements BlockTagSupplier
 {
     private static final MapCodec<LampBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
         return builder.group(DyeColor.CODEC.fieldOf("color").forGetter(block -> {
@@ -91,15 +89,9 @@ public class LampBlock extends FurnitureBlock implements EntityBlock, BlockTagSu
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
     {
-        return createTicker(level, type, ModBlockEntities.LIGHTING.get());
-    }
-
-    @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends LightingBlockEntity> ceilingLight)
-    {
         if(!level.isClientSide())
         {
-            return createTickerHelper(type, ceilingLight, LightingBlockEntity::serverTick);
+            return createTicker(type, ModBlockEntities.LIGHTING.get(), IModuleNode::serverTick);
         }
         return null;
     }

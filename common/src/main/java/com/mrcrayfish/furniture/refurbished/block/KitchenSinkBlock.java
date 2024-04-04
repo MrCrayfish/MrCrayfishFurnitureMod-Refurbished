@@ -2,7 +2,6 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.mrcrayfish.furniture.refurbished.blockentity.CeilingFanBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.KitchenSinkBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
@@ -31,7 +30,7 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
-public abstract class KitchenSinkBlock extends FurnitureHorizontalBlock implements EntityBlock, IKitchenCabinetry
+public abstract class KitchenSinkBlock extends FurnitureHorizontalEntityBlock implements IKitchenCabinetry
 {
     public KitchenSinkBlock(Properties properties)
     {
@@ -81,15 +80,9 @@ public abstract class KitchenSinkBlock extends FurnitureHorizontalBlock implemen
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
     {
-        return createTicker(level, type, ModBlockEntities.KITCHEN_SINK.get());
-    }
-
-    @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends KitchenSinkBlockEntity> kitchenSink)
-    {
         if(level.isClientSide())
         {
-            return createTickerHelper(type, kitchenSink, KitchenSinkBlockEntity::clientTick);
+            return createTicker(type, ModBlockEntities.KITCHEN_SINK.get(), KitchenSinkBlockEntity::clientTick);
         }
         return null;
     }

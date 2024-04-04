@@ -1,5 +1,9 @@
 package com.mrcrayfish.furniture.refurbished.electricity;
 
+import com.mrcrayfish.furniture.refurbished.blockentity.ElectricityModuleBlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
 /**
@@ -40,5 +44,16 @@ public interface IModuleNode extends IElectricityNode
         {
             this.setPowered(true);
         }
+    }
+
+    /**
+     * Default implementation of an electricity module server tick.
+     *
+     * @param node the module node to tick
+     */
+    static void serverTick(Level level, BlockPos pos, BlockState state, IModuleNode node)
+    {
+        node.updatePoweredState();
+        node.setReceivingPower(false);
     }
 }

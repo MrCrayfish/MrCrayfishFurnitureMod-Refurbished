@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class ToiletBlock extends FurnitureHorizontalBlock implements EntityBlock
+public abstract class ToiletBlock extends FurnitureHorizontalEntityBlock
 {
     public ToiletBlock(Properties properties)
     {

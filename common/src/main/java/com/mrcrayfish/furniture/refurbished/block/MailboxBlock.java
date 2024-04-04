@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class MailboxBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
+public class MailboxBlock extends FurnitureHorizontalEntityBlock implements BlockTagSupplier
 {
     private static final MapCodec<MailboxBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
         return builder.group(WoodType.CODEC.fieldOf("wood_type").forGetter(block -> {

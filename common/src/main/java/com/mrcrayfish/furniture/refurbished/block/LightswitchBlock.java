@@ -10,10 +10,10 @@ import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.data.DropWithName;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
+import com.mrcrayfish.furniture.refurbished.electricity.IModuleNode;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -25,9 +25,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.FaceAttachedHorizontalDirectionalBlock;
-import net.minecraft.world.level.block.entity.BarrelBlockEntity;
-import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -179,15 +176,9 @@ public class LightswitchBlock extends FurnitureAttachedFaceBlock implements Enti
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
     {
-        return createTicker(level, type, ModBlockEntities.LIGHTSWITCH.get());
-    }
-
-    @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends LightswitchBlockEntity> lightSwitch)
-    {
         if(!level.isClientSide())
         {
-            return createTickerHelper(type, lightSwitch, LightswitchBlockEntity::serverTick);
+            return FurnitureEntityBlock.createTicker(type, ModBlockEntities.LIGHTSWITCH.get(), IModuleNode::serverTick);
         }
         return null;
     }

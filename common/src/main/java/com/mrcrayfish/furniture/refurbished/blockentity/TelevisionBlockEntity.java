@@ -5,6 +5,7 @@ import com.mrcrayfish.furniture.refurbished.block.TelevisionBlock;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
+import com.mrcrayfish.furniture.refurbished.electricity.IModuleNode;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageTelevisionChannel;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
@@ -243,8 +244,8 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, TelevisionBlockEntity television)
     {
+        IModuleNode.serverTick(level, pos, state, television);
         television.specialTick();
-        ElectricityModuleBlockEntity.serverTick(level, pos, state, television);
     }
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, TelevisionBlockEntity television)

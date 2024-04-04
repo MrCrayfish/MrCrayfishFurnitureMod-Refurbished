@@ -3,8 +3,6 @@ package com.mrcrayfish.furniture.refurbished.block;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.MapCodec;
-import com.mrcrayfish.furniture.refurbished.blockentity.CeilingFanBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.ElectricityGeneratorBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.TelevisionBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
@@ -36,7 +34,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class TelevisionBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
+public class TelevisionBlock extends FurnitureHorizontalEntityBlock implements BlockTagSupplier
 {
     private static final MapCodec<TelevisionBlock> CODEC = simpleCodec(TelevisionBlock::new);
 
@@ -99,17 +97,11 @@ public class TelevisionBlock extends FurnitureHorizontalBlock implements EntityB
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
     {
-        return createTicker(level, type, ModBlockEntities.TELEVISION.get());
-    }
-
-    @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends TelevisionBlockEntity> television)
-    {
         if(level.isClientSide())
         {
-            return createTickerHelper(type, television, TelevisionBlockEntity::clientTick);
+            return createTicker(type, ModBlockEntities.TELEVISION.get(), TelevisionBlockEntity::clientTick);
         }
-        return createTickerHelper(type, television, TelevisionBlockEntity::serverTick);
+        return createTicker(type, ModBlockEntities.TELEVISION.get(), TelevisionBlockEntity::serverTick);
     }
 
     public static int light(BlockState state)

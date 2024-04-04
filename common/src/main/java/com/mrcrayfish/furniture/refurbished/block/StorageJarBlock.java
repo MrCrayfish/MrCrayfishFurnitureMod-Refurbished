@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class StorageJarBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
+public class StorageJarBlock extends FurnitureHorizontalEntityBlock implements BlockTagSupplier
 {
     private static final MapCodec<StorageJarBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
         return builder.group(WoodType.CODEC.fieldOf("wood_type").forGetter(block -> {

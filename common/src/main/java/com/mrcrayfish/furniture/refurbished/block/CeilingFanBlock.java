@@ -2,14 +2,11 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.blockentity.CeilingFanBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.LightswitchBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
-import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -17,9 +14,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -41,7 +36,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class CeilingFanBlock extends FurnitureBlock implements EntityBlock, BlockTagSupplier
+public class CeilingFanBlock extends FurnitureEntityBlock implements BlockTagSupplier
 {
     private static final MapCodec<CeilingFanBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> {
         return builder.group(WoodType.CODEC.fieldOf("wood_type").forGetter(block -> {
@@ -126,17 +121,11 @@ public class CeilingFanBlock extends FurnitureBlock implements EntityBlock, Bloc
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
     {
-        return createTicker(level, type, ModBlockEntities.CEILING_FAN.get());
-    }
-
-    @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends CeilingFanBlockEntity> ceilingLight)
-    {
-        if(!level.isClientSide())
+        if(level.isClientSide())
         {
-            return createTickerHelper(type, ceilingLight, CeilingFanBlockEntity::serverTick);
+            return createTicker(type, ModBlockEntities.CEILING_FAN.get(), CeilingFanBlockEntity::clientTick);
         }
-        return createTickerHelper(type, ceilingLight, CeilingFanBlockEntity::clientTick);
+        return createTicker(type, ModBlockEntities.CEILING_FAN.get(), CeilingFanBlockEntity::serverTick);
     }
 
     @Override

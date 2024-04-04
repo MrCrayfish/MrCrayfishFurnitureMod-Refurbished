@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Author: MrCrayfish
  */
-public abstract class StorageCabinetBlock extends FurnitureHorizontalBlock implements EntityBlock
+public abstract class StorageCabinetBlock extends FurnitureHorizontalEntityBlock
 {
     public static final EnumProperty<DoorHingeSide> HINGE = BlockStateProperties.DOOR_HINGE;
 
