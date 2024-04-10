@@ -1,0 +1,324 @@
+---
+sidebar_position: 1
+sidebar_label: Using Prebuilt Classes
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import ForgeIcon from '@site/static/img/forge-icon.webp';
+import FabricIcon from '@site/static/img/fabric-icon.webp';
+import NeoForgeIcon from '@site/static/img/neoforge-icon.webp';
+
+# Create an Electricity Block
+
+MrCrayfish's Furniture Mod: Refurbished provides many classes and utilities
+
+To create an electricity block, the block must have a block entity and block entity renderer.
+
+## Step 1: Create a Block Entity
+
+MrCrayfish's Furniture Mod: Refurbished comes with many prebuilt classes you can extend your block entity to avoid writing boilerplate code.
+
+### Option 1: Extend a Prebuilt Class <span class="badge badge--primary">Easy</span>
+
+#### 💥 Destroy the Node
+
+```java title="ExampleBlock.java"
+@Override
+public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+    if(!state.is(newState.getBlock())) {
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        if(blockEntity instanceof IElectricityNode node) {
+            node.onNodeDestroyed();
+        }
+    }
+    super.onRemove(state, level, pos, newState, isMoving);
+}
+```
+
+## Step 2: Register the Block Entity Ticker
+
+:::note
+You can **skip this step** if you are creating an electricty source as it is not needed 😎
+:::
+
+The next step to implementing a custom electricity block is registering a `BlockEntityTicker`. Electricity modules self manage their powered state, which is based on if they are recieving power. An electricity source (like the Electricity Generator) mark electricity modules (like the Ceiling Light) in the network as receiving power but don't actually update their powered state. Upon a electricity module tick, if it is marked as receiving power and it is not powered, it will update it's powered state to `true`. If it is not marked as receiving power and it is powered, it will update it's powered state to `false`. Immediately after, `setNodeReceivingPower(boolean)` will be called on itself with `false` to indicate the "marked state" as consumed. Now that you know the basics of how the ticks work, it's time to register the ticker.
+
+Below is an example of registering a `BlockEntityTicker` for a block entity as an electricity module.
+
+<Tabs className="unique-tabs">
+    <TabItem value="1-20-4" label={<div><img src={require('/static/img/minecraft-icon.webp').default}/> 1.20.4</div>} default>
+        ```java title="ExampleBlock.java"
+        @Nullable
+        @Override
+        public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+            // Only register on server side
+            if(!level.isClientSide()) {
+                // From BaseEntityBlock#createTickerHelper
+                return createTickerHelper(type, <ExampleBlockEntityTypeInstance>, ExampleBlockEntity::serverTick);
+            }
+            return null;
+        }
+        ```
+        ```java title="ExampleBlockEntity.java"
+        public static void serverTick(Level level, BlockPos pos, BlockState state, ExampleBlockEntity entity) {
+            // Make sure this is called first in your tick before other logic
+            IModuleNode.serverTick(level, pos, state, entity);
+        }
+        ```
+    </TabItem>
+    <TabItem value="1-20-1" label={<div><img src={require('/static/img/minecraft-icon.webp').default}/> 1.20.1</div>} default>
+        ```java title="ExampleBlock.java"
+        @Nullable
+        @Override
+        public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+            // Only register on server side
+            if(!level.isClientSide()) {
+                // From BaseEntityBlock#createTickerHelper
+                return createTickerHelper(type, <ExampleBlockEntityTypeInstance>, ExampleBlockEntity::serverTick);
+            }
+            return null;
+        }
+        ```
+        ```java title="ExampleBlockEntity.java"
+        public static void serverTick(Level level, BlockPos pos, BlockState state, ExampleBlockEntity entity) {
+            // Make sure this is called first in your tick before other logic
+            IModuleNode.serverTick(level, pos, state, entity);
+        }
+        ```
+    </TabItem>
+</Tabs>
+
+## Step 3: Register the Block Entity Renderer
+
+In order to render the node and its connections, you'll need to register a block entity renderer for your block entity. This is also crucial for enabling interaction with the Wrench. You either have the option to register your block entity renderer with an existing class proivided by the mod, or if you already have a block entity renderer, you just need to call one method.
+
+### Option 1: Bind to Default Block Entity Renderer
+
+MrCrayfish's Furniture Mod: Refurbished comes with a default block entity renderer for electricity blocks. Simply bind your block entity type with `ElectricBlockEntityRenderer` and rendering and interactions will be handled for you. `ElectricBlockEntityRenderer` accepts any block entity type that inherits `BlockEntity` and `IElectricityNode`. *This option is only suitable if you don't plan to do any extra rendering. Refer to option B for more control.*
+
+<Tabs className="unique-tabs">
+  <TabItem value="1-20-4" label={<div><img src={require('/static/img/minecraft-icon.webp').default}/> 1.20.4</div>} default>
+    <div className="code-block">
+      <Tabs className="unique-tabs">
+        <TabItem value="forge" label={<div><img src={require('/static/img/forge-icon.webp').default}/> Forge</div>} default>
+          ```java
+          import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.ElectricBlockEntityRenderer;
+
+          // Make sure to register this event on the mod event bus
+          public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
+              // Replace <YourBlockEntityType> with the instance of the block entity type
+              event.registerBlockEntityRenderer(<YourBlockEntityType>, ElectricBlockEntityRenderer::new);
+          }
+          ```  
+        </TabItem>
+        <TabItem value="fabric" label={<div><img src={require('/static/img/fabric-icon.webp').default}/> Fabric</div>}>
+          ```java
+          import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.ElectricBlockEntityRenderer;
+
+          // Call this in your client initialization. Replace <YourBlockEntityType> with the instance of the block entity type
+          BlockEntityRenderers.register(<YourBlockEntityType>, ElectricBlockEntityRenderer::new);
+          ``` 
+        </TabItem>
+        <TabItem value="neoforge" label={<div><img src={require('/static/img/neoforge-icon.webp').default}/> NeoForge</div>}>
+          ```java
+          import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.ElectricBlockEntityRenderer;
+
+          // Make sure to register this event on the mod event bus
+          public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
+              // Replace <YourBlockEntityType> with the instance of the block entity type
+              event.registerBlockEntityRenderer(<YourBlockEntityType>, ElectricBlockEntityRenderer::new);
+          }
+          ```  
+        </TabItem>
+      </Tabs>
+    </div>
+  </TabItem>
+  <TabItem value="1-20-1" label={<div><img src={require('/static/img/minecraft-icon.webp').default}/> 1.20.1</div>}>
+    <div className="code-block">
+      <Tabs className="unique-tabs">
+        <TabItem value="forge" label={<div><img src={require('/static/img/forge-icon.webp').default}/> Forge</div>} default>
+          ```java
+          import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.ElectricBlockEntityRenderer;
+
+          // Make sure to register this event on the mod event bus
+          public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
+              // Replace <YourBlockEntityType> with the instance of the block entity type
+              event.registerBlockEntityRenderer(<YourBlockEntityType>, ElectricBlockEntityRenderer::new);
+          }
+          ```  
+        </TabItem>
+        <TabItem value="fabric" label={<div><img src={require('/static/img/fabric-icon.webp').default}/> Fabric</div>}>
+          ```java
+          import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.ElectricBlockEntityRenderer;
+
+          // Call this in your client initialization. Replace <YourBlockEntityType> with the instance of the block entity type
+          BlockEntityRenderers.register(<YourBlockEntityType>, ElectricBlockEntityRenderer::new);
+          ``` 
+        </TabItem>
+      </Tabs>
+    </div>
+  </TabItem>
+</Tabs>
+
+### Option 2: Modifying a Preexisting Block Entity Renderer
+
+If you already have a block entity renderer, you just need to call `drawNodeAndConnections` from `ElectricBlockEntityRenderer` to enabled rendering and interactions.
+
+<Tabs className="unique-tabs">
+  <TabItem value="1-20-4" label={<div><img src={require('/static/img/minecraft-icon.webp').default}/> 1.20.4</div>} default>
+    ```java title="ExampleBlockEntityRenderer.java"
+    import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.ElectricBlockEntityRenderer;
+
+    @Override
+    public void render(T entity, float partialTick, PoseStack stack, MultiBufferSource source, int light, int overlay)
+    {
+        stack.pushPose();
+        // ...
+        stack.popPose();
+
+        // Call this last. Make sure you don't perform any transforms, wrap your rendering in push and pop.
+        ElectricBlockEntityRenderer.drawNodeAndConnections(entity, stack, source, overlay);
+    }
+    ```
+  </TabItem>
+  <TabItem value="1-20-1" label={<div><img src={require('/static/img/minecraft-icon.webp').default}/> 1.20.1</div>}>
+    ```java title="ExampleBlockEntityRenderer.java"
+    import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.ElectricBlockEntityRenderer;
+
+    @Override
+    public void render(T entity, float partialTick, PoseStack stack, MultiBufferSource source, int light, int overlay)
+    {
+        stack.pushPose();
+        // ...
+        stack.popPose();
+
+        // Call this last. Make sure you don't perform any transforms, wrap your rendering in push and pop.
+        ElectricBlockEntityRenderer.drawNodeAndConnections(entity, stack, source, overlay);
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+### Disable Frustrum Culling
+
+Frustrum culling is a performance feature. It only allows blocks that are in the view of the camera to be drawn. This can be a problem for electricity blocks as there is a case where no electricity blocks are visible but the connections should be drawn. Since the Block Entity Renderer of the electricity block is responsible for drawing them, we need to add an exception to allow the blocks to be drawn even though they aren't in view.
+
+:::note
+You may not need to apply all these changes. This depends on if you extended one of the prebuilt classes or if you're using ElectricBlockEntityRenderer. Check if methods are overriden already and apply where needed.
+:::
+
+<Tabs className="unique-tabs">
+  <TabItem value="1-20-4" label={<div><img src={require('/static/img/minecraft-icon.webp').default}/> 1.20.4</div>} default>
+  <div className="code-block">
+    <Tabs className="unique-tabs">
+      <TabItem value="forge" label={<div><img src={require('/static/img/forge-icon.webp').default}/> Forge</div>} default>
+        ```java title="ExampleBlockEntityRenderer.java"
+        @Override
+        public boolean shouldRenderOffScreen(T node)
+        {
+            return true;
+        }
+
+        @Override
+        public int getViewDistance()
+        {
+            // Use the config property from the mod for consistency
+            return Config.CLIENT.electricityViewDistance.get();
+        }
+        ```
+        ```java title="ExampleBlockEntity.java"
+        @Override
+        public AABB getRenderBoundingBox() // From IForgeBlockEntity
+        {
+            // Use the config property from the mod for consistency
+            return new AABB(this.worldPosition).inflate(Config.CLIENT.electricityViewDistance.get());
+        }
+        ```
+      </TabItem>
+      <TabItem value="fabric" label={<div><img src={require('/static/img/fabric-icon.webp').default}/> Fabric</div>}>
+        ```java title="ExampleBlockEntityRenderer.java"
+        @Override
+        public boolean shouldRenderOffScreen(T node)
+        {
+            return true;
+        }
+
+        @Override
+        public int getViewDistance()
+        {
+            // Use the config property from the mod for consistency
+            return Config.CLIENT.electricityViewDistance.get();
+        }
+        ```
+      </TabItem>
+      <TabItem value="neoforge" label={<div><img src={require('/static/img/neoforge-icon.webp').default}/> NeoForge</div>}>
+        ```java title="ExampleBlockEntityRenderer.java"
+        @Override
+        public boolean shouldRenderOffScreen(T node)
+        {
+            return true;
+        }
+
+        @Override
+        public int getViewDistance()
+        {
+            // Use the config property from the mod for consistency
+            return Config.CLIENT.electricityViewDistance.get();
+        }
+
+        @Override
+        public AABB getRenderBoundingBox(T node) // From IBlockEntityRendererExtension
+        {
+            // Use the config property from the mod for consistency
+            return new AABB(node.getNodePosition()).inflate(Config.CLIENT.electricityViewDistance.get());
+        }
+        ```
+      </TabItem>
+    </Tabs>
+  </div>
+  </TabItem>
+  <TabItem value="1-20-1" label={<div><img src={require('/static/img/minecraft-icon.webp').default}/> 1.20.1</div>}>
+  <div className="code-block">
+    <Tabs className="unique-tabs">
+      <TabItem value="forge" label={<div><img src={require('/static/img/forge-icon.webp').default}/> Forge</div>} default>
+        ```java title="ExampleBlockEntityRenderer.java"
+        @Override
+        public boolean shouldRenderOffScreen(T node)
+        {
+            return true;
+        }
+
+        @Override
+        public int getViewDistance()
+        {
+            return Config.CLIENT.electricityViewDistance.get();
+        }
+        ```
+        ```java title="ExampleBlockEntity.java"
+        @Override
+        public AABB getRenderBoundingBox() // From IForgeBlockEntity
+        {
+            return new AABB(this.worldPosition).inflate(Config.CLIENT.electricityViewDistance.get());
+        }
+        ```
+      </TabItem>
+      <TabItem value="fabric" label={<div><img src={require('/static/img/fabric-icon.webp').default}/> Fabric</div>}>
+        ```java title="ExampleBlockEntityRenderer.java"
+        @Override
+        public boolean shouldRenderOffScreen(T node)
+        {
+            return true;
+        }
+
+        @Override
+        public int getViewDistance()
+        {
+            return Config.CLIENT.electricityViewDistance.get();
+        }
+        ```
+      </TabItem>
+    </Tabs>
+  </div>
+  </TabItem>
+</Tabs>

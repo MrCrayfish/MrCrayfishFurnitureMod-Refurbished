@@ -1,0 +1,11 @@
+{
+    "position": 2,
+    "label": "Create an Electricity Block",
+    "collapsible": true,
+    "collapsed": true,
+    "className": "red",
+    "link": {
+      "type": "generated-index",
+      "title": "Create an Electricity Block"
+    }
+  }
