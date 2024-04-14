@@ -9,6 +9,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
@@ -19,12 +20,12 @@ import java.util.Set;
 /**
  * Author: MrCrayfish
  */
-public abstract class ElectricitySourceBlockEntity extends BlockEntity implements ISourceNode
+public abstract class ElectricitySourceContainerBlockEntity extends RandomizableContainerBlockEntity implements ISourceNode
 {
     protected final Set<Connection> connections = new HashSet<>();
     protected boolean overloaded;
 
-    public ElectricitySourceBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
+    public ElectricitySourceContainerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
     {
         super(type, pos, state);
     }
@@ -105,8 +106,7 @@ public abstract class ElectricitySourceBlockEntity extends BlockEntity implement
         return this.worldPosition.hashCode();
     }
 
-    // Forge method
-    // @Override
+    // @Override From IForgeBlockEntity
     @SuppressWarnings("unused")
     public AABB getRenderBoundingBox()
     {
