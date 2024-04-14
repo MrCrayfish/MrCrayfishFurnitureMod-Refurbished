@@ -192,7 +192,7 @@ public class FreezerBlockEntity extends ElectricityModuleProcessingContainerBloc
     {
         this.enabled = !this.enabled;
         this.setChanged();
-        this.syncNodeData();
+        this.syncDataToTrackingClients();
     }
 
     @Override
@@ -200,7 +200,7 @@ public class FreezerBlockEntity extends ElectricityModuleProcessingContainerBloc
     {
         this.enabled = enabled;
         this.setChanged();
-        this.syncNodeData();
+        this.syncDataToTrackingClients();
     }
 
     @Override

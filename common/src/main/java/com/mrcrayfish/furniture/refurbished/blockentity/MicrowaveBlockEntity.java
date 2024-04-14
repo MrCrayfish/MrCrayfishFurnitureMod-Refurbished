@@ -177,7 +177,7 @@ public class MicrowaveBlockEntity extends ElectricityModuleProcessingContainerBl
     {
         this.enabled = !this.enabled;
         this.setChanged();
-        this.syncNodeData();
+        this.syncDataToTrackingClients();
     }
 
     @Override
@@ -185,7 +185,7 @@ public class MicrowaveBlockEntity extends ElectricityModuleProcessingContainerBl
     {
         this.enabled = enabled;
         this.setChanged();
-        this.syncNodeData();
+        this.syncDataToTrackingClients();
     }
 
     @Override
