@@ -133,6 +133,13 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNod
         return Config.CLIENT.electricityViewDistance.get();
     }
 
+    // @Override (from NeoForge's IBlockEntityRendererExtension)
+    @SuppressWarnings("unused")
+    public AABB getRenderBoundingBox(T node)
+    {
+        return new AABB(node.getNodePosition()).inflate(Config.CLIENT.electricityViewDistance.get());
+    }
+
     public static void clearDrawn()
     {
         DRAWN_CONNECTIONS.clear();
