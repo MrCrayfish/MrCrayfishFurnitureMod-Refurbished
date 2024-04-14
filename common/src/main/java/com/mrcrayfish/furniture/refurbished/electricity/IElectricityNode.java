@@ -166,6 +166,7 @@ public interface IElectricityNode
     {
         this.getNodeConnections().remove(connection);
         this.syncDataToTrackingClients();
+        this.getNodeOwner().setChanged();
     }
 
     /**
@@ -183,6 +184,7 @@ public interface IElectricityNode
             });
         });
         connections.clear();
+        this.getNodeOwner().setChanged();
     }
 
     /**
