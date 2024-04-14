@@ -48,12 +48,6 @@ public abstract class ElectricityModuleBlockEntity extends BlockEntity implement
     }
 
     @Override
-    public boolean isSourceNode()
-    {
-        return false;
-    }
-
-    @Override
     public Set<Connection> getNodeConnections()
     {
         return this.connections;
