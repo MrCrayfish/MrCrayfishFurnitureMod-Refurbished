@@ -22,13 +22,13 @@ import java.util.Set;
 /**
  * Author: MrCrayfish
  */
-public abstract class ElectricityModuleProcessingContainerBlockEntity extends ProcessingContainerBlockEntity implements IModuleNode
+public abstract class ElectricityModuleProcessingLootBlockEntity extends ProcessingContainerBlockEntity implements IModuleNode
 {
     protected final Set<Connection> connections = new HashSet<>();
     protected boolean powered;
     protected boolean receivingPower;
 
-    protected ElectricityModuleProcessingContainerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int containerSize, RecipeType<? extends ProcessingRecipe> recipeType)
+    protected ElectricityModuleProcessingLootBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int containerSize, RecipeType<? extends ProcessingRecipe> recipeType)
     {
         super(type, pos, state, containerSize, recipeType);
     }
@@ -76,7 +76,7 @@ public abstract class ElectricityModuleProcessingContainerBlockEntity extends Pr
         this.setChanged();
         if(this.level instanceof ServerLevel)
         {
-            this.syncNodeData();
+            this.syncDataToTrackingClients();
         }
     }
 
@@ -98,7 +98,7 @@ public abstract class ElectricityModuleProcessingContainerBlockEntity extends Pr
         return this.receivingPower;
     }
 
-    public static void serverTick(Level level, BlockPos pos, BlockState state, ElectricityModuleProcessingContainerBlockEntity module)
+    public static void serverTick(Level level, BlockPos pos, BlockState state, ElectricityModuleProcessingLootBlockEntity module)
     {
         module.updateNodePoweredState();
         module.setNodeReceivingPower(false);
@@ -125,7 +125,7 @@ public abstract class ElectricityModuleProcessingContainerBlockEntity extends Pr
     }
 
     @Override
-    public void syncNodeData()
+    public void syncDataToTrackingClients()
     {
         this.updateNodeConnections();
         BlockEntityHelper.sendCustomUpdate(this, this.getUpdateTag());
