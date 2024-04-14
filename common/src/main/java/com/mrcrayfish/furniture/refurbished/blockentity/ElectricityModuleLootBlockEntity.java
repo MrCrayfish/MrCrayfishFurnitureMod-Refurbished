@@ -98,6 +98,7 @@ public abstract class ElectricityModuleLootBlockEntity extends BasicLootBlockEnt
         return this.saveWithoutMetadata();
     }
 
+    // @Override From IForgeBlockEntity
     @SuppressWarnings("unused")
     public AABB getRenderBoundingBox()
     {

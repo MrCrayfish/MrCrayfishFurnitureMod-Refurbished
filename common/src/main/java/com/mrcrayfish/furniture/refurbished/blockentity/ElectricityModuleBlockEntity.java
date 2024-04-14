@@ -97,6 +97,7 @@ public abstract class ElectricityModuleBlockEntity extends BlockEntity implement
         return this.saveWithoutMetadata();
     }
 
+    // @Override From IForgeBlockEntity
     @SuppressWarnings("unused")
     public AABB getRenderBoundingBox()
     {
