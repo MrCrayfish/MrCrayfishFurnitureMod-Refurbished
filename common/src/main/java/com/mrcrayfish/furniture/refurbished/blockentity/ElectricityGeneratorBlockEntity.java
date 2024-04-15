@@ -297,4 +297,11 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
         super.saveAdditional(tag);
         tag.putBoolean("Enabled", this.enabled);
     }
+
+    @Override
+    public void earlyNodeLevelTick()
+    {
+        this.processTick();
+        super.earlyNodeLevelTick();
+    }
 }
