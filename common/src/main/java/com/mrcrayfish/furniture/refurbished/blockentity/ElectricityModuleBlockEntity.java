@@ -6,6 +6,7 @@ import com.mrcrayfish.furniture.refurbished.electricity.IModuleNode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -108,5 +109,11 @@ public abstract class ElectricityModuleBlockEntity extends BlockEntity implement
     public int hashCode()
     {
         return this.worldPosition.hashCode();
+    }
+
+    @Override
+    public void saveToItem(ItemStack stack)
+    {
+        this.saveNodeNbtToItem(stack);
     }
 }

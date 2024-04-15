@@ -9,6 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -151,5 +152,11 @@ public abstract class ElectricityModuleProcessingLootBlockEntity extends Process
     public int hashCode()
     {
         return this.worldPosition.hashCode();
+    }
+
+    @Override
+    public void saveToItem(ItemStack stack)
+    {
+        this.saveNodeNbtToItem(stack);
     }
 }
