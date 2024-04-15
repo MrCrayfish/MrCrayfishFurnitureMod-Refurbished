@@ -5,6 +5,8 @@ import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
@@ -154,6 +156,23 @@ public interface IElectricityNode
     {
         Set<Connection> connections = this.getNodeConnections();
         tag.putLongArray("Connections", connections.stream().map(Connection::getPosB).map(BlockPos::asLong).toList());
+        tag.putLong("NodePos", this.getNodePosition().asLong());
+    }
+
+    /**
+     * Custom method for saving data to an item. This happens when the player picks the block with
+     * nbt enabled. Removes node data that should not be included when writing to the item.
+     *
+     * @param stack the stack to write the data to
+     */
+    default void saveNodeNbtToItem(ItemStack stack)
+    {
+        BlockEntity entity = this.getNodeOwner();
+        CompoundTag tag = entity.saveWithoutMetadata();
+        tag.remove("Connections"); // Don't include connections as this breaks node limits
+        tag.remove("Powered"); // Remove the powered property
+        tag.remove("Overloaded"); // Remove the overloaded property
+        BlockItem.setBlockEntityData(stack, entity.getType(), tag);
     }
 
     /**

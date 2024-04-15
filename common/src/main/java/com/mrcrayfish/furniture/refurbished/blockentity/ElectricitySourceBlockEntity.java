@@ -6,6 +6,7 @@ import com.mrcrayfish.furniture.refurbished.electricity.ISourceNode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -111,5 +112,11 @@ public abstract class ElectricitySourceBlockEntity extends BlockEntity implement
     public AABB getRenderBoundingBox()
     {
         return new AABB(this.worldPosition).inflate(Config.CLIENT.electricityViewDistance.get());
+    }
+
+    @Override
+    public void saveToItem(ItemStack stack)
+    {
+        this.saveNodeNbtToItem(stack);
     }
 }

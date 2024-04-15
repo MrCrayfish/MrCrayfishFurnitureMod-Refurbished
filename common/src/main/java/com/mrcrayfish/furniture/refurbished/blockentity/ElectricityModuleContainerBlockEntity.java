@@ -114,8 +114,8 @@ public abstract class ElectricityModuleContainerBlockEntity extends Randomizable
     }
 
     @Override
-    public void saveToItem(ItemStack $$0)
+    public void saveToItem(ItemStack stack)
     {
-        super.saveToItem($$0);
+        this.saveNodeNbtToItem(stack);
     }
 }
