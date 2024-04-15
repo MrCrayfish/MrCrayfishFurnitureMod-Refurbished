@@ -136,13 +136,24 @@ public interface IElectricityNode
     {
         if(tag.contains("Connections", Tag.TAG_LONG_ARRAY))
         {
+            // Hack to offset connections when using clone command. Does not support rotation
+            BlockPos offset = BlockPos.ZERO;
+            if(tag.contains("NodePos", Tag.TAG_LONG))
+            {
+                BlockPos current = this.getNodePosition();
+                BlockPos previous = BlockPos.of(tag.getLong("NodePos"));
+                if(!current.equals(previous))
+                {
+                    offset = current.subtract(previous);
+                }
+            }
             BlockPos pos = this.getNodePosition();
             Set<Connection> connections = this.getNodeConnections();
             connections.clear();
             long[] nodes = tag.getLongArray("Connections");
             for(long node : nodes)
             {
-                connections.add(Connection.of(pos, BlockPos.of(node)));
+                connections.add(Connection.of(pos, BlockPos.of(node).offset(offset)));
             }
         }
     }
@@ -170,6 +181,7 @@ public interface IElectricityNode
         BlockEntity entity = this.getNodeOwner();
         CompoundTag tag = entity.saveWithoutMetadata();
         tag.remove("Connections"); // Don't include connections as this breaks node limits
+        tag.remove("NodePos"); // Don't include fix for connections since none are present anyway
         tag.remove("Powered"); // Remove the powered property
         tag.remove("Overloaded"); // Remove the overloaded property
         BlockItem.setBlockEntityData(stack, entity.getType(), tag);
