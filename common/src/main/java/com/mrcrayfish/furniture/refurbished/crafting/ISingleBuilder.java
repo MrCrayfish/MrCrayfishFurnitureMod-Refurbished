@@ -10,5 +10,5 @@ import net.minecraft.world.item.crafting.SingleItemRecipe;
  */
 public interface ISingleBuilder<T extends SingleItemRecipe>
 {
-    T create(ResourceLocation id, String group, Ingredient input, ItemStack result);
+    T create(ResourceLocation id, String group, Ingredient ingredient, ItemStack result);
 }

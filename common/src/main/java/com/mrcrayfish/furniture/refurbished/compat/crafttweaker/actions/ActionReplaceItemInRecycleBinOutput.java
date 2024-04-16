@@ -7,14 +7,13 @@ import com.blamejared.crafttweaker.api.recipe.RecipeList;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.crafting.RecycleBinRecyclingRecipe;
+import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish
@@ -39,7 +38,8 @@ public class ActionReplaceItemInRecycleBinOutput implements IAction, IRuntimeAct
     {
         RecipeList<RecycleBinRecyclingRecipe> list = this.manager.getRecipeList();
         RecycleBinRecyclingRecipe recipe = list.get(this.id);
-        List<ItemStack> newOutput = new ArrayList<>(List.of(recipe.getOutputs()));
+        NonNullList<ItemStack> newOutput = NonNullList.create();
+        newOutput.addAll(recipe.getScraps());
         for(int i = 0; i < newOutput.size(); i++)
         {
             ItemStack stack = newOutput.get(i);
@@ -50,13 +50,13 @@ public class ActionReplaceItemInRecycleBinOutput implements IAction, IRuntimeAct
             }
         }
         list.remove(this.id);
-        list.add(this.id, new RecycleBinRecyclingRecipe(this.id, recipe.getInput(), newOutput.toArray(ItemStack[]::new)));
+        list.add(this.id, new RecycleBinRecyclingRecipe(this.id, recipe.getRecyclable(), newOutput));
     }
 
     @Override
     public String describe()
     {
-        return "Replacing the item '%s' with '%s' from the output of the recycling bin recipe '%s'".formatted(this.from.getCommandString(), this.to.getCommandString(), this.id);
+        return "Replacing the item '%s' with '%s' from the scraps of the recycling bin recipe '%s'".formatted(this.from.getCommandString(), this.to.getCommandString(), this.id);
     }
 
     @Override

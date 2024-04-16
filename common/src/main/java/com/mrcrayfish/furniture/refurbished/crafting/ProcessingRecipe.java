@@ -12,8 +12,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -30,17 +30,17 @@ public abstract class ProcessingRecipe implements Recipe<Container>
 {
     protected final RecipeType<?> type;
     protected final ResourceLocation id;
-    protected final Ingredient input;
-    protected final ItemStack output;
-    protected final int processTime;
+    protected final Ingredient ingredient;
+    protected final ItemStack result;
+    protected final int time;
 
-    protected ProcessingRecipe(RecipeType<?> type, ResourceLocation id, Ingredient input, ItemStack output, int processTime)
+    protected ProcessingRecipe(RecipeType<?> type, ResourceLocation id, Ingredient ingredient, ItemStack result, int time)
     {
         this.type = type;
         this.id = id;
-        this.input = input;
-        this.output = output;
-        this.processTime = processTime;
+        this.ingredient = ingredient;
+        this.result = result;
+        this.time = time;
     }
 
     @Override
@@ -58,19 +58,19 @@ public abstract class ProcessingRecipe implements Recipe<Container>
     @Override
     public ItemStack getResultItem(RegistryAccess access)
     {
-        return this.output;
+        return this.result;
     }
 
     @Override
     public boolean matches(Container container, Level level)
     {
-        return this.input.test(container.getItem(0));
+        return this.ingredient.test(container.getItem(0));
     }
 
     @Override
     public ItemStack assemble(Container container, RegistryAccess access)
     {
-        return this.output.copy();
+        return this.result.copy();
     }
 
     @Override
@@ -83,16 +83,16 @@ public abstract class ProcessingRecipe implements Recipe<Container>
     public NonNullList<Ingredient> getIngredients()
     {
         NonNullList<Ingredient> ingredients = NonNullList.create();
-        ingredients.add(this.input);
+        ingredients.add(this.ingredient);
         return ingredients;
     }
 
     /**
      * @return The input ingredient of this recipe
      */
-    public Ingredient getInput()
+    public Ingredient getIngredient()
     {
-        return this.input;
+        return this.ingredient;
     }
 
     /**
@@ -100,79 +100,41 @@ public abstract class ProcessingRecipe implements Recipe<Container>
      *
      * @return The output itemstack
      */
-    public ItemStack getOutput()
+    public ItemStack getResult()
     {
-        return this.output;
+        return this.result;
     }
 
     /**
      * @return The time in ticks to process this recipe
      */
-    public int getProcessTime()
+    public int getTime()
     {
-        return this.processTime;
+        return this.time;
     }
 
-    public static Builder builder(Ingredient input, ItemStack output, int processTime, RecipeSerializer<? extends ProcessingRecipe> serializer)
+    public static Builder builder(Ingredient input, ItemStack output, int processTime, Serializer<? extends ProcessingRecipe> serializer)
     {
         return new Builder(input, output, processTime, serializer);
     }
 
-    public static class Serializer<T extends ProcessingRecipe> implements RecipeSerializer<T>
-    {
-        private final Factory<T> factory;
-        private final int defaultTime;
-
-        public Serializer(Factory<T> factory, int defaultTime)
-        {
-            this.factory = factory;
-            this.defaultTime = defaultTime;
-        }
-
-        @Override
-        public T fromJson(ResourceLocation id, JsonObject object)
-        {
-            Ingredient input = Utils.getIngredient(object, "input");
-            ItemStack output = Utils.getItemStack(object, "output");
-            int processTime = GsonHelper.getAsInt(object, "processTime", this.defaultTime);
-            return this.factory.create(id, input, output, processTime);
-        }
-
-        @Override
-        public T fromNetwork(ResourceLocation id, FriendlyByteBuf buf)
-        {
-            Ingredient input = Ingredient.fromNetwork(buf);
-            ItemStack output = buf.readItem();
-            int processTime = buf.readVarInt();
-            return this.factory.create(id, input, output, processTime);
-        }
-
-        @Override
-        public void toNetwork(FriendlyByteBuf buf, T recipe)
-        {
-            recipe.input.toNetwork(buf);
-            buf.writeItem(recipe.output);
-            buf.writeVarInt(recipe.processTime);
-        }
-    }
-
     public interface Factory<T extends ProcessingRecipe>
     {
-        T create(ResourceLocation id, Ingredient input, ItemStack result, int processTime);
+        T create(ResourceLocation id, Ingredient ingredient, ItemStack result, int time);
     }
 
     public static class Builder implements RecipeBuilder
     {
-        protected final Ingredient input;
-        protected final ItemStack output;
-        protected final int processTime;
-        protected final RecipeSerializer<? extends ProcessingRecipe> serializer;
+        protected final Ingredient ingredient;
+        protected final ItemStack result;
+        protected final int time;
+        protected final Serializer<? extends ProcessingRecipe> serializer;
 
-        private Builder(Ingredient input, ItemStack output, int processTime, RecipeSerializer<? extends ProcessingRecipe> serializer)
+        private Builder(Ingredient ingredient, ItemStack result, int time, Serializer<? extends ProcessingRecipe> serializer)
         {
-            this.input = input;
-            this.output = output;
-            this.processTime = processTime;
+            this.ingredient = ingredient;
+            this.result = result;
+            this.time = time;
             this.serializer = serializer;
         }
 
@@ -189,53 +151,70 @@ public abstract class ProcessingRecipe implements Recipe<Container>
         }
 
         @Override
-        public Item getResult()
+        public net.minecraft.world.item.Item getResult()
         {
-            return this.output.getItem();
+            return this.result.getItem();
         }
 
         @Override
         public void save(Consumer<FinishedRecipe> consumer, ResourceLocation id)
         {
-            consumer.accept(new Result(id, this.input, this.output, this.processTime, this.serializer));
+            consumer.accept(new Result(id, this.ingredient, this.result, this.time, this.serializer));
+        }
+    }
+
+    public static abstract class Serializer<T extends ProcessingRecipe> implements RecipeSerializer<T>
+    {
+        protected final Factory<T> factory;
+        protected final int defaultTime;
+
+        public Serializer(Factory<T> factory, int defaultTime)
+        {
+            this.factory = factory;
+            this.defaultTime = defaultTime;
+        }
+
+        public abstract void toJson(JsonObject object, Result result);
+
+        @Override
+        public T fromNetwork(ResourceLocation id, FriendlyByteBuf buf)
+        {
+            Ingredient ingredient = Ingredient.fromNetwork(buf);
+            ItemStack result = buf.readItem();
+            int time = buf.readVarInt();
+            return this.factory.create(id, ingredient, result, time);
+        }
+
+        @Override
+        public void toNetwork(FriendlyByteBuf buf, T recipe)
+        {
+            recipe.ingredient.toNetwork(buf);
+            buf.writeItem(recipe.result);
+            buf.writeVarInt(recipe.time);
         }
     }
 
     public static class Result implements FinishedRecipe
     {
         private final ResourceLocation id;
-        private final Ingredient input;
-        private final ItemStack output;
-        private final int processTime;
-        private final RecipeSerializer<? extends ProcessingRecipe> serializer;
+        private final Ingredient ingredient;
+        private final ItemStack result;
+        private final int time;
+        private final Serializer<? extends ProcessingRecipe> serializer;
 
-        public Result(ResourceLocation id, Ingredient input, ItemStack output, int processTime, RecipeSerializer<? extends ProcessingRecipe> serializer)
+        public Result(ResourceLocation id, Ingredient ingredient, ItemStack result, int time, Serializer<? extends ProcessingRecipe> serializer)
         {
             this.id = id;
-            this.input = input;
-            this.output = output;
-            this.processTime = processTime;
+            this.ingredient = ingredient;
+            this.result = result;
+            this.time = time;
             this.serializer = serializer;
         }
 
         @Override
         public void serializeRecipeData(JsonObject object)
         {
-            object.add("input", this.input.toJson());
-            String id = BuiltInRegistries.ITEM.getKey(this.output.getItem()).toString();
-            int count = this.output.getCount();
-            if(count == 1)
-            {
-                object.addProperty("output", id);
-            }
-            else
-            {
-                JsonObject itemObject = new JsonObject();
-                itemObject.addProperty("item", id);
-                itemObject.addProperty("count", count);
-                object.add("output", itemObject);
-            }
-            object.addProperty("processTime", this.processTime);
+            this.serializer.toJson(object, this);
         }
 
         @Override
@@ -264,6 +243,98 @@ public abstract class ProcessingRecipe implements Recipe<Container>
         {
             // Not supported
             return null;
+        }
+    }
+
+    public static abstract class Item extends ProcessingRecipe
+    {
+        protected Item(RecipeType<?> type, ResourceLocation id, Ingredient ingredient, ItemStack result, int time)
+        {
+            super(type, id, ingredient, result, time);
+        }
+
+        public static ProcessingRecipe from(AbstractCookingRecipe recipe, RegistryAccess access)
+        {
+            return new ProcessingRecipe(recipe.getType(), recipe.getId(), recipe.getIngredients().get(0), recipe.getResultItem(access), recipe.getCookingTime())
+            {
+                @Override
+                public RecipeSerializer<?> getSerializer()
+                {
+                    return recipe.getSerializer();
+                }
+            };
+        }
+
+        public static class Serializer<T extends ProcessingRecipe> extends ProcessingRecipe.Serializer<T>
+        {
+            public Serializer(Factory<T> factory, int defaultTime)
+            {
+                super(factory, defaultTime);
+            }
+
+            @Override
+            public void toJson(JsonObject object, Result result)
+            {
+                String id = BuiltInRegistries.ITEM.getKey(result.result.getItem()).toString();
+                object.add("ingredient", result.ingredient.toJson());
+                object.addProperty("result", id);
+                object.addProperty("time", result.time);
+            }
+
+            @Override
+            public T fromJson(ResourceLocation id, JsonObject object)
+            {
+                Ingredient ingredient = Utils.getIngredient(object, "ingredient");
+                ResourceLocation resultId = new ResourceLocation(GsonHelper.getAsString(object, "result"));
+                net.minecraft.world.item.Item item = BuiltInRegistries.ITEM.getOptional(resultId).orElseThrow(() -> new IllegalStateException("The item '%s' does not exist".formatted(resultId)));
+                int time = GsonHelper.getAsInt(object, "time", this.defaultTime);
+                return this.factory.create(id, ingredient, new ItemStack(item), time);
+            }
+        }
+    }
+
+    public static abstract class ItemWithCount extends ProcessingRecipe
+    {
+        protected ItemWithCount(RecipeType<?> type, ResourceLocation id, Ingredient ingredient, ItemStack result, int time)
+        {
+            super(type, id, ingredient, result, time);
+        }
+
+        public static class Serializer<T extends ProcessingRecipe> extends ProcessingRecipe.Serializer<T>
+        {
+            public Serializer(Factory<T> factory, int defaultTime)
+            {
+                super(factory, defaultTime);
+            }
+
+            @Override
+            public void toJson(JsonObject object, Result result)
+            {
+                object.add("ingredient", result.ingredient.toJson());
+                String id = BuiltInRegistries.ITEM.getKey(result.result.getItem()).toString();
+                int count = result.result.getCount();
+                if(count == 1)
+                {
+                    object.addProperty("result", id);
+                }
+                else
+                {
+                    JsonObject itemObject = new JsonObject();
+                    itemObject.addProperty("item", id);
+                    itemObject.addProperty("count", count);
+                    object.add("result", itemObject);
+                }
+                object.addProperty("time", result.time);
+            }
+
+            @Override
+            public T fromJson(ResourceLocation id, JsonObject object)
+            {
+                Ingredient input = Utils.getIngredient(object, "ingredient");
+                ItemStack output = Utils.getItemStack(object, "result");
+                int processTime = GsonHelper.getAsInt(object, "time", this.defaultTime);
+                return this.factory.create(id, input, output, processTime);
+            }
         }
     }
 }

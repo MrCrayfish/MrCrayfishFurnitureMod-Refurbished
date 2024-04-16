@@ -24,9 +24,9 @@ import org.openzen.zencode.java.ZenCodeType;
 public class SinkFluidTransmutingRecipeManager implements IRecipeManager<SinkFluidTransmutingRecipe>
 {
     @ZenCodeType.Method
-    public void addRecipe(String name, IFluidStack fluid, IIngredient catalyst, IItemStack output)
+    public void addRecipe(String name, IFluidStack fluid, IIngredient catalyst, IItemStack result)
     {
-        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new SinkFluidTransmutingRecipe(CraftTweakerConstants.rl(name), fluid.getFluid(), catalyst.asVanillaIngredient(), output.getInternal())));
+        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new SinkFluidTransmutingRecipe(CraftTweakerConstants.rl(name), fluid.getFluid(), catalyst.asVanillaIngredient(), result.getInternal())));
     }
 
     @Override

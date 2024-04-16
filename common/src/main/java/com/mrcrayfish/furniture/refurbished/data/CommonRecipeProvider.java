@@ -5,11 +5,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeSerializers;
 import com.mrcrayfish.furniture.refurbished.core.ModTags;
-import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardCombiningRecipe;
-import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
-import com.mrcrayfish.furniture.refurbished.crafting.RecycleBinRecyclingRecipe;
-import com.mrcrayfish.furniture.refurbished.crafting.SinkFluidTransmutingRecipe;
-import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchContructingRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.*;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.advancements.CriterionTriggerInstance;
@@ -1535,40 +1531,40 @@ public class CommonRecipeProvider
                 .save(this.consumer, Utils.resource(folder + "/" + resultName + "_from_" + baseName));
     }
 
-    private void processing(String folder, RecipeSerializer<? extends ProcessingRecipe> serializer, Ingredient input, ItemLike output, int count, int time)
+    private <T extends ProcessingRecipe> void processing(ProcessingRecipe.Serializer<T> serializer, String folder, Ingredient ingredient, ItemLike result, int count, int time)
     {
-        ResourceLocation recipeId = Utils.resource(folder + "/" + output.asItem());
-        ProcessingRecipe.builder(input, new ItemStack(output, count), time, serializer).save(this.consumer, recipeId);
+        ResourceLocation recipeId = Utils.resource(folder + "/" + result.asItem());
+        ProcessingRecipe.builder(ingredient, new ItemStack(result, count), time, serializer).save(this.consumer, recipeId);
     }
 
     private void grillCooking(ItemLike rawItem, ItemLike cookedItem, int cookingTime, float experience)
     {
-        this.cooking("grilling", RecipeCategory.FOOD, ModRecipeSerializers.GRILL_RECIPE.get(), rawItem, cookedItem, cookingTime, experience);
+        this.processing(ModRecipeSerializers.GRILL_RECIPE.get(), "grilling", Ingredient.of(rawItem), cookedItem, 1, cookingTime);
     }
 
     private void freezerSolidifying(ItemLike baseItem, ItemLike frozenItem, int freezeTime, float experience)
     {
-        this.cooking("freezing", RecipeCategory.MISC, ModRecipeSerializers.FREEZER_RECIPE.get(), baseItem, frozenItem, freezeTime, experience);
+        this.processing(ModRecipeSerializers.FREEZER_RECIPE.get(), "freezing", Ingredient.of(baseItem), frozenItem, 1, freezeTime);
     }
 
     private void toasterHeating(ItemLike baseItem, ItemLike heatedItem, int heatingTime, float experience)
     {
-        this.cooking("toasting", RecipeCategory.FOOD, ModRecipeSerializers.TOASTER_RECIPE.get(), baseItem, heatedItem, heatingTime, experience);
+        this.processing(ModRecipeSerializers.TOASTER_RECIPE.get(), "toasting", Ingredient.of(baseItem), heatedItem, 1, heatingTime);
     }
 
     private void microwaveHeating(ItemLike baseItem, ItemLike heatedItem, int heatingTime, float experience)
     {
-        this.cooking("heating", RecipeCategory.FOOD, ModRecipeSerializers.MICROWAVE_RECIPE.get(), baseItem, heatedItem, heatingTime, experience);
+        this.processing(ModRecipeSerializers.MICROWAVE_RECIPE.get(), "heating", Ingredient.of(baseItem), heatedItem, 1, heatingTime);
     }
 
     private void fryingPanCooking(ItemLike baseItem, ItemLike heatedItem, int heatingTime, float experience)
     {
-        this.cooking("frying", RecipeCategory.FOOD, ModRecipeSerializers.FRYING_PAN_RECIPE.get(), baseItem, heatedItem, heatingTime, experience);
+        this.processing(ModRecipeSerializers.FRYING_PAN_RECIPE.get(), "frying", Ingredient.of(baseItem), heatedItem, 1, heatingTime);
     }
 
     private void ovenBaking(ItemLike baseItem, ItemLike bakedItem, int count, int bakingTime)
     {
-        this.processing("baking", ModRecipeSerializers.OVEN_BAKING.get(), Ingredient.of(baseItem), bakedItem, count, bakingTime);
+        this.processing(ModRecipeSerializers.OVEN_BAKING.get(), "baking", Ingredient.of(baseItem), bakedItem, count, bakingTime);
     }
 
     private void cuttingBoardSlicing(ItemLike baseItem, ItemLike resultItem, int resultCount)

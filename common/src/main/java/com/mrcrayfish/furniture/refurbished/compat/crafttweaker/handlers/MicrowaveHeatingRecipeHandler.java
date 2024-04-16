@@ -30,10 +30,9 @@ public class MicrowaveHeatingRecipeHandler implements IRecipeHandler<MicrowaveHe
         return String.format("%s.addRecipe(%s, %s, %s, %s, %s);",
                 manager.getCommandString(),
                 StringUtil.quoteAndEscape(recipe.getId()),
-                IIngredient.fromIngredient(recipe.getInput()).getCommandString(),
-                IItemStack.ofMutable(recipe.getOutput()).getCommandString(),
-                recipe.getExperience(),
-                recipe.getCookingTime());
+                IIngredient.fromIngredient(recipe.getIngredient()).getCommandString(),
+                IItemStack.ofMutable(recipe.getResult()).getCommandString(),
+                recipe.getTime());
     }
 
     @Override
@@ -42,19 +41,16 @@ public class MicrowaveHeatingRecipeHandler implements IRecipeHandler<MicrowaveHe
         if(!(secondRecipe instanceof MicrowaveHeatingRecipe toasterRecipe))
             return true;
         // Toaster recipes are conflicting if the input is the same
-        return IngredientUtil.canConflict(firstRecipe.getInput(), toasterRecipe.getInput());
+        return IngredientUtil.canConflict(firstRecipe.getIngredient(), toasterRecipe.getIngredient());
     }
 
     @Override
     public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super MicrowaveHeatingRecipe> manager, MicrowaveHeatingRecipe recipe)
     {
         IDecomposedRecipe decomposedRecipe = IDecomposedRecipe.builder()
-                .with(BuiltinRecipeComponents.Input.INGREDIENTS, IIngredient.fromIngredient(recipe.getInput()))
-                .with(BuiltinRecipeComponents.Output.ITEMS, IItemStack.ofMutable(recipe.getOutput()))
-                .with(BuiltinRecipeComponents.Output.EXPERIENCE, recipe.getExperience())
-                .with(BuiltinRecipeComponents.Processing.TIME, recipe.getCookingTime())
-                .with(BuiltinRecipeComponents.Metadata.GROUP, recipe.getGroup())
-                .with(BuiltinRecipeComponents.Metadata.COOKING_BOOK_CATEGORY, recipe.category())
+                .with(BuiltinRecipeComponents.Input.INGREDIENTS, IIngredient.fromIngredient(recipe.getIngredient()))
+                .with(BuiltinRecipeComponents.Output.ITEMS, IItemStack.ofMutable(recipe.getResult()))
+                .with(BuiltinRecipeComponents.Processing.TIME, recipe.getTime())
                 .build();
         return Optional.of(decomposedRecipe);
     }
@@ -62,12 +58,9 @@ public class MicrowaveHeatingRecipeHandler implements IRecipeHandler<MicrowaveHe
     @Override
     public Optional<MicrowaveHeatingRecipe> recompose(IRecipeManager<? super MicrowaveHeatingRecipe> manager, ResourceLocation id, IDecomposedRecipe recipe)
     {
-        Ingredient input = recipe.getOrThrowSingle(BuiltinRecipeComponents.Input.INGREDIENTS).asVanillaIngredient();
-        String group = recipe.getOrThrowSingle(BuiltinRecipeComponents.Metadata.GROUP);
-        CookingBookCategory category = recipe.getOrThrowSingle(BuiltinRecipeComponents.Metadata.COOKING_BOOK_CATEGORY);
-        ItemStack output = recipe.getOrThrowSingle(BuiltinRecipeComponents.Output.ITEMS).getInternal();
-        float experience = recipe.getOrThrowSingle(BuiltinRecipeComponents.Output.EXPERIENCE);
-        int cookingTime = recipe.getOrThrowSingle(BuiltinRecipeComponents.Processing.TIME);
-        return Optional.of(new MicrowaveHeatingRecipe(id, group, category, input, output, experience, cookingTime));
+        Ingredient ingredient = recipe.getOrThrowSingle(BuiltinRecipeComponents.Input.INGREDIENTS).asVanillaIngredient();
+        ItemStack result = recipe.getOrThrowSingle(BuiltinRecipeComponents.Output.ITEMS).getInternal();
+        int time = recipe.getOrThrowSingle(BuiltinRecipeComponents.Processing.TIME);
+        return Optional.of(new MicrowaveHeatingRecipe(id, ingredient, result, time));
     }
 }

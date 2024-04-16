@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -25,14 +26,14 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
 {
     protected static final int[] NO_SLOTS = new int[]{};
 
-    private final RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> inputRecipeCache;
-    private final RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe>[] processRecipeCache;
-    private final RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> outputRecipeCache;
+    private final RecipeManager.CachedCheck<Container, ? extends ProcessingRecipe> inputRecipeCache;
+    private final RecipeManager.CachedCheck<Container, ? extends ProcessingRecipe>[] processRecipeCache;
+    private final RecipeManager.CachedCheck<Container, ? extends ProcessingRecipe> outputRecipeCache;
     protected int totalProcessingTime;
     protected int processingTime;
     protected int energy;
 
-    public ProcessingContainerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int containerSize, RecipeType<? extends AbstractCookingRecipe> recipeType)
+    public ProcessingContainerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int containerSize, RecipeType<? extends ProcessingRecipe> recipeType)
     {
         super(type, pos, state, containerSize);
         this.inputRecipeCache = RecipeManager.createCheck(recipeType);
@@ -167,10 +168,10 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
             ItemStack stack = this.getItem(slot);
             if(!stack.isEmpty())
             {
-                Optional<? extends AbstractCookingRecipe> optional = this.getRecipe(this.processRecipeCache[i], stack);
+                Optional<? extends ProcessingRecipe> optional = this.getRecipe(this.processRecipeCache[i], stack);
                 if(optional.isPresent())
                 {
-                    time = Math.max(time, optional.get().getCookingTime());
+                    time = Math.max(time, optional.get().getTime());
                     if(!this.shouldProcessAll())
                     {
                         break;
@@ -229,7 +230,7 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
             ItemStack stack = this.getItem(slot);
             if(!stack.isEmpty())
             {
-                Optional<? extends AbstractCookingRecipe> optional = this.getRecipe(this.processRecipeCache[i], stack);
+                Optional<? extends ProcessingRecipe> optional = this.getRecipe(this.processRecipeCache[i], stack);
                 if(optional.isEmpty())
                 {
                     return false;
@@ -264,7 +265,7 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
             if(!stack.isEmpty())
             {
                 Item remainingItem = stack.getItem().getCraftingRemainingItem();
-                Optional<? extends AbstractCookingRecipe> optional = this.getRecipe(this.processRecipeCache[i], stack);
+                Optional<? extends ProcessingRecipe> optional = this.getRecipe(this.processRecipeCache[i], stack);
                 ItemStack result = optional.map(recipe -> recipe.getResultItem(this.level.registryAccess())).orElse(ItemStack.EMPTY);
                 stack.shrink(1);
                 if(!result.isEmpty())
@@ -389,7 +390,7 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
      * @param stack the itemstack of the recipe
      * @return An optional recipe
      */
-    private Optional<? extends AbstractCookingRecipe> getRecipe(RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> cache, ItemStack stack)
+    private Optional<? extends ProcessingRecipe> getRecipe(RecipeManager.CachedCheck<Container, ? extends ProcessingRecipe> cache, ItemStack stack)
     {
         return cache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level));
     }
@@ -464,14 +465,14 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
      * @return an array of cache checks
      */
     @SuppressWarnings("unchecked")
-    protected RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe>[] createCacheArray(int size, Supplier<RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe>> fill)
+    protected RecipeManager.CachedCheck<Container, ? extends ProcessingRecipe>[] createCacheArray(int size, Supplier<RecipeManager.CachedCheck<Container, ? extends ProcessingRecipe>> fill)
     {
         RecipeManager.CachedCheck<?, ?>[] array = new RecipeManager.CachedCheck<?, ?>[size];
         for(int i = 0; i < array.length; i++)
         {
             array[i] = fill.get();
         }
-        return (RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe>[]) array;
+        return (RecipeManager.CachedCheck<Container, ? extends ProcessingRecipe>[]) array;
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModParticleTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
+import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageFlipAnimation;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
@@ -64,7 +65,7 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
     private final NonNullList<ItemStack> fuel = NonNullList.withSize(9, ItemStack.EMPTY);
     private final NonNullList<ItemStack> cooking = NonNullList.withSize(4, ItemStack.EMPTY);
     private final ImmutableList<CookingSpace> spaces;
-    protected final RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> recipeCache;
+    protected final RecipeManager.CachedCheck<Container, ? extends ProcessingRecipe> recipeCache;
     protected final RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> campfireCookingCache;
     private int remainingFuel;
     private float storedExperience;
@@ -74,7 +75,7 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
         this(ModBlockEntities.GRILL.get(), pos, state, ModRecipeTypes.GRILL_COOKING.get());
     }
 
-    protected GrillBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, RecipeType<? extends AbstractCookingRecipe> recipeType)
+    protected GrillBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, RecipeType<? extends ProcessingRecipe> recipeType)
     {
         super(type, pos, state);
         this.recipeCache = RecipeManager.createCheck(recipeType);
@@ -125,14 +126,15 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
     {
         if(this.cooking.get(position).isEmpty())
         {
-            Optional<? extends AbstractCookingRecipe> optional = this.getRecipe(stack);
+            Optional<? extends ProcessingRecipe> optional = this.getRecipe(stack);
             if(optional.isPresent())
             {
-                AbstractCookingRecipe recipe = optional.get();
+                ProcessingRecipe recipe = optional.get();
                 ItemStack copy = stack.copy();
                 copy.setCount(1);
                 this.cooking.set(position, copy);
-                this.spaces.get(position).update(recipe.getCookingTime(), recipe.getExperience(), rotation);
+                // TODO eventually add back experience support
+                this.spaces.get(position).update(recipe.getTime(), 0F, rotation);
                 this.syncCookingSpace(position);
                 this.playPlaceSound(this.spaces.get(position), false, 0.85F);
                 return true;
@@ -321,7 +323,7 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
                         if(space.isFlipped())
                         {
                             Level level = Objects.requireNonNull(this.level);
-                            Optional<? extends AbstractCookingRecipe> optional = this.getRecipe(this.cooking.get(i));
+                            Optional<? extends ProcessingRecipe> optional = this.getRecipe(this.cooking.get(i));
                             if(optional.isPresent())
                             {
                                 this.cooking.set(i, optional.get().getResultItem(level.registryAccess()).copy());
@@ -453,14 +455,19 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
         return false;
     }
 
-    private Optional<? extends AbstractCookingRecipe> getRecipe(ItemStack stack)
+    private Optional<? extends ProcessingRecipe> getRecipe(ItemStack stack)
     {
-        Optional<? extends AbstractCookingRecipe> optional = this.getRecipeFromCache(this.recipeCache, stack);
-        optional = optional.isEmpty() ? this.getRecipeFromCache(this.campfireCookingCache, stack) : optional;
+        Optional<? extends ProcessingRecipe> optional = this.getRecipeFromCache(this.recipeCache, stack);
+        optional = optional.isEmpty() ? this.getCookingRecipe(this.campfireCookingCache, stack) : optional;
         return optional;
     }
 
-    private Optional<? extends AbstractCookingRecipe> getRecipeFromCache(RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> cache, ItemStack stack)
+    private Optional<ProcessingRecipe> getCookingRecipe(RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> cache, ItemStack stack)
+    {
+        return cache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level)).map(recipe -> ProcessingRecipe.Item.from(recipe, this.level.registryAccess()));
+    }
+
+    private Optional<? extends ProcessingRecipe> getRecipeFromCache(RecipeManager.CachedCheck<Container, ? extends ProcessingRecipe> cache, ItemStack stack)
     {
         return cache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level));
     }
@@ -555,11 +562,12 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
             index -= this.fuel.size();
             inventory = this.cooking;
             // TODO store this in the cooking space
-            Optional<? extends AbstractCookingRecipe> optional = this.getRecipe(stack);
+            Optional<? extends ProcessingRecipe> optional = this.getRecipe(stack);
             if(optional.isPresent())
             {
-                AbstractCookingRecipe recipe = optional.get();
-                this.spaces.get(index).update(recipe.getCookingTime(), recipe.getExperience(), (byte) 0);
+                ProcessingRecipe recipe = optional.get();
+                // TODO eventually add back experience support
+                this.spaces.get(index).update(recipe.getTime(), 0F /* experience */, (byte) 0);
                 this.syncCookingSpace(index);
             }
         }

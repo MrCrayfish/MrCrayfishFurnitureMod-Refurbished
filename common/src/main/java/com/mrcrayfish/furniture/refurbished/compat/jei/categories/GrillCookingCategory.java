@@ -7,6 +7,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.crafting.FreezerSolidifyingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.GrillCookingRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -28,9 +29,9 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class GrillCookingCategory extends FurnitureRecipeCategory<AbstractCookingRecipe>
+public class GrillCookingCategory extends FurnitureRecipeCategory<ProcessingRecipe>
 {
-    public static final RecipeType<AbstractCookingRecipe> TYPE = RecipeType.create(Constants.MOD_ID, "grill_cooking", AbstractCookingRecipe.class);
+    public static final RecipeType<ProcessingRecipe> TYPE = RecipeType.create(Constants.MOD_ID, "grill_cooking", ProcessingRecipe.class);
 
     private final ItemStack campfireStack = new ItemStack(Items.CAMPFIRE);
     private final IGuiHelper helper;
@@ -46,7 +47,7 @@ public class GrillCookingCategory extends FurnitureRecipeCategory<AbstractCookin
     }
 
     @Override
-    public RecipeType<AbstractCookingRecipe> getRecipeType()
+    public RecipeType<ProcessingRecipe> getRecipeType()
     {
         return TYPE;
     }
@@ -70,20 +71,20 @@ public class GrillCookingCategory extends FurnitureRecipeCategory<AbstractCookin
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, AbstractCookingRecipe recipe, IFocusGroup focuses)
+    public void setRecipe(IRecipeLayoutBuilder builder, ProcessingRecipe recipe, IFocusGroup focuses)
     {
         builder.addSlot(RecipeIngredientRole.INPUT, 26, 6).addIngredients(recipe.getIngredients().get(0));
         builder.addSlot(RecipeIngredientRole.OUTPUT, 99, 31).addItemStack(Plugin.getResult(recipe));
         builder.addSlot(RecipeIngredientRole.RENDER_ONLY, 71, 3).addItemStack(new ItemStack(ModItems.SPATULA.get()));
-        this.arrow = this.helper.createAnimatedDrawable(this.helper.createDrawable(Plugin.TEXTURES, 133, 136, 24, 17), recipe.getCookingTime(), IDrawableAnimated.StartDirection.LEFT, false);
+        this.arrow = this.helper.createAnimatedDrawable(this.helper.createDrawable(Plugin.TEXTURES, 133, 136, 24, 17), recipe.getTime(), IDrawableAnimated.StartDirection.LEFT, false);
     }
 
     @Override
-    public void draw(AbstractCookingRecipe recipe, IRecipeSlotsView view, GuiGraphics graphics, double mouseX, double mouseY)
+    public void draw(ProcessingRecipe recipe, IRecipeSlotsView view, GuiGraphics graphics, double mouseX, double mouseY)
     {
         this.arrow.draw(graphics, 68, 31);
-        this.drawSeconds(graphics, 80, 50, recipe.getCookingTime());
-        if(recipe instanceof CampfireCookingRecipe)
+        this.drawSeconds(graphics, 80, 50, recipe.getTime());
+        if(recipe.getType() == net.minecraft.world.item.crafting.RecipeType.CAMPFIRE_COOKING)
         {
             graphics.fill(99, 5, 99 + 16, 5 + 16, 0x33000000);
             graphics.renderFakeItem(this.campfireStack, 99, 5);
@@ -91,7 +92,7 @@ public class GrillCookingCategory extends FurnitureRecipeCategory<AbstractCookin
     }
 
     @Override
-    public List<Component> getTooltipStrings(AbstractCookingRecipe recipe, IRecipeSlotsView view, double mouseX, double mouseY)
+    public List<Component> getTooltipStrings(ProcessingRecipe recipe, IRecipeSlotsView view, double mouseX, double mouseY)
     {
         if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, 5, 15, 57, 61) && !ScreenHelper.isMouseWithinBounds(mouseX, mouseY, 26, 6, 16, 16))
         {

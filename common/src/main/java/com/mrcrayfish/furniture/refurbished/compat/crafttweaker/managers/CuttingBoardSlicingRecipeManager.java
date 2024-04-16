@@ -22,9 +22,9 @@ import org.openzen.zencode.java.ZenCodeType;
 public class CuttingBoardSlicingRecipeManager implements IRecipeManager<CuttingBoardSlicingRecipe>
 {
     @ZenCodeType.Method
-    public void addRecipe(String name, IIngredient input, IItemStack output)
+    public void addRecipe(String name, IIngredient ingredient, IItemStack result)
     {
-        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new CuttingBoardSlicingRecipe(CraftTweakerConstants.rl(name), "", input.asVanillaIngredient(), output.getInternal())));
+        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new CuttingBoardSlicingRecipe(CraftTweakerConstants.rl(name), "", ingredient.asVanillaIngredient(), result.getInternal())));
     }
 
     @Override

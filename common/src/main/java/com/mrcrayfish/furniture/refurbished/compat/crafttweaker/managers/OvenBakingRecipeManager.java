@@ -24,9 +24,9 @@ import org.openzen.zencode.java.ZenCodeType;
 public class OvenBakingRecipeManager implements IRecipeManager<OvenBakingRecipe>
 {
     @ZenCodeType.Method
-    public void addRecipe(String name, IIngredient input, IItemStack output, @ZenCodeType.OptionalInt(300) int processTime)
+    public void addRecipe(String name, IIngredient ingredient, IItemStack result, @ZenCodeType.OptionalInt(300) int time)
     {
-        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new OvenBakingRecipe(CraftTweakerConstants.rl(name), input.asVanillaIngredient(), output.getInternal(), processTime)));
+        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new OvenBakingRecipe(CraftTweakerConstants.rl(name), ingredient.asVanillaIngredient(), result.getInternal(), time)));
     }
 
     @Override

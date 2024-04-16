@@ -12,11 +12,11 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 /**
  * Author: MrCrayfish
  */
-public class OvenBakingRecipe extends ProcessingRecipe
+public class OvenBakingRecipe extends ProcessingRecipe.ItemWithCount
 {
-    public OvenBakingRecipe(ResourceLocation id, Ingredient ingredient, ItemStack stack, int processTime)
+    public OvenBakingRecipe(ResourceLocation id, Ingredient ingredient, ItemStack result, int time)
     {
-        super(ModRecipeTypes.OVEN_BAKING.get(), id, ingredient, stack, processTime);
+        super(ModRecipeTypes.OVEN_BAKING.get(), id, ingredient, result, time);
     }
 
     @Override

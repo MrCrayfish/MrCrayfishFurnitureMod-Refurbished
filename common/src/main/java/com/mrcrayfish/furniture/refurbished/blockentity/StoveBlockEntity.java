@@ -30,7 +30,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -601,7 +600,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
             Optional<? extends ProcessingRecipe> optional = this.getRecipe();
             if(optional.isPresent())
             {
-                time = Math.max(time, optional.get().getProcessTime());
+                time = Math.max(time, optional.get().getTime());
             }
             if(this.totalBakingTime != time)
             {

@@ -8,11 +8,9 @@ import com.blamejared.crafttweaker.api.recipe.handler.IRecipeHandler;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker.api.util.IngredientUtil;
 import com.blamejared.crafttweaker.api.util.StringUtil;
-import com.mrcrayfish.furniture.refurbished.crafting.FryingPanCookingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.OvenBakingRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 
@@ -30,9 +28,9 @@ public class OvenBakingRecipeHandler implements IRecipeHandler<OvenBakingRecipe>
         return "%s.addRecipe(%s, %s, %s, %s);".formatted(
             manager.getCommandString(),
             StringUtil.quoteAndEscape(recipe.getId()),
-            IIngredient.fromIngredient(recipe.getInput()).getCommandString(),
-            IItemStack.ofMutable(recipe.getOutput()).getCommandString(),
-            recipe.getProcessTime()
+            IIngredient.fromIngredient(recipe.getIngredient()).getCommandString(),
+            IItemStack.ofMutable(recipe.getResult()).getCommandString(),
+            recipe.getTime()
         );
     }
 
@@ -42,16 +40,16 @@ public class OvenBakingRecipeHandler implements IRecipeHandler<OvenBakingRecipe>
         if(!(secondRecipe instanceof OvenBakingRecipe bakingRecipe))
             return true;
         // Baking recipes are conflicting if the input is the same
-        return IngredientUtil.canConflict(firstRecipe.getInput(), bakingRecipe.getInput());
+        return IngredientUtil.canConflict(firstRecipe.getIngredient(), bakingRecipe.getIngredient());
     }
 
     @Override
     public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super OvenBakingRecipe> manager, OvenBakingRecipe recipe)
     {
         IDecomposedRecipe decomposedRecipe = IDecomposedRecipe.builder()
-                .with(BuiltinRecipeComponents.Input.INGREDIENTS, IIngredient.fromIngredient(recipe.getInput()))
-                .with(BuiltinRecipeComponents.Output.ITEMS, IItemStack.ofMutable(recipe.getOutput()))
-                .with(BuiltinRecipeComponents.Processing.TIME, recipe.getProcessTime())
+                .with(BuiltinRecipeComponents.Input.INGREDIENTS, IIngredient.fromIngredient(recipe.getIngredient()))
+                .with(BuiltinRecipeComponents.Output.ITEMS, IItemStack.ofMutable(recipe.getResult()))
+                .with(BuiltinRecipeComponents.Processing.TIME, recipe.getTime())
                 .build();
         return Optional.of(decomposedRecipe);
     }
@@ -59,9 +57,9 @@ public class OvenBakingRecipeHandler implements IRecipeHandler<OvenBakingRecipe>
     @Override
     public Optional<OvenBakingRecipe> recompose(IRecipeManager<? super OvenBakingRecipe> manager, ResourceLocation id, IDecomposedRecipe recipe)
     {
-        Ingredient input = recipe.getOrThrowSingle(BuiltinRecipeComponents.Input.INGREDIENTS).asVanillaIngredient();
-        ItemStack output = recipe.getOrThrowSingle(BuiltinRecipeComponents.Output.ITEMS).getInternal();
-        int cookingTime = recipe.getOrThrowSingle(BuiltinRecipeComponents.Processing.TIME);
-        return Optional.of(new OvenBakingRecipe(id, input, output, cookingTime));
+        Ingredient ingredient = recipe.getOrThrowSingle(BuiltinRecipeComponents.Input.INGREDIENTS).asVanillaIngredient();
+        ItemStack result = recipe.getOrThrowSingle(BuiltinRecipeComponents.Output.ITEMS).getInternal();
+        int time = recipe.getOrThrowSingle(BuiltinRecipeComponents.Processing.TIME);
+        return Optional.of(new OvenBakingRecipe(id, ingredient, result, time));
     }
 }

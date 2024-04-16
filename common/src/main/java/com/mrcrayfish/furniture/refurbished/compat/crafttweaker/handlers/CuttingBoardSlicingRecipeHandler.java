@@ -28,8 +28,8 @@ public class CuttingBoardSlicingRecipeHandler implements IRecipeHandler<CuttingB
         return String.format("%s.addRecipe(%s, %s, %s);",
                 manager.getCommandString(),
                 StringUtil.quoteAndEscape(recipe.getId()),
-                IIngredient.fromIngredient(recipe.getInput()).getCommandString(),
-                IItemStack.ofMutable(recipe.getOutput()).getCommandString());
+                IIngredient.fromIngredient(recipe.getIngredient()).getCommandString(),
+                IItemStack.ofMutable(recipe.getResult()).getCommandString());
     }
 
     @Override
@@ -38,16 +38,15 @@ public class CuttingBoardSlicingRecipeHandler implements IRecipeHandler<CuttingB
         if(!(secondRecipe instanceof CuttingBoardSlicingRecipe slicingRecipe))
             return true;
         // Cutting board recipes are conflicting if the input is the same
-        return IngredientUtil.canConflict(firstRecipe.getInput(), slicingRecipe.getInput());
+        return IngredientUtil.canConflict(firstRecipe.getIngredient(), slicingRecipe.getIngredient());
     }
 
     @Override
     public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super CuttingBoardSlicingRecipe> manager, CuttingBoardSlicingRecipe recipe)
     {
         IDecomposedRecipe decomposedRecipe = IDecomposedRecipe.builder()
-                .with(BuiltinRecipeComponents.Input.INGREDIENTS, IIngredient.fromIngredient(recipe.getInput()))
-                .with(BuiltinRecipeComponents.Output.ITEMS, IItemStack.ofMutable(recipe.getOutput()))
-                .with(BuiltinRecipeComponents.Metadata.GROUP, recipe.getGroup())
+                .with(BuiltinRecipeComponents.Input.INGREDIENTS, IIngredient.fromIngredient(recipe.getIngredient()))
+                .with(BuiltinRecipeComponents.Output.ITEMS, IItemStack.ofMutable(recipe.getResult()))
                 .build();
         return Optional.of(decomposedRecipe);
     }
@@ -55,9 +54,8 @@ public class CuttingBoardSlicingRecipeHandler implements IRecipeHandler<CuttingB
     @Override
     public Optional<CuttingBoardSlicingRecipe> recompose(IRecipeManager<? super CuttingBoardSlicingRecipe> manager, ResourceLocation id, IDecomposedRecipe recipe)
     {
-        Ingredient input = recipe.getOrThrowSingle(BuiltinRecipeComponents.Input.INGREDIENTS).asVanillaIngredient();
-        String group = recipe.getOrThrowSingle(BuiltinRecipeComponents.Metadata.GROUP);
-        ItemStack output = recipe.getOrThrowSingle(BuiltinRecipeComponents.Output.ITEMS).getInternal();
-        return Optional.of(new CuttingBoardSlicingRecipe(id, group, input, output));
+        Ingredient ingredient = recipe.getOrThrowSingle(BuiltinRecipeComponents.Input.INGREDIENTS).asVanillaIngredient();
+        ItemStack result = recipe.getOrThrowSingle(BuiltinRecipeComponents.Output.ITEMS).getInternal();
+        return Optional.of(new CuttingBoardSlicingRecipe(id, "", ingredient, result));
     }
 }

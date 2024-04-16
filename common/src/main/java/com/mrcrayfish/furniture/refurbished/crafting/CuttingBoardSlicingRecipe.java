@@ -14,9 +14,9 @@ import net.minecraft.world.level.Level;
  */
 public class CuttingBoardSlicingRecipe extends SingleItemRecipe
 {
-    public CuttingBoardSlicingRecipe(ResourceLocation id, String group, Ingredient input, ItemStack result)
+    public CuttingBoardSlicingRecipe(ResourceLocation id, String group, Ingredient ingredient, ItemStack result)
     {
-        super(ModRecipeTypes.CUTTING_BOARD_SLICING.get(), ModRecipeSerializers.CUTTING_BOARD_SLICING_RECIPE.get(), id, group, input, result);
+        super(ModRecipeTypes.CUTTING_BOARD_SLICING.get(), ModRecipeSerializers.CUTTING_BOARD_SLICING_RECIPE.get(), id, "", ingredient, result);
     }
 
     @Override
@@ -25,12 +25,12 @@ public class CuttingBoardSlicingRecipe extends SingleItemRecipe
         return this.ingredient.test(container.getItem(0));
     }
 
-    public Ingredient getInput()
+    public Ingredient getIngredient()
     {
         return this.ingredient;
     }
 
-    public ItemStack getOutput()
+    public ItemStack getResult()
     {
         return this.result;
     }

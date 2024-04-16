@@ -12,26 +12,16 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 /**
  * Author: MrCrayfish
  */
-public class GrillCookingRecipe extends AbstractCookingRecipe
+public class GrillCookingRecipe extends ProcessingRecipe.Item
 {
-    public GrillCookingRecipe(ResourceLocation id, String name, CookingBookCategory category, Ingredient ingredient, ItemStack stack, float experience, int cookingTime)
+    public GrillCookingRecipe(ResourceLocation id, Ingredient ingredient, ItemStack result, int time)
     {
-        super(ModRecipeTypes.GRILL_COOKING.get(), id, name, category, ingredient, stack, experience, cookingTime);
+        super(ModRecipeTypes.GRILL_COOKING.get(), id, ingredient, result, time);
     }
 
     @Override
     public RecipeSerializer<?> getSerializer()
     {
         return ModRecipeSerializers.GRILL_RECIPE.get();
-    }
-
-    public Ingredient getInput()
-    {
-        return this.ingredient;
-    }
-
-    public ItemStack getOutput()
-    {
-        return this.result;
     }
 }

@@ -65,13 +65,13 @@ public class MicrowaveHeatingCategory extends FurnitureRecipeCategory<MicrowaveH
     {
         builder.addSlot(RecipeIngredientRole.INPUT, 7, 10).addIngredients(recipe.getIngredients().get(0));
         builder.addSlot(RecipeIngredientRole.OUTPUT, 67, 10).addItemStack(Plugin.getResult(recipe));
-        this.waveform = this.helper.createAnimatedDrawable(this.helper.createDrawable(Plugin.TEXTURES, 93, 154, 24, 17), recipe.getCookingTime(), IDrawableAnimated.StartDirection.LEFT, false);
+        this.waveform = this.helper.createAnimatedDrawable(this.helper.createDrawable(Plugin.TEXTURES, 93, 154, 24, 17), recipe.getTime(), IDrawableAnimated.StartDirection.LEFT, false);
     }
 
     @Override
     public void draw(MicrowaveHeatingRecipe recipe, IRecipeSlotsView view, GuiGraphics graphics, double mouseX, double mouseY)
     {
         this.waveform.draw(graphics, 30, 9);
-        this.drawSeconds(graphics, 42, 28, recipe.getCookingTime());
+        this.drawSeconds(graphics, 42, 28, recipe.getTime());
     }
 }

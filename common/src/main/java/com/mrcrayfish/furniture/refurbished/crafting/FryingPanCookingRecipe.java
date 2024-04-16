@@ -12,26 +12,16 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 /**
  * Author: MrCrayfish
  */
-public class FryingPanCookingRecipe extends AbstractCookingRecipe
+public class FryingPanCookingRecipe extends ProcessingRecipe.Item
 {
-    public FryingPanCookingRecipe(ResourceLocation id, String name, CookingBookCategory category, Ingredient ingredient, ItemStack stack, float experience, int cookingTime)
+    public FryingPanCookingRecipe(ResourceLocation id, Ingredient ingredient, ItemStack result, int cookingTime)
     {
-        super(ModRecipeTypes.FRYING_PAN_COOKING.get(), id, name, category, ingredient, stack, experience, cookingTime);
+        super(ModRecipeTypes.FRYING_PAN_COOKING.get(), id, ingredient, result, cookingTime);
     }
 
     @Override
     public RecipeSerializer<?> getSerializer()
     {
         return ModRecipeSerializers.FRYING_PAN_RECIPE.get();
-    }
-
-    public Ingredient getInput()
-    {
-        return this.ingredient;
-    }
-
-    public ItemStack getOutput()
-    {
-        return this.result;
     }
 }

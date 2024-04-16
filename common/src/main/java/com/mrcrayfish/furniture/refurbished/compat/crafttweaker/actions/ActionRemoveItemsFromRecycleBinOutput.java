@@ -7,6 +7,7 @@ import com.blamejared.crafttweaker.api.recipe.RecipeList;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.crafting.RecycleBinRecyclingRecipe;
+import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.StringUtils;
@@ -37,9 +38,10 @@ public class ActionRemoveItemsFromRecycleBinOutput implements IAction, IRuntimeA
     {
         RecipeList<RecycleBinRecyclingRecipe> list = this.manager.getRecipeList();
         RecycleBinRecyclingRecipe recipe = list.get(this.id);
-        List<ItemStack> newOutput = new ArrayList<>(List.of(recipe.getOutputs()));
+        NonNullList<ItemStack> newOutput = NonNullList.create();
+        newOutput.addAll(recipe.getScraps());
         newOutput.removeIf(stack -> this.removal.stream().anyMatch(iStack -> ItemStack.isSameItemSameTags(stack, iStack.getInternal())));
-        RecycleBinRecyclingRecipe newRecipe = new RecycleBinRecyclingRecipe(this.id, recipe.getInput(), newOutput.toArray(ItemStack[]::new));
+        RecycleBinRecyclingRecipe newRecipe = new RecycleBinRecyclingRecipe(this.id, recipe.getRecyclable(), newOutput);
         list.remove(this.id);
         list.add(this.id, newRecipe);
     }
@@ -48,7 +50,7 @@ public class ActionRemoveItemsFromRecycleBinOutput implements IAction, IRuntimeA
     public String describe()
     {
         String items = "[" + StringUtils.join(this.removal.stream().map(IItemStack::getCommandString).collect(Collectors.toList()), ", ") + "]";
-        return "Removing the items '%s' from the output of the recycling bin recipe '%s'".formatted(items, this.id);
+        return "Removing the items '%s' from the scraps of the recycling bin recipe '%s'".formatted(items, this.id);
     }
 
     @Override

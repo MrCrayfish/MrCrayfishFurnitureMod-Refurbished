@@ -12,26 +12,16 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 /**
  * Author: MrCrayfish
  */
-public class FreezerSolidifyingRecipe extends AbstractCookingRecipe
+public class FreezerSolidifyingRecipe extends ProcessingRecipe.ItemWithCount
 {
-    public FreezerSolidifyingRecipe(ResourceLocation id, String name, CookingBookCategory category, Ingredient ingredient, ItemStack stack, float experience, int cookingTime)
+    public FreezerSolidifyingRecipe(ResourceLocation id, Ingredient ingredient, ItemStack result, int time)
     {
-        super(ModRecipeTypes.FREEZER_SOLIDIFYING.get(), id, name, category, ingredient, stack, experience, cookingTime);
+        super(ModRecipeTypes.FREEZER_SOLIDIFYING.get(), id, ingredient, result, time);
     }
 
     @Override
     public RecipeSerializer<?> getSerializer()
     {
         return ModRecipeSerializers.FREEZER_RECIPE.get();
-    }
-
-    public Ingredient getInput()
-    {
-        return this.ingredient;
-    }
-
-    public ItemStack getOutput()
-    {
-        return this.result;
     }
 }

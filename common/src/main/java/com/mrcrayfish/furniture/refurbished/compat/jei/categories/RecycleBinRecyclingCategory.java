@@ -63,12 +63,12 @@ public class RecycleBinRecyclingCategory extends FurnitureRecipeCategory<Recycle
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, RecycleBinRecyclingRecipe recipe, IFocusGroup focuses)
     {
-        builder.addSlot(RecipeIngredientRole.INPUT, 6, 24).addItemStack(recipe.getInput());
-        for(int i = 0; i < recipe.getOutputs().length; i++)
+        builder.addSlot(RecipeIngredientRole.INPUT, 6, 24).addItemStack(recipe.getRecyclable());
+        for(int i = 0; i < recipe.getScraps().size(); i++)
         {
             int slotX = 60 + (i % 3) * 18;
             int slotY = 6 + (i / 3) * 18;
-            builder.addSlot(RecipeIngredientRole.OUTPUT, slotX, slotY).addItemStack(recipe.getOutputs()[i]);
+            builder.addSlot(RecipeIngredientRole.OUTPUT, slotX, slotY).addItemStack(recipe.getScraps().get(i));
         }
     }
 

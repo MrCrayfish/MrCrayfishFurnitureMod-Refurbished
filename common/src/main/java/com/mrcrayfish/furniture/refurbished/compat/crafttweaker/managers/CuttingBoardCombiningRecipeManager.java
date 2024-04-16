@@ -11,6 +11,7 @@ import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.mrcrayfish.furniture.refurbished.compat.crafttweaker.Plugin;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardCombiningRecipe;
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.openzen.zencode.java.ZenCodeType;
@@ -27,12 +28,13 @@ import java.util.List;
 public class CuttingBoardCombiningRecipeManager implements IRecipeManager<CuttingBoardCombiningRecipe>
 {
     @ZenCodeType.Method
-    public void addRecipe(String name, IItemStack output, IIngredient[] input)
+    public void addRecipe(String name, IItemStack result, IIngredient[] ingredients)
     {
-        if(!this.validate(input))
+        if(!this.validate(ingredients))
             return;
-        Ingredient[] ingredients = Arrays.stream(input).map(IIngredient::asVanillaIngredient).toArray(Ingredient[]::new);
-        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new CuttingBoardCombiningRecipe(CraftTweakerConstants.rl(name), ingredients, output.getInternal())));
+        NonNullList<Ingredient> ingredientList = NonNullList.create();
+        Arrays.stream(ingredients).map(IIngredient::asVanillaIngredient).forEach(ingredientList::add);
+        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new CuttingBoardCombiningRecipe(CraftTweakerConstants.rl(name), ingredientList, result.getInternal())));
     }
 
     @Override

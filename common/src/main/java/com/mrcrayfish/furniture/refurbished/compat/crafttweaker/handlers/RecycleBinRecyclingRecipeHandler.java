@@ -7,6 +7,7 @@ import com.blamejared.crafttweaker.api.recipe.handler.IRecipeHandler;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker.api.util.StringUtil;
 import com.mrcrayfish.furniture.refurbished.crafting.RecycleBinRecyclingRecipe;
+import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -27,8 +28,8 @@ public class RecycleBinRecyclingRecipeHandler implements IRecipeHandler<RecycleB
         return String.format("%s.addRecipe(%s, %s, %s);",
                 manager.getCommandString(),
                 StringUtil.quoteAndEscape(recipe.getId()),
-                IItemStack.ofMutable(recipe.getInput()).getCommandString(),
-                "[" + String.join(", ", Arrays.stream(recipe.getOutputs()).map(stack -> IItemStack.ofMutable(stack).getCommandString()).toArray(String[]::new)) + "]");
+                IItemStack.ofMutable(recipe.getRecyclable()).getCommandString(),
+                "[" + String.join(", ", recipe.getScraps().stream().map(stack -> IItemStack.ofMutable(stack).getCommandString()).toArray(String[]::new)) + "]");
     }
 
     @Override
@@ -36,15 +37,15 @@ public class RecycleBinRecyclingRecipeHandler implements IRecipeHandler<RecycleB
     {
         if(!(secondRecipe instanceof RecycleBinRecyclingRecipe recyclingRecipe))
             return true;
-        return ItemStack.isSameItem(firstRecipe.getInput(), recyclingRecipe.getInput());
+        return ItemStack.isSameItem(firstRecipe.getRecyclable(), recyclingRecipe.getRecyclable());
     }
 
     @Override
     public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super RecycleBinRecyclingRecipe> manager, RecycleBinRecyclingRecipe recipe)
     {
         IDecomposedRecipe decomposedRecipe = IDecomposedRecipe.builder()
-                .with(BuiltinRecipeComponents.Input.INGREDIENTS, IItemStack.of(recipe.getInput()))
-                .with(BuiltinRecipeComponents.Output.ITEMS, Arrays.stream(recipe.getOutputs()).map(IItemStack::ofMutable).collect(Collectors.toList()))
+                .with(BuiltinRecipeComponents.Input.INGREDIENTS, IItemStack.of(recipe.getRecyclable()))
+                .with(BuiltinRecipeComponents.Output.ITEMS, recipe.getScraps().stream().map(IItemStack::ofMutable).collect(Collectors.toList()))
                 .build();
         return Optional.of(decomposedRecipe);
     }
@@ -52,8 +53,8 @@ public class RecycleBinRecyclingRecipeHandler implements IRecipeHandler<RecycleB
     @Override
     public Optional<RecycleBinRecyclingRecipe> recompose(IRecipeManager<? super RecycleBinRecyclingRecipe> manager, ResourceLocation id, IDecomposedRecipe recipe)
     {
-        ItemStack input = recipe.getOrThrowSingle(BuiltinRecipeComponents.Input.INGREDIENTS).asVanillaIngredient().getItems()[0];
-        ItemStack[] output = recipe.get(BuiltinRecipeComponents.Output.ITEMS).stream().map(IItemStack::getInternal).toArray(ItemStack[]::new);
-        return Optional.of(new RecycleBinRecyclingRecipe(id, input, output));
+        ItemStack recyclable = recipe.getOrThrowSingle(BuiltinRecipeComponents.Input.INGREDIENTS).asVanillaIngredient().getItems()[0];
+        ItemStack[] scraps = recipe.get(BuiltinRecipeComponents.Output.ITEMS).stream().map(IItemStack::getInternal).toArray(ItemStack[]::new);
+        return Optional.of(new RecycleBinRecyclingRecipe(id, recyclable, NonNullList.of(ItemStack.EMPTY, scraps)));
     }
 }

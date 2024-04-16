@@ -65,13 +65,13 @@ public class ToasterToastingCategory extends FurnitureRecipeCategory<ToasterHeat
     {
         builder.addSlot(RecipeIngredientRole.INPUT, 18, 4).addIngredients(recipe.getIngredients().get(0));
         builder.addSlot(RecipeIngredientRole.OUTPUT, 83, 19).addItemStack(Plugin.getResult(recipe));
-        this.arrow = this.helper.createAnimatedDrawable(this.helper.createDrawable(Plugin.TEXTURES, 93, 0, 24, 17), recipe.getCookingTime(), IDrawableAnimated.StartDirection.LEFT, false);
+        this.arrow = this.helper.createAnimatedDrawable(this.helper.createDrawable(Plugin.TEXTURES, 93, 0, 24, 17), recipe.getTime(), IDrawableAnimated.StartDirection.LEFT, false);
     }
 
     @Override
     public void draw(ToasterHeatingRecipe recipe, IRecipeSlotsView view, GuiGraphics graphics, double mouseX, double mouseY)
     {
         this.arrow.draw(graphics, 52, 19);
-        this.drawSeconds(graphics, 64, 38, recipe.getCookingTime());
+        this.drawSeconds(graphics, 64, 38, recipe.getTime());
     }
 }

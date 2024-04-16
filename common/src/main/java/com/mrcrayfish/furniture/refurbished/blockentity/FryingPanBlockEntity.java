@@ -6,6 +6,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModParticleTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
+import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageFlipAnimation;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
@@ -54,7 +55,7 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
     public static final Vector3f OIL_COLOUR = Vec3.fromRGB24(0xE1A803).toVector3f();
     public static final double MAX_AUDIO_DISTANCE = Mth.square(8);
 
-    protected final RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> recipeCache;
+    protected final RecipeManager.CachedCheck<Container, ? extends ProcessingRecipe> recipeCache;
     protected final RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> campfireCookingCache;
     protected final Vec3 audioPosition;
     protected boolean needsFlipping;
@@ -70,7 +71,7 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
         this(ModBlockEntities.FRYING_PAN.get(), pos, state, ModRecipeTypes.FRYING_PAN_COOKING.get());
     }
 
-    public FryingPanBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, RecipeType<? extends AbstractCookingRecipe> recipeType)
+    public FryingPanBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, RecipeType<? extends ProcessingRecipe> recipeType)
     {
         super(type, pos, state, 1);
         this.recipeCache = RecipeManager.createCheck(recipeType);
@@ -213,10 +214,10 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
         ItemStack stack = this.getItem(0);
         if(!stack.isEmpty())
         {
-            Optional<? extends AbstractCookingRecipe> optional = this.getRecipe(stack);
+            Optional<? extends ProcessingRecipe> optional = this.getRecipe(stack);
             if(optional.isPresent())
             {
-                return optional.get().getCookingTime() / 2; // Half the time since it's flipped
+                return optional.get().getTime() / 2; // Half the time since it's flipped
             }
         }
         return 0;
@@ -236,7 +237,7 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
         if(!stack.isEmpty())
         {
             Item remainingItem = stack.getItem().getCraftingRemainingItem();
-            Optional<? extends AbstractCookingRecipe> optional = this.getRecipe(stack);
+            Optional<? extends ProcessingRecipe> optional = this.getRecipe(stack);
             ItemStack result = optional.map(recipe -> recipe.getResultItem(this.level.registryAccess())).orElse(ItemStack.EMPTY);
             stack.shrink(1);
             if(!result.isEmpty())
@@ -284,11 +285,16 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
      * @param stack the input item stack
      * @return an AbstractCookingRecipe for the given input or an empty optional is no recipe is found
      */
-    private Optional<? extends AbstractCookingRecipe> getRecipe(ItemStack stack)
+    private Optional<? extends ProcessingRecipe> getRecipe(ItemStack stack)
     {
-        Optional<? extends AbstractCookingRecipe> optional = this.getRecipe(this.recipeCache, stack);
-        optional = optional.isEmpty() ? this.getRecipe(this.campfireCookingCache, stack) : optional;
+        Optional<? extends ProcessingRecipe> optional = this.getRecipe(this.recipeCache, stack);
+        optional = optional.isEmpty() ? this.getCookingRecipe(this.campfireCookingCache, stack) : optional;
         return optional;
+    }
+
+    private Optional<ProcessingRecipe> getCookingRecipe(RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> cache, ItemStack stack)
+    {
+        return cache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level)).map(recipe -> ProcessingRecipe.Item.from(recipe, this.level.registryAccess()));
     }
 
     /**
@@ -298,7 +304,7 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
      * @param stack the itemstack of the recipe
      * @return An optional recipe
      */
-    private Optional<? extends AbstractCookingRecipe> getRecipe(RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> cache, ItemStack stack)
+    private Optional<? extends ProcessingRecipe> getRecipe(RecipeManager.CachedCheck<Container, ? extends ProcessingRecipe> cache, ItemStack stack)
     {
         return cache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level));
     }

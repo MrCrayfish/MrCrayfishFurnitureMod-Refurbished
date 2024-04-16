@@ -63,7 +63,7 @@ public class SinkFluidTransmutingRecipeHandler implements IRecipeHandler<SinkFlu
     {
         Fluid fluid = recipe.getOrThrowSingle(BuiltinRecipeComponents.Input.FLUID_INGREDIENTS).getMatchingStacks().get(0).getFluid();
         Ingredient catalyst = recipe.getOrThrowSingle(BuiltinRecipeComponents.Input.INGREDIENTS).asVanillaIngredient();
-        ItemStack output = recipe.getOrThrowSingle(BuiltinRecipeComponents.Output.ITEMS).getInternal();
-        return Optional.of(new SinkFluidTransmutingRecipe(id, fluid, catalyst, output));
+        ItemStack result = recipe.getOrThrowSingle(BuiltinRecipeComponents.Output.ITEMS).getInternal();
+        return Optional.of(new SinkFluidTransmutingRecipe(id, fluid, catalyst, result));
     }
 }
