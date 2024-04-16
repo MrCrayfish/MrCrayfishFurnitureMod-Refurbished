@@ -3,7 +3,6 @@ package com.mrcrayfish.furniture.refurbished.block;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.furniture.refurbished.blockentity.BasinBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.KitchenSinkBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
@@ -11,13 +10,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -33,7 +30,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public abstract class BasinBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
+public abstract class BasinBlock extends FurnitureHorizontalEntityBlock implements BlockTagSupplier
 {
     public BasinBlock(Properties properties)
     {
@@ -75,15 +72,9 @@ public abstract class BasinBlock extends FurnitureHorizontalBlock implements Ent
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
     {
-        return createTicker(level, type, ModBlockEntities.BASIN.get());
-    }
-
-    @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends BasinBlockEntity> basin)
-    {
         if(level.isClientSide())
         {
-            return createTickerHelper(type, basin, BasinBlockEntity::clientTick);
+            return createTicker(type, ModBlockEntities.BASIN.get(), BasinBlockEntity::clientTick);
         }
         return null;
     }

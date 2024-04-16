@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
-public class KitchenDrawerBlock extends FurnitureHorizontalBlock implements EntityBlock, IKitchenCabinetry
+public abstract class KitchenDrawerBlock extends FurnitureHorizontalEntityBlock implements IKitchenCabinetry
 {
     public KitchenDrawerBlock(Properties properties)
     {

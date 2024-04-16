@@ -5,6 +5,7 @@ import com.mrcrayfish.furniture.refurbished.block.LightswitchBlock;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
+import com.mrcrayfish.furniture.refurbished.electricity.IModuleNode;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -156,7 +157,7 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implemen
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, CeilingFanBlockEntity ceilingFan)
     {
-        ElectricityModuleBlockEntity.serverTick(level, pos, state, ceilingFan);
+        IModuleNode.serverTick(level, pos, state, ceilingFan);
         ceilingFan.performDamage(level);
     }
 

@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class StorageJarBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
+public class StorageJarBlock extends FurnitureHorizontalEntityBlock implements BlockTagSupplier
 {
     private final WoodType type;
 

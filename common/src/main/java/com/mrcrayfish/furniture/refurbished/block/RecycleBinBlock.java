@@ -2,7 +2,6 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.mrcrayfish.furniture.refurbished.blockentity.MicrowaveBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.RecycleBinBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.data.DropWithName;
@@ -18,7 +17,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -35,7 +33,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class RecycleBinBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier, DropWithName
+public class RecycleBinBlock extends FurnitureHorizontalEntityBlock implements BlockTagSupplier, DropWithName
 {
     public RecycleBinBlock(Properties properties)
     {
@@ -87,17 +85,11 @@ public class RecycleBinBlock extends FurnitureHorizontalBlock implements EntityB
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
     {
-        return createTicker(level, type, ModBlockEntities.RECYCLE_BIN.get());
-    }
-
-    @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends RecycleBinBlockEntity> recycleBin)
-    {
         if(!level.isClientSide())
         {
-            return createTickerHelper(type, recycleBin, RecycleBinBlockEntity::serverTick);
+            return createTicker(type, ModBlockEntities.RECYCLE_BIN.get(), RecycleBinBlockEntity::serverTick);
         }
-        return createTickerHelper(type, recycleBin, RecycleBinBlockEntity::clientTick);
+        return createTicker(type, ModBlockEntities.RECYCLE_BIN.get(), RecycleBinBlockEntity::clientTick);
     }
 
     @Override

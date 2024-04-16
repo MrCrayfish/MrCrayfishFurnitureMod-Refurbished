@@ -1,7 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.block;
 
 import com.mrcrayfish.furniture.refurbished.blockentity.FreezerBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.LightswitchBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -99,15 +98,9 @@ public class FreezerBlock extends FridgeBlock
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
     {
-        return createTicker(level, type, ModBlockEntities.FREEZER.get());
-    }
-
-    @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends FreezerBlockEntity> freezer)
-    {
         if(!level.isClientSide())
         {
-            return createTickerHelper(type, freezer, FreezerBlockEntity::serverTick);
+            return createTicker(type,  ModBlockEntities.FREEZER.get(), FreezerBlockEntity::serverTick);
         }
         return null;
     }

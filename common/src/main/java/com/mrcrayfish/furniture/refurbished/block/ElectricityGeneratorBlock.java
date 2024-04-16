@@ -5,7 +5,6 @@ import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.furniture.refurbished.blockentity.ElectricityGeneratorBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
-import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -37,7 +36,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class ElectricityGeneratorBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
+public class ElectricityGeneratorBlock extends FurnitureHorizontalEntityBlock implements BlockTagSupplier
 {
     private final MetalType type;
 
@@ -87,15 +86,9 @@ public class ElectricityGeneratorBlock extends FurnitureHorizontalBlock implemen
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
     {
-        return createTicker(level, type, ModBlockEntities.ELECTRICITY_GENERATOR.get());
-    }
-
-    @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends ElectricityGeneratorBlockEntity> generator)
-    {
         if(level.isClientSide())
         {
-            return createTickerHelper(type, generator, ElectricityGeneratorBlockEntity::clientTick);
+            return createTicker(type, ModBlockEntities.ELECTRICITY_GENERATOR.get(), ElectricityGeneratorBlockEntity::clientTick);
         }
         return null;
     }

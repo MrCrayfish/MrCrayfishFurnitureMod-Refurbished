@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class CrateBlock extends FurnitureBlock implements EntityBlock, BlockTagSupplier
+public class CrateBlock extends FurnitureEntityBlock implements BlockTagSupplier
 {
     private final WoodType type;
 

@@ -1,20 +1,20 @@
 package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
+import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.FaceAttachedHorizontalDirectionalBlock;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -25,11 +25,11 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
-public abstract class FurnitureAttachedFaceBlock extends FaceAttachedHorizontalDirectionalBlock
+public abstract class FurnitureEntityBlock extends BaseEntityBlock implements BlockProperties
 {
     protected final Map<BlockState, VoxelShape> shapes;
 
-    protected FurnitureAttachedFaceBlock(Properties properties)
+    public FurnitureEntityBlock(Properties properties)
     {
         super(properties);
         this.shapes = this.generateShapes(this.getStateDefinition().getPossibleStates());
@@ -44,11 +44,9 @@ public abstract class FurnitureAttachedFaceBlock extends FaceAttachedHorizontalD
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
+    public RenderShape getRenderShape(BlockState state)
     {
-        super.createBlockStateDefinition(builder);
-        builder.add(FACING);
-        builder.add(FACE);
+        return RenderShape.MODEL;
     }
 
     @Override
@@ -68,25 +66,29 @@ public abstract class FurnitureAttachedFaceBlock extends FaceAttachedHorizontalD
     {
         if(!state.is(newState.getBlock()))
         {
-            if(level.getBlockEntity(pos) instanceof Container container)
+            BlockEntity blockEntity = level.getBlockEntity(pos);
+            if(blockEntity instanceof Container container)
             {
                 Containers.dropContents(level, pos, container);
                 level.updateNeighbourForOutputSignal(pos, this);
+            }
+            if(blockEntity instanceof IElectricityNode node)
+            {
+                node.onDestroyed();
             }
         }
         super.onRemove(state, level, pos, newState, isMoving);
     }
 
     @Override
-    public boolean triggerEvent(BlockState state, Level level, BlockPos pos, int id, int type)
-    {
-        BlockEntity blockEntity = level.getBlockEntity(pos);
-        return blockEntity != null && blockEntity.triggerEvent(id, type);
-    }
-
-    @Override
     public boolean isPathfindable(BlockState state, BlockGetter getter, BlockPos pos, PathComputationType type)
     {
         return false;
+    }
+
+    @Nullable
+    public static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> createTicker(BlockEntityType<A> first, BlockEntityType<E> second, BlockEntityTicker<? super E> ticker)
+    {
+        return BaseEntityBlock.createTickerHelper(first, second, ticker);
     }
 }

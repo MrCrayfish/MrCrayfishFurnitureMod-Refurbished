@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.furniture.refurbished.blockentity.RangeHoodBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
+import com.mrcrayfish.furniture.refurbished.electricity.IModuleNode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class RangeHoodBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
+public class RangeHoodBlock extends FurnitureHorizontalEntityBlock implements BlockTagSupplier
 {
     private final MetalType type;
 
@@ -67,15 +68,9 @@ public class RangeHoodBlock extends FurnitureHorizontalBlock implements EntityBl
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
     {
-        return createTicker(level, type, ModBlockEntities.RANGE_HOOD.get());
-    }
-
-    @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends RangeHoodBlockEntity> rangeHood)
-    {
         if(!level.isClientSide())
         {
-            return createTickerHelper(type, rangeHood, RangeHoodBlockEntity::serverTick);
+            return createTicker(type, ModBlockEntities.RANGE_HOOD.get(), IModuleNode::serverTick);
         }
         return null;
     }

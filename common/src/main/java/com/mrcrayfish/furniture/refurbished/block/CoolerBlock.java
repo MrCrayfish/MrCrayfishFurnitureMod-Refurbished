@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class CoolerBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
+public class CoolerBlock extends FurnitureHorizontalEntityBlock implements BlockTagSupplier
 {
     private final DyeColor color;
 

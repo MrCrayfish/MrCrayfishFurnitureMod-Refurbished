@@ -35,7 +35,7 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
-public class FridgeBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier, DropWithName
+public class FridgeBlock extends FurnitureHorizontalEntityBlock implements BlockTagSupplier, DropWithName
 {
     protected final MetalType type;
 

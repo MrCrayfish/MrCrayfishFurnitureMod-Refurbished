@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class ToasterBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
+public class ToasterBlock extends FurnitureHorizontalEntityBlock implements BlockTagSupplier
 {
     private final MetalType type;
 
@@ -128,20 +128,11 @@ public class ToasterBlock extends FurnitureHorizontalBlock implements EntityBloc
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
     {
-        return createTicker(level, type, ModBlockEntities.TOASTER.get());
-    }
-
-    @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends ToasterBlockEntity> toaster)
-    {
         if(level.isClientSide())
         {
-            return createTickerHelper(type, toaster, ToasterBlockEntity::clientTick);
+            return createTicker(type, ModBlockEntities.TOASTER.get(), ToasterBlockEntity::clientTick);
         }
-        else
-        {
-            return createTickerHelper(type, toaster, ToasterBlockEntity::serverTick);
-        }
+        return createTicker(type, ModBlockEntities.TOASTER.get(), ToasterBlockEntity::serverTick);
     }
 
     @Override

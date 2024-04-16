@@ -2,8 +2,6 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.mrcrayfish.furniture.refurbished.blockentity.CeilingFanBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.ElectricityGeneratorBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.TelevisionBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
@@ -18,7 +16,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -35,7 +32,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class TelevisionBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
+public class TelevisionBlock extends FurnitureHorizontalEntityBlock implements BlockTagSupplier
 {
     public TelevisionBlock(Properties properties)
     {
@@ -90,17 +87,11 @@ public class TelevisionBlock extends FurnitureHorizontalBlock implements EntityB
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
     {
-        return createTicker(level, type, ModBlockEntities.TELEVISION.get());
-    }
-
-    @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends TelevisionBlockEntity> television)
-    {
         if(level.isClientSide())
         {
-            return createTickerHelper(type, television, TelevisionBlockEntity::clientTick);
+            return createTicker(type, ModBlockEntities.TELEVISION.get(), TelevisionBlockEntity::clientTick);
         }
-        return createTickerHelper(type, television, TelevisionBlockEntity::serverTick);
+        return createTicker(type, ModBlockEntities.TELEVISION.get(), TelevisionBlockEntity::serverTick);
     }
 
     public static int light(BlockState state)

@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class PostBoxBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
+public class PostBoxBlock extends FurnitureHorizontalEntityBlock implements BlockTagSupplier
 {
     public PostBoxBlock(Properties properties)
     {

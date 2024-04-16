@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class MailboxBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
+public class MailboxBlock extends FurnitureHorizontalEntityBlock implements BlockTagSupplier
 {
     private final WoodType type;
 

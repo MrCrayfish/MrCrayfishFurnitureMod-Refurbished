@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class FryingPanBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
+public class FryingPanBlock extends FurnitureHorizontalEntityBlock implements BlockTagSupplier
 {
     public FryingPanBlock(Properties properties)
     {
@@ -149,15 +149,9 @@ public class FryingPanBlock extends FurnitureHorizontalBlock implements EntityBl
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
     {
-        return createTicker(level, type, ModBlockEntities.FRYING_PAN.get());
-    }
-
-    @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends FryingPanBlockEntity> fryingPan)
-    {
         if(level.isClientSide())
         {
-            return createTickerHelper(type, fryingPan, FryingPanBlockEntity::clientTick);
+            return createTicker(type, ModBlockEntities.FRYING_PAN.get(), FryingPanBlockEntity::clientTick);
         }
         return null;
     }

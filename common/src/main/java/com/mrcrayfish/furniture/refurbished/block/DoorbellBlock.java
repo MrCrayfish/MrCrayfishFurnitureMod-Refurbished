@@ -3,10 +3,12 @@ package com.mrcrayfish.furniture.refurbished.block;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.furniture.refurbished.blockentity.DoorbellBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.ElectricityModuleBlockEntity;
 import com.mrcrayfish.furniture.refurbished.client.FurnitureScreens;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
+import com.mrcrayfish.furniture.refurbished.electricity.IModuleNode;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
@@ -44,7 +46,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class DoorbellBlock extends FurnitureHorizontalBlock implements EntityBlock, BlockTagSupplier
+public class DoorbellBlock extends FurnitureHorizontalEntityBlock implements BlockTagSupplier
 {
     public DoorbellBlock(Properties properties)
     {
@@ -161,17 +163,12 @@ public class DoorbellBlock extends FurnitureHorizontalBlock implements EntityBlo
     }
 
     @Nullable
+    @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
-    {
-        return createTicker(level, type, ModBlockEntities.DOORBELL.get());
-    }
-
-    @Nullable
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends DoorbellBlockEntity> doorbell)
     {
         if(!level.isClientSide())
         {
-            return createTickerHelper(type, doorbell, DoorbellBlockEntity::serverTick);
+            return createTicker(type, ModBlockEntities.DOORBELL.get(), IModuleNode::serverTick);
         }
         return null;
     }
