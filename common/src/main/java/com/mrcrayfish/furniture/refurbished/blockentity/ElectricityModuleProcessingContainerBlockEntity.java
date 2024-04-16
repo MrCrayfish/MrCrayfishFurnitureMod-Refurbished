@@ -76,7 +76,7 @@ public abstract class ElectricityModuleProcessingContainerBlockEntity extends Pr
         this.setChanged();
         if(this.level instanceof ServerLevel)
         {
-            this.syncNodeData();
+            this.syncDataToTrackingClients();
         }
     }
 
@@ -125,7 +125,7 @@ public abstract class ElectricityModuleProcessingContainerBlockEntity extends Pr
     }
 
     @Override
-    public void syncNodeData()
+    public void syncDataToTrackingClients()
     {
         this.updateNodeConnections();
         BlockEntityHelper.sendCustomUpdate(this, this.getUpdateTag());

@@ -119,12 +119,10 @@ public interface IElectricityNode
     /**
      * Syncs the data of this node to tracking clients
      */
-    default void syncNodeData()
+    default void syncDataToTrackingClients()
     {
-        this.updateNodeConnections();
-        CompoundTag compound = new CompoundTag();
-        this.writeNodeNbt(compound);
-        BlockEntityHelper.sendCustomUpdate(this.getNodeOwner(), compound);
+        BlockEntity entity = this.getNodeOwner();
+        BlockEntityHelper.sendCustomUpdate(entity, entity.getUpdateTag());
     }
 
     /**
@@ -167,7 +165,7 @@ public interface IElectricityNode
     default void removeNodeConnection(Connection connection)
     {
         this.getNodeConnections().remove(connection);
-        this.syncNodeData();
+        this.syncDataToTrackingClients();
     }
 
     /**
@@ -181,7 +179,7 @@ public interface IElectricityNode
         connections.forEach(c -> {
             c.getOtherNode(this).ifPresent(node -> {
                 node.removeNodeConnection(c);
-                node.syncNodeData();
+                node.syncDataToTrackingClients();
             });
         });
         connections.clear();
@@ -231,7 +229,7 @@ public interface IElectricityNode
         {
             other.connectToNode(this);
             this.onNodeConnectedTo(other);
-            this.syncNodeData();
+            this.syncDataToTrackingClients();
             this.getNodeOwner().setChanged();
             return true;
         }
