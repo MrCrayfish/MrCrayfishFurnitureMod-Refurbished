@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeSerializers;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.data.Material;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.CriterionTriggerInstance;
@@ -133,8 +134,17 @@ public class WorkbenchContructingRecipe implements Recipe<Container>
                 materialsArray.add(ingredient.toJson());
             }
             object.add("materials", materialsArray);
-            object.addProperty("result", BuiltInRegistries.ITEM.getKey(result.result).toString());
-            object.addProperty("count", result.count);
+            if(result.count == 1)
+            {
+                object.addProperty("result", BuiltInRegistries.ITEM.getKey(result.result).toString());
+            }
+            else
+            {
+                JsonObject itemObject = new JsonObject();
+                itemObject.addProperty("item", BuiltInRegistries.ITEM.getKey(result.result).toString());
+                itemObject.addProperty("count", result.count);
+                object.add("result", itemObject);
+            }
             object.addProperty("show_notification", result.notification);
         }
 
@@ -144,10 +154,7 @@ public class WorkbenchContructingRecipe implements Recipe<Container>
             JsonArray materialArray = GsonHelper.getAsJsonArray(object, "materials");
             NonNullList<StackedIngredient> materials = NonNullList.withSize(materialArray.size(), StackedIngredient.EMPTY);
             IntStream.range(0, materialArray.size()).forEach(i -> materials.set(i, StackedIngredient.fromJson(materialArray.get(i))));
-            String inputString = GsonHelper.getAsString(object, "result");
-            int count = GsonHelper.getAsInt(object, "count", 1);
-            // TODO error out here iuf item not found
-            ItemStack result = new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(inputString)), count);
+            ItemStack result = Utils.getItemStack(object, "result");
             boolean notification = GsonHelper.getAsBoolean(object, "show_notification", true);
             return new WorkbenchContructingRecipe(id, materials, result, notification);
         }
