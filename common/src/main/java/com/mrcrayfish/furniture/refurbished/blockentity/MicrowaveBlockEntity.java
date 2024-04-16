@@ -128,7 +128,7 @@ public class MicrowaveBlockEntity extends ElectricityModuleProcessingContainerBl
     }
 
     @Override
-    public void toggle()
+    public void togglePower()
     {
         this.enabled = !this.enabled;
         this.setChanged();

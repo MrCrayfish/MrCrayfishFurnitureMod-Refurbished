@@ -442,7 +442,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     }
 
     @Override
-    public void toggle()
+    public void togglePower()
     {
         this.enabled = !this.enabled;
         this.level.setBlock(this.worldPosition, this.getBlockState().setValue(StoveBlock.LIT, this.isNodePowered() && this.enabled), Block.UPDATE_ALL);

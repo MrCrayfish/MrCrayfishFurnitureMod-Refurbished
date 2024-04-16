@@ -92,7 +92,7 @@ public class RecycleBinMenu extends SimpleContainerMenu implements IPowerSwitchM
     {
         if(this.container instanceof IPowerSwitch powerSwitch)
         {
-            powerSwitch.toggle();
+            powerSwitch.togglePower();
         }
     }
 }

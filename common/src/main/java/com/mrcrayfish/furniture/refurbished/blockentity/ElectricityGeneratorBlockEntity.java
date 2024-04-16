@@ -145,7 +145,7 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
     }
 
     @Override
-    public void toggle()
+    public void togglePower()
     {
         this.enabled = !this.enabled;
         if(this.enabled)
