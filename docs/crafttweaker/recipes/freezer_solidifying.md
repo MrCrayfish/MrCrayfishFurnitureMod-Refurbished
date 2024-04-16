@@ -8,7 +8,7 @@ import TabItem from '@theme/TabItem';
 
 # Freezer (Solidifying)
 
-Solidifying/Freezing is a feature of the Fridge in MrCrayfish's Furniture Mod: Refurbished. It can be used by the player to freeze an item, like converting water into ice.
+Solidifying/Freezing is a feature of the Fridge in MrCrayfish's Furniture Mod: Refurbished. It can be used by the player to freeze an item, like converting water into ice. The Freezer requires electrical power in order for it to function.
 
 ## Recipe Manager
 `<recipetype:refurbished_furniture:freezer_solidifying>`

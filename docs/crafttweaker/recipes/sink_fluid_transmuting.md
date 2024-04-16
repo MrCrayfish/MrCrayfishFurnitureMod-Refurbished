@@ -8,7 +8,7 @@ import TabItem from '@theme/TabItem';
 
 # Sink (Fluid Transmuting)
 
-TODO
+Fluid Transmuting is a new system introduced in MrCrayfish's Furniture Mod: Refurbished. It allows the player to mix a catalyst item into a fluid to produce a new item. Fluid transmuting is performed using a Kitchen Sink. It is currently used in the mod to turn milk, by mixing sea salt, to turn it into cheese.
 
 ## Recipe Manager
 `<recipetype:refurbished_furniture:sink_fluid_transmuting>`
@@ -19,12 +19,12 @@ TODO
 
 Adds a new fluid transmuting recipe to the sink
 
-| Paramater |                                          Type                                           | Required |                              Description                              |
-| :-------: | :-------------------------------------------------------------------------------------: | :------: | :-------------------------------------------------------------------: |
-|   name    |                                         string                                          |   Yes    |                The name of the recipe, must be unique.                |
-|   fluid   |   [IFluidStack](https://docs.blamejared.com/1.20.4/en/vanilla/api/fluid/IFluidStack)    |   Yes    |                       The ingredient to freeze                        |
-| catalyst  | [IIngredient](https://docs.blamejared.com/1.20.4/en/vanilla/api/ingredient/IIngredient) |   Yes    | The resulting item from cooking the `ingredient`, can have an amount. |
-|  result   |     [IItemStack](https://docs.blamejared.com/1.20.4/en/vanilla/api/item/IItemStack)     |   Yes    | The resulting item from cooking the `ingredient`, can have an amount. |
+| Paramater |                                          Type                                           | Required |                                    Description                                    |
+| :-------: | :-------------------------------------------------------------------------------------: | :------: | :-------------------------------------------------------------------------------: |
+|   name    |                                         string                                          |   Yes    |                      The name of the recipe, must be unique.                      |
+|   fluid   |   [IFluidStack](https://docs.blamejared.com/1.20.4/en/vanilla/api/fluid/IFluidStack)    |   Yes    |                 A fluid. The recipe will consume one bucket full.                 |
+| catalyst  | [IIngredient](https://docs.blamejared.com/1.20.4/en/vanilla/api/ingredient/IIngredient) |   Yes    |          The item that triggers the reaction. Can only be a single item.          |
+|  result   |     [IItemStack](https://docs.blamejared.com/1.20.4/en/vanilla/api/item/IItemStack)     |   Yes    | The resulting item from mixing the `catalyst` with the fluid, can have an amount. |
 
 #### Example
 <Tabs>

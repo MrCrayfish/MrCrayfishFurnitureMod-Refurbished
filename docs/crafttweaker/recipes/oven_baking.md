@@ -8,7 +8,7 @@ import TabItem from '@theme/TabItem';
 
 # Oven (Baking)
 
-TODO
+The Oven (a part of the Stove block) allows you to bake items. It has the ability to bake up to three different items simultaneously. They are also baked independantly, so it doesn't matter it another item is already half way baked when you add it into the Oven.
 
 ## Recipe Manager
 `<recipetype:refurbished_furniture:oven_baking>`

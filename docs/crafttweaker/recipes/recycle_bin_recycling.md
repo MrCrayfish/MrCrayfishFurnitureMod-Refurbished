@@ -8,7 +8,7 @@ import TabItem from '@theme/TabItem';
 
 # Recycle Bin (Recycling)
 
-TODO
+The Recycling Bin is a pseudo uncrafter/item deleter. Uncrafting in the game using an items actual crafting recipes is overpowered. The Recycling Bin aims to provide a handcrafted experience that doesn't break the gameplay experience, while still providing useful items from breaking down an item. Due to it's handcrafted nature, a custom recipe has to be provided for the recycle bin in order to return items from breaking it down, it is not automatic. The base mod currently supports most vanilla blocks/items (that make sense) and blocks/items from the mod itself. By default, the recycling bin will consume all items regardless if their is a recycling recipe of not; this acts like a sort of item deleter for lack of better words.
 
 ## Recipe Manager
 `<recipetype:refurbished_furniture:recycle_bin_recycling>`

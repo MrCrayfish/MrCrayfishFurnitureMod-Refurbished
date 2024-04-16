@@ -8,7 +8,7 @@ import TabItem from '@theme/TabItem';
 
 # Microwave (Heating)
 
-TODO
+The Microwave is a block that allows you to heat items. It acts very similar to a furnace, but does not inherit the recipes. The Microwave requires electrical power in order for it to function. It currently has limited recipes in the base mod.
 
 ## Recipe Manager
 `<recipetype:refurbished_furniture:microwave_heating>`
@@ -23,8 +23,8 @@ Adds a new heating recipe to the microwave
 | :--------: | :-------------------------------------------------------------------------------------: | :------: | :-------------------------------------------------------------------: |
 |    name    |                                         string                                          |   Yes    |                The name of the recipe, must be unique.                |
 | ingredient | [IIngredient](https://docs.blamejared.com/1.20.4/en/vanilla/api/ingredient/IIngredient) |   Yes    |                       The ingredient to freeze                        |
-|   result   |     [IItemStack](https://docs.blamejared.com/1.20.4/en/vanilla/api/item/IItemStack)     |   Yes    | The resulting item from slicing the `ingredient`, can have an amount. |
-|    time    |                                           int                                           |    No    |        The duration in ticks to freeze the item. Default `200`        |
+|   result   |     [IItemStack](https://docs.blamejared.com/1.20.4/en/vanilla/api/item/IItemStack)     |   Yes    | The resulting item from heating the `ingredient`, can have an amount. |
+|    time    |                                           int                                           |    No    |         The duration in ticks to heat the item. Default `200`         |
 
 #### Example
 <Tabs>
