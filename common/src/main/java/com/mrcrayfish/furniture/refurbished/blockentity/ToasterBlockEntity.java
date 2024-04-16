@@ -30,7 +30,7 @@ import net.minecraft.world.phys.Vec3;
 /**
  * Author: MrCrayfish
  */
-public class ToasterBlockEntity extends ElectricityModuleProcessingContainerBlockEntity
+public class ToasterBlockEntity extends ElectricityModuleProcessingLootBlockEntity
 {
     public static final int[] INPUT_SLOTS = new int[]{0, 1};
     public static final int[] OUTPUT_SLOTS = new int[]{0, 1};

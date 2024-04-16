@@ -105,8 +105,7 @@ public abstract class ElectricitySourceLootBlockEntity extends BasicLootBlockEnt
         return this.worldPosition.hashCode();
     }
 
-    // Forge method
-    // @Override
+    // @Override From IForgeBlockEntity
     @SuppressWarnings("unused")
     public AABB getRenderBoundingBox()
     {

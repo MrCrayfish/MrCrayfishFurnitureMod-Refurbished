@@ -32,7 +32,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class FreezerBlockEntity extends ElectricityModuleProcessingContainerBlockEntity implements IPowerSwitch, IHomeControlDevice
+public class FreezerBlockEntity extends ElectricityModuleProcessingLootBlockEntity implements IPowerSwitch, IHomeControlDevice
 {
     public static final int[] INPUT_SLOTS = new int[]{0};
     public static final int[] OUTPUT_SLOTS = new int[]{0, 1};
