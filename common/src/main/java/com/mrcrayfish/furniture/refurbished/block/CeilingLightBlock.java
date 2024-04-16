@@ -75,7 +75,7 @@ public class CeilingLightBlock extends FurnitureAttachedFaceBlock implements Ent
         {
             if(level.getBlockEntity(pos) instanceof IElectricityNode node)
             {
-                node.onDestroyed();
+                node.onNodeDestroyed();
             }
         }
         super.onRemove(state, level, pos, newState, isMoving);

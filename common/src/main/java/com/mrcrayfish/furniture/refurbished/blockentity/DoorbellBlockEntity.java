@@ -40,13 +40,13 @@ public class DoorbellBlockEntity extends ElectricityModuleBlockEntity implements
     }
 
     @Override
-    public boolean isPowered()
+    public boolean isNodePowered()
     {
         return this.powered;
     }
 
     @Override
-    public void setPowered(boolean powered)
+    public void setNodePowered(boolean powered)
     {
         this.powered = powered;
         this.setChanged();

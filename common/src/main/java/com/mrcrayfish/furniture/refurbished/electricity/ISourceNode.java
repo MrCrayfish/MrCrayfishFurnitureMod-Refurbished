@@ -1,8 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.electricity;
 
 import com.mrcrayfish.furniture.refurbished.Config;
-import net.minecraft.SharedConstants;
-import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -45,28 +43,28 @@ public interface ISourceNode extends IElectricityNode
     }
 
     @Override
-    default boolean isSource()
+    default boolean isSourceNode()
     {
         return true;
     }
 
     @Override
-    default boolean canPowerTraverse()
+    default boolean canPowerTraverseNode()
     {
         return false;
     }
 
     @Override
-    default AABB getInteractBox()
+    default AABB getNodeInteractBox()
     {
         return DEFAULT_NODE_BOX;
     }
 
     @Override
-    default void setReceivingPower(boolean power) {}
+    default void setNodeReceivingPower(boolean power) {}
 
     @Override
-    default boolean isReceivingPower()
+    default boolean isNodeReceivingPower()
     {
         return false;
     }
@@ -91,7 +89,7 @@ public interface ISourceNode extends IElectricityNode
     default void earlyLevelTick()
     {
         // TODO figure out way to cache this instead of searching again every tick
-        if(this.isPowered() && !this.isOverloaded())
+        if(this.isNodePowered() && !this.isOverloaded())
         {
             //long time = Util.getNanos();
             NodeSearchResult result = this.search();
@@ -101,7 +99,7 @@ public interface ISourceNode extends IElectricityNode
                 this.onOverloaded();
                 return;
             }
-            result.nodes().forEach(node -> node.setReceivingPower(true));
+            result.nodes().forEach(node -> node.setNodeReceivingPower(true));
             //long searchTime = Util.getNanos() - time;
             //System.out.println("Search time: " + searchTime);
         }
@@ -128,7 +126,7 @@ public interface ISourceNode extends IElectricityNode
      */
     default NodeSearchResult search()
     {
-        List<IElectricityNode> nodes = IElectricityNode.searchNodes(this, Config.SERVER.electricity.maximumDaisyChain.get(), this.getMaxPowerableNodes(), false, node -> !node.isSource() && node.canPowerTraverse(), node -> !node.isSource());
+        List<IElectricityNode> nodes = IElectricityNode.searchNodes(this, Config.SERVER.electricity.maximumDaisyChain.get(), this.getMaxPowerableNodes(), false, node -> !node.isSourceNode() && node.canPowerTraverseNode(), node -> !node.isSourceNode());
         boolean overloaded = nodes.size() > this.getMaxPowerableNodes();
         return new NodeSearchResult(overloaded, nodes);
     }

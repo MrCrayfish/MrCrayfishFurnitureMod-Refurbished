@@ -52,7 +52,7 @@ public class ElectricityTicker extends SavedData
      */
     public void addSourceNode(ISourceNode node)
     {
-        this.sources.put(node.getPosition(), new MutableObject<>(new WeakReference<>(node)));
+        this.sources.put(node.getNodePosition(), new MutableObject<>(new WeakReference<>(node)));
     }
 
     /**
@@ -94,7 +94,7 @@ public class ElectricityTicker extends SavedData
         if(sourceRef != null)
         {
             ISourceNode node = sourceRef.get();
-            if(node != null && node.isValid())
+            if(node != null && node.isNodeValid())
             {
                 return node;
             }
@@ -103,7 +103,7 @@ public class ElectricityTicker extends SavedData
         if(this.level.isLoaded(pos))
         {
             BlockEntity entity = this.level.getBlockEntity(pos);
-            if(entity instanceof ISourceNode node && node.isValid())
+            if(entity instanceof ISourceNode node && node.isNodeValid())
             {
                 mutableObj.setValue(new WeakReference<>(node));
                 return node;

@@ -26,7 +26,7 @@ public interface IElectricityNode
     /**
      * @return The block position of the node in the level
      */
-    BlockPos getPosition();
+    BlockPos getNodePosition();
 
     /**
      * @return The level where the node is located
@@ -36,60 +36,60 @@ public interface IElectricityNode
     /**
      * @return The block entity that owns this node
      */
-    BlockEntity getBlockEntity();
+    BlockEntity getNodeOwner();
 
     /**
      * @return An AABB box used for interacting
      */
-    AABB getInteractBox();
+    AABB getNodeInteractBox();
 
     /**
      * @return True if this node is a source node. See {@link ISourceNode}
      */
-    boolean isSource();
+    boolean isSourceNode();
 
     /**
      * @return True if this node is currently powered
      */
-    boolean isPowered();
+    boolean isNodePowered();
 
     /**
      * Sets the powered state for this node
      *
      * @param powered true for powered, false for unpowered
      */
-    void setPowered(boolean powered);
+    void setNodePowered(boolean powered);
 
     /**
      * @return A set containing all the connections of this node
      */
-    Set<Connection> getConnections();
+    Set<Connection> getNodeConnections();
 
     /**
      * Marks this node as receiving power with the given state. This is only applicable to module nodes.
      * @param power the power state
      */
-    void setReceivingPower(boolean power);
+    void setNodeReceivingPower(boolean power);
 
     /**
      * @return True if this node is receiving power. This is only applicable to module nodes.
      */
-    boolean isReceivingPower();
+    boolean isNodeReceivingPower();
 
     /**
      * @return True if this node is not removed from the level
      */
-    default boolean isValid()
+    default boolean isNodeValid()
     {
-        return !this.getBlockEntity().isRemoved();
+        return !this.getNodeOwner().isRemoved();
     }
 
     /**
      * Called when the node is removed from the level. E.g. player breaks the block
      */
-    default void onDestroyed()
+    default void onNodeDestroyed()
     {
-        this.removeAllConnections();
+        this.removeAllNodeConnections();
     }
 
     /**
@@ -97,12 +97,12 @@ public interface IElectricityNode
      *
      * @param other the node that was just connected to this node
      */
-    default void onConnectedTo(IElectricityNode other) {}
+    default void onNodeConnectedTo(IElectricityNode other) {}
 
     /**
      * @return True if electricity can flow through this node
      */
-    default boolean canPowerTraverse()
+    default boolean canPowerTraverseNode()
     {
         return true;
     }
@@ -110,10 +110,10 @@ public interface IElectricityNode
     /**
      * @return Updates and returns a set containing all the connections of this node
      */
-    default Set<Connection> updateAndGetConnections()
+    default Set<Connection> updateAndGetNodeConnections()
     {
-        this.updateConnections();
-        return this.getConnections();
+        this.updateNodeConnections();
+        return this.getNodeConnections();
     }
 
     /**
@@ -121,10 +121,10 @@ public interface IElectricityNode
      */
     default void syncNodeData()
     {
-        this.updateConnections();
+        this.updateNodeConnections();
         CompoundTag compound = new CompoundTag();
         this.writeNodeNbt(compound);
-        BlockEntityHelper.sendCustomUpdate(this.getBlockEntity(), compound);
+        BlockEntityHelper.sendCustomUpdate(this.getNodeOwner(), compound);
     }
 
     /**
@@ -136,8 +136,8 @@ public interface IElectricityNode
     {
         if(tag.contains("Connections", Tag.TAG_LONG_ARRAY))
         {
-            BlockPos pos = this.getPosition();
-            Set<Connection> connections = this.getConnections();
+            BlockPos pos = this.getNodePosition();
+            Set<Connection> connections = this.getNodeConnections();
             connections.clear();
             long[] nodes = tag.getLongArray("Connections");
             for(long node : nodes)
@@ -154,7 +154,7 @@ public interface IElectricityNode
      */
     default void writeNodeNbt(CompoundTag tag)
     {
-        Set<Connection> connections = this.getConnections();
+        Set<Connection> connections = this.getNodeConnections();
         tag.putLongArray("Connections", connections.stream().map(Connection::getPosB).map(BlockPos::asLong).toList());
     }
 
@@ -164,9 +164,9 @@ public interface IElectricityNode
      *
      * @param connection the connection to remove
      */
-    default void removeConnection(Connection connection)
+    default void removeNodeConnection(Connection connection)
     {
-        this.getConnections().remove(connection);
+        this.getNodeConnections().remove(connection);
         this.syncNodeData();
     }
 
@@ -175,12 +175,12 @@ public interface IElectricityNode
      * node to also remove their connection to this node. This method does not sync the data to
      * tracking clients after removal.
      */
-    default void removeAllConnections()
+    default void removeAllNodeConnections()
     {
-        Set<Connection> connections = this.getConnections();
+        Set<Connection> connections = this.getNodeConnections();
         connections.forEach(c -> {
             c.getOtherNode(this).ifPresent(node -> {
-                node.removeConnection(c);
+                node.removeNodeConnection(c);
                 node.syncNodeData();
             });
         });
@@ -191,14 +191,14 @@ public interface IElectricityNode
      * Updates the connections of this node and removes connections that are not valid. This method
      * does not sync connections to tracking clients.
      */
-    default void updateConnections()
+    default void updateNodeConnections()
     {
         Level level = this.getNodeLevel();
-        this.getConnections().removeIf(c -> {
+        this.getNodeConnections().removeIf(c -> {
             if(!c.isConnected(level)) {
                 IElectricityNode node = c.getNodeB(level);
                 if(node != null) {
-                    node.removeConnection(c);
+                    node.removeNodeConnection(c);
                 }
                 return true;
             }
@@ -209,9 +209,9 @@ public interface IElectricityNode
     /**
      * @return True if this node connection count has reached the configured max links per node.
      */
-    default boolean isConnectionLimit()
+    default boolean isNodeConnectionLimitReached()
     {
-        return this.getConnections().size() >= Config.SERVER.electricity.maximumLinksPerElectricityNode.get();
+        return this.getNodeConnections().size() >= Config.SERVER.electricity.maximumLinksPerElectricityNode.get();
     }
 
     /**
@@ -223,16 +223,16 @@ public interface IElectricityNode
      * @param other the node to connect to
      * @return True if successfully connected to the other node
      */
-    default boolean connectTo(IElectricityNode other)
+    default boolean connectToNode(IElectricityNode other)
     {
-        BlockPos pos = this.getPosition();
-        Set<Connection> connections = this.getConnections();
-        if(connections.add(Connection.of(pos, other.getPosition())))
+        BlockPos pos = this.getNodePosition();
+        Set<Connection> connections = this.getNodeConnections();
+        if(connections.add(Connection.of(pos, other.getNodePosition())))
         {
-            other.connectTo(this);
-            this.onConnectedTo(other);
+            other.connectToNode(this);
+            this.onNodeConnectedTo(other);
             this.syncNodeData();
-            this.getBlockEntity().setChanged();
+            this.getNodeOwner().setChanged();
             return true;
         }
         return false;
@@ -244,18 +244,18 @@ public interface IElectricityNode
      * @param node the node to test
      * @return True if connected
      */
-    default boolean isConnectedTo(IElectricityNode node)
+    default boolean isConnectedToNode(IElectricityNode node)
     {
-        Set<Connection> connections = this.getConnections();
-        return connections.contains(Connection.of(this.getPosition(), node.getPosition()));
+        Set<Connection> connections = this.getNodeConnections();
+        return connections.contains(Connection.of(this.getNodePosition(), node.getNodePosition()));
     }
 
     /**
      * @return The interaction box of this node but offset by the block position
      */
-    default AABB getPositionedInteractBox()
+    default AABB getPositionedNodeInteractBox()
     {
-        return this.getInteractBox().move(this.getPosition());
+        return this.getNodeInteractBox().move(this.getNodePosition());
     }
 
     static List<IElectricityNode> searchNodes(IElectricityNode start)
@@ -288,7 +288,7 @@ public interface IElectricityNode
             Pair<IElectricityNode, Integer> pair = queue.poll();
             IElectricityNode node = pair.getLeft();
             int currentDepth = pair.getRight();
-            for(Connection connection : node.getConnections())
+            for(Connection connection : node.getNodeConnections())
             {
                 IElectricityNode other = connection.getNodeB(node.getNodeLevel());
                 if(other == null || searched.contains(other))

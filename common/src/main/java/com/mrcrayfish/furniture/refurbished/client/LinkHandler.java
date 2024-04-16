@@ -77,7 +77,7 @@ public class LinkHandler
      */
     public boolean isLinkingNode(IElectricityNode node)
     {
-        return this.lastNodePos != null && this.lastNodePos.equals(node.getPosition());
+        return this.lastNodePos != null && this.lastNodePos.equals(node.getNodePosition());
     }
 
     /**
@@ -203,7 +203,7 @@ public class LinkHandler
         IElectricityNode node = this.getTargetNode();
         if(node != null && !this.isLinkingNode(node) && this.canLinkToNode(player.level(), node))
         {
-            return node.getPosition().getCenter();
+            return node.getNodePosition().getCenter();
         }
         return player.getViewVector(partialTick).add(player.getEyePosition(partialTick));
     }
@@ -245,10 +245,10 @@ public class LinkHandler
             IElectricityNode lastNode = level.getBlockEntity(this.lastNodePos) instanceof IElectricityNode node ? node : null;
             if(lastNode != null && target != null && lastNode != target)
             {
-                double distance = this.lastNodePos.getCenter().distanceTo(target.getPosition().getCenter());
+                double distance = this.lastNodePos.getCenter().distanceTo(target.getNodePosition().getCenter());
                 if(distance <= Config.SERVER.electricity.maximumLinkDistance.get())
                 {
-                    return !target.isConnectionLimit() && !lastNode.isConnectedTo(target);
+                    return !target.isNodeConnectionLimitReached() && !lastNode.isConnectedToNode(target);
                 }
             }
         }

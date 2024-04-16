@@ -170,7 +170,7 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
     @Override
     public boolean canPlayAudio()
     {
-        return this.isPowered() && this.processing && this.enabled && !this.isRemoved();
+        return this.isNodePowered() && this.processing && this.enabled && !this.isRemoved();
     }
 
     @Override
@@ -186,13 +186,13 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
     }
 
     @Override
-    public boolean isPowered()
+    public boolean isNodePowered()
     {
         return this.powered;
     }
 
     @Override
-    public void setPowered(boolean powered)
+    public void setNodePowered(boolean powered)
     {
         this.powered = powered;
         this.setChanged();
@@ -255,7 +255,7 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
     @Override
     public boolean canProcess()
     {
-        if(!this.stopped && this.enabled && this.isPowered())
+        if(!this.stopped && this.enabled && this.isNodePowered())
         {
             ItemStack input = this.getItem(0);
             if(input.isEmpty())
@@ -334,7 +334,7 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
     public static void serverTick(Level level, BlockPos pos, BlockState state, RecycleBinBlockEntity recycleBin)
     {
         recycleBin.updatePoweredState();
-        recycleBin.setReceivingPower(false);
+        recycleBin.setNodeReceivingPower(false);
 
         boolean processing = recycleBin.processTick();
         if(recycleBin.processing != processing)

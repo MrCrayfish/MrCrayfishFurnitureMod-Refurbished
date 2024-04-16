@@ -68,14 +68,14 @@ public class LinkManager extends SavedData
     public void onNodeInteract(Level level, Player player, IElectricityNode interactedNode)
     {
         // Prevent interaction if reached connection limit
-        if(interactedNode.isConnectionLimit())
+        if(interactedNode.isNodeConnectionLimitReached())
             return;
 
         if(!this.lastNodeMap.containsKey(player.getUUID()))
         {
-            BlockPos pos = interactedNode.getPosition();
+            BlockPos pos = interactedNode.getNodePosition();
             this.lastNodeMap.put(player.getUUID(), pos);
-            level.playSound(null, interactedNode.getPosition(), ModSounds.ITEM_WRENCH_SELECTED_NODE.get(), SoundSource.BLOCKS);
+            level.playSound(null, interactedNode.getNodePosition(), ModSounds.ITEM_WRENCH_SELECTED_NODE.get(), SoundSource.BLOCKS);
             Network.getPlay().sendToPlayer(() -> (ServerPlayer) player, new MessageSyncLink(pos));
             return;
         }
@@ -85,11 +85,11 @@ public class LinkManager extends SavedData
         IElectricityNode lastNode = level.getBlockEntity(previousPos) instanceof IElectricityNode node ? node : null;
         if(lastNode != null && lastNode != interactedNode)
         {
-            double distance = lastNode.getPosition().getCenter().distanceTo(interactedNode.getPosition().getCenter());
+            double distance = lastNode.getNodePosition().getCenter().distanceTo(interactedNode.getNodePosition().getCenter());
             if(distance <= Config.SERVER.electricity.maximumLinkDistance.get())
             {
-                lastNode.connectTo(interactedNode);
-                level.playSound(null, interactedNode.getPosition(), ModSounds.ITEM_WRENCH_CONNECTED_LINK.get(), SoundSource.BLOCKS);
+                lastNode.connectToNode(interactedNode);
+                level.playSound(null, interactedNode.getNodePosition(), ModSounds.ITEM_WRENCH_CONNECTED_LINK.get(), SoundSource.BLOCKS);
             }
         }
 

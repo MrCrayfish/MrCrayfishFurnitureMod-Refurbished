@@ -57,7 +57,7 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
 
     protected final DataSlot selectedRecipe = DataSlot.standalone();
     protected final ContainerData data = new BuildableContainerData(builder -> {
-        builder.add(DATA_POWERED, () -> this.isPowered() ? 1 : 0, value -> {});
+        builder.add(DATA_POWERED, () -> this.isNodePowered() ? 1 : 0, value -> {});
     });
 
     public WorkbenchBlockEntity(BlockPos pos, BlockState state)
@@ -92,11 +92,11 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     public void writeMenuData(FriendlyByteBuf buffer)
     {
         buffer.writeVarInt(this.selectedRecipe.get());
-        buffer.writeVarInt(this.isPowered() ? 1 : 0);
+        buffer.writeVarInt(this.isNodePowered() ? 1 : 0);
     }
 
     @Override
-    public boolean isPowered()
+    public boolean isNodePowered()
     {
         BlockState state = this.getBlockState();
         if(state.hasProperty(WorkbenchBlock.POWERED))
@@ -107,7 +107,7 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     }
 
     @Override
-    public void setPowered(boolean powered)
+    public void setNodePowered(boolean powered)
     {
         BlockState state = this.getBlockState();
         if(state.hasProperty(WorkbenchBlock.POWERED))
@@ -208,7 +208,7 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     @Override
     public boolean canCraft(WorkbenchContructingRecipe recipe)
     {
-        return this.isPowered() && this.getConsumedMaterialItems(recipe) != null;
+        return this.isNodePowered() && this.getConsumedMaterialItems(recipe) != null;
     }
 
     @Override

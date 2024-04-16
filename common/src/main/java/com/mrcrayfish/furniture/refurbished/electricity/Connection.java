@@ -86,7 +86,7 @@ public class Connection
     {
         IElectricityNode a = this.a.getElectricNode(level);
         IElectricityNode b = this.b.getElectricNode(level);
-        return a != null && a.isPowered() && b != null && b.isPowered();
+        return a != null && a.isNodePowered() && b != null && b.isNodePowered();
     }
 
     public Optional<BlockPos> getOtherPos(BlockPos pos)
@@ -110,11 +110,11 @@ public class Connection
      */
     public Optional<IElectricityNode> getOtherNode(IElectricityNode node)
     {
-        if(this.a.pos.equals(node.getPosition()))
+        if(this.a.pos.equals(node.getNodePosition()))
         {
             return Optional.ofNullable(this.b.getElectricNode(node.getNodeLevel()));
         }
-        else if(this.b.pos.equals(node.getPosition()))
+        else if(this.b.pos.equals(node.getNodePosition()))
         {
             return Optional.ofNullable(this.a.getElectricNode(node.getNodeLevel()));
         }
@@ -229,7 +229,7 @@ public class Connection
         private void updateStatus(Level level)
         {
             IElectricityNode node = this.ref.get();
-            if(node != null && node.isValid())
+            if(node != null && node.isNodeValid())
             {
                 this.status = Status.ACTIVE;
                 return;

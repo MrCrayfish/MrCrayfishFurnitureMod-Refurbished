@@ -1,20 +1,14 @@
 package com.mrcrayfish.furniture.refurbished.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.mrcrayfish.furniture.refurbished.block.CuttingBoardBlock;
 import com.mrcrayfish.furniture.refurbished.blockentity.ComputerBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.TelevisionBlockEntity;
-import com.mrcrayfish.furniture.refurbished.client.CustomSheets;
-import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import org.joml.Matrix4f;
 
 /**
  * Author: MrCrayfish
@@ -26,7 +20,7 @@ public class ComputerBlockEntityRenderer implements BlockEntityRenderer<Computer
     @Override
     public void render(ComputerBlockEntity computer, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay)
     {
-        if(computer.isPowered())
+        if(computer.isNodePowered())
         {
             poseStack.pushPose();
 

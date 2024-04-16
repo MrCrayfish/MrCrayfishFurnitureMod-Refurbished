@@ -50,7 +50,7 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
         builder.add(DATA_TOTAL_ENERGY, () -> totalEnergy, value -> {});
         builder.add(DATA_ENABLED, () -> enabled ? 1 : 0, value -> {});
         builder.add(DATA_OVERLOADED, () -> overloaded ? 1 : 0, value -> {});
-        builder.add(DATA_POWERED, () -> this.isPowered() ? 1 : 0, value -> {});
+        builder.add(DATA_POWERED, () -> this.isNodePowered() ? 1 : 0, value -> {});
         builder.add(DATA_NODE_COUNT, () -> nodeCount, value -> {});
     });
 
@@ -108,7 +108,7 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
     @Override
     public boolean canPlayAudio()
     {
-        return this.isPowered() && !this.isRemoved();
+        return this.isNodePowered() && !this.isRemoved();
     }
 
     @Override
@@ -124,7 +124,7 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
     }
 
     @Override
-    public boolean isPowered()
+    public boolean isNodePowered()
     {
         BlockState state = this.getBlockState();
         if(state.hasProperty(ElectricityGeneratorBlock.POWERED))
@@ -135,7 +135,7 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
     }
 
     @Override
-    public void setPowered(boolean powered)
+    public void setNodePowered(boolean powered)
     {
         BlockState state = this.getBlockState();
         if(state.hasProperty(ElectricityGeneratorBlock.POWERED))
@@ -254,16 +254,16 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
     @Override
     public void setProcessingTime(int time)
     {
-        if(this.isPowered())
+        if(this.isNodePowered())
         {
             if(time == 0)
             {
-                this.setPowered(false);
+                this.setNodePowered(false);
             }
         }
         else if(time == 1)
         {
-            this.setPowered(true);
+            this.setNodePowered(true);
         }
     }
 

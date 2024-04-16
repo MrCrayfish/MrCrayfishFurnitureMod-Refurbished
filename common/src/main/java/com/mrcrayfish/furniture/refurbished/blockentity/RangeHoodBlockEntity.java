@@ -23,14 +23,14 @@ public class RangeHoodBlockEntity extends ElectricityModuleBlockEntity
     }
 
     @Override
-    public boolean isPowered()
+    public boolean isNodePowered()
     {
         BlockState state = this.getBlockState();
         return state.hasProperty(RangeHoodBlock.POWERED) && state.getValue(RangeHoodBlock.POWERED);
     }
 
     @Override
-    public void setPowered(boolean powered)
+    public void setNodePowered(boolean powered)
     {
         BlockState state = this.getBlockState();
         if(state.hasProperty(RangeHoodBlock.POWERED))

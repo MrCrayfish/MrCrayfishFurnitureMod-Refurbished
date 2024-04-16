@@ -3,7 +3,6 @@ package com.mrcrayfish.furniture.refurbished.block;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.furniture.refurbished.blockentity.DoorbellBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.ElectricityModuleBlockEntity;
 import com.mrcrayfish.furniture.refurbished.client.FurnitureScreens;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
@@ -29,7 +28,6 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -126,7 +124,7 @@ public class DoorbellBlock extends FurnitureHorizontalEntityBlock implements Blo
         {
             return InteractionResult.CONSUME;
         }
-        if(level.getBlockEntity(pos) instanceof DoorbellBlockEntity doorbell && doorbell.isPowered())
+        if(level.getBlockEntity(pos) instanceof DoorbellBlockEntity doorbell && doorbell.isNodePowered())
         {
             level.setBlock(pos, state.setValue(ENABLED, true), Block.UPDATE_ALL);
             level.scheduleTick(pos, this, 20);

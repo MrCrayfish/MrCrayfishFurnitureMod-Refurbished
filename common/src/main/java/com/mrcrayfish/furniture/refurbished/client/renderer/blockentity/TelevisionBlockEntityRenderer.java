@@ -27,7 +27,7 @@ public class TelevisionBlockEntityRenderer implements BlockEntityRenderer<Televi
     @Override
     public void render(TelevisionBlockEntity television, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay)
     {
-        if(television.isPowered())
+        if(television.isNodePowered())
         {
             poseStack.pushPose();
 

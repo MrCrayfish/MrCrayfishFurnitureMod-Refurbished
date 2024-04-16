@@ -1,6 +1,5 @@
 package com.mrcrayfish.furniture.refurbished.electricity;
 
-import com.mrcrayfish.furniture.refurbished.blockentity.ElectricityModuleBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -14,13 +13,13 @@ public interface IModuleNode extends IElectricityNode
     AABB DEFAULT_NODE_BOX = new AABB(0.375, 0.375, 0.375, 0.625, 0.625, 0.625);
 
     @Override
-    default boolean isSource()
+    default boolean isSourceNode()
     {
         return false;
     }
 
     @Override
-    default AABB getInteractBox()
+    default AABB getNodeInteractBox()
     {
         return DEFAULT_NODE_BOX;
     }
@@ -33,16 +32,16 @@ public interface IModuleNode extends IElectricityNode
      */
     default void updatePoweredState()
     {
-        if(!this.isReceivingPower())
+        if(!this.isNodeReceivingPower())
         {
-            if(this.isPowered())
+            if(this.isNodePowered())
             {
-                this.setPowered(false);
+                this.setNodePowered(false);
             }
         }
-        else if(!this.isPowered())
+        else if(!this.isNodePowered())
         {
-            this.setPowered(true);
+            this.setNodePowered(true);
         }
     }
 
@@ -54,6 +53,6 @@ public interface IModuleNode extends IElectricityNode
     static void serverTick(Level level, BlockPos pos, BlockState state, IModuleNode node)
     {
         node.updatePoweredState();
-        node.setReceivingPower(false);
+        node.setNodeReceivingPower(false);
     }
 }

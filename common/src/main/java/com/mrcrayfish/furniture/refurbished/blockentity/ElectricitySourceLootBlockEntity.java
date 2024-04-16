@@ -36,19 +36,19 @@ public abstract class ElectricitySourceLootBlockEntity extends BasicLootBlockEnt
     }
 
     @Override
-    public BlockPos getPosition()
+    public BlockPos getNodePosition()
     {
         return this.worldPosition;
     }
 
     @Override
-    public BlockEntity getBlockEntity()
+    public BlockEntity getNodeOwner()
     {
         return this;
     }
 
     @Override
-    public Set<Connection> getConnections()
+    public Set<Connection> getNodeConnections()
     {
         return this.connections;
     }

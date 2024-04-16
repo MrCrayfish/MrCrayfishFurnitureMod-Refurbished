@@ -40,13 +40,13 @@ public class NodeIndicatorOverlay implements IHudOverlay
         }
         else if(node != null)
         {
-            label = Utils.translation("gui", "progress", node.getConnections().size(), Components.GUI_SLASH, Config.SERVER.electricity.maximumLinksPerElectricityNode.get());
+            label = Utils.translation("gui", "progress", node.getNodeConnections().size(), Components.GUI_SLASH, Config.SERVER.electricity.maximumLinksPerElectricityNode.get());
             iconV = 10;
         }
         else if(minecraft.hitResult instanceof BlockHitResult result && minecraft.player.isCrouching())
         {
             BlockEntity entity = minecraft.level.getBlockEntity(result.getBlockPos());
-            if(entity instanceof IElectricityNode node1 && !node1.isPowered())
+            if(entity instanceof IElectricityNode node1 && !node1.isNodePowered())
             {
                 label = Components.GUI_NO_POWER;
                 iconU = 20;

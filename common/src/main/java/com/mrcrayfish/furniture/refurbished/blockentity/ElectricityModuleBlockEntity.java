@@ -36,37 +36,37 @@ public abstract class ElectricityModuleBlockEntity extends BlockEntity implement
     }
 
     @Override
-    public BlockPos getPosition()
+    public BlockPos getNodePosition()
     {
         return this.worldPosition;
     }
 
     @Override
-    public BlockEntity getBlockEntity()
+    public BlockEntity getNodeOwner()
     {
         return this;
     }
 
     @Override
-    public boolean isSource()
+    public boolean isSourceNode()
     {
         return false;
     }
 
     @Override
-    public Set<Connection> getConnections()
+    public Set<Connection> getNodeConnections()
     {
         return this.connections;
     }
 
     @Override
-    public void setReceivingPower(boolean power)
+    public void setNodeReceivingPower(boolean power)
     {
         this.receivingPower = power;
     }
 
     @Override
-    public boolean isReceivingPower()
+    public boolean isNodeReceivingPower()
     {
         return this.receivingPower;
     }

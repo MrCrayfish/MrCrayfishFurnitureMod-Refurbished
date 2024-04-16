@@ -50,7 +50,7 @@ public class TelevisionBlock extends FurnitureHorizontalEntityBlock implements B
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
     {
-        if(level.getBlockEntity(pos) instanceof TelevisionBlockEntity television && television.isPowered())
+        if(level.getBlockEntity(pos) instanceof TelevisionBlockEntity television && television.isNodePowered())
         {
             if(!level.isClientSide())
             {

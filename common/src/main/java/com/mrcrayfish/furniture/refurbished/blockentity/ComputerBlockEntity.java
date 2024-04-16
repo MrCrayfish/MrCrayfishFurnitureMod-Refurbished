@@ -50,7 +50,7 @@ public class ComputerBlockEntity extends ElectricityModuleBlockEntity implements
     protected @Nullable Player currentUser;
 
     protected final ContainerData data = new BuildableContainerData(builder -> {
-        builder.add(DATA_POWERED, () -> isPowered() ? 1 : 0, value -> {});
+        builder.add(DATA_POWERED, () -> isNodePowered() ? 1 : 0, value -> {});
         builder.add(DATA_SYSTEM, () -> systemData, value -> {});
         builder.add(DATA_PROGRAM_1, () -> programData1, value -> programData1 = value);
         builder.add(DATA_PROGRAM_2, () -> programData2, value -> programData2 = value);
@@ -118,18 +118,18 @@ public class ComputerBlockEntity extends ElectricityModuleBlockEntity implements
     @Override
     public boolean isValid(Player player)
     {
-        return this.isPowered() && Container.stillValidBlockEntity(this, player) && player.equals(this.getUser());
+        return this.isNodePowered() && Container.stillValidBlockEntity(this, player) && player.equals(this.getUser());
     }
 
     @Override
-    public boolean isPowered()
+    public boolean isNodePowered()
     {
         BlockState state = this.getBlockState();
         return state.hasProperty(BlockStateProperties.POWERED) && state.getValue(BlockStateProperties.POWERED);
     }
 
     @Override
-    public void setPowered(boolean powered)
+    public void setNodePowered(boolean powered)
     {
         BlockState state = this.getBlockState();
         if(state.hasProperty(BlockStateProperties.POWERED))

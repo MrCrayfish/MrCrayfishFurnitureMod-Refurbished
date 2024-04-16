@@ -111,7 +111,7 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
     @Override
     public boolean canPlayAudio()
     {
-        return !this.isRemoved() && this.isPowered();
+        return !this.isRemoved() && this.isNodePowered();
     }
 
     @Override
@@ -143,14 +143,14 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
     }
 
     @Override
-    public boolean isPowered()
+    public boolean isNodePowered()
     {
         BlockState state = this.getBlockState();
         return state.hasProperty(BlockStateProperties.POWERED) && state.getValue(BlockStateProperties.POWERED);
     }
 
     @Override
-    public void setPowered(boolean powered)
+    public void setNodePowered(boolean powered)
     {
         BlockState state = this.getBlockState();
         if(state.hasProperty(BlockStateProperties.POWERED))
@@ -161,7 +161,7 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
 
     public void interact()
     {
-        if(!this.transitioning && this.isPowered())
+        if(!this.transitioning && this.isNodePowered())
         {
             Preconditions.checkState(this.level instanceof ServerLevel);
             int transitionTime = this.level.random.nextInt(5, 20);
@@ -219,7 +219,7 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
     private void specialTick()
     {
         Preconditions.checkNotNull(this.level);
-        if(this.isPowered() && this.level.dimension() == Level.OVERWORLD && this.worldPosition.getY() <= 0)
+        if(this.isNodePowered() && this.level.dimension() == Level.OVERWORLD && this.worldPosition.getY() <= 0)
         {
             if(this.currentChannel == COLOUR_TEST)
             {
