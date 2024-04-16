@@ -333,7 +333,7 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, RecycleBinBlockEntity recycleBin)
     {
-        recycleBin.updatePoweredState();
+        recycleBin.updateNodePoweredState();
         recycleBin.setNodeReceivingPower(false);
 
         boolean processing = recycleBin.processTick();

@@ -74,7 +74,7 @@ public class ElectricityTicker extends SavedData
                 continue;
             }
 
-            node.earlyLevelTick();
+            node.earlyNodeLevelTick();
         }
     }
 

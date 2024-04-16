@@ -76,7 +76,7 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
     {
         if(!this.enabled)
         {
-            this.search();
+            this.searchNodeNetwork();
         }
         return new ElectricityGeneratorMenu(windowId, playerInventory, this, this.data);
     }
@@ -150,7 +150,7 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
         this.enabled = !this.enabled;
         if(this.enabled)
         {
-            NodeSearchResult result = this.search();
+            NodeSearchResult result = this.searchNodeNetwork();
             if(!result.overloaded())
             {
                 if(this.overloaded)
@@ -167,16 +167,16 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
     }
 
     @Override
-    public void onOverloaded()
+    public void onNodeOverloaded()
     {
         this.enabled = false;
         this.setChanged();
     }
 
     @Override
-    public NodeSearchResult search()
+    public NodeSearchResult searchNodeNetwork()
     {
-        NodeSearchResult result = super.search();
+        NodeSearchResult result = super.searchNodeNetwork();
         this.nodeCount = result.nodes().size();
         return result;
     }
@@ -273,7 +273,7 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
     @Override
     public boolean canProcess()
     {
-        return this.enabled && !this.isOverloaded();
+        return this.enabled && !this.isNodeOverloaded();
     }
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, ElectricityGeneratorBlockEntity generator)

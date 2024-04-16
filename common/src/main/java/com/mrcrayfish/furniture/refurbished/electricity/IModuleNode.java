@@ -30,7 +30,7 @@ public interface IModuleNode extends IElectricityNode
      * and not powered, it will become powered. While if it's not receiving power and is currently
      * powered, it will be powered off.
      */
-    default void updatePoweredState()
+    default void updateNodePoweredState()
     {
         if(!this.isNodeReceivingPower())
         {
@@ -52,7 +52,7 @@ public interface IModuleNode extends IElectricityNode
      */
     static void serverTick(Level level, BlockPos pos, BlockState state, IModuleNode node)
     {
-        node.updatePoweredState();
+        node.updateNodePoweredState();
         node.setNodeReceivingPower(false);
     }
 }

@@ -67,7 +67,7 @@ public abstract class ElectricityModuleLootBlockEntity extends BasicLootBlockEnt
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, ElectricityModuleLootBlockEntity module)
     {
-        module.updatePoweredState();
+        module.updateNodePoweredState();
         module.setNodeReceivingPower(false);
     }
 

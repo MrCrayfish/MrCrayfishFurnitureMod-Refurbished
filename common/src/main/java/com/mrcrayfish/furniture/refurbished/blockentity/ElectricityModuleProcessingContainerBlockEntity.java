@@ -100,7 +100,7 @@ public abstract class ElectricityModuleProcessingContainerBlockEntity extends Pr
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, ElectricityModuleProcessingContainerBlockEntity module)
     {
-        module.updatePoweredState();
+        module.updateNodePoweredState();
         module.setNodeReceivingPower(false);
         ProcessingContainerBlockEntity.serverTick(level, pos, state, module);
     }
