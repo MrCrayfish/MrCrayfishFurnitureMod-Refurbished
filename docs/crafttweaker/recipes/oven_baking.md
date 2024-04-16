@@ -19,12 +19,12 @@ The Oven (a part of the Stove block) allows you to bake items. It has the abilit
 
 Adds a new baking recipe to the oven
 
-| Paramater  |                                          Type                                           | Required |                              Description                              |
-| :--------: | :-------------------------------------------------------------------------------------: | :------: | :-------------------------------------------------------------------: |
-|    name    |                                         string                                          |   Yes    |                The name of the recipe, must be unique.                |
-| ingredient | [IIngredient](https://docs.blamejared.com/1.20.4/en/vanilla/api/ingredient/IIngredient) |   Yes    |                       The ingredient to freeze                        |
-|   result   |     [IItemStack](https://docs.blamejared.com/1.20.4/en/vanilla/api/item/IItemStack)     |   Yes    | The resulting item from slicing the `ingredient`, can have an amount. |
-|    time    |                                           int                                           |    No    |        The duration in ticks to freeze the item. Default `200`        |
+| Paramater  |                                          Type                                           | Required |                             Description                              |
+| :--------: | :-------------------------------------------------------------------------------------: | :------: | :------------------------------------------------------------------: |
+|    name    |                                         string                                          |   Yes    |               The name of the recipe, must be unique.                |
+| ingredient | [IIngredient](https://docs.blamejared.com/1.20.4/en/vanilla/api/ingredient/IIngredient) |   Yes    |                       The ingredient to freeze                       |
+|   result   |     [IItemStack](https://docs.blamejared.com/1.20.4/en/vanilla/api/item/IItemStack)     |   Yes    | The resulting item from baking the `ingredient`, can have an amount. |
+|    time    |                                           int                                           |    No    |        The duration in ticks to bake the item. Default `200`         |
 
 #### Example
 <Tabs>
