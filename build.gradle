@@ -107,6 +107,7 @@ subprojects {
             expand expandProps
         }
         inputs.properties(expandProps)
+        exclude ".cache" // Remove cache from generated data
     }
 
     // Disables Gradle's custom module metadata from being published to maven. The
