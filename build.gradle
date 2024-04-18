@@ -21,6 +21,9 @@ subprojects {
         from(rootProject.file("LICENSE")) {
             rename { "${it}_${mod_id}" }
         }
+        from(rootProject.file("ASSETS_LICENSE")) {
+            rename { "${it}_${mod_id}" }
+        }
         manifest {
             attributes([
                 'Specification-Title'     : mod_name,
@@ -39,6 +42,9 @@ subprojects {
 
     sourcesJar {
         from(rootProject.file("LICENSE")) {
+            rename { "${it}_${mod_id}" }
+        }
+        from(rootProject.file("ASSETS_LICENSE")) {
             rename { "${it}_${mod_id}" }
         }
     }
