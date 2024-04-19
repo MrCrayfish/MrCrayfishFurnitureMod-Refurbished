@@ -51,7 +51,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
 
     public WorkbenchMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data)
     {
-        this(windowId, playerInventory, new ClientWorkbench(new SimpleContainer(11)), new SimpleContainerData(1));
+        this(windowId, playerInventory, new ClientWorkbench(new SimpleContainer(13)), new SimpleContainerData(1));
         this.selectedRecipe.set(data.readVarInt());
         this.data.set(WorkbenchBlockEntity.DATA_POWERED, data.readVarInt());
     }
@@ -59,7 +59,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
     public WorkbenchMenu(int windowId, Inventory playerInventory, IWorkbench workbench, ContainerData data)
     {
         super(ModMenuTypes.WORKBENCH.get(), windowId, workbench.getWorkbenchContainer());
-        checkContainerSize(workbench.getWorkbenchContainer(), 11);
+        checkContainerSize(workbench.getWorkbenchContainer(), 13);
         checkContainerDataCount(data, 1);
         workbench.getWorkbenchContainer().startOpen(playerInventory.player);
         this.workbench = workbench;
@@ -68,7 +68,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
         this.data = data;
         this.selectedRecipe = workbench.getSelectedRecipeData();
         this.recipes = this.setupRecipes(this.level);
-        this.addContainerSlots(8, 18, 2, 5, 0);
+        this.addContainerSlots(8, 18, 2, 6, 0);
         this.resultSlot = this.addSlot(new WorkbenchResultSlot(this.container, WorkbenchBlockEntity.RESULT_SLOT, 188, 21));
         this.addPlayerInventorySlots(28, 147, playerInventory);
         this.addDataSlot(this.selectedRecipe);
