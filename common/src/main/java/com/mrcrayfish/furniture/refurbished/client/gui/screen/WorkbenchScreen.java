@@ -72,6 +72,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     protected final Map<ResourceLocation, Integer> recipeToIndex;
     protected final List<WorkbenchContructingRecipe> displayRecipes = new ArrayList<>();
     protected StateSwitchingButton craftableOnlyButton;
+    protected StateSwitchingButton searchNeighboursButton;
     protected double scroll; // 0 - content height
     protected int hoveredIndex = -1;
     protected int clickedY = -1;
@@ -125,6 +126,8 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         super.init();
         this.craftableOnlyButton = this.addRenderableWidget(new CraftableButton(this.leftPos + 184, this.topPos + 44, 26, 16, craftableOnly));
         this.craftableOnlyButton.initTextureValues(152, 41, 28, 18, VanillaTextures.RECIPE_BOOK);
+        this.searchNeighboursButton = this.addRenderableWidget(new SearchNeighboursButton(this.leftPos + 184, this.topPos + 62, 26, 16, this.menu.shouldSearchNeighbours()));
+        this.searchNeighboursButton.initTextureValues(204, 139, 26, 16, WORKBENCH_TEXTURE);
         this.addRenderableWidget(new CategoryButton(this.leftPos + 46, this.topPos + 108, 236, 55, CATEGORY_ALL));
         this.addRenderableWidget(new CategoryButton(this.leftPos + 66, this.topPos + 108, 236, 69, CATEGORY_GENERAL));
         this.addRenderableWidget(new CategoryButton(this.leftPos + 86, this.topPos + 108, 236, 83, CATEGORY_KITCHEN));
@@ -136,6 +139,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
+        this.searchNeighboursButton.setStateTriggered(this.menu.shouldSearchNeighbours());
         this.renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTick);
         this.renderTooltip(graphics, mouseX, mouseY);
@@ -311,7 +315,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     @Override
     public void setFocused(@Nullable GuiEventListener listener)
     {
-        if(listener == this.craftableOnlyButton)
+        if(listener == this.craftableOnlyButton || listener == this.searchNeighboursButton)
             return;
         super.setFocused(listener);
     }
@@ -339,6 +343,40 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         private void updateTooltip()
         {
             this.setTooltip(Tooltip.create(this.isStateTriggered ? VANILLA_ONLY_CRAFTABLE : VANILLA_ALL_RECIPES));
+        }
+    }
+
+    private static class SearchNeighboursButton extends StateSwitchingButton
+    {
+        private static final Component SEARCH_NEIGHBOURS_OFF = Utils.translation("gui", "workbench.search_neighbours.off");
+        private static final Component SEARCH_NEIGHBOURS_ON = Utils.translation("gui", "workbench.search_neighbours.on");
+
+        public SearchNeighboursButton(int x, int y, int width, int height, boolean state)
+        {
+            super(x, y, width, height, state);
+            this.updateTooltip();
+        }
+
+        @Override
+        public void onClick(double mouseX, double mouseY)
+        {
+            Network.getPlay().sendToServer(new MessageWorkbench.SearchNeighbours());
+        }
+
+        @Override
+        public void setStateTriggered(boolean state)
+        {
+            boolean original = this.isStateTriggered();
+            super.setStateTriggered(state);
+            if(original != state)
+            {
+                this.updateTooltip();
+            }
+        }
+
+        private void updateTooltip()
+        {
+            this.setTooltip(Tooltip.create(this.isStateTriggered ? SEARCH_NEIGHBOURS_ON : SEARCH_NEIGHBOURS_OFF));
         }
     }
 

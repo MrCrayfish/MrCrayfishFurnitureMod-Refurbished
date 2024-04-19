@@ -14,7 +14,9 @@ public interface IWorkbench
 
     boolean canCraft(WorkbenchContructingRecipe recipe);
 
-    DataSlot getSelectedRecipeData();
+    DataSlot selectedRecipeDataSlot();
+
+    DataSlot searchNeighboursDataSlot();
 
     Container getWorkbenchContainer();
 

@@ -42,6 +42,7 @@ public class Network
             .registerPlayMessage(MessageWaterTapAnimation.class, MessageDirection.PLAY_CLIENT_BOUND)
             .registerPlayMessage(MessageWorkbench.ItemCounts.class, MessageDirection.PLAY_CLIENT_BOUND)
             .registerPlayMessage(MessageWorkbench.SelectRecipe.class, MessageDirection.PLAY_SERVER_BOUND)
+            .registerPlayMessage(MessageWorkbench.SearchNeighbours.class, MessageDirection.PLAY_SERVER_BOUND)
             .registerPlayMessage(MessageNameMailbox.class, MessageDirection.PLAY_CLIENT_BOUND)
             .build();
     }

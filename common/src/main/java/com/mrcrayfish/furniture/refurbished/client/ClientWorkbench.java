@@ -12,6 +12,7 @@ import net.minecraft.world.inventory.DataSlot;
 public class ClientWorkbench implements IWorkbench
 {
     private final DataSlot selectedRecipe = DataSlot.standalone();
+    private final DataSlot searchNeighbours = DataSlot.standalone();
     private final Container container;
 
     public ClientWorkbench(Container container)
@@ -29,9 +30,15 @@ public class ClientWorkbench implements IWorkbench
     }
 
     @Override
-    public DataSlot getSelectedRecipeData()
+    public DataSlot selectedRecipeDataSlot()
     {
         return this.selectedRecipe;
+    }
+
+    @Override
+    public DataSlot searchNeighboursDataSlot()
+    {
+        return this.searchNeighbours;
     }
 
     @Override

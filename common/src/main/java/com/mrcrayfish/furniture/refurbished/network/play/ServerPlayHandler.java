@@ -186,4 +186,16 @@ public class ServerPlayHandler
             }
         }
     }
+
+    public static void handleMessageWorkbenchSearchNeighbours(MessageWorkbench.SearchNeighbours message, ServerPlayer player)
+    {
+        if(player != null)
+        {
+            player.resetLastActionTime();
+            if(player.containerMenu instanceof WorkbenchMenu menu && menu.stillValid(player) && !player.isSpectator())
+            {
+                menu.toggleSearchNeighbours();
+            }
+        }
+    }
 }

@@ -101,4 +101,23 @@ public final class MessageWorkbench
             return this.index;
         }
     }
+
+    public static class SearchNeighbours extends PlayMessage<SearchNeighbours>
+    {
+        @Override
+        public void encode(SearchNeighbours message, FriendlyByteBuf buffer) {}
+
+        @Override
+        public SearchNeighbours decode(FriendlyByteBuf buffer)
+        {
+            return new SearchNeighbours();
+        }
+
+        @Override
+        public void handle(SearchNeighbours message, MessageContext context)
+        {
+            context.execute(() -> ServerPlayHandler.handleMessageWorkbenchSearchNeighbours(message, context.getPlayer()));
+            context.setHandled(true);
+        }
+    }
 }
