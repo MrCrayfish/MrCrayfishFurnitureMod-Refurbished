@@ -63,4 +63,20 @@ public final class MessageWorkbench
             context.setHandled(true);
         }
     }
+
+    public record SearchNeighbours()
+    {
+        public static void encode(SearchNeighbours message, FriendlyByteBuf buffer) {}
+
+        public static SearchNeighbours decode(FriendlyByteBuf buffer)
+        {
+            return new SearchNeighbours();
+        }
+
+        public static void handle(SearchNeighbours message, MessageContext context)
+        {
+            context.execute(() -> ServerPlayHandler.handleMessageWorkbenchSearchNeighbours(message, context.getPlayer().orElse(null)));
+            context.setHandled(true);
+        }
+    }
 }

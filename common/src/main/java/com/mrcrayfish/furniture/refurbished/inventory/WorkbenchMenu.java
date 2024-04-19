@@ -44,6 +44,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
     private final ContainerLevelAccess access;
     private final ContainerData data;
     private final DataSlot selectedRecipe;
+    private final DataSlot searchNeighbours;
     private final List<RecipeHolder<WorkbenchContructingRecipe>> recipes;
     private final Map<ResourceLocation, Boolean> recipeToCraftable = new HashMap<>();
     private final Slot resultSlot;
@@ -55,6 +56,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
     {
         this(windowId, playerInventory, new ClientWorkbench(new SimpleContainer(13)), new SimpleContainerData(1));
         this.selectedRecipe.set(data.readVarInt());
+        this.searchNeighbours.set(data.readVarInt());
         this.data.set(WorkbenchBlockEntity.DATA_POWERED, data.readVarInt());
     }
 
@@ -68,12 +70,14 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
         this.level = playerInventory.player.level();
         this.access = workbench.createLevelAccess();
         this.data = data;
-        this.selectedRecipe = workbench.getSelectedRecipeData();
+        this.selectedRecipe = workbench.selectedRecipeDataSlot();
+        this.searchNeighbours = workbench.searchNeighboursDataSlot();
         this.recipes = this.setupRecipes(this.level);
         this.addContainerSlots(8, 18, 2, 6, 0);
         this.resultSlot = this.addSlot(new WorkbenchResultSlot(this.container, WorkbenchBlockEntity.RESULT_SLOT, 188, 21));
         this.addPlayerInventorySlots(28, 147, playerInventory);
         this.addDataSlot(this.selectedRecipe);
+        this.addDataSlot(this.searchNeighbours);
         this.addDataSlots(this.data);
     }
 
@@ -229,6 +233,17 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
     public int getSelectedRecipeIndex()
     {
         return this.selectedRecipe.get();
+    }
+
+    public boolean shouldSearchNeighbours()
+    {
+        return this.searchNeighbours.get() != 0;
+    }
+
+    public void toggleSearchNeighbours()
+    {
+        this.searchNeighbours.set(this.shouldSearchNeighbours() ? 0 : 1);
+        this.broadcastChanges();
     }
 
     public void updateItemCounts(Map<Integer, Integer> counts)

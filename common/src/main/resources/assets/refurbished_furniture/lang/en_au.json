@@ -544,6 +544,8 @@
     "gui.refurbished_furniture.booting": "Booting...",
     "gui.refurbished_furniture.sliceable": "Sliceable",
     "gui.refurbished_furniture.placeable": "Placeable",
+    "gui.refurbished_furniture.workbench.search_neighbours.off": "Ignore Neighbour Containers",
+    "gui.refurbished_furniture.workbench.search_neighbours.on": "Include Neighbour Containers",
     "subtitle.refurbished_furniture.package_open": "Cardboard Ripping",
     "subtitle.refurbished_furniture.chair_slide": "Wood Sliding",
     "subtitle.refurbished_furniture.doorbell_chime": "Doorbell Chime",

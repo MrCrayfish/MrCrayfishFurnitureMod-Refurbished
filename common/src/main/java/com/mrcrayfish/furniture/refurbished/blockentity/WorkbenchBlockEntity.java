@@ -57,6 +57,7 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     protected int countsHash;
 
     protected final DataSlot selectedRecipe = DataSlot.standalone();
+    protected final DataSlot searchNeighbours = DataSlot.standalone();
     protected final ContainerData data = new BuildableContainerData(builder -> {
         builder.add(DATA_POWERED, () -> this.isNodePowered() ? 1 : 0, value -> {});
     });
@@ -70,6 +71,7 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     {
         super(type, pos, state, 13);
         this.selectedRecipe.set(-1);
+        this.searchNeighbours.set(1);
     }
 
     @Override
@@ -93,6 +95,7 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     public void writeMenuData(FriendlyByteBuf buffer)
     {
         buffer.writeVarInt(this.selectedRecipe.get());
+        buffer.writeVarInt(this.searchNeighbours.get());
         buffer.writeVarInt(this.isNodePowered() ? 1 : 0);
     }
 
@@ -213,9 +216,15 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     }
 
     @Override
-    public DataSlot getSelectedRecipeData()
+    public DataSlot selectedRecipeDataSlot()
     {
         return this.selectedRecipe;
+    }
+
+    @Override
+    public DataSlot searchNeighboursDataSlot()
+    {
+        return this.searchNeighbours;
     }
 
     @Override
@@ -228,6 +237,11 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     public ContainerLevelAccess createLevelAccess()
     {
         return ContainerLevelAccess.create(Objects.requireNonNull(this.level), this.worldPosition);
+    }
+
+    protected boolean shouldSearchNeighbours()
+    {
+        return this.searchNeighbours.get() != 0;
     }
 
     @Nullable
@@ -309,11 +323,14 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     {
         List<Pair<Direction, Container>> list = new ArrayList<>();
         list.add(Pair.of(null, this));
-        Direction direction = this.getDirection();
-        this.getContainer(direction).ifPresent(list::add);
-        this.getContainer(direction.getOpposite()).ifPresent(list::add);
-        this.getContainer(direction.getCounterClockWise()).ifPresent(list::add);
-        this.getContainer(direction.getClockWise()).ifPresent(list::add);
+        if(this.shouldSearchNeighbours())
+        {
+            Direction direction = this.getDirection();
+            this.getContainer(direction).ifPresent(list::add);
+            this.getContainer(direction.getOpposite()).ifPresent(list::add);
+            this.getContainer(direction.getCounterClockWise()).ifPresent(list::add);
+            this.getContainer(direction.getClockWise()).ifPresent(list::add);
+        }
         Optional.ofNullable(this.getUser()).ifPresent(player -> list.add(Pair.of(null, player.getInventory())));
         return list;
     }
@@ -327,7 +344,7 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
             {
                 BlockState state = this.level.getBlockState(pos);
                 Block block = state.getBlock();
-                if(container instanceof ChestBlockEntity && block instanceof ChestBlock)
+                if(container instanceof ChestBlockEntity && block instanceof ChestBlock) // TODO find a better way to do this
                 {
                     container = ChestBlock.getContainer((ChestBlock) block, state, this.level, pos, true);
                 }

@@ -191,4 +191,16 @@ public class ServerPlayHandler
             }
         }
     }
+
+    public static void handleMessageWorkbenchSearchNeighbours(MessageWorkbench.SearchNeighbours message, @Nullable Player player)
+    {
+        if(player instanceof ServerPlayer serverPlayer)
+        {
+            serverPlayer.resetLastActionTime();
+            if(serverPlayer.containerMenu instanceof WorkbenchMenu menu && menu.stillValid(serverPlayer) && !serverPlayer.isSpectator())
+            {
+                menu.toggleSearchNeighbours();
+            }
+        }
+    }
 }

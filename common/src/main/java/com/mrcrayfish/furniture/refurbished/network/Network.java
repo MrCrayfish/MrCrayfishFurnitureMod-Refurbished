@@ -42,6 +42,7 @@ public class Network
             .registerPlayMessage("water_tap_animation", MessageWaterTapAnimation.class, MessageWaterTapAnimation::encode, MessageWaterTapAnimation::decode, MessageWaterTapAnimation::handle, PacketFlow.CLIENTBOUND)
             .registerPlayMessage("workbench_item_counts", MessageWorkbench.ItemCounts.class, MessageWorkbench.ItemCounts::encode, MessageWorkbench.ItemCounts::decode, MessageWorkbench.ItemCounts::handle, PacketFlow.CLIENTBOUND)
             .registerPlayMessage("workbench_select_recipe", MessageWorkbench.SelectRecipe.class, MessageWorkbench.SelectRecipe::encode, MessageWorkbench.SelectRecipe::decode, MessageWorkbench.SelectRecipe::handle, PacketFlow.SERVERBOUND)
+            .registerPlayMessage("workbench_search_neighbours", MessageWorkbench.SearchNeighbours.class, MessageWorkbench.SearchNeighbours::encode, MessageWorkbench.SearchNeighbours::decode, MessageWorkbench.SearchNeighbours::handle, PacketFlow.SERVERBOUND)
             .registerPlayMessage("name_mailbox", MessageNameMailbox.class, MessageNameMailbox::encode, MessageNameMailbox::decode, MessageNameMailbox::handle, PacketFlow.CLIENTBOUND)
             .build();
     }
