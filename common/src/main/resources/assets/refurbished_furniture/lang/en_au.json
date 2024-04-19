@@ -517,7 +517,7 @@
     "gui.refurbished_furniture.send": "Send",
     "gui.refurbished_furniture.how_to": "How To",
     "gui.refurbished_furniture.post_box_info": "Select a mailbox from the list. You can search for a mailbox by name, or a player by prefixing with @. Place items in package slots and optionally include a message. Click the send button to deliver the package.",
-    "gui.refurbished_furniture.workbench_info": "Select a crafting recipe from the list and gather the required materials to craft the item. The workbench will search your inventory, it's own storage, and neighbouring storage blocks for materials.",
+    "gui.refurbished_furniture.workbench_info": "Select a crafting recipe from the list and gather the required materials to craft the item. The workbench will search your inventory, its own storage, and neighbouring storage blocks for materials.",
     "gui.refurbished_furniture.package_sent_by": "Sent by %s",
     "gui.refurbished_furniture.package_open": "Right Click to Open",
     "gui.refurbished_furniture.set_doorbell_name": "Set Doorbell Name",
