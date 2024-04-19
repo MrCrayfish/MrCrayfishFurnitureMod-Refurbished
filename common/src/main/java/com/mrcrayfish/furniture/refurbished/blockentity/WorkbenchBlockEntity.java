@@ -375,6 +375,10 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
         {
             this.selectedRecipe.set(tag.getInt("SelectedRecipe"));
         }
+        if(tag.contains("IncludeNeighbours", Tag.TAG_BYTE))
+        {
+            this.searchNeighbours.set(tag.getBoolean("IncludeNeighbours") ? 1 : 0);
+        }
     }
 
     @Override
@@ -382,5 +386,6 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     {
         super.saveAdditional(tag);
         tag.putInt("SelectedRecipe", this.selectedRecipe.get());
+        tag.putBoolean("IncludeNeighbours", this.searchNeighbours.get() != 0);
     }
 }
