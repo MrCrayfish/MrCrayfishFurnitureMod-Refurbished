@@ -268,6 +268,18 @@
             "refurbished_furniture:block/workbench/craft2"
         ]
     },
+    "block.cabinet.open": {
+        "subtitle": "subtitle.refurbished_furniture.cabinet.open",
+        "sounds": [
+            "refurbished_furniture:block/cabinet/open"
+        ]
+    },
+    "block.cabinet.close": {
+        "subtitle": "subtitle.refurbished_furniture.cabinet.close",
+        "sounds": [
+            "refurbished_furniture:block/cabinet/close"
+        ]
+    },
     "item.package.open": {
         "subtitle": "subtitle.refurbished_furniture.package_open",
         "sounds": [
