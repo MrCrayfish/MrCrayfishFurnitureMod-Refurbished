@@ -2,9 +2,11 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.mrcrayfish.furniture.refurbished.block.WoodenStorageCabinetBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
+import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -36,17 +38,18 @@ public class StorageCabinetBlockEntity extends RowedStorageBlockEntity
     @Override
     public void onOpen(Level level, BlockPos pos, BlockState state)
     {
-        // TODO sounds
-        this.setDrawState(state, true);
+        level.playSound(null, this.worldPosition, ModSounds.BLOCK_CABINET_OPEN.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.random.nextFloat());
+        this.setDoorState(state, true);
     }
 
     @Override
     public void onClose(Level level, BlockPos pos, BlockState state)
     {
-        this.setDrawState(state, false);
+        level.playSound(null, this.worldPosition, ModSounds.BLOCK_CABINET_CLOSE.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.random.nextFloat());
+        this.setDoorState(state, false);
     }
 
-    private void setDrawState(BlockState state, boolean open)
+    private void setDoorState(BlockState state, boolean open)
     {
         Level level = this.getLevel();
         if(level != null)
