@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 
 import com.google.common.collect.ImmutableMap;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.client.gui.ClientWorkbenchRecipeIngredientTooltip;
@@ -130,7 +131,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         this.craftableOnlyButton = this.addRenderableWidget(new CraftableButton(this.leftPos + 184, this.topPos + 44, 26, 16, craftableOnly));
         this.craftableOnlyButton.initTextureValues(FILTER_BUTTON_SPRITES);
         this.searchNeighboursButton = this.addRenderableWidget(new SearchNeighboursButton(this.leftPos + 184, this.topPos + 62, 26, 16, this.menu.shouldSearchNeighbours()));
-        this.searchNeighboursButton.initTextureValues(204, 139, 26, 16, WORKBENCH_TEXTURE);
+        this.searchNeighboursButton.initTextureValues(230, 139, 26, 16, WORKBENCH_TEXTURE);
         this.addRenderableWidget(new CategoryButton(this.leftPos + 46, this.topPos + 108, 236, 55, CATEGORY_ALL));
         this.addRenderableWidget(new CategoryButton(this.leftPos + 66, this.topPos + 108, 236, 69, CATEGORY_GENERAL));
         this.addRenderableWidget(new CategoryButton(this.leftPos + 86, this.topPos + 108, 236, 83, CATEGORY_KITCHEN));
@@ -363,6 +364,18 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         public void onClick(double mouseX, double mouseY)
         {
             Network.getPlay().sendToServer(new MessageWorkbench.SearchNeighbours());
+        }
+
+        @Override
+        public void renderWidget(GuiGraphics graphics, int $$1, int $$2, float $$3)
+        {
+            RenderSystem.disableDepthTest();
+            int u = this.xTexStart;
+            int v = this.yTexStart;
+            v += this.isStateTriggered ? this.height * 2 : 0;
+            v += this.isHoveredOrFocused() ? this.height : 0;
+            graphics.blit(this.resourceLocation, this.getX(), this.getY(), u, v, this.width, this.height);
+            RenderSystem.enableDepthTest();
         }
 
         @Override
