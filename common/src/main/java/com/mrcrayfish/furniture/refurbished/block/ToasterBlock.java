@@ -78,11 +78,12 @@ public class ToasterBlock extends FurnitureHorizontalEntityBlock implements Bloc
     {
         if(level.getBlockEntity(pos) instanceof ToasterBlockEntity toaster)
         {
-            Direction facing = state.getValue(DIRECTION);
-            ItemStack heldItem = player.getItemInHand(hand);
             if(!level.isClientSide())
             {
-                if(player.isCrouching() || result.getDirection() == facing.getCounterClockWise())
+                ItemStack heldItem = player.getItemInHand(hand);
+                Direction facing = state.getValue(DIRECTION);
+                boolean hitLever = result.getDirection() == facing.getCounterClockWise();
+                if(player.isCrouching() || hitLever)
                 {
                     if(toaster.toggleHeating())
                     {
