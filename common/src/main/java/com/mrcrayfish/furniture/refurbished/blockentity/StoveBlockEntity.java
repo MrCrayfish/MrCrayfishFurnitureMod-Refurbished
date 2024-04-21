@@ -489,12 +489,6 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     }
 
     @Override
-    public Component getName()
-    {
-        return this.getBlockState().getBlock().getName();
-    }
-
-    @Override
     public Component getDisplayName()
     {
         return this.name != null ? this.name : this.getName();
