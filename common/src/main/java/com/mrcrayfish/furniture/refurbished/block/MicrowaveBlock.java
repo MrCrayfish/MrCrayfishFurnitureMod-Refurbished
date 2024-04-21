@@ -130,7 +130,7 @@ public class MicrowaveBlock extends FurnitureHorizontalEntityBlock implements Bl
         {
             return createTicker(type, ModBlockEntities.MICROWAVE.get(), MicrowaveBlockEntity::serverTick);
         }
-        return null;
+        return createTicker(type, ModBlockEntities.MICROWAVE.get(), MicrowaveBlockEntity::clientTick);
     }
 
     @Override
