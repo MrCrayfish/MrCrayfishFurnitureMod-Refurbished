@@ -2,11 +2,13 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.block.MicrowaveBlock;
+import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
+import com.mrcrayfish.furniture.refurbished.electricity.IModuleNode;
 import com.mrcrayfish.furniture.refurbished.inventory.BuildableContainerData;
 import com.mrcrayfish.furniture.refurbished.inventory.MicrowaveMenu;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
@@ -15,7 +17,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -25,13 +29,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish
  */
-public class MicrowaveBlockEntity extends ElectricityModuleProcessingLootBlockEntity implements IPowerSwitch, IHomeControlDevice, Nameable
+public class MicrowaveBlockEntity extends ElectricityModuleProcessingLootBlockEntity implements IPowerSwitch, IHomeControlDevice, ILevelAudio, Nameable
 {
     public static final int[] INPUT_SLOTS = new int[]{0};
     public static final int[] OUTPUT_SLOTS = new int[]{1};
@@ -39,9 +44,12 @@ public class MicrowaveBlockEntity extends ElectricityModuleProcessingLootBlockEn
     public static final int DATA_ENABLED = 1;
     public static final int DATA_PROCESS_TIME = 2;
     public static final int DATA_MAX_PROCESS_TIME = 3;
+    public static final double MAX_AUDIO_DISTANCE = Mth.square(3.5);
 
+    protected final Vec3 audioPosition;
     protected boolean enabled;
     protected @Nullable Component name;
+    protected boolean processing;
 
     protected final ContainerData data = new BuildableContainerData(builder -> {
         builder.add(DATA_POWERED, () -> powered ? 1 : 0, value -> {});
@@ -58,6 +66,7 @@ public class MicrowaveBlockEntity extends ElectricityModuleProcessingLootBlockEn
     public MicrowaveBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, RecipeType<? extends ProcessingRecipe> recipeType)
     {
         super(type, pos, state, 2, recipeType);
+        this.audioPosition = pos.getCenter();
     }
 
     @Override
@@ -141,6 +150,10 @@ public class MicrowaveBlockEntity extends ElectricityModuleProcessingLootBlockEn
         {
             this.enabled = tag.getBoolean("Enabled");
         }
+        if(tag.contains("Processing", Tag.TAG_BYTE))
+        {
+            this.processing = tag.getBoolean("Processing");
+        }
     }
 
     @Override
@@ -148,6 +161,7 @@ public class MicrowaveBlockEntity extends ElectricityModuleProcessingLootBlockEn
     {
         super.saveAdditional(tag);
         tag.putBoolean("Enabled", this.enabled);
+        tag.putBoolean("Processing", this.processing);
     }
 
     @Override
@@ -155,6 +169,7 @@ public class MicrowaveBlockEntity extends ElectricityModuleProcessingLootBlockEn
     {
         CompoundTag tag = super.getUpdateTag();
         tag.putBoolean("Enabled", this.enabled);
+        tag.putBoolean("Processing", this.processing);
         return tag;
     }
 
@@ -218,5 +233,63 @@ public class MicrowaveBlockEntity extends ElectricityModuleProcessingLootBlockEn
     public void setCustomName(@Nullable Component name)
     {
         this.name = name;
+    }
+
+    @Override
+    public SoundEvent getSound()
+    {
+        return ModSounds.BLOCK_MICROWAVE_FAN.get();
+    }
+
+    @Override
+    public SoundSource getSource()
+    {
+        return SoundSource.BLOCKS;
+    }
+
+    @Override
+    public Vec3 getAudioPosition()
+    {
+        return this.audioPosition;
+    }
+
+    @Override
+    public boolean canPlayAudio()
+    {
+        return this.isNodePowered() && this.processing && this.enabled && !this.isRemoved();
+    }
+
+    @Override
+    public int getAudioHash()
+    {
+        return this.worldPosition.hashCode();
+    }
+
+    @Override
+    public boolean isAudioEqual(ILevelAudio other)
+    {
+        return this == other;
+    }
+
+    @Override
+    public double getAudioRadiusSqr()
+    {
+        return MAX_AUDIO_DISTANCE;
+    }
+
+    public static void serverTick(Level level, BlockPos pos, BlockState state, MicrowaveBlockEntity microwave)
+    {
+        IModuleNode.serverTick(level, pos, state, microwave);
+        boolean processing = microwave.processTick();
+        if(microwave.processing != processing)
+        {
+            microwave.processing = processing;
+            microwave.syncDataToTrackingClients();
+        }
+    }
+
+    public static void clientTick(Level level, BlockPos pos, BlockState state, MicrowaveBlockEntity microwave)
+    {
+        AudioManager.get().playLevelAudio(microwave);
     }
 }

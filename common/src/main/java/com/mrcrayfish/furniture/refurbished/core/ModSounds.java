@@ -45,6 +45,7 @@ public class ModSounds
     public static final RegistryEntry<SoundEvent> BLOCK_COOLER_CLOSE = RegistryEntry.soundEvent(Utils.resource("block.cooler.close"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> BLOCK_MICROWAVE_OPEN = RegistryEntry.soundEvent(Utils.resource("block.microwave.open"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> BLOCK_MICROWAVE_CLOSE = RegistryEntry.soundEvent(Utils.resource("block.microwave.close"), id -> () -> SoundEvent.createVariableRangeEvent(id));
+    public static final RegistryEntry<SoundEvent> BLOCK_MICROWAVE_FAN = RegistryEntry.soundEvent(Utils.resource("block.microwave.fan"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> BLOCK_KITCHEN_DRAWER_OPEN = RegistryEntry.soundEvent(Utils.resource("block.kitchen_drawer.open"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> BLOCK_KITCHEN_DRAWER_CLOSE = RegistryEntry.soundEvent(Utils.resource("block.kitchen_drawer.close"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> BLOCK_KITCHEN_SINK_FILL = RegistryEntry.soundEvent(Utils.resource("block.kitchen_sink.fill"), id -> () -> SoundEvent.createVariableRangeEvent(id));

@@ -187,6 +187,12 @@
             "refurbished_furniture:block/microwave/close"
         ]
     },
+    "block.microwave.fan": {
+        "subtitle": "subtitle.refurbished_furniture.microwave.fan",
+        "sounds": [
+            "refurbished_furniture:block/microwave/fan"
+        ]
+    },
     "block.kitchen_drawer.open": {
         "subtitle": "subtitle.refurbished_furniture.kitchen_drawer.open",
         "sounds": [
