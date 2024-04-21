@@ -50,81 +50,6 @@ import java.util.Optional;
 @SuppressWarnings("UnstableApiUsage")
 public class FurnitureMod implements ModInitializer, DataGeneratorEntrypoint
 {
-    public static final Fluid MILK = Registry.register(BuiltInRegistries.FLUID, Utils.resource("milk"), new Fluid()
-    {
-        @Override
-        public Item getBucket()
-        {
-            return Items.MILK_BUCKET;
-        }
-
-        @Override
-        protected boolean canBeReplacedWith(FluidState state, BlockGetter getter, BlockPos pos, Fluid fluid, Direction direction)
-        {
-            return true;
-        }
-
-        @Override
-        protected Vec3 getFlow(BlockGetter getter, BlockPos pos, FluidState state)
-        {
-            return Vec3.ZERO;
-        }
-
-        @Override
-        public int getTickDelay(LevelReader reader)
-        {
-            return 0;
-        }
-
-        @Override
-        protected float getExplosionResistance()
-        {
-            return 0;
-        }
-
-        @Override
-        public float getHeight(FluidState state, BlockGetter getter, BlockPos pos)
-        {
-            return 0;
-        }
-
-        @Override
-        public float getOwnHeight(FluidState state)
-        {
-            return 0;
-        }
-
-        @Override
-        protected BlockState createLegacyBlock(FluidState state)
-        {
-            return Blocks.AIR.defaultBlockState();
-        }
-
-        @Override
-        public boolean isSource(FluidState state)
-        {
-            return true;
-        }
-
-        @Override
-        public int getAmount(FluidState state)
-        {
-            return 8;
-        }
-
-        @Override
-        public VoxelShape getShape(FluidState state, BlockGetter getter, BlockPos pos)
-        {
-            return Shapes.empty();
-        }
-
-        @Override
-        public Optional<SoundEvent> getPickupSound()
-        {
-            return Optional.of(SoundEvents.BUCKET_FILL);
-        }
-    });
-
     @Override
     public void onInitialize()
     {
@@ -157,43 +82,6 @@ public class FurnitureMod implements ModInitializer, DataGeneratorEntrypoint
                         cuttingBoard.removeItem();
                     }
                     return InteractionResult.SUCCESS;
-                }
-            }
-            return InteractionResult.PASS;
-        });
-
-        // Custom interaction when using milk bucket on kitchen sink
-        UseBlockCallback.EVENT.register((player, level, hand, hitResult) -> {
-            ItemStack heldItem = player.getItemInHand(hand);
-            if(level.getBlockEntity(hitResult.getBlockPos()) instanceof KitchenSinkBlockEntity sink) {
-                if(hitResult.getDirection() != Direction.DOWN) {
-                    FluidContainer container = sink.getFluidContainer();
-                    if(container != null) {
-                        if(heldItem.is(Items.MILK_BUCKET)) {
-                            if(container.getStoredAmount() < container.getCapacity()) {
-                                if(!level.isClientSide()) {
-                                    container.push(MILK, FluidConstants.BUCKET, false);
-                                }
-                                player.setItemInHand(hand, new ItemStack(Items.BUCKET));
-                                level.playSound(player, hitResult.getBlockPos(), SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
-                                return InteractionResult.SUCCESS;
-                            }
-                        } else if(heldItem.is(Items.BUCKET)) {
-                            if(container.getStoredFluid().isSame(MILK) && container.getStoredAmount() >= FluidConstants.BUCKET) {
-                                if(!level.isClientSide()) {
-                                    container.pull(FluidConstants.BUCKET, false);
-                                }
-                                heldItem.shrink(1);
-                                if(heldItem.isEmpty()) {
-                                    player.setItemInHand(hand, new ItemStack(Items.MILK_BUCKET));
-                                } else {
-                                    player.addItem(new ItemStack(Items.MILK_BUCKET));
-                                }
-                                level.playSound(player, hitResult.getBlockPos(), SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
-                                return InteractionResult.SUCCESS;
-                            }
-                        }
-                    }
                 }
             }
             return InteractionResult.PASS;

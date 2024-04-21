@@ -26,6 +26,5 @@ public class ModRecipeSerializers
     public static final RegistryEntry<ProcessingRecipe.Serializer<FryingPanCookingRecipe>> FRYING_PAN_RECIPE = RegistryEntry.recipeSerializer(Utils.resource("frying_pan_cooking"), () -> new ProcessingRecipe.Item.Serializer<>(FryingPanCookingRecipe::new, 200));
     public static final RegistryEntry<RecycleBinRecyclingRecipe.Serializer> RECYCLE_BIN_RECIPE = RegistryEntry.recipeSerializer(Utils.resource("recycle_bin_recycling"), RecycleBinRecyclingRecipe.Serializer::new);
     public static final RegistryEntry<RecipeSerializer<DoorMatCopyRecipe>> DOOR_MAT_COPY_RECIPE = RegistryEntry.recipeSerializer(Utils.resource("crafting_special_door_mat_copy"), () -> new SimpleCraftingRecipeSerializer<>(DoorMatCopyRecipe::new));
-    public static final RegistryEntry<RecipeSerializer<SinkFluidTransmutingRecipe>> SINK_FLUID_TRANSMUTING_RECIPE = RegistryEntry.recipeSerializer(Utils.resource("sink_fluid_transmuting"), SinkFluidTransmutingRecipe.Serializer::new);
     public static final RegistryEntry<ProcessingRecipe.Serializer<OvenBakingRecipe>> OVEN_BAKING = RegistryEntry.recipeSerializer(Utils.resource("oven_baking"), () -> new ProcessingRecipe.ItemWithCount.Serializer<>(OvenBakingRecipe::new, 300));
 }

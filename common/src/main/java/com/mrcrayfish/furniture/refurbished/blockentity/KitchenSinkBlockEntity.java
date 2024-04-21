@@ -3,12 +3,10 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.block.KitchenSinkBlock;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
-import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.IFluidContainerBlock;
+import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModParticleTypes;
-import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
-import com.mrcrayfish.furniture.refurbished.crafting.SinkFluidTransmutingRecipe;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageWaterTapAnimation;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
@@ -22,10 +20,8 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -39,7 +35,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * Author: MrCrayfish
@@ -84,48 +79,6 @@ public class KitchenSinkBlockEntity extends BlockEntity implements IFluidContain
 
     public InteractionResult interact(Player player, InteractionHand hand, BlockHitResult result)
     {
-        Level level = player.level();
-        ItemStack heldStack = player.getItemInHand(hand);
-        Optional<SinkFluidTransmutingRecipe> optional = level.getRecipeManager().getRecipeFor(ModRecipeTypes.SINK_FLUID_TRANSMUTING.get(), new SimpleContainer(heldStack), player.level());
-        if(optional.isPresent() && result.getDirection() != Direction.DOWN)
-        {
-            SinkFluidTransmutingRecipe recipe = optional.get();
-            if(this.tank.getStoredAmount() >= FluidContainer.BUCKET_CAPACITY && this.tank.getStoredFluid().isSame(recipe.getFluid()))
-            {
-                // Consume held item and if present, return remaining crafting item
-                Item remainingItem = heldStack.getItem().getCraftingRemainingItem();
-                heldStack.shrink(1);
-                if(remainingItem != null)
-                {
-                    ItemStack remainingStack = new ItemStack(remainingItem);
-                    if(heldStack.isEmpty())
-                    {
-                        player.setItemInHand(hand, remainingStack);
-                    }
-                    else if(!player.addItem(remainingStack))
-                    {
-                        player.drop(remainingStack, false);
-                    }
-                }
-
-                // Play draining sound
-                this.tank.getStoredFluid().getPickupSound().ifPresent(event -> {
-                    level.playSound(null, this.worldPosition, event, SoundSource.BLOCKS);
-                });
-
-                // Consume bucket worth of fluid from sink
-                this.tank.pull(FluidContainer.BUCKET_CAPACITY, false);
-
-                // Finally spawn the resulting item
-                Vec3 pos = Vec3.atBottomCenterOf(this.worldPosition).add(0, 1, 0);
-                ItemEntity entity = new ItemEntity(level, pos.x, pos.y, pos.z, recipe.getResultItem(level.registryAccess()).copy());
-                entity.setDefaultPickUpDelay();
-                level.addFreshEntity(entity);
-
-                return InteractionResult.SUCCESS;
-            }
-        }
-
         // TODO allow this to be triggered with redstone
         if(Config.SERVER.kitchenSink.dispenseWater.get() && player.getItemInHand(hand).isEmpty() && result.getDirection() != Direction.DOWN)
         {
@@ -148,6 +101,7 @@ public class KitchenSinkBlockEntity extends BlockEntity implements IFluidContain
                 if(drained.right() == FluidContainer.BUCKET_CAPACITY)
                 {
                     this.tank.pull(FluidContainer.BUCKET_CAPACITY, false);
+                    Level level = player.level();
                     Vec3 pos = Vec3.atBottomCenterOf(this.worldPosition).add(0, 1, 0);
                     ItemEntity entity = new ItemEntity(level, pos.x, pos.y, pos.z, new ItemStack(Blocks.OBSIDIAN));
                     entity.setDefaultPickUpDelay();

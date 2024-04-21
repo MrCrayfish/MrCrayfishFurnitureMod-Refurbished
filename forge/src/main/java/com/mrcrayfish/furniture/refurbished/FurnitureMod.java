@@ -34,7 +34,6 @@ public class FurnitureMod
 {
     public FurnitureMod()
     {
-        ForgeMod.enableMilkFluid();
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(this::onCommonSetup);
         bus.addListener(this::onClientSetup);
