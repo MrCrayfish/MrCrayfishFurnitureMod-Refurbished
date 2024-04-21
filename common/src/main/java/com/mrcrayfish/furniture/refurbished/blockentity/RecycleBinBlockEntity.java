@@ -572,12 +572,6 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
     }
 
     @Override
-    public Component getName()
-    {
-        return this.getBlockState().getBlock().getName();
-    }
-
-    @Override
     public Component getDisplayName()
     {
         return this.name != null ? this.name : this.getName();
