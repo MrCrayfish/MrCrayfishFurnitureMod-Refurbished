@@ -133,7 +133,7 @@ public class Config
             @ConfigProperty(name = "maximumNodesInNetwork", comment = """
                 The maximum amount of nodes in a network that can be powered by an electricity
                 source, like the electricity generator.""")
-            public final IntProperty maximumNodesInNetwork = IntProperty.create(50, 1, 512);
+            public final IntProperty maximumNodesInNetwork = IntProperty.create(64, 1, 512);
         }
 
         public static class RecycleBin
@@ -147,11 +147,11 @@ public class Config
                 Recycled items are still consumed even if no items were added to the output. This value
                 is seen as the base value, however it is further affected for items that are damaged,
                 which greatly reduce the chance of an output. The value must be between 0 and 1 (inclusive)""")
-            public final DoubleProperty baseOutputChance = DoubleProperty.create(0.6, 0.0, 1.0);
+            public final DoubleProperty baseOutputChance = DoubleProperty.create(1.0, 0.0, 1.0);
 
             @ConfigProperty(name = "recycleEveryItem", comment = """
                 When enabled, the recycle bin will recycle every item even if the item doesn't recycle into anything.""")
-            public final BoolProperty recycleEveryItem = BoolProperty.create(true);
+            public final BoolProperty recycleEveryItem = BoolProperty.create(false);
 
             @ConfigProperty(name = "randomizeOutputCount", comment = """
                 If enabled, the count of an item created from recycling will be randomized based on
