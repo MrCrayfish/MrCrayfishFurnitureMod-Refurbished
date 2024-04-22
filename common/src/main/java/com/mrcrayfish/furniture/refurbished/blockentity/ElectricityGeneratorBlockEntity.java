@@ -66,6 +66,12 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
     }
 
     @Override
+    public int getNodeMaximumConnections()
+    {
+        return Config.SERVER.electricity.maximumLinksPerElectricityGenerator.get();
+    }
+
+    @Override
     protected Component getDefaultName()
     {
         return Utils.translation("container", "electricity_generator");
