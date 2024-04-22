@@ -112,8 +112,5 @@ public class ClientFurnitureMod implements ClientModInitializer
             }
             return true;
         });
-
-        BlockRenderLayerMap.INSTANCE.putFluid(FurnitureMod.MILK, RenderType.solid());
-        FluidRenderHandlerRegistry.INSTANCE.register(FurnitureMod.MILK, new SimpleFluidRenderHandler(Utils.resource("block/milk_still"), Utils.resource("block/milk_still")));
     }
 }

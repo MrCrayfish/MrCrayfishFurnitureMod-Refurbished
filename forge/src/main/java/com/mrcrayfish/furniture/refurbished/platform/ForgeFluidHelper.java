@@ -60,12 +60,6 @@ public class ForgeFluidHelper implements IFluidHelper
         return !stack.isEmpty() && stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent();
     }
 
-    @Override
-    public Fluid getMilkFluid()
-    {
-        return ForgeMod.MILK.get();
-    }
-
     public static class ForgeFluidContainer extends FluidContainer
     {
         protected final FluidTank tank;

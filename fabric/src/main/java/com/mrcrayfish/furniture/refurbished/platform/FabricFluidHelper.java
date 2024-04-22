@@ -1,6 +1,5 @@
 package com.mrcrayfish.furniture.refurbished.platform;
 
-import com.mrcrayfish.furniture.refurbished.FurnitureMod;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
 import com.mrcrayfish.furniture.refurbished.platform.services.IFluidHelper;
 import it.unimi.dsi.fastutil.Pair;
@@ -17,7 +16,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -63,12 +61,6 @@ public class FabricFluidHelper implements IFluidHelper
     public boolean isFluidContainerItem(ItemStack stack)
     {
         return !stack.isEmpty() && FluidStorage.ITEM.find(stack, ContainerItemContext.withConstant(stack)) != null;
-    }
-
-    @Override
-    public Fluid getMilkFluid()
-    {
-        return FurnitureMod.MILK;
     }
 
     public static class FabricFluidContainer extends FluidContainer
