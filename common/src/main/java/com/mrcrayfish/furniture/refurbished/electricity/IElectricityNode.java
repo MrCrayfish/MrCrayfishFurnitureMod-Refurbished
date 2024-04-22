@@ -238,11 +238,19 @@ public interface IElectricityNode
     }
 
     /**
+     * @return The maximum links allowed to connect to/from this node
+     */
+    default int getNodeMaximumConnections()
+    {
+        return Config.SERVER.electricity.maximumLinksPerElectricityNode.get();
+    }
+
+    /**
      * @return True if this node connection count has reached the configured max links per node.
      */
     default boolean isNodeConnectionLimitReached()
     {
-        return this.getNodeConnections().size() >= Config.SERVER.electricity.maximumLinksPerElectricityNode.get();
+        return this.getNodeConnections().size() >= this.getNodeMaximumConnections();
     }
 
     /**
