@@ -1,6 +1,9 @@
 package com.mrcrayfish.furniture.refurbished;
 
+import com.chocohead.mm.api.ClassTinkerers;
+import com.google.common.base.Suppliers;
 import com.mrcrayfish.framework.FrameworkSetup;
+import com.mrcrayfish.furniture.refurbished.asm.Loader;
 import com.mrcrayfish.furniture.refurbished.blockentity.CuttingBoardBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.KitchenSinkBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.StorageJarBlockEntity;
@@ -32,6 +35,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -46,10 +50,13 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 @SuppressWarnings("UnstableApiUsage")
 public class FurnitureMod implements ModInitializer, DataGeneratorEntrypoint
 {
+    public static final Supplier<RecipeBookType> RECIPE_BOOK_TYPE_FREEZER = Suppliers.memoize(() -> ClassTinkerers.getEnum(RecipeBookType.class, Loader.RECIPE_BOOK_TYPE_FREEZER));
+
     @Override
     public void onInitialize()
     {

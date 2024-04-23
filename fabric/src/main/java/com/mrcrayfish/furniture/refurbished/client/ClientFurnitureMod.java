@@ -1,12 +1,17 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
+import com.chocohead.mm.api.ClassTinkerers;
+import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.FurnitureMod;
+import com.mrcrayfish.furniture.refurbished.asm.Loader;
 import com.mrcrayfish.furniture.refurbished.client.registration.ParticleProviderRegister;
+import com.mrcrayfish.furniture.refurbished.client.registration.RecipeCategoryRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
+import io.github.fabricators_of_create.porting_lib.recipe_book_categories.RecipeBookRegistry;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
@@ -32,6 +37,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -39,15 +45,21 @@ import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish
  */
 public class ClientFurnitureMod implements ClientModInitializer
 {
-    public static final Map<RecipeType<?>, Function<Recipe<?>, RecipeBookCategories>> RECIPE_TYPE_TO_CATEGORY = new HashMap<>();
+    public static final Supplier<RecipeBookCategories> CATEGORY_SEARCH = Suppliers.memoize(() -> ClassTinkerers.getEnum(RecipeBookCategories.class, Loader.RECIPE_BOOK_CATEGORY_SEARCH));
+    public static final Supplier<RecipeBookCategories> CATEGORY_BLOCKS = Suppliers.memoize(() -> ClassTinkerers.getEnum(RecipeBookCategories.class, Loader.RECIPE_BOOK_CATEGORY_BLOCKS));
+    public static final Supplier<RecipeBookCategories> CATEGORY_ITEMS = Suppliers.memoize(() -> ClassTinkerers.getEnum(RecipeBookCategories.class, Loader.RECIPE_BOOK_CATEGORY_ITEMS));
+    public static final Supplier<RecipeBookCategories> CATEGORY_FOOD = Suppliers.memoize(() -> ClassTinkerers.getEnum(RecipeBookCategories.class, Loader.RECIPE_BOOK_CATEGORY_FOOD));
+    public static final Supplier<RecipeBookCategories> CATEGORY_MISC = Suppliers.memoize(() -> ClassTinkerers.getEnum(RecipeBookCategories.class, Loader.RECIPE_BOOK_CATEGORY_MISC));
 
     @Override
     public void onInitializeClient()
@@ -71,7 +83,23 @@ public class ClientFurnitureMod implements ClientModInitializer
                 ParticleFactoryRegistry.getInstance().register(type, provider::apply);
             }
         });
-        ClientBootstrap.registerRecipeBookCategories(RECIPE_TYPE_TO_CATEGORY::put);
+        ClientBootstrap.registerRecipeBookCategories(new RecipeCategoryRegister() {
+            @Override
+            public void applyCategory(RecipeBookType recipeBookType, List<RecipeBookCategories> categories) {
+                RecipeBookRegistry.registerBookCategories(recipeBookType, categories);
+            }
+
+            @Override
+            public void applyAggregate(RecipeBookCategories category, List<RecipeBookCategories> categories) {
+                RecipeBookRegistry.registerAggregateCategory(category, categories);
+            }
+
+            @Override
+            public void applyFinder(RecipeType<?> type, Function<Recipe<?>, RecipeBookCategories> function) {
+                RecipeBookRegistry.registerRecipeCategoryFinder(type, function);
+            }
+        });
+
         ModelLoadingRegistry.INSTANCE.registerModelProvider((manager, out) -> ExtraModels.register(out));
 
         WorldRenderEvents.LAST.register(context -> {

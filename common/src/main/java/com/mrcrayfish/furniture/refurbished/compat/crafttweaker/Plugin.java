@@ -14,4 +14,10 @@ import org.apache.logging.log4j.Logger;
 public class Plugin implements ICraftTweakerPlugin
 {
     public static final Logger LOGGER = CraftTweakerAPI.getLogger("RefurbishedFurniture");
+
+    @Override
+    public void registerRecipeComponents(IRecipeComponentRegistrationHandler handler)
+    {
+        handler.registerRecipeComponent(CustomRecipeComponents.Metadata.PROCESSING_CATEGORY);
+    }
 }

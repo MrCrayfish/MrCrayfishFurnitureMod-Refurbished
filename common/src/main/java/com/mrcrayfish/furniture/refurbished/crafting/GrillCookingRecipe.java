@@ -14,9 +14,9 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
  */
 public class GrillCookingRecipe extends ProcessingRecipe.Item
 {
-    public GrillCookingRecipe(ResourceLocation id, Ingredient ingredient, ItemStack result, int time)
+    public GrillCookingRecipe(ResourceLocation id, Category category, Ingredient ingredient, ItemStack result, int time)
     {
-        super(ModRecipeTypes.GRILL_COOKING.get(), id, ingredient, result, time);
+        super(ModRecipeTypes.GRILL_COOKING.get(), id, category, ingredient, result, time);
     }
 
     @Override

@@ -573,13 +573,13 @@ public class CommonRecipeProvider
         this.simpleCombined(ModItems.GLOW_BERRY_JAM.get(), ModItems.TOAST.get(), ModItems.GLOW_BERRY_JAM_TOAST.get(), 1, RecipeCategory.FOOD);
 
         // Solidifying
-        this.freezerSolidifying(Items.WATER_BUCKET, Items.ICE, 600, 1.0F);
-        this.freezerSolidifying(Items.ICE, Items.PACKED_ICE, 1200, 1.0F);
-        this.freezerSolidifying(Items.PACKED_ICE, Items.BLUE_ICE, 2400, 1.0F);
+        this.freezerSolidifying(ProcessingRecipe.Category.BLOCKS, Items.WATER_BUCKET, Items.ICE, 600, 1.0F);
+        this.freezerSolidifying(ProcessingRecipe.Category.BLOCKS, Items.ICE, Items.PACKED_ICE, 1200, 1.0F);
+        this.freezerSolidifying(ProcessingRecipe.Category.BLOCKS, Items.PACKED_ICE, Items.BLUE_ICE, 2400, 1.0F);
 
         // Toasting
-        this.toasterHeating(ModItems.BREAD_SLICE.get(), ModItems.TOAST.get(), 300, 0.5F);
-        this.toasterHeating(ModItems.CHEESE_SANDWICH.get(), ModItems.CHEESE_TOASTIE.get(), 400, 0.5F);
+        this.toasterHeating(ProcessingRecipe.Category.FOOD, ModItems.BREAD_SLICE.get(), ModItems.TOAST.get(), 300, 0.5F);
+        this.toasterHeating(ProcessingRecipe.Category.FOOD, ModItems.CHEESE_SANDWICH.get(), ModItems.CHEESE_TOASTIE.get(), 400, 0.5F);
 
         // Slicing
         this.cuttingBoardSlicing(Blocks.MELON, Items.MELON_SLICE, 9);
@@ -655,18 +655,18 @@ public class CommonRecipeProvider
                 Ingredient.of(ModItems.DOUGH.get()));
 
         // Heating
-        this.microwaveHeating(Items.POTATO, Items.BAKED_POTATO, 200, 0.5F);
+        this.microwaveHeating(ProcessingRecipe.Category.FOOD, Items.POTATO, Items.BAKED_POTATO, 200, 0.5F);
 
         // Frying
-        this.fryingPanCooking(Items.SWEET_BERRIES, ModItems.SWEET_BERRY_JAM.get(), 400, 0.5F);
-        this.fryingPanCooking(Items.GLOW_BERRIES, ModItems.GLOW_BERRY_JAM.get(), 400, 0.5F);
-        this.fryingPanCooking(ModItems.CHEESE_SANDWICH.get(), ModItems.CHEESE_TOASTIE.get(), 400, 0.5F);
+        this.fryingPanCooking(ProcessingRecipe.Category.FOOD, Items.SWEET_BERRIES, ModItems.SWEET_BERRY_JAM.get(), 400, 0.5F);
+        this.fryingPanCooking(ProcessingRecipe.Category.FOOD, Items.GLOW_BERRIES, ModItems.GLOW_BERRY_JAM.get(), 400, 0.5F);
+        this.fryingPanCooking(ProcessingRecipe.Category.FOOD, ModItems.CHEESE_SANDWICH.get(), ModItems.CHEESE_TOASTIE.get(), 400, 0.5F);
 
         // Baking
-        this.ovenBaking(Items.POTATO, Items.BAKED_POTATO, 1, 200);
-        this.ovenBaking(Items.WATER_BUCKET, ModItems.SEA_SALT.get(), 4, 1200);
-        this.ovenBaking(ModItems.RAW_VEGETABLE_PIZZA.get(), ModItems.COOKED_VEGETABLE_PIZZA.get(), 1, 1200);
-        this.ovenBaking(ModItems.RAW_MEATLOVERS_PIZZA.get(), ModItems.COOKED_MEATLOVERS_PIZZA.get(), 1, 1200);
+        this.ovenBaking(ProcessingRecipe.Category.FOOD, Items.POTATO, Items.BAKED_POTATO, 1, 200);
+        this.ovenBaking(ProcessingRecipe.Category.MISC, Items.WATER_BUCKET, ModItems.SEA_SALT.get(), 4, 1200);
+        this.ovenBaking(ProcessingRecipe.Category.FOOD, ModItems.RAW_VEGETABLE_PIZZA.get(), ModItems.COOKED_VEGETABLE_PIZZA.get(), 1, 1200);
+        this.ovenBaking(ProcessingRecipe.Category.FOOD, ModItems.RAW_MEATLOVERS_PIZZA.get(), ModItems.COOKED_MEATLOVERS_PIZZA.get(), 1, 1200);
 
         // Recycling
         this.recycleBinSalvaging(Items.OAK_STAIRS, new ItemStack(Items.OAK_PLANKS, 1));
@@ -1541,40 +1541,43 @@ public class CommonRecipeProvider
                 .save(this.consumer, Utils.resource(folder + "/" + resultName + "_from_" + baseName));
     }
 
-    private <T extends ProcessingRecipe> void processing(ProcessingRecipe.Serializer<T> serializer, String folder, Ingredient ingredient, ItemLike result, int count, int time)
+    private <T extends ProcessingRecipe> void processing(ProcessingRecipe.Serializer<T> serializer, String folder, ProcessingRecipe.Category category, ItemLike ingredient, ItemLike result, int count, int time)
     {
         ResourceLocation recipeId = Utils.resource(folder + "/" + result.asItem());
-        ProcessingRecipe.builder(ingredient, new ItemStack(result, count), time, serializer).save(this.consumer, recipeId);
+        ProcessingRecipe.builder(category, Ingredient.of(ingredient), new ItemStack(result, count), time, serializer)
+            .unlockedBy("has_ingredient", this.hasItem.apply(ingredient))
+            .unlockedBy("has_result", this.hasItem.apply(result))
+            .save(this.consumer, recipeId);
     }
 
-    private void grillCooking(ItemLike rawItem, ItemLike cookedItem, int cookingTime, float experience)
+    private void grillCooking(ProcessingRecipe.Category category, ItemLike rawItem, ItemLike cookedItem, int cookingTime, float experience)
     {
-        this.processing(ModRecipeSerializers.GRILL_RECIPE.get(), "grilling", Ingredient.of(rawItem), cookedItem, 1, cookingTime);
+        this.processing(ModRecipeSerializers.GRILL_RECIPE.get(), "grilling", category, rawItem, cookedItem, 1, cookingTime);
     }
 
-    private void freezerSolidifying(ItemLike baseItem, ItemLike frozenItem, int freezeTime, float experience)
+    private void freezerSolidifying(ProcessingRecipe.Category category, ItemLike baseItem, ItemLike frozenItem, int freezeTime, float experience)
     {
-        this.processing(ModRecipeSerializers.FREEZER_RECIPE.get(), "freezing", Ingredient.of(baseItem), frozenItem, 1, freezeTime);
+        this.processing(ModRecipeSerializers.FREEZER_RECIPE.get(), "freezing", category, baseItem, frozenItem, 1, freezeTime);
     }
 
-    private void toasterHeating(ItemLike baseItem, ItemLike heatedItem, int heatingTime, float experience)
+    private void toasterHeating(ProcessingRecipe.Category category, ItemLike baseItem, ItemLike heatedItem, int heatingTime, float experience)
     {
-        this.processing(ModRecipeSerializers.TOASTER_RECIPE.get(), "toasting", Ingredient.of(baseItem), heatedItem, 1, heatingTime);
+        this.processing(ModRecipeSerializers.TOASTER_RECIPE.get(), "toasting", category, baseItem, heatedItem, 1, heatingTime);
     }
 
-    private void microwaveHeating(ItemLike baseItem, ItemLike heatedItem, int heatingTime, float experience)
+    private void microwaveHeating(ProcessingRecipe.Category category, ItemLike baseItem, ItemLike heatedItem, int heatingTime, float experience)
     {
-        this.processing(ModRecipeSerializers.MICROWAVE_RECIPE.get(), "heating", Ingredient.of(baseItem), heatedItem, 1, heatingTime);
+        this.processing(ModRecipeSerializers.MICROWAVE_RECIPE.get(), "heating", category, baseItem, heatedItem, 1, heatingTime);
     }
 
-    private void fryingPanCooking(ItemLike baseItem, ItemLike heatedItem, int heatingTime, float experience)
+    private void fryingPanCooking(ProcessingRecipe.Category category, ItemLike baseItem, ItemLike heatedItem, int heatingTime, float experience)
     {
-        this.processing(ModRecipeSerializers.FRYING_PAN_RECIPE.get(), "frying", Ingredient.of(baseItem), heatedItem, 1, heatingTime);
+        this.processing(ModRecipeSerializers.FRYING_PAN_RECIPE.get(), "frying", category, baseItem, heatedItem, 1, heatingTime);
     }
 
-    private void ovenBaking(ItemLike baseItem, ItemLike bakedItem, int count, int bakingTime)
+    private void ovenBaking(ProcessingRecipe.Category category, ItemLike baseItem, ItemLike bakedItem, int count, int bakingTime)
     {
-        this.processing(ModRecipeSerializers.OVEN_BAKING.get(), "baking", Ingredient.of(baseItem), bakedItem, count, bakingTime);
+        this.processing(ModRecipeSerializers.OVEN_BAKING.get(), "baking", category, baseItem, bakedItem, count, bakingTime);
     }
 
     private void cuttingBoardSlicing(ItemLike baseItem, ItemLike resultItem, int resultCount)

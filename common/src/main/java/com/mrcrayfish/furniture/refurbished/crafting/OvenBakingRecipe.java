@@ -14,9 +14,9 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
  */
 public class OvenBakingRecipe extends ProcessingRecipe.ItemWithCount
 {
-    public OvenBakingRecipe(ResourceLocation id, Ingredient ingredient, ItemStack result, int time)
+    public OvenBakingRecipe(ResourceLocation id, Category category, Ingredient ingredient, ItemStack result, int time)
     {
-        super(ModRecipeTypes.OVEN_BAKING.get(), id, ingredient, result, time);
+        super(ModRecipeTypes.OVEN_BAKING.get(), id, category, ingredient, result, time);
     }
 
     @Override

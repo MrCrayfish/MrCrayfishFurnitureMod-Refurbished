@@ -12,9 +12,9 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
  */
 public class ToasterHeatingRecipe extends ProcessingRecipe.Item
 {
-    public ToasterHeatingRecipe(ResourceLocation id, Ingredient ingredient, ItemStack result, int time)
+    public ToasterHeatingRecipe(ResourceLocation id, Category category, Ingredient ingredient, ItemStack result, int time)
     {
-        super(ModRecipeTypes.TOASTER_HEATING.get(), id, ingredient, result, time);
+        super(ModRecipeTypes.TOASTER_HEATING.get(), id, category, ingredient, result, time);
     }
 
     @Override

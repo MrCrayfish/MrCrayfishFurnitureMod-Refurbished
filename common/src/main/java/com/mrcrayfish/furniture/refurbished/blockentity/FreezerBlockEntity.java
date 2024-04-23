@@ -18,8 +18,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.StackedContentsCompatible;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -32,7 +34,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class FreezerBlockEntity extends ElectricityModuleProcessingLootBlockEntity implements IPowerSwitch, IHomeControlDevice
+public class FreezerBlockEntity extends ElectricityModuleProcessingLootBlockEntity implements IPowerSwitch, IHomeControlDevice, StackedContentsCompatible
 {
     public static final int[] INPUT_SLOTS = new int[]{0};
     public static final int[] OUTPUT_SLOTS = new int[]{0, 1};
@@ -209,5 +211,14 @@ public class FreezerBlockEntity extends ElectricityModuleProcessingLootBlockEnti
             return this.getCustomName();
         }
         return Components.SMART_DEVICE_FREEZER;
+    }
+
+    @Override
+    public void fillStackedContents(StackedContents contents)
+    {
+        for(ItemStack stack : this.items)
+        {
+            contents.accountStack(stack);
+        }
     }
 }

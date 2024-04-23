@@ -3,11 +3,13 @@ package com.mrcrayfish.furniture.refurbished.platform;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mrcrayfish.furniture.refurbished.client.ClientFurnitureMod;
 import com.mrcrayfish.furniture.refurbished.client.FabricRenderType;
 import com.mrcrayfish.furniture.refurbished.platform.services.IClientHelper;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
@@ -23,6 +25,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -108,5 +111,35 @@ public class FabricClientHelper implements IClientHelper
     public void renderTooltip(GuiGraphics graphics, Font font, List<ClientTooltipComponent> components, int mouseX, int mouseY, ClientTooltipPositioner position)
     {
         graphics.renderTooltipInternal(font, components, mouseX, mouseY, position);
+    }
+
+    @Override
+    public RecipeBookCategories getSearchRecipeBookCategory()
+    {
+        return ClientFurnitureMod.CATEGORY_SEARCH.get();
+    }
+
+    @Override
+    public RecipeBookCategories getBlockRecipeBookCategory()
+    {
+        return ClientFurnitureMod.CATEGORY_BLOCKS.get();
+    }
+
+    @Override
+    public RecipeBookCategories getItemRecipeBookCategory()
+    {
+        return ClientFurnitureMod.CATEGORY_ITEMS.get();
+    }
+
+    @Override
+    public RecipeBookCategories getFoodRecipeBookCategory()
+    {
+        return ClientFurnitureMod.CATEGORY_FOOD.get();
+    }
+
+    @Override
+    public RecipeBookCategories getMiscRecipeBookCategory()
+    {
+        return ClientFurnitureMod.CATEGORY_MISC.get();
     }
 }

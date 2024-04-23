@@ -11,6 +11,7 @@ import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.GrillCookingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.OvenBakingRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.openzen.zencode.java.ZenCodeType;
@@ -24,9 +25,9 @@ import org.openzen.zencode.java.ZenCodeType;
 public class OvenBakingRecipeManager implements IRecipeManager<OvenBakingRecipe>
 {
     @ZenCodeType.Method
-    public void addRecipe(String name, IIngredient ingredient, IItemStack result, @ZenCodeType.OptionalInt(300) int time)
+    public void addRecipe(String name, String category, IIngredient ingredient, IItemStack result, @ZenCodeType.OptionalInt(300) int time)
     {
-        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new OvenBakingRecipe(CraftTweakerConstants.rl(name), ingredient.asVanillaIngredient(), result.getInternal(), time)));
+        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new OvenBakingRecipe(CraftTweakerConstants.rl(name), ProcessingRecipe.Category.byName(category), ingredient.asVanillaIngredient(), result.getInternal(), time)));
     }
 
     @Override

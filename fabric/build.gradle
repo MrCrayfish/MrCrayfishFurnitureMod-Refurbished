@@ -9,7 +9,18 @@ archivesBaseName = "${mod_id}-fabric"
 version = "${minecraft_version}-${mod_version}"
 
 configurations {
-    implementation.extendsFrom library
+    modImplementation.extendsFrom library
+}
+
+repositories {
+    maven {
+        name = 'Fabric-ASM and other GitHub repos'
+        url = "https://jitpack.io/"
+    }
+    maven {
+        name = 'Fabricators of Create: Porting Lib'
+        url = "https://mvn.devos.one/releases/"
+    }
 }
 
 dependencies {
@@ -19,6 +30,16 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
     modImplementation "com.mrcrayfish:framework-fabric:${minecraft_version}-${framework_version}"
     implementation "com.google.code.findbugs:jsr305:3.0.2"
+
+    // Fabric-ASM to add new enums
+    include library("com.github.Chocohead:Fabric-ASM:v2.3") {
+        exclude (group: "net.fabricmc.fabric-api")
+    }
+
+    // Porting Lib from Fabricators of Create
+    for(String module in porting_lib_modules.split(",")) {
+        include library("io.github.fabricators_of_create.Porting-Lib:$module:${porting_lib_version}")
+    }
 
     // JEI
     modCompileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"

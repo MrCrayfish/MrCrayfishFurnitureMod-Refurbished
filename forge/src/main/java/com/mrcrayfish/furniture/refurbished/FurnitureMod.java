@@ -11,10 +11,10 @@ import com.mrcrayfish.furniture.refurbished.data.FurnitureRecipeProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.registries.RegistriesDatapackGenerator;
+import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.client.event.RegisterRecipeBookCategoriesEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -26,12 +26,15 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 @Mod(Constants.MOD_ID)
 public class FurnitureMod
 {
+    public static final RecipeBookType RECIPE_BOOK_TYPE_FREEZER = RecipeBookType.create("REFURBISHED_FURNITURE_FREEZER");
+
     public FurnitureMod()
     {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
