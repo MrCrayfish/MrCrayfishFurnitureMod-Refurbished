@@ -1,23 +1,16 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
-import com.chocohead.mm.api.ClassTinkerers;
-import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mrcrayfish.furniture.refurbished.FurnitureMod;
-import com.mrcrayfish.furniture.refurbished.asm.Loader;
 import com.mrcrayfish.furniture.refurbished.client.registration.ParticleProviderRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.RecipeCategoryRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
-import com.mrcrayfish.furniture.refurbished.util.Utils;
 import io.github.fabricators_of_create.porting_lib.recipe_book_categories.RecipeBookRegistry;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
-import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
@@ -28,7 +21,6 @@ import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
@@ -44,23 +36,14 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.function.TriFunction;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish
  */
 public class ClientFurnitureMod implements ClientModInitializer
 {
-    public static final Supplier<RecipeBookCategories> CATEGORY_SEARCH = Suppliers.memoize(() -> ClassTinkerers.getEnum(RecipeBookCategories.class, Loader.RECIPE_BOOK_CATEGORY_SEARCH));
-    public static final Supplier<RecipeBookCategories> CATEGORY_BLOCKS = Suppliers.memoize(() -> ClassTinkerers.getEnum(RecipeBookCategories.class, Loader.RECIPE_BOOK_CATEGORY_BLOCKS));
-    public static final Supplier<RecipeBookCategories> CATEGORY_ITEMS = Suppliers.memoize(() -> ClassTinkerers.getEnum(RecipeBookCategories.class, Loader.RECIPE_BOOK_CATEGORY_ITEMS));
-    public static final Supplier<RecipeBookCategories> CATEGORY_FOOD = Suppliers.memoize(() -> ClassTinkerers.getEnum(RecipeBookCategories.class, Loader.RECIPE_BOOK_CATEGORY_FOOD));
-    public static final Supplier<RecipeBookCategories> CATEGORY_MISC = Suppliers.memoize(() -> ClassTinkerers.getEnum(RecipeBookCategories.class, Loader.RECIPE_BOOK_CATEGORY_MISC));
-
     @Override
     public void onInitializeClient()
     {
@@ -85,13 +68,13 @@ public class ClientFurnitureMod implements ClientModInitializer
         });
         ClientBootstrap.registerRecipeBookCategories(new RecipeCategoryRegister() {
             @Override
-            public void applyCategory(RecipeBookType recipeBookType, List<RecipeBookCategories> categories) {
-                RecipeBookRegistry.registerBookCategories(recipeBookType, categories);
+            public void applyCategory(RecipeBookType type, RecipeBookCategories ... categories) {
+                RecipeBookRegistry.registerBookCategories(type, List.of(categories));
             }
 
             @Override
-            public void applyAggregate(RecipeBookCategories category, List<RecipeBookCategories> categories) {
-                RecipeBookRegistry.registerAggregateCategory(category, categories);
+            public void applyAggregate(RecipeBookCategories category, RecipeBookCategories ... categories) {
+                RecipeBookRegistry.registerAggregateCategory(category, List.of(categories));
             }
 
             @Override

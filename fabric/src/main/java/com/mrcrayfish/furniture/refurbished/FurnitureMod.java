@@ -1,13 +1,8 @@
 package com.mrcrayfish.furniture.refurbished;
 
-import com.chocohead.mm.api.ClassTinkerers;
-import com.google.common.base.Suppliers;
 import com.mrcrayfish.framework.FrameworkSetup;
-import com.mrcrayfish.furniture.refurbished.asm.Loader;
 import com.mrcrayfish.furniture.refurbished.blockentity.CuttingBoardBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.KitchenSinkBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.StorageJarBlockEntity;
-import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureBlockTagsProvider;
@@ -17,46 +12,19 @@ import com.mrcrayfish.furniture.refurbished.data.FurnitureModelProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureRecipeProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureRegistryProvider;
 import com.mrcrayfish.furniture.refurbished.platform.FabricFluidHelper;
-import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.fluid.base.FullItemFluidStorage;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.inventory.RecipeBookType;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
-
-import java.util.Optional;
-import java.util.function.Supplier;
 
 @SuppressWarnings("UnstableApiUsage")
 public class FurnitureMod implements ModInitializer, DataGeneratorEntrypoint
 {
-    public static final Supplier<RecipeBookType> RECIPE_BOOK_TYPE_FREEZER = Suppliers.memoize(() -> ClassTinkerers.getEnum(RecipeBookType.class, Loader.RECIPE_BOOK_TYPE_FREEZER));
-
     @Override
     public void onInitialize()
     {

@@ -22,8 +22,11 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.StackedContentsCompatible;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -36,7 +39,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class MicrowaveBlockEntity extends ElectricityModuleProcessingLootBlockEntity implements IPowerSwitch, IHomeControlDevice, ILevelAudio, Nameable
+public class MicrowaveBlockEntity extends ElectricityModuleProcessingLootBlockEntity implements IPowerSwitch, IHomeControlDevice, ILevelAudio, Nameable, StackedContentsCompatible
 {
     public static final int[] INPUT_SLOTS = new int[]{0};
     public static final int[] OUTPUT_SLOTS = new int[]{1};
@@ -285,5 +288,14 @@ public class MicrowaveBlockEntity extends ElectricityModuleProcessingLootBlockEn
     public static void clientTick(Level level, BlockPos pos, BlockState state, MicrowaveBlockEntity microwave)
     {
         AudioManager.get().playLevelAudio(microwave);
+    }
+
+    @Override
+    public void fillStackedContents(StackedContents contents)
+    {
+        for(ItemStack stack : this.items)
+        {
+            contents.accountStack(stack);
+        }
     }
 }

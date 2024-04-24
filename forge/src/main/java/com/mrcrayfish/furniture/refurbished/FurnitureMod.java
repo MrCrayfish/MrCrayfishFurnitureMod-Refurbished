@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished;
 
 import com.mrcrayfish.furniture.refurbished.client.ClientBootstrap;
+import com.mrcrayfish.furniture.refurbished.client.ClientFurnitureMod;
 import com.mrcrayfish.furniture.refurbished.client.ForgeClientEvents;
 import com.mrcrayfish.furniture.refurbished.data.RegistriesProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureBlockTagsProvider;
@@ -34,6 +35,7 @@ import java.util.concurrent.CompletableFuture;
 public class FurnitureMod
 {
     public static final RecipeBookType RECIPE_BOOK_TYPE_FREEZER = RecipeBookType.create("REFURBISHED_FURNITURE_FREEZER");
+    public static final RecipeBookType RECIPE_BOOK_TYPE_MICROWAVE = RecipeBookType.create("REFURBISHED_FURNITURE_MICROWAVE");
 
     public FurnitureMod()
     {
@@ -42,6 +44,7 @@ public class FurnitureMod
         bus.addListener(this::onClientSetup);
         bus.addListener(this::onGatherData);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+            ClientFurnitureMod.init();
             bus.addListener(ForgeClientEvents::onRegisterRenderers);
             bus.addListener(ForgeClientEvents::onRegisterAdditional);
             bus.addListener(ForgeClientEvents::onRegisterParticleProviders);
@@ -63,7 +66,7 @@ public class FurnitureMod
 
     private void onClientSetup(FMLClientSetupEvent event)
     {
-        event.enqueueWork(ClientBootstrap::init);
+        event.enqueueWork(ClientFurnitureMod::init);
     }
 
     private void onGatherData(GatherDataEvent event)

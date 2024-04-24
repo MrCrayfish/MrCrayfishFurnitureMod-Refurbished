@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.mixin;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.util.Pair;
 import com.mrcrayfish.furniture.refurbished.FurnitureMod;
+import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookTypes;
 import net.minecraft.stats.RecipeBookSettings;
 import net.minecraft.world.inventory.RecipeBookType;
 import org.spongepowered.asm.mixin.Final;
@@ -31,7 +32,8 @@ public class FabricRecipeBookSettingsMixin
     private static void refurbishedFurnitureRecipeBookSettingInit(CallbackInfo ci)
     {
         Map<RecipeBookType, Pair<String, String>> map = new HashMap<>(TAG_FIELDS);
-        map.put(FurnitureMod.RECIPE_BOOK_TYPE_FREEZER.get(), Pair.of("isRefurbishedFurnitureFreezerGuiOpen", "isRefurbishedFurnitureFreezerFilteringCraftable"));
+        map.put(ModRecipeBookTypes.FREEZER.get(), Pair.of("isRefurbishedFurnitureFreezerGuiOpen", "isRefurbishedFurnitureFreezerFilteringCraftable"));
+        map.put(ModRecipeBookTypes.MICROWAVE.get(), Pair.of("isRefurbishedFurnitureMicrowaveGuiOpen", "isRefurbishedFurnitureMicrowaveFilteringCraftable"));
         TAG_FIELDS = ImmutableMap.copyOf(map); // Update and respect immutability of original map
     }
 }

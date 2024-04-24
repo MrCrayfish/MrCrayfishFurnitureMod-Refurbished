@@ -1,10 +1,9 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
-import com.google.common.collect.ImmutableMap;
+import com.google.common.base.Preconditions;
 import com.mrcrayfish.framework.api.event.ClientConnectionEvents;
 import com.mrcrayfish.framework.api.event.PlayerEvents;
 import com.mrcrayfish.framework.api.event.TickEvents;
-import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.block.StoveBlock;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.client.gui.overlay.CuttingBoardHelperOverlay;
@@ -39,49 +38,38 @@ import com.mrcrayfish.furniture.refurbished.computer.app.HomeControl;
 import com.mrcrayfish.furniture.refurbished.computer.app.Marketplace;
 import com.mrcrayfish.furniture.refurbished.computer.app.PaddleBall;
 import com.mrcrayfish.furniture.refurbished.computer.client.graphics.CoinMinerGraphics;
+import com.mrcrayfish.furniture.refurbished.computer.client.graphics.HomeControlGraphics;
 import com.mrcrayfish.furniture.refurbished.computer.client.graphics.MarketplaceGraphics;
 import com.mrcrayfish.furniture.refurbished.computer.client.graphics.PaddleBallGraphics;
-import com.mrcrayfish.furniture.refurbished.computer.client.graphics.HomeControlGraphics;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModParticleTypes;
+import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookCategories;
+import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
-import com.mrcrayfish.furniture.refurbished.crafting.FreezerSolidifyingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import com.mrcrayfish.furniture.refurbished.image.TextureCache;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
-import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish
  */
 public class ClientBootstrap
 {
-    @SuppressWarnings("UnstableApiUsage")
-    private static final Map<ProcessingRecipe.Category, Supplier<RecipeBookCategories>> CATEGORY_TO_VANILLA = Util.make(() -> {
-        ImmutableMap.Builder<ProcessingRecipe.Category, Supplier<RecipeBookCategories>> builder = ImmutableMap.builderWithExpectedSize(4);
-        builder.put(ProcessingRecipe.Category.BLOCKS, ClientServices.PLATFORM::getBlockRecipeBookCategory);
-        builder.put(ProcessingRecipe.Category.ITEMS, ClientServices.PLATFORM::getItemRecipeBookCategory);
-        builder.put(ProcessingRecipe.Category.FOOD, ClientServices.PLATFORM::getFoodRecipeBookCategory);
-        builder.put(ProcessingRecipe.Category.MISC, ClientServices.PLATFORM::getMiscRecipeBookCategory);
-        return builder.build();
-    });
-
     public static void init()
     {
         CreativeFilters.get();
@@ -387,24 +375,37 @@ public class ClientBootstrap
 
     public static void registerRecipeBookCategories(RecipeCategoryRegister register)
     {
-        register.applyCategory(Services.RECIPE.getFreezerRecipeBookType(), List.of(
-            ClientServices.PLATFORM.getSearchRecipeBookCategory(),
-            ClientServices.PLATFORM.getBlockRecipeBookCategory(),
-            ClientServices.PLATFORM.getItemRecipeBookCategory(),
-            ClientServices.PLATFORM.getFoodRecipeBookCategory(),
-            ClientServices.PLATFORM.getMiscRecipeBookCategory()
-        ));
-        register.applyAggregate(ClientServices.PLATFORM.getSearchRecipeBookCategory(), List.of(
-            ClientServices.PLATFORM.getBlockRecipeBookCategory(),
-            ClientServices.PLATFORM.getItemRecipeBookCategory(),
-            ClientServices.PLATFORM.getFoodRecipeBookCategory(),
-            ClientServices.PLATFORM.getMiscRecipeBookCategory()
-        ));
-        register.applyFinder(ModRecipeTypes.FREEZER_SOLIDIFYING.get(), recipe -> {
-            if(recipe instanceof FreezerSolidifyingRecipe solidifyingRecipe) {
-                return CATEGORY_TO_VANILLA.get(solidifyingRecipe.getCategory()).get();
+        registerIntoRecipeBook(register, ModRecipeTypes.FREEZER_SOLIDIFYING.get(), ModRecipeBookTypes.FREEZER.get(),
+            ModRecipeBookCategories.FREEZER_SEARCH.get(),
+            ModRecipeBookCategories.FREEZER_BLOCKS.get(),
+            ModRecipeBookCategories.FREEZER_ITEMS.get(),
+            ModRecipeBookCategories.FREEZER_FOOD.get(),
+            ModRecipeBookCategories.FREEZER_MISC.get()
+        );
+        registerIntoRecipeBook(register, ModRecipeTypes.MICROWAVE_HEATING.get(), ModRecipeBookTypes.MICROWAVE.get(),
+            ModRecipeBookCategories.MICROWAVE_SEARCH.get(),
+            ModRecipeBookCategories.MICROWAVE_BLOCKS.get(),
+            ModRecipeBookCategories.MICROWAVE_ITEMS.get(),
+            ModRecipeBookCategories.MICROWAVE_FOOD.get(),
+            ModRecipeBookCategories.MICROWAVE_MISC.get()
+        );
+    }
+    
+    private static void registerIntoRecipeBook(RecipeCategoryRegister register, RecipeType<?> recipeType, RecipeBookType bookType, RecipeBookCategories ... categories)
+    {
+        Preconditions.checkArgument(categories.length == 5, "Invalid categories. There must be exactly five.");
+        register.applyCategory(bookType, categories);
+        register.applyAggregate(categories[0], categories[1], categories[2], categories[3], categories[4]);
+        register.applyFinder(recipeType, recipe -> {
+            if(recipe instanceof ProcessingRecipe processingRecipe) {
+                return switch(processingRecipe.getCategory()) {
+                    case BLOCKS -> categories[1];
+                    case ITEMS -> categories[2];
+                    case FOOD -> categories[3];
+                    case MISC -> categories[4];
+                };
             }
-            return ClientServices.PLATFORM.getMiscRecipeBookCategory();
+            return categories[4];
         });
     }
 }

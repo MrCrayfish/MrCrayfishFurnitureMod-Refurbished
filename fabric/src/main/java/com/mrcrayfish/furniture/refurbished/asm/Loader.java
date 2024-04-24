@@ -2,35 +2,33 @@ package com.mrcrayfish.furniture.refurbished.asm;
 
 import com.chocohead.mm.api.ClassTinkerers;
 import com.chocohead.mm.api.EnumAdder;
+import com.mrcrayfish.furniture.refurbished.client.RecipeBookCategoryHolder;
+import com.mrcrayfish.furniture.refurbished.client.RecipeBookTypeHolder;
+import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookCategories;
+import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookTypes;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.MappingResolver;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-
-import java.util.Arrays;
-import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish
  */
 public class Loader implements Runnable
 {
-    public static final String RECIPE_BOOK_TYPE_FREEZER = "REFURBISHED_FURNITURE_FREEZER";
-    public static final String RECIPE_BOOK_CATEGORY_SEARCH = "REFURBISHED_FURNITURE_SEARCH";
-    public static final String RECIPE_BOOK_CATEGORY_BLOCKS = "REFURBISHED_FURNITURE_BLOCKS";
-    public static final String RECIPE_BOOK_CATEGORY_ITEMS = "REFURBISHED_FURNITURE_ITEMS";
-    public static final String RECIPE_BOOK_CATEGORY_FOOD = "REFURBISHED_FURNITURE_FOOD";
-    public static final String RECIPE_BOOK_CATEGORY_MISC = "REFURBISHED_FURNITURE_MISC";
-
     @Override
     public void run()
     {
-        this.registerRecipeBookTypes(RECIPE_BOOK_TYPE_FREEZER);
-        this.registerRecipeBookCategory(RECIPE_BOOK_CATEGORY_SEARCH, () -> new ItemStack(Items.COMPASS));
-        this.registerRecipeBookCategory(RECIPE_BOOK_CATEGORY_BLOCKS, () -> new ItemStack(Items.STONE));
-        this.registerRecipeBookCategory(RECIPE_BOOK_CATEGORY_ITEMS, () -> new ItemStack(Items.WOODEN_SWORD));
-        this.registerRecipeBookCategory(RECIPE_BOOK_CATEGORY_FOOD, () -> new ItemStack(Items.PORKCHOP));
-        this.registerRecipeBookCategory(RECIPE_BOOK_CATEGORY_MISC, () -> new ItemStack(Items.LAVA_BUCKET));
+        this.registerRecipeBookTypes(ModRecipeBookTypes.FREEZER);
+        this.registerRecipeBookTypes(ModRecipeBookTypes.MICROWAVE);
+        this.registerRecipeBookCategory(ModRecipeBookCategories.FREEZER_SEARCH);
+        this.registerRecipeBookCategory(ModRecipeBookCategories.FREEZER_BLOCKS);
+        this.registerRecipeBookCategory(ModRecipeBookCategories.FREEZER_ITEMS);
+        this.registerRecipeBookCategory(ModRecipeBookCategories.FREEZER_FOOD);
+        this.registerRecipeBookCategory(ModRecipeBookCategories.FREEZER_MISC);
+        this.registerRecipeBookCategory(ModRecipeBookCategories.MICROWAVE_SEARCH);
+        this.registerRecipeBookCategory(ModRecipeBookCategories.MICROWAVE_BLOCKS);
+        this.registerRecipeBookCategory(ModRecipeBookCategories.MICROWAVE_ITEMS);
+        this.registerRecipeBookCategory(ModRecipeBookCategories.MICROWAVE_FOOD);
+        this.registerRecipeBookCategory(ModRecipeBookCategories.MICROWAVE_MISC);
     }
 
     /**
@@ -39,12 +37,12 @@ public class Loader implements Runnable
      *
      * @param constantNames names of constants
      */
-    private void registerRecipeBookTypes(String ... constantNames)
+    private void registerRecipeBookTypes(RecipeBookTypeHolder holder)
     {
         MappingResolver resolver = FabricLoader.getInstance().getMappingResolver();
         String recipeBookTypeClass = resolver.mapClassName("intermediary", "net.minecraft.class_5421");
         EnumAdder adder = ClassTinkerers.enumBuilder(recipeBookTypeClass);
-        Arrays.stream(constantNames).forEach(adder::addEnum);
+        adder.addEnum(holder.getConstantName());
         adder.build();
     }
 
@@ -55,13 +53,13 @@ public class Loader implements Runnable
      * @param constantName the name of the constant
      * @param icon         the icon to display in the crafting book
      */
-    private void registerRecipeBookCategory(String constantName, Supplier<ItemStack> icon)
+    private void registerRecipeBookCategory(RecipeBookCategoryHolder holder)
     {
         MappingResolver resolver = FabricLoader.getInstance().getMappingResolver();
         String recipeBookCategoriesClass = resolver.mapClassName("intermediary", "net.minecraft.class_314");
         String itemStackClass = "[L" + resolver.mapClassName("intermediary", "net.minecraft.class_1799") + ";";
         EnumAdder adder = ClassTinkerers.enumBuilder(recipeBookCategoriesClass, itemStackClass);
-        adder.addEnum(constantName, () -> new Object[]{new ItemStack[]{icon.get()}});
+        adder.addEnum(holder.getConstantName(), () -> new Object[]{holder.getIcons().get()});
         adder.build();
     }
 }

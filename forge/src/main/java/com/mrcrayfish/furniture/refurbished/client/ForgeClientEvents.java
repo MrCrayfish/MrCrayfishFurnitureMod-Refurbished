@@ -146,23 +146,19 @@ public class ForgeClientEvents
 
     public static void onRegisterRecipeCategories(RegisterRecipeBookCategoriesEvent event)
     {
-        ClientBootstrap.registerRecipeBookCategories(new RecipeCategoryRegister()
-        {
+        ClientBootstrap.registerRecipeBookCategories(new RecipeCategoryRegister() {
             @Override
-            public void applyCategory(RecipeBookType recipeBookType, List<RecipeBookCategories> categories)
-            {
-                event.registerBookCategories(recipeBookType, categories);
+            public void applyCategory(RecipeBookType type, RecipeBookCategories ... categories) {
+                event.registerBookCategories(type, List.of(categories));
             }
 
             @Override
-            public void applyAggregate(RecipeBookCategories category, List<RecipeBookCategories> categories)
-            {
-                event.registerAggregateCategory(category, categories);
+            public void applyAggregate(RecipeBookCategories category, RecipeBookCategories ... categories) {
+                event.registerAggregateCategory(category, List.of(categories));
             }
 
             @Override
-            public void applyFinder(RecipeType<?> type, Function<Recipe<?>, RecipeBookCategories> function)
-            {
+            public void applyFinder(RecipeType<?> type, Function<Recipe<?>, RecipeBookCategories> function) {
                 event.registerRecipeCategoryFinder(type, function);
             }
         });
