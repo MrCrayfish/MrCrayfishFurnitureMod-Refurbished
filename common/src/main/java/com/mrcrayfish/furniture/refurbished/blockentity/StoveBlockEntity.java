@@ -26,8 +26,10 @@ import net.minecraft.world.Nameable;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.StackedContentsCompatible;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -49,7 +51,7 @@ import java.util.stream.IntStream;
  * Author: MrCrayfish
  */
 @SuppressWarnings("UnstableApiUsage")
-public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implements IProcessingBlock, IHeatingSource, IPowerSwitch, IHomeControlDevice, Nameable
+public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implements IProcessingBlock, IHeatingSource, IPowerSwitch, IHomeControlDevice, Nameable, StackedContentsCompatible
 {
     public static final int[] INPUT_SLOTS = new int[]{0, 1, 2};
     public static final int[] OUTPUT_SLOTS = new int[]{3, 4, 5};
@@ -548,6 +550,15 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
                     }
                 }
             });
+        }
+    }
+
+    @Override
+    public void fillStackedContents(StackedContents contents)
+    {
+        for(ItemStack stack : this.items)
+        {
+            contents.accountStack(stack);
         }
     }
 

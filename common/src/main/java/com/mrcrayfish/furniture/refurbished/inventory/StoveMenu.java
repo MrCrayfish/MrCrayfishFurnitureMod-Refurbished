@@ -3,22 +3,28 @@ package com.mrcrayfish.furniture.refurbished.inventory;
 import com.mrcrayfish.furniture.refurbished.blockentity.IPowerSwitch;
 import com.mrcrayfish.furniture.refurbished.blockentity.StoveBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
+import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.inventory.slot.ResultSlot;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.StackedContentsCompatible;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 
 /**
  * Author: MrCrayfish
  */
-public class StoveMenu extends SimpleContainerMenu implements IPowerSwitchMenu, IElectricityMenu
+public class StoveMenu extends SimpleRecipeContainerMenu<Container> implements IPowerSwitchMenu, IElectricityMenu
 {
     private final ContainerData data;
     private final Level level;
@@ -133,5 +139,63 @@ public class StoveMenu extends SimpleContainerMenu implements IPowerSwitchMenu, 
         {
             powerSwitch.togglePower();
         }
+    }
+
+    @Override
+    public void fillCraftSlotsStackedContents(StackedContents contents)
+    {
+        if(this.container instanceof StackedContentsCompatible)
+        {
+            ((StackedContentsCompatible) this.container).fillStackedContents(contents);
+        }
+    }
+
+    @Override
+    public void clearCraftingContent()
+    {
+        this.getSlot(0).set(ItemStack.EMPTY);
+        this.getSlot(3).set(ItemStack.EMPTY);
+    }
+
+    @Override
+    public boolean recipeMatches(Recipe<? super Container> recipe)
+    {
+        return recipe.matches(this.container, this.level);
+    }
+
+    @Override
+    public int getResultSlotIndex()
+    {
+        return 3;
+    }
+
+    @Override
+    public int getGridWidth()
+    {
+        return 3;
+    }
+
+    @Override
+    public int getGridHeight()
+    {
+        return 1;
+    }
+
+    @Override
+    public int getSize()
+    {
+        return 6;
+    }
+
+    @Override
+    public RecipeBookType getRecipeBookType()
+    {
+        return ModRecipeBookTypes.OVEN.get();
+    }
+
+    @Override
+    public boolean shouldMoveToInventory(int slot)
+    {
+        return slot < this.getGridWidth() * this.getGridHeight();
     }
 }

@@ -63,6 +63,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -375,6 +376,8 @@ public class ClientBootstrap
 
     public static void registerRecipeBookCategories(RecipeCategoryRegister register)
     {
+        System.out.println(Arrays.toString(RecipeBookType.values()));
+
         registerIntoRecipeBook(register, ModRecipeTypes.FREEZER_SOLIDIFYING.get(), ModRecipeBookTypes.FREEZER.get(),
             ModRecipeBookCategories.FREEZER_SEARCH.get(),
             ModRecipeBookCategories.FREEZER_BLOCKS.get(),
@@ -388,6 +391,13 @@ public class ClientBootstrap
             ModRecipeBookCategories.MICROWAVE_ITEMS.get(),
             ModRecipeBookCategories.MICROWAVE_FOOD.get(),
             ModRecipeBookCategories.MICROWAVE_MISC.get()
+        );
+        registerIntoRecipeBook(register, ModRecipeTypes.OVEN_BAKING.get(), ModRecipeBookTypes.OVEN.get(),
+            ModRecipeBookCategories.OVEN_SEARCH.get(),
+            ModRecipeBookCategories.OVEN_BLOCKS.get(),
+            ModRecipeBookCategories.OVEN_ITEMS.get(),
+            ModRecipeBookCategories.OVEN_FOOD.get(),
+            ModRecipeBookCategories.OVEN_MISC.get()
         );
     }
     

@@ -34,6 +34,7 @@ public class FabricRecipeBookSettingsMixin
         Map<RecipeBookType, Pair<String, String>> map = new HashMap<>(TAG_FIELDS);
         map.put(ModRecipeBookTypes.FREEZER.get(), Pair.of("isRefurbishedFurnitureFreezerGuiOpen", "isRefurbishedFurnitureFreezerFilteringCraftable"));
         map.put(ModRecipeBookTypes.MICROWAVE.get(), Pair.of("isRefurbishedFurnitureMicrowaveGuiOpen", "isRefurbishedFurnitureMicrowaveFilteringCraftable"));
+        map.put(ModRecipeBookTypes.OVEN.get(), Pair.of("isRefurbishedFurnitureOvenGuiOpen", "isRefurbishedFurnitureOvenFilteringCraftable"));
         TAG_FIELDS = ImmutableMap.copyOf(map); // Update and respect immutability of original map
     }
 }
