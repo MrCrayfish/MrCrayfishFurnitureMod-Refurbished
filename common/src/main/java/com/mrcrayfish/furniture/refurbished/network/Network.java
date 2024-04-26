@@ -5,6 +5,7 @@ import com.mrcrayfish.framework.api.network.FrameworkNetwork;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.network.message.*;
 import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -44,6 +45,7 @@ public class Network
             .registerPlayMessage("workbench_select_recipe", MessageWorkbench.SelectRecipe.class, MessageWorkbench.SelectRecipe::encode, MessageWorkbench.SelectRecipe::decode, MessageWorkbench.SelectRecipe::handle, PacketFlow.SERVERBOUND)
             .registerPlayMessage("workbench_search_neighbours", MessageWorkbench.SearchNeighbours.class, MessageWorkbench.SearchNeighbours::encode, MessageWorkbench.SearchNeighbours::decode, MessageWorkbench.SearchNeighbours::handle, PacketFlow.SERVERBOUND)
             .registerPlayMessage("name_mailbox", MessageNameMailbox.class, MessageNameMailbox::encode, MessageNameMailbox::decode, MessageNameMailbox::handle, PacketFlow.CLIENTBOUND)
+            .registerPlayMessage("withdraw_experience", MessageWithdrawExperience.class, MessageWithdrawExperience::encode, MessageWithdrawExperience::decode, MessageWithdrawExperience::handle, PacketFlow.SERVERBOUND)
             .build();
     }
 

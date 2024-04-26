@@ -1,117 +1,60 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
-import com.google.common.collect.ImmutableSet;
 import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
-import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
-import com.mrcrayfish.furniture.refurbished.crafting.RecycleBinRecyclingRecipe;
 import com.mrcrayfish.furniture.refurbished.inventory.BuildableContainerData;
 import com.mrcrayfish.furniture.refurbished.inventory.RecycleBinMenu;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.Container;
 import net.minecraft.world.Nameable;
-import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.SpawnEggItem;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
 
 /**
  * Author: MrCrayfish
  */
 public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity implements IProcessingBlock, IPowerSwitch, ILevelAudio, IHomeControlDevice, Nameable
 {
-    private static final Set<ItemLike> INVALID_ITEMS = Util.make(() -> {
-        ImmutableSet.Builder<ItemLike> builder = ImmutableSet.builder();
-        builder.add(Items.KNOWLEDGE_BOOK);
-        builder.add(Items.DEBUG_STICK);
-        builder.add(Items.BARRIER);
-        builder.add(Items.STRUCTURE_VOID);
-        builder.add(Items.STRUCTURE_BLOCK);
-        builder.add(Items.LIGHT);
-        builder.add(Items.COMMAND_BLOCK);
-        builder.add(Items.COMMAND_BLOCK_MINECART);
-        builder.add(Items.CHAIN_COMMAND_BLOCK);
-        builder.add(Items.REPEATING_COMMAND_BLOCK);
-        builder.add(Items.JIGSAW);
-        builder.add(Items.PETRIFIED_OAK_SLAB);
-        builder.add(Items.PLAYER_HEAD);
-        builder.add(Items.BEDROCK);
-        builder.add(Items.REINFORCED_DEEPSLATE);
-        builder.add(Items.BUDDING_AMETHYST);
-        builder.add(Items.CHORUS_PLANT);
-        builder.add(Items.DIRT_PATH);
-        builder.add(Items.END_PORTAL_FRAME);
-        builder.add(Items.FARMLAND);
-        builder.add(Items.INFESTED_CHISELED_STONE_BRICKS);
-        builder.add(Items.INFESTED_CRACKED_STONE_BRICKS);
-        builder.add(Items.INFESTED_COBBLESTONE);
-        builder.add(Items.INFESTED_DEEPSLATE);
-        builder.add(Items.INFESTED_MOSSY_STONE_BRICKS);
-        builder.add(Items.INFESTED_STONE);
-        builder.add(Items.INFESTED_STONE_BRICKS);
-        builder.add(Items.SPAWNER);
-        builder.add(Items.BUNDLE);
-        return builder.build();
-    });
-
-    public static final int[] INPUT_SLOTS = new int[]{0};
-    public static final int[] OUTPUT_SLOTS = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9};
+    public static final int[] INPUT_SLOTS = new int[]{0, 1, 2};
     public static final int DATA_POWERED = 0;
     public static final int DATA_ENABLED = 1;
     public static final int DATA_PROCESSING_TIME = 2;
+    public static final int DATA_RECYCLED = 3;
 
-    protected final RecipeManager.CachedCheck<Container, RecycleBinRecyclingRecipe> recipeCache;
     protected final Vec3 audioPosition;
-    protected RandomSource random = RandomSource.create();
-    protected SimpleContainer output = new SimpleContainer(9);
     protected boolean powered;
     protected boolean processing;
     protected int processingTime;
     protected boolean enabled;
-    protected boolean stopped;
-    protected long seed = this.random.nextLong();
-    protected @Nullable Item inputCache;
-    protected @Nullable List<ItemStack> outputCache;
+    protected int recycled;
     protected @Nullable Component name;
 
     protected final ContainerData data = new BuildableContainerData(builder -> {
         builder.add(DATA_ENABLED, () -> enabled ? 1 : 0, value -> {});
         builder.add(DATA_POWERED, () -> powered ? 1 : 0, value -> {});
         builder.add(DATA_PROCESSING_TIME, () -> processingTime, value -> {});
+        builder.add(DATA_RECYCLED, () -> recycled, value -> {});
     });
 
     public RecycleBinBlockEntity(BlockPos pos, BlockState state)
@@ -121,15 +64,14 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
 
     public RecycleBinBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
     {
-        super(type, pos, state, 10);
-        this.recipeCache = RecipeManager.createCheck(ModRecipeTypes.RECYCLE_BIN_RECYCLING.get());
+        super(type, pos, state, 3);
         this.audioPosition = pos.getCenter();
     }
 
     @Override
     public int[] getSlotsForFace(Direction direction)
     {
-        return direction == Direction.DOWN ? OUTPUT_SLOTS : INPUT_SLOTS;
+        return INPUT_SLOTS;
     }
 
     @Override
@@ -249,64 +191,60 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
     public void onCompleteProcess()
     {
         this.recycleItem();
-        this.seed = this.level.random.nextLong();
-        this.resetCache();
     }
 
     @Override
     public boolean canProcess()
     {
-        if(!this.stopped && this.enabled && this.isNodePowered())
+        if(this.enabled && this.isNodePowered())
         {
-            ItemStack input = this.getItem(0);
-            if(input.isEmpty())
-                return false;
-
-            // If the recycle bin has been configured to only process items that have an output,
-            // check if the current input has an output. If no output, prevent processing.
-            if(!Config.SERVER.recycleBin.recycleEveryItem.get() && this.getRecipe(input).isEmpty())
+            for(int index : INPUT_SLOTS)
             {
-                this.stopped = true;
-                return false;
-            }
-
-            // Create unique seed per item
-            ResourceLocation id = BuiltInRegistries.ITEM.getKey(input.getItem());
-            this.random.setSeed(this.seed + id.hashCode());
-
-            // Checks if the recycled items can be added output. The output is cached for later use
-            // when completing a recycling process. This means the item will be exactly the same
-            // as when initial testing here when adding to the output.
-            if(this.inputCache == null || this.inputCache != input.getItem() || this.outputCache == null)
-            {
-                this.inputCache = input.getItem();
-                this.outputCache = this.getRecycledItems(input);
-                if(!this.canAddItemsToOutput(this.outputCache))
+                if(!this.getItem(index).isEmpty())
                 {
-                    this.stopped = true;
-                    return false;
+                    return !this.isMaxExperience();
                 }
             }
-            return true;
         }
         return false;
     }
 
-    @Override
-    public void setChanged()
+    private int getCurrentExperiencePoints()
     {
-        super.setChanged();
-        this.resetCache();
+        return (int) Mth.clamp(this.recycled * Config.SERVER.recycleBin.experiencePerItem.get(), 0, this.getMaxExperience());
     }
 
-    @Override
-    public void setItem(int index, ItemStack stack)
+    private boolean isMaxExperience()
     {
-        super.setItem(index, stack);
-        if(index >= 1 && index < this.getContainerSize())
+        return this.getCurrentExperiencePoints() >= this.getMaxExperience();
+    }
+
+    public void withdrawExperience(ServerPlayer player)
+    {
+        int points = this.getCurrentExperiencePoints();
+        if(points > 0)
         {
-            this.output.setItem(index - 1, this.getItem(index));
+            player.level().addFreshEntity(new ExperienceOrb(player.level(), player.getX(), player.getY(), player.getZ(), points));
+            this.recycled = 0;
+            this.setChanged();
         }
+    }
+
+    /*
+     * Credit to https://minecraft.wiki/w/Experience for the equations.
+     */
+    private int getMaxExperience()
+    {
+        int maxLevel = Config.SERVER.recycleBin.maximumExperienceLevels.get();
+        if(maxLevel <= 16)
+        {
+            return Mth.square(maxLevel) + 6 * maxLevel;
+        }
+        else if(maxLevel <= 31)
+        {
+            return (int) (2.5 * Mth.square(maxLevel) - 40.5 * maxLevel + 360);
+        }
+        return (int) (4.5 * Mth.square(maxLevel) - 162.5 * maxLevel + 2220);
     }
 
     @Override
@@ -315,21 +253,6 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
         this.enabled = !this.enabled;
         this.setChanged();
         this.sync();
-    }
-
-    private void resetCache()
-    {
-        this.inputCache = null;
-        this.outputCache = null;
-        this.stopped = false;
-    }
-
-    private void updateOutputContainer()
-    {
-        for(int i = 1; i < this.getContainerSize(); i++)
-        {
-            this.output.setItem(i - 1, this.getItem(i));
-        }
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, RecycleBinBlockEntity recycleBin)
@@ -354,7 +277,6 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
     public void load(CompoundTag tag)
     {
         super.load(tag);
-        this.updateOutputContainer();
         if(tag.contains("Powered", Tag.TAG_BYTE))
         {
             this.powered = tag.getBoolean("Powered");
@@ -367,13 +289,13 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
         {
             this.processingTime = tag.getInt("ProcessTime");
         }
-        if(tag.contains("Seed", CompoundTag.TAG_LONG))
-        {
-            this.seed = tag.getLong("Seed");
-        }
         if(tag.contains("Processing", CompoundTag.TAG_BYTE))
         {
             this.processing = tag.getBoolean("Processing");
+        }
+        if(tag.contains("Recycled", Tag.TAG_INT))
+        {
+            this.recycled = Math.max(tag.getInt("Recycled"), 0);
         }
     }
 
@@ -384,7 +306,7 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
         tag.putBoolean("Powered", this.powered);
         tag.putBoolean("Enabled", this.enabled);
         tag.putInt("ProcessTime", this.processingTime);
-        tag.putLong("Seed", this.seed);
+        tag.putInt("Recycled", this.recycled);
     }
 
     @Override
@@ -411,127 +333,17 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
      */
     private void recycleItem()
     {
-        if(this.outputCache == null)
-            return;
-
-        ItemStack input = this.getItem(0);
-        if(input.isEmpty())
-            return;
-
-        input.shrink(1);
-
-        for(ItemStack stack : this.outputCache)
+        for(int index : INPUT_SLOTS)
         {
-            this.output.addItem(stack);
-        }
-
-        // Update the output slots from the output container
-        for(int i = 0; i < 9; i++)
-        {
-            this.setItem(i + 1, this.output.getItem(i));
-        }
-    }
-
-    /**
-     * Gets the item stack that is returned when recycling the given input item stack. If the input
-     * item has no recipe, an empty item stack will be returned. The returned item stack may not be
-     * the same since the input may have multiple outputs, which is influenced by the {@link #seed}.
-     *
-     * @param input the input item stack to get the item stack for
-     * @return An item stack or empty if no recipe found for the input
-     */
-    private List<ItemStack> getRecycledItems(ItemStack input)
-    {
-        Optional<RecycleBinRecyclingRecipe> optional = this.getRecipe(input);
-        if(optional.isEmpty())
-            return Collections.emptyList();
-
-        // Create an initial chance based on the config property
-        float chance = Config.SERVER.recycleBin.baseOutputChance.get().floatValue();
-
-        // Items that are more damaged should yield a lower chance of returning an item
-        if(input.isDamageableItem())
-        {
-            float damaged = (float) input.getDamageValue() / (float) input.getMaxDamage();
-            damaged = 1.0F - Mth.square(1.0F - damaged); // Ramp the damage for balancing
-            damaged = 1.0F - damaged; // Invert since the higher the damage, the less chance to recycle
-            chance *= Mth.clamp(damaged, 0.0F, 1.0F); // Finally multiply the chance
-        }
-
-        RecycleBinRecyclingRecipe recipe = optional.get();
-        List<ItemStack> output = recipe.createRandomisedOutput(this.random, chance);
-
-        // Remove invalid or banned items
-        output.removeIf(RecycleBinBlockEntity::isInvalidItem);
-
-        // If enabled, randomised the count of every output item based on it's initial count
-        if(Config.SERVER.recycleBin.randomizeOutputCount.get())
-        {
-            output.forEach(stack -> stack.setCount(this.random.nextIntBetweenInclusive(1, stack.getCount())));
-        }
-
-        return output;
-    }
-
-    /**
-     * A utility to get a recipe for the given cache and ItemStack.
-     * @param stack the itemstack of the recipe
-     * @return An optional recipe
-     */
-    private Optional<RecycleBinRecyclingRecipe> getRecipe(ItemStack stack)
-    {
-        return this.recipeCache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level)).map(RecipeHolder::value);
-    }
-
-    /**
-     * Determines if the given item stack is an invalid item for the recycling output.
-     * An invalid item is generally creative-only, like game tools or unobtainable items based on
-     * survival mode.
-     *
-     * @param stack the item stack to test if invalid
-     * @return True if the item is invalid
-     */
-    public static boolean isInvalidItem(ItemStack stack)
-    {
-        if(stack.isEmpty())
-            return true;
-
-        if(stack.getItem() instanceof SpawnEggItem)
-            return true;
-
-        // Prevents things like buckets from generating
-        if(stack.getItem().hasCraftingRemainingItem())
-            return true;
-
-        // TODO config options
-
-        return INVALID_ITEMS.contains(stack.getItem());
-    }
-
-    // TODO update docs
-    /**
-     * Performs a simulation if the given item stack can be added to the output slots.
-     * This method creates a temporary container and uses a built-in utility method that
-     * adds an item, which the result is the remaining item if any. If empty, it can be added.
-     *
-     * @param items the item stack for the simulation
-     * @return True if can be added to the output
-     */
-    private boolean canAddItemsToOutput(List<ItemStack> items)
-    {
-        SimpleContainer copy = new SimpleContainer(this.output.getContainerSize());
-        for(int i = 0; i < this.output.getContainerSize(); i++)
-        {
-            copy.setItem(i, this.output.getItem(i).copy());
-        }
-        for(ItemStack stack : items)
-        {
-            if(!copy.addItem(stack.copy()).isEmpty())
+            ItemStack stack = this.getItem(index);
+            if(!stack.isEmpty())
             {
-                return false;
+                stack.shrink(1);
+                this.recycled++;
+                this.setChanged();
+                break;
             }
         }
-        return true;
     }
 
     @Override

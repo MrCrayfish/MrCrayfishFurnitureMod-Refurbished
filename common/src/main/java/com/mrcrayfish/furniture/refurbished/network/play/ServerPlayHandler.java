@@ -4,6 +4,7 @@ import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.blockentity.INameable;
 import com.mrcrayfish.furniture.refurbished.blockentity.IPaintable;
+import com.mrcrayfish.furniture.refurbished.blockentity.RecycleBinBlockEntity;
 import com.mrcrayfish.furniture.refurbished.computer.app.HomeControl;
 import com.mrcrayfish.furniture.refurbished.computer.app.PaddleBall;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
@@ -13,6 +14,7 @@ import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.DoorMatMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.IPowerSwitchMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.PostBoxMenu;
+import com.mrcrayfish.furniture.refurbished.inventory.RecycleBinMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.WorkbenchMenu;
 import com.mrcrayfish.furniture.refurbished.item.PackageItem;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
@@ -200,6 +202,21 @@ public class ServerPlayHandler
             if(serverPlayer.containerMenu instanceof WorkbenchMenu menu && menu.stillValid(serverPlayer) && !serverPlayer.isSpectator())
             {
                 menu.toggleSearchNeighbours();
+            }
+        }
+    }
+
+    public static void handleMessageWithdrawExperience(MessageWithdrawExperience message, Player player)
+    {
+        if(player instanceof ServerPlayer serverPlayer)
+        {
+            serverPlayer.resetLastActionTime();
+            if(player.containerMenu instanceof RecycleBinMenu menu && menu.stillValid(player) && !player.isSpectator())
+            {
+                if(menu.getContainer() instanceof RecycleBinBlockEntity entity)
+                {
+                    entity.withdrawExperience(serverPlayer);
+                }
             }
         }
     }

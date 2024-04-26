@@ -78,9 +78,8 @@ public class TextInputScreen extends Screen
     }
 
     @Override
-    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
-        super.renderBackground(graphics, mouseX, mouseY, partialTick);
         int startX = (this.width - WINDOW_WIDTH) / 2;
         int startY = (this.height - WINDOW_HEIGHT) / 2;
         graphics.blitSprite(WINDOW_SPRITE, startX, startY, WINDOW_WIDTH, WINDOW_HEIGHT);
