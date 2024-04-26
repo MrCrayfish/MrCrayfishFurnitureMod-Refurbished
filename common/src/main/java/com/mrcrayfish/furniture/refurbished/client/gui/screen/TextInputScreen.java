@@ -84,10 +84,10 @@ public class TextInputScreen extends Screen
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
-        // x, y, width, height, corner_size, sub_image_width, sub_image_height, sub_image_u, sub_image_v
         this.renderBackground(graphics);
         int startX = (this.width - WINDOW_WIDTH) / 2;
         int startY = (this.height - WINDOW_HEIGHT) / 2;
+        // x, y, width, height, corner_size, sub_image_width, sub_image_height, sub_image_u, sub_image_v
         graphics.blitNineSliced(RECIPE_BOOK_TEXTURE, startX, startY, WINDOW_WIDTH, WINDOW_HEIGHT, 4, 32, 32, 82, 208);
         graphics.drawString(this.minecraft.font, this.title, startX + 6, startY + 7, 0x404040, false);
         super.render(graphics, mouseX, mouseY, partialTick);

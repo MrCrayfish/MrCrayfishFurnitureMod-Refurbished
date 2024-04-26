@@ -83,16 +83,6 @@ public class RecycleBinRecyclingRecipeManager implements IRecipeManager<RecycleB
             Plugin.LOGGER.error("Recycling bin output can only have between 1 and " + RecycleBinRecyclingRecipe.MAX_OUTPUT_COUNT + " items");
             return false;
         }
-        for(IItemStack iStack : output)
-        {
-            ItemStack stack = iStack.getInternal();
-            if(RecycleBinBlockEntity.isInvalidItem(stack))
-            {
-                String itemName = BuiltInRegistries.ITEM.getKey(stack.getItem()).toString();
-                Plugin.LOGGER.error("{} is not an acceptable item for a recycling bin recipe output", itemName);
-                return false;
-            }
-        }
         return true;
     }
 

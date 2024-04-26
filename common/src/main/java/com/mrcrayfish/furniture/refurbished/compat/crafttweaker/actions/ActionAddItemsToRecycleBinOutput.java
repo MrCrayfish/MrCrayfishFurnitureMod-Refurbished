@@ -78,12 +78,6 @@ public class ActionAddItemsToRecycleBinOutput implements IAction, IRuntimeAction
                 logger.error("Cannot add the item '{}' to the scraps as the item already exists in the output", stack.getCommandString());
                 return false;
             }
-
-            if(RecycleBinBlockEntity.isInvalidItem(stack.getInternal()))
-            {
-                logger.error("'{}' is not an acceptable item for a recycling bin recipe scraps", stack.getCommandString());
-                return false;
-            }
         }
 
         if(outputs.size() + this.add.size() > RecycleBinRecyclingRecipe.MAX_OUTPUT_COUNT)

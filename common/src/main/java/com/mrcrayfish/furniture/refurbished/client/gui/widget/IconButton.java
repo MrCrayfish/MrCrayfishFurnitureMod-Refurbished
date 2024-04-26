@@ -56,8 +56,10 @@ public class IconButton extends Button
         graphics.blit(ICON_TEXTURES, iconX, iconY, this.u, this.v, 10, 10, 64, 64);
         graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
 
+        int start = iconX + 14;
+        int end = iconX + contentWidth;
         int labelColour = 0xFFFFFF | Mth.ceil(this.alpha * 255) << 24;
-        renderScrollingString(graphics, mc.font, this.label, iconX + 14, iconY + 1, this.width, this.height, labelColour);
+        renderScrollingString(graphics, mc.font, this.label, start, this.getY(), end, this.getY() + this.getHeight(), labelColour);
     }
 
     @Override

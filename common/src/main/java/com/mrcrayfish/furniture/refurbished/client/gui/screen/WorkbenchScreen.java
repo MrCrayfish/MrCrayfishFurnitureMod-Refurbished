@@ -220,7 +220,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         if(!Screen.hasShiftDown())
         {
             components.add(new ClientWorkbenchRecipeTooltip(this.menu, recipe));
-            components.add(new ClientTextTooltip(Components.HOLD_SHIFT_DETAILS.getVisualOrderText()));
+            components.add(new ClientTextTooltip(Components.GUI_HOLD_SHIFT_DETAILS.getVisualOrderText()));
         }
         else
         {

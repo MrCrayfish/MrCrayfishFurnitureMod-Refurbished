@@ -142,22 +142,13 @@ public class Config
                 The amount of time in ticks that it takes to perform one cycle of recycling""")
             public final IntProperty processingTime = IntProperty.create(10, 1, Integer.MAX_VALUE);
 
-            @ConfigProperty(name = "baseOutputChance", comment = """
-                The base chance for the items created from recycling an item to be added to the output.
-                Recycled items are still consumed even if no items were added to the output. This value
-                is seen as the base value, however it is further affected for items that are damaged,
-                which greatly reduce the chance of an output. The value must be between 0 and 1 (inclusive)""")
-            public final DoubleProperty baseOutputChance = DoubleProperty.create(1.0, 0.0, 1.0);
+            @ConfigProperty(name = "experiencePerItem", comment = """
+                The amount of experience to add when recycling an item.""")
+            public final DoubleProperty experiencePerItem = DoubleProperty.create(0.05, 0, Double.MAX_VALUE);
 
-            @ConfigProperty(name = "recycleEveryItem", comment = """
-                When enabled, the recycle bin will recycle every item even if the item doesn't recycle into anything.""")
-            public final BoolProperty recycleEveryItem = BoolProperty.create(false);
-
-            @ConfigProperty(name = "randomizeOutputCount", comment = """
-                If enabled, the count of an item created from recycling will be randomized based on
-                the count defined in the recipe. For example, if the recipe is outputting 5 iron ingots,
-                a randomized output count will be a random number from 1 to 5""")
-            public final BoolProperty randomizeOutputCount = BoolProperty.create(false);
+            @ConfigProperty(name = "maximumExperienceLevels", comment = """
+                The maximum amount of experience levels that the recycling bin can hold. Recycling stops once it reaches that level.""")
+            public final IntProperty maximumExperienceLevels = IntProperty.create(5, 1, 100);
         }
 
         public static class Trampoline

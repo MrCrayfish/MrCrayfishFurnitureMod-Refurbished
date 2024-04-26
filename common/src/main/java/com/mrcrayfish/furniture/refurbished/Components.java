@@ -21,11 +21,12 @@ public class Components
     );
     public static final Component GUI_SLASH = Component.literal("/").withStyle(ChatFormatting.GOLD).withStyle(ChatFormatting.BOLD);
     public static final Component GUI_SHOW_ALL_CATEGORIES = Utils.translation("gui", "show_all_categories");
-    public static final Component HOLD_SHIFT_DETAILS = Utils.translation("gui", "hold_for_details", Utils.translation("gui", "shift").withStyle(ChatFormatting.GOLD).withStyle(ChatFormatting.BOLD));
+    public static final Component GUI_HOLD_SHIFT_DETAILS = Utils.translation("gui", "hold_for_details", Utils.translation("gui", "shift").withStyle(ChatFormatting.GOLD).withStyle(ChatFormatting.BOLD));
     public static final Function<Integer, Component> GUI_MAIL_BOX_LIMIT = maxCount -> Utils.translation("gui", "mail_box_limit", maxCount);
     public static final Component GUI_BOOTING = Utils.translation("gui", "booting");
     public static final Component GUI_SLICEABLE = Utils.translation("gui", "sliceable");
     public static final Component GUI_PLACEABLE = Utils.translation("gui", "placeable");
+    public static final Component GUI_WITHDRAW_EXPERIENCE = Utils.translation("gui", "withdraw_experience");
     public static final Component SMART_DEVICE_FREEZER = Utils.translation("smart_device", "freezer");
     public static final Component SMART_DEVICE_LIGHTSWITCH = Utils.translation("smart_device", "lightswitch");
     public static final Component SMART_DEVICE_MICROWAVE = Utils.translation("smart_device", "microwave");

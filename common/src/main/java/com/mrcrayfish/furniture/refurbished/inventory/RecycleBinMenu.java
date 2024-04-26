@@ -22,19 +22,18 @@ public class RecycleBinMenu extends SimpleContainerMenu implements IPowerSwitchM
 
     public RecycleBinMenu(int windowId, Inventory playerInventory)
     {
-        this(windowId, playerInventory, new SimpleContainer(10), new SimpleContainerData(4));
+        this(windowId, playerInventory, new SimpleContainer(3), new SimpleContainerData(4));
     }
 
     public RecycleBinMenu(int windowId, Inventory playerInventory, Container container, ContainerData data)
     {
         super(ModMenuTypes.RECYCLE_BIN.get(), windowId, container);
-        checkContainerSize(container, 10);
-        checkContainerDataCount(data, 3);
+        checkContainerSize(container, 3);
+        checkContainerDataCount(data, 4);
         container.startOpen(playerInventory.player);
         this.data = data;
-        this.addContainerSlots(35, 38, 1, 1, 0);
-        this.addContainerSlots(89, 20, 3, 3, 1, ResultSlot::new);
-        this.addPlayerInventorySlots(8, 90, playerInventory);
+        this.addContainerSlots(26, 29, 3, 1, 0);
+        this.addPlayerInventorySlots(8, 111, playerInventory);
         this.addDataSlots(data);
     }
 
@@ -85,6 +84,11 @@ public class RecycleBinMenu extends SimpleContainerMenu implements IPowerSwitchM
     public int getProcessTime()
     {
         return this.data.get(RecycleBinBlockEntity.DATA_PROCESSING_TIME);
+    }
+
+    public int getRecycledCount()
+    {
+        return this.data.get(RecycleBinBlockEntity.DATA_RECYCLED);
     }
 
     @Override
