@@ -1,7 +1,15 @@
 package com.mrcrayfish.furniture.refurbished.compat.jei;
 
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.ComputerScreen;
-import com.mrcrayfish.furniture.refurbished.compat.jei.categories.*;
+import com.mrcrayfish.furniture.refurbished.compat.jei.categories.CuttingBoardCombiningCategory;
+import com.mrcrayfish.furniture.refurbished.compat.jei.categories.CuttingBoardSlicingCategory;
+import com.mrcrayfish.furniture.refurbished.compat.jei.categories.FreezerSolidifyingCategory;
+import com.mrcrayfish.furniture.refurbished.compat.jei.categories.FryingPanCookingCategory;
+import com.mrcrayfish.furniture.refurbished.compat.jei.categories.GrillCookingCategory;
+import com.mrcrayfish.furniture.refurbished.compat.jei.categories.MicrowaveHeatingCategory;
+import com.mrcrayfish.furniture.refurbished.compat.jei.categories.OvenBakingCategory;
+import com.mrcrayfish.furniture.refurbished.compat.jei.categories.ToasterToastingCategory;
+import com.mrcrayfish.furniture.refurbished.compat.jei.categories.WorkbenchConstructingCategory;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
@@ -29,7 +37,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -66,7 +73,6 @@ public class Plugin implements IModPlugin
         registration.addRecipeCategories(new CuttingBoardSlicingCategory(helper));
         registration.addRecipeCategories(new FryingPanCookingCategory(helper));
         registration.addRecipeCategories(new MicrowaveHeatingCategory(helper));
-        registration.addRecipeCategories(new RecycleBinRecyclingCategory(helper));
         registration.addRecipeCategories(new ToasterToastingCategory(helper));
         registration.addRecipeCategories(new GrillCookingCategory(helper));
         registration.addRecipeCategories(new CuttingBoardCombiningCategory(helper));
@@ -82,7 +88,6 @@ public class Plugin implements IModPlugin
         registration.addRecipes(CuttingBoardSlicingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.CUTTING_BOARD_SLICING.get()));
         registration.addRecipes(FryingPanCookingCategory.TYPE, this.getFryingPanRecipes());
         registration.addRecipes(MicrowaveHeatingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.MICROWAVE_HEATING.get()));
-        registration.addRecipes(RecycleBinRecyclingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.RECYCLE_BIN_RECYCLING.get()));
         registration.addRecipes(ToasterToastingCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.TOASTER_HEATING.get()));
         registration.addRecipes(GrillCookingCategory.TYPE, this.getGrillRecipes());
         registration.addRecipes(CuttingBoardCombiningCategory.TYPE, manager.getAllRecipesFor(ModRecipeTypes.CUTTING_BOARD_COMBINING.get()));

@@ -1,6 +1,5 @@
 package com.mrcrayfish.furniture.refurbished.compat.crafttweaker;
 
-import com.blamejared.crafttweaker.api.CraftTweakerConstants;
 import com.blamejared.crafttweaker.api.recipe.component.IRecipeComponent;
 import com.google.gson.reflect.TypeToken;
 import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;

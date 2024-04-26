@@ -5,8 +5,9 @@ import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeSerializers;
 import com.mrcrayfish.furniture.refurbished.core.ModTags;
-import com.mrcrayfish.furniture.refurbished.crafting.*;
-import com.mrcrayfish.furniture.refurbished.platform.Services;
+import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardCombiningRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchContructingRecipe;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -29,11 +30,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -668,80 +665,6 @@ public class CommonRecipeProvider
         this.ovenBaking(ProcessingRecipe.Category.FOOD, ModItems.RAW_VEGETABLE_PIZZA.get(), ModItems.COOKED_VEGETABLE_PIZZA.get(), 1, 1200);
         this.ovenBaking(ProcessingRecipe.Category.FOOD, ModItems.RAW_MEATLOVERS_PIZZA.get(), ModItems.COOKED_MEATLOVERS_PIZZA.get(), 1, 1200);
 
-        // Recycling
-        this.recycleBinSalvaging(Items.WOODEN_SHOVEL, new ItemStack(Items.STICK, 1));
-        this.recycleBinSalvaging(Items.WOODEN_PICKAXE, new ItemStack(Items.STICK, 1), new ItemStack(Items.OAK_PLANKS, 1));
-        this.recycleBinSalvaging(Items.WOODEN_AXE, new ItemStack(Items.STICK, 1), new ItemStack(Items.OAK_PLANKS, 1));
-        this.recycleBinSalvaging(Items.WOODEN_HOE, new ItemStack(Items.STICK, 1), new ItemStack(Items.OAK_PLANKS, 1));
-        this.recycleBinSalvaging(Items.WOODEN_SWORD, new ItemStack(Items.STICK, 1), new ItemStack(Items.OAK_PLANKS, 1));
-        this.recycleBinSalvaging(Items.STONE_SHOVEL, new ItemStack(Items.STICK, 1));
-        this.recycleBinSalvaging(Items.STONE_PICKAXE, new ItemStack(Items.STICK, 1), new ItemStack(Items.COBBLESTONE, 1));
-        this.recycleBinSalvaging(Items.STONE_AXE, new ItemStack(Items.STICK, 1), new ItemStack(Items.COBBLESTONE, 1));
-        this.recycleBinSalvaging(Items.STONE_HOE, new ItemStack(Items.STICK, 1), new ItemStack(Items.COBBLESTONE, 1));
-        this.recycleBinSalvaging(Items.STONE_SWORD, new ItemStack(Items.STICK, 1), new ItemStack(Items.COBBLESTONE, 1));
-        this.recycleBinSalvaging(Items.IRON_SHOVEL, new ItemStack(Items.STICK, 1));
-        this.recycleBinSalvaging(Items.IRON_PICKAXE, new ItemStack(Items.STICK, 1), new ItemStack(Items.IRON_INGOT, 1));
-        this.recycleBinSalvaging(Items.IRON_AXE, new ItemStack(Items.STICK, 1), new ItemStack(Items.IRON_INGOT, 1));
-        this.recycleBinSalvaging(Items.IRON_HOE, new ItemStack(Items.STICK, 1), new ItemStack(Items.IRON_INGOT, 1));
-        this.recycleBinSalvaging(Items.IRON_SWORD, new ItemStack(Items.STICK, 1), new ItemStack(Items.IRON_INGOT, 1));
-        this.recycleBinSalvaging(Items.GOLDEN_SHOVEL, new ItemStack(Items.STICK, 1));
-        this.recycleBinSalvaging(Items.GOLDEN_PICKAXE, new ItemStack(Items.STICK, 1), new ItemStack(Items.GOLD_INGOT, 1));
-        this.recycleBinSalvaging(Items.GOLDEN_AXE, new ItemStack(Items.STICK, 1), new ItemStack(Items.GOLD_INGOT, 1));
-        this.recycleBinSalvaging(Items.GOLDEN_HOE, new ItemStack(Items.STICK, 1), new ItemStack(Items.GOLD_INGOT, 1));
-        this.recycleBinSalvaging(Items.GOLDEN_SWORD, new ItemStack(Items.STICK, 1), new ItemStack(Items.GOLD_INGOT, 1));
-        this.recycleBinSalvaging(Items.DIAMOND_SHOVEL, new ItemStack(Items.STICK, 1));
-        this.recycleBinSalvaging(Items.DIAMOND_PICKAXE, new ItemStack(Items.STICK, 1), new ItemStack(Items.DIAMOND, 1));
-        this.recycleBinSalvaging(Items.DIAMOND_AXE, new ItemStack(Items.STICK, 1), new ItemStack(Items.DIAMOND, 1));
-        this.recycleBinSalvaging(Items.DIAMOND_HOE, new ItemStack(Items.STICK, 1), new ItemStack(Items.DIAMOND, 1));
-        this.recycleBinSalvaging(Items.DIAMOND_SWORD, new ItemStack(Items.STICK, 1), new ItemStack(Items.DIAMOND, 1));
-        this.recycleBinSalvaging(Items.NETHERITE_SHOVEL, new ItemStack(Items.STICK, 1));
-        this.recycleBinSalvaging(Items.NETHERITE_PICKAXE, new ItemStack(Items.STICK, 1), new ItemStack(Items.DIAMOND, 1), new ItemStack(Items.NETHERITE_SCRAP, 1));
-        this.recycleBinSalvaging(Items.NETHERITE_AXE, new ItemStack(Items.STICK, 1), new ItemStack(Items.DIAMOND, 1), new ItemStack(Items.NETHERITE_SCRAP, 1));
-        this.recycleBinSalvaging(Items.NETHERITE_HOE, new ItemStack(Items.STICK, 1), new ItemStack(Items.DIAMOND, 1), new ItemStack(Items.NETHERITE_SCRAP, 1));
-        this.recycleBinSalvaging(Items.NETHERITE_SWORD, new ItemStack(Items.STICK, 1), new ItemStack(Items.DIAMOND, 1), new ItemStack(Items.NETHERITE_SCRAP, 1));
-        this.recycleBinSalvaging(Items.BUCKET, new ItemStack(Items.IRON_INGOT, 1));
-        this.recycleBinSalvaging(Items.FISHING_ROD, new ItemStack(Items.STICK, 1), new ItemStack(Items.STRING, 1));
-        this.recycleBinSalvaging(Items.FLINT_AND_STEEL, new ItemStack(Items.FLINT, 1));
-        this.recycleBinSalvaging(Items.SHEARS, new ItemStack(Items.IRON_INGOT, 1));
-        this.recycleBinSalvaging(Items.BRUSH, new ItemStack(Items.COPPER_INGOT, 1), new ItemStack(Items.FEATHER, 1));
-        this.recycleBinSalvaging(Items.COMPASS, new ItemStack(Items.IRON_INGOT, 3), new ItemStack(Items.REDSTONE, 1));
-        this.recycleBinSalvaging(Items.RECOVERY_COMPASS, new ItemStack(Items.COMPASS, 1), new ItemStack(Items.ECHO_SHARD, 5));
-        this.recycleBinSalvaging(Items.CLOCK, new ItemStack(Items.GOLD_INGOT, 3), new ItemStack(Items.REDSTONE, 1));
-        this.recycleBinSalvaging(Items.SPYGLASS, new ItemStack(Items.COPPER_INGOT, 1), new ItemStack(Items.AMETHYST_SHARD, 1));
-        this.recycleBinSalvaging(Items.TRIDENT, new ItemStack(Items.PRISMARINE_SHARD, 2));
-        this.recycleBinSalvaging(Items.SHIELD, new ItemStack(Items.IRON_INGOT, 1), new ItemStack(Items.OAK_PLANKS, 2));
-        this.recycleBinSalvaging(Items.LEATHER_HELMET, new ItemStack(Items.LEATHER, 2));
-        this.recycleBinSalvaging(Items.LEATHER_CHESTPLATE, new ItemStack(Items.LEATHER, 3));
-        this.recycleBinSalvaging(Items.LEATHER_LEGGINGS, new ItemStack(Items.LEATHER, 2));
-        this.recycleBinSalvaging(Items.LEATHER_BOOTS, new ItemStack(Items.LEATHER, 1));
-        this.recycleBinSalvaging(Items.IRON_HELMET, new ItemStack(Items.IRON_INGOT, 2));
-        this.recycleBinSalvaging(Items.IRON_CHESTPLATE, new ItemStack(Items.IRON_INGOT, 3));
-        this.recycleBinSalvaging(Items.IRON_LEGGINGS, new ItemStack(Items.IRON_INGOT, 2));
-        this.recycleBinSalvaging(Items.IRON_BOOTS, new ItemStack(Items.IRON_INGOT, 1));
-        this.recycleBinSalvaging(Items.CHAINMAIL_HELMET, new ItemStack(Items.IRON_NUGGET, 4));
-        this.recycleBinSalvaging(Items.CHAINMAIL_CHESTPLATE, new ItemStack(Items.IRON_NUGGET, 6));
-        this.recycleBinSalvaging(Items.CHAINMAIL_LEGGINGS, new ItemStack(Items.IRON_NUGGET, 4));
-        this.recycleBinSalvaging(Items.CHAINMAIL_BOOTS, new ItemStack(Items.IRON_NUGGET, 2));
-        this.recycleBinSalvaging(Items.GOLDEN_HELMET, new ItemStack(Items.GOLD_INGOT, 2));
-        this.recycleBinSalvaging(Items.GOLDEN_CHESTPLATE, new ItemStack(Items.GOLD_INGOT, 3));
-        this.recycleBinSalvaging(Items.GOLDEN_LEGGINGS, new ItemStack(Items.GOLD_INGOT, 2));
-        this.recycleBinSalvaging(Items.GOLDEN_BOOTS, new ItemStack(Items.GOLD_INGOT, 1));
-        this.recycleBinSalvaging(Items.DIAMOND_HELMET, new ItemStack(Items.DIAMOND, 2));
-        this.recycleBinSalvaging(Items.DIAMOND_CHESTPLATE, new ItemStack(Items.DIAMOND, 3));
-        this.recycleBinSalvaging(Items.DIAMOND_LEGGINGS, new ItemStack(Items.DIAMOND, 2));
-        this.recycleBinSalvaging(Items.DIAMOND_BOOTS, new ItemStack(Items.DIAMOND, 1));
-        this.recycleBinSalvaging(Items.NETHERITE_HELMET, new ItemStack(Items.DIAMOND, 2), new ItemStack(Items.NETHERITE_SCRAP, 1));
-        this.recycleBinSalvaging(Items.NETHERITE_CHESTPLATE, new ItemStack(Items.DIAMOND, 3), new ItemStack(Items.NETHERITE_SCRAP, 1));
-        this.recycleBinSalvaging(Items.NETHERITE_LEGGINGS, new ItemStack(Items.DIAMOND, 2), new ItemStack(Items.NETHERITE_SCRAP, 1));
-        this.recycleBinSalvaging(Items.NETHERITE_BOOTS, new ItemStack(Items.DIAMOND, 1), new ItemStack(Items.NETHERITE_SCRAP, 1));
-        this.recycleBinSalvaging(Items.TURTLE_HELMET, new ItemStack(Items.SCUTE, 2));
-        this.recycleBinSalvaging(Items.LEATHER_HORSE_ARMOR, new ItemStack(Items.LEATHER, 3));
-        this.recycleBinSalvaging(Items.IRON_HORSE_ARMOR, new ItemStack(Items.IRON_INGOT, 3));
-        this.recycleBinSalvaging(Items.GOLDEN_HORSE_ARMOR, new ItemStack(Items.GOLD_INGOT, 3));
-        this.recycleBinSalvaging(Items.DIAMOND_HORSE_ARMOR, new ItemStack(Items.DIAMOND, 3));
-        this.recycleBinSalvaging(Items.BOW, new ItemStack(Items.STICK, 2), new ItemStack(Items.STRING, 2));
-        this.recycleBinSalvaging(Items.CROSSBOW, new ItemStack(Items.STICK, 1), new ItemStack(Items.STRING, 1), new ItemStack(Items.IRON_INGOT, 1), new ItemStack(Items.TRIPWIRE_HOOK, 1));
-
         SpecialRecipeBuilder.special(ModRecipeSerializers.DOOR_MAT_COPY_RECIPE.get()).save(this.consumer, Constants.MOD_ID + ":door_mat_copy");
     }
 
@@ -1201,18 +1124,5 @@ public class CommonRecipeProvider
             builder.add(inputs[i]);
         }
         builder.save(this.consumer, Utils.resource("combining/" + baseName));
-    }
-
-    private Set<Item> recycledItems = new HashSet<>();
-
-    private void recycleBinSalvaging(ItemLike baseItem, ItemStack ... outputItems)
-    {
-        if(this.recycledItems.contains(baseItem.asItem())) {
-            throw new IllegalArgumentException(baseItem.asItem() + " is already recycled");
-        }
-        String baseName = baseItem.asItem().toString();
-        RecycleBinRecyclingRecipe.Builder builder = new RecycleBinRecyclingRecipe.Builder(baseItem.asItem(), outputItems);
-        builder.save(this.consumer, Utils.resource("recycling/" + baseName));
-        this.recycledItems.add(baseItem.asItem());
     }
 }
