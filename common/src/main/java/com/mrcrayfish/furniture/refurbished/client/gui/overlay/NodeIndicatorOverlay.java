@@ -33,7 +33,8 @@ public class NodeIndicatorOverlay implements IHudOverlay
 
         LinkHandler handler = LinkHandler.get();
         IElectricityNode node = handler.getTargetNode();
-        if(handler.isLinking() && handler.getLinkDistance() > Config.SERVER.electricity.maximumLinkDistance.get())
+        IElectricityNode source = handler.getLinkingNode(minecraft.level);
+        if(handler.isLinking() && node == null && source != null && handler.getLinkDistance() > source.getMaxOutboundLinkLength())
         {
             label = Utils.translation("gui", "link_too_long");
             iconU = 40;

@@ -88,6 +88,16 @@ public class LinkHandler
         return this.lastNodePos != null;
     }
 
+    @Nullable
+    public IElectricityNode getLinkingNode(Level level)
+    {
+        if(this.lastNodePos == null)
+            return null;
+        if(level.getBlockEntity(this.lastNodePos) instanceof IElectricityNode node)
+            return node;
+        return null;
+    }
+
     /**
      * @return
      */
@@ -216,13 +226,23 @@ public class LinkHandler
      */
     public int getLinkColour(Level level)
     {
-        // TODO show text on screen if too long
-        if(this.distance > Config.SERVER.electricity.maximumLinkDistance.get())
-        {
-            return ERROR_LINK_COLOUR;
-        }
+        if(this.lastNodePos == null)
+            return DEFAULT_LINK_COLOUR;
 
         IElectricityNode node = this.getTargetNode();
+        IElectricityNode source = this.getLinkingNode(level);
+        if(source == null)
+            return DEFAULT_LINK_COLOUR;
+
+        // TODO show text on screen if too long
+        if(this.distance > source.getMaxOutboundLinkLength())
+        {
+            if(node == null || this.distance > node.getMaxOutboundLinkLength())
+            {
+                return ERROR_LINK_COLOUR;
+            }
+        }
+
         if(node != null && !this.isLinkingNode(node) && this.canLinkToNode(level, node))
         {
             return SUCCESS_LINK_COLOUR;
@@ -242,11 +262,12 @@ public class LinkHandler
     {
         if(this.lastNodePos != null)
         {
-            IElectricityNode lastNode = level.getBlockEntity(this.lastNodePos) instanceof IElectricityNode node ? node : null;
+            IElectricityNode lastNode = this.getLinkingNode(level);
             if(lastNode != null && target != null && lastNode != target)
             {
+                double maxDistance = Math.max(target.getMaxOutboundLinkLength(), lastNode.getMaxOutboundLinkLength());
                 double distance = this.lastNodePos.getCenter().distanceTo(target.getNodePosition().getCenter());
-                if(distance <= Config.SERVER.electricity.maximumLinkDistance.get())
+                if(distance <= maxDistance)
                 {
                     return !target.isNodeConnectionLimitReached() && !lastNode.isConnectedToNode(target);
                 }
