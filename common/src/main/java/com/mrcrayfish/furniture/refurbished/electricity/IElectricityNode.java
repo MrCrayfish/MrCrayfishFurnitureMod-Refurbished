@@ -195,9 +195,11 @@ public interface IElectricityNode
      */
     default void removeNodeConnection(Connection connection)
     {
-        this.getNodeConnections().remove(connection);
-        this.syncDataToTrackingClients();
-        this.getNodeOwner().setChanged();
+        if(this.getNodeConnections().remove(connection))
+        {
+            this.syncDataToTrackingClients();
+            this.getNodeOwner().setChanged();
+        }
     }
 
     /**
@@ -349,5 +351,10 @@ public interface IElectricityNode
             }
         }
         return searched.stream().filter(matchPredicate).collect(Collectors.toList());
+    }
+
+    default double getMaxOutboundLinkLength()
+    {
+        return Config.SERVER.electricity.maximumLinkLength.get();
     }
 }

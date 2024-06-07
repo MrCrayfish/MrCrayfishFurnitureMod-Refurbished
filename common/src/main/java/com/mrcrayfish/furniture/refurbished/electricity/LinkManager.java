@@ -91,8 +91,9 @@ public class LinkManager extends SavedData
         IElectricityNode lastNode = level.getBlockEntity(previousPos) instanceof IElectricityNode node ? node : null;
         if(lastNode != null && lastNode != interactedNode)
         {
+            double maxDistance = Math.max(lastNode.getMaxOutboundLinkLength(), interactedNode.getMaxOutboundLinkLength());
             double distance = lastNode.getNodePosition().getCenter().distanceTo(interactedNode.getNodePosition().getCenter());
-            if(distance <= Config.SERVER.electricity.maximumLinkDistance.get())
+            if(distance <= maxDistance)
             {
                 lastNode.connectToNode(interactedNode);
                 level.playSound(null, interactedNode.getNodePosition(), ModSounds.ITEM_WRENCH_CONNECTED_LINK.get(), SoundSource.BLOCKS);

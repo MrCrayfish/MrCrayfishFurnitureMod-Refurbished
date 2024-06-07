@@ -108,16 +108,23 @@ public class Config
                 the power in an electricity network.""")
             public final IntProperty maximumDaisyChain = IntProperty.create(8, 1, 32);
 
-            @ConfigProperty(name = "maximumLinkDistance", comment = """
+            @ConfigProperty(name = "maximumLinkLength", comment = """
                 The maximum distance from one electricity node to another that a link can be made.
                 If this value is increased to a large value, it may result in an electricity node
                 being in an unloaded chunk. Electricity nodes in unloaded chunks won't be updated
                 even if the power does reach according to the maximumDaisyChain property.""")
-            public final DoubleProperty maximumLinkDistance = DoubleProperty.create(16, 1, 64);
+            public final DoubleProperty maximumLinkLength = DoubleProperty.create(16, 1, 64);
 
             @ConfigProperty(name = "maximumLinksPerElectricityNode", comment = """
                 The maximum amount of links that can be connected to a single electricity node.""")
             public final IntProperty maximumLinksPerElectricityNode = IntProperty.create(6, 1, 64);
+
+            @ConfigProperty(name = "maximumElectricityGeneratorLinkLength", comment = """
+                The maximum length of a link from an electricity generator to an electricity node.
+                If this value is increased to a large value, it may result in an electricity node
+                being in an unloaded chunk. Electricity nodes in unloaded chunks won't be updated
+                even if the power does reach according to the maximumDaisyChain property.""")
+            public final DoubleProperty maximumElectricityGeneratorLinkLength = DoubleProperty.create(64, 1, 256);
 
             @ConfigProperty(name = "maximumLinksPerElectricityGenerator", comment = """
                 The maximum amount of links that can be connected to an Electricity Generator.""")

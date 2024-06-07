@@ -86,9 +86,9 @@ public class ServerPlayHandler
             if(level.isLoaded(c.getPosA()) && level.isLoaded(c.getPosB()))
             {
                 // Check if the player is near the nodes that are being disconnected
-                double maxDistance = Mth.square(Config.SERVER.electricity.maximumLinkDistance.get());
                 Vec3 a = c.getPosA().getCenter();
                 Vec3 b = c.getPosB().getCenter();
+                double maxDistance = a.distanceToSqr(b);
                 if(player.distanceToSqr(a) > maxDistance && player.distanceToSqr(b) > maxDistance)
                     return;
 
