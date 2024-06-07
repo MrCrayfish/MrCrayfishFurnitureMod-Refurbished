@@ -81,8 +81,7 @@ public class ComputerBlockEntity extends ElectricityModuleBlockEntity implements
     @Nullable
     public Player getUser()
     {
-        // TODO handle freeing memory if user logged out
-        if(this.currentUser != null && !this.currentUser.isAlive())
+        if(this.currentUser != null && (!this.currentUser.isAlive() || this.currentUser.isRemoved()))
         {
             this.currentUser = null;
         }
