@@ -101,30 +101,20 @@ public class Config
 
         public static class Electricity
         {
-            @ConfigProperty(name = "maximumDaisyChain", comment = """
-                The maximum daisy chain that electricity can travel from a power source. A daisy chain
-                is electricity nodes connected one after the other to one or more other electricity
-                nodes. The larger this value is, the more processing time is required for updating
-                the power in an electricity network.""")
-            public final IntProperty maximumDaisyChain = IntProperty.create(8, 1, 32);
-
-            @ConfigProperty(name = "maximumLinkLength", comment = """
-                The maximum distance from one electricity node to another that a link can be made.
-                If this value is increased to a large value, it may result in an electricity node
-                being in an unloaded chunk. Electricity nodes in unloaded chunks won't be updated
-                even if the power does reach according to the maximumDaisyChain property.""")
-            public final DoubleProperty maximumLinkLength = DoubleProperty.create(16, 1, 64);
+            @ConfigProperty(name = "powerableAreaRadius", comment = """
+                The maximum area radius determines the size of the area which electricity nodes must
+                be inside of to be powered by a source node (like the Electricity Generator). The
+                radius is represented as blocks. The center of the area is the source node providing
+                the power, and area radius expands in each cardinal direction, including up and down.
+                For example, if we have an area radius of 16 blocks, a source node can provide power
+                to other electricity nodes from (x-16,y-16,z-16) to (x+16,y+16,z+16) with x,y,z being
+                the block position of the source. Electricity nodes still must be connected with
+                links to be powered, this config value just determines the acceptable area.""")
+            public final IntProperty powerableAreaRadius = IntProperty.create(80, 1, 256);
 
             @ConfigProperty(name = "maximumLinksPerElectricityNode", comment = """
                 The maximum amount of links that can be connected to a single electricity node.""")
             public final IntProperty maximumLinksPerElectricityNode = IntProperty.create(6, 1, 64);
-
-            @ConfigProperty(name = "maximumElectricityGeneratorLinkLength", comment = """
-                The maximum length of a link from an electricity generator to an electricity node.
-                If this value is increased to a large value, it may result in an electricity node
-                being in an unloaded chunk. Electricity nodes in unloaded chunks won't be updated
-                even if the power does reach according to the maximumDaisyChain property.""")
-            public final DoubleProperty maximumElectricityGeneratorLinkLength = DoubleProperty.create(64, 1, 256);
 
             @ConfigProperty(name = "maximumLinksPerElectricityGenerator", comment = """
                 The maximum amount of links that can be connected to an Electricity Generator.""")
@@ -141,6 +131,11 @@ public class Config
                 The maximum amount of nodes in a network that can be powered by an electricity
                 source, like the electricity generator.""")
             public final IntProperty maximumNodesInNetwork = IntProperty.create(64, 1, 512);
+
+            public int getMaximumLinkLength()
+            {
+                return this.powerableAreaRadius.get();
+            }
         }
 
         public static class RecycleBin

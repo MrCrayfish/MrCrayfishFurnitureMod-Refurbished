@@ -87,21 +87,25 @@ public class LinkManager extends SavedData
         }
 
         // Attempt to connect the two nodes together
-        BlockPos previousPos = this.lastNodeMap.remove(player.getUUID());
+        BlockPos previousPos = this.lastNodeMap.get(player.getUUID());
         IElectricityNode lastNode = level.getBlockEntity(previousPos) instanceof IElectricityNode node ? node : null;
         if(lastNode != null && lastNode != interactedNode)
         {
-            double maxDistance = Math.max(lastNode.getMaxOutboundLinkLength(), interactedNode.getMaxOutboundLinkLength());
-            double distance = lastNode.getNodePosition().getCenter().distanceTo(interactedNode.getNodePosition().getCenter());
-            if(distance <= maxDistance)
+            // Sources nodes can't connect to other source nodes
+            if(lastNode.isSourceNode() && interactedNode.isSourceNode())
+                return;
+
+            int maxLinkLength = Config.SERVER.electricity.getMaximumLinkLength();
+            int linkLength = (int) (lastNode.getNodePosition().getCenter().distanceTo(interactedNode.getNodePosition().getCenter()) + 0.5);
+            if(linkLength <= maxLinkLength)
             {
                 lastNode.connectToNode(interactedNode);
                 level.playSound(null, interactedNode.getNodePosition(), ModSounds.ITEM_WRENCH_CONNECTED_LINK.get(), SoundSource.BLOCKS);
+                this.lastNodeMap.remove(player.getUUID());
+                // Update the client that the linking should stop
+                Network.getPlay().sendToPlayer(() -> (ServerPlayer) player, new MessageSyncLink(null));
             }
         }
-
-        // Update the client that the linking should stop
-        Network.getPlay().sendToPlayer(() -> (ServerPlayer) player, new MessageSyncLink(null));
     }
 
     /**
