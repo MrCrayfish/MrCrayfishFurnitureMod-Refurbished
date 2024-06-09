@@ -20,49 +20,87 @@ public class NodeIndicatorOverlay implements IHudOverlay
     @Override
     public void draw(GuiGraphics graphics, float partialTick)
     {
-        Minecraft minecraft = Minecraft.getInstance();
-        if(minecraft.level == null || minecraft.hitResult == null)
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.level == null || mc.hitResult == null)
             return;
 
-        if(minecraft.player == null)
+        if(mc.player == null)
             return;
-
-        Component label = null;
-        int iconU = 0;
-        int iconV = 0;
 
         LinkHandler handler = LinkHandler.get();
-        IElectricityNode node = handler.getTargetNode();
-        IElectricityNode source = handler.getLinkingNode(minecraft.level);
-        if(handler.isLinking() && node == null && source != null && handler.getLinkDistance() > source.getMaxOutboundLinkLength())
+        IElectricityNode target = handler.getTargetNode();
+        if(handler.isLinking())
         {
-            label = Utils.translation("gui", "link_too_long");
-            iconU = 40;
-        }
-        else if(node != null)
-        {
-            label = Utils.translation("gui", "progress", node.getNodeConnections().size(), Components.GUI_SLASH, node.getNodeMaximumConnections());
-            iconV = 10;
-        }
-        else if(minecraft.hitResult instanceof BlockHitResult result && minecraft.player.isCrouching())
-        {
-            BlockEntity entity = minecraft.level.getBlockEntity(result.getBlockPos());
-            if(entity instanceof IElectricityNode node1 && !node1.isNodePowered())
+            IElectricityNode linking = handler.getLinkingNode(mc.level);
+            if(linking != null && target == null)
             {
-                label = Components.GUI_NO_POWER;
-                iconU = 20;
-                iconV = 20;
+                if(handler.getLinkLength() > Config.SERVER.electricity.getMaximumLinkLength())
+                {
+                    this.drawLabel(mc, graphics, Components.GUI_LINK_TOO_LONG, 40, 0);
+                    return;
+                }
+            }
+
+            if(target != null && linking != null && target != linking)
+            {
+                if(target.isSourceNode() && linking.isSourceNode())
+                {
+                    this.drawLabel(mc, graphics, Components.GUI_LINK_INVALID_NODE, 40, 0);
+                    return;
+                }
+
+                int maxLength = Config.SERVER.electricity.getMaximumLinkLength();
+                int currentLength = (int) (linking.getNodePosition().getCenter().distanceTo(target.getNodePosition().getCenter()) + 0.5);
+                if(currentLength > maxLength)
+                {
+                    this.drawLabel(mc, graphics, Components.GUI_LINK_TOO_LONG, 40, 0);
+                    return;
+                }
+
+                if(linking.isConnectedToNode(target))
+                {
+                    this.drawLabel(mc, graphics, Components.GUI_LINK_ALREADY_CONNECTED, 40, 0);
+                    return;
+                }
+
+                if(target.isNodeConnectionLimitReached())
+                {
+                    this.drawLabel(mc, graphics, Components.GUI_LINK_TOO_MANY, 40, 0);
+                    return;
+                }
+
+                if(handler.canLinkToNode(mc.level, target))
+                {
+                    Component label = Utils.translation("gui", "progress", target.getNodeConnections().size(), Components.GUI_SLASH, target.getNodeMaximumConnections());
+                    this.drawLabel(mc, graphics, label, 0, 10);
+                    return;
+                }
             }
         }
-
-        if(label == null)
+        else if(target != null)
+        {
+            Component label = Utils.translation("gui", "progress", target.getNodeConnections().size(), Components.GUI_SLASH, target.getNodeMaximumConnections());
+            this.drawLabel(mc, graphics, label, 0, 10);
             return;
+        }
 
+        if(mc.hitResult instanceof BlockHitResult result && mc.player.isCrouching())
+        {
+            BlockEntity entity = mc.level.getBlockEntity(result.getBlockPos());
+            if(entity instanceof IElectricityNode node1 && !node1.isNodePowered())
+            {
+                this.drawLabel(mc, graphics, Components.GUI_NO_POWER, 20, 20);
+            }
+        }
+    }
+
+    private void drawLabel(Minecraft mc, GuiGraphics graphics, Component label, int iconU, int iconV)
+    {
         int padding = 3;
         int iconSize = 10;
-        int messageWidth = minecraft.font.width(label);
+        int messageWidth = mc.font.width(label);
         int contentWidth = padding + iconSize + padding + messageWidth + padding;
-        int contentHeight = padding + minecraft.font.lineHeight + padding;
+        int contentHeight = padding + mc.font.lineHeight + padding;
         int contentStart = (graphics.guiWidth() - contentWidth) / 2;
         int contentTop = (graphics.guiHeight() - contentHeight) / 2 + 50;
 
@@ -75,6 +113,6 @@ public class NodeIndicatorOverlay implements IHudOverlay
         graphics.blit(IconButton.ICON_TEXTURES, contentStart + padding, contentTop + padding, iconU, iconV, iconSize, iconSize, 64, 64);
 
         // Draw message
-        graphics.drawString(minecraft.font, label, contentStart + padding + iconSize + padding, contentTop + padding + 1, 0xFFFFFFFF);
+        graphics.drawString(mc.font, label, contentStart + padding + iconSize + padding, contentTop + padding + 1, 0xFFFFFFFF);
     }
 }

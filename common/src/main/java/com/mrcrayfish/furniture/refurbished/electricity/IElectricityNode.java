@@ -301,7 +301,7 @@ public interface IElectricityNode
 
     static List<IElectricityNode> searchNodes(IElectricityNode start)
     {
-        return searchNodes(start, Config.SERVER.electricity.maximumDaisyChain.get(), Config.SERVER.electricity.maximumNodesInNetwork.get(), false, node -> true, node -> true);
+        return searchNodes(start, Config.SERVER.electricity.powerableAreaRadius.get(), Config.SERVER.electricity.maximumNodesInNetwork.get(), false, node -> true, node -> true);
     }
 
     /**
@@ -311,50 +311,44 @@ public interface IElectricityNode
      * and it's connections won't be searched.
      *
      * @param start           the node to begin the search from
-     * @param maxDepth        the maximum depth this search can travel
-     * @param maxSize         the maximum amount of nodes that can be found
-     * @param cancelAtLimit
+     * @param maxRadius       the maximum depth this search can travel
+     * @param searchLimit     the maximum amount of nodes that can be found
+     * @param cancelAtLimit   if searching should stop once searchLimit has been reached
      * @param searchPredicate a predicate determining if a node can be searched
      * @return A list of all nodes that were searched and passed the match predicate
      */
-    static List<IElectricityNode> searchNodes(IElectricityNode start, int maxDepth, int maxSize, boolean cancelAtLimit, Predicate<IElectricityNode> searchPredicate, Predicate<IElectricityNode> matchPredicate)
+    static List<IElectricityNode> searchNodes(IElectricityNode start, int maxRadius, int searchLimit, boolean cancelAtLimit, Predicate<IElectricityNode> searchPredicate, Predicate<IElectricityNode> matchPredicate)
     {
-        Set<IElectricityNode> searched = new HashSet<>(List.of(start));
+        AABB box = new AABB(start.getNodePosition()).inflate(maxRadius);
+        Set<IElectricityNode> found = new HashSet<>(List.of(start));
         // Creating the queue with an initial size equal to the maximum nodes in a network
         // prevents expensive calls to grow the capacity.
-        Queue<Pair<IElectricityNode, Integer>> queue = new ArrayDeque<>(maxSize);
-        queue.add(Pair.of(start, 0));
+        Queue<IElectricityNode> queue = new ArrayDeque<>(searchLimit);
+        queue.add(start);
         search: while(!queue.isEmpty())
         {
-            Pair<IElectricityNode, Integer> pair = queue.poll();
-            IElectricityNode node = pair.getLeft();
-            int currentDepth = pair.getRight();
+            IElectricityNode node = queue.poll();
             for(Connection connection : node.getNodeConnections())
             {
                 IElectricityNode other = connection.getNodeB(node.getNodeLevel());
-                if(other == null || searched.contains(other))
+                if(other == null || found.contains(other))
                     continue;
 
-                searched.add(other);
+                BlockPos pos = other.getNodePosition();
+                if(!box.contains(pos.getX(), pos.getY(), pos.getZ()))
+                    continue;
 
-                if(cancelAtLimit && searched.size() >= maxSize)
+                found.add(other);
+
+                if(cancelAtLimit && found.size() >= searchLimit)
                     break search;
 
                 if(!searchPredicate.test(other))
                     continue;
 
-                int nextDepth = currentDepth + 1;
-                if(nextDepth >= maxDepth)
-                    continue;
-
-                queue.add(Pair.of(other, nextDepth));
+                queue.add(other);
             }
         }
-        return searched.stream().filter(matchPredicate).collect(Collectors.toList());
-    }
-
-    default double getMaxOutboundLinkLength()
-    {
-        return Config.SERVER.electricity.maximumLinkLength.get();
+        return found.stream().filter(matchPredicate).collect(Collectors.toList());
     }
 }

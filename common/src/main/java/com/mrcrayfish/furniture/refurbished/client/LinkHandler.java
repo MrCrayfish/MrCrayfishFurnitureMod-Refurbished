@@ -56,7 +56,7 @@ public class LinkHandler
     @Nullable
     private BlockPos lastNodePos;
     private HitResult result;
-    private double distance;
+    private double linkLength;
 
     private LinkHandler() {}
 
@@ -99,11 +99,11 @@ public class LinkHandler
     }
 
     /**
-     * @return
+     * @return The current length of the link being created
      */
-    public double getLinkDistance()
+    public double getLinkLength()
     {
-        return this.distance;
+        return this.linkLength;
     }
 
     /**
@@ -175,7 +175,7 @@ public class LinkHandler
      */
     public void render(Player player, PoseStack poseStack, MultiBufferSource.BufferSource source, float partialTick)
     {
-        this.distance = 0;
+        this.linkLength = 0;
 
         if(this.lastNodePos == null)
             return;
@@ -188,7 +188,7 @@ public class LinkHandler
         Vec3 start = Vec3.atCenterOf(this.lastNodePos);
         Vec3 end = this.getLinkEnd(player, partialTick);
         Vec3 delta = end.subtract(start);
-        this.distance = delta.length();
+        this.linkLength = delta.length();
         double yaw = Math.atan2(-delta.z, delta.x) + Math.PI;
         double pitch = Math.atan2(delta.horizontalDistance(), delta.y) + Mth.HALF_PI;
         poseStack.pushPose();
@@ -226,26 +226,24 @@ public class LinkHandler
      */
     public int getLinkColour(Level level)
     {
-        if(this.lastNodePos == null)
+        IElectricityNode linking = this.getLinkingNode(level);
+        if(linking == null)
             return DEFAULT_LINK_COLOUR;
 
-        IElectricityNode node = this.getTargetNode();
-        IElectricityNode source = this.getLinkingNode(level);
-        if(source == null)
-            return DEFAULT_LINK_COLOUR;
-
-        // TODO show text on screen if too long
-        if(this.distance > source.getMaxOutboundLinkLength())
+        double maxLinkLength = Config.SERVER.electricity.getMaximumLinkLength();
+        if(this.linkLength > maxLinkLength)
         {
-            if(node == null || this.distance > node.getMaxOutboundLinkLength())
-            {
-                return ERROR_LINK_COLOUR;
-            }
+            return ERROR_LINK_COLOUR;
         }
 
-        if(node != null && !this.isLinkingNode(node) && this.canLinkToNode(level, node))
+        IElectricityNode target = this.getTargetNode();
+        if(target != null && !this.isLinkingNode(target))
         {
-            return SUCCESS_LINK_COLOUR;
+            if(this.canLinkToNode(level, target))
+            {
+                return SUCCESS_LINK_COLOUR;
+            }
+            return ERROR_LINK_COLOUR;
         }
         return DEFAULT_LINK_COLOUR;
     }
@@ -265,9 +263,13 @@ public class LinkHandler
             IElectricityNode lastNode = this.getLinkingNode(level);
             if(lastNode != null && target != null && lastNode != target)
             {
-                double maxDistance = Math.max(target.getMaxOutboundLinkLength(), lastNode.getMaxOutboundLinkLength());
-                double distance = this.lastNodePos.getCenter().distanceTo(target.getNodePosition().getCenter());
-                if(distance <= maxDistance)
+                if(target.isSourceNode() && lastNode.isSourceNode())
+                {
+                    return false;
+                }
+                int maxLinkLength = Config.SERVER.electricity.getMaximumLinkLength();
+                int linkLength = (int) (this.lastNodePos.getCenter().distanceTo(target.getNodePosition().getCenter()) + 0.5);
+                if(linkLength <= maxLinkLength)
                 {
                     return !target.isNodeConnectionLimitReached() && !lastNode.isConnectedToNode(target);
                 }

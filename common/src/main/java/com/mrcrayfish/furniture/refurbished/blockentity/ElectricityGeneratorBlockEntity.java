@@ -310,10 +310,4 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
         this.processTick();
         super.earlyNodeLevelTick();
     }
-
-    @Override
-    public double getMaxOutboundLinkLength()
-    {
-        return Config.SERVER.electricity.maximumElectricityGeneratorLinkLength.get();
-    }
 }

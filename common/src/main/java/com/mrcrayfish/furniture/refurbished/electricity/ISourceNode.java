@@ -42,6 +42,11 @@ public interface ISourceNode extends IElectricityNode
         return Config.SERVER.electricity.maximumNodesInNetwork.get();
     }
 
+    default int getPowerableRadius()
+    {
+        return 64; // TODO config
+    }
+
     @Override
     default boolean isSourceNode()
     {
@@ -126,7 +131,7 @@ public interface ISourceNode extends IElectricityNode
      */
     default NodeSearchResult searchNodeNetwork()
     {
-        List<IElectricityNode> nodes = IElectricityNode.searchNodes(this, Config.SERVER.electricity.maximumDaisyChain.get(), this.getMaxPowerableNodes(), false, node -> !node.isSourceNode() && node.canPowerTraverseNode(), node -> !node.isSourceNode());
+        List<IElectricityNode> nodes = IElectricityNode.searchNodes(this, this.getPowerableRadius(), this.getMaxPowerableNodes(), false, node -> !node.isSourceNode() && node.canPowerTraverseNode(), node -> !node.isSourceNode());
         boolean overloaded = nodes.size() > this.getMaxPowerableNodes();
         return new NodeSearchResult(overloaded, nodes);
     }
