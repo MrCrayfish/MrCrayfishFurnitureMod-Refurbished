@@ -1,24 +1,37 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Axis;
 import com.mrcrayfish.furniture.refurbished.Config;
+import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.ElectricBlockEntityRenderer;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.electricity.Connection;
 import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
 import com.mrcrayfish.furniture.refurbished.electricity.LinkHitResult;
+import com.mrcrayfish.furniture.refurbished.electricity.LinkManager;
 import com.mrcrayfish.furniture.refurbished.electricity.NodeHitResult;
 import com.mrcrayfish.furniture.refurbished.item.WrenchItem;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageDeleteLink;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
+import it.unimi.dsi.fastutil.Pair;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
@@ -27,10 +40,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.joml.Intersectiond;
+import org.joml.Matrix4f;
 import org.joml.Vector3d;
 
 import javax.annotation.Nullable;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -38,9 +56,12 @@ import java.util.Set;
  */
 public class LinkHandler
 {
+    private static final ResourceLocation POWERABLE_AREA = new ResourceLocation(Constants.MOD_ID, "textures/misc/powerable_area.png");
+    private static final ResourceLocation UNPOWERABLE_AREA = new ResourceLocation(Constants.MOD_ID, "textures/misc/unpowerable_area.png");
     private static final int DEFAULT_LINK_COLOUR = 0xFFFFFFFF;
     private static final int SUCCESS_LINK_COLOUR = 0xFFB5FF4C;
     private static final int ERROR_LINK_COLOUR = 0xFFC33636;
+    private static final double NEAR_DISTANCE = 10.0;
 
     private static LinkHandler instance;
 
@@ -57,6 +78,10 @@ public class LinkHandler
     private BlockPos lastNodePos;
     private HitResult result;
     private double linkLength;
+    private boolean linkInsideArea;
+    private final Set<BlockPos> sourcePositions = new HashSet<>();
+    private final Set<BlockPos> lastSourcePositions = new HashSet<>();
+    private VoxelShape cachedPowerableAreaShape;
 
     private LinkHandler() {}
 
@@ -88,6 +113,11 @@ public class LinkHandler
         return this.lastNodePos != null;
     }
 
+    public boolean isLinkInsidePowerableArea()
+    {
+        return this.linkInsideArea;
+    }
+
     @Nullable
     public IElectricityNode getLinkingNode(Level level)
     {
@@ -113,6 +143,19 @@ public class LinkHandler
      */
     public void beforeRender(float partialTick)
     {
+        this.updateHitResult(partialTick);
+        this.updatePowerSources();
+        this.updateLinkState(partialTick);
+    }
+
+    /**
+     * Performs a raycast for nodes and links, and stores that result if any hit.
+     *
+     * @param partialTick the partial tick of the current frame
+     */
+    private void updateHitResult(float partialTick)
+    {
+        this.result = null;
         Minecraft mc = Minecraft.getInstance();
         if(mc.player != null && mc.level != null && mc.gameMode != null)
         {
@@ -125,12 +168,77 @@ public class LinkHandler
                 // If missed, try to raycast for links
                 if(this.result.getType() == HitResult.Type.MISS)
                 {
-                    this.result = performLinkRaycast(mc.player, partialTick, range);
+                    this.result = this.performLinkRaycast(mc.player, partialTick, range);
                 }
-                return;
             }
         }
-        this.result = null;
+    }
+
+    /**
+     * Finds and updates the source nodes that are connected to either the node we are linking or
+     * node we are currently looking at.
+     */
+    private void updatePowerSources()
+    {
+        this.sourcePositions.clear();
+
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.level == null || this.lastNodePos == null)
+            return;
+
+        // Find source node block positions from the linking and target node
+        this.addSourceNodePositions(this.sourcePositions, this.getLinkingNode(mc.level));
+        this.addSourceNodePositions(this.sourcePositions, this.getTargetNode());
+    }
+
+    /**
+     * Updates the state of the link currently being created. Performs a check to test if the link
+     * is crossing the border of the powerable zone.
+     *
+     * @param partialTick the partial tick of the current frame
+     */
+    private void updateLinkState(float partialTick)
+    {
+        this.linkInsideArea = false;
+
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.player == null || this.lastNodePos == null)
+            return;
+
+        // Determine if the current link is in the powerable zone of the found sources
+        this.linkInsideArea = this.sourcePositions.isEmpty() || this.sourcePositions.stream().anyMatch(pos -> {
+            AABB box = new AABB(pos).inflate(Config.SERVER.electricity.powerableAreaRadius.get());
+            return box.contains(this.lastNodePos.getCenter()) && box.contains(this.getLinkEnd(mc.player, partialTick));
+        });
+    }
+
+    /**
+     * Searches the electricity network starting from the provided start node and finds all the
+     * source nodes that can provide power to the given start node. The block position of the source
+     * node is then added to the given positions set. A null start node can be provided, it will just
+     * simply not run anything.
+     *
+     * @param positions the set of currently found source node block positions
+     * @param start     the node to start the search or null
+     */
+    private void addSourceNodePositions(Set<BlockPos> positions, @Nullable IElectricityNode start)
+    {
+        if(start == null)
+            return;
+
+        // If source node, add to positions and return. Sources don't need to search network
+        if(start.isSourceNode())
+        {
+            positions.add(start.getNodePosition());
+            return;
+        }
+
+        // Search network for all possible source nodes that can provide power to the start node
+        int maxRadius = Config.SERVER.electricity.powerableAreaRadius.get();
+        int searchLimit = Config.SERVER.electricity.maximumNodesInNetwork.get();
+        IElectricityNode.searchNodes(start, maxRadius, searchLimit, true, node -> !node.isSourceNode(), IElectricityNode::isSourceNode).forEach(node -> {
+            positions.add(node.getNodePosition());
+        });
     }
 
     /**
@@ -185,6 +293,8 @@ public class LinkHandler
             return;
         }
 
+        this.renderPowerableArea(poseStack, player, partialTick);
+
         Vec3 start = Vec3.atCenterOf(this.lastNodePos);
         Vec3 end = this.getLinkEnd(player, partialTick);
         Vec3 delta = end.subtract(start);
@@ -230,11 +340,8 @@ public class LinkHandler
         if(linking == null)
             return DEFAULT_LINK_COLOUR;
 
-        double maxLinkLength = Config.SERVER.electricity.getMaximumLinkLength();
-        if(this.linkLength > maxLinkLength)
-        {
+        if(this.linkLength > LinkManager.MAX_LINK_LENGTH)
             return ERROR_LINK_COLOUR;
-        }
 
         IElectricityNode target = this.getTargetNode();
         if(target != null && !this.isLinkingNode(target))
@@ -245,6 +352,10 @@ public class LinkHandler
             }
             return ERROR_LINK_COLOUR;
         }
+
+        if(!this.linkInsideArea)
+            return ERROR_LINK_COLOUR;
+
         return DEFAULT_LINK_COLOUR;
     }
 
@@ -264,15 +375,10 @@ public class LinkHandler
             if(lastNode != null && target != null && lastNode != target)
             {
                 if(target.isSourceNode() && lastNode.isSourceNode())
-                {
                     return false;
-                }
-                int maxLinkLength = Config.SERVER.electricity.getMaximumLinkLength();
-                int linkLength = (int) (this.lastNodePos.getCenter().distanceTo(target.getNodePosition().getCenter()) + 0.5);
-                if(linkLength <= maxLinkLength)
-                {
-                    return !target.isNodeConnectionLimitReached() && !lastNode.isConnectedToNode(target);
-                }
+                if(target.isNodeConnectionLimitReached())
+                    return false;
+                return !lastNode.isConnectedToNode(target);
             }
         }
         return false;
@@ -332,6 +438,145 @@ public class LinkHandler
             }
         }
         return false;
+    }
+
+    /**
+     * @return The powerable area shape (or cached version), otherwise null if no powerable area.
+     */
+    @Nullable
+    private VoxelShape getPowerableAreaShape()
+    {
+        if(this.sourcePositions.isEmpty())
+            return null;
+
+        // Return cached shape if same as last positions
+        if(this.lastSourcePositions.equals(this.sourcePositions))
+            return this.cachedPowerableAreaShape;
+
+        // Creates the powerable area shape
+        this.sourcePositions.stream().map(pos -> {
+            return new AABB(pos).inflate(Config.SERVER.electricity.powerableAreaRadius.get());
+        }).map(aabb -> {
+            VoxelShape shape1 = Shapes.create(aabb);
+            VoxelShape shape2 = Shapes.create(aabb.inflate(0.001));
+            return Pair.of(shape1, shape2);
+        }).reduce((p1, p2) -> {
+            VoxelShape shape1 = Shapes.joinUnoptimized(p1.first(), p2.first(), BooleanOp.OR);
+            VoxelShape shape2 = Shapes.joinUnoptimized(p1.second(), p2.second(), BooleanOp.OR);
+            return Pair.of(shape1, shape2);
+        }).map(pair -> {
+            return Shapes.joinUnoptimized(pair.first(), pair.second(), BooleanOp.ONLY_SECOND);
+        }).ifPresent(shape -> {
+            this.cachedPowerableAreaShape = shape;
+        });
+
+        // Finally remember the positions and return the shape
+        this.lastSourcePositions.clear();
+        this.lastSourcePositions.addAll(this.sourcePositions);
+        return this.cachedPowerableAreaShape;
+    }
+
+    /**
+     * Draws the current powerable area into the level
+     */
+    private void renderPowerableArea(PoseStack poseStack, Player player, float partialTick)
+    {
+        VoxelShape areaShape = this.getPowerableAreaShape();
+        if(areaShape == null)
+            return;
+
+        // Calculate the alpha colour of the powerable zone border
+        Vec3 eyePos = player.getEyePosition(partialTick);
+        double nearDistanceSqr = NEAR_DISTANCE * NEAR_DISTANCE;
+        float areaAlpha = !this.linkInsideArea ? 1.0F : areaShape.closestPointTo(eyePos)
+            .map(vec -> vec.distanceToSqr(eyePos))
+            .map(val -> 1.0F - (float) Mth.clamp(val / nearDistanceSqr, 0, 1))
+            .orElse(0F);
+
+        // Don't render powerable area if alpha is zero
+        if(areaAlpha <= 0)
+            return;
+
+        // Apply an easing function to make it appear quicker at the start
+        areaAlpha = 1.0F - (float) Math.pow(1.0F - areaAlpha, 5);
+
+        // Draw the powerable zone border
+        Tesselator tesselator = Tesselator.getInstance();
+        RenderSystem.enableBlend();
+        RenderSystem.enableDepthTest();
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        RenderSystem.setShaderTexture(0, this.linkInsideArea ? POWERABLE_AREA : UNPOWERABLE_AREA);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 0.6F * areaAlpha);
+        RenderSystem.depthMask(Minecraft.useShaderTransparency());
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.polygonOffset(-3.0F, -3.0F);
+        RenderSystem.enablePolygonOffset();
+        BufferBuilder builder = tesselator.getBuilder();
+        builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        areaShape.toAabbs().forEach(box -> this.drawTexturedBox(poseStack, builder, box));
+        BufferUploader.drawWithShader(builder.end());
+        RenderSystem.polygonOffset(0.0F, 0.0F);
+        RenderSystem.disablePolygonOffset();
+        RenderSystem.disableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+    }
+
+    /**
+     * Draws a texture box from an AABB. The position of the box is determined by the AABB.
+     *
+     * @param poseStack the current pose stack
+     * @param consumer  the vertex consumer to accept the data. Must be VERTEX and UV only
+     * @param box       the AABB box to draw
+     */
+    private void drawTexturedBox(PoseStack poseStack, VertexConsumer consumer, AABB box)
+    {
+        Matrix4f matrix = poseStack.last().pose();
+        float offset = Util.getMillis() * 0.001F;
+        float width = (float) (box.maxX - box.minX);
+        float height = (float) (box.maxY - box.minY);
+        if(width > 0.01)
+        {
+            // North
+            consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).uv(0, height + offset).endVertex();
+            consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).uv(width, height + offset).endVertex();
+            consumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).uv(width, offset).endVertex();
+            consumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).uv(0, offset).endVertex();
+            // South
+            consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).uv(0, height + offset).endVertex();
+            consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).uv(width, height + offset).endVertex();
+            consumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).uv(width, offset).endVertex();
+            consumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).uv(0, offset).endVertex();
+        }
+        width = (float) (box.maxZ - box.minZ);
+        if(width > 0.01)
+        {
+            // West
+            consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).uv(0, height + offset).endVertex();
+            consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).uv(width, height + offset).endVertex();
+            consumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).uv(width, offset).endVertex();
+            consumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).uv(0, offset).endVertex();
+            // East
+            consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).uv(0, height + offset).endVertex();
+            consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).uv(width, height + offset).endVertex();
+            consumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).uv(width, offset).endVertex();
+            consumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).uv(0, offset).endVertex();
+        }
+        width = (float) (box.maxX - box.minX);
+        height = (float) (box.maxZ - box.minZ);
+        if(width > 0.01)
+        {
+            // Up
+            consumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).uv(0, width + offset).endVertex();
+            consumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).uv(height, width + offset).endVertex();
+            consumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).uv(height, offset).endVertex();
+            consumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).uv(0, offset).endVertex();
+            // Down
+            consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).uv(0, height + offset).endVertex();
+            consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).uv(width, height + offset).endVertex();
+            consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).uv(width, offset).endVertex();
+            consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).uv(0, offset).endVertex();
+        }
     }
 
     /**
