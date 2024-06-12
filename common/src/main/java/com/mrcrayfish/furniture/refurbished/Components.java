@@ -16,6 +16,8 @@ public class Components
     public static final Component GUI_LINK_TOO_MANY = Utils.translation("gui", "link_too_many");
     public static final Component GUI_LINK_ALREADY_CONNECTED = Utils.translation("gui", "link_already_connected");
     public static final Component GUI_LINK_INVALID_NODE = Utils.translation("gui", "link_invalid_node");
+    public static final Component GUI_LINK_UNPOWERABLE = Utils.translation("gui", "link_unpowerable");
+    public static final Component GUI_LINK_OUTSIDE_AREA = Utils.translation("gui", "link_outside_area");
     public static final Component GUI_ELECTRICITY_GENERATOR = Utils.translation("gui", "electricity_generator");
     public static final Component GUI_TOGGLE_POWER = Utils.translation("gui", "toggle_power");
     public static final Component GUI_NO_POWER = Utils.translation("gui", "no_power");

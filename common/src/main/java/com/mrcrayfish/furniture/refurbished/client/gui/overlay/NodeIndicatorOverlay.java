@@ -5,6 +5,7 @@ import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.client.LinkHandler;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.IconButton;
 import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
+import com.mrcrayfish.furniture.refurbished.electricity.LinkManager;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -27,20 +28,20 @@ public class NodeIndicatorOverlay implements IHudOverlay
         if(mc.player == null)
             return;
 
+        // TODO improve wording and when to display certain messages
+
         LinkHandler handler = LinkHandler.get();
         IElectricityNode target = handler.getTargetNode();
         if(handler.isLinking())
         {
-            IElectricityNode linking = handler.getLinkingNode(mc.level);
-            if(linking != null && target == null)
+            double linkLength = handler.getLinkLength();
+            if(linkLength > LinkManager.MAX_LINK_LENGTH)
             {
-                if(handler.getLinkLength() > Config.SERVER.electricity.getMaximumLinkLength())
-                {
-                    this.drawLabel(mc, graphics, Components.GUI_LINK_TOO_LONG, 40, 0);
-                    return;
-                }
+                this.drawLabel(mc, graphics, Components.GUI_LINK_TOO_LONG, 40, 0);
+                return;
             }
 
+            IElectricityNode linking = handler.getLinkingNode(mc.level);
             if(target != null && linking != null && target != linking)
             {
                 if(target.isSourceNode() && linking.isSourceNode())
@@ -49,9 +50,8 @@ public class NodeIndicatorOverlay implements IHudOverlay
                     return;
                 }
 
-                int maxLength = Config.SERVER.electricity.getMaximumLinkLength();
-                int currentLength = (int) (linking.getNodePosition().getCenter().distanceTo(target.getNodePosition().getCenter()) + 0.5);
-                if(currentLength > maxLength)
+                int nodeLinkLength = (int) (linking.getNodePosition().getCenter().distanceTo(target.getNodePosition().getCenter()) + 0.5);
+                if(nodeLinkLength > LinkManager.MAX_LINK_LENGTH)
                 {
                     this.drawLabel(mc, graphics, Components.GUI_LINK_TOO_LONG, 40, 0);
                     return;
@@ -71,10 +71,22 @@ public class NodeIndicatorOverlay implements IHudOverlay
 
                 if(handler.canLinkToNode(mc.level, target))
                 {
+                    if(!handler.isLinkInsidePowerableArea())
+                    {
+                        this.drawLabel(mc, graphics, Components.GUI_LINK_UNPOWERABLE, 30, 0);
+                        return;
+                    }
+
                     Component label = Utils.translation("gui", "progress", target.getNodeConnections().size(), Components.GUI_SLASH, target.getNodeMaximumConnections());
                     this.drawLabel(mc, graphics, label, 0, 10);
                     return;
                 }
+            }
+
+            if(!handler.isLinkInsidePowerableArea())
+            {
+                this.drawLabel(mc, graphics, Components.GUI_LINK_OUTSIDE_AREA, 40, 0);
+                return;
             }
         }
         else if(target != null)

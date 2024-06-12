@@ -131,11 +131,6 @@ public class Config
                 The maximum amount of nodes in a network that can be powered by an electricity
                 source, like the electricity generator.""")
             public final IntProperty maximumNodesInNetwork = IntProperty.create(64, 1, 512);
-
-            public int getMaximumLinkLength()
-            {
-                return this.powerableAreaRadius.get();
-            }
         }
 
         public static class RecycleBin

@@ -28,6 +28,7 @@ import java.util.UUID;
 public class LinkManager extends SavedData
 {
     private static final String STORAGE_ID = "refurbished_furniture_link_manager";
+    public static final double MAX_LINK_LENGTH = 512; // TODO remove
 
     public static Optional<LinkManager> get(MinecraftServer server)
     {
@@ -89,9 +90,8 @@ public class LinkManager extends SavedData
             if(lastNode.isSourceNode() && interactedNode.isSourceNode())
                 return;
 
-            int maxLinkLength = Config.SERVER.electricity.getMaximumLinkLength();
             int linkLength = (int) (lastNode.getNodePosition().getCenter().distanceTo(interactedNode.getNodePosition().getCenter()) + 0.5);
-            if(linkLength <= maxLinkLength)
+            if(linkLength <= MAX_LINK_LENGTH)
             {
                 lastNode.connectToNode(interactedNode);
                 level.playSound(null, interactedNode.getNodePosition(), ModSounds.ITEM_WRENCH_CONNECTED_LINK.get(), SoundSource.BLOCKS);
