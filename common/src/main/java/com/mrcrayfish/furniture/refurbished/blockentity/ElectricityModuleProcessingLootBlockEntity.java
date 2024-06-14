@@ -148,6 +148,13 @@ public abstract class ElectricityModuleProcessingLootBlockEntity extends Process
         return tag;
     }
 
+    // @Override From IForgeBlockEntity
+    @SuppressWarnings("unused")
+    public AABB getRenderBoundingBox()
+    {
+        return new AABB(this.worldPosition).inflate(Config.CLIENT.electricityViewDistance.get());
+    }
+
     @Override
     public int hashCode()
     {
