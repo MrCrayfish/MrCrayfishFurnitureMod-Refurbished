@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import com.mrcrayfish.furniture.refurbished.electricity.Connection;
 import com.mrcrayfish.furniture.refurbished.electricity.IModuleNode;
@@ -15,6 +16,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
@@ -28,6 +30,7 @@ public abstract class ElectricityModuleProcessingLootBlockEntity extends Process
     protected final Set<Connection> connections = new HashSet<>();
     protected boolean powered;
     protected boolean receivingPower;
+    protected boolean inPowerableNetwork;
 
     protected ElectricityModuleProcessingLootBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int containerSize, RecipeType<? extends ProcessingRecipe> recipeType)
     {
@@ -88,15 +91,27 @@ public abstract class ElectricityModuleProcessingLootBlockEntity extends Process
     }
 
     @Override
-    public void setNodeReceivingPower(boolean power)
+    public void setNodeReceivingPower(boolean state)
     {
-        this.receivingPower = power;
+        this.receivingPower = state;
     }
 
     @Override
     public boolean isNodeReceivingPower()
     {
         return this.receivingPower;
+    }
+
+    @Override
+    public void setNodeInPowerableNetwork(boolean state)
+    {
+        this.inPowerableNetwork = state;
+    }
+
+    @Override
+    public boolean isNodeInPowerableNetwork()
+    {
+        return this.inPowerableNetwork;
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, ElectricityModuleProcessingLootBlockEntity module)
@@ -165,5 +180,12 @@ public abstract class ElectricityModuleProcessingLootBlockEntity extends Process
     public void saveToItem(ItemStack stack)
     {
         this.saveNodeNbtToItem(stack);
+    }
+
+    @Override
+    public void setLevel(Level level)
+    {
+        super.setLevel(level);
+        this.registerElectricityNodeTicker(level);
     }
 }

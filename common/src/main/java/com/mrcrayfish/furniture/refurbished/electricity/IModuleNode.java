@@ -45,6 +45,12 @@ public interface IModuleNode extends IElectricityNode
         }
     }
 
+    @Override
+    default void startLevelTick(Level level)
+    {
+        this.setNodeInPowerableNetwork(false);
+    }
+
     /**
      * Default implementation of an electricity module server tick.
      *

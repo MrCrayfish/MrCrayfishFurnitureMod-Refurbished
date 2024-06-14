@@ -24,6 +24,7 @@ public abstract class ElectricityModuleBlockEntity extends BlockEntity implement
 {
     protected final Set<Connection> connections = new HashSet<>();
     protected boolean receivingPower;
+    protected boolean inPowerableNetwork;
 
     public ElectricityModuleBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
     {
@@ -55,15 +56,27 @@ public abstract class ElectricityModuleBlockEntity extends BlockEntity implement
     }
 
     @Override
-    public void setNodeReceivingPower(boolean power)
+    public void setNodeReceivingPower(boolean state)
     {
-        this.receivingPower = power;
+        this.receivingPower = state;
     }
 
     @Override
     public boolean isNodeReceivingPower()
     {
         return this.receivingPower;
+    }
+
+    @Override
+    public void setNodeInPowerableNetwork(boolean state)
+    {
+        this.inPowerableNetwork = state;
+    }
+
+    @Override
+    public boolean isNodeInPowerableNetwork()
+    {
+        return this.inPowerableNetwork;
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, ElectricityModuleBlockEntity module)
@@ -115,5 +128,12 @@ public abstract class ElectricityModuleBlockEntity extends BlockEntity implement
     public void saveToItem(ItemStack stack)
     {
         this.saveNodeNbtToItem(stack);
+    }
+
+    @Override
+    public void setLevel(Level level)
+    {
+        super.setLevel(level);
+        this.registerElectricityNodeTicker(level);
     }
 }

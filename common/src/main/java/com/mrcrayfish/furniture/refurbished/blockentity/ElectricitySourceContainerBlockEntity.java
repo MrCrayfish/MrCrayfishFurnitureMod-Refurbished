@@ -71,7 +71,7 @@ public abstract class ElectricitySourceContainerBlockEntity extends Randomizable
     public void setLevel(Level level)
     {
         super.setLevel(level);
-        this.registerSourceNodeTicker(level);
+        this.registerElectricityNodeTicker(level);
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.mrcrayfish.furniture.refurbished.electricity;
 
 import com.mrcrayfish.furniture.refurbished.Config;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 
@@ -61,12 +60,21 @@ public interface ISourceNode extends IElectricityNode
     }
 
     @Override
-    default void setNodeReceivingPower(boolean power) {}
+    default void setNodeReceivingPower(boolean state) {}
 
     @Override
     default boolean isNodeReceivingPower()
     {
         return false;
+    }
+
+    @Override
+    default void setNodeInPowerableNetwork(boolean state) {}
+
+    @Override
+    default boolean isNodeInPowerableNetwork()
+    {
+        return true; // Source nodes are always in a network
     }
 
     @Override
@@ -86,35 +94,31 @@ public interface ISourceNode extends IElectricityNode
     /**
      * An early tick called at the start of the level tick before other block entities are ticked
      */
-    default void earlyNodeLevelTick()
+    @Override
+    default void startLevelTick(Level level)
     {
-        // TODO figure out way to cache this instead of searching again every tick
-        if(this.isNodePowered() && !this.isNodeOverloaded())
+        if(!level.isClientSide())
         {
-            //long time = Util.getNanos();
-            NodeSearchResult result = this.searchNodeNetwork();
-            if(result.overloaded())
+            if(this.isNodePowered() && !this.isNodeOverloaded())
             {
-                this.setNodeOverloaded(true);
-                this.onNodeOverloaded();
-                return;
+                //long time = Util.getNanos();
+                // TODO figure out way to cache this instead of searching again every tick
+                NodeSearchResult result = this.searchNodeNetwork(false);
+                if(result.overloaded())
+                {
+                    this.setNodeOverloaded(true);
+                    this.onNodeOverloaded();
+                    return;
+                }
+                result.nodes().forEach(node -> node.setNodeReceivingPower(true));
+                //long searchTime = Util.getNanos() - time;
+                //System.out.println("Search time: " + searchTime);
             }
-            result.nodes().forEach(node -> node.setNodeReceivingPower(true));
-            //long searchTime = Util.getNanos() - time;
-            //System.out.println("Search time: " + searchTime);
         }
-    }
-
-    /**
-     * Registers this source node into the electricity ticker handler
-     *
-     * @param level the level of this source node
-     */
-    default void registerSourceNodeTicker(Level level)
-    {
-        if(level instanceof ServerLevel serverLevel)
+        else
         {
-            ElectricityTicker.get(serverLevel).addSourceNode(this);
+            NodeSearchResult result = this.searchNodeNetwork(true);
+            result.nodes().forEach(node -> node.setNodeInPowerableNetwork(true));
         }
     }
 
@@ -124,10 +128,10 @@ public interface ISourceNode extends IElectricityNode
      *
      * @return a result of all found nodes and if it's overloaded
      */
-    default NodeSearchResult searchNodeNetwork()
+    default NodeSearchResult searchNodeNetwork(boolean cancelAtLimit)
     {
         int powerableAreaRadius = Config.SERVER.electricity.powerableAreaRadius.get();
-        List<IElectricityNode> nodes = IElectricityNode.searchNodes(this, powerableAreaRadius, this.getMaxPowerableNodes(), false, node -> !node.isSourceNode() && node.canPowerTraverseNode(), node -> !node.isSourceNode());
+        List<IElectricityNode> nodes = IElectricityNode.searchNodes(this, powerableAreaRadius, this.getMaxPowerableNodes(), cancelAtLimit, node -> !node.isSourceNode() && node.canPowerTraverseNode(), node -> !node.isSourceNode());
         boolean overloaded = nodes.size() > this.getMaxPowerableNodes();
         return new NodeSearchResult(overloaded, nodes);
     }

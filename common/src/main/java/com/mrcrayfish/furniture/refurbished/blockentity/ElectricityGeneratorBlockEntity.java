@@ -82,7 +82,7 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
     {
         if(!this.enabled)
         {
-            this.searchNodeNetwork();
+            this.searchNodeNetwork(false);
         }
         return new ElectricityGeneratorMenu(windowId, playerInventory, this, this.data);
     }
@@ -156,7 +156,7 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
         this.enabled = !this.enabled;
         if(this.enabled)
         {
-            NodeSearchResult result = this.searchNodeNetwork();
+            NodeSearchResult result = this.searchNodeNetwork(false);
             if(!result.overloaded())
             {
                 if(this.overloaded)
@@ -180,9 +180,9 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
     }
 
     @Override
-    public NodeSearchResult searchNodeNetwork()
+    public NodeSearchResult searchNodeNetwork(boolean cancelAtLimit)
     {
-        NodeSearchResult result = super.searchNodeNetwork();
+        NodeSearchResult result = super.searchNodeNetwork(cancelAtLimit);
         this.nodeCount = result.nodes().size();
         return result;
     }
@@ -305,9 +305,12 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
     }
 
     @Override
-    public void earlyNodeLevelTick()
+    public void startLevelTick(Level level)
     {
-        this.processTick();
-        super.earlyNodeLevelTick();
+        if(!level.isClientSide())
+        {
+            this.processTick();
+        }
+        super.startLevelTick(level);
     }
 }

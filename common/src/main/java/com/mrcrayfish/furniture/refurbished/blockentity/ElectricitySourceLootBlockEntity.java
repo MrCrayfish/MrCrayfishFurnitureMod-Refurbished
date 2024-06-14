@@ -2,12 +2,10 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.electricity.Connection;
-import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
 import com.mrcrayfish.furniture.refurbished.electricity.ISourceNode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -72,7 +70,7 @@ public abstract class ElectricitySourceLootBlockEntity extends BasicLootBlockEnt
     public void setLevel(Level level)
     {
         super.setLevel(level);
-        this.registerSourceNodeTicker(level);
+        this.registerElectricityNodeTicker(level);
     }
 
     @Override
