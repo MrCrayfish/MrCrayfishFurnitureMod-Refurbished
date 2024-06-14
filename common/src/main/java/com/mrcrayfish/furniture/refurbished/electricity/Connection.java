@@ -64,6 +64,27 @@ public class Connection
     }
 
     /**
+     * Gets the first powerable node in the connection/link.
+     * @param level
+     * @return
+     */
+    @Nullable
+    public IElectricityNode getPowerableNode(Level level)
+    {
+        IElectricityNode a = this.a.getElectricNode(level);
+        if(a != null && a.isNodeInPowerableNetwork())
+        {
+            return a;
+        }
+        IElectricityNode b = this.b.getElectricNode(level);
+        if(b != null && b.isNodeInPowerableNetwork())
+        {
+            return b;
+        }
+        return null;
+    }
+
+    /**
      * Determines if this connection is connected. A connection is considered connected when
      * the nodes in this connection are both valid.
      *
@@ -108,6 +129,7 @@ public class Connection
      */
     public boolean isCrossingPowerableZone(Level level)
     {
+        // TODO check for same powerable sources
         IElectricityNode a = this.a.getElectricNode(level);
         IElectricityNode b = this.b.getElectricNode(level);
         return (a != null && a.isNodeInPowerableNetwork()) ^ (b != null && b.isNodeInPowerableNetwork());

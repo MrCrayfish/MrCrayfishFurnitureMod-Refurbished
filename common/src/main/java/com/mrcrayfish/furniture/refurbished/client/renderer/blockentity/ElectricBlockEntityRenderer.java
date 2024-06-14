@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -33,7 +34,9 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNod
     private static final Set<Connection> DRAWN_CONNECTIONS = new HashSet<>();
     private static final int DEFAULT_COLOUR = 0xFFFFFFFF;
     private static final int ERROR_COLOUR = 0xFFC33636;
-    private static final int CONNECTION_COLOUR = 0xFFFFC54C;
+    private static final int POWERABLE_COLOUR = 0xFFFFDA4C;
+    private static final int POWERED_COLOUR = 0xFF60E6C6;
+    private static final int CROSSING_ZONE_COLOUR = 0xFFE07E38;
     private static final float POWER_NODE_SCALE = 1.5F;
 
     public ElectricBlockEntityRenderer(BlockEntityRendererProvider.Context context) {}
@@ -83,17 +86,34 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNod
                 double pitch = Math.atan2(delta.horizontalDistance(), delta.y) + Mth.HALF_PI;
                 poseStack.mulPose(Axis.YP.rotation((float) yaw));
                 poseStack.mulPose(Axis.ZP.rotation((float) pitch));
-                boolean selected = !handler.isLinking() && connection.equals(handler.getTargetLink());
-                int color = selected ? ERROR_COLOUR : connection.isPowered(node.getNodeLevel()) ? CONNECTION_COLOUR : DEFAULT_COLOUR;
-                float offset = (float) (Math.sin(Util.getMillis() / 500.0) + 1.0F) / 2.0F * 0.2F;
+                boolean selected = !handler.isLinking() && connection.equals(handler.getTargetConnection());
+                int color = selected ? ERROR_COLOUR : getConnectionColour(connection, node.getNodeLevel());
+                float offset = selected ? 0.2F : (float) (Math.sin(Util.getMillis() / 500.0) + 1.0F) / 2.0F * 0.2F;
                 AABB connectionBox = new AABB(0, -0.03125, -0.03125, delta.length(), 0.03125, 0.03125);
-                LinkHandler.drawColouredBox(poseStack, source, connectionBox, color, 0.6F + offset);
-                LinkHandler.drawColouredBox(poseStack, source, connectionBox.inflate(0.03125), color, 0.4F + offset);
+                LinkHandler.drawColouredBox(poseStack, source, connectionBox, color, 0.7F + offset); // TODO remove offset if target
+                LinkHandler.drawColouredBox(poseStack, source, connectionBox.inflate(0.03125), color, 0.5F + offset);
                 poseStack.popPose();
                 DRAWN_CONNECTIONS.add(connection);
             }
         }
         poseStack.popPose();
+    }
+
+    private static int getConnectionColour(Connection connection, Level level)
+    {
+        if(connection.isPowered(level))
+        {
+            return POWERED_COLOUR;
+        }
+        if(connection.isPowerable(level))
+        {
+            return POWERABLE_COLOUR;
+        }
+        if(connection.isCrossingPowerableZone(level))
+        {
+            return CROSSING_ZONE_COLOUR;
+        }
+        return DEFAULT_COLOUR;
     }
 
     private static BakedModel getNodeModel(IElectricityNode node)
@@ -113,7 +133,7 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNod
             return ExtraModels.ELECTRIC_NODE_ERROR.getModel();
         }
 
-        if(node.isSourceNode())
+        if(node.isNodePowered())
         {
             return ExtraModels.ELECTRIC_NODE_POWER.getModel();
         }
