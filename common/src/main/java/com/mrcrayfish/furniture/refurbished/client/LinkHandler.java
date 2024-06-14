@@ -133,7 +133,7 @@ public class LinkHandler
      */
     public double getLinkLength()
     {
-        return this.linkLength;
+        return this.lastNodePos != null ? this.linkLength : 0;
     }
 
     /**
@@ -183,12 +183,30 @@ public class LinkHandler
         this.sourcePositions.clear();
 
         Minecraft mc = Minecraft.getInstance();
-        if(mc.level == null || this.lastNodePos == null)
+        if(mc.level == null)
             return;
 
-        // Find source node block positions from the linking and target node
+        // Find source node block positions from the linking node
+        IElectricityNode linking = this.getLinkingNode(mc.level);
         this.addSourceNodePositions(this.sourcePositions, this.getLinkingNode(mc.level));
-        this.addSourceNodePositions(this.sourcePositions, this.getTargetNode());
+
+        // Find all sources starting from the target node
+        IElectricityNode target = this.getTargetNode();
+        if(linking != null)
+        {
+            this.addSourceNodePositions(this.sourcePositions, this.getTargetNode());
+        }
+
+        // Finally try to find sources from target link if it only crosses the powerable zone
+        if(linking == null && target == null)
+        {
+            Connection connection = this.getTargetConnection();
+            if(connection != null && connection.isCrossingPowerableZone(mc.level))
+            {
+                IElectricityNode node = connection.getPowerableNode(mc.level);
+                this.addSourceNodePositions(this.sourcePositions, node);
+            }
+        }
     }
 
     /**
@@ -202,14 +220,30 @@ public class LinkHandler
         this.linkInsideArea = false;
 
         Minecraft mc = Minecraft.getInstance();
-        if(mc.player == null || this.lastNodePos == null)
+        if(mc.player == null)
             return;
 
-        // Determine if the current link is in the powerable zone of the found sources
-        this.linkInsideArea = this.sourcePositions.isEmpty() || this.sourcePositions.stream().anyMatch(pos -> {
-            AABB box = new AABB(pos).inflate(Config.SERVER.electricity.powerableAreaRadius.get());
-            return box.contains(this.lastNodePos.getCenter()) && box.contains(this.getLinkEnd(mc.player, partialTick));
-        });
+        if(this.sourcePositions.isEmpty())
+        {
+            this.linkInsideArea = true;
+        }
+        else if(this.lastNodePos != null)
+        {
+            this.linkInsideArea = this.sourcePositions.stream().anyMatch(pos -> {
+                AABB box = new AABB(pos).inflate(Config.SERVER.electricity.powerableAreaRadius.get());
+                return box.contains(this.lastNodePos.getCenter()) && box.contains(this.getLinkEnd(mc.player, partialTick));
+            });
+        }
+        else if(this.result instanceof LinkHitResult hitResult)
+        {
+            Connection connection = hitResult.getConnection();
+            Vec3 start = connection.getPosA().getCenter();
+            Vec3 end = connection.getPosB().getCenter();
+            this.linkInsideArea = this.sourcePositions.stream().anyMatch(pos -> {
+                AABB box = new AABB(pos).inflate(Config.SERVER.electricity.powerableAreaRadius.get());
+                return box.contains(start) && box.contains(end);
+            });
+        }
     }
 
     /**
@@ -265,7 +299,7 @@ public class LinkHandler
      * @return The connection link the local player is currently looking at or null
      */
     @Nullable
-    public Connection getTargetLink()
+    public Connection getTargetConnection()
     {
         return this.result instanceof LinkHitResult linkResult ? linkResult.getConnection() : null;
     }
@@ -283,19 +317,30 @@ public class LinkHandler
      */
     public void render(Player player, PoseStack poseStack, MultiBufferSource.BufferSource source, float partialTick)
     {
-        this.linkLength = 0;
-
-        if(this.lastNodePos == null)
-            return;
-
-        if(!player.isAlive() || !player.getMainHandItem().is(ModItems.WRENCH.get())) {
+        if(!player.isAlive() || !player.getMainHandItem().is(ModItems.WRENCH.get()))
+        {
             this.lastNodePos = null;
-            return;
         }
 
         this.renderPowerableArea(poseStack, player, partialTick);
 
-        Vec3 start = Vec3.atCenterOf(this.lastNodePos);
+        if(this.lastNodePos != null)
+        {
+            this.renderPartialLink(player, this.lastNodePos, poseStack, source, partialTick);
+        }
+    }
+
+    /**
+     *
+     * @param player
+     * @param pos
+     * @param poseStack
+     * @param source
+     * @param partialTick
+     */
+    private void renderPartialLink(Player player, BlockPos pos, PoseStack poseStack, MultiBufferSource.BufferSource source, float partialTick)
+    {
+        Vec3 start = Vec3.atCenterOf(pos);
         Vec3 end = this.getLinkEnd(player, partialTick);
         Vec3 delta = end.subtract(start);
         this.linkLength = delta.length();

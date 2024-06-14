@@ -1,9 +1,9 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.overlay;
 
 import com.mrcrayfish.furniture.refurbished.Components;
-import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.client.LinkHandler;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.IconButton;
+import com.mrcrayfish.furniture.refurbished.electricity.Connection;
 import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
 import com.mrcrayfish.furniture.refurbished.electricity.LinkManager;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
@@ -57,12 +57,6 @@ public class NodeIndicatorOverlay implements IHudOverlay
                     return;
                 }
 
-                if(linking.isConnectedToNode(target))
-                {
-                    this.drawLabel(mc, graphics, Components.GUI_LINK_ALREADY_CONNECTED, 40, 0);
-                    return;
-                }
-
                 if(target.isNodeConnectionLimitReached())
                 {
                     this.drawLabel(mc, graphics, Components.GUI_LINK_TOO_MANY, 40, 0);
@@ -94,6 +88,16 @@ public class NodeIndicatorOverlay implements IHudOverlay
             Component label = Utils.translation("gui", "progress", target.getNodeConnections().size(), Components.GUI_SLASH, target.getNodeMaximumConnections());
             this.drawLabel(mc, graphics, label, 0, 10);
             return;
+        }
+
+        Connection connection = handler.getTargetConnection();
+        if(connection != null)
+        {
+            if(connection.isCrossingPowerableZone(mc.level))
+            {
+                this.drawLabel(mc, graphics, Components.GUI_LINK_OUTSIDE_AREA, 40, 0);
+                return;
+            }
         }
 
         if(mc.hitResult instanceof BlockHitResult result && mc.player.isCrouching())

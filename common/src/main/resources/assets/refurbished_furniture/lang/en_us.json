@@ -537,7 +537,7 @@
     "gui.refurbished_furniture.link_already_connected": "Already connected",
     "gui.refurbished_furniture.link_invalid_node": "Invalid node",
     "gui.refurbished_furniture.link_unpowerable": "Link will not be powered",
-    "gui.refurbished_furniture.link_outside_area": "Link is outside of the powerable zone",
+    "gui.refurbished_furniture.link_outside_area": "Link crosses to the outside of the powerable zone",
     "gui.refurbished_furniture.connect_to_power": "Ensure the block is receiving power from an %s. It can be connected using a %s.",
     "gui.refurbished_furniture.electricity_generator": "Electricity Generator",
     "gui.refurbished_furniture.jei_campfire_info": "Inherited from Campfire Cooking",
