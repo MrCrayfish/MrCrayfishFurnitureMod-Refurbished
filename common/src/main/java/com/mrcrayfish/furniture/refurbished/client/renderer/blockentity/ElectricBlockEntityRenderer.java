@@ -33,10 +33,8 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNod
 {
     private static final Set<Connection> DRAWN_CONNECTIONS = new HashSet<>();
     private static final int DEFAULT_COLOUR = 0xFFFFFFFF;
-    private static final int ERROR_COLOUR = 0xFFC33636;
-    private static final int POWERABLE_COLOUR = 0xFFFFDA4C;
-    private static final int POWERED_COLOUR = 0xFF60E6C6;
-    private static final int CROSSING_ZONE_COLOUR = 0xFFE07E38;
+    private static final int POWERED_COLOUR = 0xFFFFDA4C;
+    private static final int CROSSING_ZONE_COLOUR = 0xFFC33636;
     private static final float POWER_NODE_SCALE = 1.5F;
 
     public ElectricBlockEntityRenderer(BlockEntityRendererProvider.Context context) {}
@@ -87,11 +85,15 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNod
                 poseStack.mulPose(Axis.YP.rotation((float) yaw));
                 poseStack.mulPose(Axis.ZP.rotation((float) pitch));
                 boolean selected = !handler.isLinking() && connection.equals(handler.getTargetConnection());
-                int color = selected ? ERROR_COLOUR : getConnectionColour(connection, node.getNodeLevel());
-                float offset = selected ? 0.2F : (float) (Math.sin(Util.getMillis() / 500.0) + 1.0F) / 2.0F * 0.2F;
+                int color = getConnectionColour(connection, node.getNodeLevel());
+                float offset = (float) (Math.sin(Util.getMillis() / 500.0) + 1.0F) / 2.0F * 0.2F;
                 AABB connectionBox = new AABB(0, -0.03125, -0.03125, delta.length(), 0.03125, 0.03125);
                 LinkHandler.drawColouredBox(poseStack, source, connectionBox, color, 0.7F + offset); // TODO remove offset if target
                 LinkHandler.drawColouredBox(poseStack, source, connectionBox.inflate(0.03125), color, 0.5F + offset);
+                if(selected)
+                {
+                    LinkHandler.drawColouredBox(poseStack, source, connectionBox.inflate(0.03125), 0xFFFFFFFF, 0.5F);
+                }
                 poseStack.popPose();
                 DRAWN_CONNECTIONS.add(connection);
             }
@@ -104,10 +106,6 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNod
         if(connection.isPowered(level))
         {
             return POWERED_COLOUR;
-        }
-        if(connection.isPowerable(level))
-        {
-            return POWERABLE_COLOUR;
         }
         if(connection.isCrossingPowerableZone(level))
         {
@@ -135,10 +133,10 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNod
 
         if(node.isNodePowered())
         {
-            return ExtraModels.ELECTRIC_NODE_POWER.getModel();
+            return ExtraModels.ELECTRIC_NODE_NEUTRAL.getModel();
         }
 
-        return ExtraModels.ELECTRIC_NODE_NEUTRAL.getModel();
+        return ExtraModels.ELECTRIC_NODE_POWER.getModel();
     }
 
     @Override
