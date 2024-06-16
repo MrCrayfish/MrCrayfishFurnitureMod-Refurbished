@@ -326,7 +326,7 @@ public class LinkHandler
 
         if(this.lastNodePos != null)
         {
-            this.renderPartialLink(player, this.lastNodePos, poseStack, source, partialTick);
+            this.renderUnfinishedLink(player, this.lastNodePos, poseStack, source, partialTick);
         }
     }
 
@@ -338,7 +338,7 @@ public class LinkHandler
      * @param source
      * @param partialTick
      */
-    private void renderPartialLink(Player player, BlockPos pos, PoseStack poseStack, MultiBufferSource.BufferSource source, float partialTick)
+    private void renderUnfinishedLink(Player player, BlockPos pos, PoseStack poseStack, MultiBufferSource.BufferSource source, float partialTick)
     {
         Vec3 start = Vec3.atCenterOf(pos);
         Vec3 end = this.getLinkEnd(player, partialTick);
@@ -351,7 +351,8 @@ public class LinkHandler
         poseStack.mulPose(Axis.YP.rotation((float) yaw));
         poseStack.mulPose(Axis.ZP.rotation((float) pitch));
         int color = this.getLinkColour(player.level());
-        drawColouredBox(poseStack, source, new AABB(0, -0.03125, -0.03125, delta.length(), 0.03125, 0.03125), color, 0.75F);
+        drawColouredBox(poseStack, source, new AABB(0, -0.03125, -0.03125, delta.length(), 0.03125, 0.03125), color, 0.8F);
+        drawColouredBox(poseStack, source, new AABB(0, -0.03125, -0.03125, delta.length(), 0.03125, 0.03125).inflate(0.03125), color, 0.6F);
         poseStack.popPose();
     }
 
@@ -370,7 +371,7 @@ public class LinkHandler
         {
             return node.getNodePosition().getCenter();
         }
-        return player.getViewVector(partialTick).add(player.getEyePosition(partialTick));
+        return player.getViewVector(partialTick).normalize().scale(1.5).add(player.getEyePosition(partialTick));
     }
 
     /**
