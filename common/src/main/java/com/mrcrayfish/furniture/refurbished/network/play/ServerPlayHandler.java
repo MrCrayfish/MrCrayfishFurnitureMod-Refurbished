@@ -87,7 +87,7 @@ public class ServerPlayHandler
                 // Check if the player is near the nodes that are being disconnected
                 Vec3 a = c.getPosA().getCenter();
                 Vec3 b = c.getPosB().getCenter();
-                double maxDistance = a.distanceToSqr(b);
+                double maxDistance = Math.max(25, a.distanceToSqr(b));
                 if(player.distanceToSqr(a) > maxDistance && player.distanceToSqr(b) > maxDistance)
                     return;
 
