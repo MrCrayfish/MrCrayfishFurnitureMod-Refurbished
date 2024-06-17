@@ -18,13 +18,11 @@ public class ClientLoader implements Runnable
         ModRecipeBookCategories.getAllCategories().forEach(this::registerRecipeBookCategory);
     }
 
-
     /**
      * Registers a new RecipeBookCategories constant. It is important to make sure the constant name
      * is unique; prefixing with the id of your mod should suffice.
      *
-     * @param constantName the name of the constant
-     * @param icon         the icon to display in the crafting book
+     * @param holder the name of the constant
      */
     private void registerRecipeBookCategory(RecipeBookCategoryHolder holder)
     {

@@ -8,8 +8,9 @@ plugins {
     id 'org.spongepowered.mixin'
 }
 
-archivesBaseName = "${mod_id}-forge"
-version = "${minecraft_version}-${mod_version}"
+base {
+    archivesName = "${mod_id}-forge"
+}
 
 mixin {
     add(sourceSets.main, "${mod_id}.refmap.json")
@@ -19,6 +20,7 @@ mixin {
 
 minecraft {
     mappings channel: 'official', version: minecraft_version
+    copyIdeResources = true
 
     if (file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
         accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')

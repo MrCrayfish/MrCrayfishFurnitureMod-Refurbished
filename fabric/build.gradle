@@ -5,8 +5,9 @@ plugins {
     id 'fabric-loom'
 }
 
-archivesBaseName = "${mod_id}-fabric"
-version = "${minecraft_version}-${mod_version}"
+base {
+    archivesName = "${mod_id}-fabric"
+}
 
 configurations {
     modImplementation.extendsFrom library
@@ -14,12 +15,12 @@ configurations {
 
 repositories {
     maven {
-        name = 'Fabric-ASM and other GitHub repos'
-        url = "https://jitpack.io/"
-    }
-    maven {
         name = 'Fabricators of Create: Porting Lib'
         url = "https://mvn.devos.one/releases/"
+    }
+    maven {
+        name = 'Fabric-ASM and other GitHub repos'
+        url = "https://jitpack.io/"
     }
 }
 
