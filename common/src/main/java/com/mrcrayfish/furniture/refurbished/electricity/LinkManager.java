@@ -70,42 +70,54 @@ public class LinkManager extends SavedData
      *
      * @param level          the level where the interacted happened
      * @param player         the player interacting with the node
-     * @param interactedNode the node that was interacted
+     * @param node the node that was interacted
      */
-    public void onNodeInteract(Level level, Player player, IElectricityNode interactedNode)
+    public void onNodeInteract(Level level, Player player, IElectricityNode node)
     {
         // Prevent interaction if reached connection limit
-        if(interactedNode.isNodeConnectionLimitReached())
+        if(node.isNodeConnectionLimitReached())
             return;
 
-        if(!this.lastNodeMap.containsKey(player.getUUID()))
-        {
-            BlockPos pos = interactedNode.getNodePosition();
-            this.lastNodeMap.put(player.getUUID(), pos);
-            level.playSound(null, interactedNode.getNodePosition(), ModSounds.ITEM_WRENCH_SELECTED_NODE.get(), SoundSource.BLOCKS);
-            Network.getPlay().sendToPlayer(() -> (ServerPlayer) player, new MessageSyncLink(pos));
+        if(this.startLinking(node.getNodePosition(), level, player))
             return;
-        }
 
         // Attempt to connect the two nodes together
         BlockPos previousPos = this.lastNodeMap.get(player.getUUID());
-        IElectricityNode lastNode = level.getBlockEntity(previousPos) instanceof IElectricityNode node ? node : null;
-        if(lastNode != null && lastNode != interactedNode)
+        IElectricityNode lastNode = level.getBlockEntity(previousPos) instanceof IElectricityNode n ? n : null;
+        if(lastNode != null && lastNode != node)
         {
             // Sources nodes can't connect to other source nodes
-            if(lastNode.isSourceNode() && interactedNode.isSourceNode())
+            if(lastNode.isSourceNode() && node.isSourceNode())
                 return;
 
-            int linkLength = (int) (lastNode.getNodePosition().getCenter().distanceTo(interactedNode.getNodePosition().getCenter()) + 0.5);
+            int linkLength = (int) (lastNode.getNodePosition().getCenter().distanceTo(node.getNodePosition().getCenter()) + 0.5);
             if(linkLength <= MAX_LINK_LENGTH)
             {
-                lastNode.connectToNode(interactedNode);
-                level.playSound(null, interactedNode.getNodePosition(), ModSounds.ITEM_WRENCH_CONNECTED_LINK.get(), SoundSource.BLOCKS);
                 this.lastNodeMap.remove(player.getUUID());
-                // Update the client that the linking should stop
+                lastNode.connectToNode(node);
+
+                // Allows the player to chain links more quickly. Sneaking will continue linking
+                if(player.isCrouching() && this.startLinking(node.getNodePosition(), level, player))
+                {
+                    Network.getPlay().sendToPlayer(() -> (ServerPlayer) player, new MessageSyncLink(node.getNodePosition()));
+                    return;
+                }
+                level.playSound(null, node.getNodePosition(), ModSounds.ITEM_WRENCH_CONNECTED_LINK.get(), SoundSource.BLOCKS);
                 Network.getPlay().sendToPlayer(() -> (ServerPlayer) player, new MessageSyncLink(null));
             }
         }
+    }
+
+    private boolean startLinking(BlockPos pos, Level level, Player player)
+    {
+        if(!this.lastNodeMap.containsKey(player.getUUID()))
+        {
+            this.lastNodeMap.put(player.getUUID(), pos);
+            level.playSound(null, pos, ModSounds.ITEM_WRENCH_SELECTED_NODE.get(), SoundSource.BLOCKS);
+            Network.getPlay().sendToPlayer(() -> (ServerPlayer) player, new MessageSyncLink(pos));
+            return true;
+        }
+        return false;
     }
 
     /**
