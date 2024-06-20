@@ -1,19 +1,16 @@
 package com.mrcrayfish.furniture.refurbished.electricity;
 
-import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSyncLink;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.saveddata.SavedData;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,9 +22,8 @@ import java.util.UUID;
  * <p>
  * Author: MrCrayfish
  */
-public class LinkManager extends SavedData
+public class LinkManager
 {
-    private static final String STORAGE_ID = "refurbished_furniture_link_manager";
     public static final double MAX_LINK_LENGTH = 512; // TODO remove
 
     public static Optional<LinkManager> get(MinecraftServer server)
@@ -35,25 +31,12 @@ public class LinkManager extends SavedData
         ServerLevel level = server.getLevel(Level.OVERWORLD);
         if(level != null)
         {
-            return Optional.of(level.getDataStorage().computeIfAbsent(tag -> new LinkManager(), LinkManager::new, STORAGE_ID));
+            return Optional.of(((Access) level).refurbishedFurniture$GetLinkManager());
         }
         return Optional.empty();
     }
 
     private final Map<UUID, BlockPos> lastNodeMap = new HashMap<>();
-
-    @Override
-    public CompoundTag save(CompoundTag tag)
-    {
-        return new CompoundTag();
-    }
-
-    @Override
-    public boolean isDirty()
-    {
-        // Ensure this never saves
-        return false;
-    }
 
     /**
      * Called when a player interacts with an electric node. This handles creating a link between
@@ -139,5 +122,10 @@ public class LinkManager extends SavedData
     public void onPlayerLoggedOut(Player player)
     {
         this.lastNodeMap.remove(player.getUUID());
+    }
+
+    public interface Access
+    {
+        LinkManager refurbishedFurniture$GetLinkManager();
     }
 }
