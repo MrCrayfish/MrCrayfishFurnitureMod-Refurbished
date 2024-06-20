@@ -311,6 +311,12 @@
             "refurbished_furniture:item/wrench/connected_link"
         ]
     },
+    "item.wrench.hover_link": {
+        "subtitle": "subtitle.refurbished_furniture.wrench_hover_link",
+        "sounds": [
+            "refurbished_furniture:item/wrench/hover_link"
+        ]
+    },
     "item.knife.chop": {
         "subtitle": "subtitle.refurbished_furniture.knife_chop",
         "sounds": [

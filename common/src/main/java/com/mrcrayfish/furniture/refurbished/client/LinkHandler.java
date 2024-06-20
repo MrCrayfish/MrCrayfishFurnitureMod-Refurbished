@@ -33,6 +33,7 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
@@ -49,7 +50,6 @@ import org.joml.Matrix4f;
 import org.joml.Vector3d;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -158,6 +158,7 @@ public class LinkHandler
      */
     private void updateHitResult(float partialTick)
     {
+        HitResult last = this.result;
         this.result = null;
         Minecraft mc = Minecraft.getInstance();
         if(mc.player != null && mc.level != null && mc.gameMode != null)
@@ -166,14 +167,30 @@ public class LinkHandler
             if(mc.player.getMainHandItem().is(ModItems.WRENCH.get()))
             {
                 float range = mc.gameMode.getPickRange();
-                this.result = WrenchItem.performNodeRaycast(mc.level, mc.player, range, partialTick);
-
+                HitResult newResult = WrenchItem.performNodeRaycast(mc.level, mc.player, range, partialTick);
                 // If missed, try to raycast for links
-                if(this.result.getType() == HitResult.Type.MISS)
+                if(newResult.getType() == HitResult.Type.MISS)
                 {
-                    this.result = this.performLinkRaycast(mc.player, partialTick, range);
+                    newResult = this.performLinkRaycast(mc.player, partialTick, range);
+                }
+                if(newResult.getType() != HitResult.Type.MISS)
+                {
+                    this.playHoverSound(last, newResult, mc.player, mc.level);
+                    this.result = newResult;
                 }
             }
+        }
+    }
+
+    private void playHoverSound(@Nullable HitResult oldResult, @Nullable HitResult newResult, Player player, Level level)
+    {
+        if((oldResult == null || !oldResult.equals(newResult)) && newResult instanceof LinkHitResult)
+        {
+            if(this.lastNodePos != null)
+                return;
+            Vec3 pos = newResult.getLocation();
+            float pitch = 1.0F + 0.05F * level.random.nextFloat();
+            level.playSound(player, pos.x, pos.y, pos.z, ModSounds.ITEM_WRENCH_HOVER_LINK.get(), SoundSource.BLOCKS, 1.0F, pitch);
         }
     }
 

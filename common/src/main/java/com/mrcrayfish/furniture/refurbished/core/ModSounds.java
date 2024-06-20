@@ -65,6 +65,7 @@ public class ModSounds
     public static final RegistryEntry<SoundEvent> ITEM_WRENCH_SELECTED_NODE = RegistryEntry.soundEvent(Utils.resource("item.wrench.selected_node"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> ITEM_WRENCH_REMOVE_LINK = RegistryEntry.soundEvent(Utils.resource("item.wrench.remove_link"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> ITEM_WRENCH_CONNECTED_LINK = RegistryEntry.soundEvent(Utils.resource("item.wrench.connected_link"), id -> () -> SoundEvent.createVariableRangeEvent(id));
+    public static final RegistryEntry<SoundEvent> ITEM_WRENCH_HOVER_LINK = RegistryEntry.soundEvent(Utils.resource("item.wrench.hover_link"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> ITEM_KNIFE_CHOP = RegistryEntry.soundEvent(Utils.resource("item.knife.chop"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> ITEM_SPATULA_SCOOP = RegistryEntry.soundEvent(Utils.resource("item.spatula.scoop"), id -> () -> SoundEvent.createVariableRangeEvent(id));
     public static final RegistryEntry<SoundEvent> UI_PADDLE_BALL_RETRO_CLICK = RegistryEntry.soundEvent(Utils.resource("ui.paddle_ball.retro_click"), id -> () -> SoundEvent.createVariableRangeEvent(id));
