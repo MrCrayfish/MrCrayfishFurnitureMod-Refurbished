@@ -24,8 +24,8 @@ import java.util.Set;
 public abstract class ElectricityModuleContainerBlockEntity extends RandomizableContainerBlockEntity implements IModuleNode
 {
     protected final Set<Connection> connections = new HashSet<>();
+    protected final Set<BlockPos> powerSources = new HashSet<>();
     protected boolean receivingPower;
-    protected boolean inPowerableNetwork;
 
     public ElectricityModuleContainerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
     {
@@ -69,15 +69,9 @@ public abstract class ElectricityModuleContainerBlockEntity extends Randomizable
     }
 
     @Override
-    public void setNodeInPowerableNetwork(boolean state)
+    public Set<BlockPos> getPowerSources()
     {
-        this.inPowerableNetwork = state;
-    }
-
-    @Override
-    public boolean isNodeInPowerableNetwork()
-    {
-        return this.inPowerableNetwork;
+        return this.powerSources;
     }
 
     @Override

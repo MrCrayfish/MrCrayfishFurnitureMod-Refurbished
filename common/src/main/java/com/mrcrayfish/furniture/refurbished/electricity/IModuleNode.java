@@ -48,7 +48,7 @@ public interface IModuleNode extends IElectricityNode
     @Override
     default void startLevelTick(Level level)
     {
-        this.setNodeInPowerableNetwork(false);
+        this.getPowerSources().clear();
     }
 
     /**

@@ -1,11 +1,15 @@
 package com.mrcrayfish.furniture.refurbished.electricity;
 
 import com.mrcrayfish.furniture.refurbished.Config;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Author: MrCrayfish
@@ -69,10 +73,13 @@ public interface ISourceNode extends IElectricityNode
     }
 
     @Override
-    default void setNodeInPowerableNetwork(boolean state) {}
+    default Set<BlockPos> getPowerSources()
+    {
+        return new HashSet<>(Collections.singleton(this.getNodePosition()));
+    }
 
     @Override
-    default boolean isNodeInPowerableNetwork()
+    default boolean isNodeInPowerableNetwork(BlockPos source)
     {
         return true; // Source nodes are always in a network
     }
@@ -118,20 +125,19 @@ public interface ISourceNode extends IElectricityNode
         else
         {
             NodeSearchResult result = this.searchNodeNetwork(true);
-            result.nodes().forEach(node -> node.setNodeInPowerableNetwork(true));
+            result.nodes().forEach(node -> node.getPowerSources().add(this.getNodePosition()));
         }
     }
 
     /**
      * The default search algorithm for locating electricity nodes. See {@link IElectricityNode#searchNodes}
-     * for more information on how searching works.
+     * for more information on how searching works. Changing the default
      *
      * @return a result of all found nodes and if it's overloaded
      */
     default NodeSearchResult searchNodeNetwork(boolean cancelAtLimit)
     {
-        int powerableAreaRadius = Config.SERVER.electricity.powerableAreaRadius.get();
-        List<IElectricityNode> nodes = IElectricityNode.searchNodes(this, powerableAreaRadius, this.getMaxPowerableNodes(), cancelAtLimit, node -> !node.isSourceNode() && node.canPowerTraverseNode(), node -> !node.isSourceNode());
+        List<IElectricityNode> nodes = IElectricityNode.searchNodes(this, this.getMaxPowerableNodes(), cancelAtLimit, node -> !node.isSourceNode() && node.canPowerTraverseNode(), node -> !node.isSourceNode());
         boolean overloaded = nodes.size() > this.getMaxPowerableNodes();
         return new NodeSearchResult(overloaded, nodes);
     }

@@ -73,19 +73,30 @@ public interface IElectricityNode
     void setNodeReceivingPower(boolean state);
 
     /**
-     * Marks this node as being a part of a powerable network or not. Used mainly for rendering
-     * purposes. A node is in a powerable network if it can be powered by a source node connecting
-     * to this node or either through neighbouring nodes.
+     * Gets the set of the block positions representing the position of the source nodes that are
+     * powering this node. This is handled automatically, implementations should just return a
+     * hash set.
      *
-     * @param state the state of being in a valid network
+     * @return A set of the block positions representing the position of the source nodes
      */
-    void setNodeInPowerableNetwork(boolean state);
+    Set<BlockPos> getPowerSources();
 
     /**
-     * @return True if in a powerable network. See {@link #setNodeInPowerableNetwork(boolean)} for
-     * more explanation on this.
+     *
+     * @return
      */
-    boolean isNodeInPowerableNetwork();
+    default boolean isNodeInPowerableNetwork()
+    {
+        return !this.getPowerSources().isEmpty();
+    }
+
+    /**
+     * @return True if the provided source block position is in the known power sources
+     */
+    default boolean isNodeInPowerableNetwork(BlockPos source)
+    {
+        return this.getPowerSources().contains(source);
+    }
 
     /**
      * @return True if this node is receiving power. This is only applicable to module nodes.
@@ -225,10 +236,11 @@ public interface IElectricityNode
     {
         Set<Connection> connections = this.getNodeConnections();
         connections.forEach(c -> {
-            c.getOtherNode(this).ifPresent(node -> {
+            IElectricityNode node = c.getOtherNode(this);
+            if(node != null) {
                 node.removeNodeConnection(c);
                 node.syncDataToTrackingClients();
-            });
+            }
         });
         connections.clear();
         this.getNodeOwner().setChanged();
@@ -338,7 +350,7 @@ public interface IElectricityNode
      */
     static List<IElectricityNode> searchNodes(IElectricityNode start)
     {
-        return searchNodes(start, Config.SERVER.electricity.powerableAreaRadius.get(), Config.SERVER.electricity.maximumNodesInNetwork.get(), false, node -> true, node -> true);
+        return searchNodes(start, Config.SERVER.electricity.maximumNodesInNetwork.get(), false, node -> true, node -> true);
     }
 
     /**
@@ -354,9 +366,9 @@ public interface IElectricityNode
      * @param searchPredicate a predicate determining if a node can be searched
      * @return A list of all nodes that were searched and passed the match predicate
      */
-    static List<IElectricityNode> searchNodes(IElectricityNode start, int maxRadius, int searchLimit, boolean cancelAtLimit, Predicate<IElectricityNode> searchPredicate, Predicate<IElectricityNode> matchPredicate)
+    static List<IElectricityNode> searchNodes(IElectricityNode start, int searchLimit, boolean cancelAtLimit, Predicate<IElectricityNode> searchPredicate, Predicate<IElectricityNode> matchPredicate)
     {
-        AABB box = new AABB(start.getNodePosition()).inflate(maxRadius);
+        AABB box = new AABB(start.getNodePosition()).inflate(Config.SERVER.electricity.powerableAreaRadius.get());
         Set<IElectricityNode> found = new HashSet<>(List.of(start));
         // Creating the queue with an initial size equal to the maximum nodes in a network
         // prevents expensive calls to grow the capacity.

@@ -1,12 +1,17 @@
 package com.mrcrayfish.furniture.refurbished.electricity;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.Sets;
+import com.mrcrayfish.furniture.refurbished.Config;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Author: MrCrayfish
@@ -69,14 +74,35 @@ public class Connection
      * @return
      */
     @Nullable
-    public IElectricityNode getPowerableNode(Level level)
+    public IElectricityNode getFirstInsidePowerableZoneNode(Level level)
     {
         IElectricityNode a = this.a.getElectricNode(level);
+        IElectricityNode b = this.b.getElectricNode(level);
+
+        // Edge case where we need to look if the one of the nodes is a source, and that the opposite
+        // node is not being powered by that source node.
+        if(a != null && b != null && (a.isSourceNode() ^ b.isSourceNode()))
+        {
+            ISourceNode source = this.getFirstSource(a, b);
+            if(source != null)
+            {
+                IElectricityNode other = this.getOtherNode(source);
+                if(other == null || !other.getPowerSources().contains(source.getNodePosition()))
+                {
+                    return source;
+                }
+            }
+        }
+
+
+
+        // TODO is there a case where we should compare power sources?
+
         if(a != null && a.isNodeInPowerableNetwork())
         {
             return a;
         }
-        IElectricityNode b = this.b.getElectricNode(level);
+
         if(b != null && b.isNodeInPowerableNetwork())
         {
             return b;
@@ -115,24 +141,42 @@ public class Connection
      * @param level
      * @return
      */
-    public boolean isPowerable(Level level)
-    {
-        IElectricityNode a = this.a.getElectricNode(level);
-        IElectricityNode b = this.b.getElectricNode(level);
-        return a != null && a.isNodeInPowerableNetwork() && b != null && b.isNodeInPowerableNetwork();
-    }
-
-    /**
-     *
-     * @param level
-     * @return
-     */
     public boolean isCrossingPowerableZone(Level level)
     {
-        // TODO check for same powerable sources
         IElectricityNode a = this.a.getElectricNode(level);
         IElectricityNode b = this.b.getElectricNode(level);
-        return (a != null && a.isNodeInPowerableNetwork()) ^ (b != null && b.isNodeInPowerableNetwork());
+        if(a != null && b != null)
+        {
+            Set<BlockPos> aPowerSources = a.getPowerSources();
+            Set<BlockPos> bPowerSources = b.getPowerSources();
+            if(!aPowerSources.equals(bPowerSources))
+            {
+                Vec3 aPos = this.a.pos.getCenter();
+                Vec3 bPos = this.b.pos.getCenter();
+                for(BlockPos source : Sets.symmetricDifference(aPowerSources, bPowerSources))
+                {
+                    AABB box = new AABB(source).inflate(Config.SERVER.electricity.powerableAreaRadius.get());
+                    if(!box.contains(aPos) || !box.contains(bPos))
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    @Nullable
+    private ISourceNode getFirstSource(IElectricityNode ... nodes)
+    {
+        for(IElectricityNode node : nodes)
+        {
+            if(node instanceof ISourceNode source)
+            {
+                return source;
+            }
+        }
+        return null;
     }
 
     public Optional<BlockPos> getOtherPos(BlockPos pos)
@@ -154,17 +198,18 @@ public class Connection
      * @param node the electricity node at the start of the connection
      * @return the other electricity node or empty optional
      */
-    public Optional<IElectricityNode> getOtherNode(IElectricityNode node)
+    @Nullable
+    public IElectricityNode getOtherNode(IElectricityNode node)
     {
         if(this.a.pos.equals(node.getNodePosition()))
         {
-            return Optional.ofNullable(this.b.getElectricNode(node.getNodeLevel()));
+            return this.b.getElectricNode(node.getNodeLevel());
         }
         else if(this.b.pos.equals(node.getNodePosition()))
         {
-            return Optional.ofNullable(this.a.getElectricNode(node.getNodeLevel()));
+            return this.a.getElectricNode(node.getNodeLevel());
         }
-        return Optional.empty();
+        return null;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
+import com.google.common.collect.Sets;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
@@ -48,7 +49,9 @@ import org.joml.Matrix4f;
 import org.joml.Vector3d;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -192,9 +195,17 @@ public class LinkHandler
 
         // Find all sources starting from the target node
         IElectricityNode target = this.getTargetNode();
-        if(linking != null)
+        if(linking != null && !linking.isSourceNode())
         {
-            this.addSourceNodePositions(this.sourcePositions, this.getTargetNode());
+            // When target is a source node, we only use that source's powerable zone
+            if(target != null && target.isSourceNode())
+            {
+                this.sourcePositions.clear();
+            }
+            if(this.sourcePositions.isEmpty())
+            {
+                this.addSourceNodePositions(this.sourcePositions, target);
+            }
         }
 
         // Finally try to find sources from target link if it only crosses the powerable zone
@@ -203,8 +214,16 @@ public class LinkHandler
             Connection connection = this.getTargetConnection();
             if(connection != null && connection.isCrossingPowerableZone(mc.level))
             {
-                IElectricityNode node = connection.getPowerableNode(mc.level);
-                this.addSourceNodePositions(this.sourcePositions, node);
+                IElectricityNode a = connection.getNodeA(mc.level);
+                IElectricityNode b = connection.getNodeB(mc.level);
+                if(a != null && b != null)
+                {
+                    Set<BlockPos> delta = Sets.symmetricDifference(a.getPowerSources(), b.getPowerSources());
+                    if(!delta.isEmpty())
+                    {
+                        this.sourcePositions.add(List.copyOf(delta).get(0));
+                    }
+                }
             }
         }
     }
@@ -268,9 +287,8 @@ public class LinkHandler
         }
 
         // Search network for all possible source nodes that can provide power to the start node
-        int maxRadius = Config.SERVER.electricity.powerableAreaRadius.get();
         int searchLimit = Config.SERVER.electricity.maximumNodesInNetwork.get();
-        IElectricityNode.searchNodes(start, maxRadius, searchLimit, true, node -> !node.isSourceNode(), IElectricityNode::isSourceNode).forEach(node -> {
+        IElectricityNode.searchNodes(start, searchLimit, true, node -> !node.isSourceNode(), IElectricityNode::isSourceNode).forEach(node -> {
             positions.add(node.getNodePosition());
         });
     }
