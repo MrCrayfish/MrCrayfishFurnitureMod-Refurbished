@@ -11,6 +11,8 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Axis;
+import com.mrcrayfish.framework.api.config.event.FrameworkConfigEvents;
+import com.mrcrayfish.framework.api.util.EnvironmentHelper;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.ElectricBlockEntityRenderer;
@@ -87,7 +89,16 @@ public class LinkHandler
     private final Set<BlockPos> lastSourcePositions = new HashSet<>();
     private VoxelShape cachedPowerableAreaShape;
 
-    private LinkHandler() {}
+    private LinkHandler()
+    {
+        // On changes to server the config, clear zone shape cache
+        FrameworkConfigEvents.RELOAD.register(object -> {
+            if(object == Config.SERVER) {
+                this.lastSourcePositions.clear();
+                this.cachedPowerableAreaShape = null;
+            }
+        });
+    }
 
     /**
      * Sets the last node position interacted by player. Used for rendering the link
