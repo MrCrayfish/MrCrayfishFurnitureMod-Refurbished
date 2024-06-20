@@ -12,6 +12,7 @@ import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -58,7 +59,7 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNod
         poseStack.scale(scale, scale, scale);
         VertexConsumer consumer = source.getBuffer(ClientServices.PLATFORM.getElectrictyNodeRenderType());
         BakedModel model = getNodeModel(node);
-        ClientServices.PLATFORM.drawBakedModel(model, poseStack, consumer, 15728880, overlay);
+        ClientServices.PLATFORM.drawBakedModel(model, poseStack, consumer, LightTexture.FULL_BRIGHT, overlay);
         poseStack.popPose();
 
         // Draw highlight colour
@@ -103,13 +104,13 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNod
 
     private static int getConnectionColour(Connection connection, Level level)
     {
-        if(connection.isPowered(level))
-        {
-            return POWERED_COLOUR;
-        }
         if(connection.isCrossingPowerableZone(level))
         {
             return CROSSING_ZONE_COLOUR;
+        }
+        if(connection.isPowered(level))
+        {
+            return POWERED_COLOUR;
         }
         return DEFAULT_COLOUR;
     }

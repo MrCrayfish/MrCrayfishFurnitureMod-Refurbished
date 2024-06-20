@@ -23,8 +23,8 @@ import java.util.Set;
 public abstract class ElectricityModuleLootBlockEntity extends BasicLootBlockEntity implements IModuleNode
 {
     protected final Set<Connection> connections = new HashSet<>();
+    protected final Set<BlockPos> powerSources = new HashSet<>();
     protected boolean receivingPower;
-    protected boolean inPowerableNetwork;
 
     public ElectricityModuleLootBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int containerSize)
     {
@@ -68,15 +68,9 @@ public abstract class ElectricityModuleLootBlockEntity extends BasicLootBlockEnt
     }
 
     @Override
-    public void setNodeInPowerableNetwork(boolean state)
+    public Set<BlockPos> getPowerSources()
     {
-        this.inPowerableNetwork = state;
-    }
-
-    @Override
-    public boolean isNodeInPowerableNetwork()
-    {
-        return this.inPowerableNetwork;
+        return this.powerSources;
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, ElectricityModuleLootBlockEntity module)

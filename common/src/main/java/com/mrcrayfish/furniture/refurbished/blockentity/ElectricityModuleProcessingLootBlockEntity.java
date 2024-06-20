@@ -28,9 +28,9 @@ import java.util.Set;
 public abstract class ElectricityModuleProcessingLootBlockEntity extends ProcessingContainerBlockEntity implements IModuleNode
 {
     protected final Set<Connection> connections = new HashSet<>();
+    protected final Set<BlockPos> powerSources = new HashSet<>();
     protected boolean powered;
     protected boolean receivingPower;
-    protected boolean inPowerableNetwork;
 
     protected ElectricityModuleProcessingLootBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int containerSize, RecipeType<? extends ProcessingRecipe> recipeType)
     {
@@ -103,15 +103,9 @@ public abstract class ElectricityModuleProcessingLootBlockEntity extends Process
     }
 
     @Override
-    public void setNodeInPowerableNetwork(boolean state)
+    public Set<BlockPos> getPowerSources()
     {
-        this.inPowerableNetwork = state;
-    }
-
-    @Override
-    public boolean isNodeInPowerableNetwork()
-    {
-        return this.inPowerableNetwork;
+        return this.powerSources;
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, ElectricityModuleProcessingLootBlockEntity module)

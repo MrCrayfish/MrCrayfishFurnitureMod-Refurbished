@@ -30,9 +30,8 @@ public class HomeControl extends Program
         Player player = this.computer.getUser();
         if(player != null && player.level().getBlockEntity(this.computer.getComputerPos()) instanceof ComputerBlockEntity computerBlockEntity)
         {
-            int areaRadius = Config.SERVER.electricity.powerableAreaRadius.get();
             int maxSize = Config.SERVER.electricity.maximumNodesInNetwork.get();
-            return IElectricityNode.searchNodes(computerBlockEntity, areaRadius, maxSize, true, node -> true, node -> node instanceof IHomeControlDevice)
+            return IElectricityNode.searchNodes(computerBlockEntity, maxSize, true, node -> true, node -> node instanceof IHomeControlDevice)
                     .stream().map(node -> (IHomeControlDevice) node).sorted(Comparator.comparing(device -> device.getDeviceName().getString())).collect(Collectors.toList());
         }
         return Collections.emptyList();
