@@ -155,7 +155,7 @@ public class Connection
                 Vec3 bPos = this.b.pos.getCenter();
                 for(BlockPos source : Sets.symmetricDifference(aPowerSources, bPowerSources))
                 {
-                    AABB box = new AABB(source).inflate(Config.SERVER.electricity.powerableAreaRadius.get());
+                    AABB box = ISourceNode.createPowerableZone(level, source);
                     if(!box.contains(aPos) || !box.contains(bPos))
                     {
                         return true;
