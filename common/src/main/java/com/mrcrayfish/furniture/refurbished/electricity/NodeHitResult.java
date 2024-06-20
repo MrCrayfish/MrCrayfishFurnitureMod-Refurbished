@@ -5,6 +5,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 /**
  * Author: MrCrayfish
@@ -43,5 +44,20 @@ public class NodeHitResult extends HitResult
     public Type getType()
     {
         return this.node != null ? Type.BLOCK : Type.MISS;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if(this == o) return true;
+        if(o == null || getClass() != o.getClass()) return false;
+        NodeHitResult that = (NodeHitResult) o;
+        return Objects.equals(this.pos, that.pos);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return this.pos != null ? this.pos.hashCode() : 0;
     }
 }
