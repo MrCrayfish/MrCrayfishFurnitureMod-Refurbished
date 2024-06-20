@@ -489,7 +489,7 @@ public class LinkHandler
             Vector3d result =  new Vector3d();
             double squareDistance = Intersectiond.findClosestPointsLineSegments(rayStart.x, rayStart.y, rayStart.z, rayEnd.x, rayEnd.y, rayEnd.z, linkStart.x, linkStart.y, linkStart.z, linkEnd.x, linkEnd.y, linkEnd.z, new Vector3d(), result);
             double distance = Math.sqrt(squareDistance);
-            if(distance < 0.125 && distance < closestDistance)
+            if(distance < 0.1 && distance < closestDistance)
             {
                 closestDistance = distance;
                 closestConnection = connection;
