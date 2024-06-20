@@ -141,4 +141,25 @@ public interface ISourceNode extends IElectricityNode
         boolean overloaded = nodes.size() > this.getMaxPowerableNodes();
         return new NodeSearchResult(overloaded, nodes);
     }
+
+    /**
+     * Creates an AABB of the powerable zone for source nodes.
+     *
+     * @param level the level where the powerable zone will be located
+     * @param pos   the block position of the source node
+     * @return an AABB of the powerable zone
+     */
+    static AABB createPowerableZone(Level level, BlockPos pos)
+    {
+        double radius = Config.SERVER.electricity.powerableAreaRadius.get();
+        double minX = pos.getX() - radius;
+        double minY = pos.getY() - radius;
+        double minZ = pos.getZ() - radius;
+        double maxX = pos.getX() + radius + 1;
+        double maxY = pos.getY() + radius + 1;
+        double maxZ = pos.getZ() + radius + 1;
+        minY = Math.max(minY, level.getMinBuildHeight());
+        maxY = Math.min(maxY, level.getMaxBuildHeight());
+        return new AABB(minX, minY, minZ, maxX, maxY, maxZ);
+    }
 }

@@ -18,6 +18,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.electricity.Connection;
 import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
+import com.mrcrayfish.furniture.refurbished.electricity.ISourceNode;
 import com.mrcrayfish.furniture.refurbished.electricity.LinkHitResult;
 import com.mrcrayfish.furniture.refurbished.electricity.LinkManager;
 import com.mrcrayfish.furniture.refurbished.electricity.NodeHitResult;
@@ -256,7 +257,7 @@ public class LinkHandler
         this.linkInsideArea = false;
 
         Minecraft mc = Minecraft.getInstance();
-        if(mc.player == null)
+        if(mc.player == null || mc.level == null)
             return;
 
         if(this.sourcePositions.isEmpty())
@@ -266,7 +267,7 @@ public class LinkHandler
         else if(this.lastNodePos != null)
         {
             this.linkInsideArea = this.sourcePositions.stream().anyMatch(pos -> {
-                AABB box = new AABB(pos).inflate(Config.SERVER.electricity.powerableAreaRadius.get());
+                AABB box = ISourceNode.createPowerableZone(mc.level, pos);
                 return box.contains(this.lastNodePos.getCenter()) && box.contains(this.getLinkEnd(mc.player, partialTick));
             });
         }
@@ -276,7 +277,7 @@ public class LinkHandler
             Vec3 start = connection.getPosA().getCenter();
             Vec3 end = connection.getPosB().getCenter();
             this.linkInsideArea = this.sourcePositions.stream().anyMatch(pos -> {
-                AABB box = new AABB(pos).inflate(Config.SERVER.electricity.powerableAreaRadius.get());
+                AABB box = ISourceNode.createPowerableZone(mc.level, pos);
                 return box.contains(start) && box.contains(end);
             });
         }
@@ -527,7 +528,8 @@ public class LinkHandler
     @Nullable
     private VoxelShape getPowerableAreaShape()
     {
-        if(this.sourcePositions.isEmpty())
+        Minecraft mc = Minecraft.getInstance();
+        if(this.sourcePositions.isEmpty() || mc.level == null)
             return null;
 
         // Return cached shape if same as last positions
@@ -536,7 +538,7 @@ public class LinkHandler
 
         // Creates the powerable area shape
         this.sourcePositions.stream().map(pos -> {
-            return new AABB(pos).inflate(Config.SERVER.electricity.powerableAreaRadius.get());
+            return ISourceNode.createPowerableZone(mc.level, pos);
         }).map(aabb -> {
             VoxelShape shape1 = Shapes.create(aabb);
             VoxelShape shape2 = Shapes.create(aabb.inflate(0.001));

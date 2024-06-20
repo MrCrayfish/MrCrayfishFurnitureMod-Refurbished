@@ -368,7 +368,8 @@ public interface IElectricityNode
      */
     static List<IElectricityNode> searchNodes(IElectricityNode start, int searchLimit, boolean cancelAtLimit, Predicate<IElectricityNode> searchPredicate, Predicate<IElectricityNode> matchPredicate)
     {
-        AABB box = new AABB(start.getNodePosition()).inflate(Config.SERVER.electricity.powerableAreaRadius.get());
+        // TODO create separate version for general use without area limitation
+        AABB box = ISourceNode.createPowerableZone(start.getNodeLevel(), start.getNodePosition());
         Set<IElectricityNode> found = new HashSet<>(List.of(start));
         // Creating the queue with an initial size equal to the maximum nodes in a network
         // prevents expensive calls to grow the capacity.
