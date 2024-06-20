@@ -93,7 +93,7 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNod
                 LinkHandler.drawColouredBox(poseStack, source, connectionBox.inflate(0.03125), color, 0.5F + offset);
                 if(selected)
                 {
-                    LinkHandler.drawColouredBox(poseStack, source, connectionBox.inflate(0.03125), 0xFFFFFFFF, 0.5F);
+                    LinkHandler.drawColouredBox(poseStack, source, connectionBox.inflate(0.03125), 0xFFFFFFFF, 0.6F);
                 }
                 poseStack.popPose();
                 DRAWN_CONNECTIONS.add(connection);
