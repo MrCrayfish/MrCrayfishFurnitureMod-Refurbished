@@ -116,9 +116,16 @@ subprojects {
     }
 }
 
-tasks.register('incrementBuild') {
+def incrementBuild(path) {
+    var buildFile = file(path);
+    int version = buildFile.text.toInteger()
+    buildFile.text = version + 1
+}
+
+tasks.register('incrementBuilds') {
     doLast {
-        int version = file('/release_build').text.toInteger()
-        file('/release_build').text = version + 1
+        incrementBuild('/release_build_common');
+        incrementBuild('/release_build_forge');
+        incrementBuild('/release_build_fabric');
     }
 }
