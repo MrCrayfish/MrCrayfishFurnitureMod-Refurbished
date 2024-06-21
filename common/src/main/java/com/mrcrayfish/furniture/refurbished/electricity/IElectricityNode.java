@@ -360,7 +360,6 @@ public interface IElectricityNode
      * and it's connections won't be searched.
      *
      * @param start           the node to begin the search from
-     * @param maxRadius       the maximum depth this search can travel
      * @param searchLimit     the maximum amount of nodes that can be found
      * @param cancelAtLimit   if searching should stop once searchLimit has been reached
      * @param searchPredicate a predicate determining if a node can be searched
