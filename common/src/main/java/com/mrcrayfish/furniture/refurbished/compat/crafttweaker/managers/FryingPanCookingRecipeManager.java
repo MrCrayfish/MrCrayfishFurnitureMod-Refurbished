@@ -27,9 +27,9 @@ import org.openzen.zencode.java.ZenCodeType;
 public class FryingPanCookingRecipeManager implements IRecipeManager<ProcessingRecipe.Item>
 {
     @ZenCodeType.Method
-    public void addRecipe(String name, IIngredient ingredient, IItemStack result, @ZenCodeType.OptionalInt(200) int time)
+    public void addRecipe(String name, String category, IIngredient ingredient, IItemStack result, @ZenCodeType.OptionalInt(200) int time)
     {
-        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new RecipeHolder<>(CraftTweakerConstants.rl(name), new FryingPanCookingRecipe(ingredient.asVanillaIngredient(), result.getInternal(), time))));
+        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new RecipeHolder<>(CraftTweakerConstants.rl(name), new FryingPanCookingRecipe(ProcessingRecipe.Category.byName(category), ingredient.asVanillaIngredient(), result.getInternal(), time))));
     }
 
     @Override

@@ -13,6 +13,17 @@ configurations {
     implementation.extendsFrom library
 }
 
+repositories {
+    maven {
+        name = 'Fabric-ASM and other GitHub repos'
+        url = "https://jitpack.io/"
+    }
+    maven {
+        name = 'Fabricators of Create: Porting Lib'
+        url = "https://mvn.devos.one/releases/"
+    }
+}
+
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     mappings loom.officialMojangMappings()

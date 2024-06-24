@@ -71,7 +71,7 @@ public class ClientFurnitureMod implements ClientModInitializer
                 ParticleFactoryRegistry.getInstance().register(type, provider::apply);
             }
         });
-        ClientBootstrap.registerRecipeBookCategories(RECIPE_TYPE_TO_CATEGORY::put);
+        //ClientBootstrap.registerRecipeBookCategories(RECIPE_TYPE_TO_CATEGORY::put);
         ModelLoadingRegistry.INSTANCE.registerModelProvider((manager, out) -> ExtraModels.register(out));
 
         WorldRenderEvents.LAST.register(context -> {

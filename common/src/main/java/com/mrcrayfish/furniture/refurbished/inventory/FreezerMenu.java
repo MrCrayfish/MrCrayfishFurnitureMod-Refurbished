@@ -5,21 +5,27 @@ import com.mrcrayfish.furniture.refurbished.blockentity.IPowerSwitch;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.inventory.slot.ResultSlot;
+import com.mrcrayfish.furniture.refurbished.platform.Services;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.StackedContentsCompatible;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 
 /**
  * Author: MrCrayfish
  */
-public class FreezerMenu extends SimpleContainerMenu implements IPowerSwitchMenu, IElectricityMenu
+public class FreezerMenu extends SimpleRecipeContainerMenu<Container> implements IPowerSwitchMenu, IElectricityMenu
 {
     private final ContainerData data;
     private final Level level;
@@ -124,5 +130,64 @@ public class FreezerMenu extends SimpleContainerMenu implements IPowerSwitchMenu
         {
             powerSwitch.togglePower();
         }
+    }
+
+    @Override
+    public void fillCraftSlotsStackedContents(StackedContents contents)
+    {
+        if(this.container instanceof StackedContentsCompatible)
+        {
+            ((StackedContentsCompatible) this.container).fillStackedContents(contents);
+        }
+    }
+
+    @Override
+    public void clearCraftingContent()
+    {
+        this.getSlot(0).set(ItemStack.EMPTY);
+        this.getSlot(1).set(ItemStack.EMPTY);
+    }
+
+    @Override
+    public boolean recipeMatches(RecipeHolder<? extends Recipe<Container>> holder)
+    {
+        return holder.value().matches(this.container, this.level);
+    }
+
+    @Override
+    public int getResultSlotIndex()
+    {
+        return 1;
+    }
+
+    @Override
+    public int getGridWidth()
+    {
+        return 1;
+    }
+
+    @Override
+    public int getGridHeight()
+    {
+        return 1;
+    }
+
+    @Override
+    public int getSize()
+    {
+        return 2;
+    }
+
+    @Override
+    public RecipeBookType getRecipeBookType()
+    {
+        // TODO verify this hack to disable fabric
+        return !Services.PLATFORM.getPlatform().isFabric() ? Services.RECIPE.getFreezerRecipeBookType() : RecipeBookType.CRAFTING;
+    }
+
+    @Override
+    public boolean shouldMoveToInventory(int slot)
+    {
+        return slot != this.getResultSlotIndex();
     }
 }

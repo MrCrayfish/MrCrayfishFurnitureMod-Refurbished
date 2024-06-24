@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.platform.services;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
@@ -51,4 +52,14 @@ public interface IClientHelper
     SimpleParticleType createSimpleParticleType(boolean ignoreLimit);
 
     void renderTooltip(GuiGraphics graphics, Font font, List<ClientTooltipComponent> components, int mouseX, int mouseY, ClientTooltipPositioner position);
+
+    RecipeBookCategories getSearchRecipeBookCategory();
+
+    RecipeBookCategories getBlockRecipeBookCategory();
+
+    RecipeBookCategories getItemRecipeBookCategory();
+
+    RecipeBookCategories getFoodRecipeBookCategory();
+
+    RecipeBookCategories getMiscRecipeBookCategory();
 }

@@ -11,9 +11,9 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
  */
 public class FreezerSolidifyingRecipe extends ProcessingRecipe.ItemWithCount
 {
-    public FreezerSolidifyingRecipe(Ingredient ingredient, ItemStack result, int time)
+    public FreezerSolidifyingRecipe(Category category, Ingredient ingredient, ItemStack result, int time)
     {
-        super(ModRecipeTypes.FREEZER_SOLIDIFYING.get(), ingredient, result, time);
+        super(ModRecipeTypes.FREEZER_SOLIDIFYING.get(), category, ingredient, result, time);
     }
 
     @Override

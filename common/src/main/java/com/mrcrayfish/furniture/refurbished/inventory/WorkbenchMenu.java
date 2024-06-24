@@ -113,7 +113,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
             int selectedRecipeIndex = this.selectedRecipe.get();
             if(this.isPowered() && selectedRecipeIndex >= 0 && selectedRecipeIndex < this.recipes.size())
             {
-                WorkbenchContructingRecipe recipe = this.recipes.get(selectedRecipeIndex);
+                RecipeHolder<WorkbenchContructingRecipe> recipe = this.recipes.get(selectedRecipeIndex);
                 if(this.workbench.canCraft(recipe))
                 {
                     ItemStack result = this.getSlot(WorkbenchBlockEntity.RESULT_SLOT).getItem();

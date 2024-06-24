@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
+import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.framework.api.event.ClientConnectionEvents;
 import com.mrcrayfish.framework.api.event.PlayerEvents;
 import com.mrcrayfish.framework.api.event.TickEvents;
@@ -46,8 +47,13 @@ import com.mrcrayfish.furniture.refurbished.core.ModEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModParticleTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
+import com.mrcrayfish.furniture.refurbished.crafting.FreezerSolidifyingRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import com.mrcrayfish.furniture.refurbished.image.TextureCache;
+import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
+import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.renderer.BiomeColors;
@@ -56,11 +62,24 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
+
 /**
  * Author: MrCrayfish
  */
 public class ClientBootstrap
 {
+    private static final Map<ProcessingRecipe.Category, Supplier<RecipeBookCategories>> CATEGORY_TO_VANILLA = Util.make(() -> {
+        ImmutableMap.Builder<ProcessingRecipe.Category, Supplier<RecipeBookCategories>> builder = ImmutableMap.builderWithExpectedSize(4);
+        builder.put(ProcessingRecipe.Category.BLOCKS, ClientServices.PLATFORM::getBlockRecipeBookCategory);
+        builder.put(ProcessingRecipe.Category.ITEMS, ClientServices.PLATFORM::getItemRecipeBookCategory);
+        builder.put(ProcessingRecipe.Category.FOOD, ClientServices.PLATFORM::getFoodRecipeBookCategory);
+        builder.put(ProcessingRecipe.Category.MISC, ClientServices.PLATFORM::getMiscRecipeBookCategory);
+        return builder.build();
+    });
+
     public static void init()
     {
         CreativeFilters.get();
@@ -367,16 +386,24 @@ public class ClientBootstrap
     public static void registerRecipeBookCategories(RecipeCategoryRegister register)
     {
         // Unknown at the moment since we don't use the crafting book yet
-        register.apply(ModRecipeTypes.GRILL_COOKING.get(), recipe -> RecipeBookCategories.UNKNOWN);
-        register.apply(ModRecipeTypes.FREEZER_SOLIDIFYING.get(), recipe -> RecipeBookCategories.UNKNOWN);
-        register.apply(ModRecipeTypes.TOASTER_HEATING.get(), recipe -> RecipeBookCategories.UNKNOWN);
-        register.apply(ModRecipeTypes.CUTTING_BOARD_SLICING.get(), recipe -> RecipeBookCategories.UNKNOWN);
-        register.apply(ModRecipeTypes.CUTTING_BOARD_COMBINING.get(), recipe -> RecipeBookCategories.UNKNOWN);
-        register.apply(ModRecipeTypes.MICROWAVE_HEATING.get(), recipe -> RecipeBookCategories.UNKNOWN);
-        register.apply(ModRecipeTypes.OVEN_BAKING.get(), recipe -> RecipeBookCategories.UNKNOWN);
-        register.apply(ModRecipeTypes.SINK_FLUID_TRANSMUTING.get(), recipe -> RecipeBookCategories.UNKNOWN);
-        register.apply(ModRecipeTypes.FRYING_PAN_COOKING.get(), recipe -> RecipeBookCategories.UNKNOWN);
-        register.apply(ModRecipeTypes.RECYCLE_BIN_RECYCLING.get(), recipe -> RecipeBookCategories.UNKNOWN);
-        register.apply(ModRecipeTypes.WORKBENCH_CONSTRUCTING.get(), recipe -> RecipeBookCategories.UNKNOWN);
+        register.applyCategory(Services.RECIPE.getFreezerRecipeBookType(), List.of(
+            ClientServices.PLATFORM.getSearchRecipeBookCategory(),
+            ClientServices.PLATFORM.getBlockRecipeBookCategory(),
+            ClientServices.PLATFORM.getItemRecipeBookCategory(),
+            ClientServices.PLATFORM.getFoodRecipeBookCategory(),
+            ClientServices.PLATFORM.getMiscRecipeBookCategory()
+        ));
+        register.applyAggregate(ClientServices.PLATFORM.getSearchRecipeBookCategory(), List.of(
+            ClientServices.PLATFORM.getBlockRecipeBookCategory(),
+            ClientServices.PLATFORM.getItemRecipeBookCategory(),
+            ClientServices.PLATFORM.getFoodRecipeBookCategory(),
+            ClientServices.PLATFORM.getMiscRecipeBookCategory()
+        ));
+        register.applyFinder(ModRecipeTypes.FREEZER_SOLIDIFYING.get(), recipe -> {
+            if(recipe instanceof FreezerSolidifyingRecipe solidifyingRecipe) {
+                return CATEGORY_TO_VANILLA.get(solidifyingRecipe.getCategory()).get();
+            }
+            return ClientServices.PLATFORM.getMiscRecipeBookCategory();
+        });
     }
 }

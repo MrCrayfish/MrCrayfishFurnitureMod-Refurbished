@@ -10,6 +10,7 @@ import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.FreezerSolidifyingRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.ToasterHeatingRecipe;
 import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -25,9 +26,9 @@ import org.openzen.zencode.java.ZenCodeType;
 public class FreezerSolidifyingRecipeManager implements IRecipeManager<FreezerSolidifyingRecipe>
 {
     @ZenCodeType.Method
-    public void addRecipe(String name, IIngredient ingredient, IItemStack result, @ZenCodeType.OptionalInt(200) int time)
+    public void addRecipe(String name, String category, IIngredient ingredient, IItemStack result, @ZenCodeType.OptionalInt(200) int time)
     {
-        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new RecipeHolder<>(CraftTweakerConstants.rl(name), new FreezerSolidifyingRecipe(ingredient.asVanillaIngredient(), result.getInternal(), time))));
+        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new RecipeHolder<>(CraftTweakerConstants.rl(name), new FreezerSolidifyingRecipe(ProcessingRecipe.Category.byName(category), ingredient.asVanillaIngredient(), result.getInternal(), time))));
     }
 
     @Override

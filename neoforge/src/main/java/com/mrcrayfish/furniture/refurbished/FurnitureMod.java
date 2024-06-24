@@ -16,6 +16,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.registries.RegistriesDatapackGenerator;
+import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
@@ -42,6 +43,8 @@ import java.util.concurrent.CompletableFuture;
 @Mod(Constants.MOD_ID)
 public class FurnitureMod
 {
+    public static final RecipeBookType RECIPE_BOOK_TYPE_FREEZER = RecipeBookType.create("REFURBISHED_FURNITURE_FREEZER");
+
     public FurnitureMod(IEventBus bus)
     {
         NeoForgeMod.enableMilkFluid();

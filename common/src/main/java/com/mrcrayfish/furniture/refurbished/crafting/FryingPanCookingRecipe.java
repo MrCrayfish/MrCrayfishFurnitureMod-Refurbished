@@ -11,9 +11,9 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
  */
 public class FryingPanCookingRecipe extends ProcessingRecipe.Item
 {
-    public FryingPanCookingRecipe(Ingredient ingredient, ItemStack result, int time)
+    public FryingPanCookingRecipe(Category category, Ingredient ingredient, ItemStack result, int time)
     {
-        super(ModRecipeTypes.FRYING_PAN_COOKING.get(), ingredient, result, time);
+        super(ModRecipeTypes.FRYING_PAN_COOKING.get(), category, ingredient, result, time);
     }
 
     @Override

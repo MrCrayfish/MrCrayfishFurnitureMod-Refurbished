@@ -51,7 +51,7 @@ dependencies {
 
     // JEI
     compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
-    runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
 
     // CraftTweaker
     compileOnly "com.blamejared.crafttweaker:CraftTweaker-common-${minecraft_version}:${crafttweaker_version}"

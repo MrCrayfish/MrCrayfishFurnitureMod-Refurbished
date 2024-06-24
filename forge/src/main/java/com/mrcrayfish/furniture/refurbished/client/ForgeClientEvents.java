@@ -3,10 +3,12 @@ package com.mrcrayfish.furniture.refurbished.client;
 import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.client.registration.ParticleProviderRegister;
+import com.mrcrayfish.furniture.refurbished.client.registration.RecipeCategoryRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
@@ -18,7 +20,11 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.InputEvent;
@@ -30,6 +36,9 @@ import net.minecraftforge.client.event.RegisterRecipeBookCategoriesEvent;
 import net.minecraftforge.client.event.RenderHighlightEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import org.apache.commons.lang3.function.TriFunction;
+
+import java.util.List;
+import java.util.function.Function;
 
 /**
  * Author: MrCrayfish
@@ -139,6 +148,25 @@ public class ForgeClientEvents
 
     public static void onRegisterRecipeCategories(RegisterRecipeBookCategoriesEvent event)
     {
-        ClientBootstrap.registerRecipeBookCategories(event::registerRecipeCategoryFinder);
+        ClientBootstrap.registerRecipeBookCategories(new RecipeCategoryRegister()
+        {
+            @Override
+            public void applyCategory(RecipeBookType recipeBookType, List<RecipeBookCategories> categories)
+            {
+                event.registerBookCategories(recipeBookType, categories);
+            }
+
+            @Override
+            public void applyAggregate(RecipeBookCategories category, List<RecipeBookCategories> categories)
+            {
+                event.registerAggregateCategory(category, categories);
+            }
+
+            @Override
+            public void applyFinder(RecipeType<?> type, Function<Recipe<?>, RecipeBookCategories> function)
+            {
+                event.registerRecipeCategoryFinder(type, function);
+            }
+        });
     }
 }

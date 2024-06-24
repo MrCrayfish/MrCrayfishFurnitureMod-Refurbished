@@ -8,7 +8,9 @@ import com.blamejared.crafttweaker.api.recipe.handler.IRecipeHandler;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker.api.util.IngredientUtil;
 import com.blamejared.crafttweaker.api.util.StringUtil;
+import com.mrcrayfish.furniture.refurbished.compat.crafttweaker.CustomRecipeComponents;
 import com.mrcrayfish.furniture.refurbished.crafting.FryingPanCookingRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CookingBookCategory;
@@ -49,6 +51,7 @@ public class FryingPanCookingRecipeHandler implements IRecipeHandler<FryingPanCo
     public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super FryingPanCookingRecipe> manager, RegistryAccess registryAccess, FryingPanCookingRecipe recipe)
     {
         IDecomposedRecipe decomposedRecipe = IDecomposedRecipe.builder()
+            .with(CustomRecipeComponents.Metadata.PROCESSING_CATEGORY, recipe.getCategory())
             .with(BuiltinRecipeComponents.Input.INGREDIENTS, IIngredient.fromIngredient(recipe.getIngredient()))
             .with(BuiltinRecipeComponents.Output.ITEMS, IItemStack.ofMutable(recipe.getResult()))
             .with(BuiltinRecipeComponents.Processing.TIME, recipe.getTime())
@@ -59,9 +62,10 @@ public class FryingPanCookingRecipeHandler implements IRecipeHandler<FryingPanCo
     @Override
     public Optional<FryingPanCookingRecipe> recompose(IRecipeManager<? super FryingPanCookingRecipe> manager, RegistryAccess registryAccess, IDecomposedRecipe recipe)
     {
+        ProcessingRecipe.Category category = recipe.getOrThrowSingle(CustomRecipeComponents.Metadata.PROCESSING_CATEGORY);
         Ingredient ingredient = recipe.getOrThrowSingle(BuiltinRecipeComponents.Input.INGREDIENTS).asVanillaIngredient();
         ItemStack result = recipe.getOrThrowSingle(BuiltinRecipeComponents.Output.ITEMS).getInternal();
         int time = recipe.getOrThrowSingle(BuiltinRecipeComponents.Processing.TIME);
-        return Optional.of(new FryingPanCookingRecipe(ingredient, result, time));
+        return Optional.of(new FryingPanCookingRecipe(category, ingredient, result, time));
     }
 }

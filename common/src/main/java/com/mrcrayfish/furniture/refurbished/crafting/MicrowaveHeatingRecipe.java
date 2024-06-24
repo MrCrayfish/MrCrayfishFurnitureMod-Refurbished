@@ -13,9 +13,9 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
  */
 public class MicrowaveHeatingRecipe extends ProcessingRecipe.ItemWithCount
 {
-    public MicrowaveHeatingRecipe(Ingredient ingredient, ItemStack result, int time)
+    public MicrowaveHeatingRecipe(Category category, Ingredient ingredient, ItemStack result, int time)
     {
-        super(ModRecipeTypes.MICROWAVE_HEATING.get(), ingredient, result, time);
+        super(ModRecipeTypes.MICROWAVE_HEATING.get(), category, ingredient, result, time);
     }
 
     @Override
