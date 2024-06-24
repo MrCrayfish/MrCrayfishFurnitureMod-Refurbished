@@ -1,129 +1,144 @@
 package com.mrcrayfish.furniture.refurbished.electricity;
 
-import com.mrcrayfish.furniture.refurbished.Constants;
+import com.mrcrayfish.framework.Constants;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.datafix.DataFixTypes;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.saveddata.SavedData;
-import org.apache.commons.lang3.mutable.MutableObject;
 
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 /**
  * Author: MrCrayfish
  */
-public class ElectricityTicker extends SavedData
+public final class ElectricityTicker
 {
-    private static final String STORAGE_ID = "refurbished_furniture_electricity_sources";
+    private final Level level;
+    private final Map<BlockPos, WeakReference<IModuleNode>> modules = new ConcurrentHashMap<>();
+    private final Map<BlockPos, WeakReference<ISourceNode>> sources = new ConcurrentHashMap<>();
 
-    /**
-     * Creates or gets the electricity ticker for the given server level
-     *
-     * @param level a server level instance
-     * @return an electricity ticker instance
-     */
-    public static ElectricityTicker get(ServerLevel level)
+    public ElectricityTicker(Level level)
     {
-        return level.getDataStorage().computeIfAbsent(createFactory(level), STORAGE_ID);
-    }
-
-    public static SavedData.Factory<ElectricityTicker> createFactory(ServerLevel level)
-    {
-        return new SavedData.Factory<>(() -> new ElectricityTicker(level), tag -> new ElectricityTicker(level, tag), DataFixTypes.SAVED_DATA_FORCED_CHUNKS);
-    }
-
-    private final ServerLevel level;
-    private final Map<BlockPos, MutableObject<WeakReference<ISourceNode>>> sources = new ConcurrentHashMap<>();
-
-    private ElectricityTicker(ServerLevel level)
-    {
-        this(level, new CompoundTag());
-    }
-
-    private ElectricityTicker(ServerLevel level, CompoundTag tag)
-    {
-        this.load(tag);
         this.level = level;
     }
 
     /**
-     * Adds a source node to be ticked.
-     * @param node a source node instance.
+     * Adds an electricity node to be ticked
+     * @param node a module node instance
      */
-    public void addSourceNode(ISourceNode node)
+    public void addElectricityNode(IElectricityNode node)
     {
-        this.sources.put(node.getNodePosition(), new MutableObject<>(new WeakReference<>(node)));
+        if(node instanceof IModuleNode module)
+        {
+            this.modules.put(node.getNodePosition(), new WeakReference<>(module));
+        }
+        else if(node instanceof ISourceNode source)
+        {
+            this.sources.put(node.getNodePosition(), new WeakReference<>(source));
+        }
     }
 
     /**
      * Called before block entities. This method ticks all source nodes that are currently loaded.
      * Sources nodes that no longer exist or are unloaded are automatically removed.
      */
-    public void startLevelTick()
+    public void earlyLevelTick()
     {
-        Iterator<BlockPos> it = this.sources.keySet().iterator();
+        this.tickSet(this.modules, this::getModuleNode);
+        this.tickSet(this.sources, this::getSourceNode);
+    }
+
+    private <T extends IElectricityNode> void tickSet(Map<BlockPos, WeakReference<T>> nodes, Function<BlockPos, T> getter)
+    {
+        Iterator<BlockPos> it = nodes.keySet().iterator();
         while(it.hasNext())
         {
             BlockPos pos = it.next();
-            ISourceNode node = this.getSourceNode(pos);
+            T node = getter.apply(pos);
             if(node == null)
             {
-                Constants.LOG.debug("Removed electric source at {}", pos);
+                Constants.LOG.debug("Stopping ticking node at {}", pos);
                 it.remove();
-                this.setDirty();
                 continue;
             }
-
-            node.earlyNodeLevelTick();
+            node.startLevelTick(this.level);
         }
     }
 
     /**
-     * Attempts to get the source node at the given block position. This method will cache and keep
-     * a reference of the source node if found, which means future calls at the same position
-     * will return from the reference as this is quicker than polling from the level.
+     * Attempts to get the electricity node at the given block position. This method will cache and
+     * keep a reference of the electricity node if found, which means future calls at the same
+     * position will return from the reference as this is quicker than polling from the level.
      *
      * @param pos the block position
-     * @return a source node or null if not found
+     * @return an electricity node or null if not found
      */
     @Nullable
-    private ISourceNode getSourceNode(BlockPos pos)
+    private <T extends IElectricityNode> T getElectricityNode(Map<BlockPos, WeakReference<T>> map, BlockPos pos, Function<BlockEntity, T> caster)
     {
-        MutableObject<WeakReference<ISourceNode>> mutableObj = this.sources.get(pos);
-        WeakReference<ISourceNode> sourceRef = mutableObj.getValue();
+        // Try at get from the current reference
+        WeakReference<T> sourceRef = map.get(pos);
         if(sourceRef != null)
         {
-            ISourceNode node = sourceRef.get();
+            T node = sourceRef.get();
             if(node != null && node.isNodeValid())
             {
                 return node;
             }
         }
-
+        // Otherwise try and get from the world
         if(this.level.isLoaded(pos))
         {
-            BlockEntity entity = this.level.getBlockEntity(pos);
-            if(entity instanceof ISourceNode node && node.isNodeValid())
+            T node = caster.apply(this.level.getBlockEntity(pos));
+            if(node != null && node.isNodeValid())
             {
-                mutableObj.setValue(new WeakReference<>(node));
+                map.put(pos, new WeakReference<>(node));
                 return node;
             }
         }
-
         return null;
     }
 
-    private void load(CompoundTag tag) {}
-
-    @Override
-    public CompoundTag save(CompoundTag tag)
+    /**
+     * Gets the module node at the given block position or null
+     *
+     * @param pos the block position of the node
+     * @return the module node or null
+     */
+    @Nullable
+    private IModuleNode getModuleNode(BlockPos pos)
     {
-        return tag;
+        return this.getElectricityNode(this.modules, pos, entity -> {
+            return entity instanceof IModuleNode node ? node : null;
+        });
+    }
+
+    /**
+     * Gets the source node at the given block position or null
+     *
+     * @param pos the block position of the node
+     * @return the module node or null
+     */
+    @Nullable
+    private ISourceNode getSourceNode(BlockPos pos)
+    {
+        // Try and get the source node from the reference
+        return this.getElectricityNode(this.sources, pos, entity -> {
+            return entity instanceof ISourceNode node ? node : null;
+        });
+    }
+
+    public static ElectricityTicker get(Level level)
+    {
+        return ((ElectricityTicker.Access) level).refurbishedFurniture$GetElectricityTicker();
+    }
+
+    public interface Access
+    {
+        ElectricityTicker refurbishedFurniture$GetElectricityTicker();
     }
 }

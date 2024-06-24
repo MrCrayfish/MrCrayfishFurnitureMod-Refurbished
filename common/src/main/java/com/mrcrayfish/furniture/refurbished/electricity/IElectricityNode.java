@@ -10,7 +10,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayDeque;
 import java.util.HashSet;
@@ -69,9 +68,24 @@ public interface IElectricityNode
 
     /**
      * Marks this node as receiving power with the given state. This is only applicable to module nodes.
-     * @param power the power state
+     * @param state the power state
      */
-    void setNodeReceivingPower(boolean power);
+    void setNodeReceivingPower(boolean state);
+
+    /**
+     * Marks this node as being a part of a powerable network or not. Used mainly for rendering
+     * purposes. A node is in a powerable network if it can be powered by a source node connecting
+     * to this node or either through neighbouring nodes.
+     *
+     * @param state the state of being in a valid network
+     */
+    void setNodeInPowerableNetwork(boolean state);
+
+    /**
+     * @return True if in a powerable network. See {@link #setNodeInPowerableNetwork(boolean)} for
+     * more explanation on this.
+     */
+    boolean isNodeInPowerableNetwork();
 
     /**
      * @return True if this node is receiving power. This is only applicable to module nodes.
@@ -299,6 +313,29 @@ public interface IElectricityNode
         return this.getNodeInteractBox().move(this.getNodePosition());
     }
 
+    /**
+     * Registers this electricity node into the electricity ticker
+     *
+     * @param level the level of this electricity node
+     */
+    default void registerElectricityNodeTicker(Level level)
+    {
+        ElectricityTicker.get(level).addElectricityNode(this);
+    }
+
+    /**
+     * Called at the start of the level tick, before block entities. Be careful, make sure to check
+     * for client side if providing any custom behaviour.
+     *
+     * @param level the level the node is ticking in
+     */
+    default void startLevelTick(Level level) {}
+
+    /**
+     *
+     * @param start
+     * @return
+     */
     static List<IElectricityNode> searchNodes(IElectricityNode start)
     {
         return searchNodes(start, Config.SERVER.electricity.powerableAreaRadius.get(), Config.SERVER.electricity.maximumNodesInNetwork.get(), false, node -> true, node -> true);

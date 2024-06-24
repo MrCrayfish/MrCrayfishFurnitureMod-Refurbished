@@ -89,6 +89,30 @@ public class Connection
         return a != null && a.isNodePowered() && b != null && b.isNodePowered();
     }
 
+    /**
+     *
+     * @param level
+     * @return
+     */
+    public boolean isPowerable(Level level)
+    {
+        IElectricityNode a = this.a.getElectricNode(level);
+        IElectricityNode b = this.b.getElectricNode(level);
+        return a != null && a.isNodeInPowerableNetwork() && b != null && b.isNodeInPowerableNetwork();
+    }
+
+    /**
+     *
+     * @param level
+     * @return
+     */
+    public boolean isCrossingPowerableZone(Level level)
+    {
+        IElectricityNode a = this.a.getElectricNode(level);
+        IElectricityNode b = this.b.getElectricNode(level);
+        return (a != null && a.isNodeInPowerableNetwork()) ^ (b != null && b.isNodeInPowerableNetwork());
+    }
+
     public Optional<BlockPos> getOtherPos(BlockPos pos)
     {
         if(this.a.pos.equals(pos))

@@ -4,11 +4,7 @@
     "package": "com.mrcrayfish.furniture.refurbished.mixin",
     "refmap": "${mod_id}.refmap.json",
     "compatibilityLevel": "JAVA_17",
-    "mixins": [
-        "EntityAccessor",
-        "EntityMixin",
-        "LivingEntityMixin"
-    ],
+    "mixins": [ "EntityAccessor", "EntityMixin", "LevelMixin", "LivingEntityMixin" ],
     "client": [
         "client.AbstractSelectionListMixin",
         "client.CreativeModeInventoryScreenMixin",

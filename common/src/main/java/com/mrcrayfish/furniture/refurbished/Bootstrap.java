@@ -30,7 +30,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BlockItem;
@@ -79,8 +78,8 @@ public class Bootstrap
             Bootstrap.started = false;
         });
         TickEvents.START_LEVEL.register(level -> {
-            if(level instanceof ServerLevel serverLevel && Bootstrap.started) {
-                ElectricityTicker.get(serverLevel).startLevelTick();
+            if(Bootstrap.started) {
+                ElectricityTicker.get(level).earlyLevelTick();
             }
         });
         TickEvents.END_PLAYER.register(player -> {
