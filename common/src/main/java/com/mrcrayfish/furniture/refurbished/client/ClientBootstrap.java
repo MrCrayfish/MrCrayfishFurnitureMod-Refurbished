@@ -395,6 +395,13 @@ public class ClientBootstrap
             ModRecipeBookCategories.MICROWAVE_FOOD.get(),
             ModRecipeBookCategories.MICROWAVE_MISC.get()
         );
+        registerIntoRecipeBook(register, ModRecipeTypes.OVEN_BAKING.get(), ModRecipeBookTypes.OVEN.get(),
+            ModRecipeBookCategories.OVEN_SEARCH.get(),
+            ModRecipeBookCategories.OVEN_BLOCKS.get(),
+            ModRecipeBookCategories.OVEN_ITEMS.get(),
+            ModRecipeBookCategories.OVEN_FOOD.get(),
+            ModRecipeBookCategories.OVEN_MISC.get()
+        );
     }
 
     private static void registerIntoRecipeBook(RecipeCategoryRegister register, RecipeType<?> recipeType, RecipeBookType bookType, RecipeBookCategories ... categories)

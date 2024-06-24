@@ -35,11 +35,9 @@ import java.util.concurrent.CompletableFuture;
 @Mod(Constants.MOD_ID)
 public class FurnitureMod
 {
-    public static final RecipeBookType RECIPE_BOOK_TYPE_FREEZER = RecipeBookType.create(ModRecipeBookTypes.FREEZER.getConstantName());
-    public static final RecipeBookType RECIPE_BOOK_TYPE_MICROWAVE = RecipeBookType.create(ModRecipeBookTypes.MICROWAVE.getConstantName());
-
     public FurnitureMod()
     {
+        ModRecipeBookTypes.getAllTypes().forEach(holder -> RecipeBookType.create(holder.getConstantName()));
         ForgeMod.enableMilkFluid();
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(this::onCommonSetup);

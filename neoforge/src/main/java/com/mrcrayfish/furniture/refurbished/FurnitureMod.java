@@ -37,11 +37,9 @@ import java.util.concurrent.CompletableFuture;
 @Mod(Constants.MOD_ID)
 public class FurnitureMod
 {
-    public static final RecipeBookType RECIPE_BOOK_TYPE_FREEZER = RecipeBookType.create(ModRecipeBookTypes.FREEZER.getConstantName());
-    public static final RecipeBookType RECIPE_BOOK_TYPE_MICROWAVE = RecipeBookType.create(ModRecipeBookTypes.MICROWAVE.getConstantName());
-
     public FurnitureMod(IEventBus bus)
     {
+        ModRecipeBookTypes.getAllTypes().forEach(holder -> RecipeBookType.create(holder.getConstantName()));
         NeoForgeMod.enableMilkFluid();
         bus.addListener(this::onCommonSetup);
         bus.addListener(this::onGatherData);

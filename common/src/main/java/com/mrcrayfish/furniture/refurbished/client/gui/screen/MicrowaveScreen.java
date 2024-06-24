@@ -75,10 +75,17 @@ public class MicrowaveScreen extends ElectricityContainerScreen<MicrowaveMenu> i
     {
         this.slider.setEnabled(this.menu.isEnabled());
         super.render(graphics, mouseX, mouseY, partialTick);
-        this.recipeBookComponent.render(graphics, mouseX, mouseY, partialTick);
-        this.recipeBookComponent.renderGhostRecipe(graphics, this.leftPos, this.topPos, true, partialTick);
-        this.renderTooltip(graphics, mouseX, mouseY);
-        this.recipeBookComponent.renderTooltip(graphics, this.leftPos, this.topPos, mouseX, mouseY);
+        if(!Services.PLATFORM.getPlatform().isFabric())
+        {
+            this.recipeBookComponent.render(graphics, mouseX, mouseY, partialTick);
+            this.recipeBookComponent.renderGhostRecipe(graphics, this.leftPos, this.topPos, true, partialTick);
+            this.renderTooltip(graphics, mouseX, mouseY);
+            this.recipeBookComponent.renderTooltip(graphics, this.leftPos, this.topPos, mouseX, mouseY);
+        }
+        else
+        {
+            this.renderTooltip(graphics, mouseX, mouseY);
+        }
     }
 
     @Override
