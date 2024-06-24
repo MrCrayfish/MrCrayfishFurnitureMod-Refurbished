@@ -52,14 +52,4 @@ public interface IClientHelper
     SimpleParticleType createSimpleParticleType(boolean ignoreLimit);
 
     void renderTooltip(GuiGraphics graphics, Font font, List<ClientTooltipComponent> components, int mouseX, int mouseY, ClientTooltipPositioner position);
-
-    RecipeBookCategories getSearchRecipeBookCategory();
-
-    RecipeBookCategories getBlockRecipeBookCategory();
-
-    RecipeBookCategories getItemRecipeBookCategory();
-
-    RecipeBookCategories getFoodRecipeBookCategory();
-
-    RecipeBookCategories getMiscRecipeBookCategory();
 }

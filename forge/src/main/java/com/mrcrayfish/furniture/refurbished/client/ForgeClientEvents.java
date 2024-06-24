@@ -151,15 +151,15 @@ public class ForgeClientEvents
         ClientBootstrap.registerRecipeBookCategories(new RecipeCategoryRegister()
         {
             @Override
-            public void applyCategory(RecipeBookType recipeBookType, List<RecipeBookCategories> categories)
+            public void applyCategory(RecipeBookType recipeBookType, RecipeBookCategories ... categories)
             {
-                event.registerBookCategories(recipeBookType, categories);
+                event.registerBookCategories(recipeBookType, List.of(categories));
             }
 
             @Override
-            public void applyAggregate(RecipeBookCategories category, List<RecipeBookCategories> categories)
+            public void applyAggregate(RecipeBookCategories category, RecipeBookCategories ... categories)
             {
-                event.registerAggregateCategory(category, categories);
+                event.registerAggregateCategory(category, List.of(categories));
             }
 
             @Override

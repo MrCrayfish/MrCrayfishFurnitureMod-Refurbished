@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.inventory;
 import com.mrcrayfish.furniture.refurbished.blockentity.FreezerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.IPowerSwitch;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
+import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.inventory.slot.ResultSlot;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
@@ -181,8 +182,7 @@ public class FreezerMenu extends SimpleRecipeContainerMenu<Container> implements
     @Override
     public RecipeBookType getRecipeBookType()
     {
-        // TODO verify this hack to disable fabric
-        return !Services.PLATFORM.getPlatform().isFabric() ? Services.RECIPE.getFreezerRecipeBookType() : RecipeBookType.CRAFTING;
+        return ModRecipeBookTypes.FREEZER.get();
     }
 
     @Override

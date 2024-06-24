@@ -2,8 +2,8 @@ package com.mrcrayfish.furniture.refurbished;
 
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.IFluidContainerBlock;
-import com.mrcrayfish.furniture.refurbished.client.ClientBootstrap;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
+import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookTypes;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureBlockTagsProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureItemTagsProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureLootTableProvider;
@@ -15,24 +15,18 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.registries.RegistriesDatapackGenerator;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.capabilities.IBlockCapabilityProvider;
-import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.EmptyFluidHandler;
 import net.neoforged.neoforge.items.wrapper.InvWrapper;
 import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
@@ -43,13 +37,13 @@ import java.util.concurrent.CompletableFuture;
 @Mod(Constants.MOD_ID)
 public class FurnitureMod
 {
-    public static final RecipeBookType RECIPE_BOOK_TYPE_FREEZER = RecipeBookType.create("REFURBISHED_FURNITURE_FREEZER");
+    public static final RecipeBookType RECIPE_BOOK_TYPE_FREEZER = RecipeBookType.create(ModRecipeBookTypes.FREEZER.getConstantName());
+    public static final RecipeBookType RECIPE_BOOK_TYPE_MICROWAVE = RecipeBookType.create(ModRecipeBookTypes.MICROWAVE.getConstantName());
 
     public FurnitureMod(IEventBus bus)
     {
         NeoForgeMod.enableMilkFluid();
         bus.addListener(this::onCommonSetup);
-        bus.addListener(this::onClientSetup);
         bus.addListener(this::onGatherData);
         bus.addListener(this::onRegisterCapabilities);
     }
@@ -57,11 +51,6 @@ public class FurnitureMod
     private void onCommonSetup(FMLCommonSetupEvent event)
     {
         event.enqueueWork(Bootstrap::init);
-    }
-
-    private void onClientSetup(FMLClientSetupEvent event)
-    {
-        event.enqueueWork(ClientBootstrap::init);
     }
 
     private void onGatherData(GatherDataEvent event)

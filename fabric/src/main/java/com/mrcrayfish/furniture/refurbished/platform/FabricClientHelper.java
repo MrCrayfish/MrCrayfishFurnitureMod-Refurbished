@@ -110,38 +110,4 @@ public class FabricClientHelper implements IClientHelper
     {
         graphics.renderTooltipInternal(font, components, mouseX, mouseY, position);
     }
-
-    // The following are just method stubs. Until Fabric has the ability to register
-    // custom enums, they are just returning existing categories but aren't actually
-    // used for anything.
-
-    @Override
-    public RecipeBookCategories getSearchRecipeBookCategory()
-    {
-        return RecipeBookCategories.CRAFTING_SEARCH;
-    }
-
-    @Override
-    public RecipeBookCategories getBlockRecipeBookCategory()
-    {
-        return RecipeBookCategories.CRAFTING_BUILDING_BLOCKS;
-    }
-
-    @Override
-    public RecipeBookCategories getItemRecipeBookCategory()
-    {
-        return RecipeBookCategories.CRAFTING_EQUIPMENT;
-    }
-
-    @Override
-    public RecipeBookCategories getFoodRecipeBookCategory()
-    {
-        return RecipeBookCategories.CRAFTING_REDSTONE;
-    }
-
-    @Override
-    public RecipeBookCategories getMiscRecipeBookCategory()
-    {
-        return RecipeBookCategories.CRAFTING_MISC;
-    }
 }

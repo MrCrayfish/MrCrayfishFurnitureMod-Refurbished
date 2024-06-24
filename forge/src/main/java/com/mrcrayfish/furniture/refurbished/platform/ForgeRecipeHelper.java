@@ -25,10 +25,4 @@ public class ForgeRecipeHelper implements IRecipeHelper
     {
         return new SingleItemRecipe.Serializer<>(builder::create){};
     }
-
-    @Override
-    public RecipeBookType getFreezerRecipeBookType()
-    {
-        return FurnitureMod.RECIPE_BOOK_TYPE_FREEZER;
-    }
 }

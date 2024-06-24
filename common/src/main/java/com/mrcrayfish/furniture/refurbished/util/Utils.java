@@ -19,9 +19,12 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * Author: MrCrayfish
@@ -68,6 +71,18 @@ public class Utils
             list.set(i, list.get(randIndex));
             list.set(randIndex, temp);
         }
+    }
+
+    /**
+     * Utility method to concat any two collections into a new list
+     *
+     * @param a the first collection
+     * @param b the second collection
+     * @return a new list that is a combined version of two collections
+     */
+    public static <T> List<T> concat(Collection<T> a, Collection<T> b)
+    {
+        return Stream.concat(a.stream(), b.stream()).collect(Collectors.toList());
     }
 
     /**

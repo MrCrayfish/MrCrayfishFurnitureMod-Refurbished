@@ -14,9 +14,9 @@ import java.util.function.Function;
  */
 public interface RecipeCategoryRegister
 {
-    void applyCategory(RecipeBookType type, List<RecipeBookCategories> categories);
+    void applyCategory(RecipeBookType type, RecipeBookCategories ... categories);
 
-    void applyAggregate(RecipeBookCategories category, List<RecipeBookCategories> categories);
+    void applyAggregate(RecipeBookCategories category, RecipeBookCategories ... categories);
 
     void applyFinder(RecipeType<?> type, Function<Recipe<?>, RecipeBookCategories> function);
 }

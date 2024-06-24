@@ -15,6 +15,4 @@ public interface IRecipeHelper
     <T extends AbstractCookingRecipe> SimpleCookingSerializer<T> createSimpleCookingSerializer(ICookingBuilder<T> builder, int defaultCookingTime);
 
     <T extends SingleItemRecipe> SingleItemRecipe.Serializer<T> createSingleItemSerializer(ISingleBuilder<T> builder);
-
-    RecipeBookType getFreezerRecipeBookType();
 }

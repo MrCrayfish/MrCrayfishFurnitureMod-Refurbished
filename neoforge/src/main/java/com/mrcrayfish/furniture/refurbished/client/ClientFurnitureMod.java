@@ -6,6 +6,7 @@ import com.mrcrayfish.furniture.refurbished.client.ExtraModels;
 import com.mrcrayfish.furniture.refurbished.client.registration.ParticleProviderRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.RecipeCategoryRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
+import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookCategories;
 import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
@@ -24,6 +25,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
@@ -41,6 +43,12 @@ import java.util.function.Function;
 @Mod.EventBusSubscriber(modid = Constants.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientFurnitureMod
 {
+    @SubscribeEvent
+    private static void onClientSetup(FMLClientSetupEvent event)
+    {
+        event.enqueueWork(ClientBootstrap::init);
+    }
+
     @SubscribeEvent
     private static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event)
     {
@@ -99,18 +107,29 @@ public class ClientFurnitureMod
     @SubscribeEvent
     private static void onRegisterRecipeCategories(RegisterRecipeBookCategoriesEvent event)
     {
+        registerRecipeBookCategory(ModRecipeBookCategories.FREEZER_SEARCH);
+        registerRecipeBookCategory(ModRecipeBookCategories.FREEZER_BLOCKS);
+        registerRecipeBookCategory(ModRecipeBookCategories.FREEZER_ITEMS);
+        registerRecipeBookCategory(ModRecipeBookCategories.FREEZER_FOOD);
+        registerRecipeBookCategory(ModRecipeBookCategories.FREEZER_MISC);
+        registerRecipeBookCategory(ModRecipeBookCategories.MICROWAVE_SEARCH);
+        registerRecipeBookCategory(ModRecipeBookCategories.MICROWAVE_BLOCKS);
+        registerRecipeBookCategory(ModRecipeBookCategories.MICROWAVE_ITEMS);
+        registerRecipeBookCategory(ModRecipeBookCategories.MICROWAVE_FOOD);
+        registerRecipeBookCategory(ModRecipeBookCategories.MICROWAVE_MISC);
+
         ClientBootstrap.registerRecipeBookCategories(new RecipeCategoryRegister()
         {
             @Override
-            public void applyCategory(RecipeBookType recipeBookType, List<RecipeBookCategories> categories)
+            public void applyCategory(RecipeBookType recipeBookType, RecipeBookCategories ... categories)
             {
-                event.registerBookCategories(recipeBookType, categories);
+                event.registerBookCategories(recipeBookType, List.of(categories));
             }
 
             @Override
-            public void applyAggregate(RecipeBookCategories category, List<RecipeBookCategories> categories)
+            public void applyAggregate(RecipeBookCategories category, RecipeBookCategories ... categories)
             {
-                event.registerAggregateCategory(category, categories);
+                event.registerAggregateCategory(category, List.of(categories));
             }
 
             @Override
@@ -120,4 +139,10 @@ public class ClientFurnitureMod
             }
         });
     }
+
+    private static void registerRecipeBookCategory(RecipeBookCategoryHolder holder)
+    {
+        RecipeBookCategories.create(holder.getConstantName(), holder.getIcons().get());
+    }
+
 }

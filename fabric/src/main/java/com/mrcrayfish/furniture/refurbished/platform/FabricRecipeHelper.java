@@ -24,13 +24,4 @@ public class FabricRecipeHelper implements IRecipeHelper
     {
         return new SingleItemRecipe.Serializer<>(builder::create){};
     }
-
-    @Override
-    public RecipeBookType getFreezerRecipeBookType()
-    {
-        // Fabric doesn't have the ability to add new types without third party libs
-        // We are just returning this to avoid crashes, but essentially crafting book
-        // is disabled on Fabric.
-        return RecipeBookType.CRAFTING;
-    }
 }

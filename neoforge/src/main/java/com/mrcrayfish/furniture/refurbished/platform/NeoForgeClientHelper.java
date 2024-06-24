@@ -39,12 +39,6 @@ import java.util.function.Function;
  */
 public class NeoForgeClientHelper implements IClientHelper
 {
-    private static final RecipeBookCategories CATEGORY_SEARCH = RecipeBookCategories.create("REFURBISHED_FURNITURE_SEARCH", new ItemStack(Items.COMPASS));
-    private static final RecipeBookCategories CATEGORY_BLOCKS = RecipeBookCategories.create("REFURBISHED_FURNITURE_BLOCKS", new ItemStack(Items.STONE));
-    private static final RecipeBookCategories CATEGORY_ITEMS = RecipeBookCategories.create("REFURBISHED_FURNITURE_ITEMS", new ItemStack(Items.WOODEN_SWORD));
-    private static final RecipeBookCategories CATEGORY_FOOD = RecipeBookCategories.create("REFURBISHED_FURNITURE_FOOD", new ItemStack(Items.PORKCHOP));
-    private static final RecipeBookCategories CATEGORY_MISC = RecipeBookCategories.create("REFURBISHED_FURNITURE_MISC", new ItemStack(Items.LAVA_BUCKET));
-
     @Override
     public int getGuiLeft(AbstractContainerScreen<?> screen)
     {
@@ -119,36 +113,6 @@ public class NeoForgeClientHelper implements IClientHelper
     public void renderTooltip(GuiGraphics graphics, Font font, List<ClientTooltipComponent> components, int mouseX, int mouseY, ClientTooltipPositioner position)
     {
         graphics.renderTooltipInternal(font, components, mouseX, mouseY, position);
-    }
-
-    @Override
-    public RecipeBookCategories getSearchRecipeBookCategory()
-    {
-        return CATEGORY_SEARCH;
-    }
-
-    @Override
-    public RecipeBookCategories getBlockRecipeBookCategory()
-    {
-        return CATEGORY_BLOCKS;
-    }
-
-    @Override
-    public RecipeBookCategories getItemRecipeBookCategory()
-    {
-        return CATEGORY_ITEMS;
-    }
-
-    @Override
-    public RecipeBookCategories getFoodRecipeBookCategory()
-    {
-        return CATEGORY_FOOD;
-    }
-
-    @Override
-    public RecipeBookCategories getMiscRecipeBookCategory()
-    {
-        return CATEGORY_MISC;
     }
 
     private Function<ResourceLocation, TextureAtlasSprite> getBlockTextures()
