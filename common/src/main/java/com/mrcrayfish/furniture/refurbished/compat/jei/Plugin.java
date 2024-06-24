@@ -67,7 +67,6 @@ public class Plugin implements IModPlugin
         registration.addRecipeCategories(new CuttingBoardSlicingCategory(helper));
         registration.addRecipeCategories(new FryingPanCookingCategory(helper));
         registration.addRecipeCategories(new MicrowaveHeatingCategory(helper));
-        registration.addRecipeCategories(new RecycleBinRecyclingCategory(helper));
         registration.addRecipeCategories(new ToasterToastingCategory(helper));
         registration.addRecipeCategories(new GrillCookingCategory(helper));
         registration.addRecipeCategories(new CuttingBoardCombiningCategory(helper));
@@ -84,7 +83,6 @@ public class Plugin implements IModPlugin
         registration.addRecipes(CuttingBoardSlicingCategory.TYPE, this.getRecipes(ModRecipeTypes.CUTTING_BOARD_SLICING.get()));
         registration.addRecipes(FryingPanCookingCategory.TYPE, this.getFryingPanRecipes());
         registration.addRecipes(MicrowaveHeatingCategory.TYPE, this.getRecipes(ModRecipeTypes.MICROWAVE_HEATING.get()));
-        registration.addRecipes(RecycleBinRecyclingCategory.TYPE, this.getRecipes(ModRecipeTypes.RECYCLE_BIN_RECYCLING.get()));
         registration.addRecipes(ToasterToastingCategory.TYPE, this.getRecipes(ModRecipeTypes.TOASTER_HEATING.get()));
         registration.addRecipes(GrillCookingCategory.TYPE, this.getGrillRecipes());
         registration.addRecipes(CuttingBoardCombiningCategory.TYPE, this.getRecipes(ModRecipeTypes.CUTTING_BOARD_COMBINING.get()));
