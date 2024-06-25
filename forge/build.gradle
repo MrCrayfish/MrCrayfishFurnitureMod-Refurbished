@@ -2,15 +2,9 @@ import net.minecraftforge.gradle.common.tasks.SignJar
 import org.apache.commons.io.FilenameUtils
 
 plugins {
-    id 'java'
-    id 'eclipse'
-    id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
+    id 'multiloader-loader'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
-}
-
-base {
-    archivesName = "${mod_id}-forge"
 }
 
 mixin {
@@ -21,16 +15,16 @@ mixin {
 
 minecraft {
     mappings channel: 'official', version: minecraft_version
-
     copyIdeResources = true
 
-    if (file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
-        accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    def at = file('src/main/resources/META-INF/accesstransformer.cfg')
+    if (at.exists()) {
+        accessTransformer = at
     }
 
     runs {
         client {
-            workingDirectory project.file('run')
+            workingDirectory file('runs/client')
             ideaModule "${rootProject.name}.${project.name}.main"
             taskName 'Client'
             property 'forge.logging.console.level', 'debug'
@@ -39,13 +33,12 @@ minecraft {
             mods {
                 modClientRun {
                     source sourceSets.main
-                    source project(":common").sourceSets.main
                 }
             }
         }
 
         server {
-            workingDirectory project.file('run')
+            workingDirectory file('runs/server')
             ideaModule "${rootProject.name}.${project.name}.main"
             taskName 'Server'
             property 'forge.logging.console.level', 'debug'
@@ -54,13 +47,12 @@ minecraft {
             mods {
                 modServerRun {
                     source sourceSets.main
-                    source project(":common").sourceSets.main
                 }
             }
         }
 
         data {
-            workingDirectory project.file('run')
+            workingDirectory file('runs/data')
             ideaModule "${rootProject.name}.${project.name}.main"
             args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
             taskName 'Data'
@@ -69,7 +61,6 @@ minecraft {
             mods {
                 modDataRun {
                     source sourceSets.main
-                    source project(":common").sourceSets.main
                 }
             }
         }
@@ -84,97 +75,25 @@ repositories {
     }
 }
 
-configurations {
-    implementation.extendsFrom library
-}
-
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    annotationProcessor "org.spongepowered:mixin:0.8.5-SNAPSHOT:processor"
 
     // Core dependencies
-    implementation fg.deobf("com.mrcrayfish:framework-forge:${minecraft_version}-${framework_version}")
+    implementation "com.mrcrayfish:framework-forge:${minecraft_version}-${framework_version}"
 
     // Runtime mods
-    runtimeOnly fg.deobf("com.mrcrayfish:catalogue-forge:${minecraft_version}-1.9.1")
-    compileOnly fg.deobf("maven.modrinth:farmers-delight:1.20.1-1.2.3")
+    runtimeOnly "com.mrcrayfish:catalogue-forge:${minecraft_version}-1.9.1"
+    compileOnly "maven.modrinth:farmers-delight:1.20.1-1.2.3"
 
     compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
-    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+    runtimeOnly "mezz.jei:jei-${minecraft_version}-forge:${jei_version}"
 
     compileOnly "com.blamejared.crafttweaker:CraftTweaker-common-${minecraft_version}:${crafttweaker_version}"
-    runtimeOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}")
-
-    compileOnly project(":common")
-    annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
-}
-
-Spec<Task> notForge = { Task it -> !it.name.startsWith("forge") && !it.name.contains("Test") } as Spec<Task>
-
-tasks.withType(JavaCompile).matching(notForge).configureEach {
-    source(project(":common").sourceSets.main.allSource)
-}
-tasks.withType(Javadoc).matching(notForge).configureEach {
-    source(project(":common").sourceSets.main.allJava)
-}
-tasks.named("sourcesJar", Jar) {
-    from(project(":common").sourceSets.main.allSource)
-}
-
-processResources {
-    from project(":common").sourceSets.main.resources
+    runtimeOnly "com.blamejared.crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}"
 }
 
 jar.finalizedBy('reobfJar')
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            groupId project.group
-            artifactId project.archivesBaseName
-            version project.version
-
-            artifact jar
-            artifact sourcesJar
-
-            pom.withXml {
-                def depsNode = asNode().appendNode('dependencies')
-                [this.configurations.library].each {
-                    it.allDependencies.each {
-                        def depNode = depsNode.appendNode('dependency')
-                        depNode.appendNode('groupId', it.group)
-                        depNode.appendNode('artifactId', it.name)
-                        depNode.appendNode('version', it.version)
-                    }
-                }
-            }
-        }
-    }
-    repositories {
-        if (System.getenv("CI")) {
-            maven {
-                name = "GitHubPackages"
-                url = "https://maven.pkg.github.com/MrCrayfish/Maven"
-                credentials {
-                    username = project.findProperty("gpr.user") ?: System.getenv("GPR_USER")
-                    password = project.findProperty("gpr.key") ?: System.getenv("GPR_KEY")
-                }
-            }
-        } else {
-            maven {
-                url "file://" + System.getenv("LOCAL_MAVEN")
-            }
-        }
-    }
-}
-
-signing {
-    if (System.getenv("SIGNING_KEY")) {
-        def signingKey = System.getenv("SIGNING_KEY")
-        def signingPassword = System.getenv("SIGNING_PASSPHRASE")
-        useInMemoryPgpKeys(signingKey, signingPassword)
-    }
-    sign publishing.publications.mavenJava
-}
 
 tasks.register('signJar', SignJar) {
     dependsOn jar

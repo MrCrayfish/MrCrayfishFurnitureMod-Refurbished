@@ -1,27 +1,6 @@
 plugins {
-    id 'java'
-    id 'idea'
-    id 'maven-publish'
+    id 'multiloader-loader'
     id 'fabric-loom' version '1.6-SNAPSHOT'
-}
-
-base {
-    archivesName = "${mod_id}-fabric"
-}
-
-configurations {
-    implementation.extendsFrom library
-}
-
-repositories {
-    maven {
-        name = 'Fabric-ASM and other GitHub repos'
-        url = "https://jitpack.io/"
-    }
-    maven {
-        name = 'Fabricators of Create: Porting Lib'
-        url = "https://mvn.devos.one/releases/"
-    }
 }
 
 dependencies {
@@ -30,7 +9,6 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
     modImplementation "com.mrcrayfish:framework-fabric:${minecraft_version}-${framework_version}"
-    implementation "com.google.code.findbugs:jsr305:3.0.2"
 
     // JEI
     modCompileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
@@ -40,108 +18,22 @@ dependencies {
     // CraftTweaker
     modCompileOnly "com.blamejared.crafttweaker:CraftTweaker-common-${minecraft_version}:${crafttweaker_version}"
     modRuntimeOnly "com.blamejared.crafttweaker:CraftTweaker-fabric-${minecraft_version}:${crafttweaker_version}"
-
-    implementation project(":common")
-}
-
-loom {
-    if (file("src/main/resources/${mod_id}.accesswidener").exists()) {
-        accessWidenerPath.set(file("src/main/resources/${mod_id}.accesswidener"))
-    }
-    mixin {
-        defaultRefmapName.set("${mod_id}.refmap.json")
-    }
-    runs {
-        client {
-            client()
-            setConfigName("Fabric Client")
-            ideConfigGenerated(true)
-            runDir("run")
-        }
-        server {
-            server()
-            setConfigName("Fabric Server")
-            ideConfigGenerated(true)
-            runDir("run")
-        }
-        datagen {
-            inherit client
-            setConfigName("Fabric Data")
-            vmArg "-Dfabric-api.datagen"
-            vmArg "-Dfabric-api.datagen.output-dir=${file("src/generated/resources")}"
-            vmArg "-Dfabric-api.datagen.modid=${mod_id}"
-            runDir "build/datagen"
-        }
-    }
 }
 
 sourceSets.main.resources.srcDir 'src/generated/resources'
 
-tasks.withType(JavaCompile).configureEach {
-    source(project(":common").sourceSets.main.allSource)
-}
-tasks.withType(Javadoc).configureEach {
-    source(project(":common").sourceSets.main.allJava)
-}
-tasks.named("sourcesJar", Jar) {
-    from(project(":common").sourceSets.main.allSource)
-}
-
-processResources {
-    from project(":common").sourceSets.main.resources
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            groupId project.group
-            artifactId project.archivesBaseName
-            version project.version
-
-            artifact remapJar
-            artifact(sourcesJar) {
-                builtBy remapSourcesJar
-            }
-
-            pom.withXml {
-                def depsNode = asNode().appendNode('dependencies')
-                [this.configurations.library].each {
-                    it.allDependencies.each {
-                        def depNode = depsNode.appendNode('dependency')
-                        depNode.appendNode('groupId', it.group)
-                        depNode.appendNode('artifactId', it.name)
-                        depNode.appendNode('version', it.version)
-                    }
-                }
-            }
-        }
-    }
-
-    repositories {
-        if (System.getenv("CI")) {
-            maven {
-                name = "GitHubPackages"
-                url = "https://maven.pkg.github.com/MrCrayfish/Maven"
-                credentials {
-                    username = project.findProperty("gpr.user") ?: System.getenv("GPR_USER")
-                    password = project.findProperty("gpr.key") ?: System.getenv("GPR_KEY")
-                }
-            }
-        } else {
-            maven {
-                url "file://" + System.getenv("LOCAL_MAVEN")
-            }
-        }
+fabricApi {
+    configureDataGeneration {
+        outputDirectory.set(file("src/generated"))
     }
 }
 
-signing {
-    if (System.getenv("SIGNING_KEY")) {
-        def signingKey = System.getenv("SIGNING_KEY")
-        def signingPassword = System.getenv("SIGNING_PASSPHRASE")
-        useInMemoryPgpKeys(signingKey, signingPassword)
+loom {
+    def aw = file("src/main/resources/${mod_id}.accesswidener")
+    if (aw.exists()) {
+        accessWidenerPath.set(aw)
     }
-    sign publishing.publications.mavenJava
+    mixin {
+        defaultRefmapName.set("${mod_id}.refmap.json")
+    }
 }
-
-loom.disableDeprecatedPomGeneration(publishing.publications.mavenJava)
