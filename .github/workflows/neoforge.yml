@@ -43,7 +43,7 @@ jobs:
         GPR_USER: "MrCrayfish"
         GPR_KEY: ${{ secrets.GPR_TOKEN }}
         TARGET_LOADER: "neoforge"
-      run: ./gradlew :neoforge:Data
+      run: ./gradlew :neoforge:runData
     - name: Build and Publish
       env:
         TARGET_LOADER: "neoforge"
