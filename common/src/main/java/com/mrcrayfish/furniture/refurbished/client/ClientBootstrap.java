@@ -376,8 +376,6 @@ public class ClientBootstrap
 
     public static void registerRecipeBookCategories(RecipeCategoryRegister register)
     {
-        System.out.println(Arrays.toString(RecipeBookType.values()));
-
         registerIntoRecipeBook(register, ModRecipeTypes.FREEZER_SOLIDIFYING.get(), ModRecipeBookTypes.FREEZER.get(),
             ModRecipeBookCategories.FREEZER_SEARCH.get(),
             ModRecipeBookCategories.FREEZER_BLOCKS.get(),
