@@ -3,7 +3,7 @@ import org.apache.commons.io.FilenameUtils
 
 plugins {
     id 'multiloader-loader'
-    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
     id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
 }
 
@@ -77,20 +77,21 @@ repositories {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    annotationProcessor "org.spongepowered:mixin:0.8.5-SNAPSHOT:processor"
 
     // Core dependencies
-    implementation "com.mrcrayfish:framework-forge:${minecraft_version}-${framework_version}"
+    implementation fg.deobf("com.mrcrayfish:framework-forge:${minecraft_version}-${framework_version}")
 
     // Runtime mods
-    runtimeOnly "com.mrcrayfish:catalogue-forge:${minecraft_version}-1.9.1"
-    compileOnly "maven.modrinth:farmers-delight:1.20.1-1.2.3"
+    runtimeOnly fg.deobf("com.mrcrayfish:catalogue-forge:${minecraft_version}-1.9.1")
+    compileOnly fg.deobf("maven.modrinth:farmers-delight:1.20.1-1.2.3")
 
-    compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
-    runtimeOnly "mezz.jei:jei-${minecraft_version}-forge:${jei_version}"
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
 
-    compileOnly "com.blamejared.crafttweaker:CraftTweaker-common-${minecraft_version}:${crafttweaker_version}"
-    runtimeOnly "com.blamejared.crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}"
+    compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-common-${minecraft_version}:${crafttweaker_version}")
+    runtimeOnly fg.deobf( "com.blamejared.crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}")
+
+    annotationProcessor "org.spongepowered:mixin:0.8.5-SNAPSHOT:processor"
 }
 
 jar.finalizedBy('reobfJar')

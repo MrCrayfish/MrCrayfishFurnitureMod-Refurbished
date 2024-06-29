@@ -23,6 +23,7 @@ build
 eclipse
 run
 node_modules
+/forge/runs/
 /neoforge/runs/
 /forge/src/generated/
 /fabric/src/generated/

@@ -30,19 +30,12 @@ repositories {
             includeGroupAndSubgroups("org.spongepowered")
         }
     }
-    exclusiveContent {
-        forRepository {
-            maven {
-                name = "MrCrayfish (GitHub)"
-                url = "https://maven.pkg.github.com/MrCrayfish/Maven"
-                credentials {
-                    username = findProperty("gpr.user") ?: System.getenv("GPR_USER")
-                    password = findProperty("gpr.key") ?: System.getenv("GPR_KEY")
-                }
-            }
-        }
-        filter {
-            includeGroup("com.mrcrayfish")
+    maven {
+        name = "MrCrayfish (GitHub)"
+        url = "https://maven.pkg.github.com/MrCrayfish/Maven"
+        credentials {
+            username = findProperty("gpr.user") ?: System.getenv("GPR_USER")
+            password = findProperty("gpr.key") ?: System.getenv("GPR_KEY")
         }
     }
     if (!System.getenv("CI")) {
