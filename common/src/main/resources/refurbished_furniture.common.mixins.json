@@ -13,6 +13,7 @@
     ],
     "client": [
         "client.AbstractSelectionListMixin",
+        "client.ClientRecipeBookMixin",
         "client.CreativeModeInventoryScreenMixin",
         "client.ModelManagerMixin",
         "client.ScreenAccessor"
