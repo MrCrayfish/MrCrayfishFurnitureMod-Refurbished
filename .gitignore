@@ -26,3 +26,4 @@ node_modules
 /forge/src/generated/
 /fabric/src/generated/
 /neoforge/
+/forge/runs/
