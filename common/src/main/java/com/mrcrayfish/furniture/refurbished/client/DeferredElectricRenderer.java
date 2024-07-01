@@ -10,6 +10,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
@@ -44,19 +45,28 @@ public class DeferredElectricRenderer
     }
 
     private final ResourceLocation nodeTexture = new ResourceLocation(Constants.MOD_ID, "textures/misc/electricity_nodes.png");
-    private final List<Consumer<VertexConsumer>> builders = new LinkedList<>();
+    private final List<BiConsumer<PoseStack, VertexConsumer>> builders = new LinkedList<>();
 
     private DeferredElectricRenderer() {}
 
-    public void draw()
+    public void draw(PoseStack pose)
     {
+        pose.pushPose();
+
         Minecraft mc = Minecraft.getInstance();
         RenderTarget target = mc.levelRenderer.entityTarget();
-        if(target == null)
+        if(target == null || this.builders.isEmpty())
             return;
 
+        // During testing, if the render target is not cleared before drawing, some shader packs
+        // will not draw electricity components correctly. This issue only happens if an entity with
+        // an outline is in view. This is a hacky fix at the expense of breaking entity outline glow.
+        if(Config.CLIENT.experimental.electricityShadersFix.get())
+        {
+            target.clear(Minecraft.ON_OSX);
+        }
+
         // Draw to the entity outline layer
-        target.clear(Minecraft.ON_OSX);
         target.bindWrite(false);
 
         Tesselator tesselator = Tesselator.getInstance();
@@ -70,8 +80,8 @@ public class DeferredElectricRenderer
 
         BufferBuilder builder = tesselator.getBuilder();
         builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-        for(Consumer<VertexConsumer> consumer : this.builders)
-            consumer.accept(builder);
+        for(BiConsumer<PoseStack, VertexConsumer> consumer : this.builders)
+            consumer.accept(pose, builder);
         BufferUploader.drawWithShader(builder.end());
 
         RenderSystem.disableBlend();
@@ -83,12 +93,13 @@ public class DeferredElectricRenderer
         mc.getMainRenderTarget().bindWrite(false);
 
         this.builders.clear();
+
+        pose.popPose();
     }
 
-    public void deferDraw(PoseStack pose, BiConsumer<Matrix4f, VertexConsumer> consumer)
+    public void deferDraw(BiConsumer<PoseStack, VertexConsumer> consumer)
     {
-        Matrix4f matrix = new Matrix4f(pose.last().pose());
-        this.builders.add(c -> consumer.accept(matrix, c));
+        this.builders.add(consumer);
     }
 
     /**
