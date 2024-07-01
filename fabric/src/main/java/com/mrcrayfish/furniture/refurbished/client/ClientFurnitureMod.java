@@ -99,9 +99,9 @@ public class ClientFurnitureMod implements ClientModInitializer
             ToolAnimationRenderer.get().render(mc.level, stack, mc.renderBuffers().bufferSource(), context.tickDelta());
             stack.popPose();
 
+            DeferredElectricRenderer.get().draw();
+
             // End render types
-            mc.renderBuffers().bufferSource().endBatch(ClientServices.PLATFORM.getElectrictyNodeRenderType());
-            mc.renderBuffers().bufferSource().endBatch(ClientServices.PLATFORM.getElectricityConnectionRenderType());
             mc.renderBuffers().bufferSource().endBatch(ClientServices.PLATFORM.getTelevisionScreenRenderType(CustomSheets.TV_CHANNELS_SHEET));
         });
 
