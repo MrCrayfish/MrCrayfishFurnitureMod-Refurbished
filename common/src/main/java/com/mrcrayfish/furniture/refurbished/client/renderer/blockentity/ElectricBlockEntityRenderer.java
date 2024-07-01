@@ -43,10 +43,10 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNod
     @Override
     public void render(T node, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay)
     {
-        drawNodeAndConnections(node, poseStack, source, overlay);
+        drawNodeAndConnections(node);
     }
 
-    public static void drawNodeAndConnections(IElectricityNode node, PoseStack poseStack, MultiBufferSource source, int overlay)
+    public static void drawNodeAndConnections(IElectricityNode node)
     {
         Minecraft mc = Minecraft.getInstance();
         if(mc.player == null || !LinkHandler.isHoldingWrench())

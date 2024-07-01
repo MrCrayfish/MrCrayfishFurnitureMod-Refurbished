@@ -52,7 +52,7 @@ public class CeilingFanBlockEntityRenderer implements BlockEntityRenderer<Ceilin
         VertexConsumer consumer = source.getBuffer(RenderType.cutout());
         ClientServices.PLATFORM.drawBakedModel(model, poseStack, consumer, light, overlay);
         poseStack.popPose();
-        ElectricBlockEntityRenderer.drawNodeAndConnections(ceilingFan, poseStack, source, overlay);
+        ElectricBlockEntityRenderer.drawNodeAndConnections(ceilingFan);
 
         if(this.entityRenderer.shouldRenderHitBoxes())
         {
