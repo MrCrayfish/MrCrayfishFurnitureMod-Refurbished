@@ -364,7 +364,7 @@ public class LinkHandler
      */
     public void render(Player player, PoseStack poseStack, MultiBufferSource.BufferSource source, float partialTick)
     {
-        if(!player.isAlive() || !player.getMainHandItem().is(ModItems.WRENCH.get()))
+        if(!player.isAlive() || !isHoldingWrench())
         {
             this.lastNodePos = null;
         }
@@ -381,28 +381,29 @@ public class LinkHandler
      *
      * @param player
      * @param pos
-     * @param pose
      * @param partialTick
      */
-    private void renderUnfinishedLink(Player player, BlockPos pos, PoseStack pose, float partialTick)
+    private void renderUnfinishedLink(Player player, BlockPos pos, PoseStack poseStack, float partialTick)
     {
-        Vec3 start = Vec3.atCenterOf(pos);
-        Vec3 end = this.getLinkEnd(player, partialTick);
-        Vec3 delta = end.subtract(start);
-        this.linkLength = delta.length();
-        double yaw = Math.atan2(-delta.z, delta.x) + Math.PI;
-        double pitch = Math.atan2(delta.horizontalDistance(), delta.y) + Mth.HALF_PI;
-        pose.pushPose();
-        pose.translate(start.x, start.y, start.z);
-        pose.mulPose(Axis.YP.rotation((float) yaw));
-        pose.mulPose(Axis.ZP.rotation((float) pitch));
-        int color = this.getLinkColour(player.level());
         DeferredElectricRenderer renderer = DeferredElectricRenderer.get();
-        renderer.deferDraw(pose, (matrix, consumer) -> {
+        renderer.deferDraw((pose, consumer) -> {
+            pose.pushPose();
+            Vec3 start = Vec3.atCenterOf(pos);
+            Vec3 end = this.getLinkEnd(player, partialTick);
+            Vec3 delta = end.subtract(start);
+            this.linkLength = delta.length();
+            double yaw = Math.atan2(-delta.z, delta.x) + Math.PI;
+            double pitch = Math.atan2(delta.horizontalDistance(), delta.y) + Mth.HALF_PI;
+            pose.pushPose();
+            pose.translate(start.x, start.y, start.z);
+            pose.mulPose(Axis.YP.rotation((float) yaw));
+            pose.mulPose(Axis.ZP.rotation((float) pitch));
+            int color = this.getLinkColour(player.level());
+            Matrix4f matrix = pose.last().pose();
             renderer.drawColouredBox(matrix, consumer, new AABB(0, -0.03125, -0.03125, delta.length(), 0.03125, 0.03125), color, 0.8F);
             renderer.drawColouredBox(matrix, consumer, new AABB(0, -0.03125, -0.03125, delta.length(), 0.03125, 0.03125).inflate(0.03125), color, 0.6F);
+            pose.popPose();
         });
-        pose.popPose();
     }
 
     /**
@@ -673,5 +674,11 @@ public class LinkHandler
             consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).uv(width, offset).endVertex();
             consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).uv(0, offset).endVertex();
         }
+    }
+
+    public static boolean isHoldingWrench()
+    {
+        Minecraft mc = Minecraft.getInstance();
+        return mc.player != null && mc.player.getMainHandItem().is(ModItems.WRENCH.get());
     }
 }

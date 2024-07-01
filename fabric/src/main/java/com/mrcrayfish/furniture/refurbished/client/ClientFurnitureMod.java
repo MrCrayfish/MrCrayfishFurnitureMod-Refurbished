@@ -80,15 +80,14 @@ public class ClientFurnitureMod implements ClientModInitializer
                 return;
 
             // Draw active link
-            PoseStack stack = context.matrixStack();
-            stack.pushPose();
+            PoseStack pose = context.matrixStack();
+            pose.pushPose();
             Vec3 view = context.camera().getPosition();
-            stack.translate(-view.x(), -view.y(), -view.z());
-            LinkHandler.get().render(mc.player, stack, mc.renderBuffers().bufferSource(), context.tickDelta());
-            ToolAnimationRenderer.get().render(mc.level, stack, mc.renderBuffers().bufferSource(), context.tickDelta());
-            stack.popPose();
-
-            DeferredElectricRenderer.get().draw();
+            pose.translate(-view.x(), -view.y(), -view.z());
+            LinkHandler.get().render(mc.player, pose, mc.renderBuffers().bufferSource(), context.tickDelta());
+            ToolAnimationRenderer.get().render(mc.level, pose, mc.renderBuffers().bufferSource(), context.tickDelta());
+            DeferredElectricRenderer.get().draw(pose);
+            pose.popPose();
 
             // End render types
             mc.renderBuffers().bufferSource().endBatch(ClientServices.PLATFORM.getTelevisionScreenRenderType(CustomSheets.TV_CHANNELS_SHEET));

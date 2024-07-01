@@ -23,6 +23,9 @@ public class Config
 
     public static class Client
     {
+        @ConfigProperty(name = "experimental", comment = "Experimental options")
+        public final Experimental experimental = new Experimental();
+
         @ConfigProperty(name = "doorbellNotification", comment = """
             If enabled, displays a toast notification when another player rings one of your doorbells.""")
         public final BoolProperty doorbellNotification = BoolProperty.create(true);
@@ -35,6 +38,17 @@ public class Config
             If enabled, shows an overlay on the HUD to help with cutting board slicing and combining recipes.
             Note: This is an experimental feature.""")
         public final BoolProperty showCuttingBoardHelper = BoolProperty.create(false);
+
+        public static class Experimental
+        {
+            @ConfigProperty(name = "electricityShadersFix", comment = """
+            This config option is only if you have a shaders mod install, like Iris or Optifine.
+            If enabled, this will fix an issue where if an entity with the glow effect is in view
+            that it prevents electricity links and nodes from rendering. It may not fix 100% for
+            every shader pack.
+            WARNING: This will break the entity glow effect, this may or may not be a problem for you.""")
+            public final BoolProperty electricityShadersFix = BoolProperty.create(false);
+        }
     }
 
     public static class Server
