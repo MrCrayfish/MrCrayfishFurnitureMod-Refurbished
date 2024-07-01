@@ -373,7 +373,7 @@ public class LinkHandler
 
         if(this.lastNodePos != null)
         {
-            this.renderUnfinishedLink(player, this.lastNodePos, poseStack, source, partialTick);
+            this.renderUnfinishedLink(player, this.lastNodePos, poseStack, partialTick);
         }
     }
 
@@ -381,11 +381,10 @@ public class LinkHandler
      *
      * @param player
      * @param pos
-     * @param poseStack
-     * @param source
+     * @param pose
      * @param partialTick
      */
-    private void renderUnfinishedLink(Player player, BlockPos pos, PoseStack poseStack, MultiBufferSource.BufferSource source, float partialTick)
+    private void renderUnfinishedLink(Player player, BlockPos pos, PoseStack pose, float partialTick)
     {
         Vec3 start = Vec3.atCenterOf(pos);
         Vec3 end = this.getLinkEnd(player, partialTick);
@@ -393,14 +392,17 @@ public class LinkHandler
         this.linkLength = delta.length();
         double yaw = Math.atan2(-delta.z, delta.x) + Math.PI;
         double pitch = Math.atan2(delta.horizontalDistance(), delta.y) + Mth.HALF_PI;
-        poseStack.pushPose();
-        poseStack.translate(start.x, start.y, start.z);
-        poseStack.mulPose(Axis.YP.rotation((float) yaw));
-        poseStack.mulPose(Axis.ZP.rotation((float) pitch));
+        pose.pushPose();
+        pose.translate(start.x, start.y, start.z);
+        pose.mulPose(Axis.YP.rotation((float) yaw));
+        pose.mulPose(Axis.ZP.rotation((float) pitch));
         int color = this.getLinkColour(player.level());
-        drawColouredBox(poseStack, source, new AABB(0, -0.03125, -0.03125, delta.length(), 0.03125, 0.03125), color, 0.8F);
-        drawColouredBox(poseStack, source, new AABB(0, -0.03125, -0.03125, delta.length(), 0.03125, 0.03125).inflate(0.03125), color, 0.6F);
-        poseStack.popPose();
+        DeferredElectricRenderer renderer = DeferredElectricRenderer.get();
+        renderer.deferDraw(pose, (matrix, consumer) -> {
+            renderer.drawColouredBox(matrix, consumer, new AABB(0, -0.03125, -0.03125, delta.length(), 0.03125, 0.03125), color, 0.8F);
+            renderer.drawColouredBox(matrix, consumer, new AABB(0, -0.03125, -0.03125, delta.length(), 0.03125, 0.03125).inflate(0.03125), color, 0.6F);
+        });
+        pose.popPose();
     }
 
     /**
@@ -671,24 +673,5 @@ public class LinkHandler
             consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).uv(width, offset).endVertex();
             consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).uv(0, offset).endVertex();
         }
-    }
-
-    /**
-     * Draws a coloured box with the given colour. This method is specific to drawing links, as it
-     * will use the electricity connection render type. This will make the box be seen through walls.
-     *
-     * @param poseStack the current posestack
-     * @param source    a multi buffer source
-     * @param box       the aabb box to draw
-     * @param colour    the colour of the box in decimal
-     * @param alpha     the alpha value from 0 to 1
-     */
-    public static void drawColouredBox(PoseStack poseStack, MultiBufferSource source, AABB box, int colour, float alpha)
-    {
-        float red = FastColor.ARGB32.red(colour) / 255F;
-        float green = FastColor.ARGB32.green(colour) / 255F;
-        float blue = FastColor.ARGB32.blue(colour) / 255F;
-        VertexConsumer consumer = source.getBuffer(ClientServices.PLATFORM.getElectricityConnectionRenderType());
-        LevelRenderer.addChainedFilledBoxVertices(poseStack, consumer, box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ, red, green, blue, alpha);
     }
 }

@@ -1,18 +1,16 @@
 package com.mrcrayfish.furniture.refurbished.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.mrcrayfish.furniture.refurbished.Config;
+import com.mrcrayfish.furniture.refurbished.client.DeferredElectricRenderer;
 import com.mrcrayfish.furniture.refurbished.client.ExtraModels;
 import com.mrcrayfish.furniture.refurbished.client.LinkHandler;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.electricity.Connection;
 import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
-import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -46,21 +44,13 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNod
         drawNodeAndConnections(node, poseStack, source, overlay);
     }
 
-    public static void drawNodeAndConnections(IElectricityNode node, PoseStack poseStack, MultiBufferSource source, int overlay)
+    public static void drawNodeAndConnections(IElectricityNode node, PoseStack pose, MultiBufferSource source, int overlay)
     {
         Minecraft mc = Minecraft.getInstance();
         if(mc.player == null || !mc.player.getItemInHand(InteractionHand.MAIN_HAND).is(ModItems.WRENCH.get()))
             return;
 
-        // Draw node model
-        poseStack.pushPose();
-        poseStack.translate(0.5F, 0.5F, 0.5F);
-        float scale = node.isSourceNode() ? POWER_NODE_SCALE : 1.0F;
-        poseStack.scale(scale, scale, scale);
-        VertexConsumer consumer = source.getBuffer(ClientServices.PLATFORM.getElectrictyNodeRenderType());
-        BakedModel model = getNodeModel(node);
-        ClientServices.PLATFORM.drawBakedModel(model, poseStack, consumer, LightTexture.FULL_BRIGHT, overlay);
-        poseStack.popPose();
+        DeferredElectricRenderer renderer = DeferredElectricRenderer.get();
 
         // Draw highlight colour
         LinkHandler handler = LinkHandler.get();
@@ -69,37 +59,45 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNod
         {
             AABB box = node.getNodeInteractBox();
             int color = handler.getLinkColour(node.getNodeLevel());
-            LinkHandler.drawColouredBox(poseStack, source, box.inflate(0.03125), color, 0.75F);
+            renderer.deferDraw(pose, (matrix, consumer) -> {
+
+                renderer.drawInvertedColouredBox(matrix, consumer, box.inflate(0.03125), color, 0.7F);
+            });
         }
 
         // Draw connections
-        poseStack.pushPose();
-        poseStack.translate(0.5F, 0.5F, 0.5F);
+        pose.pushPose();
+        pose.translate(0.5F, 0.5F, 0.5F);
         for(Connection connection : node.getNodeConnections())
         {
-            if(!DRAWN_CONNECTIONS.contains(connection))
-            {
-                poseStack.pushPose();
-                Vec3 delta = Vec3.atLowerCornerOf(connection.getPosB().subtract(connection.getPosA()));
-                double yaw = Math.atan2(-delta.z, delta.x) + Math.PI;
-                double pitch = Math.atan2(delta.horizontalDistance(), delta.y) + Mth.HALF_PI;
-                poseStack.mulPose(Axis.YP.rotation((float) yaw));
-                poseStack.mulPose(Axis.ZP.rotation((float) pitch));
-                boolean selected = !handler.isLinking() && connection.equals(handler.getTargetConnection());
-                int color = getConnectionColour(connection, node.getNodeLevel());
-                float offset = (float) (Math.sin(Util.getMillis() / 500.0) + 1.0F) / 2.0F * 0.2F;
-                AABB connectionBox = new AABB(0, -0.03125, -0.03125, delta.length(), 0.03125, 0.03125);
-                LinkHandler.drawColouredBox(poseStack, source, connectionBox, color, 0.7F + offset); // TODO remove offset if target
-                LinkHandler.drawColouredBox(poseStack, source, connectionBox.inflate(0.03125), color, 0.5F + offset);
-                if(selected)
-                {
-                    LinkHandler.drawColouredBox(poseStack, source, connectionBox.inflate(0.03125), 0xFFFFFFFF, 0.6F);
+            if(DRAWN_CONNECTIONS.contains(connection))
+                continue;
+            pose.pushPose();
+            Vec3 delta = Vec3.atLowerCornerOf(connection.getPosB().subtract(connection.getPosA()));
+            double yaw = Math.atan2(-delta.z, delta.x) + Math.PI;
+            double pitch = Math.atan2(delta.horizontalDistance(), delta.y) + Mth.HALF_PI;
+            boolean selected = !handler.isLinking() && connection.equals(handler.getTargetConnection());
+            int color = getConnectionColour(connection, node.getNodeLevel());
+            float offset = (float) (Math.sin(Util.getMillis() / 500.0) + 1.0F) / 2.0F * 0.2F;
+            AABB box = new AABB(0, -0.03125, -0.03125, delta.length(), 0.03125, 0.03125);
+            pose.mulPose(Axis.YP.rotation((float) yaw));
+            pose.mulPose(Axis.ZP.rotation((float) pitch));
+            renderer.deferDraw(pose, (matrix, consumer) -> {
+                renderer.drawColouredBox(matrix, consumer, box, color, 0.7F + offset);
+                renderer.drawColouredBox(matrix, consumer, box.inflate(0.03125), color, 0.5F + offset);
+                if(selected) {
+                    renderer.drawColouredBox(matrix, consumer, box.inflate(0.03125), 0xFFFFFFFF, 0.8F);
                 }
-                poseStack.popPose();
-                DRAWN_CONNECTIONS.add(connection);
-            }
+            });
+            pose.popPose();
+            DRAWN_CONNECTIONS.add(connection);
         }
-        poseStack.popPose();
+        pose.popPose();
+
+        // Draw node model
+        renderer.deferDraw(pose, (matrix, consumer) -> {
+            renderer.drawTexturedBox(matrix, consumer, node.getNodeInteractBox(), 0.0F, 0.0F, 0.25F, 0.25F);
+        });
     }
 
     private static int getConnectionColour(Connection connection, Level level)
