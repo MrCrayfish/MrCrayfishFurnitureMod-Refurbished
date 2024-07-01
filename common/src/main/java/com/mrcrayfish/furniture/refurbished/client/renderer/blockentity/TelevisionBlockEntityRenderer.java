@@ -59,6 +59,6 @@ public class TelevisionBlockEntityRenderer implements BlockEntityRenderer<Televi
             poseStack.popPose();
         }
 
-        ElectricBlockEntityRenderer.drawNodeAndConnections(television, poseStack, source, overlay);
+        ElectricBlockEntityRenderer.drawNodeAndConnections(television);
     }
 }
