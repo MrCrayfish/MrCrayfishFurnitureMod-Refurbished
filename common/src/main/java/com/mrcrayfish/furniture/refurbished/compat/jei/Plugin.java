@@ -72,7 +72,6 @@ public class Plugin implements IModPlugin
         registration.addRecipeCategories(new CuttingBoardCombiningCategory(helper));
         registration.addRecipeCategories(new WorkbenchConstructingCategory(helper));
         registration.addRecipeCategories(new OvenBakingCategory(helper));
-        registration.addRecipeCategories(new SinkFluidTransmutingCategory(helper));
     }
 
     @Override
@@ -88,7 +87,6 @@ public class Plugin implements IModPlugin
         registration.addRecipes(CuttingBoardCombiningCategory.TYPE, this.getRecipes(ModRecipeTypes.CUTTING_BOARD_COMBINING.get()));
         registration.addRecipes(WorkbenchConstructingCategory.TYPE, this.getRecipes(ModRecipeTypes.WORKBENCH_CONSTRUCTING.get()));
         registration.addRecipes(OvenBakingCategory.TYPE, this.getRecipes(ModRecipeTypes.OVEN_BAKING.get()));
-        registration.addRecipes(SinkFluidTransmutingCategory.TYPE, this.getRecipes(ModRecipeTypes.SINK_FLUID_TRANSMUTING.get()));
 
         // TODO ingredient info
         //registration.addIngredientInfo(new ItemStack(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get()), VanillaTypes.ITEM_STACK, Utils.translation("jei_ingredient_info", "electricity_generator"));

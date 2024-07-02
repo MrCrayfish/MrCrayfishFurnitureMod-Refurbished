@@ -122,6 +122,20 @@ public class CommonRecipeProvider
                 .unlockedBy("has_leather", this.hasItem.apply(Items.LEATHER))
                 .save(this.output);
 
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, ModItems.CHEESE.get(), 2)
+            .requires(ModItems.SEA_SALT.get())
+            .requires(Items.MILK_BUCKET)
+            .unlockedBy("has_milk", this.hasItem.apply(Items.MILK_BUCKET))
+            .unlockedBy("has_salt", this.hasItem.apply(ModItems.SEA_SALT.get()))
+            .save(this.output);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, ModItems.DOUGH.get(), 2)
+            .requires(ModItems.WHEAT_FLOUR.get())
+            .requires(Items.WATER_BUCKET)
+            .unlockedBy("has_water", this.hasItem.apply(Items.WATER_BUCKET))
+            .unlockedBy("has_flour", this.hasItem.apply(ModItems.WHEAT_FLOUR.get()))
+            .save(this.output);
+
         this.table(Blocks.OAK_PLANKS, ModBlocks.TABLE_OAK.get());
         this.table(Blocks.SPRUCE_PLANKS, ModBlocks.TABLE_SPRUCE.get());
         this.table(Blocks.BIRCH_PLANKS, ModBlocks.TABLE_BIRCH.get());
@@ -650,10 +664,6 @@ public class CommonRecipeProvider
         this.ovenBaking(ProcessingRecipe.Category.FOOD, ModItems.RAW_VEGETABLE_PIZZA.get(), ModItems.COOKED_VEGETABLE_PIZZA.get(), 1, 1200, 0F);
         this.ovenBaking(ProcessingRecipe.Category.FOOD, ModItems.RAW_MEATLOVERS_PIZZA.get(), ModItems.COOKED_MEATLOVERS_PIZZA.get(), 1, 1200, 0F);
 
-        // Fluid Mixing
-        this.sinkFluidTransmuting(Services.FLUID.getMilkFluid(), Ingredient.of(ModItems.SEA_SALT.get()), new ItemStack(ModItems.CHEESE.get(), 2));
-        this.sinkFluidTransmuting(Fluids.WATER, Ingredient.of(ModItems.WHEAT_FLOUR.get()), new ItemStack(ModItems.DOUGH.get()));
-
         SpecialRecipeBuilder.special(DoorMatCopyRecipe::new).save(this.output, Constants.MOD_ID + ":door_mat_copy");
     }
 
@@ -1100,12 +1110,5 @@ public class CommonRecipeProvider
             builder.add(inputs[i]);
         }
         builder.save(this.output, Utils.resource("combining/" + baseName));
-    }
-
-    private void sinkFluidTransmuting(Fluid fluid, Ingredient catalyst, ItemStack result)
-    {
-        String baseName = Utils.getItemName(result.getItem());
-        SinkFluidTransmutingRecipe.Builder builder = SinkFluidTransmutingRecipe.Builder.from(fluid, catalyst, result);
-        builder.save(this.output, Utils.resource("fluid_transmuting/" + baseName));
     }
 }

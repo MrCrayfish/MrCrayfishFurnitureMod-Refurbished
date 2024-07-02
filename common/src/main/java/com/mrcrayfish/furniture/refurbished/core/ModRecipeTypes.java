@@ -21,6 +21,5 @@ public class ModRecipeTypes
     public static final RegistryEntry<RecipeType<CuttingBoardCombiningRecipe>> CUTTING_BOARD_COMBINING = RegistryEntry.recipeType(Utils.resource("cutting_board_combining"));
     public static final RegistryEntry<RecipeType<MicrowaveHeatingRecipe>> MICROWAVE_HEATING = RegistryEntry.recipeType(Utils.resource("microwave_heating"));
     public static final RegistryEntry<RecipeType<ProcessingRecipe.Item>> FRYING_PAN_COOKING = RegistryEntry.recipeType(Utils.resource("frying_pan_cooking"));
-    public static final RegistryEntry<RecipeType<SinkFluidTransmutingRecipe>> SINK_FLUID_TRANSMUTING = RegistryEntry.recipeType(Utils.resource("sink_fluid_transmuting"));
     public static final RegistryEntry<RecipeType<OvenBakingRecipe>> OVEN_BAKING = RegistryEntry.recipeType(Utils.resource("oven_baking"));
 }
