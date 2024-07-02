@@ -387,7 +387,6 @@ public class LinkHandler
     {
         DeferredElectricRenderer renderer = DeferredElectricRenderer.get();
         renderer.deferDraw((pose, consumer) -> {
-            pose.pushPose();
             Vec3 start = Vec3.atCenterOf(pos);
             Vec3 end = this.getLinkEnd(player, partialTick);
             Vec3 delta = end.subtract(start);
