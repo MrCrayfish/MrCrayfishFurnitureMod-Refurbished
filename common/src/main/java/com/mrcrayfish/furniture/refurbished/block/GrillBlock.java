@@ -88,13 +88,10 @@ public class GrillBlock extends FurnitureHorizontalEntityBlock implements BlockT
                     grill.flipItem(this.getGrillQuadrant(result));
                     FryingPanBlock.playSpatulaScoopSound(level, pos.above(), 0);
                 }
-                else if(stack.getItem() == Items.CHARCOAL)
+                else if(grill.addFuel(stack))
                 {
-                    if(grill.addFuel(stack))
-                    {
-                        stack.shrink(1);
-                        level.playSound(null, pos, SoundEvents.ANCIENT_DEBRIS_HIT, SoundSource.BLOCKS, 1.0F, 1.5F);
-                    }
+                    stack.shrink(1);
+                    level.playSound(null, pos, SoundEvents.ANCIENT_DEBRIS_HIT, SoundSource.BLOCKS, 1.0F, 1.5F);
                 }
                 else if(!stack.isEmpty())
                 {
