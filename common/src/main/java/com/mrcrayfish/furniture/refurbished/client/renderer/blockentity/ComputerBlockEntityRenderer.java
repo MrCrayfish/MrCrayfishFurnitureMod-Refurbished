@@ -43,6 +43,6 @@ public class ComputerBlockEntityRenderer implements BlockEntityRenderer<Computer
             poseStack.popPose();
         }
 
-        ElectricBlockEntityRenderer.drawNodeAndConnections(computer, poseStack, source, overlay);
+        ElectricBlockEntityRenderer.drawNodeAndConnections(computer);
     }
 }
