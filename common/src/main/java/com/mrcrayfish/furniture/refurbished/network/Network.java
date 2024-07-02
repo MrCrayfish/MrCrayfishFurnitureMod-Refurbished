@@ -5,7 +5,6 @@ import com.mrcrayfish.framework.api.network.FrameworkNetwork;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.network.message.*;
 import net.minecraft.network.protocol.PacketFlow;
-import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.resources.ResourceLocation;
 
 /**

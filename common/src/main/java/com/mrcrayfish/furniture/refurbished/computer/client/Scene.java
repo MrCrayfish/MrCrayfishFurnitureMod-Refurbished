@@ -2,10 +2,8 @@ package com.mrcrayfish.furniture.refurbished.computer.client;
 
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.IWidgetGroup;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.narration.NarratableEntry;
 
 import java.util.ArrayList;
 import java.util.Collections;

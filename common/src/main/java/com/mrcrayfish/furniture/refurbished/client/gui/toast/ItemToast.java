@@ -1,6 +1,5 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.toast;
 
-import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;

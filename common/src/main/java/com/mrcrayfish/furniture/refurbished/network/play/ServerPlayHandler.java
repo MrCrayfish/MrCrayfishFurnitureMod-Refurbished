@@ -1,7 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.network.play;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
-import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.blockentity.INameable;
 import com.mrcrayfish.furniture.refurbished.blockentity.IPaintable;
 import com.mrcrayfish.furniture.refurbished.blockentity.RecycleBinBlockEntity;
@@ -21,7 +20,6 @@ import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.*;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;

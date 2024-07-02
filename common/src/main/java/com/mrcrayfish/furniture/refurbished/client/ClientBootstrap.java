@@ -1,7 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.framework.api.event.ClientConnectionEvents;
 import com.mrcrayfish.framework.api.event.PlayerEvents;
 import com.mrcrayfish.framework.api.event.TickEvents;
@@ -39,9 +38,9 @@ import com.mrcrayfish.furniture.refurbished.computer.app.HomeControl;
 import com.mrcrayfish.furniture.refurbished.computer.app.Marketplace;
 import com.mrcrayfish.furniture.refurbished.computer.app.PaddleBall;
 import com.mrcrayfish.furniture.refurbished.computer.client.graphics.CoinMinerGraphics;
+import com.mrcrayfish.furniture.refurbished.computer.client.graphics.HomeControlGraphics;
 import com.mrcrayfish.furniture.refurbished.computer.client.graphics.MarketplaceGraphics;
 import com.mrcrayfish.furniture.refurbished.computer.client.graphics.PaddleBallGraphics;
-import com.mrcrayfish.furniture.refurbished.computer.client.graphics.HomeControlGraphics;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModEntities;
@@ -50,13 +49,9 @@ import com.mrcrayfish.furniture.refurbished.core.ModParticleTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookCategories;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
-import com.mrcrayfish.furniture.refurbished.crafting.FreezerSolidifyingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import com.mrcrayfish.furniture.refurbished.image.TextureCache;
-import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
-import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.renderer.BiomeColors;
@@ -66,10 +61,6 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.block.state.BlockState;
-
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish

@@ -2,7 +2,6 @@ package com.mrcrayfish.furniture.refurbished.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.block.BasinBlock;
-import com.mrcrayfish.furniture.refurbished.blockentity.BasinBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.ToiletBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
 import com.mrcrayfish.furniture.refurbished.client.util.SimpleFluidRenderer;

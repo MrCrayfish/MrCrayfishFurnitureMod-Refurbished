@@ -3,7 +3,6 @@ package com.mrcrayfish.furniture.refurbished.mixin.client;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import net.minecraft.client.ClientRecipeBook;
 import net.minecraft.client.RecipeBookCategories;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.spongepowered.asm.mixin.Mixin;

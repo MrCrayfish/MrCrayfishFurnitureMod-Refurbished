@@ -2,8 +2,6 @@ package com.mrcrayfish.furniture.refurbished.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.Constants;
-import com.mrcrayfish.furniture.refurbished.client.LinkHandler;
-import com.mrcrayfish.furniture.refurbished.client.ToolAnimationRenderer;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import net.minecraft.client.Minecraft;

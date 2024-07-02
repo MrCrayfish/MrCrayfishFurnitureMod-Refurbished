@@ -1,13 +1,11 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 
 import com.google.common.collect.ImmutableMap;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.client.gui.ClientWorkbenchRecipeIngredientTooltip;
 import com.mrcrayfish.furniture.refurbished.client.gui.ClientWorkbenchRecipeTooltip;
 import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
-import com.mrcrayfish.furniture.refurbished.client.util.VanillaTextures;
 import com.mrcrayfish.furniture.refurbished.core.ModTags;
 import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchContructingRecipe;
 import com.mrcrayfish.furniture.refurbished.inventory.WorkbenchMenu;

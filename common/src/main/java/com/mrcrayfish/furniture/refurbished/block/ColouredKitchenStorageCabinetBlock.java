@@ -3,7 +3,6 @@ package com.mrcrayfish.furniture.refurbished.block;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.level.block.Block;
 
 /**
  * Author: MrCrayfish

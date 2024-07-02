@@ -3,7 +3,6 @@ package com.mrcrayfish.furniture.refurbished.client.audio;
 import com.mrcrayfish.furniture.refurbished.blockentity.ILevelAudio;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.sounds.TickableSoundInstance;
 import net.minecraft.world.phys.Vec3;
 
 import java.lang.ref.WeakReference;

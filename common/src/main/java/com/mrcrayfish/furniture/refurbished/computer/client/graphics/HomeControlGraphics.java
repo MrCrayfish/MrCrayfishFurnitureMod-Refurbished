@@ -1,6 +1,5 @@
 package com.mrcrayfish.furniture.refurbished.computer.client.graphics;
 
-import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.blockentity.IHomeControlDevice;
 import com.mrcrayfish.furniture.refurbished.computer.app.HomeControl;
 import com.mrcrayfish.furniture.refurbished.computer.client.DisplayableProgram;

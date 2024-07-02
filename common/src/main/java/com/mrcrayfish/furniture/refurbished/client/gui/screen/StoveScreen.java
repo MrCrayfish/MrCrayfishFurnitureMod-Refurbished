@@ -2,7 +2,6 @@ package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 
 import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.client.gui.recipe.EmptyRecipeBookComponent;
-import com.mrcrayfish.furniture.refurbished.client.gui.recipe.MicrowaveRecipeBookComponent;
 import com.mrcrayfish.furniture.refurbished.client.gui.recipe.OvenRecipeBookComponent;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.OnOffSlider;
 import com.mrcrayfish.furniture.refurbished.inventory.StoveMenu;
@@ -13,7 +12,6 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
 import net.minecraft.network.chat.Component;

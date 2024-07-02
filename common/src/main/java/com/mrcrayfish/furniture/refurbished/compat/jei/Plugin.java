@@ -1,7 +1,15 @@
 package com.mrcrayfish.furniture.refurbished.compat.jei;
 
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.ComputerScreen;
-import com.mrcrayfish.furniture.refurbished.compat.jei.categories.*;
+import com.mrcrayfish.furniture.refurbished.compat.jei.categories.CuttingBoardCombiningCategory;
+import com.mrcrayfish.furniture.refurbished.compat.jei.categories.CuttingBoardSlicingCategory;
+import com.mrcrayfish.furniture.refurbished.compat.jei.categories.FreezerSolidifyingCategory;
+import com.mrcrayfish.furniture.refurbished.compat.jei.categories.FryingPanCookingCategory;
+import com.mrcrayfish.furniture.refurbished.compat.jei.categories.GrillCookingCategory;
+import com.mrcrayfish.furniture.refurbished.compat.jei.categories.MicrowaveHeatingCategory;
+import com.mrcrayfish.furniture.refurbished.compat.jei.categories.OvenBakingCategory;
+import com.mrcrayfish.furniture.refurbished.compat.jei.categories.ToasterToastingCategory;
+import com.mrcrayfish.furniture.refurbished.compat.jei.categories.WorkbenchConstructingCategory;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
@@ -29,7 +37,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;

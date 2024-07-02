@@ -1,9 +1,9 @@
 package com.mrcrayfish.furniture.refurbished.platform;
 
+import com.mrcrayfish.furniture.refurbished.block.NeoForgeTrampolineBlock;
 import com.mrcrayfish.furniture.refurbished.block.TrampolineBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModDamageTypes;
 import com.mrcrayfish.furniture.refurbished.platform.services.IBlockHelper;
-import com.mrcrayfish.furniture.refurbished.block.NeoForgeTrampolineBlock;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;

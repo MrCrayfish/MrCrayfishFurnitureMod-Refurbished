@@ -2,7 +2,6 @@ package com.mrcrayfish.furniture.refurbished.data;
 
 import com.mrcrayfish.furniture.refurbished.crafting.StackedIngredient;
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;

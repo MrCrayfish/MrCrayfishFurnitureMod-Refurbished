@@ -1,8 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
 import com.mrcrayfish.furniture.refurbished.Constants;
-import com.mrcrayfish.furniture.refurbished.client.ClientBootstrap;
-import com.mrcrayfish.furniture.refurbished.client.ExtraModels;
 import com.mrcrayfish.furniture.refurbished.client.registration.ParticleProviderRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.RecipeCategoryRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
@@ -20,7 +18,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;

@@ -3,7 +3,6 @@ package com.mrcrayfish.furniture.refurbished.platform;
 import com.mrcrayfish.furniture.refurbished.crafting.ICookingBuilder;
 import com.mrcrayfish.furniture.refurbished.crafting.ISingleBuilder;
 import com.mrcrayfish.furniture.refurbished.platform.services.IRecipeHelper;
-import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.SimpleCookingSerializer;
 import net.minecraft.world.item.crafting.SingleItemRecipe;

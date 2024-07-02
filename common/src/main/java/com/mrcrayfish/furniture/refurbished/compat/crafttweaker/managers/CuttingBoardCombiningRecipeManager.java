@@ -18,7 +18,6 @@ import net.minecraft.world.item.crafting.RecipeType;
 import org.openzen.zencode.java.ZenCodeType;
 
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Author: MrCrayfish

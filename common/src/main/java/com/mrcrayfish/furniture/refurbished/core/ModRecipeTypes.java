@@ -4,9 +4,16 @@ import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.framework.api.registry.RegistryContainer;
 import com.mrcrayfish.framework.api.registry.RegistryEntry;
-import com.mrcrayfish.furniture.refurbished.crafting.*;
+import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardCombiningRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardSlicingRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.FreezerSolidifyingRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.GrillCookingRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.MicrowaveHeatingRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.OvenBakingRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.ToasterHeatingRecipe;
+import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchContructingRecipe;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
-import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
 
 import java.util.List;

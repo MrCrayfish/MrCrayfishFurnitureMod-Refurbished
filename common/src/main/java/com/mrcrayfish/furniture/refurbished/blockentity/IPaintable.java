@@ -4,7 +4,6 @@ import com.mrcrayfish.furniture.refurbished.image.PaletteImage;
 import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
-import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish

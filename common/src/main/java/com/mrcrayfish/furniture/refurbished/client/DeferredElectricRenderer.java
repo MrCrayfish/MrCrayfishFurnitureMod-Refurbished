@@ -22,7 +22,6 @@ import org.joml.Matrix4f;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 /**
  * This class is mostly a hack to make the electricity rendering compatible with shader mods. It

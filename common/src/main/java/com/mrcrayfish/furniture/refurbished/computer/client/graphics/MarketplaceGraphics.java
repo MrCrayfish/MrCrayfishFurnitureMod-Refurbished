@@ -7,7 +7,6 @@ import com.mrcrayfish.furniture.refurbished.computer.client.Icon;
 import com.mrcrayfish.furniture.refurbished.computer.client.Scene;
 import com.mrcrayfish.furniture.refurbished.computer.client.widget.ComputerButton;
 import com.mrcrayfish.furniture.refurbished.computer.client.widget.ComputerSelectionList;
-import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
