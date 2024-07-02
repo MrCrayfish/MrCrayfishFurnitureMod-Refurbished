@@ -147,15 +147,18 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
     // TODO docs
     public boolean addFuel(ItemStack stack)
     {
-        for(int i = 0; i < this.fuel.size(); i++)
+        if(stack.getItem() == Items.CHARCOAL)
         {
-            if(this.fuel.get(i).isEmpty())
+            for(int i = 0; i < this.fuel.size(); i++)
             {
-                ItemStack fuel = stack.copy();
-                fuel.setCount(1);
-                this.fuel.set(i, fuel);
-                this.syncFuel();
-                return true;
+                if(this.fuel.get(i).isEmpty())
+                {
+                    ItemStack fuel = stack.copy();
+                    fuel.setCount(1);
+                    this.fuel.set(i, fuel);
+                    this.syncFuel();
+                    return true;
+                }
             }
         }
         return false;
