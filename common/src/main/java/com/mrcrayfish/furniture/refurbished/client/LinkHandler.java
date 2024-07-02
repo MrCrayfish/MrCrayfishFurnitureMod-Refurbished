@@ -12,7 +12,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Axis;
 import com.mrcrayfish.framework.api.config.event.FrameworkConfigEvents;
-import com.mrcrayfish.framework.api.util.EnvironmentHelper;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.ElectricBlockEntityRenderer;
@@ -27,18 +26,14 @@ import com.mrcrayfish.furniture.refurbished.electricity.NodeHitResult;
 import com.mrcrayfish.furniture.refurbished.item.WrenchItem;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageDeleteLink;
-import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -373,17 +368,16 @@ public class LinkHandler
 
         if(this.lastNodePos != null)
         {
-            this.renderUnfinishedLink(player, this.lastNodePos, poseStack, partialTick);
+            this.renderUnfinishedLink(player, this.lastNodePos, partialTick);
         }
     }
 
     /**
-     *
      * @param player
      * @param pos
      * @param partialTick
      */
-    private void renderUnfinishedLink(Player player, BlockPos pos, PoseStack poseStack, float partialTick)
+    private void renderUnfinishedLink(Player player, BlockPos pos, float partialTick)
     {
         DeferredElectricRenderer renderer = DeferredElectricRenderer.get();
         renderer.deferDraw((pose, consumer) -> {
