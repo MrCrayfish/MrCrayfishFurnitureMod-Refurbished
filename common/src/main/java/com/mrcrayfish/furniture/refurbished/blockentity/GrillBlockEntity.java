@@ -144,7 +144,13 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
         return false;
     }
 
-    // TODO docs
+    /**
+     * Attempts to add the given itemstack as fuel. The currently only accepted fuel is
+     * charcoal, since that is a very common source of heat for bbq/grills.
+     *
+     * @param stack the fuel itemstack
+     * @return True if the fuel was added
+     */
     public boolean addFuel(ItemStack stack)
     {
         if(stack.getItem() == Items.CHARCOAL)
@@ -164,6 +170,13 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
         return false;
     }
 
+    /**
+     * Flips the item at the given position. If the food is already cooked, it will simply drop the
+     * item into the level, otherwise if the food is half cooked, the flip will occur along with the
+     * animation.
+     *
+     * @param position the position of the food stack
+     */
     public void flipItem(int position)
     {
         if(position >= 0 && position < this.cooking.size() && !this.cooking.get(position).isEmpty())

@@ -17,7 +17,6 @@ import net.minecraft.world.item.crafting.SingleItemRecipe;
 @RegistryContainer
 public class ModRecipeSerializers
 {
-    // TODO make naming consistent across all recipes. e.g input vs ingredient and output vs result
     public static final RegistryEntry<WorkbenchContructingRecipe.Serializer> WORKBENCH_RECIPE = RegistryEntry.recipeSerializer(Utils.resource("workbench_constructing"), WorkbenchContructingRecipe.Serializer::new);
     public static final RegistryEntry<RecipeSerializer<GrillCookingRecipe>> GRILL_RECIPE = RegistryEntry.recipeSerializer(Utils.resource("grill_cooking"), () -> new ProcessingRecipe.Item.Serializer<>(GrillCookingRecipe::new, 200));
     public static final RegistryEntry<RecipeSerializer<FreezerSolidifyingRecipe>> FREEZER_RECIPE = RegistryEntry.recipeSerializer(Utils.resource("freezer_solidifying"), () -> new ProcessingRecipe.ItemWithCount.Serializer<>(FreezerSolidifyingRecipe::new, 200));

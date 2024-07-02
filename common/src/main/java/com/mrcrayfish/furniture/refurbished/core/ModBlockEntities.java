@@ -19,7 +19,6 @@ public class ModBlockEntities
     });
 
     public static final RegistryEntry<BlockEntityType<DrawerBlockEntity>> DRAWER = RegistryEntry.blockEntity(Utils.resource("drawer"), DrawerBlockEntity::new, () -> new Block[]{
-            // Valid blocks TODO maybe make dynamic?
             ModBlocks.DRAWER_OAK.get(),
             ModBlocks.DRAWER_SPRUCE.get(),
             ModBlocks.DRAWER_BIRCH.get(),
