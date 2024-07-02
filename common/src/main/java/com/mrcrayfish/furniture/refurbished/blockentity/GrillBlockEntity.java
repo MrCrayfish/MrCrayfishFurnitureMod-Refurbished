@@ -215,7 +215,7 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
 
     public void removeCookingItem(int position)
     {
-        if(!this.cooking.get(position).isEmpty())
+        if(position >= 0 && position < this.cooking.size() && !this.cooking.get(position).isEmpty())
         {
             // Spawns the item into the level
             double posX = this.worldPosition.getX() + 0.3 + 0.4 * (position % 2);
