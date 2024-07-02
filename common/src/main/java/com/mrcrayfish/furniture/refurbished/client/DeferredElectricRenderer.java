@@ -51,8 +51,6 @@ public class DeferredElectricRenderer
 
     public void draw(PoseStack pose)
     {
-        pose.pushPose();
-
         Minecraft mc = Minecraft.getInstance();
         RenderTarget target = mc.levelRenderer.entityTarget();
         if(target == null || this.builders.isEmpty())
@@ -78,11 +76,13 @@ public class DeferredElectricRenderer
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, this.nodeTexture);
 
+        pose.pushPose();
         BufferBuilder builder = tesselator.getBuilder();
         builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
         for(BiConsumer<PoseStack, VertexConsumer> consumer : this.builders)
             consumer.accept(pose, builder);
         BufferUploader.drawWithShader(builder.end());
+        pose.popPose();
 
         RenderSystem.disableBlend();
         RenderSystem.defaultBlendFunc();
@@ -93,8 +93,6 @@ public class DeferredElectricRenderer
         mc.getMainRenderTarget().bindWrite(false);
 
         this.builders.clear();
-
-        pose.popPose();
     }
 
     public void deferDraw(BiConsumer<PoseStack, VertexConsumer> consumer)
