@@ -28,8 +28,6 @@ public class NodeIndicatorOverlay implements IHudOverlay
         if(mc.player == null)
             return;
 
-        // TODO improve wording and when to display certain messages
-
         LinkHandler handler = LinkHandler.get();
         IElectricityNode target = handler.getTargetNode();
         if(handler.isLinking())

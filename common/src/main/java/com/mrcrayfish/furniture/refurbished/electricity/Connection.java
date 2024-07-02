@@ -69,48 +69,6 @@ public class Connection
     }
 
     /**
-     * Gets the first powerable node in the connection/link.
-     * @param level
-     * @return
-     */
-    @Nullable
-    public IElectricityNode getFirstInsidePowerableZoneNode(Level level)
-    {
-        IElectricityNode a = this.a.getElectricNode(level);
-        IElectricityNode b = this.b.getElectricNode(level);
-
-        // Edge case where we need to look if the one of the nodes is a source, and that the opposite
-        // node is not being powered by that source node.
-        if(a != null && b != null && (a.isSourceNode() ^ b.isSourceNode()))
-        {
-            ISourceNode source = this.getFirstSource(a, b);
-            if(source != null)
-            {
-                IElectricityNode other = this.getOtherNode(source);
-                if(other == null || !other.getPowerSources().contains(source.getNodePosition()))
-                {
-                    return source;
-                }
-            }
-        }
-
-
-
-        // TODO is there a case where we should compare power sources?
-
-        if(a != null && a.isNodeInPowerableNetwork())
-        {
-            return a;
-        }
-
-        if(b != null && b.isNodeInPowerableNetwork())
-        {
-            return b;
-        }
-        return null;
-    }
-
-    /**
      * Determines if this connection is connected. A connection is considered connected when
      * the nodes in this connection are both valid.
      *
@@ -137,9 +95,12 @@ public class Connection
     }
 
     /**
+     * Determines if this connection is crossing the border of a powerable zone. A connection is
+     * crossing a powerable zone border if either the start or end node is outside the powerable
+     * zone of the opposing node's power sources.
      *
-     * @param level
-     * @return
+     * @param level the level where the connection is present
+     * @return True if crossing a powerable zone
      */
     public boolean isCrossingPowerableZone(Level level)
     {
@@ -164,32 +125,6 @@ public class Connection
             }
         }
         return false;
-    }
-
-    @Nullable
-    private ISourceNode getFirstSource(IElectricityNode ... nodes)
-    {
-        for(IElectricityNode node : nodes)
-        {
-            if(node instanceof ISourceNode source)
-            {
-                return source;
-            }
-        }
-        return null;
-    }
-
-    public Optional<BlockPos> getOtherPos(BlockPos pos)
-    {
-        if(this.a.pos.equals(pos))
-        {
-            return Optional.of(this.b.pos);
-        }
-        else if(this.b.pos.equals(pos))
-        {
-            return Optional.of(this.a.pos);
-        }
-        return Optional.empty();
     }
 
     /**
