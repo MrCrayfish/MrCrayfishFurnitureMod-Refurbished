@@ -67,9 +67,8 @@ public class FurnitureMod
 
     private void onRegisterCapabilities(RegisterCapabilitiesEvent event)
     {
-        // TODO test
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlockEntities.STOVE.get(), (entity, context) -> {
-            return context == Direction.DOWN ? new InvWrapper(entity) : new SidedInvWrapper(entity.getContainer(), Direction.DOWN);
+            return context == Direction.DOWN ? new SidedInvWrapper(entity.getContainer(), Direction.DOWN) : new InvWrapper(entity);
         });
 
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlockEntities.RECYCLE_BIN.get(), (entity, context) -> {
