@@ -56,6 +56,7 @@ public class NeoForgeClientEvents
         stack.translate(-view.x(), -view.y(), -view.z());
         LinkHandler.get().render(mc.player, stack, mc.renderBuffers().bufferSource(), event.getPartialTick());
         ToolAnimationRenderer.get().render(mc.level, stack, mc.renderBuffers().bufferSource(), event.getPartialTick());
+        DeferredElectricRenderer.get().draw(stack);
         stack.popPose();
 
         // End render types
