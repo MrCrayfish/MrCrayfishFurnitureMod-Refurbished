@@ -7,9 +7,7 @@
     "mixins": [
         "FabricLivingEntityMixin"
     ],
-    "client": [
-        "client.ClientRecipeBookMixin"
-    ],
+    "client": [],
     "injectors": {
         "defaultRequire": 1
     }

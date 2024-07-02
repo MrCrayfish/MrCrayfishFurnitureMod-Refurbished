@@ -47,8 +47,6 @@ import java.util.function.Function;
  */
 public class ClientFurnitureMod implements ClientModInitializer
 {
-    public static final Map<RecipeType<?>, Function<Recipe<?>, RecipeBookCategories>> RECIPE_TYPE_TO_CATEGORY = new HashMap<>();
-
     @Override
     public void onInitializeClient()
     {
