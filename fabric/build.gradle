@@ -24,7 +24,7 @@ sourceSets.main.resources.srcDir 'src/generated/resources'
 
 fabricApi {
     configureDataGeneration {
-        outputDirectory.set(file("src/generated"))
+        outputDirectory.set(file("src/generated/resources"))
     }
 }
 
