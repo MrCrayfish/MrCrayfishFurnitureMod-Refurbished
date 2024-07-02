@@ -59,7 +59,7 @@ public class StoveScreen extends ElectricityContainerScreen<StoveMenu> implement
         // Disables recipe book support from Fabric
         if(!Services.PLATFORM.getPlatform().isFabric())
         {
-            this.addRenderableWidget(new ImageButton(this.leftPos + 14, this.height / 2 - 49, 20, 18, RecipeBookComponent.RECIPE_BUTTON_SPRITES, (button) -> {
+            this.addRenderableWidget(new ImageButton(this.leftPos + 7, this.height / 2 - 49, 20, 18, RecipeBookComponent.RECIPE_BUTTON_SPRITES, (button) -> {
                 this.recipeBookComponent.toggleVisibility();
                 this.leftPos = this.recipeBookComponent.updateScreenPosition(this.width, this.imageWidth);
                 button.setPosition(this.leftPos + 14, this.height / 2 - 49);
