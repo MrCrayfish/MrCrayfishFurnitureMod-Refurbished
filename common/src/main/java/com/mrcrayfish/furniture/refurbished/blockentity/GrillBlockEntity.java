@@ -162,7 +162,7 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
 
     public void flipItem(int position)
     {
-        if(!this.cooking.get(position).isEmpty())
+        if(position >= 0 && position < this.cooking.size() && !this.cooking.get(position).isEmpty())
         {
             CookingSpace space = this.spaces.get(position);
             if(space.isHalfCooked())
