@@ -63,9 +63,11 @@ public final class ElectricityTicker
             {
                 Constants.LOG.debug("Stopping ticking node at {}", pos);
                 it.remove();
-                continue;
             }
-            node.startLevelTick(this.level);
+            else if(this.level.shouldTickBlocksAt(pos))
+            {
+                node.startLevelTick(this.level);
+            }
         }
     }
 
