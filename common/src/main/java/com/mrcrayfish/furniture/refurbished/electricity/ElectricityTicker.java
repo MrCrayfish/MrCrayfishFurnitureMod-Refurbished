@@ -82,23 +82,20 @@ public final class ElectricityTicker
     @Nullable
     private <T extends IElectricityNode> T getElectricityNode(Map<BlockPos, WeakReference<T>> map, BlockPos pos, Function<BlockEntity, T> caster)
     {
-        // Try at get from the current reference
         WeakReference<T> sourceRef = map.get(pos);
         if(sourceRef != null)
         {
             T node = sourceRef.get();
-            if(node != null && node.isNodeValid())
+            if(node == null && this.level.isLoaded(pos))
             {
-                return node;
+                node = caster.apply(this.level.getBlockEntity(pos));
+                if(node != null)
+                {
+                    map.put(pos, new WeakReference<>(node));
+                }
             }
-        }
-        // Otherwise try and get from the world
-        if(this.level.isLoaded(pos))
-        {
-            T node = caster.apply(this.level.getBlockEntity(pos));
-            if(node != null && node.isNodeValid())
+            if(node != null && !node.getNodeOwner().isRemoved())
             {
-                map.put(pos, new WeakReference<>(node));
                 return node;
             }
         }
