@@ -102,16 +102,6 @@ public class CeilingLightBlock extends FurnitureAttachedFaceBlock implements Ent
         return new LightingBlockEntity(pos, state);
     }
 
-    @Nullable
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
-    {
-        if(!level.isClientSide())
-        {
-            return FurnitureEntityBlock.createTicker(type, ModBlockEntities.LIGHTING.get(), IModuleNode::serverTick);
-        }
-        return null;
-    }
-
     @Override
     public List<TagKey<Block>> getTags()
     {

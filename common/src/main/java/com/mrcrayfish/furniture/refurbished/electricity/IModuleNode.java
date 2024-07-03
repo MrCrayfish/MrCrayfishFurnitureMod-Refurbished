@@ -46,19 +46,17 @@ public interface IModuleNode extends IElectricityNode
     }
 
     @Override
-    default void startLevelTick(Level level)
+    default void earlyNodeTick(Level level)
     {
         this.getPowerSources().clear();
     }
 
-    /**
-     * Default implementation of an electricity module server tick.
-     *
-     * @param node the module node to tick
-     */
-    static void serverTick(Level level, BlockPos pos, BlockState state, IModuleNode node)
+    default void moduleTick(Level level)
     {
-        node.updateNodePoweredState();
-        node.setNodeReceivingPower(false);
+        if(!level.isClientSide)
+        {
+            this.updateNodePoweredState();
+            this.setNodeReceivingPower(false);
+        }
     }
 }

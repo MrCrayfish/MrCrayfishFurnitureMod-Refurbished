@@ -124,11 +124,4 @@ public abstract class ElectricityModuleLootBlockEntity extends BasicLootBlockEnt
     {
         this.saveNodeNbtToItem(stack);
     }
-
-    @Override
-    public void setLevel(Level level)
-    {
-        super.setLevel(level);
-        this.registerElectricityNodeTicker(level);
-    }
 }

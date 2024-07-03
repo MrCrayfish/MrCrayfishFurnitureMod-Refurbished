@@ -274,20 +274,23 @@ public class MicrowaveBlockEntity extends ElectricityModuleProcessingLootBlockEn
         return MAX_AUDIO_DISTANCE;
     }
 
-    public static void serverTick(Level level, BlockPos pos, BlockState state, MicrowaveBlockEntity microwave)
+    @Override
+    public void moduleTick(Level level)
     {
-        IModuleNode.serverTick(level, pos, state, microwave);
-        boolean processing = microwave.processTick();
-        if(microwave.processing != processing)
+        super.moduleTick(level);
+        if(!level.isClientSide)
         {
-            microwave.processing = processing;
-            microwave.syncDataToTrackingClients();
+            boolean processing = this.processTick();
+            if(this.processing != processing)
+            {
+                this.processing = processing;
+                this.syncDataToTrackingClients();
+            }
         }
-    }
-
-    public static void clientTick(Level level, BlockPos pos, BlockState state, MicrowaveBlockEntity microwave)
-    {
-        AudioManager.get().playLevelAudio(microwave);
+        else
+        {
+            AudioManager.get().playLevelAudio(this);
+        }
     }
 
     @Override

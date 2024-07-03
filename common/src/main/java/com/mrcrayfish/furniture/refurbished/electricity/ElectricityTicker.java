@@ -10,6 +10,7 @@ import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 /**
@@ -44,15 +45,23 @@ public final class ElectricityTicker
 
     /**
      * Called before block entities. This method ticks all source nodes that are currently loaded.
-     * Sources nodes that no longer exist or are unloaded are automatically removed.
+     * Electricity nodes that no longer exist or are unloaded are automatically removed.
      */
-    public void earlyLevelTick()
+    public void earlyTick()
     {
-        this.tickSet(this.modules, this::getModuleNode);
-        this.tickSet(this.sources, this::getSourceNode);
+        this.tickSet(this.modules, this::getModuleNode, IElectricityNode::earlyNodeTick);
+        this.tickSet(this.sources, this::getSourceNode, IElectricityNode::earlyNodeTick);
     }
 
-    private <T extends IElectricityNode> void tickSet(Map<BlockPos, WeakReference<T>> nodes, Function<BlockPos, T> getter)
+    /**
+     * A standard tick at the same time block entities are ticked
+     */
+    public void tick()
+    {
+        this.tickSet(this.modules, this::getModuleNode, IModuleNode::moduleTick);
+    }
+
+    private <T extends IElectricityNode> void tickSet(Map<BlockPos, WeakReference<T>> nodes, Function<BlockPos, T> getter, BiConsumer<T, Level> ticker)
     {
         Iterator<BlockPos> it = nodes.keySet().iterator();
         while(it.hasNext())
@@ -66,7 +75,7 @@ public final class ElectricityTicker
             }
             else if(this.level.shouldTickBlocksAt(pos))
             {
-                node.startLevelTick(this.level);
+                node.earlyNodeTick(this.level);
             }
         }
     }

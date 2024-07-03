@@ -90,16 +90,6 @@ public class ComputerBlock extends FurnitureHorizontalEntityBlock implements Blo
         return new ComputerBlockEntity(pos, state);
     }
 
-    @Nullable
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
-    {
-        if(!level.isClientSide())
-        {
-            return createTicker(type, ModBlockEntities.COMPUTER.get(), ComputerBlockEntity::serverTick);
-        }
-        return null;
-    }
-
     @Override
     public List<TagKey<Block>> getTags()
     {

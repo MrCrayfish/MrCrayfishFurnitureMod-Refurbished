@@ -103,12 +103,6 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implemen
         return Mth.lerp(partialTick, this.lastBladeRotation, this.bladeRotation);
     }
 
-    public static void clientTick(Level level, BlockPos pos, BlockState state, CeilingFanBlockEntity ceilingFan)
-    {
-        ceilingFan.updateAnimation();
-        AudioManager.get().playLevelAudio(ceilingFan);
-    }
-
     /**
      * Causes damage to entities that are colliding with the blades of the fan. The ceiling fan
      * will not cause any damage if it is not powered.
@@ -153,10 +147,19 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implemen
         return Direction.NORTH;
     }
 
-    public static void serverTick(Level level, BlockPos pos, BlockState state, CeilingFanBlockEntity ceilingFan)
+    @Override
+    public void moduleTick(Level level)
     {
-        IModuleNode.serverTick(level, pos, state, ceilingFan);
-        ceilingFan.performDamage(level);
+        super.moduleTick(level);
+        if(!level.isClientSide)
+        {
+            this.performDamage(level);
+        }
+        else
+        {
+            this.updateAnimation();
+            AudioManager.get().playLevelAudio(this);
+        }
     }
 
     @Override

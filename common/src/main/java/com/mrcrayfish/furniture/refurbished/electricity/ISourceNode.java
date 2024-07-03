@@ -102,7 +102,7 @@ public interface ISourceNode extends IElectricityNode
      * An early tick called at the start of the level tick before other block entities are ticked
      */
     @Override
-    default void startLevelTick(Level level)
+    default void earlyNodeTick(Level level)
     {
         if(!level.isClientSide())
         {

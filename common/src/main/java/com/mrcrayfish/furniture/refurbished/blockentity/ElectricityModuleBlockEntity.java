@@ -73,11 +73,6 @@ public abstract class ElectricityModuleBlockEntity extends BlockEntity implement
         return this.powerSources;
     }
 
-    public static void serverTick(Level level, BlockPos pos, BlockState state, ElectricityModuleBlockEntity module)
-    {
-        IModuleNode.serverTick(level, pos, state, module);
-    }
-
     @Override
     public void load(CompoundTag tag)
     {
@@ -122,12 +117,5 @@ public abstract class ElectricityModuleBlockEntity extends BlockEntity implement
     public void saveToItem(ItemStack stack)
     {
         this.saveNodeNbtToItem(stack);
-    }
-
-    @Override
-    public void setLevel(Level level)
-    {
-        super.setLevel(level);
-        this.registerElectricityNodeTicker(level);
     }
 }

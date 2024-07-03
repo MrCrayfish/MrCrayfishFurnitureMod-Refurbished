@@ -117,16 +117,6 @@ public class CeilingFanBlock extends FurnitureEntityBlock implements BlockTagSup
         return new CeilingFanBlockEntity(pos, state);
     }
 
-    @Nullable
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
-    {
-        if(level.isClientSide())
-        {
-            return createTicker(type, ModBlockEntities.CEILING_FAN.get(), CeilingFanBlockEntity::clientTick);
-        }
-        return createTicker(type, ModBlockEntities.CEILING_FAN.get(), CeilingFanBlockEntity::serverTick);
-    }
-
     @Override
     public List<TagKey<Block>> getTags()
     {

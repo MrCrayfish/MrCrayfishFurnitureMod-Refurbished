@@ -341,7 +341,7 @@ public interface IElectricityNode
      *
      * @param level the level the node is ticking in
      */
-    default void startLevelTick(Level level) {}
+    default void earlyNodeTick(Level level) {}
 
     /**
      *
