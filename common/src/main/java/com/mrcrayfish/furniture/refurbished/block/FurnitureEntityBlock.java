@@ -72,10 +72,6 @@ public abstract class FurnitureEntityBlock extends BaseEntityBlock implements Bl
                 Containers.dropContents(level, pos, container);
                 level.updateNeighbourForOutputSignal(pos, this);
             }
-            if(blockEntity instanceof IElectricityNode node)
-            {
-                node.onNodeDestroyed();
-            }
         }
         super.onRemove(state, level, pos, newState, isMoving);
     }
