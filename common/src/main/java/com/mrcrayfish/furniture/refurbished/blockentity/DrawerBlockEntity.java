@@ -1,7 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.mrcrayfish.furniture.refurbished.block.DrawerBlock;
-import com.mrcrayfish.furniture.refurbished.block.FreezerBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.util.Utils;

@@ -9,12 +9,10 @@ import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker.api.util.IngredientUtil;
 import com.blamejared.crafttweaker.api.util.StringUtil;
 import com.mrcrayfish.furniture.refurbished.compat.crafttweaker.CustomRecipeComponents;
-import com.mrcrayfish.furniture.refurbished.crafting.GrillCookingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.MicrowaveHeatingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 

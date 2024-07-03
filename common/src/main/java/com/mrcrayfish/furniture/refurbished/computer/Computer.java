@@ -5,8 +5,6 @@ import com.mrcrayfish.furniture.refurbished.computer.app.PaddleBall;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;

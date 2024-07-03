@@ -1,8 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.computer.client;
 
 import com.mrcrayfish.furniture.refurbished.client.ClientComputer;
-import com.mrcrayfish.furniture.refurbished.computer.client.DisplayableProgram;
-import com.mrcrayfish.furniture.refurbished.computer.client.Scene;
 import com.mrcrayfish.furniture.refurbished.computer.client.widget.ComputerButton;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageComputerOpenProgram;

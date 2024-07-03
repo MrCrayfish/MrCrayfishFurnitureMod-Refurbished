@@ -2,7 +2,6 @@ package com.mrcrayfish.furniture.refurbished.data;
 
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.compat.CompatibilityTags;
-import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.core.ModTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;

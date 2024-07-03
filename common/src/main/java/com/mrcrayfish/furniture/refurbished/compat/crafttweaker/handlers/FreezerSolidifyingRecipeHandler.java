@@ -13,7 +13,6 @@ import com.mrcrayfish.furniture.refurbished.crafting.FreezerSolidifyingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 

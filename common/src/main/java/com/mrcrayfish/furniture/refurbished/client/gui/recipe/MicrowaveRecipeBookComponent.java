@@ -1,6 +1,5 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.recipe;
 
-import com.mrcrayfish.furniture.refurbished.crafting.FreezerSolidifyingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.MicrowaveHeatingRecipe;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.world.inventory.Slot;

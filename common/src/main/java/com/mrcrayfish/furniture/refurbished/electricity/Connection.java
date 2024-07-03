@@ -2,7 +2,6 @@ package com.mrcrayfish.furniture.refurbished.electricity;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Sets;
-import com.mrcrayfish.furniture.refurbished.Config;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -10,7 +9,6 @@ import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
-import java.util.Optional;
 import java.util.Set;
 
 /**

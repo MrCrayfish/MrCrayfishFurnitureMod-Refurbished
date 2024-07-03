@@ -2,7 +2,6 @@ package com.mrcrayfish.furniture.refurbished.image;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mrcrayfish.furniture.refurbished.blockentity.IPaintable;
-import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.DoorMatBlockEntityRenderer;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
@@ -12,7 +11,6 @@ import net.minecraft.util.FastColor;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
 
 /**
  * Keeps track of currently drawn PaletteImages and manages load/unload from memory

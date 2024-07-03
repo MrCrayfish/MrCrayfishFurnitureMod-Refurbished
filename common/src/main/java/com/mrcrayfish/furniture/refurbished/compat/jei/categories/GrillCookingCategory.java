@@ -5,8 +5,6 @@ import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import com.mrcrayfish.furniture.refurbished.compat.jei.Plugin;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
-import com.mrcrayfish.furniture.refurbished.crafting.FreezerSolidifyingRecipe;
-import com.mrcrayfish.furniture.refurbished.crafting.GrillCookingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -21,8 +19,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.AbstractCookingRecipe;
-import net.minecraft.world.item.crafting.CampfireCookingRecipe;
 
 import java.util.List;
 

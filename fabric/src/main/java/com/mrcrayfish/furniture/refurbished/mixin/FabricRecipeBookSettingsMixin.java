@@ -2,7 +2,6 @@ package com.mrcrayfish.furniture.refurbished.mixin;
 
 import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.util.Pair;
-import com.mrcrayfish.furniture.refurbished.FurnitureMod;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookTypes;
 import net.minecraft.stats.RecipeBookSettings;
 import net.minecraft.world.inventory.RecipeBookType;

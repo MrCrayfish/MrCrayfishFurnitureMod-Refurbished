@@ -51,7 +51,6 @@ import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import com.mrcrayfish.furniture.refurbished.image.TextureCache;
-import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.RecipeBookCategories;
@@ -62,9 +61,6 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.block.state.BlockState;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Author: MrCrayfish

@@ -3,7 +3,6 @@ package com.mrcrayfish.furniture.refurbished.inventory;
 import com.mrcrayfish.furniture.refurbished.blockentity.IPaintable;
 import com.mrcrayfish.furniture.refurbished.client.ClientPaintable;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
-import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;

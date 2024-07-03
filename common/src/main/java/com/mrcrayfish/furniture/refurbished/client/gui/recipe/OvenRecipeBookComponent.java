@@ -1,7 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.recipe;
 
 import com.mrcrayfish.furniture.refurbished.crafting.OvenBakingRecipe;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;

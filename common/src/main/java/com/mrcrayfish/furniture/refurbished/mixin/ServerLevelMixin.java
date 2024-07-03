@@ -1,6 +1,5 @@
 package com.mrcrayfish.furniture.refurbished.mixin;
 
-import com.mrcrayfish.furniture.refurbished.electricity.ElectricityTicker;
 import com.mrcrayfish.furniture.refurbished.electricity.LinkManager;
 import net.minecraft.server.level.ServerLevel;
 import org.spongepowered.asm.mixin.Mixin;

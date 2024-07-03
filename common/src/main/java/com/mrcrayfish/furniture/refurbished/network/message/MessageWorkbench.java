@@ -7,9 +7,6 @@ import com.mrcrayfish.furniture.refurbished.network.play.ServerPlayHandler;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import net.minecraft.network.FriendlyByteBuf;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**

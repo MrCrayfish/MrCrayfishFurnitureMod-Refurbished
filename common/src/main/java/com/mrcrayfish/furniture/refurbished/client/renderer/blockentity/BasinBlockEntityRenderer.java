@@ -5,7 +5,6 @@ import com.mrcrayfish.furniture.refurbished.block.BasinBlock;
 import com.mrcrayfish.furniture.refurbished.blockentity.BasinBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
 import com.mrcrayfish.furniture.refurbished.client.util.SimpleFluidRenderer;
-import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;

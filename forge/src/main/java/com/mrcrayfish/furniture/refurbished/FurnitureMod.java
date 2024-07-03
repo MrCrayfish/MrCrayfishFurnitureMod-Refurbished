@@ -4,19 +4,18 @@ import com.mrcrayfish.furniture.refurbished.client.ClientBootstrap;
 import com.mrcrayfish.furniture.refurbished.client.ClientFurnitureMod;
 import com.mrcrayfish.furniture.refurbished.client.ForgeClientEvents;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookTypes;
-import com.mrcrayfish.furniture.refurbished.data.RegistriesProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureBlockTagsProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureItemTagsProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureLootTableProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureModelProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureRecipeProvider;
+import com.mrcrayfish.furniture.refurbished.data.RegistriesProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RegisterRecipeBookCategoriesEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -28,7 +27,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 

@@ -2,12 +2,7 @@ package com.mrcrayfish.furniture.refurbished.computer.app;
 
 import com.mrcrayfish.furniture.refurbished.blockentity.IComputer;
 import com.mrcrayfish.furniture.refurbished.computer.Program;
-import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
-import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Items;
 
 /**
  * Author: MrCrayfish

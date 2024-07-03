@@ -9,10 +9,8 @@ import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
-import com.mrcrayfish.furniture.refurbished.crafting.FreezerSolidifyingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.FryingPanCookingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
-import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.openzen.zencode.java.ZenCodeType;
 

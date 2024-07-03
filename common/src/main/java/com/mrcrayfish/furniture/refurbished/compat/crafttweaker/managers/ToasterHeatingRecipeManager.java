@@ -11,7 +11,6 @@ import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.ToasterHeatingRecipe;
-import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.openzen.zencode.java.ZenCodeType;
 

@@ -1,7 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.data;
 
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 

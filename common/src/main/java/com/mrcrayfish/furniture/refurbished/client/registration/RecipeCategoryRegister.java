@@ -5,7 +5,6 @@ import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 
-import java.util.List;
 import java.util.function.Function;
 
 public interface RecipeCategoryRegister

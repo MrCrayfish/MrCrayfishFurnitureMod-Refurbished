@@ -1,12 +1,8 @@
 package com.mrcrayfish.furniture.refurbished.computer;
 
 import com.mrcrayfish.furniture.refurbished.blockentity.IComputer;
-import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-
-import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish
