@@ -4,6 +4,9 @@ import com.mrcrayfish.furniture.refurbished.electricity.ElectricityTicker;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
  * Author: MrCrayfish
@@ -22,5 +25,11 @@ public abstract class LevelMixin implements ElectricityTicker.Access
             this.refurbishedFurniture$electricityTicker = new ElectricityTicker((Level) (Object) this);
         }
         return this.refurbishedFurniture$electricityTicker;
+    }
+
+    @Inject(method = "tickBlockEntities", at = @At(value = "HEAD"))
+    private void refurbishedFurniture$TickBlockEntitiesHead(CallbackInfo ci)
+    {
+        ElectricityTicker.get((Level) (Object) this).tick();
     }
 }

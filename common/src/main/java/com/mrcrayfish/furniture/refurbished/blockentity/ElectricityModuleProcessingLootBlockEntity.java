@@ -175,11 +175,4 @@ public abstract class ElectricityModuleProcessingLootBlockEntity extends Process
     {
         this.saveNodeNbtToItem(stack);
     }
-
-    @Override
-    public void setLevel(Level level)
-    {
-        super.setLevel(level);
-        this.registerElectricityNodeTicker(level);
-    }
 }

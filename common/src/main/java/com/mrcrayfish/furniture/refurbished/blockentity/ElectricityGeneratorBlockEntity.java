@@ -305,12 +305,12 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
     }
 
     @Override
-    public void startLevelTick(Level level)
+    public void earlyNodeTick(Level level)
     {
         if(!level.isClientSide())
         {
             this.processTick();
         }
-        super.startLevelTick(level);
+        super.earlyNodeTick(level);
     }
 }

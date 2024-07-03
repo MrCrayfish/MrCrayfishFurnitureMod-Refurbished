@@ -64,16 +64,6 @@ public class RangeHoodBlock extends FurnitureHorizontalEntityBlock implements Bl
         return new RangeHoodBlockEntity(pos, state);
     }
 
-    @Nullable
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
-    {
-        if(!level.isClientSide())
-        {
-            return createTicker(type, ModBlockEntities.RANGE_HOOD.get(), IModuleNode::serverTick);
-        }
-        return null;
-    }
-
     public static int light(BlockState state)
     {
         return state.getValue(POWERED) ? 10 : 0;

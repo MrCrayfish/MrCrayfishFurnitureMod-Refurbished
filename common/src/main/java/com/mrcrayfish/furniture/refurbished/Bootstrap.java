@@ -79,7 +79,7 @@ public class Bootstrap
         });
         TickEvents.START_LEVEL.register(level -> {
             if(Bootstrap.started) {
-                ElectricityTicker.get(level).earlyLevelTick();
+                ElectricityTicker.get(level).earlyTick();
             }
         });
         TickEvents.END_PLAYER.register(player -> {

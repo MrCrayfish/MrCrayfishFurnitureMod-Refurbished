@@ -108,16 +108,6 @@ public class MicrowaveBlock extends FurnitureHorizontalEntityBlock implements Bl
         }
     }
 
-    @Nullable
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
-    {
-        if(!level.isClientSide())
-        {
-            return createTicker(type, ModBlockEntities.MICROWAVE.get(), MicrowaveBlockEntity::serverTick);
-        }
-        return createTicker(type, ModBlockEntities.MICROWAVE.get(), MicrowaveBlockEntity::clientTick);
-    }
-
     @Override
     public List<TagKey<Block>> getTags()
     {

@@ -242,18 +242,17 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
         this.timer = 0;
     }
 
-    public static void serverTick(Level level, BlockPos pos, BlockState state, TelevisionBlockEntity television)
+    @Override
+    public void moduleTick(Level level)
     {
-        IModuleNode.serverTick(level, pos, state, television);
-        television.specialTick();
-    }
-
-    public static void clientTick(Level level, BlockPos pos, BlockState state, TelevisionBlockEntity television)
-    {
-        SoundEvent sound = television.currentChannel.sound().get();
-        if(sound != null)
+        super.moduleTick(level);
+        if(!level.isClientSide)
         {
-            AudioManager.get().playLevelAudio(television);
+            this.specialTick();
+        }
+        else
+        {
+            AudioManager.get().playLevelAudio(this);
         }
     }
 

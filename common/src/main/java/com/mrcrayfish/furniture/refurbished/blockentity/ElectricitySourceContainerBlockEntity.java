@@ -68,13 +68,6 @@ public abstract class ElectricitySourceContainerBlockEntity extends Randomizable
     }
 
     @Override
-    public void setLevel(Level level)
-    {
-        super.setLevel(level);
-        this.registerElectricityNodeTicker(level);
-    }
-
-    @Override
     public void load(CompoundTag tag)
     {
         super.load(tag);

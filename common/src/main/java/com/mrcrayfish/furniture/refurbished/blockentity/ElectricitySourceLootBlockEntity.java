@@ -67,13 +67,6 @@ public abstract class ElectricitySourceLootBlockEntity extends BasicLootBlockEnt
     }
 
     @Override
-    public void setLevel(Level level)
-    {
-        super.setLevel(level);
-        this.registerElectricityNodeTicker(level);
-    }
-
-    @Override
     public void load(CompoundTag tag)
     {
         super.load(tag);

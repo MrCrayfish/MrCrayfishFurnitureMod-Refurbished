@@ -84,16 +84,6 @@ public class TelevisionBlock extends FurnitureHorizontalEntityBlock implements B
         return new TelevisionBlockEntity(pos, state);
     }
 
-    @Nullable
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
-    {
-        if(level.isClientSide())
-        {
-            return createTicker(type, ModBlockEntities.TELEVISION.get(), TelevisionBlockEntity::clientTick);
-        }
-        return createTicker(type, ModBlockEntities.TELEVISION.get(), TelevisionBlockEntity::serverTick);
-    }
-
     public static int light(BlockState state)
     {
         return state.getValue(POWERED) ? 8 : 0;

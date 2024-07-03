@@ -71,16 +71,6 @@ public class LampBlock extends FurnitureEntityBlock implements BlockTagSupplier
         return new LightingBlockEntity(pos, state);
     }
 
-    @Nullable
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
-    {
-        if(!level.isClientSide())
-        {
-            return createTicker(type, ModBlockEntities.LIGHTING.get(), IModuleNode::serverTick);
-        }
-        return null;
-    }
-
     @Override
     public List<TagKey<Block>> getTags()
     {

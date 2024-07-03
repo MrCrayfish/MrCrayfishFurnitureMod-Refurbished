@@ -203,10 +203,14 @@ public class ComputerBlockEntity extends ElectricityModuleBlockEntity implements
         }
     }
 
-    public static void serverTick(Level level, BlockPos pos, BlockState state, ComputerBlockEntity computer)
+    @Override
+    public void moduleTick(Level level)
     {
-        IModuleNode.serverTick(level, pos, state, computer);
-        computer.tickProgram();
+        super.moduleTick(level);
+        if(!level.isClientSide)
+        {
+            this.tickProgram();
+        }
     }
 
     private void setPowerState(boolean powered)

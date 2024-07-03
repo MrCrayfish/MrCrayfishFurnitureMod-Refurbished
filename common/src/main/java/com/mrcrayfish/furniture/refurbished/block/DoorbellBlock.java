@@ -160,17 +160,6 @@ public class DoorbellBlock extends FurnitureHorizontalEntityBlock implements Blo
         return new DoorbellBlockEntity(pos, state);
     }
 
-    @Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
-    {
-        if(!level.isClientSide())
-        {
-            return createTicker(type, ModBlockEntities.DOORBELL.get(), IModuleNode::serverTick);
-        }
-        return null;
-    }
-
     @Override
     public List<TagKey<Block>> getTags()
     {

@@ -125,11 +125,4 @@ public abstract class ElectricityModuleContainerBlockEntity extends Randomizable
     {
         this.saveNodeNbtToItem(stack);
     }
-
-    @Override
-    public void setLevel(Level level)
-    {
-        super.setLevel(level);
-        this.registerElectricityNodeTicker(level);
-    }
 }
