@@ -12,9 +12,9 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
  */
 public class FryingPanCookingRecipe extends ProcessingRecipe.Item
 {
-    public FryingPanCookingRecipe(ResourceLocation id, Category category, Ingredient ingredient, ItemStack result, int cookingTime)
+    public FryingPanCookingRecipe(ResourceLocation id, Category category, Ingredient ingredient, ItemStack result, int time)
     {
-        super(ModRecipeTypes.FRYING_PAN_COOKING.get(), id, category, ingredient, result, cookingTime);
+        super(ModRecipeTypes.FRYING_PAN_COOKING.get(), id, category, ingredient, result, time);
     }
 
     @Override
