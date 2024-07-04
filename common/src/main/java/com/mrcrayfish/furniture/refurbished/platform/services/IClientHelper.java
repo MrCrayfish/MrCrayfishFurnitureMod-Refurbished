@@ -42,10 +42,6 @@ public interface IClientHelper
 
     BakedModel getBakedModel(ResourceLocation location);
 
-    RenderType getElectrictyNodeRenderType();
-
-    RenderType getElectricityConnectionRenderType();
-
     RenderType getTelevisionScreenRenderType(ResourceLocation id);
 
     SimpleParticleType createSimpleParticleType(boolean ignoreLimit);

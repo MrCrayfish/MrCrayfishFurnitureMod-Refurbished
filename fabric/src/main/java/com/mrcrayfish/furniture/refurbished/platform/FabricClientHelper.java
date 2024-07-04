@@ -81,18 +81,6 @@ public class FabricClientHelper implements IClientHelper
     }
 
     @Override
-    public RenderType getElectrictyNodeRenderType()
-    {
-        return FabricRenderType.ELECTRICITY_NODE;
-    }
-
-    @Override
-    public RenderType getElectricityConnectionRenderType()
-    {
-        return FabricRenderType.ELECTRICITY_CONNECTION;
-    }
-
-    @Override
     public RenderType getTelevisionScreenRenderType(ResourceLocation id)
     {
         return FabricRenderType.televisionScreen(id);
