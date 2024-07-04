@@ -15,22 +15,6 @@ import java.util.function.Function;
  */
 public class FabricRenderType extends RenderType
 {
-    public static final RenderType ELECTRICITY_NODE = RenderType.create(Constants.MOD_ID + "_block_no_depth", DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS, 0x200000, true, true, RenderType.CompositeState.builder()
-            .setLightmapState(RenderType.LIGHTMAP)
-            .setShaderState(RENDERTYPE_TRANSLUCENT_SHADER)
-            .setTextureState(BLOCK_SHEET_MIPPED)
-            .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-            .setOutputState(OUTLINE_TARGET)
-            .createCompositeState(true)
-    );
-
-    public static final RenderType ELECTRICITY_CONNECTION = create(Constants.MOD_ID + "_coloured_box", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLE_STRIP, 0x20000, false, true, RenderType.CompositeState.builder()
-            .setShaderState(POSITION_COLOR_SHADER)
-            .setLayeringState(VIEW_OFFSET_Z_LAYERING)
-            .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-            .setOutputState(OUTLINE_TARGET)
-            .createCompositeState(true));
-
     private static final Function<ResourceLocation, RenderType> TELEVISION_SCREEN = Util.memoize((id) -> {
         return RenderType.create(Constants.MOD_ID + "_television_screen", DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS, 0x200000, true, false, RenderType.CompositeState.builder()
                 .setLightmapState(LIGHTMAP)

@@ -84,18 +84,6 @@ public class ForgeClientHelper implements IClientHelper
     }
 
     @Override
-    public RenderType getElectrictyNodeRenderType()
-    {
-        return ForgeRenderType.ELECTRICITY_NODE;
-    }
-
-    @Override
-    public RenderType getElectricityConnectionRenderType()
-    {
-        return ForgeRenderType.COLOURED_BOX;
-    }
-
-    @Override
     public RenderType getTelevisionScreenRenderType(ResourceLocation id)
     {
         return ForgeRenderType.televisionScreen(id);
