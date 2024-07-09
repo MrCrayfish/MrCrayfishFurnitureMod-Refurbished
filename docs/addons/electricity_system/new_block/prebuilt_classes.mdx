@@ -160,66 +160,6 @@ The following example is an implementation that will sync everything in `saveAdd
 </Tabs>
 </div>
 
-## Handling Node Destruction
-
-Electricity nodes need to be notified when a player mines the block. This will ensure the `connections` to other nodes are removed. This is simply handled inside your block class with the following code:
-
-```java title="ExampleBlock.java"
-@Override
-public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-    if(!state.is(newState.getBlock())) {
-        BlockEntity blockEntity = level.getBlockEntity(pos);
-        if(blockEntity instanceof IElectricityNode node) {
-            node.onNodeDestroyed();
-        }
-    }
-    super.onRemove(state, level, pos, newState, isMoving);
-}
-```
-
-## Ticking the Electricty Node
-
-:::info
-This section can be skipped if you aren't creating a **Module**. **Sources** are automatically registered into a custom tick system in an overridden `setLevel(Level)` method of your block entity. Reading the first paragraph will however give you an insight into how the electricity system works.
-:::
-
-**Modules** recieve electrical power, while **sources** provide electrical power. **Modules** self manage their `powered` state on every game tick, which is based on if they recieved electrical power from a **source**. A **source** (like the Electricity Generator) mark **modules** (like the Ceiling Light) in the network as receiving power but don't actually update their `powered` state. Upon a **module** recieving a game tick, if it is marked as received electrical power and it is not powered, it will update it's `powered` state to `true`. If it is not marked as received electrical power and it is powered, it will update it's `powered` state to `false`. Immediately after, `setNodeReceivingPower(boolean)` will be called on itself with `false` to indicate the "marked state" as consumed. Now that you know the basics of how game ticks are applied to **modules** and **sources**, it's time to register the ticker.
-
-### Registering Modules
-
-**Modules** are simply registered as any normal block entity using a `BlockEntityTicker`. Your block class should extend vanilla's `BaseEntityBlock` otherwise you will have to write your own helper method to create the `BlockEntityTicker`. The `serverTick` method is already implemented from the class you extended in the previous steps.
-
-<Tabs className="unique-tabs">
-    <TabItem value="1-20-4" label={<div><img src={require('/static/img/minecraft-icon.webp').default}/> 1.20.4</div>} default>
-        ```java title="ExampleBlock.java"
-        @Nullable
-        @Override
-        public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-            // Only register on logical server side
-            if(!level.isClientSide()) {
-                // From BaseEntityBlock#createTickerHelper
-                return createTickerHelper(type, <ExampleBlockEntityTypeInstance>, ExampleBlockEntity::serverTick);
-            }
-            return null;
-        }
-        ```
-    </TabItem>
-    <TabItem value="1-20-1" label={<div><img src={require('/static/img/minecraft-icon.webp').default}/> 1.20.1</div>} default>
-        ```java title="ExampleBlock.java"
-        @Nullable
-        @Override
-        public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-            // Only register on logical server side
-            if(!level.isClientSide()) {
-                // From BaseEntityBlock#createTickerHelper
-                return createTickerHelper(type, <ExampleBlockEntityTypeInstance>, ExampleBlockEntity::serverTick);
-            }
-            return null;
-        }
-        ```
-    </TabItem>
-</Tabs>
-
 ## Register the Block Entity Renderer
 
 In order to render the node and its connections, you'll need to register a block entity renderer for your block entity. This is also crucial for enabling interaction with the Wrench.

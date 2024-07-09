@@ -33,8 +33,12 @@ After adding the one of the interfaces to your block entity class, you will need
 - `isNodePowered()` - Return a `boolean` representing the powered state. You could use a property from the `BlockState` or a variable inside your custom block entity. You should be able to call this on both the client and server, so ensure the state is available on both sides. 
 - `setNodePowered(boolean)` - Updates the powered state. If you are storing the state in a `BlockState` property, just update that. If you use a variable inside your custom block entity, this is a good time to sync any changes to clients and mark the block entity for saving.
 - `getNodeConnections()` - Return a `Set` of `Connection` objects. This should just be a simple `HashSet`. Connection management is handle automatically by the mod.
+
+If you are inheriting `IModuleNode` you will also need to implement the following:
+
 - `isNodeReceivingPower()` - Return a `boolean` representing if the block entity is receiving power from a source.  This should just update a simple `boolean` variable inside your custom block entity. This variable should be update only by `setNodeReceivingPower(boolean)` below.
 - `setNodeReceivingPower(boolean)` - Marks the block entity as receiving power from an electricity source. This is called before block entities are ticked. This should just update a simple `boolean` variable inside your custom block entity. Syncing to client is optional.
+- `getPowerSources()` - Return a `Set` that can hold `BlockPos`. This set holds block positions of power sources (e.g. the Electricity Generator). This is used by the client to correctly render the powerable zone. You should just return a simple `HashSet` for this.
 
 If you are inheriting `ISourceNode` you will also need to implement the following:
 
@@ -170,99 +174,6 @@ Syncing the `powered` state and `connections` to the client is crucical for the 
         @Override
         public CompoundTag getUpdateTag() {
             return this.saveWithoutMetadata(); // Heads up, this sends everything
-        }
-        ```
-    </TabItem>
-</Tabs>
-
-## Handling Node Destruction
-
-Electricity nodes need to be notified when a player mines the block. This will ensure the `connections` to other nodes are removed. This is simply handled inside your block class with the following code:
-
-```java title="ExampleBlock.java"
-@Override
-public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-    if(!state.is(newState.getBlock())) {
-        BlockEntity blockEntity = level.getBlockEntity(pos);
-        if(blockEntity instanceof IElectricityNode node) {
-            node.onNodeDestroyed();
-        }
-    }
-    super.onRemove(state, level, pos, newState, isMoving);
-}
-```
-
-## Ticking the Electricty Node
-
-**Modules** recieve electrical power, while **sources** provide electrical power. **Modules** self manage their `powered` state on every game tick, which is based on if they recieved electrical power from a **source**. A **source** (like the Electricity Generator) mark **modules** (like the Ceiling Light) in the network as receiving power but don't actually update their `powered` state. Upon a **module** recieving a game tick, if it is marked as received electrical power and it is not powered, it will update it's `powered` state to `true`. If it is not marked as received electrical power and it is powered, it will update it's `powered` state to `false`. Immediately after, `setNodeReceivingPower(boolean)` will be called on itself with `false` to indicate the "marked state" as consumed. Now that you know the basics of how game ticks are applied to **modules** and **sources**, it's time to register the ticker.
-
-### Registering Sources
-
-**Sources** are special in the fact they are ticked before all other block entites, including **modules**. This is achieved with a custom ticker system in the mod. To register your **source** into the system, all you need to do is add the following to your block entity.
-
-<Tabs className="unique-tabs">
-    <TabItem value="1-20-4" label={<div><img src={require('/static/img/minecraft-icon.webp').default}/> 1.20.4</div>} default>
-        ```java title="ExampleBlockEntity.java"
-        @Override
-        public void setLevel(Level level) {
-            super.setLevel(level);
-            this.registerSourceNodeTicker(level); // From ISourceNode
-        }
-        ```
-    </TabItem>
-    <TabItem value="1-20-1" label={<div><img src={require('/static/img/minecraft-icon.webp').default}/> 1.20.1</div>} default>
-        ```java title="ExampleBlockEntity.java"
-        @Override
-        public void setLevel(Level level) {
-            super.setLevel(level);
-            this.registerSourceNodeTicker(level); // From ISourceNode
-        }
-        ```
-    </TabItem>
-</Tabs>
-
-### Registering Modules
-
-**Modules** are simply registered as any normal block entity using a `BlockEntityTicker`. Your block class should extend vanilla's `BaseEntityBlock` otherwise you will have to write your own helper method to create the `BlockEntityTicker`.
-
-<Tabs className="unique-tabs">
-    <TabItem value="1-20-4" label={<div><img src={require('/static/img/minecraft-icon.webp').default}/> 1.20.4</div>} default>
-        ```java title="ExampleBlock.java"
-        @Nullable
-        @Override
-        public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-            // Only register on logical server side
-            if(!level.isClientSide()) {
-                // From BaseEntityBlock#createTickerHelper
-                return createTickerHelper(type, <ExampleBlockEntityTypeInstance>, ExampleBlockEntity::serverTick);
-            }
-            return null;
-        }
-        ```
-        ```java title="ExampleBlockEntity.java"
-        public static void serverTick(Level level, BlockPos pos, BlockState state, ExampleBlockEntity entity) {
-            // Make sure this is called first in your tick before other logic
-            IModuleNode.serverTick(level, pos, state, entity);
-        }
-        ```
-    </TabItem>
-    <TabItem value="1-20-1" label={<div><img src={require('/static/img/minecraft-icon.webp').default}/> 1.20.1</div>} default>
-        ```java title="ExampleBlock.java"
-        @Nullable
-        @Override
-        public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-            // Only register on logical server side
-            if(!level.isClientSide()) {
-                // From BaseEntityBlock#createTickerHelper
-                return createTickerHelper(type, <ExampleBlockEntityTypeInstance>, ExampleBlockEntity::serverTick);
-            }
-            return null;
-        }
-        ```
-        ```java title="ExampleBlockEntity.java"
-        public static void serverTick(Level level, BlockPos pos, BlockState state, ExampleBlockEntity entity) {
-            // Make sure this is called first in your tick before other logic
-            IModuleNode.serverTick(level, pos, state, entity);
         }
         ```
     </TabItem>
