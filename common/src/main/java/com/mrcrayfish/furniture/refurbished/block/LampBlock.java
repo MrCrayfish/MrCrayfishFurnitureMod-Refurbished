@@ -93,6 +93,6 @@ public class LampBlock extends FurnitureEntityBlock implements BlockTagSupplier
 
     public static int light(BlockState state)
     {
-        return state.getValue(POWERED) ? 8 : 0;
+        return state.getValue(POWERED) ? 15 : 0;
     }
 }
