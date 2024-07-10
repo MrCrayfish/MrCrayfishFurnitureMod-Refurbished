@@ -84,18 +84,6 @@ public class NeoForgeClientHelper implements IClientHelper
     }
 
     @Override
-    public RenderType getElectrictyNodeRenderType()
-    {
-        return NeoForgeRenderType.ELECTRICITY_NODE;
-    }
-
-    @Override
-    public RenderType getElectricityConnectionRenderType()
-    {
-        return NeoForgeRenderType.COLOURED_BOX;
-    }
-
-    @Override
     public RenderType getTelevisionScreenRenderType(ResourceLocation id)
     {
         return NeoForgeRenderType.televisionScreen(id);
