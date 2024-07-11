@@ -1,0 +1,197 @@
+---
+sidebar_position: 2
+sidebar_label: Create a Computer Program
+---
+
+import IconGrid from '@site/static/img/icon_grid.png';
+
+# Creating a Computer Program
+
+:::note
+The API for computer programs is intentionly simple and very open ended. The API only offers to ability to register your program and provide a simple GUI interface on the client. It is up to you to write your own code if you want to do anything advanced, like retrieving data from the server side with packets. - MrCrayfish
+:::
+
+
+
+## Create the Program
+
+Creating a program begins with extending the class `Program`. When you open the program on the Computer, your custom class will be instantiated on both the client and server. The program class is where all your common logic should be written.
+
+```java
+import com.mrcrayfish.furniture.refurbished.computer.Program;
+import com.mrcrayfish.furniture.refurbished.blockentity.IComputer;
+
+// Blank program
+public class ExampleProgram extends Program
+{
+    public ExampleProgram(ResourceLocation id, IComputer computer)
+    {
+        super(id, computer);
+    }
+}
+```
+
+You may have noticed that `Program` takes in the constructor arguments `ResourceLocation` and `IComputer`. The `ResourceLocation` is simply the same id you used when you registered it using `Computer#installProgram`. The more interesting argument is the `IComputer` interface. This will give you access to potentially useful data like an instance of the `Player` currently using the Computer, the `BlockPos` of the Computer block, the ability to check if program is server side. You can access to `IComputer` by simply calling `Program#getComputer()` anywhere in your program code.
+
+### Registering
+
+You will need to register the program class in your common setup with the following code:
+```java
+Computer computer = Computer.get();
+computer.installProgram(new ResourceLocation("<mod_id>", "<program_id>"), ExampleProgram::new);
+```
+
+### Additional Methods
+
+`Program` also comes with methods you can override in your program class to write your logic. 
+- `tick()` - Called every tick when you program is running.
+- `onClose()` - Called when your program is closed, either by the `Player` closing the window or exiting the GUI.
+
+## Displaying your Program
+
+Assuming you have followed all the steps correctly in the guide so far, you will notice that your program will be available in the Computer but you will not launch it, nor does it have an icon. This is because a program needs to be bound to a `DisplayableProgram` instance, and the icon sheet cannot be located.
+
+### Setting the Icon
+
+The icon for your program has been automatically managed for you, but is a little trival. An icon sheet is automatically generated based on your `mod_id` at the asset location `mod_id:textures/gui/program_icons.png`. You will need to create a `PNG` file with the exact size of `128` by `128`. Icons are strictly `16x` and start at the top left of the sheet. The index of your icon is based on the order your register your programs. So your first program will start at the pixel coordinates `(0, 0)`, your second program will start at the pixel coordinates `(16, 0)`, and so on. This sheet is to avoid registering lots of textures.
+
+Below is template you can save, and it also includes the colour palette if you wish to match with the theme of the computer.
+
+<img src={IconGrid} width="128" height="128"/>
+
+### Binding the Displayable
+
+Much like you would bind a `MenuType` to an `AbstractContainerScreen`, we need to bind a `Program` to a `DisplayableProgram`. `DisplayableProgram` is a client side only class used for writing all your UI code (like adding widgets) and client logic. Upon extending `DisplayableProgram`, you will need to provide a generic argument, which should be your custom `Program` class. 
+
+The constructor will need to accept the program in the arguments. This is required for `DisplayableProgram` constructor, but also gives you access to the client instance of your program. Additonally this is also where you set the `width` and `height` of your program. It should not be greater than `224x108`, otherwise an error will be thrown.
+
+```java
+import com.mrcrayfish.furniture.refurbished.computer.client.DisplayableProgram;
+
+public class ExampleGraphics extends DisplayableProgram<ExampleProgram>
+{
+    public ExampleGraphics(ExampleProgram program)
+    {
+        super(program, 100, 100);
+    }
+}
+```
+
+Finally to actually bind the program, you will need to call the following in your client setup:
+```java
+Display.get().bind(ExampleProgram.class, ExampleGraphics::new);
+```
+
+### Scenes
+
+A `DisplayableProgram` requires that you give it a `Scene`. Scenes are the core of drawing and orgnaising your interface. A scene holds your widgets and custom rendering code. For example, a chat application you may have a different scene for contacts list and settings menu since bundling them in the same scene would get messy.
+
+For easy management, scenes should be created as inner classes. Immediately in the constructor of your `DisplayableProgram`, you should set the `Scene` to display on initial load of your program. By default, scenes do not require any special constructor but you may want to pass your `DisplayableProgram` so the scene has access to your `Program` instance and more (since you'll probably want it).
+
+```java
+import com.mrcrayfish.furniture.refurbished.computer.client.Scene;
+
+public class ExampleGraphics extends DisplayableProgram<ExampleProgram>
+{
+    public ExampleGraphics(ExampleProgram program)
+    {
+        super(program, 100, 100);
+        // Sets the scene to show on intial load
+        this.setScene(new Main(this));
+    }
+    
+    // The main scene
+    public static class Main extends Scene
+    {
+        private final ExampleGraphics graphics;
+
+        public Home(ExampleGraphics graphics)
+        {
+            this.graphics = graphics;
+        }
+    }
+}
+```
+
+#### Adding and Updating Widgets
+
+Scenes accept any `GuiEventListener`, essentially any widget you could add to a `Screen`. You can add a widget to your scene by calling the `Scene#addWidget` method in the constructor of your scene. Under the hood of scenes, events will automatically be passed to your widgets and drawn for you.
+
+```java
+public static class Main extends Scene
+{
+    private final ExampleGraphics graphics;
+    private final Button testBtn;
+
+    public Home(ExampleGraphics graphics)
+    {
+        this.graphics = graphics;
+        this.testBtn = this.addWidget(Button.builder(Component.literal("Test"), button -> {
+            System.out.println("I pressed the test button");
+        }).size(50, 20).build());
+    }
+}
+```
+
+You may have noticed that no position was set for widget. This is because the position of widgets should be set/updated by inside the `updateWidgets()` method. You will need to override this method in your class.
+
+```java
+public static class Main extends Scene
+{
+    ...
+
+    // All content is positioned from the top left, just like regular Screens
+    @Override
+    public void updateWidgets(int contentStart, int contentTop)
+    {
+        this.testBtn.setPosition(contentStart + 5, contentTop + 5);
+    }
+}
+```
+
+#### Custom Rendering
+
+Of course adding widgets is only one half of what you need to completely draw your scene. You may want to provide custom rendering. This will give you access to vanilla's `GuiGraphics` so you can `fill` any colour or `blit` any sprites into the scene. 
+
+An important thing to note is that everything drawn is relative, not absolute. So drawing at the position `(0, 0)` is the top left of your scene, not the top left of the game window (when compared to `Screen#render`). Below is an example of filling the entire background of the scene with a colour.
+
+:::note
+The drawing of your program is wrapped with a call to OpenGL scissor test. This means content drawn outside of the width and height of your program will not be visible.
+:::
+
+```java
+public static class Main extends Scene
+{
+    ...
+
+    @Override
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    {
+        // Fills the entire background with a colour. Width and height of scene is 
+        // obtained via DisplayableProgram instance.
+        graphics.fill(0, 0, this.graphics.getWidth(), this.graphics.getHeight(), 0xFF262626);
+    }
+}
+```
+
+#### Switching Scenes
+
+A common action you would want to run is changing the `Scene` after clicking a button widget. This is done via the same `DisplayableProgram#setScene` call that is run on the initial load of the `DisplayableProgram`. In your scene, assuming you have passed an instance of your `DisplayableProgram` to it, simply just call `this.graphics.setScene(...)` inside your widget handler. From the above example, test button will now look like this:
+
+```java
+this.testBtn = this.addWidget(Button.builder(Component.literal("Test"), button -> {
+    graphics.setScene(new DifferentScene(graphics));
+}).size(50, 20).build());
+```
+
+## Custom Window Styling
+
+`DisplayableProgram` has the ability to control the styling of the window that it is contained within. Below is the list of functions you can call in the constructor to change the styling. All methods accept a decimal colour (e.g. `0xAARRGGBB`)
+- `setWindowOutlineColour(int)` - Sets the outline colour of the window
+- `setWindowTitleBarColour(int)` - Sets the title bar colour of the window
+- `setWindowTitleLabelColour(int)` - Sets the colour of the title bar label of the window
+- `setWindowBackgroundColour(int)` - Sets the background colour of the window
+
+## Final Words
+
+That's it. A very basic guide to creating a program. It is up to you to figure out the rest. Of course, feel free to read the source code of programs already in the mod. The relavent source code can be found [here](https://github.com/MrCrayfish/MrCrayfishFurnitureMod-Refurbished/tree/1.20.4/common/src/main/java/com/mrcrayfish/furniture/refurbished/computer).
