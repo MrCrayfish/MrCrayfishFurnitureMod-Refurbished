@@ -36,7 +36,7 @@ jobs:
           GPR_KEY: ${{ secrets.GPR_TOKEN }}
           SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
           SIGNING_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-        run: ./gradlew :common:build
+        run: ./gradlew :common:build :common:publish
       - name: Stop Gradle
         run: ./gradlew --stop
       - name: Construct artifact files
