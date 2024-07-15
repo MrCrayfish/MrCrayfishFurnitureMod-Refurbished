@@ -54,7 +54,7 @@ jobs:
         KEYSTORE: ${{ steps.load_keystore.outputs.filePath }}
         KEYSTORE_ALIAS: ${{ secrets.MRCRAYFISH_JKS_ALIAS }}
         KEYSTORE_PASS: ${{ secrets.MRCRAYFISH_JKS_PASSPHRASE }}
-      run: ./gradlew :forge:build
+      run: ./gradlew :forge:build :forge:publish
     - name: Stop Gradle
       run: ./gradlew --stop
     - name: Construct artifact files
