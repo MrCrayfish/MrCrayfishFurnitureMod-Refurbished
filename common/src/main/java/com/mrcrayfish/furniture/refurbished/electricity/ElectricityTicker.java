@@ -75,7 +75,7 @@ public final class ElectricityTicker
             }
             else if(this.level.shouldTickBlocksAt(pos))
             {
-                node.earlyNodeTick(this.level);
+                ticker.accept(node, this.level);
             }
         }
     }
