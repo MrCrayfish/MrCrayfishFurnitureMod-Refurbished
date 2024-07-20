@@ -108,13 +108,6 @@ public abstract class ElectricityModuleProcessingLootBlockEntity extends Process
         return this.powerSources;
     }
 
-    public static void serverTick(Level level, BlockPos pos, BlockState state, ElectricityModuleProcessingLootBlockEntity module)
-    {
-        module.updateNodePoweredState();
-        module.setNodeReceivingPower(false);
-        ProcessingContainerBlockEntity.serverTick(level, pos, state, module);
-    }
-
     @Override
     public void load(CompoundTag tag)
     {

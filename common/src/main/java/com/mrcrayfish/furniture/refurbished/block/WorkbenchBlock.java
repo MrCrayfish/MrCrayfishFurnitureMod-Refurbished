@@ -93,7 +93,7 @@ public class WorkbenchBlock extends FurnitureHorizontalEntityBlock implements Bl
     {
         if(!level.isClientSide())
         {
-            return createTicker(type, ModBlockEntities.WORKBENCH.get(), WorkbenchBlockEntity::sendCountsToUser);
+            return createTicker(type, ModBlockEntities.WORKBENCH.get(), WorkbenchBlockEntity::serverTick);
         }
         return null;
     }
