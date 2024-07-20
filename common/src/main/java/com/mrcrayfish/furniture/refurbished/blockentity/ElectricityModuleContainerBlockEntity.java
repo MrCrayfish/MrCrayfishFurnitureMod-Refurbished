@@ -114,12 +114,6 @@ public abstract class ElectricityModuleContainerBlockEntity extends Randomizable
         return this.worldPosition.hashCode();
     }
 
-    public static void serverTick(Level level, BlockPos pos, BlockState state, ElectricityModuleContainerBlockEntity module)
-    {
-        module.updateNodePoweredState();
-        module.setNodeReceivingPower(false);
-    }
-
     @Override
     public void saveToItem(ItemStack stack)
     {

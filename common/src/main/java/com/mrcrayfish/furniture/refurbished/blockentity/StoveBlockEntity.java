@@ -249,7 +249,6 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, StoveBlockEntity stove)
     {
-        ElectricityModuleLootBlockEntity.serverTick(level, pos, state, stove);
         stove.processTick();
         stove.spaces.forEach(IProcessingBlock::processTick);
         if(stove.sync)
