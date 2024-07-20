@@ -74,12 +74,6 @@ public abstract class ElectricityModuleLootBlockEntity extends BasicLootBlockEnt
         return this.powerSources;
     }
 
-    public static void serverTick(Level level, BlockPos pos, BlockState state, ElectricityModuleLootBlockEntity module)
-    {
-        module.updateNodePoweredState();
-        module.setNodeReceivingPower(false);
-    }
-
     @Override
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {

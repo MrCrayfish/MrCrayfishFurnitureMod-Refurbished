@@ -172,9 +172,8 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
         }
     }
 
-    public static void sendCountsToUser(Level level, BlockPos pos, BlockState state, WorkbenchBlockEntity workbench)
+    public static void serverTick(Level level, BlockPos pos, BlockState state, WorkbenchBlockEntity workbench)
     {
-        ElectricityModuleLootBlockEntity.serverTick(level, pos, state, workbench);
         workbench.sendCountsToUser(false);
     }
 
