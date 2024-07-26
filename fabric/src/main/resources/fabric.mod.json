@@ -26,9 +26,6 @@
         ],
         "jei_mod_plugin": [
             "com.mrcrayfish.furniture.refurbished.compat.jei.Plugin"
-        ],
-        "mm:early_risers": [
-            "com.mrcrayfish.furniture.refurbished.asm.Loader"
         ]
     },
     "mixins": [

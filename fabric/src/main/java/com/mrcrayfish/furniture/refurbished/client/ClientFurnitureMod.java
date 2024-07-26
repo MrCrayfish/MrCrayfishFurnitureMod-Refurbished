@@ -2,11 +2,9 @@ package com.mrcrayfish.furniture.refurbished.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.client.registration.ParticleProviderRegister;
-import com.mrcrayfish.furniture.refurbished.client.registration.RecipeCategoryRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
-import io.github.fabricators_of_create.porting_lib.recipe_book_categories.RecipeBookRegistry;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
@@ -17,7 +15,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.client.player.ClientPreAttackCallback;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
@@ -29,15 +26,9 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.function.TriFunction;
-
-import java.util.List;
-import java.util.function.Function;
 
 /**
  * Author: MrCrayfish
@@ -64,22 +55,6 @@ public class ClientFurnitureMod implements ClientModInitializer
             @Override
             public <T extends ParticleOptions> void apply(ParticleType<T> type, SpriteProvider<T> provider) {
                 ParticleFactoryRegistry.getInstance().register(type, provider::apply);
-            }
-        });
-        ClientBootstrap.registerRecipeBookCategories(new RecipeCategoryRegister() {
-            @Override
-            public void applyCategory(RecipeBookType type, RecipeBookCategories ... categories) {
-                RecipeBookRegistry.registerBookCategories(type, List.of(categories));
-            }
-
-            @Override
-            public void applyAggregate(RecipeBookCategories category, RecipeBookCategories ... categories) {
-                RecipeBookRegistry.registerAggregateCategory(category, List.of(categories));
-            }
-
-            @Override
-            public void applyFinder(RecipeType<?> type, Function<Recipe<?>, RecipeBookCategories> function) {
-                RecipeBookRegistry.registerRecipeCategoryFinder(type, function);
             }
         });
 
