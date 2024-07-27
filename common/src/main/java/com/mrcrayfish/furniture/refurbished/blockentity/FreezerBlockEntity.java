@@ -39,7 +39,7 @@ import org.jetbrains.annotations.Nullable;
 public class FreezerBlockEntity extends ElectricityModuleProcessingLootBlockEntity implements IPowerSwitch, IHomeControlDevice, StackedContentsCompatible
 {
     public static final int[] INPUT_SLOTS = new int[]{0};
-    public static final int[] OUTPUT_SLOTS = new int[]{0, 1};
+    public static final int[] OUTPUT_SLOTS = new int[]{1};
     public static final int DATA_POWERED = 0;
     public static final int DATA_ENABLED = 1;
     public static final int DATA_PROCESS_TIME = 2;
