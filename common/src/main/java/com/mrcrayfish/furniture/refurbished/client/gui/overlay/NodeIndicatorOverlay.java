@@ -98,10 +98,10 @@ public class NodeIndicatorOverlay implements IHudOverlay
             }
         }
 
-        if(mc.hitResult instanceof BlockHitResult result && mc.player.isCrouching())
+        if(!LinkHandler.isHoldingWrench() && mc.hitResult instanceof BlockHitResult result)
         {
             BlockEntity entity = mc.level.getBlockEntity(result.getBlockPos());
-            if(entity instanceof IElectricityNode node1 && !node1.isNodePowered())
+            if(entity instanceof IElectricityNode node1 && !node1.isNodeInPowerableNetwork())
             {
                 this.drawLabel(mc, graphics, Components.GUI_NO_POWER, 20, 20);
             }
