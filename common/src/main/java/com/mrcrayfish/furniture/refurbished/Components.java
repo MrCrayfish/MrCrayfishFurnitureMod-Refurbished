@@ -1,8 +1,12 @@
 package com.mrcrayfish.furniture.refurbished;
 
+import com.mrcrayfish.furniture.refurbished.client.FontIcons;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Function;
 
@@ -38,4 +42,13 @@ public class Components
     public static final Component SMART_DEVICE_MICROWAVE = Utils.translation("smart_device", "microwave");
     public static final Component SMART_DEVICE_RECYCLE_BIN = Utils.translation("smart_device", "recycle_bin");
     public static final Component SMART_DEVICE_STOVE = Utils.translation("smart_device", "stove");
+
+    public static final ResourceLocation ICON_FONT = new ResourceLocation(Constants.MOD_ID, "icons");
+
+    public static MutableComponent getIcon(FontIcons icon)
+    {
+        MutableComponent component = Component.literal(String.valueOf((char) (33 + icon.ordinal())));
+        component.setStyle(component.getStyle().withColor(ChatFormatting.WHITE).withFont(ICON_FONT));
+        return component;
+    }
 }
