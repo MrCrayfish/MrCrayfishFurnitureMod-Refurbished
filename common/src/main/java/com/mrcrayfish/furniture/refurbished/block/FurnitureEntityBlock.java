@@ -1,7 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
-import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
@@ -19,7 +18,7 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 /**
@@ -77,7 +76,7 @@ public abstract class FurnitureEntityBlock extends BaseEntityBlock implements Bl
     }
 
     @Override
-    public boolean isPathfindable(BlockState state, BlockGetter getter, BlockPos pos, PathComputationType type)
+    protected boolean isPathfindable(BlockState state, PathComputationType type)
     {
         return false;
     }

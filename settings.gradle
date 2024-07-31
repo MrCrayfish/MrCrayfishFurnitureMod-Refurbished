@@ -65,6 +65,6 @@ def includeModloader(String name) {
 
 rootProject.name = 'MrCrayfishFurnitureMod-Refurbished'
 include("common")
-includeModloader("forge")
+includeModloader("forge") //Note: Forge is missing features that make it possible
 includeModloader("fabric")
 includeModloader("neoforge")

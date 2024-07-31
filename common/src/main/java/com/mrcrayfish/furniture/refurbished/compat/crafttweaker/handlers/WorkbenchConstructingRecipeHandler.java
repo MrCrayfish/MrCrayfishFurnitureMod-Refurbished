@@ -60,7 +60,7 @@ public class WorkbenchConstructingRecipeHandler implements IRecipeHandler<Workbe
     {
         NonNullList<StackedIngredient> materials = recipe.getOrThrow(BuiltinRecipeComponents.Input.INGREDIENTS).stream()
             .map(IIngredient::asIIngredientWithAmount)
-            .map(v -> StackedIngredient.of(v.getIngredient().asVanillaIngredient(), v.getAmount()))
+            .map(v -> StackedIngredient.of(v.ingredient().asVanillaIngredient(), v.amount()))
             .collect(NonNullList::create, AbstractList::add, AbstractCollection::addAll);
         ItemStack result = recipe.getOrThrowSingle(BuiltinRecipeComponents.Output.ITEMS).getInternal();
         return Optional.of(new WorkbenchContructingRecipe(materials, result, false));

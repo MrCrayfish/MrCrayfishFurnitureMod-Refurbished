@@ -1,10 +1,16 @@
 package com.mrcrayfish.furniture.refurbished.image;
 
 import com.google.common.base.Preconditions;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.Util;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ExtraCodecs;
 
 import java.util.BitSet;
 import java.util.function.Supplier;
@@ -20,6 +26,32 @@ public class PaletteImage
 {
     public static final int[] COLOURS = {0x00000000, 0xFF100A0A, 0xFF585E53, 0xFFA5A589, 0xFFEAE5D1, 0xFFDEC666, 0xFF97AB50, 0xFF516B38, 0xFF25150F, 0xFF522732, 0xFF9C323C, 0xFFC4663D, 0xFFE48D80, 0xFF6392AF, 0xFF2C3C6A, 0xFF2C1D34};
     private static final int BITS_PER_INDEX = 4;
+    public static final Codec<PaletteImage> CODEC = RecordCodecBuilder.create(builder -> {
+        return builder.group(
+            ResourceLocation.CODEC.fieldOf("id").forGetter(PaletteImage::getId),
+            Codec.INT.fieldOf("width").validate(val -> {
+                if(val >= 1 && val <= 128)
+                    return DataResult.success(val);
+                return DataResult.error(() -> "Width must be between 1 and 128 (inclusive)");
+            }).forGetter(PaletteImage::getWidth),
+            Codec.INT.fieldOf("height").validate(val -> {
+                if(val >= 1 && val <= 128)
+                    return DataResult.success(val);
+                return DataResult.error(() -> "Height must be between 1 and 128 (inclusive)");
+            }).forGetter(PaletteImage::getHeight),
+            ExtraCodecs.BIT_SET.fieldOf("data").forGetter(PaletteImage::getData)
+        ).apply(builder, PaletteImage::new);
+    });
+    public static final StreamCodec<RegistryFriendlyByteBuf, PaletteImage> STREAM_CODEC = StreamCodec.of((buf, image) -> {
+        buf.writeByte((byte) image.width);
+        buf.writeByte((byte) image.height);
+        buf.writeLongArray(image.bits.toLongArray());
+    }, buf -> {
+        int width = buf.readByte();
+        int height = buf.readByte();
+        long[] data = buf.readLongArray();
+        return new PaletteImage(width, height, () -> BitSet.valueOf(data));
+    });
 
     protected final ResourceLocation id;
     protected final int width;
@@ -29,6 +61,14 @@ public class PaletteImage
     public PaletteImage(int width, int height)
     {
         this(width, height, () -> new BitSet(width * height));
+    }
+
+    private PaletteImage(ResourceLocation id, int width, int height, BitSet data)
+    {
+        this.id = id;
+        this.width = width;
+        this.height = height;
+        this.bits = BitSet.valueOf(data.toLongArray());
     }
 
     public PaletteImage(int width, int height, Supplier<BitSet> supplier)
@@ -129,34 +169,6 @@ public class PaletteImage
     {
         if(state) value |= (1 << offset);
         return value;
-    }
-
-    /**
-     * Encodes this palette image into the given {@link FriendlyByteBuf}.
-     * See {@link #read(FriendlyByteBuf)} to decode.
-     *
-     * @param buffer the buffer to write to
-     */
-    public void write(FriendlyByteBuf buffer)
-    {
-        buffer.writeByte((byte) this.width);
-        buffer.writeByte((byte) this.height);
-        buffer.writeLongArray(this.bits.toLongArray());
-    }
-
-    /**
-     * Decodes a palette image from the given {@link FriendlyByteBuf}.
-     * See {@link #write(FriendlyByteBuf)} to encode.
-     *
-     * @param buffer the buffer to read from
-     * @return a decoded palette iamge
-     */
-    public static PaletteImage read(FriendlyByteBuf buffer)
-    {
-        int width = buffer.readByte();
-        int height = buffer.readByte();
-        long[] data = buffer.readLongArray();
-        return new PaletteImage(width, height, () -> BitSet.valueOf(data));
     }
 
     /**

@@ -11,6 +11,7 @@ import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -25,11 +26,12 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Author: MrCrayfish
@@ -274,9 +276,9 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
     }
 
     @Override
-    public void load(CompoundTag tag)
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.load(tag);
+        super.loadAdditional(tag, provider);
         if(tag.contains("Powered", Tag.TAG_BYTE))
         {
             this.powered = tag.getBoolean("Powered");
@@ -300,9 +302,9 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag)
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.saveAdditional(tag);
+        super.saveAdditional(tag, provider);
         tag.putBoolean("Powered", this.powered);
         tag.putBoolean("Enabled", this.enabled);
         tag.putInt("ProcessTime", this.processingTime);
@@ -310,7 +312,7 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
     }
 
     @Override
-    public CompoundTag getUpdateTag()
+    public CompoundTag getUpdateTag(HolderLookup.Provider provider)
     {
         CompoundTag tag = new CompoundTag();
         this.writeNodeNbt(tag);
@@ -324,7 +326,7 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
     {
         if(!this.level.isClientSide())
         {
-            BlockEntityHelper.sendCustomUpdate(this, this.getUpdateTag());
+            BlockEntityHelper.sendCustomUpdate(this, BlockEntity::getUpdateTag);
         }
     }
 
@@ -363,7 +365,7 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
     {
         this.enabled = !this.enabled;
         this.setChanged();
-        BlockEntityHelper.sendCustomUpdate(this, this.getUpdateTag());
+        BlockEntityHelper.sendCustomUpdate(this, BlockEntity::getUpdateTag);
     }
 
     @Override
@@ -371,7 +373,7 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
     {
         this.enabled = enabled;
         this.setChanged();
-        BlockEntityHelper.sendCustomUpdate(this, this.getUpdateTag());
+        BlockEntityHelper.sendCustomUpdate(this, BlockEntity::getUpdateTag);
     }
 
     @Override

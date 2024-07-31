@@ -6,6 +6,7 @@ import com.mrcrayfish.furniture.refurbished.blockentity.MailboxBlockEntity;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageUpdateMailboxes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -24,7 +25,7 @@ import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.apache.commons.lang3.tuple.Pair;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -55,7 +56,7 @@ public class DeliveryService extends SavedData
 
     public static SavedData.Factory<DeliveryService> createFactory(MinecraftServer server)
     {
-        return new SavedData.Factory<>(() -> new DeliveryService(server), tag -> new DeliveryService(server, tag), DataFixTypes.SAVED_DATA_FORCED_CHUNKS);
+        return new SavedData.Factory<>(() -> new DeliveryService(server), (tag, provider) -> new DeliveryService(server, tag, provider), DataFixTypes.SAVED_DATA_FORCED_CHUNKS);
     }
 
     private final MinecraftServer server;
@@ -67,13 +68,13 @@ public class DeliveryService extends SavedData
 
     public DeliveryService(MinecraftServer server)
     {
-        this(server, new CompoundTag());
+        this.server = server;
     }
 
-    public DeliveryService(MinecraftServer server, CompoundTag compound)
+    public DeliveryService(MinecraftServer server, CompoundTag compound, HolderLookup.Provider provider)
     {
         this.server = server;
-        this.load(compound);
+        this.load(compound, provider);
     }
 
     /**
@@ -273,7 +274,7 @@ public class DeliveryService extends SavedData
         this.playerRequests.clear();
     }
 
-    private void load(CompoundTag compound)
+    private void load(CompoundTag compound, HolderLookup.Provider provider)
     {
         if(compound.contains("Mailboxes", Tag.TAG_LIST))
         {
@@ -298,7 +299,7 @@ public class DeliveryService extends SavedData
                     }
                     String customName = mailboxTag.getString("CustomName");
                     customName = customName.substring(0, Math.min(customName.length(), 32));
-                    Queue<ItemStack> queue = Mailbox.readQueueListTag(mailboxTag);
+                    Queue<ItemStack> queue = Mailbox.readQueueListTag(mailboxTag, provider);
                     Mailbox mailbox = new Mailbox(id, levelKey, pos, owner, new MutableObject<>(customName), queue, new MutableBoolean(), this);
                     this.mailboxes.putIfAbsent(id, mailbox);
                     this.locator.put(Pair.of(levelKey.location(), pos), mailbox);
@@ -312,7 +313,7 @@ public class DeliveryService extends SavedData
     }
 
     @Override
-    public CompoundTag save(CompoundTag compound)
+    public CompoundTag save(CompoundTag tag, HolderLookup.Provider provider)
     {
         ListTag list = new ListTag();
         this.mailboxes.forEach((uuid, mailbox) ->
@@ -325,12 +326,12 @@ public class DeliveryService extends SavedData
                 mailboxTag.putLong("BlockPosition", mailbox.pos().asLong());
                 Optional.ofNullable(mailbox.owner().getValue()).ifPresent(id -> mailboxTag.putUUID("Owner", id));
                 Optional.ofNullable(mailbox.customName().getValue()).ifPresent(name -> mailboxTag.putString("CustomName", name));
-                mailbox.writeQueue(mailboxTag);
+                mailbox.writeQueue(mailboxTag, provider);
                 list.add(mailboxTag);
             }
         });
-        compound.put("Mailboxes", list);
-        return compound;
+        tag.put("Mailboxes", list);
+        return tag;
     }
 
     /**

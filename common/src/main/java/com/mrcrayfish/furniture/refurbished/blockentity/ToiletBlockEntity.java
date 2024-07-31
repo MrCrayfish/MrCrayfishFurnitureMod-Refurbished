@@ -9,6 +9,7 @@ import com.mrcrayfish.furniture.refurbished.network.message.MessageFlushItem;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -63,9 +64,9 @@ public class ToiletBlockEntity extends BlockEntity implements IFluidContainerBlo
     }
 
     @Override
-    public CompoundTag getUpdateTag()
+    public CompoundTag getUpdateTag(HolderLookup.Provider provider)
     {
-        return this.saveWithoutMetadata();
+        return this.saveWithoutMetadata(provider);
     }
 
     @Override
@@ -159,18 +160,18 @@ public class ToiletBlockEntity extends BlockEntity implements IFluidContainerBlo
     }
 
     @Override
-    public void load(CompoundTag tag)
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.load(tag);
-        this.tank.load(tag.getCompound("FluidTank"));
+        super.loadAdditional(tag, provider);
+        this.tank.load(tag.getCompound("FluidTank"), provider);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag)
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.saveAdditional(tag);
+        super.saveAdditional(tag, provider);
         CompoundTag tankTag = new CompoundTag();
-        this.tank.save(tankTag);
+        this.tank.save(tankTag, provider);
         tag.put("FluidTank", tankTag);
     }
 }

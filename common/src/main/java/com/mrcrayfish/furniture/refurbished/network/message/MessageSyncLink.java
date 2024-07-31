@@ -3,29 +3,25 @@ package com.mrcrayfish.furniture.refurbished.network.message;
 import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.furniture.refurbished.network.play.ClientPlayHandler;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Author: MrCrayfish
  */
 public record MessageSyncLink(@Nullable BlockPos pos)
 {
-    public static void encode(MessageSyncLink message, FriendlyByteBuf buffer)
-    {
-        buffer.writeBoolean(message.pos != null);
-        if(message.pos != null)
-        {
-            buffer.writeBlockPos(message.pos);
+    public static final StreamCodec<RegistryFriendlyByteBuf, MessageSyncLink> STREAM_CODEC = StreamCodec.of((buf, message) -> {
+        buf.writeBoolean(message.pos != null);
+        if(message.pos != null) {
+            buf.writeBlockPos(message.pos);
         }
-    }
-
-    public static MessageSyncLink decode(FriendlyByteBuf buffer)
-    {
-        BlockPos pos = buffer.readBoolean() ? buffer.readBlockPos() : null;
+    }, buf -> {
+        BlockPos pos = buf.readBoolean() ? buf.readBlockPos() : null;
         return new MessageSyncLink(pos);
-    }
+    });
 
     public static void handle(MessageSyncLink message, MessageContext context)
     {

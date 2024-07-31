@@ -4,21 +4,19 @@ import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.furniture.refurbished.network.play.ClientPlayHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 
 /**
  * Author: MrCrayfish
  */
 public record MessageNameMailbox(BlockPos pos)
 {
-    public static void encode(MessageNameMailbox message, FriendlyByteBuf buffer)
-    {
-        buffer.writeBlockPos(message.pos);
-    }
-
-    public static MessageNameMailbox decode(FriendlyByteBuf buffer)
-    {
-        return new MessageNameMailbox(buffer.readBlockPos());
-    }
+    public static final StreamCodec<RegistryFriendlyByteBuf, MessageNameMailbox> STREAM_CODEC = StreamCodec.of((buf, message) -> {
+        buf.writeBlockPos(message.pos);
+    }, buf -> {
+        return new MessageNameMailbox(buf.readBlockPos());
+    });
 
     public static void handle(MessageNameMailbox message, MessageContext context)
     {

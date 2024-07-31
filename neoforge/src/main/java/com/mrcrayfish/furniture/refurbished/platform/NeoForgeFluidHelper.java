@@ -5,6 +5,7 @@ import com.mrcrayfish.furniture.refurbished.platform.services.IFluidHelper;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
@@ -22,7 +23,7 @@ import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.function.Consumer;
 
 /**
@@ -126,16 +127,16 @@ public class NeoForgeFluidHelper implements IFluidHelper
         }
 
         @Override
-        public void load(CompoundTag tag)
+        public void load(CompoundTag tag, HolderLookup.Provider provider)
         {
-            this.tank.readFromNBT(tag.getCompound("FluidTank"));
+            this.tank.readFromNBT(provider, tag.getCompound("FluidTank"));
         }
 
         @Override
-        public void save(CompoundTag tag)
+        public void save(CompoundTag tag, HolderLookup.Provider provider)
         {
             CompoundTag tankTag = new CompoundTag();
-            this.tank.writeToNBT(tankTag);
+            this.tank.writeToNBT(provider, tankTag);
             tag.put("FluidTank", tankTag);
         }
 

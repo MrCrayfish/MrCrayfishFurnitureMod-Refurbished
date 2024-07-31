@@ -5,10 +5,12 @@ import com.mrcrayfish.furniture.refurbished.platform.services.IFluidHelper;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -22,7 +24,7 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.function.Consumer;
 
 /**
@@ -49,15 +51,15 @@ public class ForgeFluidHelper implements IFluidHelper
     }
 
     @Override
-    public InteractionResult performInteractionWithBlock(Player player, InteractionHand hand, Level level, BlockPos pos, Direction face)
+    public ItemInteractionResult performInteractionWithBlock(Player player, InteractionHand hand, Level level, BlockPos pos, Direction face)
     {
-        return FluidUtil.interactWithFluidHandler(player, hand, level, pos, face) ? InteractionResult.SUCCESS : InteractionResult.PASS;
+        return FluidUtil.interactWithFluidHandler(player, hand, level, pos, face) ? ItemInteractionResult.SUCCESS : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Override
     public boolean isFluidContainerItem(ItemStack stack)
     {
-        return !stack.isEmpty() && stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent();
+        return !stack.isEmpty() && FluidUtil.getFluidHandler(stack).isPresent();
     }
 
     @Override
@@ -126,13 +128,13 @@ public class ForgeFluidHelper implements IFluidHelper
         }
 
         @Override
-        public void load(CompoundTag tag)
+        public void load(CompoundTag tag, HolderLookup.Provider provider)
         {
             this.tank.readFromNBT(tag.getCompound("FluidTank"));
         }
 
         @Override
-        public void save(CompoundTag tag)
+        public void save(CompoundTag tag, HolderLookup.Provider provider)
         {
             CompoundTag tankTag = new CompoundTag();
             this.tank.writeToNBT(tankTag);

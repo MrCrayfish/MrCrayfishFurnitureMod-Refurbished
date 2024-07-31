@@ -5,6 +5,7 @@ import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageDoorbellNotification;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
@@ -13,7 +14,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 /**
@@ -54,9 +55,11 @@ public class DoorbellBlockEntity extends ElectricityModuleBlockEntity implements
         // Sync the state to the client
         if(!this.level.isClientSide())
         {
-            CompoundTag compound = new CompoundTag();
-            compound.putBoolean("Powered", powered);
-            BlockEntityHelper.sendCustomUpdate(this, compound);
+            BlockEntityHelper.sendCustomUpdate(this, (entity, access) -> {
+                CompoundTag compound = new CompoundTag();
+                compound.putBoolean("Powered", powered);
+                return compound;
+            });
         }
     }
 
@@ -94,9 +97,9 @@ public class DoorbellBlockEntity extends ElectricityModuleBlockEntity implements
     }
 
     @Override
-    public void load(CompoundTag tag)
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.load(tag);
+        super.loadAdditional(tag, provider);
         if(tag.contains("Owner", Tag.TAG_INT_ARRAY))
         {
             this.owner = tag.getUUID("Owner");
@@ -112,9 +115,9 @@ public class DoorbellBlockEntity extends ElectricityModuleBlockEntity implements
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag)
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.saveAdditional(tag);
+        super.saveAdditional(tag, provider);
         if(this.owner != null)
         {
             tag.putUUID("Owner", this.owner);

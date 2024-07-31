@@ -19,6 +19,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -79,13 +80,13 @@ public class FryingPanBlock extends FurnitureHorizontalEntityBlock implements Bl
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+    public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
     {
         if(!level.isClientSide() && result.getDirection() != Direction.DOWN)
         {
             if(level.getBlockEntity(pos) instanceof FryingPanBlockEntity fryingPan)
             {
-                ItemStack stack = player.getItemInHand(hand);
+                // TODO 1.20.6 test since I am using new stack arg
                 if(stack.is(ModItems.SPATULA.get()))
                 {
                     fryingPan.flipItem();
@@ -107,7 +108,7 @@ public class FryingPanBlock extends FurnitureHorizontalEntityBlock implements Bl
                 }
             }
         }
-        return InteractionResult.SUCCESS;
+        return ItemInteractionResult.SUCCESS;
     }
 
     @Override

@@ -47,7 +47,7 @@ public abstract class StorageCabinetBlock extends FurnitureHorizontalEntityBlock
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+    public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult result)
     {
         if(state.getValue(DIRECTION).getOpposite() == result.getDirection())
         {

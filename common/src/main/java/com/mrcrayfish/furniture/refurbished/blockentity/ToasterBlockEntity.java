@@ -9,6 +9,7 @@ import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -23,6 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -160,7 +162,7 @@ public class ToasterBlockEntity extends ElectricityModuleProcessingLootBlockEnti
         boolean result = super.processTick();
         if(this.sync)
         {
-            BlockEntityHelper.sendCustomUpdate(this, this.getUpdateTag());
+            BlockEntityHelper.sendCustomUpdate(this, BlockEntity::getUpdateTag);
             this.sync = false;
         }
         return result;
@@ -321,9 +323,9 @@ public class ToasterBlockEntity extends ElectricityModuleProcessingLootBlockEnti
     }
 
     @Override
-    public void load(CompoundTag tag)
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.load(tag);
+        super.loadAdditional(tag, provider);
         if(tag.contains("Heating", Tag.TAG_BYTE))
         {
             this.heating = tag.getBoolean("Heating");
@@ -331,15 +333,15 @@ public class ToasterBlockEntity extends ElectricityModuleProcessingLootBlockEnti
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag)
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.saveAdditional(tag);
+        super.saveAdditional(tag, provider);
         tag.putBoolean("Heating", this.heating);
     }
 
     @Override
-    public CompoundTag getUpdateTag()
+    public CompoundTag getUpdateTag(HolderLookup.Provider provider)
     {
-        return this.saveWithoutMetadata();
+        return this.saveWithoutMetadata(provider);
     }
 }

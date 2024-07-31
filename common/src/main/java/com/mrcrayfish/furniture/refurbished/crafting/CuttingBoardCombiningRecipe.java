@@ -2,15 +2,19 @@ package com.mrcrayfish.furniture.refurbished.crafting;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeSerializers;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import net.minecraft.advancements.Criterion;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
@@ -21,7 +25,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.stream.IntStream;
 
 /**
@@ -54,7 +58,7 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
     }
 
     @Override
-    public ItemStack assemble(Container container, RegistryAccess access)
+    public ItemStack assemble(Container container, HolderLookup.Provider provider)
     {
         return this.result.copy();
     }
@@ -66,7 +70,7 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess access)
+    public ItemStack getResultItem(HolderLookup.Provider provider)
     {
         return this.result;
     }
@@ -112,7 +116,7 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
 
     public static class Serializer implements RecipeSerializer<CuttingBoardCombiningRecipe>
     {
-        public static final Codec<CuttingBoardCombiningRecipe> CODEC = RecordCodecBuilder.create(builder -> {
+        public static final MapCodec<CuttingBoardCombiningRecipe> CODEC = RecordCodecBuilder.mapCodec(builder -> {
             return builder.group(Ingredient.CODEC_NONEMPTY.listOf().fieldOf("ingredients").flatXmap(ingredients -> {
                 Ingredient[] inputs = ingredients.stream().filter((ingredient) -> {
                     return !ingredient.isEmpty();
@@ -125,36 +129,35 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
                 return DataResult.success(NonNullList.of(Ingredient.EMPTY, inputs));
             }, DataResult::success).forGetter((recipe) -> {
                 return recipe.getIngredients();
-            }), ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter((recipe) -> {
+            }), ItemStack.CODEC.fieldOf("result").forGetter((recipe) -> {
                 return recipe.result;
             })).apply(builder, CuttingBoardCombiningRecipe::new);
         });
 
+        public static final StreamCodec<RegistryFriendlyByteBuf, CuttingBoardCombiningRecipe> STREAM_CODEC = StreamCodec.of((buf, recipe) -> {
+            buf.writeInt(recipe.ingredients.size());
+            recipe.ingredients.forEach(ingredient -> {
+                Ingredient.CONTENTS_STREAM_CODEC.encode(buf, ingredient);
+            });
+            ItemStack.STREAM_CODEC.encode(buf, recipe.result);
+        }, buf -> {
+            int ingredientCount = buf.readInt();
+            NonNullList<Ingredient> ingredients = NonNullList.withSize(ingredientCount, Ingredient.EMPTY);
+            IntStream.range(0, ingredientCount).forEach(i -> ingredients.set(i, Ingredient.CONTENTS_STREAM_CODEC.decode(buf)));
+            ItemStack result = ItemStack.STREAM_CODEC.decode(buf);
+            return new CuttingBoardCombiningRecipe(ingredients, result);
+        });
+
         @Override
-        public Codec<CuttingBoardCombiningRecipe> codec()
+        public MapCodec<CuttingBoardCombiningRecipe> codec()
         {
             return CODEC;
         }
 
         @Override
-        public CuttingBoardCombiningRecipe fromNetwork(FriendlyByteBuf buffer)
+        public StreamCodec<RegistryFriendlyByteBuf, CuttingBoardCombiningRecipe> streamCodec()
         {
-            int ingredientCount = buffer.readInt();
-            NonNullList<Ingredient> ingredients = NonNullList.withSize(ingredientCount, Ingredient.EMPTY);
-            IntStream.range(0, ingredientCount).forEach(i -> ingredients.set(i, Ingredient.fromNetwork(buffer)));
-            ItemStack result = buffer.readItem();
-            return new CuttingBoardCombiningRecipe(ingredients, result);
-        }
-
-        @Override
-        public void toNetwork(FriendlyByteBuf buffer, CuttingBoardCombiningRecipe recipe)
-        {
-            buffer.writeInt(recipe.ingredients.size());
-            for(Ingredient ingredient : recipe.ingredients)
-            {
-                ingredient.toNetwork(buffer);
-            }
-            buffer.writeItem(recipe.result);
+            return STREAM_CODEC;
         }
     }
 

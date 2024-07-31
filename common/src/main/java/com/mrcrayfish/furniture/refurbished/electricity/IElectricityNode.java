@@ -3,6 +3,8 @@ package com.mrcrayfish.furniture.refurbished.electricity;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.BlockItem;
@@ -149,7 +151,7 @@ public interface IElectricityNode
     default void syncDataToTrackingClients()
     {
         BlockEntity entity = this.getNodeOwner();
-        BlockEntityHelper.sendCustomUpdate(entity, entity.getUpdateTag());
+        BlockEntityHelper.sendCustomUpdate(entity, BlockEntity::getUpdateTag);
     }
 
     /**
@@ -201,10 +203,10 @@ public interface IElectricityNode
      *
      * @param stack the stack to write the data to
      */
-    default void saveNodeNbtToItem(ItemStack stack)
+    default void saveNodeNbtToItem(ItemStack stack, HolderLookup.Provider provider)
     {
         BlockEntity entity = this.getNodeOwner();
-        CompoundTag tag = entity.saveWithoutMetadata();
+        CompoundTag tag = entity.saveWithoutMetadata(provider);
         tag.remove("Connections"); // Don't include connections as this breaks node limits
         tag.remove("NodePos"); // Don't include fix for connections since none are present anyway
         tag.remove("Powered"); // Remove the powered property

@@ -130,7 +130,7 @@ public class SofaBlock extends FurnitureHorizontalBlock implements BlockTagSuppl
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+    public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult result)
     {
         if(Seat.sit(player, pos, Utils.pixels(10), state.getValue(DIRECTION).getOpposite()))
         {

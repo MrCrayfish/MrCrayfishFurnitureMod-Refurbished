@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.inventory;
 
+import com.mrcrayfish.framework.api.menu.IMenuData;
 import com.mrcrayfish.furniture.refurbished.blockentity.IWorkbench;
 import com.mrcrayfish.furniture.refurbished.blockentity.WorkbenchBlockEntity;
 import com.mrcrayfish.furniture.refurbished.client.ClientWorkbench;
@@ -10,6 +11,9 @@ import com.mrcrayfish.furniture.refurbished.crafting.StackedIngredient;
 import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchContructingRecipe;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
@@ -26,7 +30,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -51,12 +55,12 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
     private long lastSoundTime;
     private @Nullable Runnable updateCallback;
 
-    public WorkbenchMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data)
+    public WorkbenchMenu(int windowId, Inventory playerInventory, CustomData data)
     {
         this(windowId, playerInventory, new ClientWorkbench(new SimpleContainer(13)), new SimpleContainerData(1));
-        this.selectedRecipe.set(data.readVarInt());
-        this.searchNeighbours.set(data.readVarInt());
-        this.data.set(WorkbenchBlockEntity.DATA_POWERED, data.readVarInt());
+        this.selectedRecipe.set(data.selectedRecipe());
+        this.searchNeighbours.set(data.searchNeighbours());
+        this.data.set(WorkbenchBlockEntity.DATA_POWERED, data.powered());
     }
 
     public WorkbenchMenu(int windowId, Inventory playerInventory, IWorkbench workbench, ContainerData data)
@@ -331,6 +335,25 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
                     level.playSound(null, pos, ModSounds.BLOCK_WORKBENCH_CRAFT.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
                 }
             });
+        }
+    }
+
+    public record CustomData(int selectedRecipe, int searchNeighbours, int powered) implements IMenuData<CustomData>
+    {
+        public static final StreamCodec<RegistryFriendlyByteBuf, CustomData> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.VAR_INT,
+            CustomData::selectedRecipe,
+            ByteBufCodecs.VAR_INT,
+            CustomData::searchNeighbours,
+            ByteBufCodecs.VAR_INT,
+            CustomData::powered,
+            CustomData::new
+        );
+
+        @Override
+        public StreamCodec<RegistryFriendlyByteBuf, CustomData> codec()
+        {
+            return STREAM_CODEC;
         }
     }
 }

@@ -20,7 +20,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.function.Supplier;
 
 /**
@@ -56,7 +56,7 @@ public class FreezerBlock extends FridgeBlock
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+    public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult result)
     {
         if(state.getValue(DIRECTION).getOpposite() == result.getDirection())
         {
@@ -89,10 +89,6 @@ public class FreezerBlock extends FridgeBlock
         BlockState fridge = this.fridge.get().defaultBlockState().setValue(DIRECTION, state.getValue(DIRECTION));
         level.setBlock(pos.above(), fridge, Block.UPDATE_ALL);
         fridge.getBlock().setPlacedBy(level, pos.above(), fridge, entity, stack);
-        if(stack.hasCustomHoverName() && level.getBlockEntity(pos) instanceof FreezerBlockEntity freezer)
-        {
-            freezer.setCustomName(stack.getHoverName());
-        }
     }
 
     @Override

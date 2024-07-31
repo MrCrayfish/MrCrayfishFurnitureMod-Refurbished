@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.crafting;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeSerializers;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
@@ -11,24 +12,28 @@ import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -70,7 +75,7 @@ public class WorkbenchContructingRecipe implements Recipe<Container>
     }
 
     @Override
-    public ItemStack assemble(Container container, RegistryAccess access)
+    public ItemStack assemble(Container container, HolderLookup.Provider provider)
     {
         return this.result.copy();
     }
@@ -82,7 +87,7 @@ public class WorkbenchContructingRecipe implements Recipe<Container>
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess access)
+    public ItemStack getResultItem(HolderLookup.Provider provider)
     {
         return this.result;
     }
@@ -115,7 +120,7 @@ public class WorkbenchContructingRecipe implements Recipe<Container>
 
     public static class Serializer implements RecipeSerializer<WorkbenchContructingRecipe>
     {
-        public static final Codec<WorkbenchContructingRecipe> CODEC = RecordCodecBuilder.create(builder -> {
+        public static final MapCodec<WorkbenchContructingRecipe> CODEC = RecordCodecBuilder.mapCodec(builder -> {
             return builder.group(StackedIngredient.CODEC.listOf().fieldOf("materials").flatXmap(materials -> {
                 StackedIngredient[] inputs = materials.stream().filter((ingredient) -> {
                     return !ingredient.ingredient().isEmpty() || ingredient.count() <= 0;
@@ -123,37 +128,37 @@ public class WorkbenchContructingRecipe implements Recipe<Container>
                 return DataResult.success(NonNullList.of(StackedIngredient.EMPTY, inputs));
             }, DataResult::success).forGetter(o -> {
                 return o.materials;
-            }), ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter(recipe -> {
+            }), ItemStack.CODEC.fieldOf("result").forGetter(recipe -> {
                 return recipe.result;
             }), Codec.BOOL.optionalFieldOf("show_notification", false).forGetter(recipe -> {
                 return recipe.notification;
             })).apply(builder, WorkbenchContructingRecipe::new);
         });
 
+        public static final StreamCodec<RegistryFriendlyByteBuf, WorkbenchContructingRecipe> STREAM_CODEC = StreamCodec.of((buf, recipe) -> {
+            buf.writeInt(recipe.materials.size());
+            recipe.materials.forEach(ingredient -> ingredient.toNetwork(buf));
+            ItemStack.STREAM_CODEC.encode(buf, recipe.result);
+            buf.writeBoolean(recipe.notification);
+        }, buf -> {
+            int materialCount = buf.readInt();
+            NonNullList<StackedIngredient> materials = NonNullList.withSize(materialCount, StackedIngredient.EMPTY);
+            IntStream.range(0, materialCount).forEach(i -> materials.set(i, StackedIngredient.fromNetwork(buf)));
+            ItemStack result = ItemStack.STREAM_CODEC.decode(buf);
+            boolean notification = buf.readBoolean();
+            return new WorkbenchContructingRecipe(materials, result, notification);
+        });
+
         @Override
-        public Codec<WorkbenchContructingRecipe> codec()
+        public MapCodec<WorkbenchContructingRecipe> codec()
         {
             return CODEC;
         }
 
         @Override
-        public WorkbenchContructingRecipe fromNetwork(FriendlyByteBuf buffer)
+        public StreamCodec<RegistryFriendlyByteBuf, WorkbenchContructingRecipe> streamCodec()
         {
-            int materialCount = buffer.readInt();
-            NonNullList<StackedIngredient> materials = NonNullList.withSize(materialCount, StackedIngredient.EMPTY);
-            IntStream.range(0, materialCount).forEach(i -> materials.set(i, StackedIngredient.fromNetwork(buffer)));
-            ItemStack result = buffer.readItem();
-            boolean notification = buffer.readBoolean();
-            return new WorkbenchContructingRecipe(materials, result, notification);
-        }
-
-        @Override
-        public void toNetwork(FriendlyByteBuf buffer, WorkbenchContructingRecipe recipe)
-        {
-            buffer.writeInt(recipe.materials.size());
-            recipe.materials.forEach(ingredient -> ingredient.toNetwork(buffer));
-            buffer.writeItem(recipe.result);
-            buffer.writeBoolean(recipe.notification);
+            return STREAM_CODEC;
         }
     }
 

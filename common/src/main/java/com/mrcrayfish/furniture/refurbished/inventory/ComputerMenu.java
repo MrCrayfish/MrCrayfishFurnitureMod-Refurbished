@@ -1,10 +1,14 @@
 package com.mrcrayfish.furniture.refurbished.inventory;
 
+import com.mrcrayfish.framework.api.menu.IMenuData;
 import com.mrcrayfish.furniture.refurbished.blockentity.ComputerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.IComputer;
 import com.mrcrayfish.furniture.refurbished.client.ClientComputer;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -22,9 +26,9 @@ public class ComputerMenu extends SimpleContainerMenu implements IElectricityMen
     private final IComputer computer;
     private ContainerListener changeListener;
 
-    public ComputerMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data)
+    public ComputerMenu(int windowId, Inventory playerInventory, CustomData data)
     {
-        this(windowId, playerInventory, new SimpleContainerData(4), new ClientComputer(data.readBlockPos(), playerInventory.player));
+        this(windowId, playerInventory, new SimpleContainerData(4), new ClientComputer(data.pos(), playerInventory.player));
     }
 
     public ComputerMenu(int windowId, Inventory playerInventory, ContainerData data, IComputer computer)
@@ -100,5 +104,16 @@ public class ComputerMenu extends SimpleContainerMenu implements IElectricityMen
     public boolean isPowered()
     {
         return this.data.get(ComputerBlockEntity.DATA_POWERED) != 0;
+    }
+
+    public record CustomData(BlockPos pos) implements IMenuData<CustomData>
+    {
+        public static final StreamCodec<RegistryFriendlyByteBuf, CustomData> STREAM_CODEC = StreamCodec.composite(BlockPos.STREAM_CODEC, CustomData::pos, CustomData::new);
+
+        @Override
+        public StreamCodec<RegistryFriendlyByteBuf, CustomData> codec()
+        {
+            return STREAM_CODEC;
+        }
     }
 }

@@ -8,6 +8,7 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,7 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Author: MrCrayfish
@@ -46,13 +47,16 @@ public class Seat extends Entity
     }
 
     @Override
-    protected void defineSynchedData() {}
-
-    @Override
     protected void readAdditionalSaveData(CompoundTag tag) {}
 
     @Override
     protected void addAdditionalSaveData(CompoundTag tag) {}
+
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder)
+    {
+
+    }
 
     @Override
     public void tick()

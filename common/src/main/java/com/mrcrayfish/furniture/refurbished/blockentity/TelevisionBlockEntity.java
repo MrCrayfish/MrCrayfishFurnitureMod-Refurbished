@@ -12,6 +12,7 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -257,9 +258,9 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
     }
 
     @Override
-    public void load(CompoundTag tag)
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.load(tag);
+        super.loadAdditional(tag, provider);
         if(tag.contains("CurrentChannel", Tag.TAG_STRING))
         {
             ResourceLocation id = ResourceLocation.tryParse(tag.getString("CurrentChannel"));
@@ -271,9 +272,9 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag)
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.saveAdditional(tag);
+        super.saveAdditional(tag, provider);
         if(this.currentChannel != null && this.currentChannel != WHITE_NOISE)
         {
             tag.putString("CurrentChannel", this.currentChannel.id.toString());

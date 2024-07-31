@@ -82,7 +82,7 @@ public abstract class FurnitureAttachedFaceBlock extends FaceAttachedHorizontalD
     }
 
     @Override
-    public boolean isPathfindable(BlockState state, BlockGetter getter, BlockPos pos, PathComputationType type)
+    protected boolean isPathfindable(BlockState state, PathComputationType type)
     {
         return false;
     }

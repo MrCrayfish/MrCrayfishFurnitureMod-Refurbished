@@ -5,7 +5,10 @@ import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.furniture.refurbished.client.ClientMailbox;
 import com.mrcrayfish.furniture.refurbished.mail.IMailbox;
 import com.mrcrayfish.furniture.refurbished.network.play.ClientPlayHandler;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,42 +21,38 @@ import java.util.UUID;
  */
 public record MessageUpdateMailboxes(Collection<? extends IMailbox> mailboxes)
 {
-    public static void encode(MessageUpdateMailboxes message, FriendlyByteBuf buffer)
-    {
-        buffer.writeInt(message.mailboxes.size());
+    public static final StreamCodec<RegistryFriendlyByteBuf, MessageUpdateMailboxes> STREAM_CODEC = StreamCodec.of((buf, message) -> {
+        buf.writeInt(message.mailboxes.size());
         message.mailboxes.forEach(mailbox -> {
-            buffer.writeUUID(mailbox.getId());
+            buf.writeUUID(mailbox.getId());
             Optional<GameProfile> ownerId = mailbox.getOwner();
-            buffer.writeBoolean(ownerId.isPresent());
+            buf.writeBoolean(ownerId.isPresent());
             ownerId.ifPresent(profile -> {
-                buffer.writeUUID(profile.getId());
+                buf.writeUUID(profile.getId());
                 String name = profile.getName();
-                buffer.writeBoolean(name != null);
+                buf.writeBoolean(name != null);
                 if(name != null) {
-                    buffer.writeUtf(name);
+                    buf.writeUtf(name);
                 }
             });
             Optional<String> customName = mailbox.getCustomName();
-            buffer.writeBoolean(customName.isPresent());
-            customName.ifPresent(buffer::writeUtf);
+            buf.writeBoolean(customName.isPresent());
+            customName.ifPresent(buf::writeUtf);
         });
-    }
-
-    public static MessageUpdateMailboxes decode(FriendlyByteBuf buffer)
-    {
+    }, buf -> {
         List<IMailbox> mailboxes = new ArrayList<>();
-        int size = buffer.readInt();
+        int size = buf.readInt();
         for(int i = 0; i < size; i++)
         {
-            UUID id = buffer.readUUID();
-            UUID ownerId = buffer.readBoolean() ? buffer.readUUID() : null;
-            String ownerName = ownerId != null && buffer.readBoolean() ? buffer.readUtf() : null;
+            UUID id = buf.readUUID();
+            UUID ownerId = buf.readBoolean() ? buf.readUUID() : null;
+            String ownerName = ownerId != null && buf.readBoolean() ? buf.readUtf() : null;
             GameProfile profile = ownerId != null && ownerName != null ? new GameProfile(ownerId, ownerName) : null;
-            String customName = buffer.readBoolean() ? buffer.readUtf() : null;
+            String customName = buf.readBoolean() ? buf.readUtf() : null;
             mailboxes.add(new ClientMailbox(id, Optional.ofNullable(profile), Optional.ofNullable(customName)));
         }
         return new MessageUpdateMailboxes(mailboxes);
-    }
+    });
 
     public static void handle(MessageUpdateMailboxes message, MessageContext context)
     {

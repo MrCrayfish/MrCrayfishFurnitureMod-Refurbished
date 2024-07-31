@@ -154,7 +154,7 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
 
         // Draw items
         graphics.enableScissor(this.getRowLeft() - 1, this.getY() + 1, this.getRowRight() + 1, this.getY() + this.getHeight() - 1);
-        this.renderList(graphics, mouseX, mouseY, partialTick);
+        this.renderListItems(graphics, mouseX, mouseY, partialTick);
         graphics.disableScissor();
 
         // Only draw scroll bar if enough items
@@ -175,7 +175,7 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
     }
 
     @Override
-    protected void renderList(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    protected void renderListItems(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
         int rowLeft = this.getRowLeft();
         int rowWidth = this.getRowWidth();

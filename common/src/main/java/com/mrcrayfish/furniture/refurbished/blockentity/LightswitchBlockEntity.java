@@ -4,6 +4,7 @@ import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.block.LightswitchBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -11,7 +12,7 @@ import net.minecraft.world.Nameable;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Author: MrCrayfish
@@ -121,22 +122,22 @@ public class LightswitchBlockEntity extends ElectricityModuleBlockEntity impleme
     }
 
     @Override
-    public void load(CompoundTag tag)
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.load(tag);
+        super.loadAdditional(tag, provider);
         if(tag.contains("CustomName", Tag.TAG_STRING))
         {
-            this.name = Component.Serializer.fromJson(tag.getString("CustomName"));
+            this.name = Component.Serializer.fromJson(tag.getString("CustomName"), provider);
         }
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag)
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.saveAdditional(tag);
+        super.saveAdditional(tag, provider);
         if(this.name != null)
         {
-            tag.putString("CustomName", Component.Serializer.toJson(this.name));
+            tag.putString("CustomName", Component.Serializer.toJson(this.name, provider));
         }
     }
 }

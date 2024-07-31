@@ -14,6 +14,7 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -42,7 +43,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
 import java.util.Optional;
@@ -255,7 +256,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
         stove.spaces.forEach(IProcessingBlock::processTick);
         if(stove.sync)
         {
-            BlockEntityHelper.sendCustomUpdate(stove, stove.getUpdateTag());
+            BlockEntityHelper.sendCustomUpdate(stove, BlockEntity::getUpdateTag);
             stove.sync = false;
         }
     }
@@ -382,15 +383,15 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     }
 
     @Override
-    public CompoundTag getUpdateTag()
+    public CompoundTag getUpdateTag(HolderLookup.Provider provider)
     {
-        return this.saveWithoutMetadata();
+        return this.saveWithoutMetadata(provider);
     }
 
     @Override
-    public void load(CompoundTag tag)
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.load(tag);
+        super.loadAdditional(tag, provider);
         if(tag.contains("Processing", Tag.TAG_BYTE))
         {
             this.processing = tag.getBoolean("Processing");
@@ -411,9 +412,9 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag)
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.saveAdditional(tag);
+        super.saveAdditional(tag, provider);
         tag.putBoolean("Processing", this.processing);
         tag.putInt("TotalProcessingTime", this.totalProcessingTime);
         tag.putInt("ProcessingTime", this.processingTime);
@@ -469,7 +470,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     {
         this.enabled = !this.enabled;
         this.setChanged();
-        BlockEntityHelper.sendCustomUpdate(this, this.getUpdateTag());
+        BlockEntityHelper.sendCustomUpdate(this, BlockEntity::getUpdateTag);
     }
 
     @Override
@@ -477,7 +478,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     {
         this.enabled = enabled;
         this.setChanged();
-        BlockEntityHelper.sendCustomUpdate(this, this.getUpdateTag());
+        BlockEntityHelper.sendCustomUpdate(this, BlockEntity::getUpdateTag);
     }
 
     @Override
@@ -651,7 +652,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
                     {
                         StoveBlockEntity.this.setItem(this.outputIndex, copy);
                     }
-                    else if(ItemStack.isSameItemSameTags(copy, outputStack) && outputStack.getCount() + copy.getCount() <= outputStack.getMaxStackSize())
+                    else if(ItemStack.isSameItemSameComponents(copy, outputStack) && outputStack.getCount() + copy.getCount() <= outputStack.getMaxStackSize())
                     {
                         outputStack.grow(copy.getCount());
                     }
@@ -690,7 +691,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
             if(result.isEmpty())
                 return false;
             ItemStack stack = StoveBlockEntity.this.getItem(this.outputIndex);
-            return stack.isEmpty() || ItemStack.isSameItemSameTags(result, stack) && stack.getCount() + result.getCount() <= stack.getMaxStackSize();
+            return stack.isEmpty() || ItemStack.isSameItemSameComponents(result, stack) && stack.getCount() + result.getCount() <= stack.getMaxStackSize();
         }
 
         private Optional<? extends ProcessingRecipe> getRecipe()

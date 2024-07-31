@@ -2,7 +2,7 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import net.minecraft.server.level.ServerPlayer;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Author: MrCrayfish

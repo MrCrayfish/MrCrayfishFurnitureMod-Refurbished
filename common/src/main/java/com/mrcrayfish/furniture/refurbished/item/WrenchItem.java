@@ -60,7 +60,7 @@ public class WrenchItem extends Item
         return InteractionResultHolder.success(player.getItemInHand(hand));
     }
 
-    public static NodeHitResult performNodeRaycast(Level level, Player player, float range, float partialTick)
+    public static NodeHitResult performNodeRaycast(Level level, Player player, double range, float partialTick)
     {
         Vec3 start = player.getEyePosition(partialTick);
         Vec3 look = player.getViewVector(partialTick);

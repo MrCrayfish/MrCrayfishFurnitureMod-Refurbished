@@ -14,12 +14,14 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -66,9 +68,9 @@ public class KitchenSinkBlockEntity extends BlockEntity implements IFluidContain
     }
 
     @Override
-    public CompoundTag getUpdateTag()
+    public CompoundTag getUpdateTag(HolderLookup.Provider provider)
     {
-        return this.saveWithoutMetadata();
+        return this.saveWithoutMetadata(provider);
     }
 
     @Override
@@ -77,7 +79,7 @@ public class KitchenSinkBlockEntity extends BlockEntity implements IFluidContain
         return this.tank;
     }
 
-    public InteractionResult interact(Player player, InteractionHand hand, BlockHitResult result)
+    public ItemInteractionResult interact(Player player, InteractionHand hand, BlockHitResult result)
     {
         Level level = player.level();
         // TODO allow this to be triggered with redstone
@@ -91,7 +93,7 @@ public class KitchenSinkBlockEntity extends BlockEntity implements IFluidContain
                 {
                     Network.getPlay().sendToTrackingBlockEntity(() -> this, new MessageWaterTapAnimation(this.worldPosition));
                     Objects.requireNonNull(this.level).playSound(null, this.worldPosition, ModSounds.BLOCK_KITCHEN_SINK_FILL.get(), SoundSource.BLOCKS);
-                    return InteractionResult.SUCCESS;
+                    return ItemInteractionResult.SUCCESS;
                 }
             }
 
@@ -109,7 +111,7 @@ public class KitchenSinkBlockEntity extends BlockEntity implements IFluidContain
                     level.playSound(null, this.worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS);
                     level.levelEvent(LevelEvent.LAVA_FIZZ, this.worldPosition, 0);
                     Network.getPlay().sendToTrackingBlockEntity(() -> this, new MessageWaterTapAnimation(this.worldPosition));
-                    return InteractionResult.SUCCESS;
+                    return ItemInteractionResult.SUCCESS;
                 }
             }
         }
@@ -139,18 +141,18 @@ public class KitchenSinkBlockEntity extends BlockEntity implements IFluidContain
     }
 
     @Override
-    public void load(CompoundTag tag)
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.load(tag);
-        this.tank.load(tag.getCompound("FluidTank"));
+        super.loadAdditional(tag, provider);
+        this.tank.load(tag.getCompound("FluidTank"), provider);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag)
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.saveAdditional(tag);
+        super.saveAdditional(tag, provider);
         CompoundTag tankTag = new CompoundTag();
-        this.tank.save(tankTag);
+        this.tank.save(tankTag, provider);
         tag.put("FluidTank", tankTag);
     }
 }

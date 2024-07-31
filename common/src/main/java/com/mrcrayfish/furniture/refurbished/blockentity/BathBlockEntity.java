@@ -14,12 +14,14 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -34,7 +36,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 /**
@@ -98,12 +100,12 @@ public class BathBlockEntity extends BlockEntity implements IFluidContainerBlock
         return null;
     }
 
-    public InteractionResult interact(Player player, InteractionHand hand, BlockHitResult result)
+    public ItemInteractionResult interact(Player player, InteractionHand hand, BlockHitResult result)
     {
         FluidContainer tank = this.getFluidContainer();
         if(tank == null)
         {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
 
         if(Config.SERVER.bath.dispenseWater.get() && player.getItemInHand(hand).isEmpty())
@@ -116,7 +118,7 @@ public class BathBlockEntity extends BlockEntity implements IFluidContainerBlock
                 {
                     this.sendTapWaterAnimation();
                     Objects.requireNonNull(this.level).playSound(null, this.worldPosition, ModSounds.BLOCK_KITCHEN_SINK_FILL.get(), SoundSource.BLOCKS);
-                    return InteractionResult.SUCCESS;
+                    return ItemInteractionResult.SUCCESS;
                 }
             }
 
@@ -135,7 +137,7 @@ public class BathBlockEntity extends BlockEntity implements IFluidContainerBlock
                     level.playSound(null, this.worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS);
                     level.levelEvent(LevelEvent.LAVA_FIZZ, this.worldPosition, 0);
                     this.sendTapWaterAnimation();
-                    return InteractionResult.SUCCESS;
+                    return ItemInteractionResult.SUCCESS;
                 }
             }
         }
@@ -178,23 +180,23 @@ public class BathBlockEntity extends BlockEntity implements IFluidContainerBlock
     }
 
     @Override
-    public void load(CompoundTag tag)
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.load(tag);
+        super.loadAdditional(tag, provider);
         if(this.tank != null)
         {
-            this.tank.load(tag.getCompound("FluidTank"));
+            this.tank.load(tag.getCompound("FluidTank"), provider);
         }
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag)
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.saveAdditional(tag);
+        super.saveAdditional(tag, provider);
         if(this.tank != null)
         {
             CompoundTag tankTag = new CompoundTag();
-            this.tank.save(tankTag);
+            this.tank.save(tankTag, provider);
             tag.put("FluidTank", tankTag);
         }
     }
@@ -206,8 +208,8 @@ public class BathBlockEntity extends BlockEntity implements IFluidContainerBlock
     }
 
     @Override
-    public CompoundTag getUpdateTag()
+    public CompoundTag getUpdateTag(HolderLookup.Provider provider)
     {
-        return this.saveWithoutMetadata();
+        return this.saveWithoutMetadata(provider);
     }
 }

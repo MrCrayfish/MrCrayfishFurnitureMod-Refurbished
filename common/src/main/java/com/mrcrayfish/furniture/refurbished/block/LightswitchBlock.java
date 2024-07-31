@@ -37,7 +37,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -94,7 +94,7 @@ public class LightswitchBlock extends FurnitureAttachedFaceBlock implements Enti
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+    public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult result)
     {
         boolean enabled = !state.getValue(ENABLED);
         level.setBlock(pos, state.setValue(ENABLED, enabled), Block.UPDATE_ALL);
@@ -148,15 +148,6 @@ public class LightswitchBlock extends FurnitureAttachedFaceBlock implements Enti
         super.createBlockStateDefinition(builder);
         builder.add(ENABLED);
         builder.add(POWERED);
-    }
-
-    @Override
-    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack)
-    {
-        if(stack.hasCustomHoverName() && level.getBlockEntity(pos) instanceof LightswitchBlockEntity light)
-        {
-            light.setCustomName(stack.getHoverName());
-        }
     }
 
     @Nullable

@@ -15,6 +15,7 @@ mixin {
 
 minecraft {
     mappings channel: 'official', version: minecraft_version
+    reobf = false
     copyIdeResources = true
 
     def at = file('src/main/resources/META-INF/accesstransformer.cfg')
@@ -79,22 +80,23 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     // Core dependencies
-    implementation fg.deobf("com.mrcrayfish:framework-forge:${minecraft_version}-${framework_version}")
+    implementation "com.mrcrayfish:framework-forge:${minecraft_version}-${framework_version}"
 
     // Runtime mods
-    runtimeOnly fg.deobf("com.mrcrayfish:catalogue-forge:${minecraft_version}-1.9.1")
-    compileOnly fg.deobf("maven.modrinth:farmers-delight:1.20.1-1.2.3")
+    runtimeOnly "com.mrcrayfish:catalogue-forge:${minecraft_version}-${catalogue_version}"
+    //compileOnly fg.deobf("maven.modrinth:farmers-delight:${minecraft_version}-${catalogue_version}")
 
-    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
-    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+    compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
+    runtimeOnly "mezz.jei:jei-${minecraft_version}-forge:${jei_version}"
 
-    compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-common-${minecraft_version}:${crafttweaker_version}")
-    runtimeOnly fg.deobf( "com.blamejared.crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}")
+    compileOnly "com.blamejared.crafttweaker:CraftTweaker-common-${minecraft_version}:${crafttweaker_version}"
+    //runtimeOnly fg.deobf( "com.blamejared.crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}")
 
     annotationProcessor "org.spongepowered:mixin:0.8.5-SNAPSHOT:processor"
-}
 
-jar.finalizedBy('reobfJar')
+    // FROM FORGE: Hack fix for now, force jopt-simple to be exactly 5.0.4 because Mojang ships that version, but some transtive dependencies request 6.0+
+    implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
+}
 
 tasks.register('signJar', SignJar) {
     dependsOn jar
@@ -110,7 +112,6 @@ tasks.register('signJar', SignJar) {
 }
 
 jar.finalizedBy 'signJar'
-signJar.mustRunAfter 'reobfJar'
 
 sourceSets.each {
     def dir = layout.buildDirectory.dir("sourcesSets/$it.name")

@@ -14,6 +14,9 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -71,7 +74,7 @@ public class CuttingBoardBlock extends FurnitureHorizontalEntityBlock implements
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
     {
         if(level.getBlockEntity(pos) instanceof CuttingBoardBlockEntity cuttingBoard)
         {
@@ -83,17 +86,18 @@ public class CuttingBoardBlock extends FurnitureHorizontalEntityBlock implements
                 {
                     if(!level.isClientSide())
                     {
-                        heldItem.hurtAndBreak(1, player, (player1) -> player1.broadcastBreakEvent(hand));
+                        // TODO 1.20.6 test
+                        heldItem.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
                     }
-                    return InteractionResult.sidedSuccess(level.isClientSide());
+                    return ItemInteractionResult.sidedSuccess(level.isClientSide());
                 }
             }
             else if(cuttingBoard.placeItem(heldItem))
             {
-                return InteractionResult.sidedSuccess(level.isClientSide());
+                return ItemInteractionResult.sidedSuccess(level.isClientSide());
             }
         }
-        return InteractionResult.PASS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Nullable

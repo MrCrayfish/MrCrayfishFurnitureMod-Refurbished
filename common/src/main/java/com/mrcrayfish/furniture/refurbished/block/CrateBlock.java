@@ -66,7 +66,7 @@ public class CrateBlock extends FurnitureEntityBlock implements BlockTagSupplier
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult result)
     {
         if(!level.isClientSide() && level.getBlockEntity(pos) instanceof CrateBlockEntity crate)
         {

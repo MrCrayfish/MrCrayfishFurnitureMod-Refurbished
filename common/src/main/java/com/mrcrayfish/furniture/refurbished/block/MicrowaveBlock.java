@@ -76,7 +76,7 @@ public class MicrowaveBlock extends FurnitureHorizontalEntityBlock implements Bl
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+    public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult result)
     {
         if(state.getValue(DIRECTION).getOpposite() == result.getDirection())
         {
@@ -95,15 +95,6 @@ public class MicrowaveBlock extends FurnitureHorizontalEntityBlock implements Bl
     {
         super.createBlockStateDefinition(builder);
         builder.add(OPEN);
-    }
-
-    @Override
-    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack)
-    {
-        if(stack.hasCustomHoverName() && level.getBlockEntity(pos) instanceof MicrowaveBlockEntity microwave)
-        {
-            microwave.setCustomName(stack.getHoverName());
-        }
     }
 
     @Nullable

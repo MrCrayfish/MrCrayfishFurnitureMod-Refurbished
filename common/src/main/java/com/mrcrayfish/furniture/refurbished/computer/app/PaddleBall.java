@@ -15,7 +15,7 @@ import org.joml.Intersectionf;
 import org.joml.Math;
 import org.joml.Vector2f;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;

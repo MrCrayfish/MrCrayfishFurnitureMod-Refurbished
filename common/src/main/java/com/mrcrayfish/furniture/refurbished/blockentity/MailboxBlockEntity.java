@@ -7,6 +7,7 @@ import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
 import com.mrcrayfish.furniture.refurbished.mail.Mailbox;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -16,7 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.Optional;
 import java.util.UUID;
@@ -73,7 +74,7 @@ public class MailboxBlockEntity extends RowedStorageBlockEntity implements IName
             {
                 continue;
             }
-            if(ItemStack.isSameItemSameTags(stack, mail) && stack.getCount() + mail.getCount() <= stack.getMaxStackSize())
+            if(ItemStack.isSameItemSameComponents(stack, mail) && stack.getCount() + mail.getCount() <= stack.getMaxStackSize())
             {
                 stack.grow(mail.getCount());
                 this.setChanged();
@@ -137,9 +138,9 @@ public class MailboxBlockEntity extends RowedStorageBlockEntity implements IName
     }
 
     @Override
-    public void load(CompoundTag tag)
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.load(tag);
+        super.loadAdditional(tag, provider);
         if(tag.contains("UUID", Tag.TAG_INT_ARRAY))
         {
             this.uuid = tag.getUUID("UUID");
@@ -147,9 +148,9 @@ public class MailboxBlockEntity extends RowedStorageBlockEntity implements IName
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag)
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.saveAdditional(tag);
+        super.saveAdditional(tag, provider);
         tag.putUUID("UUID", this.uuid);
     }
 }

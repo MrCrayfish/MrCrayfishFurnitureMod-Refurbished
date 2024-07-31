@@ -14,6 +14,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -86,31 +87,31 @@ public class ToasterBlock extends FurnitureHorizontalEntityBlock implements Bloc
         return this.defaultBlockState().setValue(DIRECTION, forward);
     }
 
+
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+    public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
     {
         if(level.getBlockEntity(pos) instanceof ToasterBlockEntity toaster)
         {
             if(!level.isClientSide())
             {
-                ItemStack heldItem = player.getItemInHand(hand);
                 Direction facing = state.getValue(DIRECTION);
                 boolean hitLever = result.getDirection() == facing.getCounterClockWise();
                 if(player.isCrouching() || hitLever)
                 {
                     if(toaster.toggleHeating())
                     {
-                        return InteractionResult.CONSUME;
+                        return ItemInteractionResult.CONSUME;
                     }
                 }
-                else if(toaster.insertItem(heldItem))
+                else if(toaster.insertItem(stack))
                 {
-                    return InteractionResult.CONSUME;
+                    return ItemInteractionResult.CONSUME;
                 }
             }
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
-        return InteractionResult.PASS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Override

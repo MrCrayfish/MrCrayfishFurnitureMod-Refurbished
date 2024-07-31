@@ -3,11 +3,13 @@ package com.mrcrayfish.furniture.refurbished.data;
 import com.mrcrayfish.framework.Registration;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.block.DoorMatBlock;
+import com.mrcrayfish.furniture.refurbished.core.ModDataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction;
+import net.minecraft.world.level.storage.loot.functions.CopyCustomDataFunction;
 import net.minecraft.world.level.storage.loot.functions.CopyNameFunction;
-import net.minecraft.world.level.storage.loot.functions.CopyNbtFunction;
 import net.minecraft.world.level.storage.loot.providers.nbt.ContextNbtProvider;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
@@ -35,7 +37,15 @@ public class CommonLootTableProvider
 
         private static LootPool.Builder createDoorMatLootPool(net.minecraft.world.level.block.Block block)
         {
-            return LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)).add(LootItem.lootTableItem(block).apply(CopyNbtFunction.copyData(ContextNbtProvider.BLOCK_ENTITY).copy("Image", "BlockEntityTag.Image").copy("Finalised", "BlockEntityTag.Finalised")));
+            // TODO 1.20.6 check if correct
+            return LootPool.lootPool()
+                .setRolls(ConstantValue.exactly(1.0F))
+                .add(LootItem.lootTableItem(block)
+                    .apply(CopyCustomDataFunction.copyData(ContextNbtProvider.BLOCK_ENTITY)
+                        .copy("Finalised", "BlockEntityTag.Finalised"))
+                    .apply(CopyComponentsFunction.copyComponents(
+                        CopyComponentsFunction.Source.BLOCK_ENTITY)
+                        .include(ModDataComponents.PALETTE_IMAGE.get())));
         }
 
         private static LootPool.Builder createDropWithName(net.minecraft.world.level.block.Block block)

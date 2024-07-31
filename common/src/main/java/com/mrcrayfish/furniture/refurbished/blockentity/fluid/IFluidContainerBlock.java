@@ -1,6 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity.fluid;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Implement on BlockEntities to add a fluid storage

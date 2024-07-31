@@ -15,22 +15,22 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
 /**
  * Author: MrCrayfish
  */
-@SuppressWarnings("UnstableApiUsage")
 public class FabricFluidHelper implements IFluidHelper
 {
     @Override
@@ -52,10 +52,10 @@ public class FabricFluidHelper implements IFluidHelper
     }
 
     @Override
-    public InteractionResult performInteractionWithBlock(Player player, InteractionHand hand, Level level, BlockPos pos, Direction face)
+    public ItemInteractionResult performInteractionWithBlock(Player player, InteractionHand hand, Level level, BlockPos pos, Direction face)
     {
         Storage<FluidVariant> storage = FluidStorage.SIDED.find(level, pos, face);
-        return storage != null && FluidStorageUtil.interactWithFluidStorage(storage, player, hand) ? InteractionResult.SUCCESS : InteractionResult.PASS;
+        return storage != null && FluidStorageUtil.interactWithFluidStorage(storage, player, hand) ? ItemInteractionResult.SUCCESS : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Override
@@ -144,16 +144,16 @@ public class FabricFluidHelper implements IFluidHelper
         }
 
         @Override
-        public void load(CompoundTag tag)
+        public void load(CompoundTag tag, HolderLookup.Provider provider)
         {
-            this.tank.readNbt(tag.getCompound("FluidTank"));
+            this.tank.readNbt(tag.getCompound("FluidTank"), provider);
         }
 
         @Override
-        public void save(CompoundTag tag)
+        public void save(CompoundTag tag, HolderLookup.Provider provider)
         {
             CompoundTag tankTag = new CompoundTag();
-            this.tank.writeNbt(tankTag);
+            this.tank.writeNbt(tankTag, provider);
             tag.put("FluidTank", tankTag);
         }
 

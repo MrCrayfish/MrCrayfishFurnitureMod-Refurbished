@@ -12,6 +12,7 @@ import com.mrcrayfish.furniture.refurbished.network.message.MessageFlipAnimation
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -41,7 +42,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -440,13 +441,13 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
      */
     protected void sync()
     {
-        BlockEntityHelper.sendCustomUpdate(this, this.getUpdateTag());
+        BlockEntityHelper.sendCustomUpdate(this, BlockEntity::getUpdateTag);
     }
 
     @Override
-    public void load(CompoundTag tag)
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.load(tag);
+        super.loadAdditional(tag, provider);
         if(tag.contains("NeedsFlipping", Tag.TAG_BYTE))
         {
             this.needsFlipping = tag.getBoolean("NeedsFlipping");
@@ -462,9 +463,9 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag)
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.saveAdditional(tag);
+        super.saveAdditional(tag, provider);
         tag.putBoolean("NeedsFlipping", this.needsFlipping);
         tag.putBoolean("Flipped", this.flipped);
         tag.putInt("Rotation", this.rotation);
@@ -478,9 +479,9 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
     }
 
     @Override
-    public CompoundTag getUpdateTag()
+    public CompoundTag getUpdateTag(HolderLookup.Provider provider)
     {
-        return this.saveWithoutMetadata();
+        return this.saveWithoutMetadata(provider);
     }
 
     @Override

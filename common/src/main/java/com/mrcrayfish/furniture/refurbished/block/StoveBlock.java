@@ -91,7 +91,7 @@ public class StoveBlock extends FurnitureHorizontalEntityBlock implements BlockT
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+    public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult result)
     {
         if(state.getValue(DIRECTION).getOpposite() == result.getDirection())
         {
@@ -135,15 +135,6 @@ public class StoveBlock extends FurnitureHorizontalEntityBlock implements BlockT
         builder.add(OPEN);
         builder.add(POWERED);
         builder.add(LIT);
-    }
-
-    @Override
-    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack)
-    {
-        if(stack.hasCustomHoverName() && level.getBlockEntity(pos) instanceof StoveBlockEntity stove)
-        {
-            stove.setCustomName(stack.getHoverName());
-        }
     }
 
     @Nullable

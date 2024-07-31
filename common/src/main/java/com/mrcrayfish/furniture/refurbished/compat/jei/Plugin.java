@@ -180,6 +180,6 @@ public class Plugin implements IModPlugin
         Minecraft minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
         boolean advanced = minecraft.options.advancedItemTooltips;
-        return new ItemStack(item).getTooltipLines(player, advanced ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
+        return new ItemStack(item).getTooltipLines(Item.TooltipContext.of(minecraft.level), player, advanced ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
     }
 }

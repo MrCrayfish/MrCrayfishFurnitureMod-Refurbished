@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.Container;
@@ -316,7 +317,7 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
             if(this.isOutputInput(slot) && input.getItem().getCraftingRemainingItem() == null)
                 return true;
 
-            if(ItemStack.isSameItemSameTags(result, stack))
+            if(ItemStack.isSameItemSameComponents(result, stack))
                 count += (stack.getMaxStackSize() - stack.getCount());
         }
         return count >= result.getCount();
@@ -353,7 +354,7 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
                 this.setItem(slot, result);
                 return;
             }
-            else if(ItemStack.isSameItemSameTags(result, stack) && stack.getCount() < stack.getMaxStackSize())
+            else if(ItemStack.isSameItemSameComponents(result, stack) && stack.getCount() < stack.getMaxStackSize())
             {
                 // Find the highest count of the result that can be pushed into this stack
                 int count = Math.min(result.getCount(), stack.getMaxStackSize() - stack.getCount());
@@ -476,9 +477,9 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
     }
 
     @Override
-    public void load(CompoundTag tag)
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.load(tag);
+        super.loadAdditional(tag, provider);
         if(tag.contains("MaxProcessTime", Tag.TAG_INT))
         {
             this.totalProcessingTime = tag.getInt("MaxProcessTime");
@@ -494,9 +495,9 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag)
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.saveAdditional(tag);
+        super.saveAdditional(tag, provider);
         tag.putInt("MaxProcessTime", this.totalProcessingTime);
         tag.putInt("ProcessTime", this.processingTime);
         tag.putInt("Energy", this.energy);

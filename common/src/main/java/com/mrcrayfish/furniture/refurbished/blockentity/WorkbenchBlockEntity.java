@@ -5,6 +5,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.crafting.StackedIngredient;
 import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchContructingRecipe;
 import com.mrcrayfish.furniture.refurbished.inventory.BuildableContainerData;
+import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.WorkbenchMenu;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageWorkbench;
@@ -13,6 +14,7 @@ import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -36,7 +38,7 @@ import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -92,11 +94,9 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
         return new WorkbenchMenu(windowId, playerInventory, this, this.data);
     }
 
-    public void writeMenuData(FriendlyByteBuf buffer)
+    public WorkbenchMenu.CustomData createSyncData()
     {
-        buffer.writeVarInt(this.selectedRecipe.get());
-        buffer.writeVarInt(this.searchNeighbours.get());
-        buffer.writeVarInt(this.isNodePowered() ? 1 : 0);
+        return new WorkbenchMenu.CustomData(this.selectedRecipe.get(), this.searchNeighbours.get(), this.isNodePowered() ? 1 : 0);
     }
 
     @Override
@@ -368,9 +368,9 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     }
 
     @Override
-    public void load(CompoundTag tag)
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.load(tag);
+        super.loadAdditional(tag, provider);
         if(tag.contains("SelectedRecipe", Tag.TAG_INT))
         {
             this.selectedRecipe.set(tag.getInt("SelectedRecipe"));
@@ -382,9 +382,9 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag)
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.saveAdditional(tag);
+        super.saveAdditional(tag, provider);
         tag.putInt("SelectedRecipe", this.selectedRecipe.get());
         tag.putBoolean("IncludeNeighbours", this.searchNeighbours.get() != 0);
     }

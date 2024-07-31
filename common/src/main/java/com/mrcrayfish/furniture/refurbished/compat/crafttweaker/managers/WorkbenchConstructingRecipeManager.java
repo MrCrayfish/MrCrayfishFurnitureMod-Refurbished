@@ -33,7 +33,7 @@ public class WorkbenchConstructingRecipeManager implements IRecipeManager<Workbe
     {
         NonNullList<StackedIngredient> ingredients = Arrays.stream(materials)
                 .map(IIngredient::asIIngredientWithAmount)
-                .map(v -> StackedIngredient.of(v.getIngredient().asVanillaIngredient(), v.getAmount()))
+                .map(v -> StackedIngredient.of(v.ingredient().asVanillaIngredient(), v.amount()))
                 .collect(NonNullList::create, AbstractList::add, AbstractCollection::addAll);
         CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new RecipeHolder<>(CraftTweakerConstants.rl(name), new WorkbenchContructingRecipe(ingredients, result.getInternal(), notification))));
     }

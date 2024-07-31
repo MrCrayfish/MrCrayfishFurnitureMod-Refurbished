@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.crafting;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -22,17 +23,17 @@ public record StackedIngredient(Ingredient ingredient, int count)
         })).apply(builder, StackedIngredient::new);
     });
 
-    public static StackedIngredient fromNetwork(FriendlyByteBuf buffer)
+    public static StackedIngredient fromNetwork(RegistryFriendlyByteBuf buf)
     {
-        Ingredient ingredient = Ingredient.fromNetwork(buffer);
-        int count = buffer.readInt();
+        Ingredient ingredient = Ingredient.CONTENTS_STREAM_CODEC.decode(buf);
+        int count = buf.readInt();
         return new StackedIngredient(ingredient, count);
     }
 
-    public void toNetwork(FriendlyByteBuf buffer)
+    public void toNetwork(RegistryFriendlyByteBuf buf)
     {
-        this.ingredient.toNetwork(buffer);
-        buffer.writeInt(this.count);
+        Ingredient.CONTENTS_STREAM_CODEC.encode(buf, this.ingredient);
+        buf.writeInt(this.count);
     }
 
     public static StackedIngredient of(TagKey<Item> tag, int count)

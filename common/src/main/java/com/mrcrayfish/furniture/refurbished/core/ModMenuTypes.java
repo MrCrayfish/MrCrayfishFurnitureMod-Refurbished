@@ -20,13 +20,13 @@ import net.minecraft.world.inventory.MenuType;
 @RegistryContainer
 public class ModMenuTypes
 {
-    public static final RegistryEntry<MenuType<WorkbenchMenu>> WORKBENCH = RegistryEntry.menuTypeWithData(Utils.resource("workbench"), WorkbenchMenu::new);
+    public static final RegistryEntry<MenuType<WorkbenchMenu>> WORKBENCH = RegistryEntry.menuTypeWithData(Utils.resource("workbench"), WorkbenchMenu.CustomData.STREAM_CODEC, WorkbenchMenu::new);
     public static final RegistryEntry<MenuType<FreezerMenu>> FREEZER = RegistryEntry.menuType(Utils.resource("freezer"), FreezerMenu::new);
     public static final RegistryEntry<MenuType<MicrowaveMenu>> MICROWAVE = RegistryEntry.menuType(Utils.resource("microwave"), MicrowaveMenu::new);
     public static final RegistryEntry<MenuType<StoveMenu>> STOVE = RegistryEntry.menuType(Utils.resource("stove"), StoveMenu::new);
     public static final RegistryEntry<MenuType<PostBoxMenu>> POST_BOX = RegistryEntry.menuType(Utils.resource("post_box"), PostBoxMenu::new);
     public static final RegistryEntry<MenuType<ElectricityGeneratorMenu>> ELECTRICITY_GENERATOR = RegistryEntry.menuType(Utils.resource("electricity_generator"), ElectricityGeneratorMenu::new);
     public static final RegistryEntry<MenuType<RecycleBinMenu>> RECYCLE_BIN = RegistryEntry.menuType(Utils.resource("recycle_bin"), RecycleBinMenu::new);
-    public static final RegistryEntry<MenuType<ComputerMenu>> COMPUTER = RegistryEntry.menuTypeWithData(Utils.resource("computer"), ComputerMenu::new);
+    public static final RegistryEntry<MenuType<ComputerMenu>> COMPUTER = RegistryEntry.menuTypeWithData(Utils.resource("computer"), ComputerMenu.CustomData.STREAM_CODEC, ComputerMenu::new);
     public static final RegistryEntry<MenuType<DoorMatMenu>> DOOR_MAT = RegistryEntry.menuType(Utils.resource("door_mat"), DoorMatMenu::new);
 }

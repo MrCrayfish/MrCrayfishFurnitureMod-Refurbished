@@ -1,7 +1,9 @@
 package com.mrcrayfish.furniture.refurbished.util;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -16,25 +18,26 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BiFunction;
 
 /**
  * Author: MrCrayfish
  */
 public class BlockEntityHelper
 {
-    public static void sendCustomUpdate(BlockEntity entity, CompoundTag tag)
+    public static void sendCustomUpdate(BlockEntity entity, BiFunction<BlockEntity, RegistryAccess, CompoundTag> update)
     {
         Level level = Objects.requireNonNull(entity.getLevel());
         if(level.getChunkSource() instanceof ServerChunkCache cache)
         {
             BlockPos pos = entity.getBlockPos();
-            ClientboundBlockEntityDataPacket packet = ClientboundBlockEntityDataPacket.create(entity, entity1 -> tag);
+            ClientboundBlockEntityDataPacket packet = ClientboundBlockEntityDataPacket.create(entity, update);
             List<ServerPlayer> players = cache.chunkMap.getPlayers(new ChunkPos(pos), false);
             players.forEach(player -> player.connection.send(packet));
         }
     }
 
-    public static void saveItems(String key, CompoundTag tag, NonNullList<ItemStack> items)
+    public static void saveItems(String key, CompoundTag tag, NonNullList<ItemStack> items, HolderLookup.Provider provider)
     {
         ListTag list = new ListTag();
         for(int i = 0; i < items.size(); i++)
@@ -44,7 +47,7 @@ public class BlockEntityHelper
             {
                 CompoundTag slot = new CompoundTag();
                 slot.putByte("Slot", (byte) i);
-                stack.save(slot);
+                stack.save(provider);
                 list.add(slot);
             }
         }
@@ -65,8 +68,8 @@ public class BlockEntityHelper
                     int index = slot.getByte("Slot");
                     if(index >= 0 && index < items.size())
                     {
-                        ItemStack stack = ItemStack.of(slot);
-                        items.set(index, stack);
+                        //ItemStack stack = ItemStack.(slot);
+                        //items.set(index, stack);
                     }
                 }
             });

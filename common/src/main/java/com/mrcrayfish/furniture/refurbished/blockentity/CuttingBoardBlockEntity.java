@@ -8,6 +8,7 @@ import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardCombiningRecipe
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -30,11 +31,12 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleItemRecipe;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -440,7 +442,7 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
     {
         if(entity.sync)
         {
-            BlockEntityHelper.sendCustomUpdate(entity, entity.getUpdateTag());
+            BlockEntityHelper.sendCustomUpdate(entity, BlockEntity::getUpdateTag);
             entity.sync = false;
         }
     }
@@ -453,23 +455,23 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
     }
 
     @Override
-    public CompoundTag getUpdateTag()
+    public CompoundTag getUpdateTag(HolderLookup.Provider provider)
     {
-        return this.saveWithoutMetadata();
+        return this.saveWithoutMetadata(provider);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag)
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.saveAdditional(tag);
+        super.saveAdditional(tag, provider);
         tag.putBoolean("CanExtract", this.canExtract);
         tag.putBoolean("PlacedByPlayer", this.placedByPlayer);
     }
 
     @Override
-    public void load(CompoundTag compound)
+    public void loadAdditional(CompoundTag compound, HolderLookup.Provider provider)
     {
-        super.load(compound);
+        super.loadAdditional(compound, provider);
         if(compound.contains("CanExtract", Tag.TAG_BYTE))
         {
             this.canExtract = compound.getBoolean("CanExtract");

@@ -25,7 +25,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 // TODO create amazon like app to buy items and send to mailboxes
 // TODO cmd like app

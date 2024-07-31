@@ -5,6 +5,8 @@ import com.mrcrayfish.furniture.refurbished.network.play.ClientPlayHandler;
 import com.mrcrayfish.furniture.refurbished.network.play.ServerPlayHandler;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 
 import java.util.Map;
 
@@ -15,28 +17,22 @@ public final class MessageWorkbench
 {
     public record ItemCounts(Map<Integer, Integer> counts)
     {
-        public static void encode(ItemCounts message, FriendlyByteBuf buffer)
-        {
-            buffer.writeVarInt(message.counts.size());
-            for(Map.Entry<Integer, Integer> entry : message.counts.entrySet())
-            {
-                buffer.writeInt(entry.getKey());
-                buffer.writeInt(entry.getValue());
+        public static final StreamCodec<RegistryFriendlyByteBuf, ItemCounts> STREAM_CODEC = StreamCodec.of((buf, message) -> {
+            buf.writeVarInt(message.counts.size());
+            for(Map.Entry<Integer, Integer> entry : message.counts.entrySet()) {
+                buf.writeInt(entry.getKey());
+                buf.writeInt(entry.getValue());
             }
-        }
-
-        public static ItemCounts decode(FriendlyByteBuf buffer)
-        {
+        }, buf -> {
             Map<Integer, Integer> counts = new Int2IntOpenHashMap();
-            int size = buffer.readVarInt();
-            while(size-- > 0)
-            {
-                int itemId = buffer.readInt();
-                int count = buffer.readInt();
+            int size = buf.readVarInt();
+            while(size-- > 0) {
+                int itemId = buf.readInt();
+                int count = buf.readInt();
                 counts.put(itemId, count);
             }
             return new ItemCounts(counts);
-        }
+        });
 
         public static void handle(ItemCounts message, MessageContext context)
         {
@@ -47,15 +43,11 @@ public final class MessageWorkbench
 
     public record SelectRecipe(int index)
     {
-        public static void encode(SelectRecipe message, FriendlyByteBuf buf)
-        {
+        public static final StreamCodec<RegistryFriendlyByteBuf, SelectRecipe> STREAM_CODEC = StreamCodec.of((buf, message) -> {
             buf.writeVarInt(message.index);
-        }
-
-        public static SelectRecipe decode(FriendlyByteBuf buf)
-        {
+        }, buf -> {
             return new SelectRecipe(buf.readVarInt());
-        }
+        });
 
         public static void handle(SelectRecipe message, MessageContext context)
         {
@@ -66,12 +58,7 @@ public final class MessageWorkbench
 
     public record SearchNeighbours()
     {
-        public static void encode(SearchNeighbours message, FriendlyByteBuf buffer) {}
-
-        public static SearchNeighbours decode(FriendlyByteBuf buffer)
-        {
-            return new SearchNeighbours();
-        }
+        public static final StreamCodec<RegistryFriendlyByteBuf, SearchNeighbours> STREAM_CODEC = StreamCodec.unit(new SearchNeighbours());
 
         public static void handle(SearchNeighbours message, MessageContext context)
         {

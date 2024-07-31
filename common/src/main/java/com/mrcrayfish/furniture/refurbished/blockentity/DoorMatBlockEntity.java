@@ -1,11 +1,14 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
+import com.mrcrayfish.furniture.refurbished.core.ModDataComponents;
 import com.mrcrayfish.furniture.refurbished.image.PaletteImage;
 import com.mrcrayfish.furniture.refurbished.inventory.DoorMatMenu;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -18,7 +21,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.BitSet;
 
 /**
@@ -45,7 +48,10 @@ public class DoorMatBlockEntity extends BlockEntity implements MenuProvider, IPa
         {
             this.image = image;
             this.setChanged();
-            BlockEntityHelper.sendCustomUpdate(this, this.getUpdateTag());
+            if(this.level != null)
+            {
+                BlockEntityHelper.sendCustomUpdate(this, BlockEntity::getUpdateTag);
+            }
         }
     }
 
@@ -105,18 +111,36 @@ public class DoorMatBlockEntity extends BlockEntity implements MenuProvider, IPa
     }
 
     @Override
-    public void load(CompoundTag tag)
+    protected void applyImplicitComponents(DataComponentInput input)
     {
-        super.load(tag);
-        if(tag.contains("Image", Tag.TAG_LONG_ARRAY))
+        super.applyImplicitComponents(input);
+        PaletteImage image = input.get(ModDataComponents.PALETTE_IMAGE.get());
+        if(image != null)
         {
-            long[] data = tag.getLongArray("Image");
-            BitSet bits = BitSet.valueOf(data);
-            if(bits.size() >= IMAGE_WIDTH * IMAGE_HEIGHT)
-            {
-                this.image = new PaletteImage(IMAGE_WIDTH, IMAGE_HEIGHT, () -> bits);
-            }
+            this.setImage(image);
         }
+    }
+
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder builder)
+    {
+        super.collectImplicitComponents(builder);
+        if(this.image != null)
+        {
+            builder.set(ModDataComponents.PALETTE_IMAGE.get(), this.image.copy());
+        }
+    }
+
+    @Override
+    public void removeComponentsFromTag(CompoundTag tag)
+    {
+        tag.remove("Image");
+    }
+
+    @Override
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    {
+        super.loadAdditional(tag, provider);
         if(tag.contains("Finalised", Tag.TAG_BYTE))
         {
             this.finalised = tag.getBoolean("Finalised");
@@ -124,14 +148,9 @@ public class DoorMatBlockEntity extends BlockEntity implements MenuProvider, IPa
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag)
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.saveAdditional(tag);
-        if(this.image != null)
-        {
-            long[] data = this.image.getData().toLongArray();
-            tag.putLongArray("Image", data);
-        }
+        super.saveAdditional(tag, provider);
         tag.putBoolean("Finalised", this.finalised);
     }
 
@@ -143,8 +162,8 @@ public class DoorMatBlockEntity extends BlockEntity implements MenuProvider, IPa
     }
 
     @Override
-    public CompoundTag getUpdateTag()
+    public CompoundTag getUpdateTag(HolderLookup.Provider provider)
     {
-        return this.saveWithoutMetadata();
+        return this.saveWithoutMetadata(provider);
     }
 }

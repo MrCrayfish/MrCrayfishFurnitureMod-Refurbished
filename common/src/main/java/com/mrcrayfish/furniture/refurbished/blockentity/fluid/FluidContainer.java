@@ -6,6 +6,7 @@ import com.mrcrayfish.furniture.refurbished.network.message.MessageSyncFluid;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerPlayer;
@@ -92,14 +93,14 @@ public abstract class FluidContainer
      *
      * @param tag the compound tag to read from
      */
-    public abstract void load(CompoundTag tag);
+    public abstract void load(CompoundTag tag, HolderLookup.Provider provider);
 
     /**
      * Saves the fluid container to the given compound tag.
      *
      * @param tag the compound tag to append the data to
      */
-    public abstract void save(CompoundTag tag);
+    public abstract void save(CompoundTag tag, HolderLookup.Provider provider);
 
     /**
      * Syncs

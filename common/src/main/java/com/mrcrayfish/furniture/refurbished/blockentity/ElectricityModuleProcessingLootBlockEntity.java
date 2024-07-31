@@ -6,6 +6,7 @@ import com.mrcrayfish.furniture.refurbished.electricity.Connection;
 import com.mrcrayfish.furniture.refurbished.electricity.IModuleNode;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -18,7 +19,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -116,9 +117,9 @@ public abstract class ElectricityModuleProcessingLootBlockEntity extends Process
     }
 
     @Override
-    public void load(CompoundTag tag)
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.load(tag);
+        super.loadAdditional(tag, provider);
         this.readNodeNbt(tag);
         if(tag.contains("Powered", Tag.TAG_BYTE))
         {
@@ -127,9 +128,9 @@ public abstract class ElectricityModuleProcessingLootBlockEntity extends Process
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag)
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.saveAdditional(tag);
+        super.saveAdditional(tag, provider);
         this.writeNodeNbt(tag);
         tag.putBoolean("Powered", this.powered);
     }
@@ -138,7 +139,7 @@ public abstract class ElectricityModuleProcessingLootBlockEntity extends Process
     public void syncDataToTrackingClients()
     {
         this.updateNodeConnections();
-        BlockEntityHelper.sendCustomUpdate(this, this.getUpdateTag());
+        BlockEntityHelper.sendCustomUpdate(this, BlockEntity::getUpdateTag);
     }
 
     @Nullable
@@ -149,7 +150,7 @@ public abstract class ElectricityModuleProcessingLootBlockEntity extends Process
     }
 
     @Override
-    public CompoundTag getUpdateTag()
+    public CompoundTag getUpdateTag(HolderLookup.Provider provider)
     {
         CompoundTag tag = new CompoundTag();
         this.writeNodeNbt(tag);
@@ -171,8 +172,8 @@ public abstract class ElectricityModuleProcessingLootBlockEntity extends Process
     }
 
     @Override
-    public void saveToItem(ItemStack stack)
+    public void saveToItem(ItemStack stack, HolderLookup.Provider provider)
     {
-        this.saveNodeNbtToItem(stack);
+        this.saveNodeNbtToItem(stack, provider);
     }
 }

@@ -5,6 +5,9 @@ import com.mrcrayfish.furniture.refurbished.computer.app.PaddleBall;
 import com.mrcrayfish.furniture.refurbished.network.play.ClientPlayHandler;
 import com.mrcrayfish.furniture.refurbished.network.play.ServerPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Author: MrCrayfish
@@ -13,18 +16,14 @@ public class MessagePaddleBall
 {
     public record PaddlePosition(float playerPos, float opponentPos)
     {
-        public static void encode(PaddlePosition message, FriendlyByteBuf buffer)
-        {
-            buffer.writeFloat(message.playerPos);
-            buffer.writeFloat(message.opponentPos);
-        }
-
-        public static PaddlePosition decode(FriendlyByteBuf buffer)
-        {
-            float playerPos = buffer.readFloat();
-            float opponentPos = buffer.readFloat();
+        public static final StreamCodec<RegistryFriendlyByteBuf, PaddlePosition> STREAM_CODEC = StreamCodec.of((buf, message) -> {
+            buf.writeFloat(message.playerPos);
+            buf.writeFloat(message.opponentPos);
+        }, buf -> {
+            float playerPos = buf.readFloat();
+            float opponentPos = buf.readFloat();
             return new PaddlePosition(playerPos, opponentPos);
-        }
+        });
 
         public static void handle(PaddlePosition message, MessageContext context)
         {
@@ -35,22 +34,18 @@ public class MessagePaddleBall
 
     public record BallUpdate(float ballX, float ballY, float velocityX, float velocityY)
     {
-        public static void encode(BallUpdate message, FriendlyByteBuf buffer)
-        {
-            buffer.writeFloat(message.ballX);
-            buffer.writeFloat(message.ballY);
-            buffer.writeFloat(message.velocityX);
-            buffer.writeFloat(message.velocityY);
-        }
-
-        public static BallUpdate decode(FriendlyByteBuf buffer)
-        {
-            float ballX = buffer.readFloat();
-            float ballY = buffer.readFloat();
-            float velocityX = buffer.readFloat();
-            float velocityY = buffer.readFloat();
+        public static final StreamCodec<RegistryFriendlyByteBuf, BallUpdate> STREAM_CODEC = StreamCodec.of((buf, message) -> {
+            buf.writeFloat(message.ballX);
+            buf.writeFloat(message.ballY);
+            buf.writeFloat(message.velocityX);
+            buf.writeFloat(message.velocityY);
+        }, buf -> {
+            float ballX = buf.readFloat();
+            float ballY = buf.readFloat();
+            float velocityX = buf.readFloat();
+            float velocityY = buf.readFloat();
             return new BallUpdate(ballX, ballY, velocityX, velocityY);
-        }
+        });
 
         public static void handle(BallUpdate message, MessageContext context)
         {
@@ -61,18 +56,14 @@ public class MessagePaddleBall
 
     public record Action(PaddleBall.Action action, byte data)
     {
-        public static void encode(Action message, FriendlyByteBuf buffer)
-        {
-            buffer.writeEnum(message.action);
-            buffer.writeByte(message.data);
-        }
-
-        public static Action decode(FriendlyByteBuf buffer)
-        {
-            PaddleBall.Action action = buffer.readEnum(PaddleBall.Action.class);
-            byte data = buffer.readByte();
+        public static final StreamCodec<RegistryFriendlyByteBuf, Action> STREAM_CODEC = StreamCodec.of((buf, message) -> {
+            buf.writeEnum(message.action);
+            buf.writeByte(message.data);
+        }, buf -> {
+            PaddleBall.Action action = buf.readEnum(PaddleBall.Action.class);
+            byte data = buf.readByte();
             return new Action(action, data);
-        }
+        });
 
         public static void handle(Action message, MessageContext context)
         {
@@ -83,16 +74,12 @@ public class MessagePaddleBall
 
     public record OpponentName(String name)
     {
-        public static void encode(OpponentName message, FriendlyByteBuf buffer)
-        {
-            buffer.writeUtf(message.name);
-        }
-
-        public static OpponentName decode(FriendlyByteBuf buffer)
-        {
-            String name = buffer.readUtf();
+        public static final StreamCodec<RegistryFriendlyByteBuf, OpponentName> STREAM_CODEC = StreamCodec.of((buf, message) -> {
+            buf.writeUtf(message.name);
+        }, buf -> {
+            String name = buf.readUtf();
             return new OpponentName(name);
-        }
+        });
 
         public static void handle(OpponentName message, MessageContext context)
         {
@@ -103,16 +90,11 @@ public class MessagePaddleBall
 
     public record Event(byte data)
     {
-        public static void encode(Event message, FriendlyByteBuf buffer)
-        {
-            buffer.writeByte(message.data);
-        }
-
-        public static Event decode(FriendlyByteBuf buffer)
-        {
-            byte event = buffer.readByte();
-            return new Event(event);
-        }
+        public static final StreamCodec<RegistryFriendlyByteBuf, Event> STREAM_CODEC = StreamCodec.of((buf, message) -> {
+            buf.writeByte(message.data);
+        }, buf -> {
+            return new Event(buf.readByte());
+        });
 
         public static void handle(Event message, MessageContext context)
         {

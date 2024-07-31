@@ -5,26 +5,24 @@ import com.mrcrayfish.furniture.refurbished.network.play.ClientPlayHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 
 /**
  * Author: MrCrayfish
  */
 public record MessageToolAnimation(Tool tool, BlockPos pos, Direction direction)
 {
-    public static void encode(MessageToolAnimation message, FriendlyByteBuf buffer)
-    {
-        buffer.writeEnum(message.tool);
-        buffer.writeBlockPos(message.pos);
-        buffer.writeEnum(message.direction);
-    }
-
-    public static MessageToolAnimation decode(FriendlyByteBuf buffer)
-    {
-        Tool tool = buffer.readEnum(Tool.class);
-        BlockPos pos = buffer.readBlockPos();
-        Direction direction = buffer.readEnum(Direction.class);
+    public static final StreamCodec<RegistryFriendlyByteBuf, MessageToolAnimation> STREAM_CODEC = StreamCodec.of((buf, message) -> {
+        buf.writeEnum(message.tool);
+        buf.writeBlockPos(message.pos);
+        buf.writeEnum(message.direction);
+    }, buf -> {
+        Tool tool = buf.readEnum(Tool.class);
+        BlockPos pos = buf.readBlockPos();
+        Direction direction = buf.readEnum(Direction.class);
         return new MessageToolAnimation(tool, pos, direction);
-    }
+    });
 
     public static void handle(MessageToolAnimation message, MessageContext context)
     {

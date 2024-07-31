@@ -16,10 +16,12 @@ import com.mrcrayfish.furniture.refurbished.computer.app.Marketplace;
 import com.mrcrayfish.furniture.refurbished.computer.app.PaddleBall;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
+import com.mrcrayfish.furniture.refurbished.core.ModDataComponents;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.electricity.ElectricityTicker;
 import com.mrcrayfish.furniture.refurbished.electricity.LinkManager;
 import com.mrcrayfish.furniture.refurbished.entity.Seat;
+import com.mrcrayfish.furniture.refurbished.image.PaletteImage;
 import com.mrcrayfish.furniture.refurbished.item.PackageItem;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
 import com.mrcrayfish.furniture.refurbished.network.Network;
@@ -32,6 +34,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -132,9 +135,9 @@ public class Bootstrap
             BlockPos pos = source.pos().relative(direction);
             if(source.level().getBlockEntity(pos) instanceof CuttingBoardBlockEntity cuttingBoard) {
                 if(cuttingBoard.sliceItem(source.level(), false)) {
-                    if(stack.hurt(1, source.level().random, null)) {
+                    stack.hurtAndBreak(1, source.level().random, null, () -> {
                         stack.setCount(0);
-                    }
+                    });
                     Network.getPlay().sendToTrackingBlockEntity(() -> cuttingBoard, new MessageToolAnimation(MessageToolAnimation.Tool.KNIFE, source.pos(), direction));
                 }
             }
@@ -145,7 +148,7 @@ public class Bootstrap
         DispenserBlock.registerBehavior(ModItems.PACKAGE::get, (source, stack) -> {
             Direction direction = source.state().getValue(DispenserBlock.FACING);
             Vec3 pos = source.pos().relative(direction).getCenter();
-            PackageItem.getPackagedItems(stack).forEach(s -> {
+            PackageItem.getPackagedItems(stack).stream().forEach(s -> {
                 Containers.dropItemStack(source.level(), pos.x, pos.y, pos.z, s);
             });
             return ItemStack.EMPTY;
@@ -158,11 +161,11 @@ public class Bootstrap
         CauldronInteraction.WATER.map().put(ModBlocks.DOOR_MAT.get().asItem(), (state, level, pos, player, hand, stack) -> {
             Block block = Block.byItem(stack.getItem());
             if(block == ModBlocks.DOOR_MAT.get()) {
-                CompoundTag tag = BlockItem.getBlockEntityData(stack);
-                if(tag != null) {
+                PaletteImage image = stack.get(ModDataComponents.PALETTE_IMAGE.get());
+                if(image != null) {
                     if(!level.isClientSide()) {
                         ItemStack copy = stack.copyWithCount(1);
-                        BlockItem.setBlockEntityData(copy, ModBlockEntities.DOOR_MAT.get(), new CompoundTag());
+                        copy.remove(ModDataComponents.PALETTE_IMAGE.get());
                         stack.shrink(1);
                         if(stack.isEmpty()) {
                             player.setItemInHand(hand, copy);
@@ -173,10 +176,10 @@ public class Bootstrap
                         }
                         LayeredCauldronBlock.lowerFillLevel(state, level, pos);
                     }
-                    return InteractionResult.sidedSuccess(level.isClientSide());
+                    return ItemInteractionResult.sidedSuccess(level.isClientSide());
                 }
             }
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         });
     }
 }

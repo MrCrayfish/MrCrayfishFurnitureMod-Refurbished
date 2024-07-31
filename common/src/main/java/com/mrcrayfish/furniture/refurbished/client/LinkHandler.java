@@ -47,7 +47,7 @@ import org.joml.Intersectiond;
 import org.joml.Matrix4f;
 import org.joml.Vector3d;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -173,7 +173,7 @@ public class LinkHandler
             // Only perform raycast when holding wrench
             if(mc.player.getMainHandItem().is(ModItems.WRENCH.get()))
             {
-                float range = mc.gameMode.getPickRange();
+                double range = mc.player.blockInteractionRange();
                 HitResult newResult = WrenchItem.performNodeRaycast(mc.level, mc.player, range, partialTick);
                 // If missed, try to raycast for links
                 if(newResult.getType() == HitResult.Type.MISS)
@@ -482,7 +482,7 @@ public class LinkHandler
      * @param range       the reach of the player
      * @return a hit result with a link or miss if no link was found
      */
-    private HitResult performLinkRaycast(Player player, float partialTick, float range)
+    private HitResult performLinkRaycast(Player player, float partialTick, double range)
     {
         double closestDistance = Double.POSITIVE_INFINITY;
         Connection closestConnection = null;

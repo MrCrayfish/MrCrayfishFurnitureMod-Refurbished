@@ -1,7 +1,9 @@
 package com.mrcrayfish.furniture.refurbished.crafting;
 
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
+import com.mrcrayfish.furniture.refurbished.core.ModDataComponents;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeSerializers;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -29,7 +31,7 @@ public class DoorMatCopyRecipe extends CustomRecipe
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer container, RegistryAccess access)
+    public ItemStack assemble(CraftingContainer container, HolderLookup.Provider provider)
     {
         return this.constructOutput(container);
     }
@@ -58,8 +60,7 @@ public class DoorMatCopyRecipe extends CustomRecipe
                 if(!stack.is(ModBlocks.DOOR_MAT.get().asItem()))
                     return ItemStack.EMPTY;
 
-                CompoundTag tag = BlockItem.getBlockEntityData(stack);
-                if(tag != null)
+                if(stack.has(ModDataComponents.PALETTE_IMAGE.get()))
                 {
                     if(!source.isEmpty())
                         return ItemStack.EMPTY;

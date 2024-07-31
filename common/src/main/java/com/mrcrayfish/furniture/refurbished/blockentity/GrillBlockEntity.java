@@ -15,7 +15,9 @@ import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -47,7 +49,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -250,9 +252,11 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
             space.update(0, 0F, 0);
 
             // Sends the items to tracking clients
-            CompoundTag compound = new CompoundTag();
-            this.writeCookingItems(compound);
-            BlockEntityHelper.sendCustomUpdate(this, compound);
+            BlockEntityHelper.sendCustomUpdate(this, (entity1, access) -> {
+                CompoundTag compound = new CompoundTag();
+                this.writeCookingItems(compound, access);
+                return compound;
+            });
         }
     }
 
@@ -270,10 +274,12 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
                     grill.fuel.set(i, ItemStack.EMPTY);
 
                     /* Send updates to client */
-                    CompoundTag compound = new CompoundTag();
-                    grill.writeFuel(compound);
-                    grill.writeRemainingFuel(compound);
-                    BlockEntityHelper.sendCustomUpdate(grill, compound);
+                    BlockEntityHelper.sendCustomUpdate(grill, (entity, access) -> {
+                        CompoundTag compound = new CompoundTag();
+                        grill.writeFuel(compound, access);
+                        grill.writeRemainingFuel(compound);
+                        return compound;
+                    });
                     break;
                 }
             }
@@ -286,9 +292,11 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
             if(grill.remainingFuel == 0)
             {
                 /* Send updates to client */
-                CompoundTag compound = new CompoundTag();
-                grill.writeRemainingFuel(compound);
-                BlockEntityHelper.sendCustomUpdate(grill, compound);
+                BlockEntityHelper.sendCustomUpdate(grill, (entity, access) -> {
+                    CompoundTag compound = new CompoundTag();
+                    grill.writeRemainingFuel(compound);
+                    return compound;
+                });
             }
         }
     }
@@ -354,9 +362,11 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
         if(changed)
         {
             // Update items on clients
-            CompoundTag compound = new CompoundTag();
-            this.writeCookingItems(compound);
-            BlockEntityHelper.sendCustomUpdate(this, compound);
+            BlockEntityHelper.sendCustomUpdate(this, (entity, access) -> {
+                CompoundTag compound = new CompoundTag();
+                this.writeCookingItems(compound, access);
+                return compound;
+            });
 
             // Mark as changed to ensure it's saved
             this.setChanged();
@@ -548,9 +558,12 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
             }
 
             /* Send updates to client */
-            CompoundTag compound = new CompoundTag();
-            this.writeCookingItems(compound);
-            BlockEntityHelper.sendCustomUpdate(this, compound);
+            BlockEntityHelper.sendCustomUpdate(this, (entity, access) -> {
+                CompoundTag compound = new CompoundTag();
+                this.writeCookingItems(compound, access);
+                this.writeFuel(compound, access);
+                return compound;
+            });
 
             return result;
         }
@@ -594,10 +607,12 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
         }
 
         /* Send updates to client */
-        CompoundTag compound = new CompoundTag();
-        this.writeCookingItems(compound);
-        this.writeFuel(compound);
-        BlockEntityHelper.sendCustomUpdate(this, compound);
+        BlockEntityHelper.sendCustomUpdate(this, (entity, access) -> {
+            CompoundTag compound = new CompoundTag();
+            this.writeCookingItems(compound, access);
+            this.writeFuel(compound, access);
+            return compound;
+        });
     }
 
     @Override
@@ -614,36 +629,36 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
     }
 
     @Override
-    public void load(CompoundTag compound)
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.load(compound);
-        if(compound.contains("Grill", Tag.TAG_LIST))
+        super.loadAdditional(tag, provider);
+        if(tag.contains("Grill", Tag.TAG_LIST))
         {
             this.cooking.clear();
-            BlockEntityHelper.loadItems("Grill", compound, this.cooking);
+            BlockEntityHelper.loadItems("Grill", tag, this.cooking);
         }
-        if(compound.contains("Fuel", Tag.TAG_LIST))
+        if(tag.contains("Fuel", Tag.TAG_LIST))
         {
             this.fuel.clear();
-            BlockEntityHelper.loadItems("Fuel", compound, this.fuel);
+            BlockEntityHelper.loadItems("Fuel", tag, this.fuel);
         }
-        if(compound.contains("RemainingFuel", Tag.TAG_INT))
+        if(tag.contains("RemainingFuel", Tag.TAG_INT))
         {
-            this.remainingFuel = compound.getInt("RemainingFuel");
+            this.remainingFuel = tag.getInt("RemainingFuel");
         }
-        if(compound.contains("StoredExperience", Tag.TAG_FLOAT))
+        if(tag.contains("StoredExperience", Tag.TAG_FLOAT))
         {
-            this.storedExperience = compound.getFloat("StoredExperience");
+            this.storedExperience = tag.getFloat("StoredExperience");
         }
-        this.readCookingSpaces(compound);
+        this.readCookingSpaces(tag);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag)
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
-        super.saveAdditional(tag);
-        this.writeCookingItems(tag);
-        this.writeFuel(tag);
+        super.saveAdditional(tag, provider);
+        this.writeCookingItems(tag, provider);
+        this.writeFuel(tag, provider);
         this.writeRemainingFuel(tag);
         this.writeCookingSpaces(tag);
         tag.putFloat("StoredExperience", this.storedExperience);
@@ -655,9 +670,9 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
      * @param compound the compound tag to save the data to
      * @return the compound tag the data saved to
      */
-    private CompoundTag writeCookingItems(CompoundTag compound)
+    private CompoundTag writeCookingItems(CompoundTag compound, HolderLookup.Provider provider)
     {
-        BlockEntityHelper.saveItems("Grill", compound, this.cooking);
+        BlockEntityHelper.saveItems("Grill", compound, this.cooking, provider);
         return compound;
     }
 
@@ -667,9 +682,9 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
      * @param compound the compound tag to save the data to
      * @return the compound tag the data saved to
      */
-    private CompoundTag writeFuel(CompoundTag compound)
+    private CompoundTag writeFuel(CompoundTag compound, HolderLookup.Provider provider)
     {
-        BlockEntityHelper.saveItems("Fuel", compound, this.fuel);
+        BlockEntityHelper.saveItems("Fuel", compound, this.fuel, provider);
         return compound;
     }
 
@@ -768,9 +783,9 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
     }
 
     @Override
-    public CompoundTag getUpdateTag()
+    public CompoundTag getUpdateTag(HolderLookup.Provider provider)
     {
-        return this.saveWithoutMetadata();
+        return this.saveWithoutMetadata(provider);
     }
 
     @Override
@@ -834,10 +849,12 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
      */
     private void syncCookingSpace(int position)
     {
-        CompoundTag compound = new CompoundTag();
-        this.writeCookingItems(compound);
-        this.writeCookingSpaces(compound, position);
-        BlockEntityHelper.sendCustomUpdate(this, compound);
+        BlockEntityHelper.sendCustomUpdate(this, (entity, access) -> {
+            CompoundTag compound = new CompoundTag();
+            this.writeCookingItems(compound, access);
+            this.writeCookingSpaces(compound, position);
+            return compound;
+        });
     }
 
     /**
@@ -845,9 +862,11 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
      */
     private void syncFuel()
     {
-        CompoundTag compound = new CompoundTag();
-        this.writeFuel(compound);
-        BlockEntityHelper.sendCustomUpdate(this, compound);
+        BlockEntityHelper.sendCustomUpdate(this, (entity, access) -> {
+            CompoundTag compound = new CompoundTag();
+            this.writeFuel(compound, access);
+            return compound;
+        });
     }
 
     /**

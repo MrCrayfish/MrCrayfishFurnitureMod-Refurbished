@@ -18,6 +18,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -72,34 +73,34 @@ public class PlateBlock extends FallingBlock implements EntityBlock, BlockTagSup
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+    public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
     {
         if(level.getBlockEntity(pos) instanceof PlateBlockEntity plate)
         {
-            ItemStack heldItem = player.getItemInHand(hand);
             if(!level.isClientSide())
             {
                 if(player.getVehicle() instanceof Seat && plate.eat(player))
                 {
-                    return InteractionResult.CONSUME;
+                    return ItemInteractionResult.CONSUME;
                 }
-                if(plate.placeItem(player, heldItem))
+                // TODO 1.20.6 test "stack" since new arg
+                if(plate.placeItem(player, stack))
                 {
                     if(!player.isCreative())
                     {
-                        heldItem.shrink(1);
+                        stack.shrink(1);
                     }
-                    return InteractionResult.CONSUME;
+                    return ItemInteractionResult.CONSUME;
                 }
                 else if(plate.popItem())
                 {
-                    return InteractionResult.CONSUME;
+                    return ItemInteractionResult.CONSUME;
                 }
-                return InteractionResult.PASS;
+                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
             }
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
-        return InteractionResult.PASS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Override
