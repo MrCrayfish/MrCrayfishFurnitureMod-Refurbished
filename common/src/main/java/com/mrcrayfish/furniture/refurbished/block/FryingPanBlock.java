@@ -86,7 +86,6 @@ public class FryingPanBlock extends FurnitureHorizontalEntityBlock implements Bl
         {
             if(level.getBlockEntity(pos) instanceof FryingPanBlockEntity fryingPan)
             {
-                // TODO 1.20.6 test since I am using new stack arg
                 if(stack.is(ModItems.SPATULA.get()))
                 {
                     fryingPan.flipItem();

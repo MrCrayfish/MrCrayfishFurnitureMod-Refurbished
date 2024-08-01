@@ -95,7 +95,6 @@ public class GrillBlock extends FurnitureHorizontalEntityBlock implements BlockT
         {
             if(level.getBlockEntity(pos) instanceof GrillBlockEntity grill)
             {
-                // TODO 1.20.6 test since I am using new stack arg
                 if(stack.getItem() == ModItems.SPATULA.get())
                 {
                     grill.flipItem(this.getGrillQuadrant(result));

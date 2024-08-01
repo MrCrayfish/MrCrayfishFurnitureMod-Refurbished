@@ -28,7 +28,7 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
-import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
+//import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.client.event.RegisterRecipeBookCategoriesEvent;
 import net.minecraftforge.client.event.RenderHighlightEvent;
@@ -83,7 +83,9 @@ public class ForgeClientEvents
             return;
 
         // Draw active link
-        PoseStack stack = event.getPoseStack();
+        PoseStack stack = new PoseStack();
+        stack.setIdentity();
+        stack.mulPose(event.getPoseStack());
         stack.pushPose();
         Vec3 view = event.getCamera().getPosition();
         stack.translate(-view.x(), -view.y(), -view.z());
@@ -134,14 +136,15 @@ public class ForgeClientEvents
         ClientBootstrap.registerItemColors(event::register);
     }
 
-    public static void onRegisterGuiOverlays(RegisterGuiOverlaysEvent event)
+    // TODO why they do this?
+    /*public static void onRegisterGuiOverlays(RegisterGuiOverlaysEvent event)
     {
         ClientBootstrap.registerHudOverlays((id, overlay) -> {
             event.registerAboveAll(id.getPath(), (gui, graphics, partialTick, screenWidth, screenHeight) -> {
                 overlay.draw(graphics, partialTick);
             });
         });
-    }
+    }*/
 
     public static void onRegisterRecipeCategories(RegisterRecipeBookCategoriesEvent event)
     {

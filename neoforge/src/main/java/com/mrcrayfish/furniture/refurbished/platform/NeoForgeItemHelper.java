@@ -14,6 +14,6 @@ public class NeoForgeItemHelper implements IItemHelper
     @Override
     public int getBurnTime(ItemStack stack, @Nullable RecipeType<?> type)
     {
-        return CommonHooks.getBurnTime(stack, type);
+        return stack.getBurnTime(type);
     }
 }

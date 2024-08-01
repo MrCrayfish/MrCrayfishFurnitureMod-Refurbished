@@ -86,7 +86,6 @@ public class CuttingBoardBlock extends FurnitureHorizontalEntityBlock implements
                 {
                     if(!level.isClientSide())
                     {
-                        // TODO 1.20.6 test
                         heldItem.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
                     }
                     return ItemInteractionResult.sidedSuccess(level.isClientSide());

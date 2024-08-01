@@ -58,7 +58,6 @@ import java.util.stream.IntStream;
 /**
  * Author: MrCrayfish
  */
-@SuppressWarnings("UnstableApiUsage")
 public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
 {
     public static final int[] ALL_SLOTS = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};

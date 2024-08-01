@@ -73,7 +73,6 @@ public class StorageJarBlock extends FurnitureHorizontalEntityBlock implements B
         {
             if(!level.isClientSide())
             {
-                // TODO 1.20.6 test since new arg
                 if(!stack.isEmpty())
                 {
                     storageJar.addItem(stack);

@@ -13,6 +13,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.util.Unit;
 import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -118,6 +119,7 @@ public class DoorMatBlockEntity extends BlockEntity implements MenuProvider, IPa
         if(image != null)
         {
             this.setImage(image);
+            this.finalised = true;
         }
     }
 
@@ -135,6 +137,7 @@ public class DoorMatBlockEntity extends BlockEntity implements MenuProvider, IPa
     public void removeComponentsFromTag(CompoundTag tag)
     {
         tag.remove("Image");
+        tag.remove("Finalised");
     }
 
     @Override

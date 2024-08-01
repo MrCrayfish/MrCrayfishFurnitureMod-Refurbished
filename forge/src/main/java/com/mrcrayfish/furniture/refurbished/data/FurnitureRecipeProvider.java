@@ -1,19 +1,22 @@
 package com.mrcrayfish.furniture.refurbished.data;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
 import net.minecraftforge.common.crafting.conditions.ModLoadedCondition;
 
+import java.util.concurrent.CompletableFuture;
+
 /**
  * Author: MrCrayfish
  */
 public class FurnitureRecipeProvider extends RecipeProvider
 {
-    public FurnitureRecipeProvider(PackOutput output)
+    public FurnitureRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider)
     {
-        super(output);
+        super(output, lookupProvider);
     }
 
     @Override

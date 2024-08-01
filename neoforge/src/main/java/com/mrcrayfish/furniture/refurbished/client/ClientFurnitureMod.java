@@ -21,12 +21,13 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
-import net.neoforged.neoforge.client.event.RegisterGuiOverlaysEvent;
+import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.event.RegisterRecipeBookCategoriesEvent;
 import org.apache.commons.lang3.function.TriFunction;
@@ -37,7 +38,7 @@ import java.util.function.Function;
 /**
  * Author: MrCrayfish
  */
-@Mod.EventBusSubscriber(modid = Constants.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = Constants.MOD_ID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 public class ClientFurnitureMod
 {
     @SubscribeEvent
@@ -49,15 +50,20 @@ public class ClientFurnitureMod
     @SubscribeEvent
     private static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event)
     {
-        ClientBootstrap.registerScreens(new ScreenRegister() {
-            @Override
-            public <T extends AbstractContainerMenu, U extends Screen & MenuAccess<T>> void apply(MenuType<? extends T> type, TriFunction<T, Inventory, Component, U> factory) {
-                MenuScreens.register(type, factory::apply);
-            }
-        });
         ClientBootstrap.registerBlockEntityRenderers(event::registerBlockEntityRenderer);
         ClientBootstrap.registerEntityRenderers(event::registerEntityRenderer);
         ClientBootstrap.registerRenderTypes(ItemBlockRenderTypes::setRenderLayer);
+    }
+
+    @SubscribeEvent
+    private static void onRegisterMenuScreens(RegisterMenuScreensEvent event)
+    {
+        ClientBootstrap.registerScreens(new ScreenRegister() {
+            @Override
+            public <T extends AbstractContainerMenu, U extends Screen & MenuAccess<T>> void apply(MenuType<? extends T> type, TriFunction<T, Inventory, Component, U> factory) {
+                event.register(type, factory::apply);
+            }
+        });
     }
 
     @SubscribeEvent
@@ -92,12 +98,10 @@ public class ClientFurnitureMod
     }
 
     @SubscribeEvent
-    private static void onRegisterGuiOverlays(RegisterGuiOverlaysEvent event)
+    private static void onRegisterGuiOverlays(RegisterGuiLayersEvent event)
     {
         ClientBootstrap.registerHudOverlays((id, overlay) -> {
-            event.registerAboveAll(id, (gui, graphics, partialTick, screenWidth, screenHeight) -> {
-                overlay.draw(graphics, partialTick);
-            });
+            event.registerAboveAll(id, overlay::draw);
         });
     }
 

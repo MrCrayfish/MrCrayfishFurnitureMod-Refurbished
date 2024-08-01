@@ -83,7 +83,6 @@ public class PlateBlock extends FallingBlock implements EntityBlock, BlockTagSup
                 {
                     return ItemInteractionResult.CONSUME;
                 }
-                // TODO 1.20.6 test "stack" since new arg
                 if(plate.placeItem(player, stack))
                 {
                     if(!player.isCreative())

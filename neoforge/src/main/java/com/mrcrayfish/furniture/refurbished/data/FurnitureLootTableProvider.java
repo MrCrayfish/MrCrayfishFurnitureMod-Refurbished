@@ -2,12 +2,15 @@ package com.mrcrayfish.furniture.refurbished.data;
 
 import com.mrcrayfish.framework.Registration;
 import com.mrcrayfish.furniture.refurbished.Constants;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.WritableRegistry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.data.loot.EntityLootSubProvider;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -18,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -26,13 +30,13 @@ import java.util.stream.Stream;
  */
 public class FurnitureLootTableProvider extends LootTableProvider
 {
-    public FurnitureLootTableProvider(PackOutput output)
+    public FurnitureLootTableProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> completableFuture)
     {
-        super(output, Set.of(), List.of(new SubProviderEntry(Block::new, LootContextParamSets.BLOCK), new SubProviderEntry(Entity::new, LootContextParamSets.ENTITY)));
+        super(output, Set.of(), List.of(new SubProviderEntry(Block::new, LootContextParamSets.BLOCK), new SubProviderEntry(Entity::new, LootContextParamSets.ENTITY)), completableFuture);
     }
 
     @Override
-    protected void validate(Map<ResourceLocation, LootTable> map, ValidationContext context) {}
+    protected void validate(WritableRegistry<LootTable> registry, ValidationContext context, ProblemReporter.Collector reporter) {}
 
     public static class Block extends BlockLootSubProvider
     {

@@ -37,15 +37,12 @@ public class CommonLootTableProvider
 
         private static LootPool.Builder createDoorMatLootPool(net.minecraft.world.level.block.Block block)
         {
-            // TODO 1.20.6 check if correct
             return LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1.0F))
                 .add(LootItem.lootTableItem(block)
-                    .apply(CopyCustomDataFunction.copyData(ContextNbtProvider.BLOCK_ENTITY)
-                        .copy("Finalised", "BlockEntityTag.Finalised"))
                     .apply(CopyComponentsFunction.copyComponents(
-                        CopyComponentsFunction.Source.BLOCK_ENTITY)
-                        .include(ModDataComponents.PALETTE_IMAGE.get())));
+                        CopyComponentsFunction.Source.BLOCK_ENTITY).include(ModDataComponents.PALETTE_IMAGE.get())
+                    ));
         }
 
         private static LootPool.Builder createDropWithName(net.minecraft.world.level.block.Block block)

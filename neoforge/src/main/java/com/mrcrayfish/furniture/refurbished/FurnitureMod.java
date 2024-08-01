@@ -59,7 +59,7 @@ public class FurnitureMod
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
         FurnitureBlockTagsProvider blockTagsProvider = generator.addProvider(event.includeServer(), new FurnitureBlockTagsProvider(output, lookupProvider, helper));
         generator.addProvider(event.includeServer(), new FurnitureItemTagsProvider(output, lookupProvider, blockTagsProvider.contentsGetter(), helper));
-        generator.addProvider(event.includeServer(), new FurnitureLootTableProvider(output));
+        generator.addProvider(event.includeServer(), new FurnitureLootTableProvider(output, lookupProvider));
         generator.addProvider(event.includeServer(), new FurnitureRecipeProvider(output, lookupProvider));
         generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(output, lookupProvider, RegistriesProvider.BUILDER, Set.of(Constants.MOD_ID)));
         generator.addProvider(event.includeClient(), new FurnitureModelProvider(output, helper));

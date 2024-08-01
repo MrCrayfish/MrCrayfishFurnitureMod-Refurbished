@@ -16,5 +16,4 @@ public class ForgeItemHelper implements IItemHelper
     {
         return ForgeHooks.getBurnTime(stack, type);
     }
-
 }

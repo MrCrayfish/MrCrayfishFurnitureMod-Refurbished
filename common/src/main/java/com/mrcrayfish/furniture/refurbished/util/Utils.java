@@ -182,41 +182,6 @@ public class Utils
         return false;
     }
 
-    public static Ingredient getIngredient(JsonObject object, String key)
-    {
-        /*if(GsonHelper.isArrayNode(object, key))
-        {
-            return Ingredient.fromJson(GsonHelper.getAsJsonArray(object, key), false);
-        }
-        return Ingredient.fromJson(GsonHelper.getAsJsonObject(object, key), false);*/
-        return null;
-    }
-
-    public static ItemStack getItemStack(JsonObject object, String key)
-    {
-        if(GsonHelper.isStringValue(object, key))
-        {
-            ResourceLocation id = new ResourceLocation(GsonHelper.getAsString(object, key));
-            Item item = BuiltInRegistries.ITEM.getOptional(id).orElseThrow(() -> new IllegalStateException("The item '%s' does not exist".formatted(id)));
-            return new ItemStack(item);
-        }
-        else if(GsonHelper.isObjectNode(object, key))
-        {
-            JsonObject itemObject = GsonHelper.getAsJsonObject(object, key);
-            ResourceLocation id = new ResourceLocation(GsonHelper.getAsString(itemObject, "item"));
-            Item item = BuiltInRegistries.ITEM.getOptional(id).orElseThrow(() -> new IllegalStateException("The item '%s' does not exist".formatted(id)));
-            int count = GsonHelper.getAsInt(itemObject, "count", 1);
-            return new ItemStack(item, count);
-        }
-        throw new IllegalStateException("'%s' must be either a string or object".formatted(key));
-    }
-
-    public static Fluid getFluid(JsonObject object, String key)
-    {
-        ResourceLocation id = new ResourceLocation(GsonHelper.getAsString(object, key));
-        return BuiltInRegistries.FLUID.getOptional(id).orElseThrow(() -> new RuntimeException("The fluid '%s' does not exist".formatted(id)));
-    }
-
     public static String getItemName(Item item)
     {
         return BuiltInRegistries.ITEM.getKey(item).getPath();
