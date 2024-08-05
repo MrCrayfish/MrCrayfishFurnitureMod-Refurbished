@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.platform.services;
 
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
@@ -11,4 +12,6 @@ public interface IEntityHelper
     boolean isFakePlayer(Player player);
 
     void spawnFoodParticles(Player player, ItemStack stack);
+
+    SimpleParticleType createSimpleParticleType(boolean ignoreLimit);
 }

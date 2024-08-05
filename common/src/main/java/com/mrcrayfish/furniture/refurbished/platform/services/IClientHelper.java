@@ -47,8 +47,6 @@ public interface IClientHelper
 
     RenderType getTelevisionScreenRenderType(ResourceLocation id);
 
-    SimpleParticleType createSimpleParticleType(boolean ignoreLimit);
-
     void renderTooltip(GuiGraphics graphics, Font font, List<ClientTooltipComponent> components, int mouseX, int mouseY, ClientTooltipPositioner position);
 
     @SuppressWarnings("rawtypes")
