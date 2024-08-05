@@ -99,12 +99,6 @@ public class ForgeClientHelper implements IClientHelper
     }
 
     @Override
-    public SimpleParticleType createSimpleParticleType(boolean ignoreLimit)
-    {
-        return new SimpleParticleType(ignoreLimit);
-    }
-
-    @Override
     public void renderTooltip(GuiGraphics graphics, Font font, List<ClientTooltipComponent> components, int mouseX, int mouseY, ClientTooltipPositioner position)
     {
         graphics.renderTooltipInternal(font, components, mouseX, mouseY, position);
