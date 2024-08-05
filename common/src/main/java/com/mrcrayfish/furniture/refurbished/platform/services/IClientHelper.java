@@ -13,8 +13,11 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.material.Fluid;
@@ -47,4 +50,13 @@ public interface IClientHelper
     SimpleParticleType createSimpleParticleType(boolean ignoreLimit);
 
     void renderTooltip(GuiGraphics graphics, Font font, List<ClientTooltipComponent> components, int mouseX, int mouseY, ClientTooltipPositioner position);
+
+    @SuppressWarnings("rawtypes")
+    AbstractContainerScreen createFreezerScreen(AbstractContainerMenu menu, Inventory playerInventory, Component title);
+
+    @SuppressWarnings("rawtypes")
+    AbstractContainerScreen createMicrowaveScreen(AbstractContainerMenu menu, Inventory playerInventory, Component title);
+
+    @SuppressWarnings("rawtypes")
+    AbstractContainerScreen createStoveScreen(AbstractContainerMenu menu, Inventory playerInventory, Component title);
 }

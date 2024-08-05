@@ -4,13 +4,12 @@ import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.block.MicrowaveBlock;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
-import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
-import com.mrcrayfish.furniture.refurbished.electricity.IModuleNode;
 import com.mrcrayfish.furniture.refurbished.inventory.BuildableContainerData;
-import com.mrcrayfish.furniture.refurbished.inventory.MicrowaveMenu;
+import com.mrcrayfish.furniture.refurbished.inventory.IContainerHolder;
+import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
@@ -83,13 +82,13 @@ public class MicrowaveBlockEntity extends ElectricityModuleProcessingLootBlockEn
     @Override
     protected AbstractContainerMenu createMenu(int windowId, Inventory playerInventory)
     {
-        return new MicrowaveMenu(ModMenuTypes.MICROWAVE.get(), windowId, playerInventory, this, this.data);
+        return Services.MENU.createMicrowaveMenu(windowId, playerInventory, this, this.data);
     }
 
     @Override
     public boolean isMatchingContainerMenu(AbstractContainerMenu menu)
     {
-        return menu instanceof MicrowaveMenu microwave && microwave.getContainer() == this;
+        return menu instanceof IContainerHolder holder && holder.container() == this;
     }
 
     @Override

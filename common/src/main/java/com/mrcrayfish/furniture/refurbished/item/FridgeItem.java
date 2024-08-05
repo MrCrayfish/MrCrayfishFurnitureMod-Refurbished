@@ -1,7 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.item;
 
 import com.mrcrayfish.framework.api.Environment;
-import com.mrcrayfish.framework.api.util.EnvironmentHelper;
+import com.mrcrayfish.framework.api.util.TaskRunner;
 import com.mrcrayfish.furniture.refurbished.block.FreezerBlock;
 import com.mrcrayfish.furniture.refurbished.block.FridgeBlock;
 import com.mrcrayfish.furniture.refurbished.block.MetalType;
@@ -13,9 +13,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemNameBlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -47,9 +45,9 @@ public class FridgeItem extends ItemNameBlockItem
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> lines, TooltipFlag flag)
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines, TooltipFlag flag)
     {
-        EnvironmentHelper.runOn(Environment.CLIENT, () -> () -> {
+        TaskRunner.runIf(Environment.CLIENT, () -> () -> {
             Minecraft.getInstance().font.getSplitter().splitLines(PoweredItem.POWER_TOOLTIP, 150, Style.EMPTY).forEach(text -> {
                 // Dumb but works
                 MutableComponent line = Component.empty();
@@ -60,6 +58,6 @@ public class FridgeItem extends ItemNameBlockItem
                 lines.add(line);
             });
         });
-        super.appendHoverText(stack, level, lines, flag);
+        super.appendHoverText(stack, context, lines, flag);
     }
 }

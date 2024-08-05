@@ -1,7 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.inventory;
 
 import com.mrcrayfish.furniture.refurbished.blockentity.IPowerSwitch;
-import com.mrcrayfish.furniture.refurbished.blockentity.StoveBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.MicrowaveBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
@@ -12,38 +12,38 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.StackedContentsCompatible;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 
 /**
  * Author: MrCrayfish
  */
-public class StoveMenu extends SimpleRecipeContainerMenu<Container> implements IPowerSwitchMenu, IElectricityMenu, IContainerHolder, IBakingMenu
+public class FabricMicrowaveMenu extends SimpleContainerMenu implements IPowerSwitchMenu, IElectricityMenu, IContainerHolder, IProcessingMenu
 {
     private final ContainerData data;
     private final Level level;
 
-    public StoveMenu(int windowId, Inventory playerInventory)
+    public FabricMicrowaveMenu(int windowId, Inventory playerInventory)
     {
-        this(windowId, playerInventory, new SimpleContainer(6), new SimpleContainerData(8));
+        this(windowId, playerInventory, new SimpleContainer(2), new SimpleContainerData(4));
     }
 
-    public StoveMenu(int windowId, Inventory playerInventory, Container container, ContainerData data)
+    public FabricMicrowaveMenu(int windowId, Inventory playerInventory, Container container, ContainerData data)
     {
-        super(ModMenuTypes.STOVE.get(), windowId, container);
-        checkContainerSize(container, 6);
-        checkContainerDataCount(data, 8);
+        super(ModMenuTypes.MICROWAVE.get(), windowId, container);
+        checkContainerSize(container, 2);
+        checkContainerDataCount(data, 4);
         container.startOpen(playerInventory.player);
         this.data = data;
         this.level = playerInventory.player.level();
-        this.addContainerSlots(85, 18, 3, 1, 0);
-        this.addContainerSlots(85, 54, 3, 1, 3, ResultSlot::new);
+        this.addSlot(new Slot(container, 0, 48, 35));
+        this.addSlot(new ResultSlot(container, 1, 108, 35));
         this.addPlayerInventorySlots(8, 84, playerInventory);
         this.addDataSlots(data);
     }
@@ -66,7 +66,7 @@ public class StoveMenu extends SimpleRecipeContainerMenu<Container> implements I
             }
             else if(this.isRecipe(slotStack))
             {
-                if(!this.moveItemStackTo(slotStack, 0, 3, false))
+                if(!this.moveItemStackTo(slotStack, 0, this.container.getContainerSize(), false))
                 {
                     return ItemStack.EMPTY;
                 }
@@ -97,41 +97,31 @@ public class StoveMenu extends SimpleRecipeContainerMenu<Container> implements I
 
     private boolean isRecipe(ItemStack stack)
     {
-        return this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.OVEN_BAKING.get(), new SimpleContainer(stack), this.level).isPresent();
+        return this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.MICROWAVE_HEATING.get(), new SimpleContainer(stack), this.level).isPresent();
     }
 
     @Override
-    public int getBakingProgress(int index)
+    public int getProcessTime()
     {
-        return switch(index) {
-            case 0 -> this.data.get(StoveBlockEntity.DATA_PROGRESS_1);
-            case 1 -> this.data.get(StoveBlockEntity.DATA_PROGRESS_2);
-            case 2 -> this.data.get(StoveBlockEntity.DATA_PROGRESS_3);
-            default -> 0;
-        };
+        return this.data.get(MicrowaveBlockEntity.DATA_PROCESS_TIME);
     }
 
     @Override
-    public int getTotalBakingProgress(int index)
+    public int getMaxProcessTime()
     {
-        return switch(index) {
-            case 0 -> this.data.get(StoveBlockEntity.DATA_TOTAL_PROGRESS_1);
-            case 1 -> this.data.get(StoveBlockEntity.DATA_TOTAL_PROGRESS_2);
-            case 2 -> this.data.get(StoveBlockEntity.DATA_TOTAL_PROGRESS_3);
-            default -> 0;
-        };
+        return this.data.get(MicrowaveBlockEntity.DATA_MAX_PROCESS_TIME);
     }
 
     @Override
     public boolean isPowered()
     {
-        return this.data.get(StoveBlockEntity.DATA_POWERED) != 0;
+        return this.data.get(MicrowaveBlockEntity.DATA_POWERED) != 0;
     }
 
     @Override
     public boolean isEnabled()
     {
-        return this.data.get(StoveBlockEntity.DATA_ENABLED) != 0;
+        return this.data.get(MicrowaveBlockEntity.DATA_ENABLED) != 0;
     }
 
     @Override
@@ -141,64 +131,6 @@ public class StoveMenu extends SimpleRecipeContainerMenu<Container> implements I
         {
             powerSwitch.togglePower();
         }
-    }
-
-    @Override
-    public void fillCraftSlotsStackedContents(StackedContents contents)
-    {
-        if(this.container instanceof StackedContentsCompatible)
-        {
-            ((StackedContentsCompatible) this.container).fillStackedContents(contents);
-        }
-    }
-
-    @Override
-    public void clearCraftingContent()
-    {
-        this.getSlot(0).set(ItemStack.EMPTY);
-        this.getSlot(3).set(ItemStack.EMPTY);
-    }
-
-    @Override
-    public boolean recipeMatches(RecipeHolder<? extends Recipe<Container>> holder)
-    {
-        return holder.value().matches(this.container, this.level);
-    }
-
-    @Override
-    public int getResultSlotIndex()
-    {
-        return 3;
-    }
-
-    @Override
-    public int getGridWidth()
-    {
-        return 3;
-    }
-
-    @Override
-    public int getGridHeight()
-    {
-        return 1;
-    }
-
-    @Override
-    public int getSize()
-    {
-        return 6;
-    }
-
-    @Override
-    public RecipeBookType getRecipeBookType()
-    {
-        return ModRecipeBookTypes.OVEN.get();
-    }
-
-    @Override
-    public boolean shouldMoveToInventory(int slot)
-    {
-        return slot < this.getGridWidth() * this.getGridHeight();
     }
 
     @Override

@@ -14,5 +14,5 @@ import org.apache.commons.lang3.function.TriFunction;
 @FunctionalInterface
 public interface ScreenRegister
 {
-    <T extends AbstractContainerMenu, U extends Screen & MenuAccess<T>> void apply(MenuType<? extends T> type, TriFunction<T, Inventory, Component, U> factory);
+    <T extends AbstractContainerMenu, U extends Screen & MenuAccess<T>> void apply(MenuType<T> type, TriFunction<T, Inventory, Component, U> factory);
 }
