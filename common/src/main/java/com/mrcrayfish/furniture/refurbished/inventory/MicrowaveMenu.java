@@ -24,19 +24,19 @@ import net.minecraft.world.level.Level;
 /**
  * Author: MrCrayfish
  */
-public class MicrowaveMenu extends SimpleRecipeContainerMenu<Container> implements IPowerSwitchMenu, IElectricityMenu
+public class MicrowaveMenu extends SimpleRecipeContainerMenu<Container> implements IPowerSwitchMenu, IElectricityMenu, IContainerHolder, IProcessingMenu
 {
     private final ContainerData data;
     private final Level level;
 
     public MicrowaveMenu(int windowId, Inventory playerInventory)
     {
-        this(ModMenuTypes.MICROWAVE.get(), windowId, playerInventory, new SimpleContainer(2), new SimpleContainerData(4));
+        this(windowId, playerInventory, new SimpleContainer(2), new SimpleContainerData(4));
     }
 
-    public MicrowaveMenu(MenuType<?> type, int windowId, Inventory playerInventory, Container container, ContainerData data)
+    public MicrowaveMenu(int windowId, Inventory playerInventory, Container container, ContainerData data)
     {
-        super(type, windowId, container);
+        super(ModMenuTypes.MICROWAVE.get(), windowId, container);
         checkContainerSize(container, 2);
         checkContainerDataCount(data, 4);
         container.startOpen(playerInventory.player);
@@ -100,11 +100,13 @@ public class MicrowaveMenu extends SimpleRecipeContainerMenu<Container> implemen
         return this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.MICROWAVE_HEATING.get(), new SimpleContainer(stack), this.level).isPresent();
     }
 
+    @Override
     public int getProcessTime()
     {
         return this.data.get(MicrowaveBlockEntity.DATA_PROCESS_TIME);
     }
 
+    @Override
     public int getMaxProcessTime()
     {
         return this.data.get(MicrowaveBlockEntity.DATA_MAX_PROCESS_TIME);
@@ -187,5 +189,11 @@ public class MicrowaveMenu extends SimpleRecipeContainerMenu<Container> implemen
     public boolean shouldMoveToInventory(int slot)
     {
         return slot != this.getResultSlotIndex();
+    }
+
+    @Override
+    public Container container()
+    {
+        return this.container;
     }
 }
