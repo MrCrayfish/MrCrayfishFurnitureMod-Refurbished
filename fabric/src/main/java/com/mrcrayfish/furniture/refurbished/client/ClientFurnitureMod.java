@@ -46,7 +46,7 @@ public class ClientFurnitureMod implements ClientModInitializer
         ClientBootstrap.init();
         ClientBootstrap.registerScreens(new ScreenRegister() {
             @Override
-            public <T extends AbstractContainerMenu, U extends Screen & MenuAccess<T>> void apply(MenuType<? extends T> type, TriFunction<T, Inventory, Component, U> factory) {
+            public <T extends AbstractContainerMenu, U extends Screen & MenuAccess<T>> void apply(MenuType<T> type, TriFunction<T, Inventory, Component, U> factory) {
                 MenuScreens.register(type, factory::apply);
             }
         });

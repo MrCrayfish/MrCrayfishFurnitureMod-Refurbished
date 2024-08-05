@@ -11,11 +11,8 @@ import com.mrcrayfish.furniture.refurbished.client.gui.overlay.NodeIndicatorOver
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.ComputerScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.DoorMatScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.ElectricityGeneratorScreen;
-import com.mrcrayfish.furniture.refurbished.client.gui.screen.FreezerScreen;
-import com.mrcrayfish.furniture.refurbished.client.gui.screen.MicrowaveScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.PostBoxScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.RecyclingBinScreen;
-import com.mrcrayfish.furniture.refurbished.client.gui.screen.StoveScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.WorkbenchScreen;
 import com.mrcrayfish.furniture.refurbished.client.particle.BounceParticle;
 import com.mrcrayfish.furniture.refurbished.client.particle.SteamParticle;
@@ -51,6 +48,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import com.mrcrayfish.furniture.refurbished.image.TextureCache;
+import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.RecipeBookCategories;
@@ -117,11 +115,12 @@ public class ClientBootstrap
         Display.get().bind(CoinMiner.class, CoinMinerGraphics::new);
     }
 
+    @SuppressWarnings("unchecked")
     public static void registerScreens(ScreenRegister register)
     {
-        register.apply(ModMenuTypes.FREEZER.get(), FreezerScreen::new);
-        register.apply(ModMenuTypes.MICROWAVE.get(), MicrowaveScreen::new);
-        register.apply(ModMenuTypes.STOVE.get(), StoveScreen::new);
+        register.apply(ModMenuTypes.FREEZER.get(), ClientServices.PLATFORM::createFreezerScreen);
+        register.apply(ModMenuTypes.MICROWAVE.get(), ClientServices.PLATFORM::createMicrowaveScreen);
+        register.apply(ModMenuTypes.STOVE.get(), ClientServices.PLATFORM::createStoveScreen);
         register.apply(ModMenuTypes.POST_BOX.get(), PostBoxScreen::new);
         register.apply(ModMenuTypes.ELECTRICITY_GENERATOR.get(), ElectricityGeneratorScreen::new);
         register.apply(ModMenuTypes.RECYCLE_BIN.get(), RecyclingBinScreen::new);

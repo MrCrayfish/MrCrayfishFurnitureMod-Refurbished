@@ -18,23 +18,22 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.StackedContentsCompatible;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 
 /**
  * Author: MrCrayfish
  */
-public class StoveMenu extends SimpleRecipeContainerMenu<Container> implements IPowerSwitchMenu, IElectricityMenu, IContainerHolder, IBakingMenu
+public class FabricStoveMenu extends SimpleContainerMenu implements IPowerSwitchMenu, IElectricityMenu, IContainerHolder, IBakingMenu
 {
     private final ContainerData data;
     private final Level level;
 
-    public StoveMenu(int windowId, Inventory playerInventory)
+    public FabricStoveMenu(int windowId, Inventory playerInventory)
     {
         this(windowId, playerInventory, new SimpleContainer(6), new SimpleContainerData(8));
     }
 
-    public StoveMenu(int windowId, Inventory playerInventory, Container container, ContainerData data)
+    public FabricStoveMenu(int windowId, Inventory playerInventory, Container container, ContainerData data)
     {
         super(ModMenuTypes.STOVE.get(), windowId, container);
         checkContainerSize(container, 6);
@@ -141,64 +140,6 @@ public class StoveMenu extends SimpleRecipeContainerMenu<Container> implements I
         {
             powerSwitch.togglePower();
         }
-    }
-
-    @Override
-    public void fillCraftSlotsStackedContents(StackedContents contents)
-    {
-        if(this.container instanceof StackedContentsCompatible)
-        {
-            ((StackedContentsCompatible) this.container).fillStackedContents(contents);
-        }
-    }
-
-    @Override
-    public void clearCraftingContent()
-    {
-        this.getSlot(0).set(ItemStack.EMPTY);
-        this.getSlot(3).set(ItemStack.EMPTY);
-    }
-
-    @Override
-    public boolean recipeMatches(RecipeHolder<? extends Recipe<Container>> holder)
-    {
-        return holder.value().matches(this.container, this.level);
-    }
-
-    @Override
-    public int getResultSlotIndex()
-    {
-        return 3;
-    }
-
-    @Override
-    public int getGridWidth()
-    {
-        return 3;
-    }
-
-    @Override
-    public int getGridHeight()
-    {
-        return 1;
-    }
-
-    @Override
-    public int getSize()
-    {
-        return 6;
-    }
-
-    @Override
-    public RecipeBookType getRecipeBookType()
-    {
-        return ModRecipeBookTypes.OVEN.get();
-    }
-
-    @Override
-    public boolean shouldMoveToInventory(int slot)
-    {
-        return slot < this.getGridWidth() * this.getGridHeight();
     }
 
     @Override

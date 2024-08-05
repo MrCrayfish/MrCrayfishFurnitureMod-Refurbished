@@ -8,7 +8,9 @@ import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import com.mrcrayfish.furniture.refurbished.inventory.BuildableContainerData;
+import com.mrcrayfish.furniture.refurbished.inventory.IContainerHolder;
 import com.mrcrayfish.furniture.refurbished.inventory.StoveMenu;
+import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.Util;
@@ -268,13 +270,13 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     @Override
     protected AbstractContainerMenu createMenu(int windowId, Inventory playerInventory)
     {
-        return new StoveMenu(windowId, playerInventory, this, this.data);
+        return Services.MENU.createStoveMenu(windowId, playerInventory, this, this.data);
     }
 
     @Override
     public boolean isMatchingContainerMenu(AbstractContainerMenu menu)
     {
-        return menu instanceof StoveMenu stove && stove.getContainer() == this;
+        return menu instanceof IContainerHolder holder && holder.container() == this;
     }
 
     @Override
