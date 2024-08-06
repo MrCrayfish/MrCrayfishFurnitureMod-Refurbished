@@ -9,7 +9,7 @@ import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
@@ -62,8 +62,6 @@ public class ClientFurnitureMod implements ClientModInitializer
                 ParticleFactoryRegistry.getInstance().register(type, provider::apply);
             }
         });
-        //ClientBootstrap.registerRecipeBookCategories(RECIPE_TYPE_TO_CATEGORY::put);
-        ModelLoadingRegistry.INSTANCE.registerModelProvider((manager, out) -> ExtraModels.register(out));
 
         WorldRenderEvents.LAST.register(context -> {
             Minecraft mc = Minecraft.getInstance();
@@ -75,8 +73,9 @@ public class ClientFurnitureMod implements ClientModInitializer
             pose.pushPose();
             Vec3 view = context.camera().getPosition();
             pose.translate(-view.x(), -view.y(), -view.z());
-            LinkHandler.get().render(mc.player, pose, mc.renderBuffers().bufferSource(), context.tickDelta());
-            ToolAnimationRenderer.get().render(mc.level, pose, mc.renderBuffers().bufferSource(), context.tickDelta());
+            float deltaTick = context.tickCounter().getGameTimeDeltaPartialTick(true);
+            LinkHandler.get().render(mc.player, pose, mc.renderBuffers().bufferSource(), deltaTick);
+            ToolAnimationRenderer.get().render(mc.level, pose, mc.renderBuffers().bufferSource(), deltaTick);
             DeferredElectricRenderer.get().draw(pose);
             pose.popPose();
 

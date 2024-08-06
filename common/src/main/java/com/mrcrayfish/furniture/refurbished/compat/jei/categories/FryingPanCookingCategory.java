@@ -5,9 +5,11 @@ import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import com.mrcrayfish.furniture.refurbished.compat.jei.Plugin;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
+import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardSlicingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
@@ -19,8 +21,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-
-import java.util.List;
 
 /**
  * Author: MrCrayfish
@@ -88,20 +88,19 @@ public class FryingPanCookingCategory extends FurnitureRecipeCategory<Processing
     }
 
     @Override
-    public List<Component> getTooltipStrings(ProcessingRecipe recipe, IRecipeSlotsView view, double mouseX, double mouseY)
+    public void getTooltip(ITooltipBuilder tooltip, ProcessingRecipe recipe, IRecipeSlotsView view, double mouseX, double mouseY)
     {
         if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, 14, 22, 42, 13))
         {
-            return Plugin.getItemTooltip(ModBlocks.FRYING_PAN.get());
+            tooltip.addAll(Plugin.getItemTooltip(ModBlocks.FRYING_PAN.get()));
         }
-        if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, 5, 26, 60, 48))
+        else if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, 5, 26, 60, 48))
         {
-            return Plugin.getItemTooltip(ModBlocks.STOVE_LIGHT.get());
+            tooltip.addAll(Plugin.getItemTooltip(ModBlocks.STOVE_LIGHT.get()));
         }
-        if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, 103, 5, 16, 16))
+        else if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, 103, 5, 16, 16))
         {
-            return List.of(Utils.translation("gui", "jei_campfire_info"));
+            tooltip.add(Utils.translation("gui", "jei_campfire_info"));
         }
-        return super.getTooltipStrings(recipe, view, mouseX, mouseY);
     }
 }

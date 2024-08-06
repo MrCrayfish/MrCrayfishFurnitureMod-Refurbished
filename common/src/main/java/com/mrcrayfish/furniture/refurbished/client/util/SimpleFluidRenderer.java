@@ -56,10 +56,10 @@ public class SimpleFluidRenderer
             RenderType type = RenderType.translucentMovingBlock(); // Hack to fix fluid not rendering with fabulous graphics
             VertexConsumer consumer = source.getBuffer(type);
             Matrix4f matrix = poseStack.last().pose();
-            consumer.vertex(matrix, (float) box.minX, offset, (float) box.minZ).color(red, green, blue, 1).uv(u0, v0).uv2(light).normal(0, 1, 0).endVertex();
-            consumer.vertex(matrix, (float) box.minX, offset, (float) box.maxZ).color(red, green, blue, 1).uv(u0, v1).uv2(light).normal(0, 1, 0).endVertex();
-            consumer.vertex(matrix, (float) box.maxX, offset, (float) box.maxZ).color(red, green, blue, 1).uv(u1, v1).uv2(light).normal(0, 1, 0).endVertex();
-            consumer.vertex(matrix, (float) box.maxX, offset, (float) box.minZ).color(red, green, blue, 1).uv(u1, v0).uv2(light).normal(0, 1, 0).endVertex();
+            consumer.addVertex(matrix, (float) box.minX, offset, (float) box.minZ).setColor(red, green, blue, 1).setUv(u0, v0).setLight(light).setNormal(0, 1, 0);
+            consumer.addVertex(matrix, (float) box.minX, offset, (float) box.maxZ).setColor(red, green, blue, 1).setUv(u0, v1).setLight(light).setNormal(0, 1, 0);
+            consumer.addVertex(matrix, (float) box.maxX, offset, (float) box.maxZ).setColor(red, green, blue, 1).setUv(u1, v1).setLight(light).setNormal(0, 1, 0);
+            consumer.addVertex(matrix, (float) box.maxX, offset, (float) box.minZ).setColor(red, green, blue, 1).setUv(u1, v0).setLight(light).setNormal(0, 1, 0);
         }
     }
 

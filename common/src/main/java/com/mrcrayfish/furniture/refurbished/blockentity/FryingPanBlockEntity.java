@@ -34,6 +34,7 @@ import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -57,8 +58,8 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
     public static final Vector3f OIL_COLOUR = Vec3.fromRGB24(0xE1A803).toVector3f();
     public static final double MAX_AUDIO_DISTANCE = Mth.square(8);
 
-    protected final RecipeManager.CachedCheck<Container, ? extends ProcessingRecipe> recipeCache;
-    protected final RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> campfireCookingCache;
+    protected final RecipeManager.CachedCheck<SingleRecipeInput, ? extends ProcessingRecipe> recipeCache;
+    protected final RecipeManager.CachedCheck<SingleRecipeInput, ? extends AbstractCookingRecipe> campfireCookingCache;
     protected final Vec3 audioPosition;
     protected boolean needsFlipping;
     protected boolean flipped;
@@ -301,14 +302,14 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
      * @param stack the itemstack of the recipe
      * @return An optional recipe
      */
-    private Optional<? extends ProcessingRecipe> getRecipe(RecipeManager.CachedCheck<Container, ? extends ProcessingRecipe> cache, ItemStack stack)
+    private Optional<? extends ProcessingRecipe> getRecipe(RecipeManager.CachedCheck<SingleRecipeInput, ? extends ProcessingRecipe> cache, ItemStack stack)
     {
-        return cache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level)).map(RecipeHolder::value);
+        return cache.getRecipeFor(new SingleRecipeInput(stack), Objects.requireNonNull(this.level)).map(RecipeHolder::value);
     }
 
-    private Optional<ProcessingRecipe> getCookingRecipe(RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> cache, ItemStack stack)
+    private Optional<ProcessingRecipe> getCookingRecipe(RecipeManager.CachedCheck<SingleRecipeInput, ? extends AbstractCookingRecipe> cache, ItemStack stack)
     {
-        return cache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level)).map(RecipeHolder::value).map(recipe -> ProcessingRecipe.Item.from(recipe, this.level.registryAccess()));
+        return cache.getRecipeFor(new SingleRecipeInput(stack), Objects.requireNonNull(this.level)).map(RecipeHolder::value).map(recipe -> ProcessingRecipe.Item.from(recipe, this.level.registryAccess()));
     }
 
     /**

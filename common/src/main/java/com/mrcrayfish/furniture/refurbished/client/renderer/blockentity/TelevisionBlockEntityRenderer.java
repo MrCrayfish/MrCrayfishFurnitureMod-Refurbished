@@ -51,10 +51,10 @@ public class TelevisionBlockEntityRenderer implements BlockEntityRenderer<Televi
             float minV = runningFabric ? sprite.getV0() : 0;
             float maxV = runningFabric ? sprite.getV1() : 1;
 
-            consumer.vertex(matrix, 0.75F + offset, 0.625F + offset, 0).color(255, 255, 255, 255).uv(minU, minV).uv2(0xF000F0).normal(0, 1, 0).endVertex();
-            consumer.vertex(matrix, 0.75F + offset, 0.1875F - offset, 0).color(255, 255, 255, 255).uv(minU, maxV).uv2(0xF000F0).normal(0, 1, 0).endVertex();
-            consumer.vertex(matrix, 0.25F - offset, 0.1875F - offset, 0).color(255, 255, 255, 255).uv(maxU, maxV).uv2(0xF000F0).normal(0, 1, 0).endVertex();
-            consumer.vertex(matrix, 0.25F - offset, 0.625F + offset, 0).color(255, 255, 255, 255).uv(maxU, minV).uv2(0xF000F0).normal(0, 1, 0).endVertex();
+            consumer.addVertex(matrix, 0.75F + offset, 0.625F + offset, 0).setColor(255, 255, 255, 255).setUv(minU, minV).setLight(0xF000F0).setNormal(0, 1, 0);
+            consumer.addVertex(matrix, 0.75F + offset, 0.1875F - offset, 0).setColor(255, 255, 255, 255).setUv(minU, maxV).setLight(0xF000F0).setNormal(0, 1, 0);
+            consumer.addVertex(matrix, 0.25F - offset, 0.1875F - offset, 0).setColor(255, 255, 255, 255).setUv(maxU, maxV).setLight(0xF000F0).setNormal(0, 1, 0);
+            consumer.addVertex(matrix, 0.25F - offset, 0.625F + offset, 0).setColor(255, 255, 255, 255).setUv(maxU, minV).setLight(0xF000F0).setNormal(0, 1, 0);
 
             poseStack.popPose();
         }

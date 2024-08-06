@@ -1,0 +1,166 @@
+{
+    "entries": [
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "REFURBISHED_FURNITURE_FREEZER_SEARCH",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/mrcrayfish/furniture/refurbished/enums/CustomRecipeBookCategories",
+                "field": "FREEZER_SEARCH_PROXY"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "REFURBISHED_FURNITURE_FREEZER_BLOCKS",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/mrcrayfish/furniture/refurbished/enums/CustomRecipeBookCategories",
+                "field": "FREEZER_BLOCKS_PROXY"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "REFURBISHED_FURNITURE_FREEZER_ITEMS",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/mrcrayfish/furniture/refurbished/enums/CustomRecipeBookCategories",
+                "field": "FREEZER_ITEMS_PROXY"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "REFURBISHED_FURNITURE_FREEZER_FOOD",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/mrcrayfish/furniture/refurbished/enums/CustomRecipeBookCategories",
+                "field": "FREEZER_FOOD_PROXY"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "REFURBISHED_FURNITURE_FREEZER_MISC",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/mrcrayfish/furniture/refurbished/enums/CustomRecipeBookCategories",
+                "field": "FREEZER_MISC_PROXY"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "REFURBISHED_FURNITURE_MICROWAVE_SEARCH",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/mrcrayfish/furniture/refurbished/enums/CustomRecipeBookCategories",
+                "field": "MICROWAVE_SEARCH_PROXY"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "REFURBISHED_FURNITURE_MICROWAVE_BLOCKS",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/mrcrayfish/furniture/refurbished/enums/CustomRecipeBookCategories",
+                "field": "MICROWAVE_BLOCKS_PROXY"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "REFURBISHED_FURNITURE_MICROWAVE_ITEMS",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/mrcrayfish/furniture/refurbished/enums/CustomRecipeBookCategories",
+                "field": "MICROWAVE_ITEMS_PROXY"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "REFURBISHED_FURNITURE_MICROWAVE_FOOD",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/mrcrayfish/furniture/refurbished/enums/CustomRecipeBookCategories",
+                "field": "MICROWAVE_FOOD_PROXY"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "REFURBISHED_FURNITURE_MICROWAVE_MISC",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/mrcrayfish/furniture/refurbished/enums/CustomRecipeBookCategories",
+                "field": "MICROWAVE_MISC_PROXY"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "REFURBISHED_FURNITURE_OVEN_SEARCH",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/mrcrayfish/furniture/refurbished/enums/CustomRecipeBookCategories",
+                "field": "OVEN_SEARCH_PROXY"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "REFURBISHED_FURNITURE_OVEN_BLOCKS",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/mrcrayfish/furniture/refurbished/enums/CustomRecipeBookCategories",
+                "field": "OVEN_BLOCKS_PROXY"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "REFURBISHED_FURNITURE_OVEN_ITEMS",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/mrcrayfish/furniture/refurbished/enums/CustomRecipeBookCategories",
+                "field": "OVEN_ITEMS_PROXY"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "REFURBISHED_FURNITURE_OVEN_FOOD",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/mrcrayfish/furniture/refurbished/enums/CustomRecipeBookCategories",
+                "field": "OVEN_FOOD_PROXY"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "REFURBISHED_FURNITURE_OVEN_MISC",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/mrcrayfish/furniture/refurbished/enums/CustomRecipeBookCategories",
+                "field": "OVEN_MISC_PROXY"
+            }
+        },
+        {
+            "enum": "net/minecraft/world/inventory/RecipeBookType",
+            "name": "REFURBISHED_FURNITURE_FREEZER",
+            "constructor": "()V",
+            "parameters": {
+                "class": "com/mrcrayfish/furniture/refurbished/enums/CustomRecipeBookTypes",
+                "field": "FREEZER_PROXY"
+            }
+        },
+        {
+            "enum": "net/minecraft/world/inventory/RecipeBookType",
+            "name": "REFURBISHED_FURNITURE_MICROWAVE",
+            "constructor": "()V",
+            "parameters": {
+                "class": "com/mrcrayfish/furniture/refurbished/enums/CustomRecipeBookTypes",
+                "field": "MICROWAVE_PROXY"
+            }
+        },
+        {
+            "enum": "net/minecraft/world/inventory/RecipeBookType",
+            "name": "REFURBISHED_FURNITURE_OVEN",
+            "constructor": "()V",
+            "parameters": {
+                "class": "com/mrcrayfish/furniture/refurbished/enums/CustomRecipeBookTypes",
+                "field": "OVEN_PROXY"
+            }
+        }
+    ]
+}

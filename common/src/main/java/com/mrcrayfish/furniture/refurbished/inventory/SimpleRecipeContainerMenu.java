@@ -6,11 +6,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.RecipeBookMenu;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeInput;
 
 /**
  * Author: MrCrayfish
  */
-public abstract class SimpleRecipeContainerMenu<C extends Container> extends RecipeBookMenu<C>
+public abstract class SimpleRecipeContainerMenu<I extends RecipeInput, R extends Recipe<I>> extends RecipeBookMenu<I, R>
 {
     protected final Container container;
 

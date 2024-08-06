@@ -1,6 +1,9 @@
 package com.mrcrayfish.furniture.refurbished.compat.jei.categories;
 
 import com.mrcrayfish.furniture.refurbished.compat.jei.Plugin;
+import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardSlicingRecipe;
+import mezz.jei.api.gui.builder.ITooltipBuilder;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.gui.GuiGraphics;
 

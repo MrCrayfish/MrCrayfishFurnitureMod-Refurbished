@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mrcrayfish.furniture.refurbished.Components;
@@ -128,15 +129,16 @@ public class RecyclingBinScreen extends ElectricityContainerScreen<RecycleBinMen
         float scale = (float) 1 / 256;
         RenderSystem.enableBlend();
         RenderSystem.setShaderTexture(0, RECYCLING_BIN_TEXTURE);
-        RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
+        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         Matrix4f matrix = graphics.pose().last().pose();
-        BufferBuilder builder = Tesselator.getInstance().getBuilder();
-        builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX);
-        builder.vertex(matrix, x, y, 0).color(1.0F, 1.0F, 1.0F, alpha).uv(u * scale, v * scale).endVertex();
-        builder.vertex(matrix, x, y + height, 0).color(1.0F, 1.0F, 1.0F, alpha).uv(u * scale, (v + height) * scale).endVertex();
-        builder.vertex(matrix, x + width, y + height, 0).color(1.0F, 1.0F, 1.0F, alpha).uv((u + width) * scale, (v + height) * scale).endVertex();
-        builder.vertex(matrix, x + width, y, 0).color(1.0F, 1.0F, 1.0F, alpha).uv((u + width) * scale, v * scale).endVertex();
-        BufferUploader.drawWithShader(builder.end());
+        BufferBuilder builder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+        builder.addVertex(matrix, x, y, 0).setUv(u * scale, v * scale).setColor(1.0F, 1.0F, 1.0F, alpha);
+        builder.addVertex(matrix, x, y + height, 0).setUv(u * scale, (v + height) * scale).setColor(1.0F, 1.0F, 1.0F, alpha);
+        builder.addVertex(matrix, x + width, y + height, 0).setUv((u + width) * scale, (v + height) * scale).setColor(1.0F, 1.0F, 1.0F, alpha);
+        builder.addVertex(matrix, x + width, y, 0).setUv((u + width) * scale, v * scale).setColor(1.0F, 1.0F, 1.0F, alpha);
+        MeshData data = builder.build();
+        if(data != null)
+            BufferUploader.drawWithShader(data);
         RenderSystem.disableBlend();
     }
 }

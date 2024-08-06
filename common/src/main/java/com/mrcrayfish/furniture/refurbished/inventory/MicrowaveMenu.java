@@ -5,6 +5,7 @@ import com.mrcrayfish.furniture.refurbished.blockentity.MicrowaveBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
+import com.mrcrayfish.furniture.refurbished.crafting.MicrowaveHeatingRecipe;
 import com.mrcrayfish.furniture.refurbished.inventory.slot.ResultSlot;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -20,12 +21,13 @@ import net.minecraft.world.inventory.StackedContentsCompatible;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 
 /**
  * Author: MrCrayfish
  */
-public class MicrowaveMenu extends SimpleRecipeContainerMenu<Container> implements IPowerSwitchMenu, IElectricityMenu, IContainerHolder, IProcessingMenu
+public class MicrowaveMenu extends SimpleRecipeContainerMenu<SingleRecipeInput, MicrowaveHeatingRecipe> implements IPowerSwitchMenu, IElectricityMenu, IContainerHolder, IProcessingMenu
 {
     private final ContainerData data;
     private final Level level;
@@ -98,7 +100,7 @@ public class MicrowaveMenu extends SimpleRecipeContainerMenu<Container> implemen
 
     private boolean isRecipe(ItemStack stack)
     {
-        return this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.MICROWAVE_HEATING.get(), new SimpleContainer(stack), this.level).isPresent();
+        return this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.MICROWAVE_HEATING.get(), new SingleRecipeInput(stack), this.level).isPresent();
     }
 
     @Override
@@ -151,9 +153,9 @@ public class MicrowaveMenu extends SimpleRecipeContainerMenu<Container> implemen
     }
 
     @Override
-    public boolean recipeMatches(RecipeHolder<? extends Recipe<Container>> holder)
+    public boolean recipeMatches(RecipeHolder<MicrowaveHeatingRecipe> holder)
     {
-        return holder.value().matches(this.container, this.level);
+        return holder.value().matches(new SingleRecipeInput(this.container.getItem(0)), this.level);
     }
 
     @Override

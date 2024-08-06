@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.client.gui.widget;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.furniture.refurbished.Constants;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -12,7 +13,7 @@ import net.minecraft.resources.ResourceLocation;
  */
 public class OnOffSlider extends Button
 {
-    private static final ResourceLocation WIDGETS = new ResourceLocation(Constants.MOD_ID, "textures/gui/widgets.png");
+    private static final ResourceLocation WIDGETS = Utils.resource("textures/gui/widgets.png");
 
     private boolean enabled;
 

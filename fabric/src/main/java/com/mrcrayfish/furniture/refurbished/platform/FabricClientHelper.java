@@ -12,23 +12,22 @@ import com.mrcrayfish.furniture.refurbished.inventory.FabricMicrowaveMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.FabricStoveMenu;
 import com.mrcrayfish.furniture.refurbished.platform.services.IClientHelper;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
-import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
-import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelManager;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
@@ -39,8 +38,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-
 import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 
 /**
@@ -70,6 +69,7 @@ public class FabricClientHelper implements IClientHelper
     public void setTooltipCache(Tooltip tooltip, List<FormattedCharSequence> lines)
     {
         tooltip.cachedTooltip = ImmutableList.copyOf(lines);
+        tooltip.splitWithLanguage = Language.getInstance();
     }
 
     @Override
@@ -85,7 +85,7 @@ public class FabricClientHelper implements IClientHelper
     }
 
     @Override
-    public BakedModel getBakedModel(ResourceLocation location)
+    public BakedModel getBakedModel(ModelResourceLocation location)
     {
         ModelManager manager = Minecraft.getInstance().getModelManager();
         return manager.bakedRegistry.getOrDefault(location, manager.getMissingModel());
@@ -123,5 +123,4 @@ public class FabricClientHelper implements IClientHelper
     {
         return new FabricStoveScreen((FabricStoveMenu) menu, playerInventory, title);
     }
-
 }

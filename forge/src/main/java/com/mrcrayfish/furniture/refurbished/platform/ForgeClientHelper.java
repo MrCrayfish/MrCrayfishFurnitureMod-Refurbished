@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.platform;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mrcrayfish.framework.api.client.FrameworkClientAPI;
 import com.mrcrayfish.furniture.refurbished.client.ForgeRenderType;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.FreezerScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.MicrowaveScreen;
@@ -23,8 +24,10 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
@@ -68,6 +71,7 @@ public class ForgeClientHelper implements IClientHelper
     public void setTooltipCache(Tooltip tooltip, List<FormattedCharSequence> lines)
     {
         tooltip.cachedTooltip = ImmutableList.copyOf(lines);
+        tooltip.splitWithLanguage = Language.getInstance();
     }
 
     @Override
@@ -87,7 +91,7 @@ public class ForgeClientHelper implements IClientHelper
     }
 
     @Override
-    public BakedModel getBakedModel(ResourceLocation location)
+    public BakedModel getBakedModel(ModelResourceLocation location)
     {
         return Minecraft.getInstance().getModelManager().getModel(location);
     }

@@ -23,8 +23,10 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
@@ -68,6 +70,7 @@ public class NeoForgeClientHelper implements IClientHelper
     public void setTooltipCache(Tooltip tooltip, List<FormattedCharSequence> lines)
     {
         tooltip.cachedTooltip = ImmutableList.copyOf(lines);
+        tooltip.splitWithLanguage = Language.getInstance();
     }
 
     @Override
@@ -87,7 +90,7 @@ public class NeoForgeClientHelper implements IClientHelper
     }
 
     @Override
-    public BakedModel getBakedModel(ResourceLocation location)
+    public BakedModel getBakedModel(ModelResourceLocation location)
     {
         return Minecraft.getInstance().getModelManager().getModel(location);
     }

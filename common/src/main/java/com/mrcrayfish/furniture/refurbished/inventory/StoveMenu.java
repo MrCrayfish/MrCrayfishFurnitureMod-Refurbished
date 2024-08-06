@@ -5,6 +5,7 @@ import com.mrcrayfish.furniture.refurbished.blockentity.StoveBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
+import com.mrcrayfish.furniture.refurbished.crafting.OvenBakingRecipe;
 import com.mrcrayfish.furniture.refurbished.inventory.slot.ResultSlot;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -19,12 +20,13 @@ import net.minecraft.world.inventory.StackedContentsCompatible;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 
 /**
  * Author: MrCrayfish
  */
-public class StoveMenu extends SimpleRecipeContainerMenu<Container> implements IPowerSwitchMenu, IElectricityMenu, IContainerHolder, IBakingMenu
+public class StoveMenu extends SimpleRecipeContainerMenu<SingleRecipeInput, OvenBakingRecipe> implements IPowerSwitchMenu, IElectricityMenu, IContainerHolder, IBakingMenu
 {
     private final ContainerData data;
     private final Level level;
@@ -97,7 +99,7 @@ public class StoveMenu extends SimpleRecipeContainerMenu<Container> implements I
 
     private boolean isRecipe(ItemStack stack)
     {
-        return this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.OVEN_BAKING.get(), new SimpleContainer(stack), this.level).isPresent();
+        return this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.OVEN_BAKING.get(), new SingleRecipeInput(stack), this.level).isPresent();
     }
 
     @Override
@@ -160,9 +162,9 @@ public class StoveMenu extends SimpleRecipeContainerMenu<Container> implements I
     }
 
     @Override
-    public boolean recipeMatches(RecipeHolder<? extends Recipe<Container>> holder)
+    public boolean recipeMatches(RecipeHolder<OvenBakingRecipe> holder)
     {
-        return holder.value().matches(this.container, this.level);
+        return holder.value().matches(new SingleRecipeInput(this.container.getItem(0)), this.level);
     }
 
     @Override

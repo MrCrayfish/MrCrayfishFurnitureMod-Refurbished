@@ -104,6 +104,8 @@ public class ComputerScreen extends ElectricityContainerScreen<ComputerMenu>
     {
         super.renderBg(graphics, partialTick, mouseX, mouseY);
 
+        float frameTime = this.minecraft.getTimer().getGameTimeDeltaPartialTick(true);
+
         // Draw background
         graphics.blit(TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
 
@@ -116,7 +118,7 @@ public class ComputerScreen extends ElectricityContainerScreen<ComputerMenu>
         // Draw booting screen
         if(this.loading > 0)
         {
-            float time = (LOADING_TIME - (this.loading - this.minecraft.getFrameTime())) / (float) LOADING_TIME;
+            float time = (LOADING_TIME - (this.loading - frameTime)) / (float) LOADING_TIME;
             int loadingBarStart = displayLeft + (DISPLAY_WIDTH - LOADING_BAR_WIDTH) / 2;
             int loadingBarWidth = (int) (LOADING_BAR_WIDTH * time);
             graphics.fill(loadingBarStart - 1, displayBottom - 31, loadingBarStart + LOADING_BAR_WIDTH + 1, displayBottom - 23, 0xFF47403E);
@@ -129,7 +131,7 @@ public class ComputerScreen extends ElectricityContainerScreen<ComputerMenu>
         graphics.enableScissor(displayLeft, displayTop, displayEnd, displayBottom);
         this.desktop.render(graphics, mouseX, mouseY, partialTick);
         Window window = this.getOrCreateWindow();
-        if(window != null) window.render(graphics, this.font, mouseX, mouseY, this.minecraft.getFrameTime());
+        if(window != null) window.render(graphics, this.font, mouseX, mouseY, frameTime);
         graphics.disableScissor();
     }
 

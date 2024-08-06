@@ -40,10 +40,10 @@ public class DoorMatBlockEntityRenderer implements BlockEntityRenderer<DoorMatBl
             poseStack.translate(-0.5, 0, -0.5);
             VertexConsumer consumer = source.getBuffer(RenderType.text(id));
             Matrix4f matrix = poseStack.last().pose();
-            consumer.vertex(matrix, 0.0625F, 0.063F, 0.1875F).color(255, 255, 255, 255).uv(0, 0).uv2(light).endVertex();
-            consumer.vertex(matrix, 0.0625F, 0.063F, 0.8125F).color(255, 255, 255, 255).uv(0, 1).uv2(light).endVertex();
-            consumer.vertex(matrix, 0.9375F, 0.063F, 0.8125F).color(255, 255, 255, 255).uv(1, 1).uv2(light).endVertex();
-            consumer.vertex(matrix, 0.9375F, 0.063F, 0.1875F).color(255, 255, 255, 255).uv(1, 0).uv2(light).endVertex();
+            consumer.addVertex(matrix, 0.0625F, 0.063F, 0.1875F).setColor(255, 255, 255, 255).setUv(0, 0).setLight(light);
+            consumer.addVertex(matrix, 0.0625F, 0.063F, 0.8125F).setColor(255, 255, 255, 255).setUv(0, 1).setLight(light);
+            consumer.addVertex(matrix, 0.9375F, 0.063F, 0.8125F).setColor(255, 255, 255, 255).setUv(1, 1).setLight(light);
+            consumer.addVertex(matrix, 0.9375F, 0.063F, 0.1875F).setColor(255, 255, 255, 255).setUv(1, 0).setLight(light);
         }
     }
 

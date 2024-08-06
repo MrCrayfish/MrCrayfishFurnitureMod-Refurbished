@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
 import com.google.common.base.Preconditions;
+import com.mrcrayfish.framework.api.client.FrameworkClientAPI;
 import com.mrcrayfish.framework.api.event.ClientConnectionEvents;
 import com.mrcrayfish.framework.api.event.PlayerEvents;
 import com.mrcrayfish.framework.api.event.TickEvents;
@@ -54,11 +55,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.stream.Stream;
 
 /**
  * Author: MrCrayfish
@@ -75,8 +79,8 @@ public class ClientBootstrap
             ToolAnimationRenderer.get().tick();
             AudioManager.get().update();
         });
-        TickEvents.START_RENDER.register(partialTick -> {
-            LinkHandler.get().beforeRender(partialTick);
+        TickEvents.START_RENDER.register(tracker -> {
+            LinkHandler.get().beforeRender(tracker.getGameTimeDeltaPartialTick(true));
             ElectricBlockEntityRenderer.clearDrawn();
         });
         ClientConnectionEvents.LOGGING_OUT.register(connection -> {
@@ -113,6 +117,9 @@ public class ClientBootstrap
         Display.get().bind(HomeControl.class, HomeControlGraphics::new);
         Display.get().bind(Marketplace.class, MarketplaceGraphics::new);
         Display.get().bind(CoinMiner.class, CoinMinerGraphics::new);
+
+        // Register standalone models
+        ExtraModels.register(FrameworkClientAPI::registerStandaloneModel);
     }
 
     @SuppressWarnings("unchecked")

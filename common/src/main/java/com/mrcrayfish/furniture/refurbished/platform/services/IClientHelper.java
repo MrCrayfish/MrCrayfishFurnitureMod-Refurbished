@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.platform.services;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
@@ -11,6 +12,7 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositione
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.network.chat.Component;
@@ -43,7 +45,7 @@ public interface IClientHelper
 
     void drawBakedModel(BakedModel model, PoseStack poseStack, VertexConsumer consumer, int light, int overlay);
 
-    BakedModel getBakedModel(ResourceLocation location);
+    BakedModel getBakedModel(ModelResourceLocation location);
 
     RenderType getTelevisionScreenRenderType(ResourceLocation id);
 

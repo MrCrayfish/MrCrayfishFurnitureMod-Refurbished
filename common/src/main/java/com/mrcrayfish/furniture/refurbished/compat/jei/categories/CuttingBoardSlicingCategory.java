@@ -9,6 +9,7 @@ import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardSlicingRecipe;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -72,12 +73,11 @@ public class CuttingBoardSlicingCategory implements IRecipeCategory<CuttingBoard
     }
 
     @Override
-    public List<Component> getTooltipStrings(CuttingBoardSlicingRecipe recipe, IRecipeSlotsView view, double mouseX, double mouseY)
+    public void getTooltip(ITooltipBuilder tooltip, CuttingBoardSlicingRecipe recipe, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY)
     {
         if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, 5, 16, 55, 15) && !ScreenHelper.isMouseWithinBounds(mouseX, mouseY, 25, 6, 16, 16))
         {
-            return Plugin.getItemTooltip(ModBlocks.CUTTING_BOARD_OAK.get());
+            tooltip.addAll(Plugin.getItemTooltip(ModBlocks.CUTTING_BOARD_OAK.get()));
         }
-        return IRecipeCategory.super.getTooltipStrings(recipe, view, mouseX, mouseY);
     }
 }

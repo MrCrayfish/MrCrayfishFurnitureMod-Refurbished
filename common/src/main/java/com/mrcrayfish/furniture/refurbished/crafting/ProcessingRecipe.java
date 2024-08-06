@@ -1,6 +1,5 @@
 package com.mrcrayfish.furniture.refurbished.crafting;
 
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -12,35 +11,32 @@ import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
-
 import org.jetbrains.annotations.Nullable;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
 
 /**
  * Author: MrCrayfish
  */
-public abstract class ProcessingRecipe implements Recipe<Container>
+public abstract class ProcessingRecipe implements Recipe<SingleRecipeInput>
 {
     protected final RecipeType<?> type;
     protected final Category category;
@@ -75,13 +71,13 @@ public abstract class ProcessingRecipe implements Recipe<Container>
     }
 
     @Override
-    public boolean matches(Container container, Level level)
+    public boolean matches(SingleRecipeInput input, Level level)
     {
-        return this.ingredient.test(container.getItem(0));
+        return this.ingredient.test(input.item());
     }
 
     @Override
-    public ItemStack assemble(Container container, HolderLookup.Provider provider)
+    public ItemStack assemble(SingleRecipeInput input, HolderLookup.Provider provider)
     {
         return this.result.copy();
     }

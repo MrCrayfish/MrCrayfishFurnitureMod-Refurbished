@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
  */
 public class ItemToast implements Toast
 {
-    public static final ResourceLocation TOAST_SPRITE = new ResourceLocation("toast/advancement");
+    public static final ResourceLocation TOAST_SPRITE = ResourceLocation.withDefaultNamespace("toast/advancement");
 
     private final Component title;
     private final Component description;

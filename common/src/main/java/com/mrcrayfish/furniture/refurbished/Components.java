@@ -43,7 +43,7 @@ public class Components
     public static final Component SMART_DEVICE_RECYCLE_BIN = Utils.translation("smart_device", "recycle_bin");
     public static final Component SMART_DEVICE_STOVE = Utils.translation("smart_device", "stove");
 
-    public static final ResourceLocation ICON_FONT = new ResourceLocation(Constants.MOD_ID, "icons");
+    public static final ResourceLocation ICON_FONT = Utils.resource("icons");
 
     public static MutableComponent getIcon(FontIcons icon)
     {

@@ -39,7 +39,6 @@ public class FurnitureMod
 {
     public FurnitureMod(IEventBus bus)
     {
-        ModRecipeBookTypes.getAllTypes().forEach(holder -> RecipeBookType.create(holder.getConstantName()));
         NeoForgeMod.enableMilkFluid();
         bus.addListener(this::onCommonSetup);
         bus.addListener(this::onGatherData);

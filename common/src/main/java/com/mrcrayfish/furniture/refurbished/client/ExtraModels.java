@@ -1,8 +1,10 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
+import com.mrcrayfish.framework.api.client.FrameworkClientAPI;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Consumer;
@@ -39,11 +41,11 @@ public enum ExtraModels
     CRIMSON_DARK_CEILING_FAN_BLADE(Utils.resource("extra/crimson_dark_ceiling_fan_blade")),
     WARPED_DARK_CEILING_FAN_BLADE(Utils.resource("extra/warped_dark_ceiling_fan_blade"));
 
-    private final ResourceLocation location;
+    private final ModelResourceLocation location;
 
     ExtraModels(ResourceLocation location)
     {
-        this.location = location;
+        this.location = FrameworkClientAPI.createModelResourceLocation(location);
     }
 
     /**
@@ -59,7 +61,7 @@ public enum ExtraModels
      * specific level.
      * @param register a consumer accepting a resource location path to the model
      */
-    public static void register(Consumer<ResourceLocation> register)
+    public static void register(Consumer<ModelResourceLocation> register)
     {
         for(ExtraModels model : values())
         {

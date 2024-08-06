@@ -44,8 +44,8 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
 {
     private static final Component MAILBOXES_LABEL = Utils.translation("gui", "mailboxes");
     private static final ResourceLocation POST_BOX_TEXTURE = Utils.resource("textures/gui/container/post_box.png");
-    private static final ResourceLocation SCROLLER_SPRITE = new ResourceLocation("container/villager/scroller");
-    private static final ResourceLocation SCROLLER_DISABLED_SPRITE = new ResourceLocation("container/villager/scroller_disabled");
+    private static final ResourceLocation SCROLLER_SPRITE = ResourceLocation.withDefaultNamespace("container/villager/scroller");
+    private static final ResourceLocation SCROLLER_DISABLED_SPRITE = ResourceLocation.withDefaultNamespace("container/villager/scroller_disabled");
     private static final List<IMailbox> MAILBOX_CACHE = new ArrayList<>();
     private static final Map<UUID, PlayerInfo> PLAYER_INFO_CACHE = new HashMap<>();
 

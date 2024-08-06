@@ -36,7 +36,7 @@ public class FurnitureMod
 {
     public FurnitureMod()
     {
-        ModRecipeBookTypes.getAllTypes().forEach(holder -> RecipeBookType.create(holder.getConstantName()));
+        ModRecipeBookTypes.getAllTypes().forEach(holder -> RecipeBookType.create(holder.constantName()));
         ForgeMod.enableMilkFluid();
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(this::onCommonSetup);
@@ -45,7 +45,6 @@ public class FurnitureMod
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             ClientFurnitureMod.init();
             bus.addListener(ForgeClientEvents::onRegisterRenderers);
-            bus.addListener(ForgeClientEvents::onRegisterAdditional);
             bus.addListener(ForgeClientEvents::onRegisterParticleProviders);
             bus.addListener(ForgeClientEvents::onRegisterBlockColors);
             bus.addListener(ForgeClientEvents::onRegisterItemColors);

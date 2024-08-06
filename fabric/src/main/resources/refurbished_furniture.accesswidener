@@ -3,6 +3,7 @@ accessible field net/minecraft/client/gui/screens/inventory/AbstractContainerScr
 accessible field net/minecraft/client/gui/screens/inventory/AbstractContainerScreen topPos I
 accessible field net/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen selectedTab Lnet/minecraft/world/item/CreativeModeTab;
 accessible field net/minecraft/client/gui/components/Tooltip cachedTooltip Ljava/util/List;
+accessible field net/minecraft/client/gui/components/Tooltip splitWithLanguage Lnet/minecraft/locale/Language;
 accessible field net/minecraft/client/resources/model/ModelManager bakedRegistry Ljava/util/Map;
 accessible method net/minecraft/data/models/blockstates/PropertyDispatch getDefinedProperties ()Ljava/util/List;
 accessible method net/minecraft/data/models/BlockModelGenerators skipAutoItemBlock (Lnet/minecraft/world/level/block/Block;)V

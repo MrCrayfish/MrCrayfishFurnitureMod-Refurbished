@@ -4,6 +4,7 @@ import com.mrcrayfish.framework.api.FrameworkAPI;
 import com.mrcrayfish.framework.api.network.FrameworkNetwork;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.network.message.*;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.resources.ResourceLocation;
 
@@ -15,7 +16,7 @@ public class Network
     public static FrameworkNetwork play;
 
     public static void init() {
-        Network.play = FrameworkAPI.createNetworkBuilder(new ResourceLocation(Constants.MOD_ID, "play"), 1)
+        Network.play = FrameworkAPI.createNetworkBuilder(Utils.resource("play"), 1)
             .registerPlayMessage("sync_fluid", MessageSyncFluid.class, MessageSyncFluid.STREAM_CODEC, MessageSyncFluid::handle, PacketFlow.CLIENTBOUND)
             .registerPlayMessage("flip_animation", MessageFlipAnimation.class, MessageFlipAnimation.STREAM_CODEC, MessageFlipAnimation::handle, PacketFlow.CLIENTBOUND)
             .registerPlayMessage("set_name", MessageSetName.class, MessageSetName.STREAM_CODEC, MessageSetName::handle, PacketFlow.SERVERBOUND)

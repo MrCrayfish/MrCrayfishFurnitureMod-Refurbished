@@ -6,6 +6,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.SingleItemRecipe;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 
 /**
@@ -24,9 +25,9 @@ public class CuttingBoardSlicingRecipe extends SingleItemRecipe
     }
 
     @Override
-    public boolean matches(Container container, Level level)
+    public boolean matches(SingleRecipeInput input, Level level)
     {
-        return this.ingredient.test(container.getItem(0));
+        return this.ingredient.test(input.item());
     }
 
     public Ingredient getIngredient()

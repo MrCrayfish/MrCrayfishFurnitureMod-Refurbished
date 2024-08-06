@@ -53,8 +53,9 @@ public class NeoForgeClientEvents
         stack.pushPose();
         Vec3 view = event.getCamera().getPosition();
         stack.translate(-view.x(), -view.y(), -view.z());
-        LinkHandler.get().render(mc.player, stack, mc.renderBuffers().bufferSource(), event.getPartialTick());
-        ToolAnimationRenderer.get().render(mc.level, stack, mc.renderBuffers().bufferSource(), event.getPartialTick());
+        float deltaTick = event.getPartialTick().getGameTimeDeltaPartialTick(true);
+        LinkHandler.get().render(mc.player, stack, mc.renderBuffers().bufferSource(), deltaTick);
+        ToolAnimationRenderer.get().render(mc.level, stack, mc.renderBuffers().bufferSource(), deltaTick);
         DeferredElectricRenderer.get().draw(stack);
         stack.popPose();
 

@@ -57,7 +57,7 @@ public class Display
         Map<String, Integer> indexTracker = new HashMap<>();
         Computer.get().getPrograms().forEach(id -> {
             String namespace = id.getNamespace();
-            textures.putIfAbsent(namespace, new ResourceLocation(namespace, "textures/gui/program_icons.png"));
+            textures.putIfAbsent(namespace, ResourceLocation.fromNamespaceAndPath(namespace, "textures/gui/program_icons.png"));
             int nextIndex = indexTracker.getOrDefault(namespace, -1) + 1;
             indexTracker.put(namespace, nextIndex);
             icons.put(id, new Icon(textures.get(namespace), (nextIndex % 8) * 16, (nextIndex / 8) * 16));

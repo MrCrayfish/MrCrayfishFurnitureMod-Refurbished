@@ -10,6 +10,7 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -25,15 +26,15 @@ public class DoorMatCopyRecipe extends CustomRecipe
     }
 
     @Override
-    public boolean matches(CraftingContainer container, Level level)
+    public boolean matches(CraftingInput input, Level level)
     {
-        return !this.constructOutput(container).isEmpty();
+        return !this.constructOutput(input).isEmpty();
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer container, HolderLookup.Provider provider)
+    public ItemStack assemble(CraftingInput input, HolderLookup.Provider provider)
     {
-        return this.constructOutput(container);
+        return this.constructOutput(input);
     }
 
     @Override
@@ -48,13 +49,13 @@ public class DoorMatCopyRecipe extends CustomRecipe
         return ModRecipeSerializers.DOOR_MAT_COPY_RECIPE.get();
     }
 
-    private ItemStack constructOutput(CraftingContainer container)
+    private ItemStack constructOutput(CraftingInput input)
     {
         int outputCount = 0;
         ItemStack source = ItemStack.EMPTY;
-        for(int i = 0; i < container.getContainerSize(); i++)
+        for(int i = 0; i < input.size(); i++)
         {
-            ItemStack stack = container.getItem(i);
+            ItemStack stack = input.getItem(i);
             if(!stack.isEmpty())
             {
                 if(!stack.is(ModBlocks.DOOR_MAT.get().asItem()))

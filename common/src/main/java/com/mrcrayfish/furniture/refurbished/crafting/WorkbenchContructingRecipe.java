@@ -30,6 +30,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 
@@ -42,7 +43,7 @@ import java.util.stream.IntStream;
 /**
  * Author: MrCrayfish
  */
-public class WorkbenchContructingRecipe implements Recipe<Container>
+public class WorkbenchContructingRecipe implements Recipe<SingleRecipeInput>
 {
     // TODO allow recipe to change sound (drill for wood, saw for stone, weld for electronics)
     private final NonNullList<StackedIngredient> materials;
@@ -69,13 +70,13 @@ public class WorkbenchContructingRecipe implements Recipe<Container>
     }
 
     @Override
-    public boolean matches(Container container, Level level)
+    public boolean matches(SingleRecipeInput input, Level level)
     {
         return true;
     }
 
     @Override
-    public ItemStack assemble(Container container, HolderLookup.Provider provider)
+    public ItemStack assemble(SingleRecipeInput input, HolderLookup.Provider provider)
     {
         return this.result.copy();
     }

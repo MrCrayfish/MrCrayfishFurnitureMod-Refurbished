@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.client.gui.widget;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.furniture.refurbished.Constants;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -15,7 +16,7 @@ import net.minecraft.util.Mth;
  */
 public class IconButton extends Button
 {
-    public static final ResourceLocation ICON_TEXTURES = new ResourceLocation(Constants.MOD_ID, "textures/gui/icons.png");
+    public static final ResourceLocation ICON_TEXTURES = Utils.resource("textures/gui/icons.png");
 
     private final Component label;
     private final int u, v;

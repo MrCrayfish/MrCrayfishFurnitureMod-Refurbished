@@ -52,10 +52,10 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
 {
     public static final ResourceLocation WORKBENCH_TEXTURE = Utils.resource("textures/gui/container/workbench.png");
     public static final WidgetSprites FILTER_BUTTON_SPRITES = new WidgetSprites(
-        new ResourceLocation("recipe_book/filter_enabled"),
-        new ResourceLocation("recipe_book/filter_disabled"),
-        new ResourceLocation("recipe_book/filter_enabled_highlighted"),
-        new ResourceLocation("recipe_book/filter_disabled_highlighted")
+        ResourceLocation.withDefaultNamespace("recipe_book/filter_enabled"),
+        ResourceLocation.withDefaultNamespace("recipe_book/filter_disabled"),
+        ResourceLocation.withDefaultNamespace("recipe_book/filter_enabled_highlighted"),
+        ResourceLocation.withDefaultNamespace("recipe_book/filter_disabled_highlighted")
     );
     public static final WidgetSprites SEARCH_NEIGHBOURS_SPRITES = new WidgetSprites(
         Utils.resource("search_neighbours_selected"),

@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.platform;
 
+import com.mrcrayfish.furniture.refurbished.PlatformTags;
 import com.mrcrayfish.furniture.refurbished.compat.CompatibilityTags;
 import com.mrcrayfish.furniture.refurbished.platform.services.ITagHelper;
 import net.minecraft.tags.TagKey;
@@ -13,6 +14,6 @@ public class ForgeTagHelper implements ITagHelper
     @Override
     public TagKey<Item> getToolKnivesTag()
     {
-        return CompatibilityTags.Items.FORGE_TOOLS_KNIVES;
+        return PlatformTags.Items.TOOLS_KNIVES;
     }
 }

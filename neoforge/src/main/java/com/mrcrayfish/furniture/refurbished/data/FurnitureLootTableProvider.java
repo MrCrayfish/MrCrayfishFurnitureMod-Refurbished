@@ -40,9 +40,9 @@ public class FurnitureLootTableProvider extends LootTableProvider
 
     public static class Block extends BlockLootSubProvider
     {
-        protected Block()
+        protected Block(HolderLookup.Provider provider)
         {
-            super(Collections.emptySet(), FeatureFlags.REGISTRY.allFlags());
+            super(Collections.emptySet(), FeatureFlags.REGISTRY.allFlags(), provider);
         }
 
         @Override
@@ -63,9 +63,9 @@ public class FurnitureLootTableProvider extends LootTableProvider
 
     public static class Entity extends EntityLootSubProvider
     {
-        protected Entity()
+        protected Entity(HolderLookup.Provider provider)
         {
-            super(FeatureFlags.REGISTRY.allFlags());
+            super(FeatureFlags.REGISTRY.allFlags(), provider);
         }
 
         @Override

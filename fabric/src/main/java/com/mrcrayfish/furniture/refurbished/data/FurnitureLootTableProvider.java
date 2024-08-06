@@ -46,7 +46,7 @@ public class FurnitureLootTableProvider
         }
 
         @Override
-        public void generate(HolderLookup.Provider provider, BiConsumer<ResourceKey<LootTable>, LootTable.Builder> consumer)
+        public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> consumer)
         {
             CommonLootTableProvider.Entity.accept(new PlatformLootBuilder.Entity(consumer));
         }

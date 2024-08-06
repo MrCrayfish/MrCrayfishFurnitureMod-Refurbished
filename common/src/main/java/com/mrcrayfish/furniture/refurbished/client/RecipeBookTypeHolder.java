@@ -6,38 +6,17 @@ import net.minecraft.world.inventory.RecipeBookType;
 /**
  * Author: MrCrayfish
  */
-public class RecipeBookTypeHolder
+public record RecipeBookTypeHolder(String constantName)
 {
-    private final String constantName;
-    private RecipeBookType type;
-
-    public RecipeBookTypeHolder(String constantName)
-    {
-        this.constantName = constantName;
-    }
-
-    public String getConstantName()
-    {
-        return this.constantName;
-    }
-
     /**
      * @return The custom enum constant. Don't call too early!
      */
     public RecipeBookType get()
     {
-        if(this.type == null)
+        if(Services.PLATFORM.getPlatform().isFabric())
         {
-            // Fabric is not supported due to inability to register custom enums
-            if(!Services.PLATFORM.getPlatform().isFabric())
-            {
-                this.type = RecipeBookType.valueOf(this.constantName);
-            }
-            else
-            {
-                this.type = RecipeBookType.CRAFTING;
-            }
+            throw new UnsupportedOperationException("Cannot get custom RecipeBookCategories on Fabric");
         }
-        return this.type;
+        return RecipeBookType.valueOf(this.constantName);
     }
 }

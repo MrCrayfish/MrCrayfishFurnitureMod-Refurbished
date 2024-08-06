@@ -4,31 +4,17 @@ import com.mrcrayfish.furniture.refurbished.platform.Services;
 import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish
  */
-public final class RecipeBookCategoryHolder
+public record RecipeBookCategoryHolder(String constantName, Supplier<List<ItemStack>> icons)
 {
-    private final String constantName;
-    private final Supplier<ItemStack[]> icons;
-    private RecipeBookCategories category;
-
-    public RecipeBookCategoryHolder(String constantName, Supplier<ItemStack[]> icons)
+    public ItemStack[] getIconsArray()
     {
-        this.constantName = constantName;
-        this.icons = icons;
-    }
-
-    public String getConstantName()
-    {
-        return this.constantName;
-    }
-
-    public Supplier<ItemStack[]> getIcons()
-    {
-        return this.icons;
+        return this.icons.get().toArray(ItemStack[]::new);
     }
 
     /**
@@ -36,18 +22,10 @@ public final class RecipeBookCategoryHolder
      */
     public RecipeBookCategories get()
     {
-        if(this.category == null)
+        if(Services.PLATFORM.getPlatform().isFabric())
         {
-            // Fabric is not supported due to inability to register custom enums
-            if(!Services.PLATFORM.getPlatform().isFabric())
-            {
-                this.category = RecipeBookCategories.valueOf(this.constantName);
-            }
-            else
-            {
-                this.category = RecipeBookCategories.CRAFTING_SEARCH;
-            }
+            throw new UnsupportedOperationException("Cannot get custom RecipeBookCategories on Fabric");
         }
-        return this.category;
+        return RecipeBookCategories.valueOf(this.constantName);
     }
 }

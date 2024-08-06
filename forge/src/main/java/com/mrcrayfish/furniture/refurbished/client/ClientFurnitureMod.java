@@ -12,7 +12,7 @@ public class ClientFurnitureMod
     {
         // Register all categories
         ModRecipeBookCategories.getAllCategories().forEach(holder -> {
-            RecipeBookCategories.create(holder.getConstantName(), holder.getIcons().get());
+            RecipeBookCategories.create(holder.constantName(), holder.getIconsArray());
         });
     }
 }

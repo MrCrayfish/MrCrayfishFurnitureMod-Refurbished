@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
+import com.mrcrayfish.furniture.refurbished.crafting.ContainerInput;
 import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardCombiningRecipe;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
@@ -30,6 +31,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleItemRecipe;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -48,9 +50,9 @@ import java.util.stream.IntStream;
  */
 public class CuttingBoardBlockEntity extends BasicLootBlockEntity
 {
-    private final RecipeManager.CachedCheck<Container, ? extends SingleItemRecipe> slicingRecipeCache;
-    private final RecipeManager.CachedCheck<Container, CuttingBoardCombiningRecipe> combiningRecipeCache;
-    private final RecipeManager.CachedCheck<Container, ? extends SingleItemRecipe> outputCache;
+    private final RecipeManager.CachedCheck<SingleRecipeInput, ? extends SingleItemRecipe> slicingRecipeCache;
+    private final RecipeManager.CachedCheck<ContainerInput, CuttingBoardCombiningRecipe> combiningRecipeCache;
+    private final RecipeManager.CachedCheck<SingleRecipeInput, ? extends SingleItemRecipe> outputCache;
     protected final int useableContainerSize;
     protected boolean sync;
     protected boolean canExtract;
@@ -270,7 +272,7 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
     {
         if(slotIndex >= 0 && slotIndex < this.useableContainerSize && slotIndex == this.getHeadIndex() && this.canExtract)
         {
-            return this.outputCache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level)).isEmpty();
+            return this.outputCache.getRecipeFor(new SingleRecipeInput(stack), Objects.requireNonNull(this.level)).isEmpty();
         }
         return false;
     }
@@ -322,7 +324,7 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
      */
     private Optional<? extends SingleItemRecipe> getSlicingRecipe(ItemStack stack)
     {
-        return this.slicingRecipeCache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level)).map(RecipeHolder::value);
+        return this.slicingRecipeCache.getRecipeFor(new SingleRecipeInput(stack), Objects.requireNonNull(this.level)).map(RecipeHolder::value);
     }
 
     /**
@@ -331,7 +333,7 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
      */
     private Optional<CuttingBoardCombiningRecipe> getCombiningRecipe()
     {
-        return this.combiningRecipeCache.getRecipeFor(this, Objects.requireNonNull(this.level)).map(RecipeHolder::value);
+        return this.combiningRecipeCache.getRecipeFor(new ContainerInput(this), Objects.requireNonNull(this.level)).map(RecipeHolder::value);
     }
 
     /**
@@ -352,7 +354,7 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
         Container container = new SimpleContainer(placeIndex + 1);
         IntStream.range(0, placeIndex + 1).forEach(index -> container.setItem(index, this.getItem(index)));
         container.setItem(container.getContainerSize() - 1, stack);
-        return this.combiningRecipeCache.getRecipeFor(container, Objects.requireNonNull(this.level)).map(RecipeHolder::value);
+        return this.combiningRecipeCache.getRecipeFor(new ContainerInput(container), Objects.requireNonNull(this.level)).map(RecipeHolder::value);
     }
 
     /**
@@ -373,7 +375,7 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
             return;
 
         Level level = Objects.requireNonNull(this.level);
-        ItemStack stack = recipe.assemble(this, level.registryAccess());
+        ItemStack stack = recipe.assemble(new ContainerInput(this), level.registryAccess());
         List<ItemStack> remainingItems = this.getCraftingRemainingItems();
 
         this.clearContent();

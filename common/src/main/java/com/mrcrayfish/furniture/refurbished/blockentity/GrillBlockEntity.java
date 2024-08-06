@@ -42,6 +42,7 @@ import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -66,8 +67,8 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
     private final NonNullList<ItemStack> fuel = NonNullList.withSize(9, ItemStack.EMPTY);
     private final NonNullList<ItemStack> cooking = NonNullList.withSize(4, ItemStack.EMPTY);
     private final ImmutableList<CookingSpace> spaces;
-    protected final RecipeManager.CachedCheck<Container, ? extends ProcessingRecipe> recipeCache;
-    protected final RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> campfireCookingCache;
+    protected final RecipeManager.CachedCheck<SingleRecipeInput, ? extends ProcessingRecipe> recipeCache;
+    protected final RecipeManager.CachedCheck<SingleRecipeInput, ? extends AbstractCookingRecipe> campfireCookingCache;
     private int remainingFuel;
     private float storedExperience;
 
@@ -487,14 +488,14 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
         return optional;
     }
 
-    private Optional<? extends ProcessingRecipe> getRecipeFromCache(RecipeManager.CachedCheck<Container, ? extends ProcessingRecipe> cache, ItemStack stack)
+    private Optional<? extends ProcessingRecipe> getRecipeFromCache(RecipeManager.CachedCheck<SingleRecipeInput, ? extends ProcessingRecipe> cache, ItemStack stack)
     {
-        return cache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level)).map(RecipeHolder::value);
+        return cache.getRecipeFor(new SingleRecipeInput(stack), Objects.requireNonNull(this.level)).map(RecipeHolder::value);
     }
 
-    private Optional<? extends ProcessingRecipe> getCookingRecipeFromCache(RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> cache, ItemStack stack)
+    private Optional<? extends ProcessingRecipe> getCookingRecipeFromCache(RecipeManager.CachedCheck<SingleRecipeInput, ? extends AbstractCookingRecipe> cache, ItemStack stack)
     {
-        return cache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level)).map(RecipeHolder::value).map(recipe -> ProcessingRecipe.Item.from(recipe, this.level.registryAccess()));
+        return cache.getRecipeFor(new SingleRecipeInput(stack), Objects.requireNonNull(this.level)).map(RecipeHolder::value).map(recipe -> ProcessingRecipe.Item.from(recipe, this.level.registryAccess()));
     }
 
     @Override

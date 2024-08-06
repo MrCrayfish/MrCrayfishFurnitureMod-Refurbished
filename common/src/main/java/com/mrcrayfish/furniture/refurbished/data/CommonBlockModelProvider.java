@@ -7,6 +7,7 @@ import com.mrcrayfish.furniture.refurbished.data.model.ExtraModel;
 import com.mrcrayfish.furniture.refurbished.data.model.ModelTemplate;
 import com.mrcrayfish.furniture.refurbished.data.model.PreparedMultiPartBlockState;
 import com.mrcrayfish.furniture.refurbished.data.model.PreparedVariantBlockState;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.models.blockstates.VariantProperties;
@@ -493,32 +494,32 @@ public class CommonBlockModelProvider
     private ResourceLocation blockTexture(Block block)
     {
         ResourceLocation name = BuiltInRegistries.BLOCK.getKey(block);
-        return new ResourceLocation(name.getNamespace(), "block/" + name.getPath());
+        return ResourceLocation.fromNamespaceAndPath(name.getNamespace(), "block/" + name.getPath());
     }
 
     private ResourceLocation woodParticle(WoodType type)
     {
-        return new ResourceLocation(Constants.MOD_ID, "block/" + type.name() + "_particle");
+        return Utils.resource("block/" + type.name() + "_particle");
     }
 
     private ResourceLocation colourParticle(DyeColor color)
     {
-        return new ResourceLocation(Constants.MOD_ID, "block/" + color.getName() + "_particle");
+        return Utils.resource("block/" + color.getName() + "_particle");
     }
 
     private ResourceLocation metalParticle(MetalType type)
     {
-        return new ResourceLocation(Constants.MOD_ID, "block/" + type.getName() + "_particle");
+        return Utils.resource("block/" + type.getName() + "_particle");
     }
 
     private ResourceLocation leafTexture(LeafType type)
     {
-        return new ResourceLocation("block/" + type.getName() + "_leaves");
+        return ResourceLocation.withDefaultNamespace("block/" + type.getName() + "_leaves");
     }
 
     private ResourceLocation stoneTexture(StoneType type)
     {
-        return new ResourceLocation("block/" + type.getName());
+        return ResourceLocation.withDefaultNamespace("block/" + type.getName());
     }
 
     private void table(TableBlock block)
@@ -1134,7 +1135,7 @@ public class CommonBlockModelProvider
     {
         WoodType type = block.getWoodType();
         TextureMapping textures = new TextureMapping();
-        textures.put(TextureSlot.PARTICLE, new ResourceLocation("block/glass"));
+        textures.put(TextureSlot.PARTICLE, ResourceLocation.withDefaultNamespace("block/glass"));
         textures.put(TextureSlot.TEXTURE, this.blockTexture(block));
         PreparedVariantBlockState state = new PreparedVariantBlockState(block);
         state.createVariant().prop(StorageJarBlock.DIRECTION, Direction.NORTH).addTexturedModel(ModelTemplate.STORAGE_JAR.stateModel(type).setTextures(textures).setYRotation(VariantProperties.Rotation.R0)).markAsItem();

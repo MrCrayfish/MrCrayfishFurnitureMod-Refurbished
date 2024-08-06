@@ -8,6 +8,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
@@ -88,16 +89,15 @@ public class GrillCookingCategory extends FurnitureRecipeCategory<ProcessingReci
     }
 
     @Override
-    public List<Component> getTooltipStrings(ProcessingRecipe recipe, IRecipeSlotsView view, double mouseX, double mouseY)
+    public void getTooltip(ITooltipBuilder tooltip, ProcessingRecipe recipe, IRecipeSlotsView view, double mouseX, double mouseY)
     {
         if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, 5, 15, 57, 61) && !ScreenHelper.isMouseWithinBounds(mouseX, mouseY, 26, 6, 16, 16))
         {
-            return Plugin.getItemTooltip(ModBlocks.GRILL_RED.get());
+            tooltip.addAll(Plugin.getItemTooltip(ModBlocks.GRILL_RED.get()));
         }
-        if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, 99, 5, 16, 16))
+        else if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, 99, 5, 16, 16))
         {
-            return List.of(Utils.translation("gui", "jei_campfire_info"));
+            tooltip.add(Utils.translation("gui", "jei_campfire_info"));
         }
-        return super.getTooltipStrings(recipe, view, mouseX, mouseY);
     }
 }

@@ -11,6 +11,7 @@ displayURL = "${mod_homepage}"
 logoFile = "${mod_id}_icon.png"
 authors = "${mod_author}"
 description = '''${mod_desc}'''
+enumExtensions="META-INF/enumextensions.json"
 
 [[accessTransformers]]
 file="META-INF/accesstransformer.cfg"

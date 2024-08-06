@@ -349,7 +349,7 @@ public class DeliveryService extends SavedData
             case "minecraft:overworld" -> Level.OVERWORLD;
             case "minecraft:the_nether" -> Level.NETHER;
             case "minecraft:the_end" -> Level.END;
-            default -> ResourceKey.create(Registries.DIMENSION, new ResourceLocation(levelKey));
+            default -> ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(levelKey));
         };
     }
 

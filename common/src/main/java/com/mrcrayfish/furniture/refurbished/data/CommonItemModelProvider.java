@@ -10,6 +10,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.data.model.ModelTemplate;
 import com.mrcrayfish.furniture.refurbished.data.model.PreparedItem;
 import com.mrcrayfish.furniture.refurbished.item.FridgeItem;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.data.models.model.TextureMapping;
 import net.minecraft.data.models.model.TextureSlot;
 import net.minecraft.resources.ResourceLocation;
@@ -86,7 +87,7 @@ public class CommonItemModelProvider
     {
         MetalType type = item.getMetalType();
         TextureMapping textures = new TextureMapping();
-        textures.put(TextureSlot.TEXTURE, new ResourceLocation(Constants.MOD_ID, "block/" + type.getName() + "_fridge"));
+        textures.put(TextureSlot.TEXTURE, Utils.resource("block/" + type.getName() + "_fridge"));
         PreparedItem preparedItem = new PreparedItem(item);
         preparedItem.setModel(ModelTemplate.FRIDGE.itemModel(type).setTextures(textures));
         this.consumer.accept(preparedItem);
@@ -97,7 +98,7 @@ public class CommonItemModelProvider
         WoodType woodType = block.getWoodType();
         MetalType metalType = block.getMetalType();
         TextureMapping textures = new TextureMapping();
-        textures.put(TextureSlot.TEXTURE, new ResourceLocation(Constants.MOD_ID, "block/" + woodType.name() + "_" + metalType.getName() + "_ceiling_fan"));
+        textures.put(TextureSlot.TEXTURE, Utils.resource("block/" + woodType.name() + "_" + metalType.getName() + "_ceiling_fan"));
         PreparedItem preparedItem = new PreparedItem(block.asItem());
         preparedItem.setModel(ModelTemplate.CEILING_FAN.itemModel(woodType, metalType).setTextures(textures));
         this.consumer.accept(preparedItem);
@@ -107,7 +108,7 @@ public class CommonItemModelProvider
     {
         WoodType woodType = block.getWoodType();
         TextureMapping textures = new TextureMapping();
-        textures.put(TextureSlot.TEXTURE, new ResourceLocation(Constants.MOD_ID, "block/" + woodType.name() + "_bath"));
+        textures.put(TextureSlot.TEXTURE, Utils.resource("block/" + woodType.name() + "_bath"));
         PreparedItem preparedItem = new PreparedItem(block.asItem());
         preparedItem.setModel(ModelTemplate.BATH.itemModel(woodType).setTextures(textures));
         this.consumer.accept(preparedItem);
@@ -117,7 +118,7 @@ public class CommonItemModelProvider
     {
         DyeColor color = block.getDyeColor();
         TextureMapping textures = new TextureMapping();
-        textures.put(TextureSlot.TEXTURE, new ResourceLocation(Constants.MOD_ID, "block/" + color.getName() + "_bath"));
+        textures.put(TextureSlot.TEXTURE, Utils.resource("block/" + color.getName() + "_bath"));
         PreparedItem preparedItem = new PreparedItem(block.asItem());
         preparedItem.setModel(ModelTemplate.BATH.itemModel(color).setTextures(textures));
         this.consumer.accept(preparedItem);

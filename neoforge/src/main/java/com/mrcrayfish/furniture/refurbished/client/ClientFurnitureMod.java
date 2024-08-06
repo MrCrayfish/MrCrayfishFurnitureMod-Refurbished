@@ -4,9 +4,7 @@ import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.client.registration.ParticleProviderRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.RecipeCategoryRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
-import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookCategories;
 import net.minecraft.client.RecipeBookCategories;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -24,7 +22,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
@@ -67,12 +64,6 @@ public class ClientFurnitureMod
     }
 
     @SubscribeEvent
-    private static void onRegisterAdditional(ModelEvent.RegisterAdditional event)
-    {
-        ExtraModels.register(event::register);
-    }
-
-    @SubscribeEvent
     private static void onRegisterParticleProviders(RegisterParticleProvidersEvent event)
     {
         ClientBootstrap.registerParticleProviders(new ParticleProviderRegister()
@@ -108,11 +99,6 @@ public class ClientFurnitureMod
     @SubscribeEvent
     private static void onRegisterRecipeCategories(RegisterRecipeBookCategoriesEvent event)
     {
-        // Register all categories
-        ModRecipeBookCategories.getAllCategories().forEach(holder -> {
-            RecipeBookCategories.create(holder.getConstantName(), holder.getIcons().get());
-        });
-
         ClientBootstrap.registerRecipeBookCategories(new RecipeCategoryRegister()
         {
             @Override
@@ -134,10 +120,4 @@ public class ClientFurnitureMod
             }
         });
     }
-
-    private static void registerRecipeBookCategory(RecipeBookCategoryHolder holder)
-    {
-        RecipeBookCategories.create(holder.getConstantName(), holder.getIcons().get());
-    }
-
 }

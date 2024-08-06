@@ -17,7 +17,6 @@ import java.util.function.Function;
 public class TextInputScreen extends Screen
 {
     private static final ResourceLocation WINDOW_SPRITE = Utils.resource("window");
-    public static final ResourceLocation RECIPE_BOOK_TEXTURE = new ResourceLocation("textures/gui/recipe_book.png");
     public static final int WINDOW_WIDTH = 160;
     public static final int WINDOW_HEIGHT = 72;
 

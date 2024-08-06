@@ -6,6 +6,7 @@ import com.mrcrayfish.furniture.refurbished.block.MetalType;
 import com.mrcrayfish.furniture.refurbished.data.model.ModelTemplate;
 import com.mrcrayfish.furniture.refurbished.data.model.PreparedItem;
 import com.mrcrayfish.furniture.refurbished.data.model.PreparedVariantBlockState;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.PackOutput;
@@ -64,17 +65,17 @@ public class FurnitureModelProvider extends BlockStateProvider
 
         // Registers wood particle textures
         WoodType.values().forEach(type -> {
-            helper.trackGenerated(new ResourceLocation(Constants.MOD_ID, "block/" + type.name() + "_particle"), TEXTURE);
+            helper.trackGenerated(Utils.resource("block/" + type.name() + "_particle"), TEXTURE);
         });
 
         // Registers coloured particle textures
         Arrays.stream(DyeColor.values()).forEach(type -> {
-            helper.trackGenerated(new ResourceLocation(Constants.MOD_ID, "block/" + type.getName() + "_particle"), TEXTURE);
+            helper.trackGenerated(Utils.resource("block/" + type.getName() + "_particle"), TEXTURE);
         });
 
         // Registers metal particle textures
         Arrays.stream(MetalType.values()).forEach(type -> {
-            helper.trackGenerated(new ResourceLocation(Constants.MOD_ID, "block/" + type.getName() + "_particle"), TEXTURE);
+            helper.trackGenerated(Utils.resource("block/" + type.getName() + "_particle"), TEXTURE);
         });
     }
 
@@ -112,7 +113,7 @@ public class FurnitureModelProvider extends BlockStateProvider
                     if(models.length > 0) {
                         PreparedVariantBlockState.Model model = models[0];
                         ResourceLocation itemName = Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(item));
-                        ResourceLocation modelLocation = new ResourceLocation(Constants.MOD_ID, "block/" + model.getName());
+                        ResourceLocation modelLocation = Utils.resource("block/" + model.getName());
                         this.itemModels().getBuilder(itemName.toString()).parent(new ModelFile.UncheckedModelFile(modelLocation));
                     }
                 });

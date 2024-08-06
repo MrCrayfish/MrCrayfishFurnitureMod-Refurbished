@@ -6,12 +6,14 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.Constants;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -43,7 +45,7 @@ public class DeferredElectricRenderer
         return instance;
     }
 
-    private final ResourceLocation nodeTexture = new ResourceLocation(Constants.MOD_ID, "textures/misc/electricity_nodes.png");
+    private final ResourceLocation nodeTexture = Utils.resource("textures/misc/electricity_nodes.png");
     private final List<BiConsumer<PoseStack, VertexConsumer>> builders = new LinkedList<>();
 
     private DeferredElectricRenderer() {}
@@ -76,11 +78,12 @@ public class DeferredElectricRenderer
         RenderSystem.setShaderTexture(0, this.nodeTexture);
 
         pose.pushPose();
-        BufferBuilder builder = tesselator.getBuilder();
-        builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+        BufferBuilder builder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
         for(BiConsumer<PoseStack, VertexConsumer> consumer : this.builders)
             consumer.accept(pose, builder);
-        BufferUploader.drawWithShader(builder.end());
+        MeshData data = builder.build();
+        if(data != null)
+            BufferUploader.drawWithShader(data);
         pose.popPose();
 
         RenderSystem.disableBlend();
@@ -118,35 +121,35 @@ public class DeferredElectricRenderer
         float maxU = minU + 0.25F;
         float maxV = minV + 0.25F;
         // North
-        consumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).uv(maxU, minV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).uv(minU, minV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).uv(minU, maxV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).uv(maxU, maxV).color(red, green, blue, alpha).endVertex();
+        consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).setUv(maxU, minV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).setUv(minU, minV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).setUv(minU, maxV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).setUv(maxU, maxV).setColor(red, green, blue, alpha);
         // South
-        consumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).uv(maxU, minV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).uv(minU, minV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).uv(minU, maxV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).uv(maxU, maxV).color(red, green, blue, alpha).endVertex();
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).setUv(maxU, minV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).setUv(minU, minV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).setUv(minU, maxV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).setUv(maxU, maxV).setColor(red, green, blue, alpha);
         // West
-        consumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).uv(maxU, minV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).uv(minU, minV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).uv(minU, maxV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).uv(maxU, maxV).color(red, green, blue, alpha).endVertex();
+        consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).setUv(maxU, minV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).setUv(minU, minV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).setUv(minU, maxV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).setUv(maxU, maxV).setColor(red, green, blue, alpha);
         // East
-        consumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).uv(maxU, minV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).uv(minU, minV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).uv(minU, maxV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).uv(maxU, maxV).color(red, green, blue, alpha).endVertex();
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).setUv(maxU, minV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).setUv(minU, minV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).setUv(minU, maxV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).setUv(maxU, maxV).setColor(red, green, blue, alpha);
         // Up
-        consumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).uv(maxV, minU).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).uv(minV, minU).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).uv(minV, maxV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).uv(maxV, maxV).color(red, green, blue, alpha).endVertex();
+        consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).setUv(maxV, minU).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).setUv(minV, minU).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).setUv(minV, maxV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).setUv(maxV, maxV).setColor(red, green, blue, alpha);
         // Down
-        consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).uv(maxU, minV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).uv(minU, minV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).uv(minU, maxV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).uv(maxU, maxV).color(red, green, blue, alpha).endVertex();
+        consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).setUv(maxU, minV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).setUv(minU, minV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).setUv(minU, maxV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).setUv(maxU, maxV).setColor(red, green, blue, alpha);
     }
 
     /**
@@ -169,35 +172,35 @@ public class DeferredElectricRenderer
         float maxU = minU + 0.25F;
         float maxV = minV + 0.25F;
         // North
-        consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).uv(maxU, minV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).uv(minU, minV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).uv(minU, maxV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).uv(maxU, maxV).color(red, green, blue, alpha).endVertex();
+        consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).setUv(maxU, minV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).setUv(minU, minV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).setUv(minU, maxV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).setUv(maxU, maxV).setColor(red, green, blue, alpha);
         // South
-        consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).uv(maxU, minV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).uv(minU, minV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).uv(minU, maxV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).uv(maxU, maxV).color(red, green, blue, alpha).endVertex();
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).setUv(maxU, minV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).setUv(minU, minV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).setUv(minU, maxV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).setUv(maxU, maxV).setColor(red, green, blue, alpha);
         // West
-        consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).uv(maxU, minV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).uv(minU, minV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).uv(minU, maxV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).uv(maxU, maxV).color(red, green, blue, alpha).endVertex();
+        consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).setUv(maxU, minV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).setUv(minU, minV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).setUv(minU, maxV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).setUv(maxU, maxV).setColor(red, green, blue, alpha);
         // East
-        consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).uv(maxU, minV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).uv(minU, minV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).uv(minU, maxV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).uv(maxU, maxV).color(red, green, blue, alpha).endVertex();
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).setUv(maxU, minV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).setUv(minU, minV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).setUv(minU, maxV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).setUv(maxU, maxV).setColor(red, green, blue, alpha);
         // Up
-        consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).uv(maxU, minV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).uv(minU, minV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).uv(minU, maxV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).uv(maxU, maxV).color(red, green, blue, alpha).endVertex();
+        consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).setUv(maxU, minV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).setUv(minU, minV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).setUv(minU, maxV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).setUv(maxU, maxV).setColor(red, green, blue, alpha);
         // Down
-        consumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).uv(maxU, minV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).uv(minU, minV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).uv(minU, maxV).color(red, green, blue, alpha).endVertex();
-        consumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).uv(maxU, maxV).color(red, green, blue, alpha).endVertex();
+        consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).setUv(maxU, minV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).setUv(minU, minV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).setUv(minU, maxV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).setUv(maxU, maxV).setColor(red, green, blue, alpha);
     }
 
     /**
@@ -213,34 +216,34 @@ public class DeferredElectricRenderer
     public void drawTexturedBox(Matrix4f matrix, VertexConsumer consumer, AABB box, float minU, float minV, float maxU, float maxV)
     {
         // North
-        consumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).uv(maxU, minV).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-        consumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).uv(minU, minV).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-        consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).uv(minU, maxV).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-        consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).uv(maxU, maxV).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+        consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).setUv(maxU, minV).setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).setUv(minU, minV).setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).setUv(minU, maxV).setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).setUv(maxU, maxV).setColor(1.0F, 1.0F, 1.0F, 1.0F);
         // South
-        consumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).uv(maxU, minV).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-        consumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).uv(minU, minV).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-        consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).uv(minU, maxV).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-        consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).uv(maxU, maxV).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).setUv(maxU, minV).setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).setUv(minU, minV).setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).setUv(minU, maxV).setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).setUv(maxU, maxV).setColor(1.0F, 1.0F, 1.0F, 1.0F);
         // West
-        consumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).uv(maxU, minV).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-        consumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).uv(minU, minV).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-        consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).uv(minU, maxV).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-        consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).uv(maxU, maxV).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+        consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).setUv(maxU, minV).setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).setUv(minU, minV).setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).setUv(minU, maxV).setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).setUv(maxU, maxV).setColor(1.0F, 1.0F, 1.0F, 1.0F);
         // East
-        consumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).uv(maxU, minV).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-        consumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).uv(minU, minV).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-        consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).uv(minU, maxV).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-        consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).uv(maxU, maxV).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).setUv(maxU, minV).setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).setUv(minU, minV).setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).setUv(minU, maxV).setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).setUv(maxU, maxV).setColor(1.0F, 1.0F, 1.0F, 1.0F);
         // Up
-        consumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).uv(maxV, minU).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-        consumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).uv(minV, minU).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-        consumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).uv(minV, maxV).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-        consumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).uv(maxV, maxV).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+        consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).setUv(maxV, minU).setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).setUv(minV, minU).setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).setUv(minV, maxV).setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).setUv(maxV, maxV).setColor(1.0F, 1.0F, 1.0F, 1.0F);
         // Down
-        consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).uv(maxU, minV).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-        consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).uv(minU, minV).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-        consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).uv(minU, maxV).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-        consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).uv(maxU, maxV).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+        consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).setUv(maxU, minV).setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).setUv(minU, minV).setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).setUv(minU, maxV).setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).setUv(maxU, maxV).setColor(1.0F, 1.0F, 1.0F, 1.0F);
     }
 }

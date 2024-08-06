@@ -7,6 +7,7 @@ import com.mrcrayfish.furniture.refurbished.electricity.Connection;
 import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
 import com.mrcrayfish.furniture.refurbished.electricity.LinkManager;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -19,7 +20,7 @@ import net.minecraft.world.phys.BlockHitResult;
 public class NodeIndicatorOverlay implements IHudOverlay
 {
     @Override
-    public void draw(GuiGraphics graphics, float partialTick)
+    public void draw(GuiGraphics graphics, DeltaTracker deltaTracker)
     {
         Minecraft mc = Minecraft.getInstance();
         if(mc.level == null || mc.hitResult == null)

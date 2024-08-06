@@ -6,6 +6,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -26,6 +27,7 @@ import com.mrcrayfish.furniture.refurbished.electricity.NodeHitResult;
 import com.mrcrayfish.furniture.refurbished.item.WrenchItem;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageDeleteLink;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -57,8 +59,8 @@ import java.util.Set;
  */
 public class LinkHandler
 {
-    private static final ResourceLocation POWERABLE_AREA = new ResourceLocation(Constants.MOD_ID, "textures/misc/powerable_area.png");
-    private static final ResourceLocation UNPOWERABLE_AREA = new ResourceLocation(Constants.MOD_ID, "textures/misc/unpowerable_area.png");
+    private static final ResourceLocation POWERABLE_AREA = Utils.resource("textures/misc/powerable_area.png");
+    private static final ResourceLocation UNPOWERABLE_AREA = Utils.resource("textures/misc/unpowerable_area.png");
     private static final int DEFAULT_LINK_COLOUR = 0xFFFFFFFF;
     private static final int SUCCESS_LINK_COLOUR = 0xFFB5FF4C;
     private static final int ERROR_LINK_COLOUR = 0xFFC33636;
@@ -601,10 +603,13 @@ public class LinkHandler
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.polygonOffset(-3.0F, -3.0F);
         RenderSystem.enablePolygonOffset();
-        BufferBuilder builder = tesselator.getBuilder();
-        builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        BufferBuilder builder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         areaShape.toAabbs().forEach(box -> this.drawTexturedBox(poseStack, builder, box));
-        BufferUploader.drawWithShader(builder.end());
+        MeshData data = builder.build();
+        if(data != null)
+        {
+            BufferUploader.drawWithShader(data);
+        }
         RenderSystem.polygonOffset(0.0F, 0.0F);
         RenderSystem.disablePolygonOffset();
         RenderSystem.disableBlend();
@@ -628,44 +633,44 @@ public class LinkHandler
         if(width > 0.01)
         {
             // North
-            consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).uv(0, height + offset).endVertex();
-            consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).uv(width, height + offset).endVertex();
-            consumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).uv(width, offset).endVertex();
-            consumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).uv(0, offset).endVertex();
+            consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).setUv(0, height + offset);
+            consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).setUv(width, height + offset);
+            consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).setUv(width, offset);
+            consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).setUv(0, offset);
             // South
-            consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).uv(0, height + offset).endVertex();
-            consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).uv(width, height + offset).endVertex();
-            consumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).uv(width, offset).endVertex();
-            consumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).uv(0, offset).endVertex();
+            consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).setUv(0, height + offset);
+            consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).setUv(width, height + offset);
+            consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).setUv(width, offset);
+            consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).setUv(0, offset);
         }
         width = (float) (box.maxZ - box.minZ);
         if(width > 0.01)
         {
             // West
-            consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).uv(0, height + offset).endVertex();
-            consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).uv(width, height + offset).endVertex();
-            consumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).uv(width, offset).endVertex();
-            consumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).uv(0, offset).endVertex();
+            consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).setUv(0, height + offset);
+            consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).setUv(width, height + offset);
+            consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).setUv(width, offset);
+            consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).setUv(0, offset);
             // East
-            consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).uv(0, height + offset).endVertex();
-            consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).uv(width, height + offset).endVertex();
-            consumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).uv(width, offset).endVertex();
-            consumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).uv(0, offset).endVertex();
+            consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).setUv(0, height + offset);
+            consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).setUv(width, height + offset);
+            consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).setUv(width, offset);
+            consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).setUv(0, offset);
         }
         width = (float) (box.maxX - box.minX);
         height = (float) (box.maxZ - box.minZ);
         if(width > 0.01)
         {
             // Up
-            consumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).uv(0, width + offset).endVertex();
-            consumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).uv(height, width + offset).endVertex();
-            consumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).uv(height, offset).endVertex();
-            consumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).uv(0, offset).endVertex();
+            consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).setUv(0, width + offset);
+            consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).setUv(height, width + offset);
+            consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).setUv(height, offset);
+            consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).setUv(0, offset);
             // Down
-            consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).uv(0, height + offset).endVertex();
-            consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).uv(width, height + offset).endVertex();
-            consumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).uv(width, offset).endVertex();
-            consumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).uv(0, offset).endVertex();
+            consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).setUv(0, height + offset);
+            consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).setUv(width, height + offset);
+            consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).setUv(width, offset);
+            consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).setUv(0, offset);
         }
     }
 

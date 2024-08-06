@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.data;
 
+import com.mrcrayfish.furniture.refurbished.PlatformTags;
 import com.mrcrayfish.furniture.refurbished.compat.CompatibilityTags;
 import com.mrcrayfish.furniture.refurbished.core.ModTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -23,7 +24,7 @@ public class FurnitureItemTagsProvider extends FabricTagProvider.ItemTagProvider
     {
         CommonItemTagsProvider.accept(key -> new PlatformTagBuilder<>(this.getOrCreateTagBuilder(key)));
 
-        this.getOrCreateTagBuilder(CompatibilityTags.Items.FABRIC_TOOLS_KNIVES)
+        this.getOrCreateTagBuilder(PlatformTags.Items.TOOLS_KNIVES)
                 .addTag(ModTags.Items.TOOLS_KNIVES);
     }
 }

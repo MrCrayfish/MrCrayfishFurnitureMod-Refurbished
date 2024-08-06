@@ -18,19 +18,7 @@ public class CompatibilityTags
 
         private static TagKey<Block> tag(String modId, String name)
         {
-            return TagKey.create(Registries.BLOCK, new ResourceLocation(modId, name));
-        }
-    }
-
-    public static class Items
-    {
-        public static final TagKey<Item> FORGE_TOOLS_KNIVES = tag("forge", "tools/knives");
-        public static final TagKey<Item> NEOFORGE_TOOLS_KNIVES = tag("neoforge", "tools/knives");
-        public static final TagKey<Item> FABRIC_TOOLS_KNIVES = tag("c", "knives");
-
-        private static TagKey<Item> tag(String modId, String name)
-        {
-            return TagKey.create(Registries.ITEM, new ResourceLocation(modId, name));
+            return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(modId, name));
         }
     }
 }

@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,9 +28,9 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
 {
     protected static final int[] NO_SLOTS = new int[]{};
 
-    private final RecipeManager.CachedCheck<Container, ? extends ProcessingRecipe> inputRecipeCache;
-    private final RecipeManager.CachedCheck<Container, ? extends ProcessingRecipe>[] processRecipeCache;
-    private final RecipeManager.CachedCheck<Container, ? extends ProcessingRecipe> outputRecipeCache;
+    private final RecipeManager.CachedCheck<SingleRecipeInput, ? extends ProcessingRecipe> inputRecipeCache;
+    private final RecipeManager.CachedCheck<SingleRecipeInput, ? extends ProcessingRecipe>[] processRecipeCache;
+    private final RecipeManager.CachedCheck<SingleRecipeInput, ? extends ProcessingRecipe> outputRecipeCache;
     protected int totalProcessingTime;
     protected int processingTime;
     protected int energy;
@@ -391,9 +392,9 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
      * @param stack the itemstack of the recipe
      * @return An optional recipe
      */
-    private Optional<? extends ProcessingRecipe> getRecipe(RecipeManager.CachedCheck<Container, ? extends ProcessingRecipe> cache, ItemStack stack)
+    private Optional<? extends ProcessingRecipe> getRecipe(RecipeManager.CachedCheck<SingleRecipeInput, ? extends ProcessingRecipe> cache, ItemStack stack)
     {
-        return cache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level)).map(RecipeHolder::value);
+        return cache.getRecipeFor(new SingleRecipeInput(stack), Objects.requireNonNull(this.level)).map(RecipeHolder::value);
     }
 
     /**
@@ -403,7 +404,7 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
      */
     public boolean isRecipe(ItemStack stack)
     {
-        return this.inputRecipeCache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level)).isPresent();
+        return this.inputRecipeCache.getRecipeFor(new SingleRecipeInput(stack), Objects.requireNonNull(this.level)).isPresent();
     }
 
     @Override
@@ -466,14 +467,14 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
      * @return an array of cache checks
      */
     @SuppressWarnings("unchecked")
-    protected RecipeManager.CachedCheck<Container, ? extends ProcessingRecipe>[] createCacheArray(int size, Supplier<RecipeManager.CachedCheck<Container, ? extends ProcessingRecipe>> fill)
+    protected RecipeManager.CachedCheck<SingleRecipeInput, ? extends ProcessingRecipe>[] createCacheArray(int size, Supplier<RecipeManager.CachedCheck<SingleRecipeInput, ? extends ProcessingRecipe>> fill)
     {
         RecipeManager.CachedCheck<?, ?>[] array = new RecipeManager.CachedCheck<?, ?>[size];
         for(int i = 0; i < array.length; i++)
         {
             array[i] = fill.get();
         }
-        return (RecipeManager.CachedCheck<Container, ? extends ProcessingRecipe>[]) array;
+        return (RecipeManager.CachedCheck<SingleRecipeInput, ? extends ProcessingRecipe>[]) array;
     }
 
     @Override

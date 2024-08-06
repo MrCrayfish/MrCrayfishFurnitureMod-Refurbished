@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mrcrayfish.framework.api.client.FrameworkClientAPI;
 import com.mrcrayfish.furniture.refurbished.client.registration.ParticleProviderRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.RecipeCategoryRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
@@ -12,6 +13,7 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.chat.Component;
@@ -56,11 +58,6 @@ public class ForgeClientEvents
         ClientBootstrap.registerRenderTypes(ItemBlockRenderTypes::setRenderLayer);
     }
 
-    public static void onRegisterAdditional(ModelEvent.RegisterAdditional event)
-    {
-        ExtraModels.register(event::register);
-    }
-
     public static void onRegisterParticleProviders(RegisterParticleProvidersEvent event)
     {
         ClientBootstrap.registerParticleProviders(new ParticleProviderRegister()
@@ -85,12 +82,14 @@ public class ForgeClientEvents
         // Draw active link
         PoseStack stack = new PoseStack();
         stack.setIdentity();
-        stack.mulPose(event.getPoseStack());
+        stack.mulPose(event.getProjectionMatrix());
+        stack.mulPose(event.getCamera().rotation());
         stack.pushPose();
         Vec3 view = event.getCamera().getPosition();
         stack.translate(-view.x(), -view.y(), -view.z());
-        LinkHandler.get().render(mc.player, stack, mc.renderBuffers().bufferSource(), event.getPartialTick());
-        ToolAnimationRenderer.get().render(mc.level, stack, mc.renderBuffers().bufferSource(), event.getPartialTick());
+        float deltaTick = mc.getTimer().getGameTimeDeltaPartialTick(true);
+        LinkHandler.get().render(mc.player, stack, mc.renderBuffers().bufferSource(), deltaTick);
+        ToolAnimationRenderer.get().render(mc.level, stack, mc.renderBuffers().bufferSource(), deltaTick);
         DeferredElectricRenderer.get().draw(stack);
         stack.popPose();
 

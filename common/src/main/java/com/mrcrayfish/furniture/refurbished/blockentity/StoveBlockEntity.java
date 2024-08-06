@@ -38,6 +38,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -568,7 +569,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     {
         private final int inputIndex;
         private final int outputIndex;
-        private final RecipeManager.CachedCheck<Container, ? extends ProcessingRecipe> inputRecipeCache;
+        private final RecipeManager.CachedCheck<SingleRecipeInput, ? extends ProcessingRecipe> inputRecipeCache;
         private int totalBakingTime;
         private int bakingTime;
 
@@ -701,7 +702,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
             if(!stack.isEmpty())
             {
                 Level level = StoveBlockEntity.this.getLevel();
-                return this.inputRecipeCache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(level)).map(RecipeHolder::value);
+                return this.inputRecipeCache.getRecipeFor(new SingleRecipeInput(stack), Objects.requireNonNull(level)).map(RecipeHolder::value);
             }
             return Optional.empty();
         }

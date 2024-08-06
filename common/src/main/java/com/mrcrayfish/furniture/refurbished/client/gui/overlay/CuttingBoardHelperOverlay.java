@@ -6,7 +6,9 @@ import com.mrcrayfish.furniture.refurbished.blockentity.CuttingBoardBlockEntity;
 import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
+import com.mrcrayfish.furniture.refurbished.crafting.ContainerInput;
 import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardCombiningRecipe;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -15,6 +17,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
@@ -34,7 +37,7 @@ public class CuttingBoardHelperOverlay implements IHudOverlay
     private static final int TITLE_HEIGHT = 13;
 
     @Override
-    public void draw(GuiGraphics graphics, float partialTick)
+    public void draw(GuiGraphics graphics, DeltaTracker deltaTracker)
     {
         if(!Config.CLIENT.showCuttingBoardHelper.get())
             return;
@@ -57,7 +60,7 @@ public class CuttingBoardHelperOverlay implements IHudOverlay
 
         // Get stream of combinable recipes and filter recipes that match the currently placed items
         Stream<Item> combinable = recipes.stream()
-            .filter(holder -> holder.value().matches(container, mc.level) && placeIndex < holder.value().getIngredients().size())
+            .filter(holder -> holder.value().matches(new ContainerInput(container), mc.level) && placeIndex < holder.value().getIngredients().size())
             .flatMap(holder -> Stream.of(holder.value().getIngredients().get(placeIndex).getItems()))
             .map(ItemStack::getItem);
 
@@ -125,7 +128,7 @@ public class CuttingBoardHelperOverlay implements IHudOverlay
         if(entity.getHeadIndex() == 0 && !placedItem.isEmpty())
         {
             Level level = Objects.requireNonNull(entity.getLevel());
-            return level.getRecipeManager().getRecipeFor(ModRecipeTypes.CUTTING_BOARD_SLICING.get(), new SimpleContainer(placedItem), level).isPresent();
+            return level.getRecipeManager().getRecipeFor(ModRecipeTypes.CUTTING_BOARD_SLICING.get(), new SingleRecipeInput(placedItem), level).isPresent();
         }
         return false;
     }

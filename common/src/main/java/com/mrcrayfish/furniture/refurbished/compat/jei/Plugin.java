@@ -39,6 +39,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ItemLike;
@@ -121,7 +122,7 @@ public class Plugin implements IModPlugin
         });
     }
 
-    private <C extends Container, T extends Recipe<C>> List<T> getRecipes(RecipeType<T> type)
+    private <C extends RecipeInput, T extends Recipe<C>> List<T> getRecipes(RecipeType<T> type)
     {
         return getRecipeManager().getAllRecipesFor(type).stream().map(RecipeHolder::value).toList();
     }

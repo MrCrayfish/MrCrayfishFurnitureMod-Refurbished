@@ -124,7 +124,7 @@ public class Bootstrap
             BlockPos pos = source.pos().relative(direction);
             if(source.level().getBlockEntity(pos) instanceof CuttingBoardBlockEntity cuttingBoard) {
                 if(cuttingBoard.sliceItem(source.level(), false)) {
-                    stack.hurtAndBreak(1, source.level().random, null, () -> {
+                    stack.hurtAndBreak(1, source.level(), null, item -> {
                         stack.setCount(0);
                     });
                     Network.getPlay().sendToTrackingBlockEntity(() -> cuttingBoard, new MessageToolAnimation(MessageToolAnimation.Tool.KNIFE, source.pos(), direction));
