@@ -58,7 +58,7 @@ public class Seat extends Entity
     public void tick()
     {
         super.tick();
-        Level level = this.level();
+        Level level = this.getLevel();
         if(!level.isClientSide())
         {
             BlockPos pos = this.blockPosition();
@@ -90,7 +90,7 @@ public class Seat extends Entity
         Direction[] sides = {front, front.getClockWise(), front.getCounterClockWise(), front.getOpposite()};
         for(Direction side : sides)
         {
-            Vec3 pos = DismountHelper.findSafeDismountLocation(entity.getType(), this.level(), this.blockPosition().relative(side), false);
+            Vec3 pos = DismountHelper.findSafeDismountLocation(entity.getType(), this.getLevel(), this.blockPosition().relative(side), false);
             if(pos != null)
             {
                 return pos.add(0, 0.25, 0);
@@ -128,7 +128,7 @@ public class Seat extends Entity
      */
     public static boolean sit(Player player, BlockPos pos, double seatHeight, @Nullable Direction direction)
     {
-        Level level = player.level();
+        Level level = player.getLevel();
         if(!level.isClientSide() && availableAt(level, pos))
         {
             float seatYaw = direction != null ? direction.toYRot() : player.getYRot();

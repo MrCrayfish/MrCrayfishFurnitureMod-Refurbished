@@ -1,9 +1,10 @@
 package com.mrcrayfish.furniture.refurbished.computer.client.widget;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.client.gui.IOverrideGetEntry;
 import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.util.Mth;
 import org.lwjgl.glfw.GLFW;
@@ -148,23 +149,23 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
     {
         // Draw outlines and background
-        graphics.fill(this.x0, this.y0, this.x1, this.y1, this.outlineColour);
-        graphics.fill(this.x0 + 1, this.y0 + 1, this.x1 - 1, this.y1 - 1, this.backgroundColour);
+        GuiComponent.fill(poseStack, this.x0, this.y0, this.x1, this.y1, this.outlineColour);
+        GuiComponent.fill(poseStack, this.x0 + 1, this.y0 + 1, this.x1 - 1, this.y1 - 1, this.backgroundColour);
 
         // Draw items
-        graphics.enableScissor(this.getRowLeft() - 1, this.y0 + 1, this.getRowRight() + 1, this.y1 - 1);
-        this.renderList(graphics, mouseX, mouseY, partialTick);
-        graphics.disableScissor();
+        GuiComponent.enableScissor(this.getRowLeft() - 1, this.y0 + 1, this.getRowRight() + 1, this.y1 - 1);
+        this.renderList(poseStack, mouseX, mouseY, partialTick);
+        GuiComponent.disableScissor();
 
         // Only draw scroll bar if enough items
         int maxScroll = this.getMaxScroll();
         if(maxScroll > 0)
         {
             // Draw divider between items and scroll bar
-            graphics.fill(this.getScrollbarPosition() - this.contentPadding - 1, this.y0 + 1, this.getScrollbarPosition() - this.contentPadding, this.y1 - 1, this.outlineColour);
+            GuiComponent.fill(poseStack, this.getScrollbarPosition() - this.contentPadding - 1, this.y0 + 1, this.getScrollbarPosition() - this.contentPadding, this.y1 - 1, this.outlineColour);
 
             // Draw scroll bar
             int scrollBarStart = this.getScrollbarPosition();
@@ -172,12 +173,12 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
             int scrollBarHeight = this.getScrollbarHeight();
             int scrollBarTop = (int) (this.getScrollAreaTop() + (this.getScrollAreaHeight() - this.getScrollbarHeight()) * (this.getScrollAmount() / maxScroll));
             int scrollBarColour = ScreenHelper.isMouseWithinBounds(mouseX, mouseY, scrollBarStart, scrollBarTop, this.scrollBarWidth, scrollBarHeight) ? this.scrollBarHighlightColour : this.scrollBarColour;
-            graphics.fill(scrollBarStart, scrollBarTop, scrollBarEnd, scrollBarTop + scrollBarHeight, scrollBarColour);
+            GuiComponent.fill(poseStack, scrollBarStart, scrollBarTop, scrollBarEnd, scrollBarTop + scrollBarHeight, scrollBarColour);
         }
     }
 
     @Override
-    protected void renderList(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    protected void renderList(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
     {
         int rowLeft = this.getRowLeft();
         int rowWidth = this.getRowWidth();
@@ -191,7 +192,7 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
             int rowTop = this.getRowTop(i);
             if(rowTop <= this.y1)
             {
-                this.renderItem(graphics, mouseX, mouseY, partialTick, i, rowLeft, rowTop, rowWidth, rowHeight);
+                this.renderItem(poseStack, mouseX, mouseY, partialTick, i, rowLeft, rowTop, rowWidth, rowHeight);
                 continue;
             }
             // Break if the item is below the content area. Also stops drawing subsequent items.
@@ -201,11 +202,11 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
     }
 
     @Override
-    protected void renderSelection(GuiGraphics graphics, int top, int rowWidth, int itemHeight, int outlineColour, int innerColour)
+    protected void renderSelection(PoseStack poseStack, int top, int rowWidth, int itemHeight, int outlineColour, int innerColour)
     {
         int start = this.getRowLeft();
         int end = this.getRowRight();
-        graphics.fill(start - 1, top - 1, end + 1, top + itemHeight + 1, outlineColour);
+        GuiComponent.fill(poseStack, start - 1, top - 1, end + 1, top + itemHeight + 1, outlineColour);
         //graphics.fill(start + 1, top - 1, end - 1, top + itemHeight + 1, innerColour);
     }
 

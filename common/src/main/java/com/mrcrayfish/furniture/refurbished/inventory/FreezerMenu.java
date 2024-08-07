@@ -41,7 +41,7 @@ public class FreezerMenu extends SimpleRecipeContainerMenu<Container> implements
         checkContainerDataCount(data, 4);
         container.startOpen(playerInventory.player);
         this.data = data;
-        this.level = playerInventory.player.level();
+        this.level = playerInventory.player.getLevel();
         this.addSlot(new Slot(container, 0, 48, 35));
         this.addSlot(new ResultSlot(container, 1, 108, 35));
         this.addPlayerInventorySlots(8, 84, playerInventory);

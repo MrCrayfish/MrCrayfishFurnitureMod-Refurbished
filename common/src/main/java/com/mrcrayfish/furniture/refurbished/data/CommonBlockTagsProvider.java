@@ -29,7 +29,7 @@ public class CommonBlockTagsProvider
                 throw new IllegalArgumentException("Block doesn't implement BlockTagSupplier: " + entry.getId());
             }
         });
-        builder.apply(BlockTags.COMBINATION_STEP_SOUND_BLOCKS)
+        builder.apply(BlockTags.INSIDE_STEP_SOUND_BLOCKS)
             .add(ModBlocks.STEPPING_STONES_STONE.get())
             .add(ModBlocks.STEPPING_STONES_GRANITE.get())
             .add(ModBlocks.STEPPING_STONES_DIORITE.get())

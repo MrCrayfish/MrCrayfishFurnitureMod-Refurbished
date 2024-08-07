@@ -1,5 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.client.gui.recipe.OvenRecipeBookComponent;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.OnOffSlider;
@@ -7,10 +9,9 @@ import com.mrcrayfish.furniture.refurbished.client.util.VanillaTextures;
 import com.mrcrayfish.furniture.refurbished.inventory.StoveMenu;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageTogglePower;
-import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.Util;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
@@ -62,22 +63,23 @@ public class StoveScreen extends AbstractStoveScreen<StoveMenu> implements Recip
     }
 
     @Override
-    protected void afterRender(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    protected void afterRender(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
     {
-        this.recipeBookComponent.render(graphics, mouseX, mouseY, partialTick);
-        this.recipeBookComponent.renderGhostRecipe(graphics, this.leftPos, this.topPos, true, partialTick);
-        this.renderTooltip(graphics, mouseX, mouseY);
-        this.recipeBookComponent.renderTooltip(graphics, this.leftPos, this.topPos, mouseX, mouseY);
+        this.recipeBookComponent.render(poseStack, mouseX, mouseY, partialTick);
+        this.recipeBookComponent.renderGhostRecipe(poseStack, this.leftPos, this.topPos, true, partialTick);
+        this.renderTooltip(poseStack, mouseX, mouseY);
+        this.recipeBookComponent.renderTooltip(poseStack, this.leftPos, this.topPos, mouseX, mouseY);
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
+    protected void renderBg(PoseStack poseStack, float partialTick, int mouseX, int mouseY)
     {
-        super.renderBg(graphics, partialTick, mouseX, mouseY);
-        graphics.blit(TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        super.renderBg(poseStack, partialTick, mouseX, mouseY);
+        RenderSystem.setShaderTexture(0, TEXTURE);
+        GuiComponent.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
 
         int offset = this.menu.isPowered() && this.menu.isEnabled() ? (int) (Util.getMillis() / 100) % 3 : 0;
-        graphics.blit(TEXTURE, this.leftPos + 32, this.topPos + 23, 176, 16 + offset * 40, 40, 40);
+        GuiComponent.blit(poseStack, this.leftPos + 32, this.topPos + 23, 176, 16 + offset * 40, 40, 40);
 
         for(int i = 0; i < 3; i++)
         {
@@ -86,7 +88,7 @@ public class StoveScreen extends AbstractStoveScreen<StoveMenu> implements Recip
             if(totalProgress == 0)
                 continue;
             int height = (int) Math.ceil(16 * (progress / (float) totalProgress));
-            graphics.blit(TEXTURE, this.leftPos + 84 + i * 18, this.topPos + 36, 190, 0, 17, height);
+            GuiComponent.blit(poseStack, this.leftPos + 84 + i * 18, this.topPos + 36, 190, 0, 17, height);
         }
     }
 

@@ -1,8 +1,9 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.widget;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.Constants;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -39,12 +40,13 @@ public class OnOffSlider extends Button
     }
 
     @Override
-    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
     {
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
-        graphics.setColor(1.0F, 1.0F, 1.0F, this.alpha);
-        graphics.blit(WIDGETS, this.getX(), this.getY(), 0, this.enabled ? this.getHeight() : 0, this.getWidth(), this.getHeight(), 64, 64);
-        graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
+        RenderSystem.setShaderTexture(0, WIDGETS);
+        GuiComponent.blit(poseStack, this.getX(), this.getY(), 0, this.enabled ? this.getHeight() : 0, this.getWidth(), this.getHeight(), 64, 64);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     }
 }

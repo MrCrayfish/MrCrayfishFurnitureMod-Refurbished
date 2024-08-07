@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.compat.jei.categories;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import com.mrcrayfish.furniture.refurbished.compat.jei.Plugin;
@@ -15,7 +16,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -76,14 +77,14 @@ public class FryingPanCookingCategory extends FurnitureRecipeCategory<Processing
     }
 
     @Override
-    public void draw(ProcessingRecipe recipe, IRecipeSlotsView view, GuiGraphics graphics, double mouseX, double mouseY)
+    public void draw(ProcessingRecipe recipe, IRecipeSlotsView view, PoseStack poseStack, double mouseX, double mouseY)
     {
-        this.arrow.draw(graphics, 71, 36);
-        this.drawSeconds(graphics, 83, 55, recipe.getTime());
+        this.arrow.draw(poseStack, 71, 36);
+        this.drawSeconds(poseStack, 83, 55, recipe.getTime());
         if(recipe.getType() == net.minecraft.world.item.crafting.RecipeType.CAMPFIRE_COOKING)
         {
-            graphics.fill(102, 5, 102 + 16, 5 + 16, 0x33000000);
-            graphics.renderFakeItem(this.campfireStack, 102, 5);
+            GuiComponent.fill(poseStack, 102, 5, 102 + 16, 5 + 16, 0x33000000);
+            ScreenHelper.drawItem(poseStack, this.campfireStack, 102, 5);
         }
     }
 

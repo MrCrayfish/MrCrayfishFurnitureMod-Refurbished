@@ -1,5 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.client.ClientComputer;
 import com.mrcrayfish.furniture.refurbished.computer.client.Desktop;
@@ -8,7 +10,7 @@ import com.mrcrayfish.furniture.refurbished.computer.client.Window;
 import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
 import com.mrcrayfish.furniture.refurbished.mixin.client.ScreenAccessor;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
@@ -94,19 +96,16 @@ public class ComputerScreen extends ElectricityContainerScreen<ComputerMenu>
     }
 
     @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY)
-    {
-        // Stop default labels from rendering
-    }
+    protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {}
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
+    protected void renderBg(PoseStack poseStack, float partialTick, int mouseX, int mouseY)
     {
-        this.renderBackground(graphics);
-        super.renderBg(graphics, partialTick, mouseX, mouseY);
+        this.renderBackground(poseStack);
 
         // Draw background
-        graphics.blit(TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        RenderSystem.setShaderTexture(0, TEXTURE);
+        GuiComponent.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
 
         // Draw desktop and window
         int displayLeft = this.leftPos + DISPLAY_LEFT;
@@ -120,18 +119,19 @@ public class ComputerScreen extends ElectricityContainerScreen<ComputerMenu>
             float time = (LOADING_TIME - (this.loading - this.minecraft.getFrameTime())) / (float) LOADING_TIME;
             int loadingBarStart = displayLeft + (DISPLAY_WIDTH - LOADING_BAR_WIDTH) / 2;
             int loadingBarWidth = (int) (LOADING_BAR_WIDTH * time);
-            graphics.fill(loadingBarStart - 1, displayBottom - 31, loadingBarStart + LOADING_BAR_WIDTH + 1, displayBottom - 23, 0xFF47403E);
-            graphics.fill(loadingBarStart, displayBottom - 30, loadingBarStart + loadingBarWidth, displayBottom - 24, 0xFFFFFFFF);
-            graphics.drawCenteredString(this.font, Components.GUI_BOOTING, displayLeft + DISPLAY_WIDTH / 2, displayBottom - 42, 0xFFFFFFFF);
-            graphics.blit(TEXTURE, displayLeft + (DISPLAY_WIDTH - 32) / 2, displayTop + 23, 32, 36, 0, this.imageHeight, 16, 18, 256, 256);
+            GuiComponent.fill(poseStack, loadingBarStart - 1, displayBottom - 31, loadingBarStart + LOADING_BAR_WIDTH + 1, displayBottom - 23, 0xFF47403E);
+            GuiComponent.fill(poseStack, loadingBarStart, displayBottom - 30, loadingBarStart + loadingBarWidth, displayBottom - 24, 0xFFFFFFFF);
+            GuiComponent.drawCenteredString(poseStack, this.font, Components.GUI_BOOTING, displayLeft + DISPLAY_WIDTH / 2, displayBottom - 42, 0xFFFFFFFF);
+            RenderSystem.setShaderTexture(0, TEXTURE);
+            GuiComponent.blit(poseStack, displayLeft + (DISPLAY_WIDTH - 32) / 2, displayTop + 23, 32, 36, 0, this.imageHeight, 16, 18, 256, 256);
             return;
         }
 
-        graphics.enableScissor(displayLeft, displayTop, displayEnd, displayBottom);
-        this.desktop.render(graphics, mouseX, mouseY, partialTick);
+        GuiComponent.enableScissor(displayLeft, displayTop, displayEnd, displayBottom);
+        this.desktop.render(poseStack, mouseX, mouseY, partialTick);
         Window window = this.getOrCreateWindow();
-        if(window != null) window.render(graphics, this.font, mouseX, mouseY, this.minecraft.getFrameTime());
-        graphics.disableScissor();
+        if(window != null) window.render(poseStack, this.font, mouseX, mouseY, this.minecraft.getFrameTime());
+        GuiComponent.disableScissor();
     }
 
     @Override

@@ -28,7 +28,7 @@ public class HomeControl extends Program
     public List<IHomeControlDevice> findDevices()
     {
         Player player = this.computer.getUser();
-        if(player != null && player.level().getBlockEntity(this.computer.getComputerPos()) instanceof ComputerBlockEntity computerBlockEntity)
+        if(player != null && player.getLevel().getBlockEntity(this.computer.getComputerPos()) instanceof ComputerBlockEntity computerBlockEntity)
         {
             int maxSize = Config.SERVER.electricity.maximumNodesInNetwork.get();
             return IElectricityNode.searchNodes(computerBlockEntity, maxSize, true, node -> true, node -> node instanceof IHomeControlDevice)
@@ -42,7 +42,7 @@ public class HomeControl extends Program
         if(this.findDevices().stream().anyMatch(device -> device.getDevicePos().equals(pos)))
         {
             Player player = this.computer.getUser();
-            if(player != null && player.level().getBlockEntity(pos) instanceof IHomeControlDevice device)
+            if(player != null && player.getLevel().getBlockEntity(pos) instanceof IHomeControlDevice device)
             {
                 device.toggleDeviceState();
             }

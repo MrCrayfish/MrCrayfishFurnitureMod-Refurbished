@@ -12,15 +12,11 @@ import com.mrcrayfish.furniture.refurbished.inventory.FabricMicrowaveMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.FabricStoveMenu;
 import com.mrcrayfish.furniture.refurbished.platform.services.IClientHelper;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
-import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
-import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.client.renderer.RenderType;
@@ -28,7 +24,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
@@ -98,9 +93,9 @@ public class FabricClientHelper implements IClientHelper
     }
 
     @Override
-    public void renderTooltip(GuiGraphics graphics, Font font, List<ClientTooltipComponent> components, int mouseX, int mouseY, ClientTooltipPositioner position)
+    public void renderTooltip(Screen screen, PoseStack poseStack, List<ClientTooltipComponent> components, int mouseX, int mouseY, ClientTooltipPositioner position)
     {
-        graphics.renderTooltipInternal(font, components, mouseX, mouseY, position);
+        screen.renderTooltipInternal(poseStack, components, mouseX, mouseY, position);
     }
 
     @Override

@@ -14,6 +14,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.inventory.RecipeBookType;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -33,6 +34,8 @@ import java.util.concurrent.CompletableFuture;
 @Mod(Constants.MOD_ID)
 public class FurnitureMod
 {
+    public static CreativeModeTab creativeModeTab;
+
     public FurnitureMod()
     {
         ModRecipeBookTypes.getAllTypes().forEach(holder -> RecipeBookType.create(holder.getConstantName()));
@@ -49,6 +52,7 @@ public class FurnitureMod
             bus.addListener(ForgeClientEvents::onRegisterItemColors);
             bus.addListener(ForgeClientEvents::onRegisterGuiOverlays);
             bus.addListener(ForgeClientEvents::onRegisterRecipeCategories);
+            bus.addListener(ForgeClientEvents::onRegisterCreativeModeTab);
             MinecraftForge.EVENT_BUS.addListener(ForgeClientEvents::onKeyTriggered);
             MinecraftForge.EVENT_BUS.addListener(ForgeClientEvents::onRenderLevelStage);
             MinecraftForge.EVENT_BUS.addListener(ForgeClientEvents::onDrawHighlight);

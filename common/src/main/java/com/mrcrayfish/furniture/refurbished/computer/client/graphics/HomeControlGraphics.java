@@ -1,6 +1,8 @@
 package com.mrcrayfish.furniture.refurbished.computer.client.graphics;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.blockentity.IHomeControlDevice;
+import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import com.mrcrayfish.furniture.refurbished.computer.app.HomeControl;
 import com.mrcrayfish.furniture.refurbished.computer.client.DisplayableProgram;
 import com.mrcrayfish.furniture.refurbished.computer.client.Scene;
@@ -9,7 +11,8 @@ import com.mrcrayfish.furniture.refurbished.computer.client.widget.ComputerSelec
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageHomeControl;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -70,9 +73,9 @@ public class HomeControlGraphics extends DisplayableProgram<HomeControl>
         }
 
         @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+        public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
         {
-            graphics.fill(0, 0, this.graphics.getWidth(), 20, 0xFF262626);
+            GuiComponent.fill(poseStack, 0, 0, this.graphics.getWidth(), 20, 0xFF262626);
         }
     }
 
@@ -98,10 +101,11 @@ public class HomeControlGraphics extends DisplayableProgram<HomeControl>
         }
 
         @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+        public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
         {
-            graphics.fill(0, 0, this.graphics.getWidth(), 20, 0xFF262626);
-            graphics.drawWordWrap(Minecraft.getInstance().font, this.infoText, 5, 25, this.graphics.getWidth() - 10, 0xFF47403E);
+            GuiComponent.fill(poseStack, 0, 0, this.graphics.getWidth(), 20, 0xFF262626);
+            Font font = Minecraft.getInstance().font;
+            font.drawWordWrap(poseStack, this.infoText, 5, 25, this.graphics.getWidth() - 10, 0xFF47403E);
         }
     }
 
@@ -128,19 +132,13 @@ public class HomeControlGraphics extends DisplayableProgram<HomeControl>
         }
 
         @Override
-        public void renderBack(GuiGraphics $$0, int $$1, int $$2, int $$3, int $$4, int $$5, int $$6, int $$7, boolean $$8, float $$9)
-        {
-            super.renderBack($$0, $$1, $$2, $$3, $$4, $$5, $$6, $$7, $$8, $$9);
-        }
-
-        @Override
-        public void render(GuiGraphics graphics, int index, int top, int left, int rowWidth, int rowHeight, int mouseX, int mouseY, boolean hovered, float partialTick)
+        public void render(PoseStack poseStack, int index, int top, int left, int rowWidth, int rowHeight, int mouseX, int mouseY, boolean hovered, float partialTick)
         {
             this.updateButtonLabel();
-            graphics.fill(left, top, left + rowWidth, top + rowHeight, 0xFF47403E);
-            graphics.drawString(Minecraft.getInstance().font, this.device.getDeviceName(), left + 5, top + 4, 0xFF222225, false);
+            GuiComponent.fill(poseStack, left, top, left + rowWidth, top + rowHeight, 0xFF47403E);
+            ScreenHelper.drawString(poseStack, this.device.getDeviceName(), left + 5, top + 4, 0xFF222225, false);
             this.button.setPosition(left + rowWidth - this.button.getWidth() - 1, top + 1);
-            this.button.render(graphics, mouseX, mouseY, partialTick);
+            this.button.render(poseStack, mouseX, mouseY, partialTick);
         }
 
         @Override

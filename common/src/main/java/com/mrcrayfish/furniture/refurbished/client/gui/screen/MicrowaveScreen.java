@@ -1,5 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.client.gui.recipe.MicrowaveRecipeBookComponent;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.OnOffSlider;
@@ -10,7 +12,7 @@ import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageTogglePower;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
@@ -67,35 +69,36 @@ public class MicrowaveScreen extends AbstractMicrowaveScreen<MicrowaveMenu> impl
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
     {
         this.slider.setEnabled(this.menu.isEnabled());
-        this.renderBackground(graphics);
-        super.render(graphics, mouseX, mouseY, partialTick);
+        this.renderBackground(poseStack);
+        super.render(poseStack, mouseX, mouseY, partialTick);
 
         // Disables recipe book support from Fabric
         if(!Services.PLATFORM.getPlatform().isFabric())
         {
-            this.recipeBookComponent.render(graphics, mouseX, mouseY, partialTick);
-            this.recipeBookComponent.renderGhostRecipe(graphics, this.leftPos, this.topPos, true, partialTick);
-            this.renderTooltip(graphics, mouseX, mouseY);
-            this.recipeBookComponent.renderTooltip(graphics, this.leftPos, this.topPos, mouseX, mouseY);
+            this.recipeBookComponent.render(poseStack, mouseX, mouseY, partialTick);
+            this.recipeBookComponent.renderGhostRecipe(poseStack, this.leftPos, this.topPos, true, partialTick);
+            this.renderTooltip(poseStack, mouseX, mouseY);
+            this.recipeBookComponent.renderTooltip(poseStack, this.leftPos, this.topPos, mouseX, mouseY);
         }
         else
         {
-            this.renderTooltip(graphics, mouseX, mouseY);
+            this.renderTooltip(poseStack, mouseX, mouseY);
         }
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
+    protected void renderBg(PoseStack poseStack, float partialTick, int mouseX, int mouseY)
     {
-        super.renderBg(graphics, partialTick, mouseX, mouseY);
-        graphics.blit(TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        super.renderBg(poseStack, partialTick, mouseX, mouseY);
+        RenderSystem.setShaderTexture(0, TEXTURE);
+        GuiComponent.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
         if(this.menu.getMaxProcessTime() > 0 && this.menu.getProcessTime() >= 0)
         {
             int width = (int) Math.ceil(25 * (this.menu.getProcessTime() / (float) this.menu.getMaxProcessTime()));
-            graphics.blit(TEXTURE, this.leftPos + 71, this.topPos + 34, 176, 0, width, 17);
+            GuiComponent.blit(poseStack, this.leftPos + 71, this.topPos + 34, 176, 0, width, 17);
         }
         if(this.menu.getProcessTime() > 0 && this.menu.getMaxProcessTime() > 0 && ScreenHelper.isMouseWithinBounds(mouseX, mouseY, this.leftPos + 71, this.topPos + 34, 25, 17))
         {

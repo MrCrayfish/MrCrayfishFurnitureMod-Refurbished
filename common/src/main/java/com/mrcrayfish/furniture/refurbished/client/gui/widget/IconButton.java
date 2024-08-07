@@ -1,9 +1,10 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.widget;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
@@ -41,9 +42,9 @@ public class IconButton extends Button
     }
 
     @Override
-    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
+    public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTicks)
     {
-        super.renderWidget(graphics, mouseX, mouseY, partialTicks);
+        super.renderWidget(poseStack, mouseX, mouseY, partialTicks);
 
         Minecraft mc = Minecraft.getInstance();
         int contentWidth = 10 + mc.font.width(this.label) + (!this.label.getString().isEmpty() ? 4 : 0);
@@ -52,14 +53,15 @@ public class IconButton extends Button
         int iconY = this.getY() + 5;
         float brightness = this.active ? 1.0F : 0.5F;
         RenderSystem.enableBlend();
-        graphics.setColor(brightness, brightness, brightness, this.alpha);
-        graphics.blit(ICON_TEXTURES, iconX, iconY, this.u, this.v, 10, 10, 64, 64);
-        graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderColor(brightness, brightness, brightness, this.alpha);
+        RenderSystem.setShaderTexture(0, ICON_TEXTURES);
+        GuiComponent.blit(poseStack, iconX, iconY, this.u, this.v, 10, 10, 64, 64);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         int start = iconX + 14;
         int end = iconX + contentWidth;
         int labelColour = 0xFFFFFF | Mth.ceil(this.alpha * 255) << 24;
-        renderScrollingString(graphics, mc.font, this.label, start, this.getY(), end, this.getY() + this.getHeight(), labelColour);
+        renderScrollingString(poseStack, mc.font, this.label, start, this.getY(), end, this.getY() + this.getHeight(), labelColour);
     }
 
     @Override

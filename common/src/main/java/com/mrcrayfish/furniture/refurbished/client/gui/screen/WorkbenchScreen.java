@@ -17,7 +17,7 @@ import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StateSwitchingButton;
 import net.minecraft.client.gui.components.Tooltip;
@@ -138,26 +138,27 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
     {
         this.searchNeighboursButton.setStateTriggered(this.menu.shouldSearchNeighbours());
-        this.renderBackground(graphics);
-        super.render(graphics, mouseX, mouseY, partialTick);
-        this.renderTooltip(graphics, mouseX, mouseY);
+        this.renderBackground(poseStack);
+        super.render(poseStack, mouseX, mouseY, partialTick);
+        this.renderTooltip(poseStack, mouseX, mouseY);
         if(this.menu.isPowered() && this.hoveredIndex != -1)
         {
-            this.renderRecipeTooltip(graphics, mouseX, mouseY, this.hoveredIndex);
+            this.renderRecipeTooltip(poseStack, mouseX, mouseY, this.hoveredIndex);
         }
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
+    protected void renderBg(PoseStack poseStack, float partialTick, int mouseX, int mouseY)
     {
-        graphics.blit(WORKBENCH_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
-        this.renderScrollbar(graphics, mouseY);
-        this.renderRecipes(graphics, partialTick, mouseX, mouseY);
-        this.renderOverlay(graphics);
-        super.renderBg(graphics, partialTick, mouseX, mouseY);
+        RenderSystem.setShaderTexture(0, WORKBENCH_TEXTURE);
+        GuiComponent.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        this.renderScrollbar(poseStack, mouseY);
+        this.renderRecipes(poseStack, partialTick, mouseX, mouseY);
+        this.renderOverlay(poseStack);
+        super.renderBg(poseStack, partialTick, mouseX, mouseY);
 
         if(this.isHovering(199, 5, 10, 10, mouseX, mouseY))
         {
@@ -165,16 +166,17 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         }
     }
 
-    private void renderScrollbar(GuiGraphics graphics, int mouseY)
+    private void renderScrollbar(PoseStack poseStack, int mouseY)
     {
         int textureU = this.getMaxScroll() > 0 ? 216 : 228;
-        graphics.blit(WORKBENCH_TEXTURE, this.leftPos + 169, this.topPos + 18 + this.getScrollbarPosition(mouseY), textureU, 40, 12, SCROLLBAR_HEIGHT);
+        RenderSystem.setShaderTexture(0, WORKBENCH_TEXTURE);
+        GuiComponent.blit(poseStack, this.leftPos + 169, this.topPos + 18 + this.getScrollbarPosition(mouseY), textureU, 40, 12, SCROLLBAR_HEIGHT);
     }
 
-    private void renderRecipes(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
+    private void renderRecipes(PoseStack poseStack, float partialTick, int mouseX, int mouseY)
     {
         this.hoveredIndex = -1;
-        graphics.enableScissor(this.leftPos + 46, this.topPos + 18, this.leftPos + 46 + WINDOW_WIDTH, this.topPos + 18 + WINDOW_HEIGHT);
+        GuiComponent.enableScissor(this.leftPos + 46, this.topPos + 18, this.leftPos + 46 + WINDOW_WIDTH, this.topPos + 18 + WINDOW_HEIGHT);
         List<WorkbenchContructingRecipe> recipes = this.displayRecipes;
         double scroll = this.getScrollAmount(mouseY);
         int startIndex = (int) (scroll / BUTTON_SIZE) * RECIPES_PER_ROW;
@@ -190,29 +192,29 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
             int buttonY = this.topPos + 18 + (i / RECIPES_PER_ROW) * BUTTON_SIZE - (int) scroll;
             int textureU = 216 + (!canCraft ? BUTTON_SIZE : 0);
             int textureV = selected ? BUTTON_SIZE : 0;
-            graphics.blit(WORKBENCH_TEXTURE, buttonX, buttonY, textureU, textureV, BUTTON_SIZE, BUTTON_SIZE);
-            graphics.renderFakeItem(recipe.getResultItem(this.menu.getLevel().registryAccess()), buttonX + 2, buttonY + 2);
+            RenderSystem.setShaderTexture(0, WORKBENCH_TEXTURE);
+            GuiComponent.blit(poseStack, buttonX, buttonY, textureU, textureV, BUTTON_SIZE, BUTTON_SIZE);
+            ScreenHelper.drawItem(poseStack, recipe.getResultItem(this.menu.getLevel().registryAccess()), buttonX + 2, buttonY + 2);
             if(mouseInWindow && ScreenHelper.isMouseWithinBounds(mouseX, mouseY, buttonX, buttonY, BUTTON_SIZE, BUTTON_SIZE))
             {
                 this.hoveredIndex = recipeIndex;
             }
         }
-        graphics.disableScissor();
+        GuiComponent.disableScissor();
     }
 
-    private void renderOverlay(GuiGraphics graphics)
+    private void renderOverlay(PoseStack poseStack)
     {
         if(!this.menu.isPowered())
         {
-            PoseStack pose = graphics.pose();
-            pose.pushPose();
-            pose.translate(0, 0, 200);
-            graphics.fill(this.leftPos + 46, this.topPos + 18, this.leftPos + 46 + WINDOW_WIDTH, this.topPos + 18 + WINDOW_HEIGHT, 0xAA000000);
-            pose.popPose();
+            poseStack.pushPose();
+            poseStack.translate(0, 0, 200);
+            GuiComponent.fill(poseStack, this.leftPos + 46, this.topPos + 18, this.leftPos + 46 + WINDOW_WIDTH, this.topPos + 18 + WINDOW_HEIGHT, 0xAA000000);
+            poseStack.popPose();
         }
     }
 
-    private void renderRecipeTooltip(GuiGraphics graphics, int mouseX, int mouseY, int recipeIndex)
+    private void renderRecipeTooltip(PoseStack poseStack, int mouseX, int mouseY, int recipeIndex)
     {
         WorkbenchContructingRecipe recipe = this.menu.getRecipes().get(recipeIndex);
         List<ClientTooltipComponent> components = new ArrayList<>();
@@ -227,7 +229,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
             Map<Integer, Integer> counted = new HashMap<>();
             recipe.getMaterials().forEach(material -> components.add(new ClientWorkbenchRecipeIngredientTooltip(this.menu, material, counted)));
         }
-        ClientServices.PLATFORM.renderTooltip(graphics, this.font, components, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE);
+        ClientServices.PLATFORM.renderTooltip(this, poseStack, components, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE);
     }
 
     @Override
@@ -365,14 +367,15 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         }
 
         @Override
-        public void renderWidget(GuiGraphics graphics, int $$1, int $$2, float $$3)
+        public void renderWidget(PoseStack poseStack, int $$1, int $$2, float $$3)
         {
             RenderSystem.disableDepthTest();
             int u = this.xTexStart;
             int v = this.yTexStart;
             v += this.isStateTriggered ? this.height * 2 : 0;
             v += this.isHoveredOrFocused() ? this.height : 0;
-            graphics.blit(this.resourceLocation, this.getX(), this.getY(), u, v, this.width, this.height);
+            RenderSystem.setShaderTexture(0, this.resourceLocation);
+            GuiComponent.blit(poseStack, this.getX(), this.getY(), u, v, this.width, this.height);
             RenderSystem.enableDepthTest();
         }
 
@@ -473,11 +476,12 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         }
 
         @Override
-        protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+        public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
         {
             int textureV = this.isHovered ? 87 : this.category.enabled ? 71 : 55;
-            graphics.blit(WORKBENCH_TEXTURE, this.getX(), this.getY(), 216, textureV, 20, 16);
-            graphics.blit(WORKBENCH_TEXTURE, this.getX() + 3, this.getY() + 1, this.iconU, this.iconV, 14, 14);
+            RenderSystem.setShaderTexture(0, WORKBENCH_TEXTURE);
+            GuiComponent.blit(poseStack, this.getX(), this.getY(), 216, textureV, 20, 16);
+            GuiComponent.blit(poseStack, this.getX() + 3, this.getY() + 1, this.iconU, this.iconV, 14, 14);
         }
     }
 }

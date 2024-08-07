@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.IconButton;
@@ -7,7 +8,7 @@ import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import com.mrcrayfish.furniture.refurbished.inventory.IElectricityMenu;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
@@ -31,13 +32,12 @@ public abstract class ElectricityContainerScreen<T extends AbstractContainerMenu
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
+    protected void renderBg(PoseStack poseStack, float partialTick, int mouseX, int mouseY)
     {
         if(!this.menu.isPowered())
         {
-            PoseStack pose = graphics.pose();
-            pose.pushPose();
-            pose.translate(0, 0, 250);
+            poseStack.pushPose();
+            poseStack.translate(0, 0, 250);
 
             int iconSize = 10;
             int padding = 5;
@@ -48,15 +48,17 @@ public abstract class ElectricityContainerScreen<T extends AbstractContainerMenu
             int bannerTop = this.getBannerTop();
 
             // Draw background
-            graphics.blit(TEXTURE, bannerStart, bannerTop, 0, 46, 4, 18, 64, 64);
-            graphics.blit(TEXTURE, bannerStart + 4, bannerTop, bannerWidth - 7, 18, 4, 46, 1, 18, 64, 64);
-            graphics.blit(TEXTURE, bannerStart + 4 + bannerWidth - 7, bannerTop, 5, 46, 3, 18, 64, 64);
+            RenderSystem.setShaderTexture(0, TEXTURE);
+            GuiComponent.blit(poseStack, bannerStart, bannerTop, 0, 46, 4, 18, 64, 64);
+            GuiComponent.blit(poseStack, bannerStart + 4, bannerTop, bannerWidth - 7, 18, 4, 46, 1, 18, 64, 64);
+            GuiComponent.blit(poseStack, bannerStart + 4 + bannerWidth - 7, bannerTop, 5, 46, 3, 18, 64, 64);
 
             // Draw icon
-            graphics.blit(IconButton.ICON_TEXTURES, bannerStart + padding, bannerTop + 4, 20, 20, 10, 10, 64, 64);
+            RenderSystem.setShaderTexture(0, IconButton.ICON_TEXTURES);
+            GuiComponent.blit(poseStack, bannerStart + padding, bannerTop + 4, 20, 20, 10, 10, 64, 64);
 
             // Draw message
-            graphics.drawString(this.minecraft.font, Components.GUI_NO_POWER, bannerStart + padding + iconSize + 3, bannerTop + 5, 0xFFFFFFFF);
+            ScreenHelper.drawString(poseStack, Components.GUI_NO_POWER, bannerStart + padding + iconSize + 3, bannerTop + 5, 0xFFFFFFFF, true);
 
             // Set tooltip if the mouse is hovering the banner
             if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, bannerStart, bannerTop, bannerWidth, 18))
@@ -68,7 +70,7 @@ public abstract class ElectricityContainerScreen<T extends AbstractContainerMenu
                 this.setTooltipForNextRenderPass(tooltip, DefaultTooltipPositioner.INSTANCE, false);this.setTooltipForNextRenderPass(tooltip, DefaultTooltipPositioner.INSTANCE, false);
             }
 
-            pose.popPose();
+            poseStack.popPose();
         }
     }
 

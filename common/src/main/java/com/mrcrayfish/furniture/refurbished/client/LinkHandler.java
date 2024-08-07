@@ -391,7 +391,7 @@ public class LinkHandler
             pose.translate(start.x, start.y, start.z);
             pose.mulPose(Axis.YP.rotation((float) yaw));
             pose.mulPose(Axis.ZP.rotation((float) pitch));
-            int color = this.getLinkColour(player.level());
+            int color = this.getLinkColour(player.getLevel());
             Matrix4f matrix = pose.last().pose();
             renderer.drawColouredBox(matrix, consumer, new AABB(0, -0.03125, -0.03125, delta.length(), 0.03125, 0.03125), color, 0.8F);
             renderer.drawColouredBox(matrix, consumer, new AABB(0, -0.03125, -0.03125, delta.length(), 0.03125, 0.03125).inflate(0.03125), color, 0.6F);
@@ -410,7 +410,7 @@ public class LinkHandler
     private Vec3 getLinkEnd(Player player, float partialTick)
     {
         IElectricityNode node = this.getTargetNode();
-        if(node != null && !this.isLinkingNode(node) && this.canLinkToNode(player.level(), node))
+        if(node != null && !this.isLinkingNode(node) && this.canLinkToNode(player.getLevel(), node))
         {
             return node.getNodePosition().getCenter();
         }

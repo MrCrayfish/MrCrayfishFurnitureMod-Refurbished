@@ -224,7 +224,7 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
         int points = this.getCurrentExperiencePoints();
         if(points > 0)
         {
-            player.level().addFreshEntity(new ExperienceOrb(player.level(), player.getX(), player.getY(), player.getZ(), points));
+            player.getLevel().addFreshEntity(new ExperienceOrb(player.getLevel(), player.getX(), player.getY(), player.getZ(), points));
             this.recycled = 0;
             this.setChanged();
         }

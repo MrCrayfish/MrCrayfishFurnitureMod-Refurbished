@@ -1,11 +1,17 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mrcrayfish.furniture.refurbished.Constants;
+import com.mrcrayfish.furniture.refurbished.FurnitureMod;
 import com.mrcrayfish.furniture.refurbished.client.registration.ParticleProviderRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.RecipeCategoryRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
+import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
+import com.mrcrayfish.furniture.refurbished.core.ModCreativeTabs;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -20,6 +26,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.RecipeBookType;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -33,6 +40,7 @@ import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.client.event.RegisterRecipeBookCategoriesEvent;
 import net.minecraftforge.client.event.RenderHighlightEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.event.CreativeModeTabEvent;
 import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.List;
@@ -43,6 +51,8 @@ import java.util.function.Function;
  */
 public class ForgeClientEvents
 {
+    public static CreativeModeTab creativeTab;
+
     public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event)
     {
         ClientBootstrap.registerScreens(new ScreenRegister() {
@@ -160,6 +170,15 @@ public class ForgeClientEvents
             public void applyFinder(RecipeType<?> type, Function<Recipe<?>, RecipeBookCategories> function) {
                 event.registerRecipeCategoryFinder(type, function);
             }
+        });
+    }
+
+    public static void onRegisterCreativeModeTab(CreativeModeTabEvent.Register event)
+    {
+        FurnitureMod.creativeModeTab = event.registerCreativeModeTab(Utils.resource("creative_tab"), builder -> {
+            builder.icon(() -> new ItemStack(ModBlocks.TABLE_OAK.get()));
+            builder.title(Component.translatable("itemGroup." + Constants.MOD_ID).withStyle(ChatFormatting.GOLD));
+            builder.displayItems((params, output) -> ModCreativeTabs.buildCreativeModeTab(output::accept));
         });
     }
 }

@@ -1,7 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.computer.client;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.IWidgetGroup;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 
@@ -19,7 +19,7 @@ public abstract class Scene implements IWidgetGroup
 
     public abstract void updateWidgets(int contentStart, int contentTop);
 
-    public abstract void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick);
+    public abstract void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick);
 
     public void tick() {}
 

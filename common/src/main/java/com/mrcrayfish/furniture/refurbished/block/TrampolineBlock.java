@@ -257,7 +257,7 @@ public class TrampolineBlock extends FurnitureBlock implements BlockTagSupplier
      */
     private void bounceBoat(Boat boat, Vec3 velocity)
     {
-        Level level = boat.level();
+        Level level = boat.getLevel();
         boat.setDeltaMovement(velocity.x, -velocity.y, velocity.z);
         if(boat.isControlledByLocalInstance() && !boat.isEffectiveAi())
         {

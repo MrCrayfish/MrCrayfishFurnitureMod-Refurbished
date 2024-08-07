@@ -1,6 +1,9 @@
 package com.mrcrayfish.furniture.refurbished.computer.client;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.ComputerScreen;
+import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import com.mrcrayfish.furniture.refurbished.computer.Computer;
 import com.mrcrayfish.furniture.refurbished.computer.Display;
 import com.mrcrayfish.furniture.refurbished.computer.client.widget.ProgramShortcutButton;
@@ -8,7 +11,7 @@ import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageComputerOpenProgram;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -67,23 +70,24 @@ public class Desktop
         });
     }
 
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
     {
-        graphics.fill(this.displayStart, this.displayTop, this.displayStart + this.displayWidth, this.displayTop + this.displayHeight, 0xFF262626);
-        this.shortcuts.forEach(shortcut -> shortcut.render(graphics, mouseX, mouseY, partialTick));
+        GuiComponent.fill(poseStack, this.displayStart, this.displayTop, this.displayStart + this.displayWidth, this.displayTop + this.displayHeight, 0xFF262626);
+        this.shortcuts.forEach(shortcut -> shortcut.render(poseStack, mouseX, mouseY, partialTick));
 
         // Draw fake taskbar
-        graphics.fill(this.displayStart, this.displayTop + this.displayHeight - 16, this.displayStart + this.displayWidth, this.displayTop + this.displayHeight, 0xFF5A534F);
-        graphics.fill(this.displayStart, this.displayTop + this.displayHeight - 16 + 2, this.displayStart + this.displayWidth, this.displayTop + this.displayHeight, 0xFF332E2D);
+        GuiComponent.fill(poseStack, this.displayStart, this.displayTop + this.displayHeight - 16, this.displayStart + this.displayWidth, this.displayTop + this.displayHeight, 0xFF5A534F);
+        GuiComponent.fill(poseStack, this.displayStart, this.displayTop + this.displayHeight - 16 + 2, this.displayStart + this.displayWidth, this.displayTop + this.displayHeight, 0xFF332E2D);
 
         // Draw time
         Font font = Minecraft.getInstance().font;
         String timeLabel = this.getDayTimeLabel();
         int width = font.width(timeLabel);
-        graphics.drawString(font, timeLabel, this.displayStart + this.displayWidth - width - 5, this.displayTop + this.displayHeight - 11, 0xFFFFFFFF, false);
+        ScreenHelper.drawString(poseStack, timeLabel, this.displayStart + this.displayWidth - width - 5, this.displayTop + this.displayHeight - 11, 0xFFFFFFFF, false);
 
         // Draw logo
-        graphics.blit(ComputerScreen.TEXTURE, this.displayStart, this.displayTop + this.displayHeight - 24, 32, 36, 0, 150, 16, 18, 256, 256);
+        RenderSystem.setShaderTexture(0, ComputerScreen.TEXTURE);
+        GuiComponent.blit(poseStack, this.displayStart, this.displayTop + this.displayHeight - 24, 32, 36, 0, 150, 16, 18, 256, 256);
     }
 
     private Component getProgramName(ResourceLocation id)

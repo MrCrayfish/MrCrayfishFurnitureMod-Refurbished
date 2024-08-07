@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.client.gui.recipe.FreezerRecipeBookComponent;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.OnOffSlider;
@@ -7,7 +8,6 @@ import com.mrcrayfish.furniture.refurbished.client.util.VanillaTextures;
 import com.mrcrayfish.furniture.refurbished.inventory.FreezerMenu;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageTogglePower;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
@@ -56,12 +56,12 @@ public class FreezerScreen extends AbstractFreezerScreen<FreezerMenu> implements
     }
 
     @Override
-    protected void afterRender(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    protected void afterRender(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
     {
-        this.recipeBookComponent.render(graphics, mouseX, mouseY, partialTick);
-        this.recipeBookComponent.renderGhostRecipe(graphics, this.leftPos, this.topPos, true, partialTick);
-        this.renderTooltip(graphics, mouseX, mouseY);
-        this.recipeBookComponent.renderTooltip(graphics, this.leftPos, this.topPos, mouseX, mouseY);
+        this.recipeBookComponent.render(poseStack, mouseX, mouseY, partialTick);
+        this.recipeBookComponent.renderGhostRecipe(poseStack, this.leftPos, this.topPos, true, partialTick);
+        this.renderTooltip(poseStack, mouseX, mouseY);
+        this.recipeBookComponent.renderTooltip(poseStack, this.leftPos, this.topPos, mouseX, mouseY);
     }
 
     @Override

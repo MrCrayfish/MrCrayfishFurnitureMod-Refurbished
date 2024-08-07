@@ -120,7 +120,7 @@ public class PlateBlockEntity extends BasicLootBlockEntity
         if(stack.getItem().isEdible() && player.canEat(false))
         {
             Services.ENTITY.spawnFoodParticles(player, stack);
-            player.eat(player.level(), stack);
+            player.eat(player.getLevel(), stack);
             this.setChanged();
             return true;
         }

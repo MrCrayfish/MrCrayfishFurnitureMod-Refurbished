@@ -92,8 +92,8 @@ dependencies {
     implementation fg.deobf("com.mrcrayfish:framework-forge:${minecraft_version}-${framework_version}")
 
     // Runtime mods
-    runtimeOnly fg.deobf("com.mrcrayfish:catalogue-forge:${minecraft_version}-1.7.1")
-    runtimeOnly fg.deobf("maven.modrinth:farmers-delight:1.20.1-1.2.3")
+    runtimeOnly fg.deobf("com.mrcrayfish:catalogue-forge:${minecraft_version}-1.7.0")
+    //runtimeOnly fg.deobf("maven.modrinth:farmers-delight:1.20.1-1.2.3")
 
     compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")

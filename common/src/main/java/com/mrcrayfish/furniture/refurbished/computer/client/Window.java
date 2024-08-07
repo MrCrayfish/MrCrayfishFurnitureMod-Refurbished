@@ -1,11 +1,13 @@
 package com.mrcrayfish.furniture.refurbished.computer.client;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.client.ClientComputer;
+import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import com.mrcrayfish.furniture.refurbished.computer.client.widget.ComputerButton;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageComputerOpenProgram;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 
@@ -59,7 +61,7 @@ public class Window
         this.displayable.tick();
     }
 
-    public void render(GuiGraphics graphics, Font font, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack poseStack, Font font, int mouseX, int mouseY, float partialTick)
     {
         int windowEnd = this.windowStart + this.windowWidth;
         int windowBottom = this.windowTop + this.windowHeight;
@@ -71,16 +73,16 @@ public class Window
         int contentBottom = this.windowTop + this.windowHeight - 1;
 
         // Draw window frame
-        graphics.fill(this.windowStart + 1, this.windowTop, windowEnd - 1, windowBottom, this.displayable.getWindowOutlineColour());
-        graphics.fill(this.windowStart, this.windowTop + 1, windowEnd, windowBottom - 1, this.displayable.getWindowOutlineColour());
-        graphics.fill(titleBarStart, titleBarTop, titleBarEnd, titleBarBottom, this.displayable.getWindowTitleBarColour());
-        graphics.fill(this.contentStart, this.contentTop, contentEnd, contentBottom, this.displayable.getWindowBackgroundColour());
-        graphics.drawString(font, this.displayable.getProgram().getTitle(), titleBarStart + 5, titleBarTop + 1, this.displayable.getWindowTitleLabelColour(), false);
+        GuiComponent.fill(poseStack, this.windowStart + 1, this.windowTop, windowEnd - 1, windowBottom, this.displayable.getWindowOutlineColour());
+        GuiComponent.fill(poseStack, this.windowStart, this.windowTop + 1, windowEnd, windowBottom - 1, this.displayable.getWindowOutlineColour());
+        GuiComponent.fill(poseStack, titleBarStart, titleBarTop, titleBarEnd, titleBarBottom, this.displayable.getWindowTitleBarColour());
+        GuiComponent.fill(poseStack, this.contentStart, this.contentTop, contentEnd, contentBottom, this.displayable.getWindowBackgroundColour());
+        ScreenHelper.drawString(poseStack, this.displayable.getProgram().getTitle(), titleBarStart + 5, titleBarTop + 1, this.displayable.getWindowTitleLabelColour(), false);
 
         // Draw displayable content
-        graphics.enableScissor(this.contentStart, this.contentTop, contentEnd, contentBottom);
-        this.displayable.render(graphics, mouseX, mouseY, partialTick);
-        graphics.disableScissor();
+        GuiComponent.enableScissor(this.contentStart, this.contentTop, contentEnd, contentBottom);
+        this.displayable.render(poseStack, mouseX, mouseY, partialTick);
+        GuiComponent.disableScissor();
     }
 
     public void onClose()

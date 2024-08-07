@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.compat.jei.categories;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.compat.jei.Plugin;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
@@ -14,7 +15,6 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -96,11 +96,11 @@ public class WorkbenchConstructingCategory extends FurnitureRecipeCategory<Workb
     }
 
     @Override
-    public void draw(WorkbenchContructingRecipe recipe, IRecipeSlotsView view, GuiGraphics graphics, double mouseX, double mouseY)
+    public void draw(WorkbenchContructingRecipe recipe, IRecipeSlotsView view, PoseStack poseStack, double mouseX, double mouseY)
     {
         this.slots.forEach(pair -> {
             Vector2i pos = pair.left();
-            pair.right().draw(graphics, pos.x(), pos.y());
+            pair.right().draw(poseStack, pos.x(), pos.y());
         });
     }
 }

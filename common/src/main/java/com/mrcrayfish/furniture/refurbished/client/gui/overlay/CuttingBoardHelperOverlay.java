@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.overlay;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.blockentity.CuttingBoardBlockEntity;
@@ -9,7 +10,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardCombiningRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardSlicingRecipe;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -35,7 +36,7 @@ public class CuttingBoardHelperOverlay implements IHudOverlay
     private static final int TITLE_HEIGHT = 13;
 
     @Override
-    public void draw(GuiGraphics graphics, float partialTick)
+    public void draw(PoseStack poseStack, float partialTick)
     {
         if(!Config.CLIENT.showCuttingBoardHelper.get())
             return;
@@ -77,19 +78,20 @@ public class CuttingBoardHelperOverlay implements IHudOverlay
         int areaWidth = COLUMNS * 18 + 8;
         int areaHeight = this.getAreaHeight(placeable, drawPlaceableElement, drawSliceableElement);
         int areaStart = 5;
-        int areaTop = (graphics.guiHeight() - areaHeight) / 2;
+        int guiHeight = mc.getWindow().getGuiScaledHeight(); // TODO 1.19.4 is this right?
+        int areaTop = (guiHeight - areaHeight) / 2;
 
         if(drawPlaceableElement)
         {
             int elementHeight = this.getPlaceableHeight(placeable);
-            ScreenHelper.fillRounded(graphics, areaStart, areaTop, areaWidth, elementHeight, 0x99000000);
-            ScreenHelper.fillRounded(graphics, areaStart, areaTop, areaWidth, TITLE_HEIGHT, 0x99000000);
-            graphics.drawCenteredString(Minecraft.getInstance().font, Components.GUI_PLACEABLE, areaStart + areaWidth / 2, areaTop + 2, 0xFFFFFFFF);
+            ScreenHelper.fillRounded(poseStack, areaStart, areaTop, areaWidth, elementHeight, 0x99000000);
+            ScreenHelper.fillRounded(poseStack, areaStart, areaTop, areaWidth, TITLE_HEIGHT, 0x99000000);
+            Screen.drawCenteredString(poseStack, Minecraft.getInstance().font, Components.GUI_PLACEABLE, areaStart + areaWidth / 2, areaTop + 2, 0xFFFFFFFF);
             for(int i = 0; i < placeable.size(); i++)
             {
                 int x = areaStart + (i % COLUMNS) * 18 + 1 + 4;
                 int y = areaTop + (i / COLUMNS) * 18 + 1 + 4 + TITLE_HEIGHT;
-                graphics.renderFakeItem(new ItemStack(placeable.get(i)), x, y);
+                ScreenHelper.drawItem(poseStack, new ItemStack(placeable.get(i)), x, y);
             }
         }
 
@@ -100,9 +102,9 @@ public class CuttingBoardHelperOverlay implements IHudOverlay
             int contentWidth = 16 + 2 + Minecraft.getInstance().font.width(sliceableLabel);
             int contentTop = areaTop + areaHeight - elementHeight;
             int labelStart = areaStart + (areaWidth - contentWidth) / 2;
-            ScreenHelper.fillRounded(graphics, areaStart, contentTop, areaWidth, elementHeight, 0x9937AE37);
-            graphics.renderFakeItem(new ItemStack(ModItems.KNIFE.get()), labelStart, contentTop + 1);
-            graphics.drawString(Minecraft.getInstance().font, sliceableLabel, labelStart + 18, contentTop + 5, 0xFFFFFFFF);
+            ScreenHelper.fillRounded(poseStack, areaStart, contentTop, areaWidth, elementHeight, 0x9937AE37);
+            ScreenHelper.drawItem(poseStack, new ItemStack(ModItems.KNIFE.get()), labelStart, contentTop + 1);
+            Screen.drawString(poseStack, Minecraft.getInstance().font, sliceableLabel, labelStart + 18, contentTop + 5, 0xFFFFFFFF);
         }
     }
 

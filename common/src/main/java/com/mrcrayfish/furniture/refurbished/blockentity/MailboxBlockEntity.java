@@ -52,7 +52,7 @@ public class MailboxBlockEntity extends RowedStorageBlockEntity implements IName
             return;
 
         DeliveryService.get(player.server).ifPresent(service -> {
-            if(!service.renameMailbox(player, player.level(), this.worldPosition, name)) {
+            if(!service.renameMailbox(player, player.getLevel(), this.worldPosition, name)) {
                 player.sendSystemMessage(Utils.translation("gui", "rename_mailbox_failed"));
             }
         });

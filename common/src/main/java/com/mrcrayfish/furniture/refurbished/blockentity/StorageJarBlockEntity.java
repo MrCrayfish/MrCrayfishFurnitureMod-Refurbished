@@ -71,7 +71,7 @@ public class StorageJarBlockEntity extends BasicLootBlockEntity
             return false;
 
         ItemStack filter = this.getItem(0);
-        if(!filter.isEmpty() && !ItemStack.isSameItem(filter, stack))
+        if(!filter.isEmpty() && !ItemStack.isSame(filter, stack))
             return false;
 
         int head = this.getHeadIndex();
@@ -129,7 +129,7 @@ public class StorageJarBlockEntity extends BasicLootBlockEntity
     public boolean canPlaceItem(int slotIndex, ItemStack stack)
     {
         ItemStack filter = this.getItem(0);
-        if(slotIndex > 0 && !filter.isEmpty() && !ItemStack.isSameItem(filter, stack))
+        if(slotIndex > 0 && !filter.isEmpty() && !ItemStack.isSame(filter, stack))
             return false;
 
         if(slotIndex < this.getHeadIndex() && this.getItem(slotIndex).isEmpty())

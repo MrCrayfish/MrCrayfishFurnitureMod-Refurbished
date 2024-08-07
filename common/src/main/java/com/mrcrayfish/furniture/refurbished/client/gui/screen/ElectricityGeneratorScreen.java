@@ -1,5 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.IconButton;
@@ -10,7 +12,7 @@ import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageTogglePower;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import it.unimi.dsi.fastutil.Pair;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -40,27 +42,29 @@ public class ElectricityGeneratorScreen extends AbstractContainerScreen<Electric
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
     {
         this.slider.setEnabled(this.menu.isEnabled());
-        this.renderBackground(graphics);
-        super.render(graphics, mouseX, mouseY, partialTick);
-        this.renderTooltip(graphics, mouseX, mouseY);
+        this.renderBackground(poseStack);
+        super.render(poseStack, mouseX, mouseY, partialTick);
+        this.renderTooltip(poseStack, mouseX, mouseY);
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
+    protected void renderBg(PoseStack poseStack, float partialTick, int mouseX, int mouseY)
     {
-        graphics.blit(TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        RenderSystem.setShaderTexture(0, TEXTURE);
+        GuiComponent.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
         if(this.menu.getEnergy() > 0 && this.menu.getTotalEnergy() > 0)
         {
             float normalEnergy = this.menu.getEnergy() / (float) this.menu.getTotalEnergy();
             int v = (int) Math.ceil(14 * normalEnergy);
-            graphics.blit(TEXTURE, this.leftPos + 26, this.topPos + 25 + 14 - v, 176, 14 - v, 14, v);
+            GuiComponent.blit(poseStack, this.leftPos + 26, this.topPos + 25 + 14 - v, 176, 14 - v, 14, v);
         }
         Status status = this.getStatus();
-        graphics.blit(IconButton.ICON_TEXTURES, this.leftPos + 66, this.topPos + 29, status.iconU, status.iconV, 10, 10, 64, 64);
-        graphics.blit(IconButton.ICON_TEXTURES, this.leftPos + 66, this.topPos + 46, 0, 10, 10, 10, 64, 64);
+        RenderSystem.setShaderTexture(0, IconButton.ICON_TEXTURES);
+        GuiComponent.blit(poseStack, this.leftPos + 66, this.topPos + 29, status.iconU, status.iconV, 10, 10, 64, 64);
+        GuiComponent.blit(poseStack, this.leftPos + 66, this.topPos + 46, 0, 10, 10, 10, 64, 64);
 
         if(this.menu.getEnergy() > 0 && this.menu.getTotalEnergy() > 0 && ScreenHelper.isMouseWithinBounds(mouseX, mouseY, this.leftPos + 26, this.topPos + 25, 14, 14))
         {
@@ -69,13 +73,13 @@ public class ElectricityGeneratorScreen extends AbstractContainerScreen<Electric
     }
 
     @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY)
+    protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY)
     {
-        super.renderLabels(graphics, mouseX, mouseY);
+        super.renderLabels(poseStack, mouseX, mouseY);
         Status status = this.getStatus();
-        graphics.drawString(this.font, status.label, 80, 30, status.textColour, true);
+        ScreenHelper.drawString(poseStack, status.label, 80, 30, status.textColour, true);
         Pair<Component, Integer> pair = this.getNodeCount();
-        graphics.drawString(this.font, pair.left(), 80, 47, pair.right(), true);
+        ScreenHelper.drawString(poseStack, pair.left(), 80, 47, pair.right(), true);
     }
 
     private Pair<Component, Integer> getNodeCount()

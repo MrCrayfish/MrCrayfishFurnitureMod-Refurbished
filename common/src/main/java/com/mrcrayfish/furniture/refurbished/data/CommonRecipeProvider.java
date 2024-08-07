@@ -617,7 +617,6 @@ public class CommonRecipeProvider
         this.cuttingBoardSlicing(Items.LILAC, Items.MAGENTA_DYE, 3);
         this.cuttingBoardSlicing(Items.ROSE_BUSH, Items.RED_DYE, 3);
         this.cuttingBoardSlicing(Items.PEONY, Items.PINK_DYE, 3);
-        this.cuttingBoardSlicing(Items.PITCHER_PLANT, Items.CYAN_DYE, 3);
         this.cuttingBoardSlicing(ModItems.COOKED_VEGETABLE_PIZZA.get(), ModItems.VEGETABLE_PIZZA_SLICE.get(), 6);
         this.cuttingBoardSlicing(ModItems.COOKED_MEATLOVERS_PIZZA.get(), ModItems.MEATLOVERS_PIZZA_SLICE.get(), 6);
 

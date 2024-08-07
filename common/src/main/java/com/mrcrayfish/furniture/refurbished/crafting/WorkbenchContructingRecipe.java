@@ -187,7 +187,7 @@ public class WorkbenchContructingRecipe implements Recipe<Container>
         private final Function<ItemLike, CriterionTriggerInstance> hasItem;
         private final Function<TagKey<Item>, CriterionTriggerInstance> hasTag;
         private final List<StackedIngredient> materials = new ArrayList<>();
-        private final Advancement.Builder advancement = Advancement.Builder.recipeAdvancement();
+        private final Advancement.Builder advancement = Advancement.Builder.advancement();
         private RecipeCategory category = RecipeCategory.MISC;
         private boolean showNotification;
 

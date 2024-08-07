@@ -39,7 +39,7 @@ public class ServerPlayHandler
         if(player == null)
             return;
 
-        Level level = player.level();
+        Level level = player.getLevel();
         if(level.isLoaded(message.getPos()) && level.getBlockEntity(message.getPos()) instanceof INameable nameable)
         {
             nameable.setName(player, message.getName().trim());
@@ -78,7 +78,7 @@ public class ServerPlayHandler
     {
         if(player != null && player.getMainHandItem().is(ModItems.WRENCH.get()))
         {
-            Level level = player.level();
+            Level level = player.getLevel();
             Connection c = Connection.of(message.getPosA(), message.getPosB());
             if(level.isLoaded(c.getPosA()) && level.isLoaded(c.getPosB()))
             {

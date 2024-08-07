@@ -1,5 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.IconButton;
 import com.mrcrayfish.furniture.refurbished.computer.client.widget.ComputerButton;
 import com.mrcrayfish.furniture.refurbished.image.ImagePresets;
@@ -9,7 +11,7 @@ import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageUpdatePainting;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import it.unimi.dsi.fastutil.Pair;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -83,13 +85,14 @@ public class DoorMatScreen extends AbstractContainerScreen<DoorMatMenu>
     }
 
     @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {}
+    protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {}
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
+    protected void renderBg(PoseStack poseStack, float partialTick, int mouseX, int mouseY)
     {
-        this.renderBackground(graphics);
-        graphics.blit(TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        this.renderBackground(poseStack);
+        RenderSystem.setShaderTexture(0, TEXTURE);
+        GuiComponent.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
         for(int y = 0; y < this.image.getHeight(); y++)
         {
             for(int x = 0; x < this.image.getWidth(); x++)
@@ -98,7 +101,7 @@ public class DoorMatScreen extends AbstractContainerScreen<DoorMatMenu>
                 int pixelEnd = pixelStart + 4;
                 int pixelTop = this.topPos + 4 + y * 4;
                 int pixelBottom = pixelTop + 4;
-                graphics.fill(pixelStart, pixelTop, pixelEnd, pixelBottom, PaletteImage.COLOURS[this.image.get(x, y)]);
+                GuiComponent.fill(poseStack, pixelStart, pixelTop, pixelEnd, pixelBottom, PaletteImage.COLOURS[this.image.get(x, y)]);
             }
         }
 

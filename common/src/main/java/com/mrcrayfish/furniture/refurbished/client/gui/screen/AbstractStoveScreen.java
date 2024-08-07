@@ -1,29 +1,21 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.Components;
-import com.mrcrayfish.furniture.refurbished.client.gui.recipe.OvenRecipeBookComponent;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.OnOffSlider;
-import com.mrcrayfish.furniture.refurbished.client.util.VanillaTextures;
 import com.mrcrayfish.furniture.refurbished.inventory.IBakingMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.IElectricityMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.IPowerSwitchMenu;
-import com.mrcrayfish.furniture.refurbished.inventory.IProcessingMenu;
-import com.mrcrayfish.furniture.refurbished.inventory.StoveMenu;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageTogglePower;
-import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.Util;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
-import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.inventory.Slot;
 
 /**
  * Author: MrCrayfish
@@ -54,27 +46,31 @@ public class AbstractStoveScreen<T extends AbstractContainerMenu & IElectricityM
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
     {
         this.slider.setEnabled(this.menu.isEnabled());
-        this.renderBackground(graphics);
-        super.render(graphics, mouseX, mouseY, partialTick);
-        this.afterRender(graphics, mouseX, mouseY, partialTick);
+        this.renderBackground(poseStack);
+        super.render(poseStack, mouseX, mouseY, partialTick);
+        this.afterRender(poseStack, mouseX, mouseY, partialTick);
     }
 
-    protected void afterRender(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    protected void afterRender(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
     {
-        this.renderTooltip(graphics, mouseX, mouseY);
+        this.renderTooltip(poseStack, mouseX, mouseY);
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
+    protected void renderBg(PoseStack poseStack, float partialTick, int mouseX, int mouseY)
     {
-        super.renderBg(graphics, partialTick, mouseX, mouseY);
-        graphics.blit(TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        super.renderBg(poseStack, partialTick, mouseX, mouseY);
 
+        // Draw base gui background
+        RenderSystem.setShaderTexture(0, TEXTURE);
+        GuiComponent.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+
+        // Draw animated fan
         int offset = this.menu.isPowered() && this.menu.isEnabled() ? (int) (Util.getMillis() / 100) % 3 : 0;
-        graphics.blit(TEXTURE, this.leftPos + 32, this.topPos + 23, 176, 16 + offset * 40, 40, 40);
+        GuiComponent.blit(poseStack, this.leftPos + 32, this.topPos + 23, 176, 16 + offset * 40, 40, 40);
 
         for(int i = 0; i < 3; i++)
         {
@@ -83,7 +79,7 @@ public class AbstractStoveScreen<T extends AbstractContainerMenu & IElectricityM
             if(totalProgress == 0)
                 continue;
             int height = (int) Math.ceil(16 * (progress / (float) totalProgress));
-            graphics.blit(TEXTURE, this.leftPos + 84 + i * 18, this.topPos + 36, 190, 0, 17, height);
+            GuiComponent.blit(poseStack, this.leftPos + 84 + i * 18, this.topPos + 36, 190, 0, 17, height);
         }
     }
 }

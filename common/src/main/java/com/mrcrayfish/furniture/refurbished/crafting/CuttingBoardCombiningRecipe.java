@@ -142,7 +142,7 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
         {
             JsonArray inputArray = GsonHelper.getAsJsonArray(object, "ingredients");
             Ingredient[] ingredients = StreamSupport.stream(inputArray.spliterator(), false).map(element -> {
-                return Ingredient.fromJson(element, false);
+                return Ingredient.fromJson(element);
             }).toArray(Ingredient[]::new);
             String resultString = GsonHelper.getAsString(object, "result");
             Item item = BuiltInRegistries.ITEM.getOptional(new ResourceLocation(resultString)).orElseThrow(() -> new IllegalStateException("Item: " + resultString + " does not exist"));

@@ -101,7 +101,7 @@ public class KitchenSinkBlockEntity extends BlockEntity implements IFluidContain
                 if(drained.right() == FluidContainer.BUCKET_CAPACITY)
                 {
                     this.tank.pull(FluidContainer.BUCKET_CAPACITY, false);
-                    Level level = player.level();
+                    Level level = player.getLevel();
                     Vec3 pos = Vec3.atBottomCenterOf(this.worldPosition).add(0, 1, 0);
                     ItemEntity entity = new ItemEntity(level, pos.x, pos.y, pos.z, new ItemStack(Blocks.OBSIDIAN));
                     entity.setDefaultPickUpDelay();

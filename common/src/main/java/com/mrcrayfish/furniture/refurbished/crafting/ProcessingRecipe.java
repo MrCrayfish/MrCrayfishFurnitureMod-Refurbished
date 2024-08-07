@@ -143,7 +143,7 @@ public abstract class ProcessingRecipe implements Recipe<Container>
         protected final ItemStack result;
         protected final int time;
         protected final Serializer<? extends ProcessingRecipe> serializer;
-        protected final Advancement.Builder advancement = Advancement.Builder.recipeAdvancement();
+        protected final Advancement.Builder advancement = Advancement.Builder.advancement();
 
         private Builder(Category category, Ingredient ingredient, ItemStack result, int time, Serializer<? extends ProcessingRecipe> serializer)
         {

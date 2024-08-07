@@ -1,5 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.compat.jei.categories;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.compat.jei.Plugin;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
@@ -15,7 +17,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.Util;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -71,10 +73,11 @@ public class OvenBakingCategory implements IRecipeCategory<OvenBakingRecipe>
     }
 
     @Override
-    public void draw(OvenBakingRecipe recipe, IRecipeSlotsView view, GuiGraphics graphics, double mouseX, double mouseY)
+    public void draw(OvenBakingRecipe recipe, IRecipeSlotsView view, PoseStack poseStack, double mouseX, double mouseY)
     {
         int offset = (int) (Util.getMillis() / 100) % 3;
-        graphics.blit(Plugin.TEXTURES_2, 5, 10, 120, offset * 40, 40, 40);
-        this.arrow.draw(graphics, 57, 23);
+        RenderSystem.setShaderTexture(0, Plugin.TEXTURES_2);
+        GuiComponent.blit(poseStack, 5, 10, 120, offset * 40, 40, 40);
+        this.arrow.draw(poseStack, 57, 23);
     }
 }

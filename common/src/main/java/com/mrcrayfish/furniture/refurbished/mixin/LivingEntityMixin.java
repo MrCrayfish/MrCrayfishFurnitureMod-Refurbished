@@ -23,7 +23,7 @@ public abstract class LivingEntityMixin
         LivingEntity entity = (LivingEntity) (Object) this;
         EntityAccessor accessor = (EntityAccessor) entity;
         BlockPos pos = accessor.refurbishedFurnitureBlockPosAffectsMovement();
-        Level level = entity.level();
+        Level level = entity.getLevel();
         BlockState state = level.getBlockState(pos);
         if(state.getBlock() instanceof TrampolineBlock block)
         {

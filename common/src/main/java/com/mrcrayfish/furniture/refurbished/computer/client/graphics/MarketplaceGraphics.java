@@ -1,5 +1,8 @@
 package com.mrcrayfish.furniture.refurbished.computer.client.graphics;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import com.mrcrayfish.furniture.refurbished.computer.Display;
 import com.mrcrayfish.furniture.refurbished.computer.app.Marketplace;
 import com.mrcrayfish.furniture.refurbished.computer.client.DisplayableProgram;
@@ -9,7 +12,7 @@ import com.mrcrayfish.furniture.refurbished.computer.client.widget.ComputerButto
 import com.mrcrayfish.furniture.refurbished.computer.client.widget.ComputerSelectionList;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -24,16 +27,9 @@ public class MarketplaceGraphics extends DisplayableProgram<Marketplace>
 {
     private static final ResourceLocation TEXTURE = Utils.resource("textures/gui/program/marketplace.png");
 
-    private final Scene catalogueScene;
-    private final Scene shoppingCartScene;
-    private final Scene mailboxScene;
-
     public MarketplaceGraphics(Marketplace program)
     {
         super(program, MAX_CONTENT_WIDTH / 2, MAX_CONTENT_HEIGHT / 2);
-        this.catalogueScene = new CatalogueScene(this);
-        this.shoppingCartScene = new ShoppingCartScene(this);
-        this.mailboxScene = new MailboxScene(this);
         this.setScene(new ComingSoon(this));
     }
 
@@ -50,14 +46,15 @@ public class MarketplaceGraphics extends DisplayableProgram<Marketplace>
         public void updateWidgets(int contentStart, int contentTop) {}
 
         @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+        public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
         {
             Icon icon = Display.get().getIcon(this.program.getProgram().getId());
             if(icon != null)
             {
-                graphics.blit(icon.texture(), (this.program.getWidth() - 16) / 2, 10, icon.u(), icon.v(), 16, 16, 128, 128);
+                RenderSystem.setShaderTexture(0, icon.texture());
+                GuiComponent.blit(poseStack, (this.program.getWidth() - 16) / 2, 10, icon.u(), icon.v(), 16, 16, 128, 128);
             }
-            graphics.drawCenteredString(Minecraft.getInstance().font, "Coming Soon!", MAX_CONTENT_WIDTH / 4, 35, 0xFFFFFFFF);
+            GuiComponent.drawCenteredString(poseStack, Minecraft.getInstance().font, "Coming Soon!", MAX_CONTENT_WIDTH / 4, 35, 0xFFFFFFFF);
         }
     }
 
@@ -85,11 +82,12 @@ public class MarketplaceGraphics extends DisplayableProgram<Marketplace>
         }
 
         @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+        public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
         {
-            graphics.fill(0, 0, this.program.getWidth(), 16, 0xFF653938);
-            graphics.blit(TEXTURE, 5, 2, 0, 0, 12, 12);
-            graphics.drawString(Minecraft.getInstance().font, Integer.toString(this.getEmeraldCount()), 50, 5, 0xFFFFFFFF);
+            GuiComponent.fill(poseStack, 0, 0, this.program.getWidth(), 16, 0xFF653938);
+            RenderSystem.setShaderTexture(0, TEXTURE);
+            GuiComponent.blit(poseStack, 5, 2, 0, 0, 12, 12);
+            ScreenHelper.drawString(poseStack, Integer.toString(this.getEmeraldCount()), 50, 5, 0xFFFFFFFF, true);
         }
 
         private int getEmeraldCount()
@@ -115,12 +113,12 @@ public class MarketplaceGraphics extends DisplayableProgram<Marketplace>
             }
 
             @Override
-            public void render(GuiGraphics graphics, int index, int top, int left, int rowWidth, int rowHeight, int mouseX, int mouseY, boolean hovered, float partialTick)
+            public void render(PoseStack poseStack, int index, int top, int left, int rowWidth, int rowHeight, int mouseX, int mouseY, boolean hovered, float partialTick)
             {
                 //graphics.drawString(Minecraft.getInstance().font, "Hello", 0, top, 0xFFFFFFFF);
-                graphics.fill(left, top, left + rowWidth, top + rowHeight, 0xFFFFFFFF);
+                GuiComponent.fill(poseStack, left, top, left + rowWidth, top + rowHeight, 0xFFFFFFFF);
                 this.buyButton.setPosition(left + rowWidth - this.buyButton.getWidth(), top);
-                this.buyButton.render(graphics, mouseX, mouseY, partialTick);
+                this.buyButton.render(poseStack, mouseX, mouseY, partialTick);
             }
 
             @Override
@@ -129,46 +127,6 @@ public class MarketplaceGraphics extends DisplayableProgram<Marketplace>
                 this.buyButton.mouseClicked(mouseX, mouseY, button);
                 return true;
             }
-        }
-    }
-
-    public static class ShoppingCartScene extends Scene
-    {
-        private ShoppingCartScene(MarketplaceGraphics program)
-        {
-
-        }
-
-        @Override
-        public void updateWidgets(int contentStart, int contentTop)
-        {
-
-        }
-
-        @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
-        {
-
-        }
-    }
-
-    public static class MailboxScene extends Scene
-    {
-        private MailboxScene(MarketplaceGraphics program)
-        {
-
-        }
-
-        @Override
-        public void updateWidgets(int contentStart, int contentTop)
-        {
-
-        }
-
-        @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
-        {
-
         }
     }
 }

@@ -1,8 +1,10 @@
 package com.mrcrayfish.furniture.refurbished.computer.client.graphics;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.client.util.AudioHelper;
+import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import com.mrcrayfish.furniture.refurbished.computer.app.PaddleBall;
 import com.mrcrayfish.furniture.refurbished.computer.client.DisplayableProgram;
 import com.mrcrayfish.furniture.refurbished.computer.client.Scene;
@@ -13,7 +15,7 @@ import com.mrcrayfish.furniture.refurbished.network.message.MessagePaddleBall;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -202,9 +204,10 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
         }
 
         @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+        public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
         {
-            graphics.blit(TEXTURE, (this.game.width - 128) / 2, 10, 16, 0, 128, 24);
+            RenderSystem.setShaderTexture(0, TEXTURE);
+            GuiComponent.blit(poseStack, (this.game.width - 128) / 2, 10, 16, 0, 128, 24);
         }
 
         private static class MenuButton extends ComputerButton
@@ -215,13 +218,14 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
             }
 
             @Override
-            protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+            public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
             {
-                super.renderWidget(graphics, mouseX, mouseY, partialTick);
+                super.renderWidget(poseStack, mouseX, mouseY, partialTick);
                 if(this.isActive() && this.isHoveredOrFocused())
                 {
-                    graphics.blit(TEXTURE, this.getX() - 6, this.getY() + 6, 12, 0, 4, 4);
-                    graphics.blit(TEXTURE, this.getX() + this.getWidth() + 2, this.getY() + 6, 12, 0, 4, 4);
+                    RenderSystem.setShaderTexture(0, TEXTURE);
+                    GuiComponent.blit(poseStack, this.getX() - 6, this.getY() + 6, 12, 0, 4, 4);
+                    GuiComponent.blit(poseStack, this.getX() + this.getWidth() + 2, this.getY() + 6, 12, 0, 4, 4);
                 }
             }
         }
@@ -249,9 +253,10 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
         }
 
         @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+        public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
         {
-            graphics.blit(TEXTURE, (this.game.width - 128) / 2, 10, 16, 0, 128, 24);
+            RenderSystem.setShaderTexture(0, TEXTURE);
+            GuiComponent.blit(poseStack, (this.game.width - 128) / 2, 10, 16, 0, 128, 24);
 
             String loading = switch((int) (Util.getMillis() / 300L % 4L)) {
                 default -> "O o o";
@@ -259,8 +264,8 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
                 case 2 -> "o o O";
             };
             Minecraft mc = Minecraft.getInstance();
-            graphics.drawCenteredString(mc.font, loading, this.game.width / 2, 50, 0xFFD3CCBE);
-            graphics.drawCenteredString(mc.font, this.game.translation("searching_players"), this.game.width / 2, 40, 0xFFD3CCBE);
+            GuiComponent.drawCenteredString(poseStack, mc.font, loading, this.game.width / 2, 50, 0xFFD3CCBE);
+            GuiComponent.drawCenteredString(poseStack, mc.font, this.game.translation("searching_players"), this.game.width / 2, 40, 0xFFD3CCBE);
         }
     }
 
@@ -297,82 +302,83 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
         }
 
         @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+        public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
         {
             this.backButton.active = this.game.wonGame != null;
             this.backButton.visible = this.game.wonGame != null;
 
             Minecraft mc = Minecraft.getInstance();
-            PoseStack stack = graphics.pose();
 
-            stack.pushPose();
-            stack.translate(PaddleBall.BOARD_WIDTH / 2, 4, 0);
+            poseStack.pushPose();
+            poseStack.translate(PaddleBall.BOARD_WIDTH / 2, 4, 0);
 
             // Draw player score
-            stack.pushPose();
+            poseStack.pushPose();
             String label = Integer.toString(this.game.playerScore);
             int width = mc.font.width(label) * 2;
-            stack.translate(-width - 7, 0, 0);
-            stack.scale(2, 2, 2);
-            graphics.drawString(mc.font, label, 0, 0, 0xFF2F2F33, false);
-            stack.popPose();
+            poseStack.translate(-width - 7, 0, 0);
+            poseStack.scale(2, 2, 2);
+            ScreenHelper.drawString(poseStack, label, 0, 0, 0xFF2F2F33, false);
+            poseStack.popPose();
 
-            stack.pushPose();
-            stack.scale(2, 2, 2);
+            poseStack.pushPose();
+            poseStack.scale(2, 2, 2);
             int breakWidth = mc.font.width(label) / 2;
-            graphics.drawString(mc.font, "-", -breakWidth, 0, 0xFF2F2F33, false);
-            stack.popPose();
+            ScreenHelper.drawString(poseStack, "-", -breakWidth, 0, 0xFF2F2F33, false);
+            poseStack.popPose();
 
             // Draw opponent score
-            stack.pushPose();
-            stack.translate(7, 0, 0);
-            stack.scale(2, 2, 2);
-            graphics.drawString(mc.font, Integer.toString(this.game.opponentScore), 0, 0, 0xFF2F2F33, false);
-            stack.popPose();
+            poseStack.pushPose();
+            poseStack.translate(7, 0, 0);
+            poseStack.scale(2, 2, 2);
+            ScreenHelper.drawString(poseStack, Integer.toString(this.game.opponentScore), 0, 0, 0xFF2F2F33, false);
+            poseStack.popPose();
 
-            stack.popPose();
+            poseStack.popPose();
 
             // Draw name tags
-            graphics.drawString(mc.font, this.game.translation("you"), 5, 5, 0xFF2F2F33, false);
+            ScreenHelper.drawString(poseStack, this.game.translation("you"), 5, 5, 0xFF2F2F33, false);
             String opponentName = this.game.opponentName;
-            graphics.drawString(mc.font, opponentName, PaddleBall.BOARD_WIDTH - 5 - mc.font.width(opponentName), 5, 0xFF2F2F33, false);
+            ScreenHelper.drawString(poseStack, opponentName, PaddleBall.BOARD_WIDTH - 5 - mc.font.width(opponentName), 5, 0xFF2F2F33, false);
+
+            RenderSystem.setShaderTexture(0, TEXTURE);
 
             // Draw host paddle
-            stack.pushPose();
+            poseStack.pushPose();
             float smoothHostPos = Mth.lerp(partialTick, this.game.lastPlayerPos, this.game.playerPos);
-            stack.translate(4, smoothHostPos, 0);
-            graphics.blit(TEXTURE, 0, 0, 0, 0, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT);
-            stack.popPose();
+            poseStack.translate(4, smoothHostPos, 0);
+            GuiComponent.blit(poseStack, 0, 0, 0, 0, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT);
+            poseStack.popPose();
 
             // Draw opponent paddle
-            stack.pushPose();
+            poseStack.pushPose();
             float smoothOpponentPos = Mth.lerp(partialTick, this.game.lastOpponentPos, this.game.opponentPos);
-            stack.translate((PaddleBall.BOARD_WIDTH) - 8, smoothOpponentPos, 0);
-            graphics.blit(TEXTURE, -2, 0, 6, 0, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT);
-            stack.popPose();
+            poseStack.translate((PaddleBall.BOARD_WIDTH) - 8, smoothOpponentPos, 0);
+            GuiComponent.blit(poseStack, -2, 0, 6, 0, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT);
+            poseStack.popPose();
 
             // Draw ball
-            stack.pushPose();
+            poseStack.pushPose();
             float smoothBallX = Mth.lerp(partialTick, this.game.lastBallX, this.game.ballX);
             float smoothBallY = Mth.lerp(partialTick, this.game.lastBallY, this.game.ballY);
             smoothBallX = this.game.leftPaddle ? smoothBallX : PaddleBall.BOARD_WIDTH - smoothBallX;
-            stack.translate(smoothBallX, smoothBallY, 0);
-            graphics.blit(TEXTURE, 0, 0, 12, 0, 4, 4);
-            stack.popPose();
+            poseStack.translate(smoothBallX, smoothBallY, 0);
+            GuiComponent.blit(poseStack, 0, 0, 12, 0, 4, 4);
+            poseStack.popPose();
 
             if(this.game.scoreAnimation > 0 && (this.game.scoreAnimation / 5) % 2 == 0)
             {
-                stack.pushPose();
-                stack.translate((PaddleBall.BOARD_WIDTH - PaddleBall.PADDLE_WIDTH) * this.game.scoreSide, 0, 0);
-                graphics.fill(0, 0, PaddleBall.PADDLE_WIDTH, PaddleBall.BOARD_HEIGHT, 0xFF653938);
-                stack.popPose();
+                poseStack.pushPose();
+                poseStack.translate((PaddleBall.BOARD_WIDTH - PaddleBall.PADDLE_WIDTH) * this.game.scoreSide, 0, 0);
+                GuiComponent.fill(poseStack, 0, 0, PaddleBall.PADDLE_WIDTH, PaddleBall.BOARD_HEIGHT, 0xFF653938);
+                poseStack.popPose();
             }
 
             if(this.game.wonGame != null && this.game.displayLabel != null)
             {
                 Component bannerLabel = this.game.displayLabel;
                 int bannerColour = this.game.wonGame ? 0xFF376337 : 0xFF653938;
-                graphics.drawCenteredString(mc.font, bannerLabel, this.game.width / 2, 40, bannerColour);
+                GuiComponent.drawCenteredString(poseStack, mc.font, bannerLabel, this.game.width / 2, 40, bannerColour);
             }
         }
 

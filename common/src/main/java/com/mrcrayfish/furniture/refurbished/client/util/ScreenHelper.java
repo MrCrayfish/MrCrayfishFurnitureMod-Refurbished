@@ -1,9 +1,10 @@
 package com.mrcrayfish.furniture.refurbished.client.util;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -79,17 +80,65 @@ public class ScreenHelper
     /**
      * Fill a rectangle on the screen with one pixel rounded corners.
      *
-     * @param graphics a gui graphics instance
+     * @param poseStack a gui graphics instance
      * @param x        the x position of the rectangle
      * @param y        the y position of the rectangle
      * @param width    the width of the rectangle
      * @param height   the height of the rectangle
      * @param colour   the colour to fill the rectangle
      */
-    public static void fillRounded(GuiGraphics graphics, int x, int y, int width, int height, int colour)
+    public static void fillRounded(PoseStack poseStack, int x, int y, int width, int height, int colour)
     {
-        graphics.fill(x, y + 1, x + 1, y + height - 1, colour);
-        graphics.fill(x + 1, y, x + width - 1, y + height, colour);
-        graphics.fill(x + width - 1, y + 1, x + width, y + height - 1, colour);
+        Screen.fill(poseStack, x, y + 1, x + 1, y + height - 1, colour);
+        Screen.fill(poseStack, x + 1, y, x + width - 1, y + height, colour);
+        Screen.fill(poseStack, x + width - 1, y + 1, x + width, y + height - 1, colour);
+    }
+
+    /**
+     * Draws an item on the screen
+     *
+     * @param poseStack the current pose stack
+     * @param stack     the item to draw
+     * @param x         the x position to draw
+     * @param y         the y position to draw
+     */
+    public static void drawItem(PoseStack poseStack, ItemStack stack, int x, int y)
+    {
+        Minecraft mc = Minecraft.getInstance();
+        mc.getItemRenderer().renderAndDecorateItem(poseStack, stack, x, y);
+        mc.getItemRenderer().renderGuiItemDecorations(poseStack, mc.font, stack, x, y);
+    }
+
+    /**
+     *
+     * @param poseStack
+     * @param text
+     * @param x
+     * @param y
+     * @param colour
+     * @param shadow
+     */
+    public static void drawString(PoseStack poseStack, Component text, int x, int y, int colour, boolean shadow)
+    {
+        if(shadow)
+        {
+            Screen.drawString(poseStack, Minecraft.getInstance().font, text, x, y, colour);
+        }
+        else
+        {
+            Minecraft.getInstance().font.draw(poseStack, text, x, y, colour);
+        }
+    }
+
+    public static void drawString(PoseStack poseStack, String text, int x, int y, int colour, boolean shadow)
+    {
+        if(shadow)
+        {
+            Screen.drawString(poseStack, Minecraft.getInstance().font, text, x, y, colour);
+        }
+        else
+        {
+            Minecraft.getInstance().font.draw(poseStack, text, x, y, colour);
+        }
     }
 }

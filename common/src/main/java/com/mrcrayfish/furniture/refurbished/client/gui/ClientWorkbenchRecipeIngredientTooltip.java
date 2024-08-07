@@ -1,14 +1,17 @@
 package com.mrcrayfish.furniture.refurbished.client.gui;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.WorkbenchScreen;
+import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import com.mrcrayfish.furniture.refurbished.crafting.StackedIngredient;
 import com.mrcrayfish.furniture.refurbished.inventory.WorkbenchMenu;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 
@@ -43,22 +46,21 @@ public class ClientWorkbenchRecipeIngredientTooltip implements ClientTooltipComp
     }
 
     @Override
-    public void renderImage(Font font, int start, int top, GuiGraphics graphics)
+    public void renderImage(Font font, int start, int top, PoseStack poseStack, ItemRenderer renderer)
     {
         ItemStack material = this.getStack().copy();
         material.setCount(this.material.count());
-        graphics.renderFakeItem(material, start, top);
-        graphics.renderItemDecorations(font, material, start, top);
+        renderer.renderAndDecorateFakeItem(poseStack, material, start, top);
         MutableComponent name = material.getHoverName().copy().withStyle(ChatFormatting.GRAY);
-        graphics.drawString(font, name, start + 18 + 5, top + 4, 0xFFFFFFFF);
+        ScreenHelper.drawString(poseStack, name, start + 18 + 5, top + 4, 0xFFFFFFFF, true);
 
         // Draw check or cross depending on if we have the materials
-        PoseStack pose = graphics.pose();
-        pose.pushPose();
-        pose.translate(0, 0, 200);
+        poseStack.pushPose();
+        poseStack.translate(0, 0, 200);
         boolean checked = this.menu.hasMaterials(this.material, this.counted);
-        graphics.blit(WorkbenchScreen.WORKBENCH_TEXTURE, start, top, checked ? 246 : 240, 40, 6, 5);
-        pose.popPose();
+        RenderSystem.setShaderTexture(0, WorkbenchScreen.WORKBENCH_TEXTURE);
+        GuiComponent.blit(poseStack, start, top, checked ? 246 : 240, 40, 6, 5);
+        poseStack.popPose();
     }
 
     private ItemStack getStack()

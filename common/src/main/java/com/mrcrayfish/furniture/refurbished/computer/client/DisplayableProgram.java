@@ -1,9 +1,9 @@
 package com.mrcrayfish.furniture.refurbished.computer.client;
 
 import com.google.common.base.Preconditions;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.ComputerScreen;
 import com.mrcrayfish.furniture.refurbished.computer.Program;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -56,18 +56,18 @@ public abstract class DisplayableProgram<T extends Program>
         }
     }
 
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
     {
         if(this.scene != null)
         {
             // Render scene
-            graphics.pose().pushPose();
-            graphics.pose().translate(this.contentStart, this.contentTop, 0);
-            this.scene.render(graphics, mouseX, mouseY, partialTick);
-            graphics.pose().popPose();
+            poseStack.pushPose();
+            poseStack.translate(this.contentStart, this.contentTop, 0);
+            this.scene.render(poseStack, mouseX, mouseY, partialTick);
+            poseStack.popPose();
 
             // Render widgets
-            this.scene.getRenderables().forEach(widget -> widget.render(graphics, mouseX, mouseY, partialTick));
+            this.scene.getRenderables().forEach(widget -> widget.render(poseStack, mouseX, mouseY, partialTick));
         }
     }
 

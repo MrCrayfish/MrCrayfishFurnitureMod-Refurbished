@@ -65,7 +65,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
         checkContainerDataCount(data, 1);
         workbench.getWorkbenchContainer().startOpen(playerInventory.player);
         this.workbench = workbench;
-        this.level = playerInventory.player.level();
+        this.level = playerInventory.player.getLevel();
         this.access = workbench.createLevelAccess();
         this.data = data;
         this.selectedRecipe = workbench.selectedRecipeDataSlot();
@@ -163,7 +163,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
             if(slotIndex == this.resultSlot.index)
             {
                 Item item = slotStack.getItem();
-                item.onCraftedBy(slotStack, player.level(), player);
+                item.onCraftedBy(slotStack, player.getLevel(), player);
                 if(!this.moveItemStackTo(slotStack, this.container.getContainerSize(), this.slots.size(), true))
                 {
                     return ItemStack.EMPTY;
@@ -309,7 +309,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
         @Override
         public void onTake(Player player, ItemStack stack)
         {
-            stack.onCraftedBy(player.level(), player, stack.getCount());
+            stack.onCraftedBy(player.getLevel(), player, stack.getCount());
             WorkbenchMenu.this.onCraft();
             super.onTake(player, stack);
         }

@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mrcrayfish.framework.api.event.ClientConnectionEvents;
@@ -17,8 +18,8 @@ import com.mrcrayfish.furniture.refurbished.core.ModCreativeTabs;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.core.ModTags;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
+import com.mrcrayfish.furniture.refurbished.platform.Services;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -169,7 +170,7 @@ public class CreativeFilters
     {
         Set<Item> seenItems = new HashSet<>();
         LinkedHashSet<ItemStack> categorisedItems = new LinkedHashSet<>();
-        ModCreativeTabs.MAIN.get().getDisplayItems().forEach(stack -> {
+        Services.PLATFORM.getCreativeModeTab().getDisplayItems().forEach(stack -> {
             this.categories.stream().filter(FilterCategory::isEnabled).forEach(category -> {
                 Item item = stack.getItem();
                 if(!seenItems.contains(item) && stack.is(category.tag)) {
@@ -210,7 +211,7 @@ public class CreativeFilters
      */
     private void onSwitchCreativeTab(CreativeModeTab tab, CreativeModeInventoryScreen screen)
     {
-        boolean isFurnitureTab = tab == ModCreativeTabs.MAIN.get();
+        boolean isFurnitureTab = tab == Services.PLATFORM.getCreativeModeTab();
         this.scrollUpButton.visible = isFurnitureTab;
         this.scrollDownButton.visible = isFurnitureTab;
         if(isFurnitureTab)
@@ -233,7 +234,7 @@ public class CreativeFilters
     public boolean onMouseScroll(double mouseX, double mouseY, double scroll)
     {
         CreativeModeTab selectedTab = ClientServices.PLATFORM.getSelectedCreativeModeTab();
-        if(selectedTab != ModCreativeTabs.MAIN.get())
+        if(selectedTab != Services.PLATFORM.getCreativeModeTab())
             return false;
 
         double startX = this.guiLeft - 28;
@@ -387,7 +388,7 @@ public class CreativeFilters
         }
 
         @Override
-        public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
+        public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTicks)
         {
             int textureX = 26;
             int textureY = this.category.isEnabled() ? 32 : 0;
@@ -396,8 +397,8 @@ public class CreativeFilters
             RenderSystem.setShaderTexture(0, VanillaTextures.CREATIVE_TABS);
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
-            this.drawRotatedTexture(graphics.pose().last().pose(), this.getX(), this.getY(), textureX, textureY, textureWidth, textureHeight);
-            graphics.renderItem(this.category.getIcon(), this.getX() + 8, this.getY() + 5);
+            this.drawRotatedTexture(poseStack.last().pose(), this.getX(), this.getY(), textureX, textureY, textureWidth, textureHeight);
+            ScreenHelper.drawItem(poseStack, this.category.getIcon(), this.getX() + 8, this.getY() + 5);
         }
 
         /**

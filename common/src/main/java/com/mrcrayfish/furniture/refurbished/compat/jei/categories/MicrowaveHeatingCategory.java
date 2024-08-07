@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.compat.jei.categories;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.compat.jei.Plugin;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
@@ -13,7 +14,6 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -69,9 +69,9 @@ public class MicrowaveHeatingCategory extends FurnitureRecipeCategory<MicrowaveH
     }
 
     @Override
-    public void draw(MicrowaveHeatingRecipe recipe, IRecipeSlotsView view, GuiGraphics graphics, double mouseX, double mouseY)
+    public void draw(MicrowaveHeatingRecipe recipe, IRecipeSlotsView view, PoseStack poseStack, double mouseX, double mouseY)
     {
-        this.waveform.draw(graphics, 30, 9);
-        this.drawSeconds(graphics, 42, 28, recipe.getTime());
+        this.waveform.draw(poseStack, 30, 9);
+        this.drawSeconds(poseStack, 42, 28, recipe.getTime());
     }
 }

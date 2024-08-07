@@ -1,11 +1,11 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.overlay;
 
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 /**
  * Author: MrCrayfish
  */
 public interface IHudOverlay
 {
-    void draw(GuiGraphics graphics, float partialTick);
+    void draw(PoseStack poseStack, float partialTick);
 }

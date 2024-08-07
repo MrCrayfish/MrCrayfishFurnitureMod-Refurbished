@@ -1,5 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.platform.services;
 
+import net.minecraft.world.item.CreativeModeTab;
+
 public interface IPlatformHelper
 {
     /**
@@ -33,6 +35,11 @@ public interface IPlatformHelper
     {
         return isDevelopmentEnvironment() ? "development" : "production";
     }
+
+    /**
+     * @return Returns the platform specific creative mode tab
+     */
+    CreativeModeTab getCreativeModeTab();
 
     enum Platform
     {

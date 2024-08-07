@@ -40,7 +40,7 @@ public class StoveMenu extends SimpleRecipeContainerMenu<Container> implements I
         checkContainerDataCount(data, 8);
         container.startOpen(playerInventory.player);
         this.data = data;
-        this.level = playerInventory.player.level();
+        this.level = playerInventory.player.getLevel();
         this.addContainerSlots(85, 18, 3, 1, 0);
         this.addContainerSlots(85, 54, 3, 1, 3, ResultSlot::new);
         this.addPlayerInventorySlots(8, 84, playerInventory);

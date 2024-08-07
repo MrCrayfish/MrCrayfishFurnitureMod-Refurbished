@@ -1,7 +1,10 @@
 package com.mrcrayfish.furniture.refurbished.computer.client.widget;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
@@ -33,14 +36,14 @@ public class ComputerButton extends Button
     }
 
     @Override
-    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
     {
         Minecraft mc = Minecraft.getInstance();
-        graphics.fill(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), this.getOutlineColour());
-        graphics.fill(this.getX() + 1, this.getY() + 1, this.getX() + this.getWidth() - 1, this.getY() + this.getHeight() - 1, this.getBackgroundColour());
-        graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        GuiComponent.fill(poseStack, this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), this.getOutlineColour());
+        GuiComponent.fill(poseStack, this.getX() + 1, this.getY() + 1, this.getX() + this.getWidth() - 1, this.getY() + this.getHeight() - 1, this.getBackgroundColour());
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         int messageWidth = mc.font.width(this.getMessage());
-        graphics.drawString(mc.font, this.getMessage(), this.getX() + (this.getWidth() - messageWidth) / 2 + 1, this.getY() + (this.getHeight() - mc.font.lineHeight) / 2 + 1 + this.textOffset, this.getTextColour(), false);
+        ScreenHelper.drawString(poseStack, this.getMessage(), this.getX() + (this.getWidth() - messageWidth) / 2 + 1, this.getY() + (this.getHeight() - mc.font.lineHeight) / 2 + 1 + this.textOffset, this.getTextColour(), false);
     }
 
     @Override

@@ -1,7 +1,10 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 
 import com.google.common.base.MoreObjects;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
@@ -82,14 +85,15 @@ public class TextInputScreen extends Screen
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
     {
-        this.renderBackground(graphics);
+        this.renderBackground(poseStack);
         int startX = (this.width - WINDOW_WIDTH) / 2;
         int startY = (this.height - WINDOW_HEIGHT) / 2;
         // x, y, width, height, corner_size, sub_image_width, sub_image_height, sub_image_u, sub_image_v
-        graphics.blitNineSliced(RECIPE_BOOK_TEXTURE, startX, startY, WINDOW_WIDTH, WINDOW_HEIGHT, 4, 32, 32, 82, 208);
-        graphics.drawString(this.minecraft.font, this.title, startX + 6, startY + 7, 0x404040, false);
-        super.render(graphics, mouseX, mouseY, partialTick);
+        RenderSystem.setShaderTexture(0, RECIPE_BOOK_TEXTURE);
+        GuiComponent.blitNineSliced(poseStack, startX, startY, WINDOW_WIDTH, WINDOW_HEIGHT, 4, 32, 32, 82, 208);
+        ScreenHelper.drawString(poseStack, this.title, startX + 6, startY + 7, 0x404040, false);
+        super.render(poseStack, mouseX, mouseY, partialTick);
     }
 }
