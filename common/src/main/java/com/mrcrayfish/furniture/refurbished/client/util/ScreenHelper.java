@@ -106,7 +106,6 @@ public class ScreenHelper
     {
         Minecraft mc = Minecraft.getInstance();
         mc.getItemRenderer().renderAndDecorateItem(poseStack, stack, x, y);
-        mc.getItemRenderer().renderGuiItemDecorations(poseStack, mc.font, stack, x, y);
     }
 
     /**
