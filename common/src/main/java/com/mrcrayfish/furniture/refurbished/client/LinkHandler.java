@@ -10,7 +10,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Axis;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 import com.mrcrayfish.framework.api.config.event.FrameworkConfigEvents;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.Constants;
@@ -26,6 +27,8 @@ import com.mrcrayfish.furniture.refurbished.electricity.NodeHitResult;
 import com.mrcrayfish.furniture.refurbished.item.WrenchItem;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageDeleteLink;
+import com.mrcrayfish.furniture.refurbished.util.joml.Intersectiond;
+import com.mrcrayfish.furniture.refurbished.util.joml.Vector3d;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -43,9 +46,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.joml.Intersectiond;
-import org.joml.Matrix4f;
-import org.joml.Vector3d;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
@@ -274,14 +274,15 @@ public class LinkHandler
         {
             this.linkInsideArea = this.sourcePositions.stream().anyMatch(pos -> {
                 AABB box = ISourceNode.createPowerableZone(mc.level, pos);
-                return box.contains(this.lastNodePos.getCenter()) && box.contains(this.getLinkEnd(mc.player, partialTick));
+                Vec3 center = Vec3.atCenterOf(this.lastNodePos);
+                return box.contains(center) && box.contains(this.getLinkEnd(mc.player, partialTick));
             });
         }
         else if(this.result instanceof LinkHitResult hitResult)
         {
             Connection connection = hitResult.getConnection();
-            Vec3 start = connection.getPosA().getCenter();
-            Vec3 end = connection.getPosB().getCenter();
+            Vec3 start = Vec3.atCenterOf(connection.getPosA());
+            Vec3 end = Vec3.atCenterOf(connection.getPosB());
             this.linkInsideArea = this.sourcePositions.stream().anyMatch(pos -> {
                 AABB box = ISourceNode.createPowerableZone(mc.level, pos);
                 return box.contains(start) && box.contains(end);
@@ -389,8 +390,8 @@ public class LinkHandler
             double pitch = Math.atan2(delta.horizontalDistance(), delta.y) + Mth.HALF_PI;
             pose.pushPose();
             pose.translate(start.x, start.y, start.z);
-            pose.mulPose(Axis.YP.rotation((float) yaw));
-            pose.mulPose(Axis.ZP.rotation((float) pitch));
+            pose.mulPose(Vector3f.YP.rotation((float) yaw));
+            pose.mulPose(Vector3f.ZP.rotation((float) pitch));
             int color = this.getLinkColour(player.getLevel());
             Matrix4f matrix = pose.last().pose();
             renderer.drawColouredBox(matrix, consumer, new AABB(0, -0.03125, -0.03125, delta.length(), 0.03125, 0.03125), color, 0.8F);
@@ -412,7 +413,7 @@ public class LinkHandler
         IElectricityNode node = this.getTargetNode();
         if(node != null && !this.isLinkingNode(node) && this.canLinkToNode(player.getLevel(), node))
         {
-            return node.getNodePosition().getCenter();
+            return Vec3.atCenterOf(node.getNodePosition());
         }
         return player.getViewVector(partialTick).normalize().scale(1.5).add(player.getEyePosition(partialTick));
     }
@@ -492,9 +493,9 @@ public class LinkHandler
         {
             Vec3 rayStart = player.getEyePosition(partialTick);
             Vec3 rayEnd = rayStart.add(player.getViewVector(partialTick).normalize().scale(range));
-            Vec3 linkStart = connection.getPosA().getCenter();
-            Vec3 linkEnd = connection.getPosB().getCenter();
-            Vector3d result =  new Vector3d();
+            Vec3 linkStart = Vec3.atCenterOf(connection.getPosA());
+            Vec3 linkEnd = Vec3.atCenterOf(connection.getPosB());
+            Vector3d result = new Vector3d();
             double squareDistance = Intersectiond.findClosestPointsLineSegments(rayStart.x, rayStart.y, rayStart.z, rayEnd.x, rayEnd.y, rayEnd.z, linkStart.x, linkStart.y, linkStart.z, linkEnd.x, linkEnd.y, linkEnd.z, new Vector3d(), result);
             double distance = Math.sqrt(squareDistance);
             if(distance < 0.1 && distance < closestDistance)

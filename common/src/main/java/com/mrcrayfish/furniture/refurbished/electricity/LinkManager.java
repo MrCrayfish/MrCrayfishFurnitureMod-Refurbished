@@ -11,6 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -67,7 +68,7 @@ public class LinkManager
             if(lastNode.isSourceNode() && node.isSourceNode())
                 return;
 
-            int linkLength = (int) (lastNode.getNodePosition().getCenter().distanceTo(node.getNodePosition().getCenter()) + 0.5);
+            int linkLength = (int) (Vec3.atCenterOf(lastNode.getNodePosition()).distanceTo(Vec3.atCenterOf(node.getNodePosition())) + 0.5);
             if(linkLength <= MAX_LINK_LENGTH)
             {
                 this.lastNodeMap.remove(player.getUUID());
@@ -79,7 +80,7 @@ public class LinkManager
                     Network.getPlay().sendToPlayer(() -> (ServerPlayer) player, new MessageSyncLink(node.getNodePosition()));
                     return;
                 }
-                level.playSound(null, node.getNodePosition(), ModSounds.ITEM_WRENCH_CONNECTED_LINK.get(), SoundSource.BLOCKS);
+                level.playSound(null, node.getNodePosition(), ModSounds.ITEM_WRENCH_CONNECTED_LINK.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
                 Network.getPlay().sendToPlayer(() -> (ServerPlayer) player, new MessageSyncLink(null));
             }
         }
@@ -90,7 +91,7 @@ public class LinkManager
         if(!this.lastNodeMap.containsKey(player.getUUID()))
         {
             this.lastNodeMap.put(player.getUUID(), pos);
-            level.playSound(null, pos, ModSounds.ITEM_WRENCH_SELECTED_NODE.get(), SoundSource.BLOCKS);
+            level.playSound(null, pos, ModSounds.ITEM_WRENCH_SELECTED_NODE.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
             Network.getPlay().sendToPlayer(() -> (ServerPlayer) player, new MessageSyncLink(pos));
             return true;
         }

@@ -10,6 +10,7 @@ import com.mrcrayfish.furniture.refurbished.computer.client.Window;
 import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
 import com.mrcrayfish.furniture.refurbished.mixin.client.ScreenAccessor;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
@@ -81,18 +82,18 @@ public class ComputerScreen extends ElectricityContainerScreen<ComputerMenu>
     }
 
     @Override
-    protected void init()
+    protected void rebuildWidgets()
     {
-        super.init();
+        this.init();
+        this.setFocused(null);
+        this.updateWindow();
         this.desktop.update(this.leftPos + DISPLAY_LEFT, this.topPos + DISPLAY_TOP, DISPLAY_WIDTH, DISPLAY_HEIGHT);
     }
 
     @Override
-    protected void repositionElements()
+    public void resize(Minecraft minecraft, int $$1, int $$2)
     {
-        super.init();
-        this.updateWindow();
-        this.desktop.update(this.leftPos + DISPLAY_LEFT, this.topPos + DISPLAY_TOP, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+        super.resize(minecraft, $$1, $$2);
     }
 
     @Override
@@ -105,7 +106,7 @@ public class ComputerScreen extends ElectricityContainerScreen<ComputerMenu>
 
         // Draw background
         RenderSystem.setShaderTexture(0, TEXTURE);
-        GuiComponent.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        this.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
 
         // Draw desktop and window
         int displayLeft = this.leftPos + DISPLAY_LEFT;

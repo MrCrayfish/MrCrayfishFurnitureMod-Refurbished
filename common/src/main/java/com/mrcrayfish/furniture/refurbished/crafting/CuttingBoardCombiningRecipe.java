@@ -6,8 +6,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModRecipeSerializers;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.network.FriendlyByteBuf;
@@ -61,7 +60,7 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
     }
 
     @Override
-    public ItemStack assemble(Container container, RegistryAccess access)
+    public ItemStack assemble(Container container)
     {
         return this.result.copy();
     }
@@ -73,7 +72,7 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess access)
+    public ItemStack getResultItem()
     {
         return this.result;
     }
@@ -133,7 +132,7 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
                 inputArray.add(ingredient.toJson());
             }
             object.add("ingredients", inputArray);
-            object.addProperty("result", BuiltInRegistries.ITEM.getKey(result.result.getItem()).toString());
+            object.addProperty("result", Registry.ITEM.getKey(result.result.getItem()).toString());
             object.addProperty("count", result.result.getCount());
         }
 
@@ -145,7 +144,7 @@ public class CuttingBoardCombiningRecipe implements Recipe<Container>
                 return Ingredient.fromJson(element);
             }).toArray(Ingredient[]::new);
             String resultString = GsonHelper.getAsString(object, "result");
-            Item item = BuiltInRegistries.ITEM.getOptional(new ResourceLocation(resultString)).orElseThrow(() -> new IllegalStateException("Item: " + resultString + " does not exist"));
+            Item item = Registry.ITEM.getOptional(new ResourceLocation(resultString)).orElseThrow(() -> new IllegalStateException("Item: " + resultString + " does not exist"));
             int count = GsonHelper.getAsInt(object, "count", 1);
             ItemStack result = new ItemStack(item, count);
             return new CuttingBoardCombiningRecipe(id, NonNullList.of(Ingredient.EMPTY, ingredients), result);

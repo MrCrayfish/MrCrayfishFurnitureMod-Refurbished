@@ -65,7 +65,7 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
     public RecycleBinBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
     {
         super(type, pos, state, 3);
-        this.audioPosition = pos.getCenter();
+        this.audioPosition = Vec3.atCenterOf(pos);
     }
 
     @Override

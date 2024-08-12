@@ -18,7 +18,7 @@ public class LatticeFenceGateBlock extends FenceGateBlock implements BlockTagSup
 
     public LatticeFenceGateBlock(WoodType type, Properties properties)
     {
-        super(properties, type);
+        super(properties);
         this.type = type;
     }
 

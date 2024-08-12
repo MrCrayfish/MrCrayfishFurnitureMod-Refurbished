@@ -92,18 +92,8 @@ public class StoveContainer extends CompoundContainer implements WorldlyContaine
             {
                 return worldlyContainer.canTakeItemThroughFace(slotIndex - this.stove.getContainerSize(), stack, direction);
             }
-            return this.cookingContainer.canTakeItem(this.cookingContainer, slotIndex - this.stove.getContainerSize(), stack);
+            return true;
         }
         return this.stove.canTakeItemThroughFace(slotIndex, stack, direction);
-    }
-
-    @Override
-    public boolean canTakeItem(Container container, int slotIndex, ItemStack stack)
-    {
-        if(slotIndex >= this.stove.getContainerSize())
-        {
-            return this.cookingContainer.canTakeItem(this.cookingContainer, slotIndex - this.stove.getContainerSize(), stack);
-        }
-        return this.stove.canTakeItem(this.stove, slotIndex, stack);
     }
 }

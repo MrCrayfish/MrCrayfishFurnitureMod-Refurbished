@@ -134,7 +134,7 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     }
 
     @Override
-    public boolean canTakeItem(Container container, int slotIndex, ItemStack stack)
+    public boolean canTakeItemThroughFace(int slotIndex, ItemStack stack, Direction direction)
     {
         return slotIndex != RESULT_SLOT;
     }

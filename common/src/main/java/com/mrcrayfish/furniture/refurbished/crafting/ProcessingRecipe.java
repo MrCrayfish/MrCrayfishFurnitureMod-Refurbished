@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.crafting;
 
+import com.google.common.base.MoreObjects;
 import com.google.gson.JsonObject;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.advancements.Advancement;
@@ -8,8 +9,7 @@ import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.RequirementsStrategy;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.network.FriendlyByteBuf;
@@ -69,7 +69,7 @@ public abstract class ProcessingRecipe implements Recipe<Container>
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess access)
+    public ItemStack getResultItem()
     {
         return this.result;
     }
@@ -81,7 +81,7 @@ public abstract class ProcessingRecipe implements Recipe<Container>
     }
 
     @Override
-    public ItemStack assemble(Container container, RegistryAccess access)
+    public ItemStack assemble(Container container)
     {
         return this.result.copy();
     }
@@ -177,7 +177,8 @@ public abstract class ProcessingRecipe implements Recipe<Container>
         public void save(Consumer<FinishedRecipe> consumer, ResourceLocation id)
         {
             this.advancement.parent(ROOT_RECIPE_ADVANCEMENT).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id)).rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
-            consumer.accept(new Result(id, this.category, this.ingredient, this.result, this.time, this.serializer, this.advancement, id.withPrefix("recipes/")));
+            ResourceLocation advancementId = new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath());
+            consumer.accept(new Result(id, this.category, this.ingredient, this.result, this.time, this.serializer, this.advancement, advancementId));
         }
     }
 
@@ -277,9 +278,9 @@ public abstract class ProcessingRecipe implements Recipe<Container>
             super(type, id, category, ingredient, result, time);
         }
 
-        public static ProcessingRecipe from(AbstractCookingRecipe recipe, RegistryAccess access)
+        public static ProcessingRecipe from(AbstractCookingRecipe recipe)
         {
-            return new ProcessingRecipe(recipe.getType(), recipe.getId(), Category.FOOD, recipe.getIngredients().get(0), recipe.getResultItem(access), recipe.getCookingTime())
+            return new ProcessingRecipe(recipe.getType(), recipe.getId(), Category.FOOD, recipe.getIngredients().get(0), recipe.getResultItem(), recipe.getCookingTime())
             {
                 @Override
                 public RecipeSerializer<?> getSerializer()
@@ -299,7 +300,7 @@ public abstract class ProcessingRecipe implements Recipe<Container>
             @Override
             public void toJson(JsonObject object, Result result)
             {
-                String id = BuiltInRegistries.ITEM.getKey(result.result.getItem()).toString();
+                String id = Registry.ITEM.getKey(result.result.getItem()).toString();
                 object.addProperty("category", result.category.getSerializedName());
                 object.add("ingredient", result.ingredient.toJson());
                 object.addProperty("result", id);
@@ -312,7 +313,7 @@ public abstract class ProcessingRecipe implements Recipe<Container>
                 Category category = Category.byName(GsonHelper.getAsString(object, "category", "misc"));
                 Ingredient ingredient = Utils.getIngredient(object, "ingredient");
                 ResourceLocation resultId = new ResourceLocation(GsonHelper.getAsString(object, "result"));
-                net.minecraft.world.item.Item item = BuiltInRegistries.ITEM.getOptional(resultId).orElseThrow(() -> new IllegalStateException("The item '%s' does not exist".formatted(resultId)));
+                net.minecraft.world.item.Item item = Registry.ITEM.getOptional(resultId).orElseThrow(() -> new IllegalStateException("The item '%s' does not exist".formatted(resultId)));
                 int time = GsonHelper.getAsInt(object, "time", this.defaultTime);
                 return this.factory.create(id, category, ingredient, new ItemStack(item), time);
             }
@@ -338,7 +339,7 @@ public abstract class ProcessingRecipe implements Recipe<Container>
             {
                 object.addProperty("category", result.category.getSerializedName());
                 object.add("ingredient", result.ingredient.toJson());
-                String id = BuiltInRegistries.ITEM.getKey(result.result.getItem()).toString();
+                String id = Registry.ITEM.getKey(result.result.getItem()).toString();
                 int count = result.result.getCount();
                 if(count == 1)
                 {
@@ -400,7 +401,7 @@ public abstract class ProcessingRecipe implements Recipe<Container>
 
         public static Category byName(String name)
         {
-            return CODEC.byName(name, Category.MISC);
+            return MoreObjects.firstNonNull(CODEC.byName(name), Category.MISC);
         }
     }
 }

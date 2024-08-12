@@ -2,7 +2,7 @@ package com.mrcrayfish.furniture.refurbished.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
 import com.mrcrayfish.furniture.refurbished.block.CeilingFanBlock;
 import com.mrcrayfish.furniture.refurbished.blockentity.CeilingFanBlockEntity;
 import com.mrcrayfish.furniture.refurbished.client.ExtraModels;
@@ -43,7 +43,7 @@ public class CeilingFanBlockEntityRenderer implements BlockEntityRenderer<Ceilin
         poseStack.translate(0.5, 0.5, 0.5);
         Direction direction = ceilingFan.getDirection();
         poseStack.mulPose(direction.getRotation());
-        poseStack.mulPose(Axis.YP.rotationDegrees(ceilingFan.getRotation(partialTick)));
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(ceilingFan.getRotation(partialTick)));
         poseStack.translate(-0.5, -0.5, -0.5);
         BakedModel model = this.getCeilingFanBladeModel(ceilingFan.getBlockState());
         VertexConsumer consumer = source.getBuffer(RenderType.cutout());

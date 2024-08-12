@@ -117,7 +117,7 @@ public class ComputerBlockEntity extends ElectricityModuleBlockEntity implements
     @Override
     public boolean isValid(Player player)
     {
-        return this.isNodePowered() && Container.stillValidBlockEntity(this, player) && player.equals(this.getUser());
+        return this.isNodePowered() && Utils.isInInteractableRange(this, player) && player.equals(this.getUser());
     }
 
     @Override

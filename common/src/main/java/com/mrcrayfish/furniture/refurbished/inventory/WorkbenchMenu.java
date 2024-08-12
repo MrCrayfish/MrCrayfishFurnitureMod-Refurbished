@@ -113,7 +113,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
                 if(this.workbench.canCraft(recipe))
                 {
                     ItemStack result = this.getSlot(WorkbenchBlockEntity.RESULT_SLOT).getItem();
-                    ItemStack output = recipe.getResultItem(this.level.registryAccess());
+                    ItemStack output = recipe.getResultItem();
                     if(!ItemStack.matches(result, output))
                     {
                         this.resultSlot.set(output.copy());
@@ -191,10 +191,12 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
 
             if(slotStack.isEmpty())
             {
-                slot.setByPlayer(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             }
-
-            slot.setChanged();
+            else
+            {
+                slot.setChanged();
+            }
 
             if(slotStack.getCount() == stack.getCount())
             {
@@ -202,6 +204,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
             }
 
             slot.onTake(player, slotStack);
+
             this.broadcastChanges();
         }
         return stack;

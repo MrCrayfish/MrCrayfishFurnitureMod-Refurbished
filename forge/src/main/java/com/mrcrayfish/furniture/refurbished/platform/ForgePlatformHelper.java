@@ -29,6 +29,6 @@ public class ForgePlatformHelper implements IPlatformHelper
     @Override
     public CreativeModeTab getCreativeModeTab()
     {
-        return FurnitureMod.creativeModeTab;
+        return FurnitureMod.CREATIVE_TAB;
     }
 }

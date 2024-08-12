@@ -6,6 +6,7 @@
     "compatibilityLevel": "JAVA_17",
     "mixins": [
         "BlockEntityMixin",
+        "CreativeModeTabMixin",
         "EntityAccessor",
         "EntityMixin",
         "LevelChunkMixin",
@@ -17,7 +18,7 @@
         "client.AbstractSelectionListMixin",
         "client.ClientRecipeBookMixin",
         "client.CreativeModeInventoryScreenMixin",
-        "client.ModelManagerMixin",
+        "client.ModelBakeryMixin",
         "client.ScreenAccessor"
     ],
     "injectors": {

@@ -641,8 +641,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
             {
                 Item remainingItem = stack.getMaxStackSize() == 1 ? stack.getItem().getCraftingRemainingItem() : null;
                 Optional<? extends ProcessingRecipe> optional = this.getRecipe();
-                Level level = Objects.requireNonNull(StoveBlockEntity.this.getLevel());
-                ItemStack result = optional.map(recipe -> recipe.getResultItem(level.registryAccess())).orElse(ItemStack.EMPTY);
+                ItemStack result = optional.map(ProcessingRecipe::getResultItem).orElse(ItemStack.EMPTY);
                 stack.shrink(1);
                 if(!result.isEmpty())
                 {
@@ -674,14 +673,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
             if(!stack.isEmpty())
             {
                 Optional<? extends ProcessingRecipe> optional = this.getRecipe();
-                if(optional.isEmpty())
-                {
-                    return false;
-                }
-
-                Level level = Objects.requireNonNull(StoveBlockEntity.this.getLevel());
-                ItemStack result = optional.get().getResultItem(level.registryAccess());
-                return this.canOutput(result);
+                return optional.map(recipe -> this.canOutput(recipe.getResultItem())).orElse(false);
             }
             return false;
         }

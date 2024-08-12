@@ -2,13 +2,11 @@ package com.mrcrayfish.furniture.refurbished.crafting;
 
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeSerializers;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -18,9 +16,9 @@ import net.minecraft.world.level.Level;
  */
 public class DoorMatCopyRecipe extends CustomRecipe
 {
-    public DoorMatCopyRecipe(ResourceLocation id, CraftingBookCategory category)
+    public DoorMatCopyRecipe(ResourceLocation id)
     {
-        super(id, category);
+        super(id);
     }
 
     @Override
@@ -30,7 +28,7 @@ public class DoorMatCopyRecipe extends CustomRecipe
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer container, RegistryAccess access)
+    public ItemStack assemble(CraftingContainer container)
     {
         return this.constructOutput(container);
     }

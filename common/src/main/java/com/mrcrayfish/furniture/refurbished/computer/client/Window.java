@@ -53,7 +53,8 @@ public class Window
         this.contentStart = this.windowStart + 1;
         this.contentTop =  this.windowTop + 1 + TITLE_BAR_HEIGHT + 1;
         this.displayable.update(this.contentStart, this.contentTop);
-        this.closeButton.setPosition(this.windowStart + this.windowWidth - this.closeButton.getWidth() - 1, this.windowTop + 1);
+        this.closeButton.x = this.windowStart + this.windowWidth - this.closeButton.getWidth() - 1;
+        this.closeButton.y = this.windowTop + 1;
     }
 
     public void tick()

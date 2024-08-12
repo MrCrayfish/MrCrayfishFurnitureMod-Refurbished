@@ -78,7 +78,7 @@ public class CuttingBoardHelperOverlay implements IHudOverlay
         int areaWidth = COLUMNS * 18 + 8;
         int areaHeight = this.getAreaHeight(placeable, drawPlaceableElement, drawSliceableElement);
         int areaStart = 5;
-        int guiHeight = mc.getWindow().getGuiScaledHeight(); // TODO 1.19.4 is this right?
+        int guiHeight = mc.getWindow().getGuiScaledHeight();
         int areaTop = (guiHeight - areaHeight) / 2;
 
         if(drawPlaceableElement)
@@ -91,7 +91,7 @@ public class CuttingBoardHelperOverlay implements IHudOverlay
             {
                 int x = areaStart + (i % COLUMNS) * 18 + 1 + 4;
                 int y = areaTop + (i / COLUMNS) * 18 + 1 + 4 + TITLE_HEIGHT;
-                ScreenHelper.drawItem(poseStack, new ItemStack(placeable.get(i)), x, y);
+                ScreenHelper.drawItem(new ItemStack(placeable.get(i)), x, y);
             }
         }
 
@@ -103,7 +103,7 @@ public class CuttingBoardHelperOverlay implements IHudOverlay
             int contentTop = areaTop + areaHeight - elementHeight;
             int labelStart = areaStart + (areaWidth - contentWidth) / 2;
             ScreenHelper.fillRounded(poseStack, areaStart, contentTop, areaWidth, elementHeight, 0x9937AE37);
-            ScreenHelper.drawItem(poseStack, new ItemStack(ModItems.KNIFE.get()), labelStart, contentTop + 1);
+            ScreenHelper.drawItem(new ItemStack(ModItems.KNIFE.get()), labelStart, contentTop + 1);
             Screen.drawString(poseStack, Minecraft.getInstance().font, sliceableLabel, labelStart + 18, contentTop + 5, 0xFFFFFFFF);
         }
     }

@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.compat.crafttweaker.handlers;
 
+import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.recipe.component.BuiltinRecipeComponents;
@@ -47,7 +48,7 @@ public class CuttingBoardCombiningRecipeHandler implements IRecipeHandler<Cuttin
         {
             if(Collections.disjoint(firstIngredients.get(i).getStackingIds(), secondIngredients.get(i).getStackingIds()))
             {
-                Plugin.LOGGER.error("Cutting Board combining inputs cannot be empty");
+                CraftTweakerAPI.LOGGER.error("[MrCrayfish's Furniture Mod: Refurbished] Cutting Board combining inputs cannot be empty");
                 return false;
             }
         }

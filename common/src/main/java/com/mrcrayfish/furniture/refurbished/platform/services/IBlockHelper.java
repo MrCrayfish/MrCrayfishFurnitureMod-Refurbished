@@ -13,5 +13,5 @@ public interface IBlockHelper
 {
     TrampolineBlock createTrampolineBlock(DyeColor color, BlockBehaviour.Properties properties);
 
-    DamageSource ceilingFanDamageSource(Level level);
+    DamageSource createDamageSource(String name);
 }

@@ -8,6 +8,8 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -53,6 +55,12 @@ public class Seat extends Entity
 
     @Override
     protected void addAdditionalSaveData(CompoundTag tag) {}
+
+    @Override
+    public Packet<?> getAddEntityPacket()
+    {
+        return new ClientboundAddEntityPacket(this);
+    }
 
     @Override
     public void tick()

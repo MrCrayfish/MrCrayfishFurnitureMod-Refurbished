@@ -1,7 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
 import com.mrcrayfish.furniture.refurbished.block.CuttingBoardBlock;
 import com.mrcrayfish.furniture.refurbished.blockentity.ComputerBlockEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -27,7 +27,7 @@ public class ComputerBlockEntityRenderer implements BlockEntityRenderer<Computer
             // Setup rotations
             Direction direction = computer.getBlockState().getValue(CuttingBoardBlock.DIRECTION);
             poseStack.translate(0.5, 0, 0.5);
-            poseStack.mulPose(Axis.YN.rotation(Mth.HALF_PI * direction.get2DDataValue()));
+            poseStack.mulPose(Vector3f.YN.rotation(Mth.HALF_PI * direction.get2DDataValue()));
             poseStack.translate(-0.5, 0, -0.345);
 
             // Draw tv screen quad with current channel

@@ -3,7 +3,7 @@ package com.mrcrayfish.furniture.refurbished.data;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.furniture.refurbished.data.model.PreparedVariantBlockState;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.ItemModelGenerators;
@@ -33,12 +33,12 @@ import java.util.Set;
  */
 public class FurnitureModelProvider extends FabricModelProvider
 {
-    private final FabricDataOutput output;
+    private final FabricDataGenerator generator;
 
-    public FurnitureModelProvider(FabricDataOutput output)
+    public FurnitureModelProvider(FabricDataGenerator generator)
     {
-        super(output);
-        this.output = output;
+        super(generator);
+        this.generator = generator;
     }
 
     @SuppressWarnings("unchecked")
@@ -59,7 +59,7 @@ public class FurnitureModelProvider extends FabricModelProvider
                 // Generates and registers the blockstate variants
                 List<Variant> variants = new ArrayList<>();
                 for(PreparedVariantBlockState.Model model : entry.getModels()) {
-                    ResourceLocation modelLocation = model.isChild() ? new ResourceLocation(this.output.getModId(), "block/" + model.getName()) : model.getModel();
+                    ResourceLocation modelLocation = model.isChild() ? new ResourceLocation(this.generator.getModId(), "block/" + model.getName()) : model.getModel();
                     Variant variant = Variant.variant().with(VariantProperties.MODEL, modelLocation);
                     if(model.getXRotation() != VariantProperties.Rotation.R0) {
                         variant.with(VariantProperties.X_ROT, model.getXRotation());
@@ -87,7 +87,7 @@ public class FurnitureModelProvider extends FabricModelProvider
                     if(models.length > 0) {
                         PreparedVariantBlockState.Model model = models[0];
                         ResourceLocation itemName = ModelLocationUtils.getModelLocation(item);
-                        ResourceLocation modelLocation = new ResourceLocation(this.output.getModId(), "block/" + model.getName());
+                        ResourceLocation modelLocation = new ResourceLocation(this.generator.getModId(), "block/" + model.getName());
                         generators.modelOutput.accept(itemName, new DelegatedModel(modelLocation));
                     }
                 });
@@ -102,7 +102,7 @@ public class FurnitureModelProvider extends FabricModelProvider
             builder.getParts().forEach(entry -> {
                 List<Variant> variants = new ArrayList<>();
                 for(PreparedVariantBlockState.Model model : entry.getModels()) {
-                    ResourceLocation modelLocation = model.isChild() ? new ResourceLocation(this.output.getModId(), "block/" + model.getName()) : model.getModel();
+                    ResourceLocation modelLocation = model.isChild() ? new ResourceLocation(this.generator.getModId(), "block/" + model.getName()) : model.getModel();
                     Variant variant = Variant.variant().with(VariantProperties.MODEL, modelLocation);
                     if(model.getXRotation() != VariantProperties.Rotation.R0) {
                         variant.with(VariantProperties.X_ROT, model.getXRotation());
@@ -136,7 +136,7 @@ public class FurnitureModelProvider extends FabricModelProvider
                 });
             });
         }, model -> {
-            ResourceLocation modelLocation = new ResourceLocation(this.output.getModId(), "extra/" + model.getName());
+            ResourceLocation modelLocation = new ResourceLocation(this.generator.getModId(), "extra/" + model.getName());
             if(!createdModels.contains(modelLocation))
             {
                 model.asTemplate().create(modelLocation, model.getTextures(), generators.modelOutput);

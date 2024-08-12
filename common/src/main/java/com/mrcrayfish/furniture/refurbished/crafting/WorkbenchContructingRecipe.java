@@ -12,11 +12,9 @@ import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.RequirementsStrategy;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeBuilder;
-import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -81,7 +79,7 @@ public class WorkbenchContructingRecipe implements Recipe<Container>
     }
 
     @Override
-    public ItemStack assemble(Container container, RegistryAccess access)
+    public ItemStack assemble(Container container)
     {
         return this.result.copy();
     }
@@ -93,15 +91,9 @@ public class WorkbenchContructingRecipe implements Recipe<Container>
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess access)
+    public ItemStack getResultItem()
     {
         return this.result;
-    }
-
-    @Override
-    public boolean showNotification()
-    {
-        return this.notification;
     }
 
     public NonNullList<StackedIngredient> getMaterials()
@@ -136,12 +128,12 @@ public class WorkbenchContructingRecipe implements Recipe<Container>
             object.add("materials", materialsArray);
             if(result.count == 1)
             {
-                object.addProperty("result", BuiltInRegistries.ITEM.getKey(result.result).toString());
+                object.addProperty("result", Registry.ITEM.getKey(result.result).toString());
             }
             else
             {
                 JsonObject itemObject = new JsonObject();
-                itemObject.addProperty("item", BuiltInRegistries.ITEM.getKey(result.result).toString());
+                itemObject.addProperty("item", Registry.ITEM.getKey(result.result).toString());
                 itemObject.addProperty("count", result.count);
                 object.add("result", itemObject);
             }
@@ -188,7 +180,6 @@ public class WorkbenchContructingRecipe implements Recipe<Container>
         private final Function<TagKey<Item>, CriterionTriggerInstance> hasTag;
         private final List<StackedIngredient> materials = new ArrayList<>();
         private final Advancement.Builder advancement = Advancement.Builder.advancement();
-        private RecipeCategory category = RecipeCategory.MISC;
         private boolean showNotification;
 
         private Builder(Item result, int count, Function<ItemLike, CriterionTriggerInstance> hasItem, Function<TagKey<Item>, CriterionTriggerInstance> hasTag)
@@ -218,12 +209,6 @@ public class WorkbenchContructingRecipe implements Recipe<Container>
             return this;
         }
 
-        public Builder category(RecipeCategory category)
-        {
-            this.category = category;
-            return this;
-        }
-
         public Builder showNotification(boolean show)
         {
             this.showNotification = show;
@@ -241,7 +226,9 @@ public class WorkbenchContructingRecipe implements Recipe<Container>
         {
             this.validate(id);
             this.advancement.parent(ROOT_RECIPE_ADVANCEMENT).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id)).rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
-            consumer.accept(new Result(id, this.result, this.count, this.materials, this.advancement, id.withPrefix("recipes/" + this.category.getFolderName() + "/"), this.showNotification));
+            String folder = this.result.getItemCategory().getRecipeFolderName();
+            ResourceLocation advancementId = new ResourceLocation(id.getNamespace(), "recipes/" + folder + "/" + id.getPath());
+            consumer.accept(new Result(id, this.result, this.count, this.materials, this.advancement, advancementId, this.showNotification));
         }
 
         private void validate(ResourceLocation id)

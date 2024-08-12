@@ -37,7 +37,7 @@ import javax.annotation.Nullable;
 public class FreezerBlockEntity extends ElectricityModuleProcessingLootBlockEntity implements IPowerSwitch, IHomeControlDevice, StackedContentsCompatible
 {
     public static final int[] INPUT_SLOTS = new int[]{0};
-    public static final int[] OUTPUT_SLOTS = new int[]{1};
+    public static final int[] OUTPUT_SLOTS = new int[]{0, 1};
     public static final int DATA_POWERED = 0;
     public static final int DATA_ENABLED = 1;
     public static final int DATA_PROCESS_TIME = 2;
@@ -106,9 +106,9 @@ public class FreezerBlockEntity extends ElectricityModuleProcessingLootBlockEnti
     }
 
     @Override
-    public boolean canTakeItem(Container container, int slotIndex, ItemStack stack)
+    public boolean canTakeItemThroughFace(int slotIndex, ItemStack stack, Direction direction)
     {
-        return slotIndex != 0 || !this.isRecipe(stack);
+        return super.canTakeItemThroughFace(slotIndex, stack, direction);
     }
 
     @Override

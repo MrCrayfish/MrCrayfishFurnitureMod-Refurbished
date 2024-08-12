@@ -16,7 +16,6 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -187,9 +186,8 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
 
             // Disable the vs player button if not in a server
             Minecraft mc = Minecraft.getInstance();
-            if((mc.getSingleplayerServer() == null || mc.isSingleplayer()) && mc.getCurrentServer() == null)
+            if((mc.getSingleplayerServer() == null || mc.hasSingleplayerServer()) && mc.getCurrentServer() == null)
             {
-                this.playVsButton.setTooltip(Tooltip.create(this.game.translation("server_required")));
                 this.playVsButton.active = false;
             }
 
@@ -199,15 +197,29 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
         @Override
         public void updateWidgets(int contentStart, int contentTop)
         {
-            this.playAiButton.setPosition(contentStart + (this.game.width - this.playAiButton.getWidth()) / 2, contentTop + 45);
-            this.playVsButton.setPosition(contentStart + (this.game.width - this.playVsButton.getWidth()) / 2, contentTop + 65);
+            this.playAiButton.x = contentStart + (this.game.width - this.playAiButton.getWidth()) / 2;
+            this.playAiButton.y = contentTop + 45;
+            this.playVsButton.x = contentStart + (this.game.width - this.playVsButton.getWidth()) / 2;
+            this.playVsButton.y = contentTop + 65;
         }
 
         @Override
         public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
         {
             RenderSystem.setShaderTexture(0, TEXTURE);
-            GuiComponent.blit(poseStack, (this.game.width - 128) / 2, 10, 16, 0, 128, 24);
+            this.playAiButton.blit(poseStack, (this.game.width - 128) / 2, 10, 16, 0, 128, 24);
+
+            if(this.playAiButton.isHoveredOrFocused())
+            {
+                Minecraft mc = Minecraft.getInstance();
+                if((mc.getSingleplayerServer() == null || mc.hasSingleplayerServer()) && mc.getCurrentServer() == null)
+                {
+                    if(mc.screen != null)
+                    {
+                        mc.screen.renderTooltip(poseStack, this.game.translation("server_required"), mouseX, mouseY);
+                    }
+                }
+            }
         }
 
         private static class MenuButton extends ComputerButton
@@ -218,14 +230,14 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
             }
 
             @Override
-            public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
+            public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
             {
-                super.renderWidget(poseStack, mouseX, mouseY, partialTick);
+                super.renderButton(poseStack, mouseX, mouseY, partialTick);
                 if(this.isActive() && this.isHoveredOrFocused())
                 {
                     RenderSystem.setShaderTexture(0, TEXTURE);
-                    GuiComponent.blit(poseStack, this.getX() - 6, this.getY() + 6, 12, 0, 4, 4);
-                    GuiComponent.blit(poseStack, this.getX() + this.getWidth() + 2, this.getY() + 6, 12, 0, 4, 4);
+                    this.blit(poseStack, this.x - 6, this.y + 6, 12, 0, 4, 4);
+                    this.blit(poseStack, this.x + this.getWidth() + 2, this.y + 6, 12, 0, 4, 4);
                 }
             }
         }
@@ -249,14 +261,15 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
         @Override
         public void updateWidgets(int contentStart, int contentTop)
         {
-            this.backButton.setPosition(contentStart + (this.game.width - this.backButton.getWidth()) / 2, contentTop + 65);
+            this.backButton.x = contentStart + (this.game.width - this.backButton.getWidth()) / 2;
+            this.backButton.y = contentTop + 65;
         }
 
         @Override
         public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
         {
             RenderSystem.setShaderTexture(0, TEXTURE);
-            GuiComponent.blit(poseStack, (this.game.width - 128) / 2, 10, 16, 0, 128, 24);
+            this.backButton.blit(poseStack, (this.game.width - 128) / 2, 10, 16, 0, 128, 24);
 
             String loading = switch((int) (Util.getMillis() / 300L % 4L)) {
                 default -> "O o o";
@@ -288,7 +301,8 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
         @Override
         public void updateWidgets(int contentStart, int contentTop)
         {
-            this.backButton.setPosition(contentStart + (this.game.width - this.backButton.getWidth()) / 2, contentTop + 60);
+            this.backButton.x = contentStart + (this.game.width - this.backButton.getWidth()) / 2;
+            this.backButton.y = contentTop + 60;
         }
 
         @Override
@@ -347,14 +361,14 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
             poseStack.pushPose();
             float smoothHostPos = Mth.lerp(partialTick, this.game.lastPlayerPos, this.game.playerPos);
             poseStack.translate(4, smoothHostPos, 0);
-            GuiComponent.blit(poseStack, 0, 0, 0, 0, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT);
+            this.backButton.blit(poseStack, 0, 0, 0, 0, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT);
             poseStack.popPose();
 
             // Draw opponent paddle
             poseStack.pushPose();
             float smoothOpponentPos = Mth.lerp(partialTick, this.game.lastOpponentPos, this.game.opponentPos);
             poseStack.translate((PaddleBall.BOARD_WIDTH) - 8, smoothOpponentPos, 0);
-            GuiComponent.blit(poseStack, -2, 0, 6, 0, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT);
+            this.backButton.blit(poseStack, -2, 0, 6, 0, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT);
             poseStack.popPose();
 
             // Draw ball
@@ -363,7 +377,7 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
             float smoothBallY = Mth.lerp(partialTick, this.game.lastBallY, this.game.ballY);
             smoothBallX = this.game.leftPaddle ? smoothBallX : PaddleBall.BOARD_WIDTH - smoothBallX;
             poseStack.translate(smoothBallX, smoothBallY, 0);
-            GuiComponent.blit(poseStack, 0, 0, 12, 0, 4, 4);
+            this.backButton.blit(poseStack, 0, 0, 12, 0, 4, 4);
             poseStack.popPose();
 
             if(this.game.scoreAnimation > 0 && (this.game.scoreAnimation / 5) % 2 == 0)

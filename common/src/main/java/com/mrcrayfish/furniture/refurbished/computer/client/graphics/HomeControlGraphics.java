@@ -67,9 +67,12 @@ public class HomeControlGraphics extends DisplayableProgram<HomeControl>
         public void updateWidgets(int contentStart, int contentTop)
         {
             this.devices.setPosition(contentStart + 5, contentTop + 25);
-            this.turnOnAllButton.setPosition(contentStart + 5, contentTop + 3);
-            this.turnOffAllButton.setPosition(contentStart + 5 + this.turnOnAllButton.getWidth() + 2, contentTop + 3);
-            this.infoButton.setPosition(contentStart + this.graphics.getWidth() - 5 - this.infoButton.getWidth(), contentTop + 3);
+            this.turnOnAllButton.x = contentStart + 5;
+            this.turnOnAllButton.y = contentTop + 3;
+            this.turnOffAllButton.x = contentStart + 5 + this.turnOnAllButton.getWidth() + 2;
+            this.turnOffAllButton.y = contentTop + 3;
+            this.infoButton.x = contentStart + this.graphics.getWidth() - 5 - this.infoButton.getWidth();
+            this.infoButton.y = contentTop + 3;
         }
 
         @Override
@@ -97,7 +100,8 @@ public class HomeControlGraphics extends DisplayableProgram<HomeControl>
         @Override
         public void updateWidgets(int contentStart, int contentTop)
         {
-            this.backButton.setPosition(contentStart + 5, contentTop + 3);
+            this.backButton.x = contentStart + 5;
+            this.backButton.y = contentTop + 3;
         }
 
         @Override
@@ -105,7 +109,7 @@ public class HomeControlGraphics extends DisplayableProgram<HomeControl>
         {
             GuiComponent.fill(poseStack, 0, 0, this.graphics.getWidth(), 20, 0xFF262626);
             Font font = Minecraft.getInstance().font;
-            font.drawWordWrap(poseStack, this.infoText, 5, 25, this.graphics.getWidth() - 10, 0xFF47403E);
+            font.drawWordWrap(this.infoText, 5, 25, this.graphics.getWidth() - 10, 0xFF47403E);
         }
     }
 
@@ -137,7 +141,8 @@ public class HomeControlGraphics extends DisplayableProgram<HomeControl>
             this.updateButtonLabel();
             GuiComponent.fill(poseStack, left, top, left + rowWidth, top + rowHeight, 0xFF47403E);
             ScreenHelper.drawString(poseStack, this.device.getDeviceName(), left + 5, top + 4, 0xFF222225, false);
-            this.button.setPosition(left + rowWidth - this.button.getWidth() - 1, top + 1);
+            this.button.x = left + rowWidth - this.button.getWidth() - 1;
+            this.button.y = top + 1;
             this.button.render(poseStack, mouseX, mouseY, partialTick);
         }
 

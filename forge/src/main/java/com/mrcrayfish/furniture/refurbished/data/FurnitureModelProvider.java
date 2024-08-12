@@ -6,9 +6,9 @@ import com.mrcrayfish.furniture.refurbished.block.MetalType;
 import com.mrcrayfish.furniture.refurbished.data.model.ModelTemplate;
 import com.mrcrayfish.furniture.refurbished.data.model.PreparedItem;
 import com.mrcrayfish.furniture.refurbished.data.model.PreparedVariantBlockState;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.data.CachedOutput;
-import net.minecraft.data.PackOutput;
+import net.minecraft.data.DataGenerator;
 import net.minecraft.data.models.model.ModelLocationUtils;
 import net.minecraft.data.models.model.TextureMapping;
 import net.minecraft.data.models.model.TextureSlot;
@@ -29,11 +29,11 @@ import net.minecraftforge.client.model.generators.VariantBlockStateBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * Author: MrCrayfish
@@ -45,11 +45,11 @@ public class FurnitureModelProvider extends BlockStateProvider
 
     private final ExtraModelProvider extraModelProvider;
 
-    public FurnitureModelProvider(PackOutput output, ExistingFileHelper helper)
+    public FurnitureModelProvider(DataGenerator generator, ExistingFileHelper helper)
     {
-        super(output, Constants.MOD_ID, helper);
+        super(generator, Constants.MOD_ID, helper);
         this.registerExistingResources(helper);
-        this.extraModelProvider = new ExtraModelProvider(output, Constants.MOD_ID, helper);
+        this.extraModelProvider = new ExtraModelProvider(generator, Constants.MOD_ID, helper);
     }
 
     private void registerExistingResources(ExistingFileHelper helper)
@@ -58,7 +58,7 @@ public class FurnitureModelProvider extends BlockStateProvider
         ModelTemplate.all().forEach(model -> helper.trackGenerated(model, MODEL));
 
         // Registers a default texture for all blocks in the mod
-        Registration.get(Registries.BLOCK).stream().filter(entry -> entry.getId().getNamespace().equals(Constants.MOD_ID)).forEach(entry -> {
+        Registration.get(Registry.BLOCK_REGISTRY).stream().filter(entry -> entry.getId().getNamespace().equals(Constants.MOD_ID)).forEach(entry -> {
             helper.trackGenerated(this.blockTexture((Block) entry.get()), TEXTURE);
         });
 
@@ -186,9 +186,10 @@ public class FurnitureModelProvider extends BlockStateProvider
     }
 
     @Override
-    public CompletableFuture<?> run(CachedOutput cache)
+    public void run(CachedOutput cache) throws IOException
     {
         this.extraModelProvider.clear();
-        return CompletableFuture.allOf(super.run(cache), this.extraModelProvider.generateAll(cache));
+        super.run(cache);
+        this.extraModelProvider.run(cache);
     }
 }

@@ -14,12 +14,12 @@ import java.util.stream.Collectors;
 public class CustomSheets
 {
     public static final ResourceLocation TV_CHANNELS_SHEET = Utils.resource("textures/atlas/tv_channels.png");
-    private static final Map<ResourceLocation, Material> TV_CHANNEL_MATERIALS = TelevisionBlockEntity.ALL_CHANNELS.stream()
+    public static final Map<ResourceLocation, Material> TV_CHANNEL_MATERIALS = TelevisionBlockEntity.ALL_CHANNELS.stream()
             .collect(Collectors.toMap(TelevisionBlockEntity.Channel::id, channel -> createTelevisionChannelMaterial(channel.id())));
 
     private static Material createTelevisionChannelMaterial(ResourceLocation texture)
     {
-        return new Material(TV_CHANNELS_SHEET, texture.withPrefix("tv_channels/"));
+        return new Material(TV_CHANNELS_SHEET, new ResourceLocation(texture.getNamespace(), "tv_channels/" + texture.getPath()));
     }
 
     public static Material getTelevisionChannelMaterial(ResourceLocation id)

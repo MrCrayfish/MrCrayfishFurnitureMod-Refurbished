@@ -1,7 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.data.model;
 
 import com.google.common.base.Preconditions;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.data.models.blockstates.VariantProperties;
 import net.minecraft.data.models.model.TextureSlot;
 import net.minecraft.resources.ResourceLocation;
@@ -40,7 +40,7 @@ public class PreparedVariantBlockState
         // Verify that all block states have been covered
         this.block.getStateDefinition().getPossibleStates().forEach(state -> {
             if(this.entries.stream().noneMatch(entry -> entry.is(state))) {
-                ResourceLocation key = BuiltInRegistries.BLOCK.getKey(this.block);
+                ResourceLocation key = Registry.BLOCK.getKey(this.block);
                 throw new IllegalStateException("Missing variant for " + key + state.toString());
             }
         });

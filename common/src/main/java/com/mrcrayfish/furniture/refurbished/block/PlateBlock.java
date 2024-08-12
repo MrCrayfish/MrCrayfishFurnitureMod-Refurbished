@@ -118,7 +118,7 @@ public class PlateBlock extends FallingBlock implements EntityBlock, BlockTagSup
     @Override
     protected void falling(FallingBlockEntity entity)
     {
-        entity.disableDrop();
+        entity.dropItem = false;
     }
 
     @Override

@@ -11,22 +11,25 @@ import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSendPackage;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.MultiLineEditBox;
 import net.minecraft.client.gui.components.PlayerFaceRenderer;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.level.GameType;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.glfw.GLFW;
 
@@ -70,6 +73,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
     protected String message = "";
     protected int scroll;
     protected int clickedY = -1;
+    protected List<FormattedCharSequence> tooltip;
 
     public PostBoxScreen(PostBoxMenu menu, Inventory playerInventory, Component title)
     {
@@ -87,7 +91,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
         super.init();
 
         this.addRenderableWidget(this.searchEditBox = new EditBox(this.font, this.leftPos + 8, this.topPos + 18, 92, 12, Utils.translation("gui", "search_mailboxes")));
-        this.searchEditBox.setHint(Utils.translation("gui", "search"));
+        this.searchEditBox.setValue("");
         this.searchEditBox.setResponder(s -> {
             this.query = s;
             this.updateSearchFilter();
@@ -99,9 +103,8 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
         }
 
         this.addRenderableWidget(this.messageEditBox = new MultiLineEditBox(this.font, this.leftPos + 118, this.topPos + 13, 116, 54, Utils.translation("gui", "enter_message"), Utils.translation("gui", "package_message")) {
-            // TODO 1.19.4 what append to dis
-            /*@Override
-            public void renderBorder(PoseStack graphics, int x, int y, int width, int height) {}*/
+            @Override
+            protected void renderDecorations(PoseStack poseStack) {}
 
             @Override
             protected boolean scrollbarVisible()
@@ -109,19 +112,21 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
                 return false;
             }
         });
-        this.messageEditBox.setValueListener(s -> this.message = s);
-        if(!this.message.isBlank())
-        {
+        if(!this.message.isBlank()) {
             this.messageEditBox.setValue(this.message);
+        } else {
+            this.messageEditBox.setValue("");
         }
+        this.messageEditBox.setValueListener(s -> this.message = s);
 
         this.addRenderableWidget(this.sendButton = new IconButton(this.leftPos + 284, this.topPos + 22, 20, 0, 18, 18, CommonComponents.EMPTY, btn -> {
             if(this.selected != null) {
                 Network.getPlay().sendToServer(new MessageSendPackage(this.selected.getId(), this.message));
                 this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.BOOK_PAGE_TURN, 1.0F));
             }
+        }, (btn, poseStack, mouseX, mouseY) -> {
+            this.renderTooltip(poseStack, Utils.translation("gui", "send"), mouseX, mouseY);
         }));
-        this.sendButton.setTooltip(Tooltip.create(Utils.translation("gui", "send")));
     }
 
     @Override
@@ -134,6 +139,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
     {
+        this.searchEditBox.setSuggestion(this.searchEditBox.getValue().isBlank() ? Utils.translation("gui", "search").getString() : "");
         this.sendButton.active = this.selected != null && !this.menu.getContainer().isEmpty();
         this.searchEditBox.setTextColor(this.searchEditBox.getValue().isEmpty() && !this.searchEditBox.isFocused() ? 0x707070 : 0xE0E0E0);
         this.renderBackground(poseStack);
@@ -151,6 +157,8 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
     @Override
     protected void renderBg(PoseStack poseStack, float partialTick, int mouseX, int mouseY)
     {
+        this.tooltip = null;
+
         RenderSystem.setShaderTexture(0, POST_BOX_TEXTURE);
         GuiComponent.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth + 25, this.imageHeight, 512, 256);
 
@@ -188,7 +196,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
             if(this.isHovering((entryX - this.leftPos) + 3, (entryY - this.topPos) + 3, 8, 8, mouseX, mouseY))
             {
                 String ownerName = mailbox.getOwner().map(GameProfile::getName).orElse("Unknown Player");
-                this.setTooltipForNextRenderPass(Component.literal(ownerName));
+                this.tooltip = ScreenHelper.createMultilineTooltip(List.of(Component.literal(ownerName)));
             }
         }
         GuiComponent.disableScissor();
@@ -212,8 +220,19 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
 
         if(this.isHovering(91, 5, 10, 10, mouseX, mouseY))
         {
-            this.setTooltipForNextRenderPass(ScreenHelper.createMultilineTooltip(List.of(Utils.translation("gui", "how_to").withStyle(ChatFormatting.GOLD), Utils.translation("gui", "post_box_info"))).toCharSequence(this.minecraft));
+            this.tooltip = ScreenHelper.createMultilineTooltip(List.of(Utils.translation("gui", "how_to").withStyle(ChatFormatting.GOLD), Utils.translation("gui", "post_box_info")));
         }
+    }
+
+    @Override
+    protected void renderTooltip(PoseStack poseStack, int mouseX, int mouseY)
+    {
+        if(this.tooltip != null)
+        {
+            this.renderTooltip(poseStack, this.tooltip, mouseX, mouseY);
+            return;
+        }
+        super.renderTooltip(poseStack, mouseX, mouseY);
     }
 
     @Override
@@ -397,7 +416,10 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
                 }
             }
         }
-        return PLAYER_INFO_CACHE.computeIfAbsent(profile.getId(), uuid -> new PlayerInfo(profile, false));
+        return PLAYER_INFO_CACHE.computeIfAbsent(profile.getId(), uuid -> {
+            ClientboundPlayerInfoPacket.PlayerUpdate update = new ClientboundPlayerInfoPacket.PlayerUpdate(profile, 0, GameType.SURVIVAL, null, null);
+            return new PlayerInfo(update, this.minecraft.getServiceSignatureValidator(), false);
+        });
     }
 
     /**

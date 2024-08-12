@@ -12,6 +12,7 @@ import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageFlipAnimation;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -341,7 +342,7 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
                             Optional<? extends ProcessingRecipe> optional = this.getRecipe(this.cooking.get(i));
                             if(optional.isPresent())
                             {
-                                this.cooking.set(i, optional.get().getResultItem(level.registryAccess()).copy());
+                                this.cooking.set(i, optional.get().getResultItem().copy());
                             }
                         }
                         this.syncCookingSpace(i);
@@ -479,7 +480,7 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
 
     private Optional<ProcessingRecipe> getCookingRecipe(RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> cache, ItemStack stack)
     {
-        return cache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level)).map(recipe -> ProcessingRecipe.Item.from(recipe, this.level.registryAccess()));
+        return cache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level)).map(ProcessingRecipe.Item::from);
     }
 
     private Optional<? extends ProcessingRecipe> getRecipeFromCache(RecipeManager.CachedCheck<Container, ? extends ProcessingRecipe> cache, ItemStack stack)
@@ -775,7 +776,7 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
     @Override
     public boolean stillValid(Player player)
     {
-        return Container.stillValidBlockEntity(this, player);
+        return Utils.isInInteractableRange(this, player);
     }
 
     @Override

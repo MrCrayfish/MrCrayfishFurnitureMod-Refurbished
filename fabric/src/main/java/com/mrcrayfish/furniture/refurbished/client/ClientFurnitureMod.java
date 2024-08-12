@@ -13,7 +13,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.fabricmc.fabric.api.event.client.player.ClientPreAttackCallback;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
@@ -60,7 +59,7 @@ public class ClientFurnitureMod implements ClientModInitializer
 
         ModelLoadingRegistry.INSTANCE.registerModelProvider((manager, out) -> ExtraModels.register(out));
 
-        WorldRenderEvents.LAST.register(context -> {
+        WorldRenderEvents.AFTER_ENTITIES.register(context -> {
             Minecraft mc = Minecraft.getInstance();
             if(mc.player == null || mc.level == null)
                 return;
@@ -77,16 +76,6 @@ public class ClientFurnitureMod implements ClientModInitializer
 
             // End render types
             mc.renderBuffers().bufferSource().endBatch(ClientServices.PLATFORM.getTelevisionScreenRenderType(CustomSheets.TV_CHANNELS_SHEET));
-        });
-
-        ClientPreAttackCallback.EVENT.register((client, player, clickCount) -> {
-            Minecraft mc = Minecraft.getInstance();
-            if(mc.player != null && mc.level != null) {
-                if(mc.player.getMainHandItem().is(ModItems.WRENCH.get())) {
-                    return LinkHandler.get().onWrenchLeftClick(mc.level);
-                }
-            }
-            return false;
         });
 
         WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((context, hitResult) -> {

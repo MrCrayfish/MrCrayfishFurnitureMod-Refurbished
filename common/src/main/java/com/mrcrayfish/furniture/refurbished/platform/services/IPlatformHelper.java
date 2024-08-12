@@ -36,9 +36,6 @@ public interface IPlatformHelper
         return isDevelopmentEnvironment() ? "development" : "production";
     }
 
-    /**
-     * @return Returns the platform specific creative mode tab
-     */
     CreativeModeTab getCreativeModeTab();
 
     enum Platform

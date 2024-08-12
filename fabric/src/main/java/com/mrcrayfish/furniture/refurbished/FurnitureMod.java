@@ -12,23 +12,16 @@ import com.mrcrayfish.furniture.refurbished.data.FurnitureItemTagsProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureLootTableProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureModelProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureRecipeProvider;
-import com.mrcrayfish.furniture.refurbished.data.FurnitureRegistryProvider;
 import com.mrcrayfish.furniture.refurbished.platform.FabricFluidHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -36,11 +29,13 @@ import net.minecraft.world.item.ItemStack;
 @SuppressWarnings("UnstableApiUsage")
 public class FurnitureMod implements ModInitializer, DataGeneratorEntrypoint
 {
-    public static final CreativeModeTab ITEM_GROUP = FabricItemGroup.builder(Utils.resource("creative_tab"))
+    public static final CreativeModeTab ITEM_GROUP = FabricItemGroupBuilder.create(Utils.resource("creative_tab"))
         .icon(() -> new ItemStack(ModBlocks.TABLE_OAK.get()))
-        .title(Component.translatable("itemGroup." + Constants.MOD_ID).withStyle(ChatFormatting.GOLD))
-        .displayItems((params, output) -> ModCreativeTabs.buildCreativeModeTab(output::accept))
-        .build();
+        .appendItems(items -> {
+            ModCreativeTabs.buildCreativeModeTab(itemLike -> {
+                items.add(new ItemStack(itemLike));
+            });
+        }).build();
 
     @Override
     public void onInitialize()
@@ -83,12 +78,10 @@ public class FurnitureMod implements ModInitializer, DataGeneratorEntrypoint
     @Override
     public void onInitializeDataGenerator(FabricDataGenerator generator)
     {
-        FabricDataGenerator.Pack pack = generator.createPack();
-        FurnitureBlockTagsProvider provider = pack.addProvider(FurnitureBlockTagsProvider::new);
-        pack.addProvider((output, lookupProvider) -> new FurnitureItemTagsProvider(output, lookupProvider, provider));
-        FurnitureLootTableProvider.addProviders(pack);
-        pack.addProvider(FurnitureRecipeProvider::new);
-        pack.addProvider(FurnitureModelProvider::new);
-        pack.addProvider(FurnitureRegistryProvider::new);
+        FurnitureBlockTagsProvider provider = generator.addProvider(FurnitureBlockTagsProvider::new);
+        generator.addProvider(new FurnitureItemTagsProvider(generator, provider));
+        FurnitureLootTableProvider.addProviders(generator);
+        generator.addProvider(FurnitureRecipeProvider::new);
+        generator.addProvider(FurnitureModelProvider::new);
     }
 }

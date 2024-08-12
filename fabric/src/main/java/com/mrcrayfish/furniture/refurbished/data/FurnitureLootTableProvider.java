@@ -1,7 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.data;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -15,21 +14,21 @@ import java.util.function.BiConsumer;
  */
 public class FurnitureLootTableProvider
 {
-    public static void addProviders(FabricDataGenerator.Pack pack)
+    public static void addProviders(FabricDataGenerator generator)
     {
-        pack.addProvider(Block::new);
-        pack.addProvider(Entity::new);
+        generator.addProvider(Block::new);
+        generator.addProvider(Entity::new);
     }
 
     public static class Block extends FabricBlockLootTableProvider
     {
-        public Block(FabricDataOutput output)
+        public Block(FabricDataGenerator generator)
         {
-            super(output);
+            super(generator);
         }
 
         @Override
-        public void generate()
+        protected void generateBlockLootTables()
         {
             CommonLootTableProvider.Block.accept(new PlatformLootBuilder.Block(this));
         }
@@ -37,13 +36,13 @@ public class FurnitureLootTableProvider
 
     public static class Entity extends SimpleFabricLootTableProvider
     {
-        public Entity(FabricDataOutput output)
+        public Entity(FabricDataGenerator generator)
         {
-            super(output, LootContextParamSets.ENTITY);
+            super(generator, LootContextParamSets.ENTITY);
         }
 
         @Override
-        public void generate(BiConsumer<ResourceLocation, LootTable.Builder> consumer)
+        public void accept(BiConsumer<ResourceLocation, LootTable.Builder> consumer)
         {
             CommonLootTableProvider.Entity.accept(new PlatformLootBuilder.Entity(consumer));
         }

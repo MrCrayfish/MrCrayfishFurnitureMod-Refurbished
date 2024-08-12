@@ -34,26 +34,26 @@ public class ProgramShortcutButton extends ComputerButton
     }
 
     @Override
-    public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
+    public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
     {
         this.active = this.screen.getOrCreateWindow() == null;
 
         // Draw button
-        GuiComponent.fill(poseStack, this.getX() + 1, this.getY(), this.getX() + this.getWidth() - 1, this.getY() + this.getHeight(), this.getOutlineColour());
-        GuiComponent.fill(poseStack, this.getX(), this.getY() + 1, this.getX() + this.getWidth(), this.getY() + this.getHeight() - 1, this.getOutlineColour());
-        GuiComponent.fill(poseStack, this.getX() + 1, this.getY() + 1, this.getX() + this.getWidth() - 1, this.getY() + this.getHeight() - 1, this.getBackgroundColour());
+        GuiComponent.fill(poseStack, this.x + 1, this.y, this.x + this.getWidth() - 1, this.y + this.getHeight(), this.getOutlineColour());
+        GuiComponent.fill(poseStack, this.x, this.y + 1, this.x + this.getWidth(), this.y + this.getHeight() - 1, this.getOutlineColour());
+        GuiComponent.fill(poseStack, this.x + 1, this.y + 1, this.x + this.getWidth() - 1, this.y + this.getHeight() - 1, this.getBackgroundColour());
 
         // Draw program icon
         RenderSystem.setShaderTexture(0, this.icon.texture());
-        GuiComponent.blit(poseStack, this.getX() + (this.width - 16) / 2, this.getY() + 4, this.icon.u(), this.icon.v(), 16, 16, 128, 128);
+        GuiComponent.blit(poseStack, this.x + (this.width - 16) / 2, this.y + 4, this.icon.u(), this.icon.v(), 16, 16, 128, 128);
 
         // Draw program name in unicode font
         poseStack.pushPose();
         Font font = Minecraft.getInstance().font;
         float scale = 0.666F;
         int labelWidth = font.width(this.getMessage());
-        int labelX = (int) (this.getX() + (this.width - labelWidth * scale) / 2) + 1;
-        int labelY = this.getY() + this.height - font.lineHeight;
+        int labelX = (int) (this.x + (this.width - labelWidth * scale) / 2) + 1;
+        int labelY = this.y + this.height - font.lineHeight;
         poseStack.translate(labelX, labelY, 0);
         poseStack.scale(scale, scale, scale);
         ScreenHelper.drawString(poseStack, this.getMessage(), 0, 0, this.getTextColour(), false);

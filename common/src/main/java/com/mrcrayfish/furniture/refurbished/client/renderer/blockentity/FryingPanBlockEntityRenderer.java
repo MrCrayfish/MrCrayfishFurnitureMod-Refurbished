@@ -1,15 +1,15 @@
 package com.mrcrayfish.furniture.refurbished.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
 import com.mrcrayfish.furniture.refurbished.blockentity.FlipAnimation;
 import com.mrcrayfish.furniture.refurbished.blockentity.FryingPanBlockEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -37,12 +37,12 @@ public class FryingPanBlockEntityRenderer implements BlockEntityRenderer<FryingP
             float flipProgress = this.calculateFlipProgress(time);
             float flipHeight = 0.75F;
             poseStack.translate(0, flipProgress * flipHeight, 0);
-            poseStack.mulPose(Axis.XP.rotation(Mth.HALF_PI));
-            poseStack.mulPose(Axis.ZP.rotation(Mth.HALF_PI * fryingPan.getRotation()));
-            poseStack.mulPose(Axis.XP.rotation(Mth.PI * -3 * time));
-            poseStack.mulPose(Axis.XP.rotation(!animation.isPlaying() && fryingPan.isFlipped() ? Mth.PI : 0));
+            poseStack.mulPose(Vector3f.XP.rotation(Mth.HALF_PI));
+            poseStack.mulPose(Vector3f.ZP.rotation(Mth.HALF_PI * fryingPan.getRotation()));
+            poseStack.mulPose(Vector3f.XP.rotation(Mth.PI * -3 * time));
+            poseStack.mulPose(Vector3f.XP.rotation(!animation.isPlaying() && fryingPan.isFlipped() ? Mth.PI : 0));
             poseStack.scale(0.4375F, 0.4375F, 0.4375F);
-            this.renderer.renderStatic(stack, ItemDisplayContext.FIXED, light, overlay, poseStack, source, fryingPan.getLevel(), 0);
+            this.renderer.renderStatic(stack, ItemTransforms.TransformType.FIXED, light, overlay, poseStack, source, 0);
             poseStack.popPose();
         }
     }

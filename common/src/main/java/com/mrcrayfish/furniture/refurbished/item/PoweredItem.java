@@ -31,7 +31,7 @@ public class PoweredItem extends BlockItem
 {
     public static final Component POWER_TOOLTIP = Component.empty()
         .append(Components.getIcon(FontIcons.INFO))
-        .append(CommonComponents.SPACE)
+        .append(Component.literal(" "))
         .append(Utils.translation("gui", "requires_power",
             Components.GUI_ELECTRICITY_GENERATOR.plainCopy().withStyle(ChatFormatting.YELLOW)).withStyle(ChatFormatting.GRAY));
 

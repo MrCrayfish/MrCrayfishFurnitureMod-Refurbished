@@ -9,6 +9,7 @@
     ],
     "injectors": {
         "defaultRequire": 1
-    }
+    },
+    "client": [ "FabricMinecraftMixin" ]
 }
   

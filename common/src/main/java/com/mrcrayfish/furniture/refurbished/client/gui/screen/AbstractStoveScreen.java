@@ -66,11 +66,11 @@ public class AbstractStoveScreen<T extends AbstractContainerMenu & IElectricityM
 
         // Draw base gui background
         RenderSystem.setShaderTexture(0, TEXTURE);
-        GuiComponent.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        this.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
 
         // Draw animated fan
         int offset = this.menu.isPowered() && this.menu.isEnabled() ? (int) (Util.getMillis() / 100) % 3 : 0;
-        GuiComponent.blit(poseStack, this.leftPos + 32, this.topPos + 23, 176, 16 + offset * 40, 40, 40);
+        this.blit(poseStack, this.leftPos + 32, this.topPos + 23, 176, 16 + offset * 40, 40, 40);
 
         for(int i = 0; i < 3; i++)
         {
@@ -79,7 +79,7 @@ public class AbstractStoveScreen<T extends AbstractContainerMenu & IElectricityM
             if(totalProgress == 0)
                 continue;
             int height = (int) Math.ceil(16 * (progress / (float) totalProgress));
-            GuiComponent.blit(poseStack, this.leftPos + 84 + i * 18, this.topPos + 36, 190, 0, 17, height);
+            this.blit(poseStack, this.leftPos + 84 + i * 18, this.topPos + 36, 190, 0, 17, height);
         }
     }
 }

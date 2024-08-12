@@ -27,7 +27,6 @@ public class CommonItemTagsProvider
         general.add(ModBlocks.TABLE_ACACIA.get().asItem());
         general.add(ModBlocks.TABLE_DARK_OAK.get().asItem());
         general.add(ModBlocks.TABLE_MANGROVE.get().asItem());
-        general.add(ModBlocks.TABLE_CHERRY.get().asItem());
         general.add(ModBlocks.TABLE_CRIMSON.get().asItem());
         general.add(ModBlocks.TABLE_WARPED.get().asItem());
         general.add(ModBlocks.CHAIR_OAK.get().asItem());
@@ -37,7 +36,6 @@ public class CommonItemTagsProvider
         general.add(ModBlocks.CHAIR_ACACIA.get().asItem());
         general.add(ModBlocks.CHAIR_DARK_OAK.get().asItem());
         general.add(ModBlocks.CHAIR_MANGROVE.get().asItem());
-        general.add(ModBlocks.CHAIR_CHERRY.get().asItem());
         general.add(ModBlocks.CHAIR_CRIMSON.get().asItem());
         general.add(ModBlocks.CHAIR_WARPED.get().asItem());
         general.add(ModBlocks.DESK_OAK.get().asItem());
@@ -47,7 +45,6 @@ public class CommonItemTagsProvider
         general.add(ModBlocks.DESK_ACACIA.get().asItem());
         general.add(ModBlocks.DESK_DARK_OAK.get().asItem());
         general.add(ModBlocks.DESK_MANGROVE.get().asItem());
-        general.add(ModBlocks.DESK_CHERRY.get().asItem());
         general.add(ModBlocks.DESK_CRIMSON.get().asItem());
         general.add(ModBlocks.DESK_WARPED.get().asItem());
         general.add(ModBlocks.DRAWER_OAK.get().asItem());
@@ -57,7 +54,6 @@ public class CommonItemTagsProvider
         general.add(ModBlocks.DRAWER_ACACIA.get().asItem());
         general.add(ModBlocks.DRAWER_DARK_OAK.get().asItem());
         general.add(ModBlocks.DRAWER_MANGROVE.get().asItem());
-        general.add(ModBlocks.DRAWER_CHERRY.get().asItem());
         general.add(ModBlocks.DRAWER_CRIMSON.get().asItem());
         general.add(ModBlocks.DRAWER_WARPED.get().asItem());
         general.add(ModBlocks.SOFA_WHITE.get().asItem());
@@ -99,7 +95,6 @@ public class CommonItemTagsProvider
         general.add(ModBlocks.STORAGE_CABINET_ACACIA.get().asItem());
         general.add(ModBlocks.STORAGE_CABINET_DARK_OAK.get().asItem());
         general.add(ModBlocks.STORAGE_CABINET_MANGROVE.get().asItem());
-        general.add(ModBlocks.STORAGE_CABINET_CHERRY.get().asItem());
         general.add(ModBlocks.STORAGE_CABINET_CRIMSON.get().asItem());
         general.add(ModBlocks.STORAGE_CABINET_WARPED.get().asItem());
 
@@ -111,7 +106,6 @@ public class CommonItemTagsProvider
         bedroom.add(ModBlocks.DESK_ACACIA.get().asItem());
         bedroom.add(ModBlocks.DESK_DARK_OAK.get().asItem());
         bedroom.add(ModBlocks.DESK_MANGROVE.get().asItem());
-        bedroom.add(ModBlocks.DESK_CHERRY.get().asItem());
         bedroom.add(ModBlocks.DESK_CRIMSON.get().asItem());
         bedroom.add(ModBlocks.DESK_WARPED.get().asItem());
         bedroom.add(ModBlocks.DRAWER_OAK.get().asItem());
@@ -121,7 +115,6 @@ public class CommonItemTagsProvider
         bedroom.add(ModBlocks.DRAWER_ACACIA.get().asItem());
         bedroom.add(ModBlocks.DRAWER_DARK_OAK.get().asItem());
         bedroom.add(ModBlocks.DRAWER_MANGROVE.get().asItem());
-        bedroom.add(ModBlocks.DRAWER_CHERRY.get().asItem());
         bedroom.add(ModBlocks.DRAWER_CRIMSON.get().asItem());
         bedroom.add(ModBlocks.DRAWER_WARPED.get().asItem());
         bedroom.add(ModBlocks.LIGHTSWITCH_LIGHT.get().asItem());
@@ -151,7 +144,6 @@ public class CommonItemTagsProvider
         bedroom.add(ModBlocks.CEILING_FAN_ACACIA_LIGHT.get().asItem());
         bedroom.add(ModBlocks.CEILING_FAN_DARK_OAK_LIGHT.get().asItem());
         bedroom.add(ModBlocks.CEILING_FAN_MANGROVE_LIGHT.get().asItem());
-        bedroom.add(ModBlocks.CEILING_FAN_CHERRY_LIGHT.get().asItem());
         bedroom.add(ModBlocks.CEILING_FAN_CRIMSON_LIGHT.get().asItem());
         bedroom.add(ModBlocks.CEILING_FAN_WARPED_LIGHT.get().asItem());
         bedroom.add(ModBlocks.CEILING_FAN_OAK_DARK.get().asItem());
@@ -161,7 +153,6 @@ public class CommonItemTagsProvider
         bedroom.add(ModBlocks.CEILING_FAN_ACACIA_DARK.get().asItem());
         bedroom.add(ModBlocks.CEILING_FAN_DARK_OAK_DARK.get().asItem());
         bedroom.add(ModBlocks.CEILING_FAN_MANGROVE_DARK.get().asItem());
-        bedroom.add(ModBlocks.CEILING_FAN_CHERRY_DARK.get().asItem());
         bedroom.add(ModBlocks.CEILING_FAN_CRIMSON_DARK.get().asItem());
         bedroom.add(ModBlocks.CEILING_FAN_WARPED_DARK.get().asItem());
         bedroom.add(ModBlocks.STORAGE_CABINET_OAK.get().asItem());
@@ -171,7 +162,6 @@ public class CommonItemTagsProvider
         bedroom.add(ModBlocks.STORAGE_CABINET_ACACIA.get().asItem());
         bedroom.add(ModBlocks.STORAGE_CABINET_DARK_OAK.get().asItem());
         bedroom.add(ModBlocks.STORAGE_CABINET_MANGROVE.get().asItem());
-        bedroom.add(ModBlocks.STORAGE_CABINET_CHERRY.get().asItem());
         bedroom.add(ModBlocks.STORAGE_CABINET_CRIMSON.get().asItem());
         bedroom.add(ModBlocks.STORAGE_CABINET_WARPED.get().asItem());
         bedroom.add(ModBlocks.STOOL_WHITE.get().asItem());
@@ -199,7 +189,6 @@ public class CommonItemTagsProvider
         kitchen.add(ModBlocks.KITCHEN_CABINETRY_ACACIA.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_CABINETRY_DARK_OAK.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_CABINETRY_MANGROVE.get().asItem());
-        kitchen.add(ModBlocks.KITCHEN_CABINETRY_CHERRY.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_CABINETRY_CRIMSON.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_CABINETRY_WARPED.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_DRAWER_OAK.get().asItem());
@@ -209,7 +198,6 @@ public class CommonItemTagsProvider
         kitchen.add(ModBlocks.KITCHEN_DRAWER_ACACIA.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_DRAWER_DARK_OAK.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_DRAWER_MANGROVE.get().asItem());
-        kitchen.add(ModBlocks.KITCHEN_DRAWER_CHERRY.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_DRAWER_CRIMSON.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_DRAWER_WARPED.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_SINK_OAK.get().asItem());
@@ -219,7 +207,6 @@ public class CommonItemTagsProvider
         kitchen.add(ModBlocks.KITCHEN_SINK_ACACIA.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_SINK_DARK_OAK.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_SINK_MANGROVE.get().asItem());
-        kitchen.add(ModBlocks.KITCHEN_SINK_CHERRY.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_SINK_CRIMSON.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_SINK_WARPED.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_STORAGE_CABINET_OAK.get().asItem());
@@ -229,7 +216,6 @@ public class CommonItemTagsProvider
         kitchen.add(ModBlocks.KITCHEN_STORAGE_CABINET_ACACIA.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_STORAGE_CABINET_DARK_OAK.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_STORAGE_CABINET_MANGROVE.get().asItem());
-        kitchen.add(ModBlocks.KITCHEN_STORAGE_CABINET_CHERRY.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_STORAGE_CABINET_CRIMSON.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_STORAGE_CABINET_WARPED.get().asItem());
         kitchen.add(ModBlocks.KITCHEN_CABINETRY_WHITE.get().asItem());
@@ -313,7 +299,6 @@ public class CommonItemTagsProvider
         kitchen.add(ModBlocks.CUTTING_BOARD_ACACIA.get().asItem());
         kitchen.add(ModBlocks.CUTTING_BOARD_DARK_OAK.get().asItem());
         kitchen.add(ModBlocks.CUTTING_BOARD_MANGROVE.get().asItem());
-        kitchen.add(ModBlocks.CUTTING_BOARD_CHERRY.get().asItem());
         kitchen.add(ModBlocks.CUTTING_BOARD_CRIMSON.get().asItem());
         kitchen.add(ModBlocks.CUTTING_BOARD_WARPED.get().asItem());
         kitchen.add(ModBlocks.FRYING_PAN.get().asItem());
@@ -324,7 +309,6 @@ public class CommonItemTagsProvider
         kitchen.add(ModBlocks.STORAGE_JAR_ACACIA.get().asItem());
         kitchen.add(ModBlocks.STORAGE_JAR_DARK_OAK.get().asItem());
         kitchen.add(ModBlocks.STORAGE_JAR_MANGROVE.get().asItem());
-        kitchen.add(ModBlocks.STORAGE_JAR_CHERRY.get().asItem());
         kitchen.add(ModBlocks.STORAGE_JAR_CRIMSON.get().asItem());
         kitchen.add(ModBlocks.STORAGE_JAR_WARPED.get().asItem());
         kitchen.add(ModBlocks.RECYCLE_BIN.get().asItem());
@@ -335,7 +319,6 @@ public class CommonItemTagsProvider
         kitchen.add(ModBlocks.STORAGE_CABINET_ACACIA.get().asItem());
         kitchen.add(ModBlocks.STORAGE_CABINET_DARK_OAK.get().asItem());
         kitchen.add(ModBlocks.STORAGE_CABINET_MANGROVE.get().asItem());
-        kitchen.add(ModBlocks.STORAGE_CABINET_CHERRY.get().asItem());
         kitchen.add(ModBlocks.STORAGE_CABINET_CRIMSON.get().asItem());
         kitchen.add(ModBlocks.STORAGE_CABINET_WARPED.get().asItem());
         kitchen.add(ModBlocks.PLATE.get().asItem());
@@ -350,7 +333,6 @@ public class CommonItemTagsProvider
         outdoors.add(ModBlocks.CRATE_ACACIA.get().asItem());
         outdoors.add(ModBlocks.CRATE_DARK_OAK.get().asItem());
         outdoors.add(ModBlocks.CRATE_MANGROVE.get().asItem());
-        outdoors.add(ModBlocks.CRATE_CHERRY.get().asItem());
         outdoors.add(ModBlocks.CRATE_CRIMSON.get().asItem());
         outdoors.add(ModBlocks.CRATE_WARPED.get().asItem());
         outdoors.add(ModBlocks.GRILL_WHITE.get().asItem());
@@ -392,7 +374,6 @@ public class CommonItemTagsProvider
         outdoors.add(ModBlocks.MAIL_BOX_ACACIA.get().asItem());
         outdoors.add(ModBlocks.MAIL_BOX_DARK_OAK.get().asItem());
         outdoors.add(ModBlocks.MAIL_BOX_MANGROVE.get().asItem());
-        outdoors.add(ModBlocks.MAIL_BOX_CHERRY.get().asItem());
         outdoors.add(ModBlocks.MAIL_BOX_CRIMSON.get().asItem());
         outdoors.add(ModBlocks.MAIL_BOX_WARPED.get().asItem());
         outdoors.add(ModBlocks.POST_BOX.get().asItem());
@@ -421,7 +402,6 @@ public class CommonItemTagsProvider
         outdoors.add(ModBlocks.HEDGE_ACACIA.get().asItem());
         outdoors.add(ModBlocks.HEDGE_DARK_OAK.get().asItem());
         outdoors.add(ModBlocks.HEDGE_MANGROVE.get().asItem());
-        outdoors.add(ModBlocks.HEDGE_CHERRY.get().asItem());
         outdoors.add(ModBlocks.HEDGE_AZALEA.get().asItem());
         outdoors.add(ModBlocks.DOOR_MAT.get().asItem());
         outdoors.add(ModBlocks.STEPPING_STONES_STONE.get().asItem());
@@ -436,7 +416,6 @@ public class CommonItemTagsProvider
         outdoors.add(ModBlocks.LATTICE_FENCE_ACACIA.get().asItem());
         outdoors.add(ModBlocks.LATTICE_FENCE_DARK_OAK.get().asItem());
         outdoors.add(ModBlocks.LATTICE_FENCE_MANGROVE.get().asItem());
-        outdoors.add(ModBlocks.LATTICE_FENCE_CHERRY.get().asItem());
         outdoors.add(ModBlocks.LATTICE_FENCE_CRIMSON.get().asItem());
         outdoors.add(ModBlocks.LATTICE_FENCE_WARPED.get().asItem());
         outdoors.add(ModBlocks.LATTICE_FENCE_GATE_OAK.get().asItem());
@@ -446,7 +425,6 @@ public class CommonItemTagsProvider
         outdoors.add(ModBlocks.LATTICE_FENCE_GATE_ACACIA.get().asItem());
         outdoors.add(ModBlocks.LATTICE_FENCE_GATE_DARK_OAK.get().asItem());
         outdoors.add(ModBlocks.LATTICE_FENCE_GATE_MANGROVE.get().asItem());
-        outdoors.add(ModBlocks.LATTICE_FENCE_GATE_CHERRY.get().asItem());
         outdoors.add(ModBlocks.LATTICE_FENCE_GATE_CRIMSON.get().asItem());
         outdoors.add(ModBlocks.LATTICE_FENCE_GATE_WARPED.get().asItem());
         outdoors.add(ModItems.SPATULA.get());
@@ -460,7 +438,6 @@ public class CommonItemTagsProvider
         bathroom.add(ModBlocks.TOILET_ACACIA.get().asItem());
         bathroom.add(ModBlocks.TOILET_DARK_OAK.get().asItem());
         bathroom.add(ModBlocks.TOILET_MANGROVE.get().asItem());
-        bathroom.add(ModBlocks.TOILET_CHERRY.get().asItem());
         bathroom.add(ModBlocks.TOILET_CRIMSON.get().asItem());
         bathroom.add(ModBlocks.TOILET_WARPED.get().asItem());
         bathroom.add(ModBlocks.TOILET_WHITE.get().asItem());
@@ -486,7 +463,6 @@ public class CommonItemTagsProvider
         bathroom.add(ModBlocks.BASIN_ACACIA.get().asItem());
         bathroom.add(ModBlocks.BASIN_DARK_OAK.get().asItem());
         bathroom.add(ModBlocks.BASIN_MANGROVE.get().asItem());
-        bathroom.add(ModBlocks.BASIN_CHERRY.get().asItem());
         bathroom.add(ModBlocks.BASIN_CRIMSON.get().asItem());
         bathroom.add(ModBlocks.BASIN_WARPED.get().asItem());
         bathroom.add(ModBlocks.BASIN_WHITE.get().asItem());
@@ -512,7 +488,6 @@ public class CommonItemTagsProvider
         bathroom.add(ModBlocks.BATH_ACACIA.get().asItem());
         bathroom.add(ModBlocks.BATH_DARK_OAK.get().asItem());
         bathroom.add(ModBlocks.BATH_MANGROVE.get().asItem());
-        bathroom.add(ModBlocks.BATH_CHERRY.get().asItem());
         bathroom.add(ModBlocks.BATH_CRIMSON.get().asItem());
         bathroom.add(ModBlocks.BATH_WARPED.get().asItem());
         bathroom.add(ModBlocks.BATH_WHITE.get().asItem());
@@ -570,7 +545,6 @@ public class CommonItemTagsProvider
         electronics.add(ModBlocks.CEILING_FAN_ACACIA_LIGHT.get().asItem());
         electronics.add(ModBlocks.CEILING_FAN_DARK_OAK_LIGHT.get().asItem());
         electronics.add(ModBlocks.CEILING_FAN_MANGROVE_LIGHT.get().asItem());
-        electronics.add(ModBlocks.CEILING_FAN_CHERRY_LIGHT.get().asItem());
         electronics.add(ModBlocks.CEILING_FAN_CRIMSON_LIGHT.get().asItem());
         electronics.add(ModBlocks.CEILING_FAN_WARPED_LIGHT.get().asItem());
         electronics.add(ModBlocks.CEILING_FAN_OAK_DARK.get().asItem());
@@ -580,7 +554,6 @@ public class CommonItemTagsProvider
         electronics.add(ModBlocks.CEILING_FAN_ACACIA_DARK.get().asItem());
         electronics.add(ModBlocks.CEILING_FAN_DARK_OAK_DARK.get().asItem());
         electronics.add(ModBlocks.CEILING_FAN_MANGROVE_DARK.get().asItem());
-        electronics.add(ModBlocks.CEILING_FAN_CHERRY_DARK.get().asItem());
         electronics.add(ModBlocks.CEILING_FAN_CRIMSON_DARK.get().asItem());
         electronics.add(ModBlocks.CEILING_FAN_WARPED_DARK.get().asItem());
         electronics.add(ModBlocks.TELEVISION.get().asItem());
@@ -595,7 +568,6 @@ public class CommonItemTagsProvider
         storage.add(ModBlocks.DRAWER_ACACIA.get().asItem());
         storage.add(ModBlocks.DRAWER_DARK_OAK.get().asItem());
         storage.add(ModBlocks.DRAWER_MANGROVE.get().asItem());
-        storage.add(ModBlocks.DRAWER_CHERRY.get().asItem());
         storage.add(ModBlocks.DRAWER_CRIMSON.get().asItem());
         storage.add(ModBlocks.DRAWER_WARPED.get().asItem());
         storage.add(ModBlocks.CRATE_OAK.get().asItem());
@@ -605,7 +577,6 @@ public class CommonItemTagsProvider
         storage.add(ModBlocks.CRATE_ACACIA.get().asItem());
         storage.add(ModBlocks.CRATE_DARK_OAK.get().asItem());
         storage.add(ModBlocks.CRATE_MANGROVE.get().asItem());
-        storage.add(ModBlocks.CRATE_CHERRY.get().asItem());
         storage.add(ModBlocks.CRATE_CRIMSON.get().asItem());
         storage.add(ModBlocks.CRATE_WARPED.get().asItem());
         storage.add(ModBlocks.KITCHEN_DRAWER_OAK.get().asItem());
@@ -615,7 +586,6 @@ public class CommonItemTagsProvider
         storage.add(ModBlocks.KITCHEN_DRAWER_ACACIA.get().asItem());
         storage.add(ModBlocks.KITCHEN_DRAWER_DARK_OAK.get().asItem());
         storage.add(ModBlocks.KITCHEN_DRAWER_MANGROVE.get().asItem());
-        storage.add(ModBlocks.KITCHEN_DRAWER_CHERRY.get().asItem());
         storage.add(ModBlocks.KITCHEN_DRAWER_CRIMSON.get().asItem());
         storage.add(ModBlocks.KITCHEN_DRAWER_WARPED.get().asItem());
         storage.add(ModBlocks.KITCHEN_SINK_OAK.get().asItem());
@@ -625,7 +595,6 @@ public class CommonItemTagsProvider
         storage.add(ModBlocks.KITCHEN_SINK_ACACIA.get().asItem());
         storage.add(ModBlocks.KITCHEN_SINK_DARK_OAK.get().asItem());
         storage.add(ModBlocks.KITCHEN_SINK_MANGROVE.get().asItem());
-        storage.add(ModBlocks.KITCHEN_SINK_CHERRY.get().asItem());
         storage.add(ModBlocks.KITCHEN_SINK_CRIMSON.get().asItem());
         storage.add(ModBlocks.KITCHEN_SINK_WARPED.get().asItem());
         storage.add(ModBlocks.KITCHEN_DRAWER_WHITE.get().asItem());
@@ -683,7 +652,6 @@ public class CommonItemTagsProvider
         storage.add(ModBlocks.MAIL_BOX_ACACIA.get().asItem());
         storage.add(ModBlocks.MAIL_BOX_DARK_OAK.get().asItem());
         storage.add(ModBlocks.MAIL_BOX_MANGROVE.get().asItem());
-        storage.add(ModBlocks.MAIL_BOX_CHERRY.get().asItem());
         storage.add(ModBlocks.MAIL_BOX_CRIMSON.get().asItem());
         storage.add(ModBlocks.MAIL_BOX_WARPED.get().asItem());
         storage.add(ModItems.FRIDGE_LIGHT.get());
@@ -695,7 +663,6 @@ public class CommonItemTagsProvider
         storage.add(ModBlocks.STORAGE_JAR_ACACIA.get().asItem());
         storage.add(ModBlocks.STORAGE_JAR_DARK_OAK.get().asItem());
         storage.add(ModBlocks.STORAGE_JAR_MANGROVE.get().asItem());
-        storage.add(ModBlocks.STORAGE_JAR_CHERRY.get().asItem());
         storage.add(ModBlocks.STORAGE_JAR_CRIMSON.get().asItem());
         storage.add(ModBlocks.STORAGE_JAR_WARPED.get().asItem());
         storage.add(ModBlocks.RECYCLE_BIN.get().asItem());
@@ -706,7 +673,6 @@ public class CommonItemTagsProvider
         storage.add(ModBlocks.STORAGE_CABINET_ACACIA.get().asItem());
         storage.add(ModBlocks.STORAGE_CABINET_DARK_OAK.get().asItem());
         storage.add(ModBlocks.STORAGE_CABINET_MANGROVE.get().asItem());
-        storage.add(ModBlocks.STORAGE_CABINET_CHERRY.get().asItem());
         storage.add(ModBlocks.STORAGE_CABINET_CRIMSON.get().asItem());
         storage.add(ModBlocks.STORAGE_CABINET_WARPED.get().asItem());
         storage.add(ModBlocks.KITCHEN_STORAGE_CABINET_OAK.get().asItem());
@@ -716,7 +682,6 @@ public class CommonItemTagsProvider
         storage.add(ModBlocks.KITCHEN_STORAGE_CABINET_ACACIA.get().asItem());
         storage.add(ModBlocks.KITCHEN_STORAGE_CABINET_DARK_OAK.get().asItem());
         storage.add(ModBlocks.KITCHEN_STORAGE_CABINET_MANGROVE.get().asItem());
-        storage.add(ModBlocks.KITCHEN_STORAGE_CABINET_CHERRY.get().asItem());
         storage.add(ModBlocks.KITCHEN_STORAGE_CABINET_CRIMSON.get().asItem());
         storage.add(ModBlocks.KITCHEN_STORAGE_CABINET_WARPED.get().asItem());
         storage.add(ModBlocks.KITCHEN_STORAGE_CABINET_WHITE.get().asItem());
@@ -769,7 +734,6 @@ public class CommonItemTagsProvider
         woodenKitchenCabinetry.add(ModBlocks.KITCHEN_CABINETRY_ACACIA.get().asItem());
         woodenKitchenCabinetry.add(ModBlocks.KITCHEN_CABINETRY_DARK_OAK.get().asItem());
         woodenKitchenCabinetry.add(ModBlocks.KITCHEN_CABINETRY_MANGROVE.get().asItem());
-        woodenKitchenCabinetry.add(ModBlocks.KITCHEN_CABINETRY_CHERRY.get().asItem());
         woodenKitchenCabinetry.add(ModBlocks.KITCHEN_CABINETRY_CRIMSON.get().asItem());
         woodenKitchenCabinetry.add(ModBlocks.KITCHEN_CABINETRY_WARPED.get().asItem());
 
@@ -781,7 +745,6 @@ public class CommonItemTagsProvider
         woodenKitchenDrawers.add(ModBlocks.KITCHEN_DRAWER_ACACIA.get().asItem());
         woodenKitchenDrawers.add(ModBlocks.KITCHEN_DRAWER_DARK_OAK.get().asItem());
         woodenKitchenDrawers.add(ModBlocks.KITCHEN_DRAWER_MANGROVE.get().asItem());
-        woodenKitchenDrawers.add(ModBlocks.KITCHEN_DRAWER_CHERRY.get().asItem());
         woodenKitchenDrawers.add(ModBlocks.KITCHEN_DRAWER_CRIMSON.get().asItem());
         woodenKitchenDrawers.add(ModBlocks.KITCHEN_DRAWER_WARPED.get().asItem());
 
@@ -793,7 +756,6 @@ public class CommonItemTagsProvider
         woodenKitchenSinks.add(ModBlocks.KITCHEN_SINK_ACACIA.get().asItem());
         woodenKitchenSinks.add(ModBlocks.KITCHEN_SINK_DARK_OAK.get().asItem());
         woodenKitchenSinks.add(ModBlocks.KITCHEN_SINK_MANGROVE.get().asItem());
-        woodenKitchenSinks.add(ModBlocks.KITCHEN_SINK_CHERRY.get().asItem());
         woodenKitchenSinks.add(ModBlocks.KITCHEN_SINK_CRIMSON.get().asItem());
         woodenKitchenSinks.add(ModBlocks.KITCHEN_SINK_WARPED.get().asItem());
 
@@ -805,7 +767,6 @@ public class CommonItemTagsProvider
         woodenKitchenStorageCabinets.add(ModBlocks.KITCHEN_STORAGE_CABINET_ACACIA.get().asItem());
         woodenKitchenStorageCabinets.add(ModBlocks.KITCHEN_STORAGE_CABINET_DARK_OAK.get().asItem());
         woodenKitchenStorageCabinets.add(ModBlocks.KITCHEN_STORAGE_CABINET_MANGROVE.get().asItem());
-        woodenKitchenStorageCabinets.add(ModBlocks.KITCHEN_STORAGE_CABINET_CHERRY.get().asItem());
         woodenKitchenStorageCabinets.add(ModBlocks.KITCHEN_STORAGE_CABINET_CRIMSON.get().asItem());
         woodenKitchenStorageCabinets.add(ModBlocks.KITCHEN_STORAGE_CABINET_WARPED.get().asItem());
         
@@ -1000,7 +961,6 @@ public class CommonItemTagsProvider
         woodenToilets.add(ModBlocks.TOILET_ACACIA.get().asItem());
         woodenToilets.add(ModBlocks.TOILET_DARK_OAK.get().asItem());
         woodenToilets.add(ModBlocks.TOILET_MANGROVE.get().asItem());
-        woodenToilets.add(ModBlocks.TOILET_CHERRY.get().asItem());
         woodenToilets.add(ModBlocks.TOILET_CRIMSON.get().asItem());
         woodenToilets.add(ModBlocks.TOILET_WARPED.get().asItem());
 
@@ -1012,7 +972,6 @@ public class CommonItemTagsProvider
         woodenBasins.add(ModBlocks.BASIN_ACACIA.get().asItem());
         woodenBasins.add(ModBlocks.BASIN_DARK_OAK.get().asItem());
         woodenBasins.add(ModBlocks.BASIN_MANGROVE.get().asItem());
-        woodenBasins.add(ModBlocks.BASIN_CHERRY.get().asItem());
         woodenBasins.add(ModBlocks.BASIN_CRIMSON.get().asItem());
         woodenBasins.add(ModBlocks.BASIN_WARPED.get().asItem());
 
@@ -1024,7 +983,6 @@ public class CommonItemTagsProvider
         woodenBaths.add(ModBlocks.BATH_ACACIA.get().asItem());
         woodenBaths.add(ModBlocks.BATH_DARK_OAK.get().asItem());
         woodenBaths.add(ModBlocks.BATH_MANGROVE.get().asItem());
-        woodenBaths.add(ModBlocks.BATH_CHERRY.get().asItem());
         woodenBaths.add(ModBlocks.BATH_CRIMSON.get().asItem());
         woodenBaths.add(ModBlocks.BATH_WARPED.get().asItem());
 

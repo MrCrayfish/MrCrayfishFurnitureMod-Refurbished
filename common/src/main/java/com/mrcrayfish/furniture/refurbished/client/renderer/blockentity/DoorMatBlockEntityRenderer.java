@@ -2,7 +2,8 @@ package com.mrcrayfish.furniture.refurbished.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 import com.mrcrayfish.furniture.refurbished.block.DoorMatBlock;
 import com.mrcrayfish.furniture.refurbished.blockentity.DoorMatBlockEntity;
 import com.mrcrayfish.furniture.refurbished.image.TextureCache;
@@ -14,7 +15,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
-import org.joml.Matrix4f;
 
 /**
  * Author: MrCrayfish
@@ -35,8 +35,8 @@ public class DoorMatBlockEntityRenderer implements BlockEntityRenderer<DoorMatBl
         {
             Direction direction = state.getValue(DoorMatBlock.DIRECTION);
             poseStack.translate(0.5, 0, 0.5);
-            poseStack.mulPose(Axis.YN.rotation(Mth.HALF_PI * direction.get2DDataValue()));
-            poseStack.mulPose(Axis.YP.rotation(Mth.PI));
+            poseStack.mulPose(Vector3f.YN.rotation(Mth.HALF_PI * direction.get2DDataValue()));
+            poseStack.mulPose(Vector3f.YP.rotation(Mth.PI));
             poseStack.translate(-0.5, 0, -0.5);
             VertexConsumer consumer = source.getBuffer(RenderType.text(id));
             Matrix4f matrix = poseStack.last().pose();

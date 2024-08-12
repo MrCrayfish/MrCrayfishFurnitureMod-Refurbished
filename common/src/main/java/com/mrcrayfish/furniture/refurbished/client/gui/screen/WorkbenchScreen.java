@@ -20,12 +20,10 @@ import net.minecraft.Util;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StateSwitchingButton;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -129,12 +127,12 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         this.craftableOnlyButton.initTextureValues(152, 41, 28, 18, VanillaTextures.RECIPE_BOOK);
         this.searchNeighboursButton = this.addRenderableWidget(new SearchNeighboursButton(this.leftPos + 184, this.topPos + 62, 26, 16, this.menu.shouldSearchNeighbours()));
         this.searchNeighboursButton.initTextureValues(230, 139, 26, 16, WORKBENCH_TEXTURE);
-        this.addRenderableWidget(new CategoryButton(this.leftPos + 46, this.topPos + 108, 236, 55, CATEGORY_ALL));
-        this.addRenderableWidget(new CategoryButton(this.leftPos + 66, this.topPos + 108, 236, 69, CATEGORY_GENERAL));
-        this.addRenderableWidget(new CategoryButton(this.leftPos + 86, this.topPos + 108, 236, 83, CATEGORY_KITCHEN));
-        this.addRenderableWidget(new CategoryButton(this.leftPos + 106, this.topPos + 108, 236, 97, CATEGORY_OUTDOORS));
-        this.addRenderableWidget(new CategoryButton(this.leftPos + 126, this.topPos + 108, 236, 111, CATEGORY_BATHROOM));
-        this.addRenderableWidget(new CategoryButton(this.leftPos + 146, this.topPos + 108, 236, 125, CATEGORY_ELECTRONICS));
+        this.addRenderableWidget(new CategoryButton(this, this.leftPos + 46, this.topPos + 108, 236, 55, CATEGORY_ALL));
+        this.addRenderableWidget(new CategoryButton(this, this.leftPos + 66, this.topPos + 108, 236, 69, CATEGORY_GENERAL));
+        this.addRenderableWidget(new CategoryButton(this, this.leftPos + 86, this.topPos + 108, 236, 83, CATEGORY_KITCHEN));
+        this.addRenderableWidget(new CategoryButton(this, this.leftPos + 106, this.topPos + 108, 236, 97, CATEGORY_OUTDOORS));
+        this.addRenderableWidget(new CategoryButton(this, this.leftPos + 126, this.topPos + 108, 236, 111, CATEGORY_BATHROOM));
+        this.addRenderableWidget(new CategoryButton(this, this.leftPos + 146, this.topPos + 108, 236, 125, CATEGORY_ELECTRONICS));
     }
 
     @Override
@@ -148,13 +146,23 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         {
             this.renderRecipeTooltip(poseStack, mouseX, mouseY, this.hoveredIndex);
         }
+        if(this.craftableOnlyButton.isHoveredOrFocused())
+        {
+            Component text = this.craftableOnlyButton.isStateTriggered() ? CraftableButton.VANILLA_ONLY_CRAFTABLE : CraftableButton.VANILLA_ALL_RECIPES;
+            this.renderTooltip(poseStack, text, mouseX, mouseY);
+        }
+        if(this.searchNeighboursButton.isHoveredOrFocused())
+        {
+            Component text = (this.searchNeighboursButton.isStateTriggered() ? SearchNeighboursButton.SEARCH_NEIGHBOURS_ON : SearchNeighboursButton.SEARCH_NEIGHBOURS_OFF);
+            this.renderTooltip(poseStack, text, mouseX, mouseY);
+        }
     }
 
     @Override
     protected void renderBg(PoseStack poseStack, float partialTick, int mouseX, int mouseY)
     {
         RenderSystem.setShaderTexture(0, WORKBENCH_TEXTURE);
-        GuiComponent.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        this.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
         this.renderScrollbar(poseStack, mouseY);
         this.renderRecipes(poseStack, partialTick, mouseX, mouseY);
         this.renderOverlay(poseStack);
@@ -162,7 +170,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
 
         if(this.isHovering(199, 5, 10, 10, mouseX, mouseY))
         {
-            this.setTooltipForNextRenderPass(ScreenHelper.createMultilineTooltip(List.of(Utils.translation("gui", "how_to").withStyle(ChatFormatting.GOLD), Utils.translation("gui", "workbench_info"))).toCharSequence(this.minecraft));
+            this.renderTooltip(poseStack, ScreenHelper.createMultilineTooltip(List.of(Utils.translation("gui", "how_to").withStyle(ChatFormatting.GOLD), Utils.translation("gui", "workbench_info"))), mouseX, mouseY);
         }
     }
 
@@ -170,7 +178,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     {
         int textureU = this.getMaxScroll() > 0 ? 216 : 228;
         RenderSystem.setShaderTexture(0, WORKBENCH_TEXTURE);
-        GuiComponent.blit(poseStack, this.leftPos + 169, this.topPos + 18 + this.getScrollbarPosition(mouseY), textureU, 40, 12, SCROLLBAR_HEIGHT);
+        this.blit(poseStack, this.leftPos + 169, this.topPos + 18 + this.getScrollbarPosition(mouseY), textureU, 40, 12, SCROLLBAR_HEIGHT);
     }
 
     private void renderRecipes(PoseStack poseStack, float partialTick, int mouseX, int mouseY)
@@ -193,8 +201,8 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
             int textureU = 216 + (!canCraft ? BUTTON_SIZE : 0);
             int textureV = selected ? BUTTON_SIZE : 0;
             RenderSystem.setShaderTexture(0, WORKBENCH_TEXTURE);
-            GuiComponent.blit(poseStack, buttonX, buttonY, textureU, textureV, BUTTON_SIZE, BUTTON_SIZE);
-            ScreenHelper.drawItem(poseStack, recipe.getResultItem(this.menu.getLevel().registryAccess()), buttonX + 2, buttonY + 2);
+            this.blit(poseStack, buttonX, buttonY, textureU, textureV, BUTTON_SIZE, BUTTON_SIZE);
+            ScreenHelper.drawItem(recipe.getResultItem(), buttonX + 2, buttonY + 2);
             if(mouseInWindow && ScreenHelper.isMouseWithinBounds(mouseX, mouseY, buttonX, buttonY, BUTTON_SIZE, BUTTON_SIZE))
             {
                 this.hoveredIndex = recipeIndex;
@@ -218,7 +226,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     {
         WorkbenchContructingRecipe recipe = this.menu.getRecipes().get(recipeIndex);
         List<ClientTooltipComponent> components = new ArrayList<>();
-        components.add(new ClientTextTooltip(recipe.getResultItem(this.menu.getLevel().registryAccess()).getHoverName().getVisualOrderText()));
+        components.add(new ClientTextTooltip(recipe.getResultItem().getHoverName().getVisualOrderText()));
         if(!Screen.hasShiftDown())
         {
             components.add(new ClientWorkbenchRecipeTooltip(this.menu, recipe));
@@ -229,7 +237,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
             Map<Integer, Integer> counted = new HashMap<>();
             recipe.getMaterials().forEach(material -> components.add(new ClientWorkbenchRecipeIngredientTooltip(this.menu, material, counted)));
         }
-        ClientServices.PLATFORM.renderTooltip(this, poseStack, components, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE);
+        ClientServices.PLATFORM.renderTooltip(this, poseStack, components, mouseX, mouseY);
     }
 
     @Override
@@ -331,7 +339,6 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         public CraftableButton(int x, int y, int width, int height, boolean state)
         {
             super(x, y, width, height, state);
-            this.updateTooltip();
         }
 
         @Override
@@ -340,12 +347,6 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
             this.isStateTriggered = !this.isStateTriggered;
             WorkbenchScreen.craftableOnly = this.isStateTriggered;
             WorkbenchScreen.this.updateRecipes();
-            this.updateTooltip();
-        }
-
-        private void updateTooltip()
-        {
-            this.setTooltip(Tooltip.create(this.isStateTriggered ? VANILLA_ONLY_CRAFTABLE : VANILLA_ALL_RECIPES));
         }
     }
 
@@ -357,7 +358,6 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         public SearchNeighboursButton(int x, int y, int width, int height, boolean state)
         {
             super(x, y, width, height, state);
-            this.updateTooltip();
         }
 
         @Override
@@ -367,7 +367,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         }
 
         @Override
-        public void renderWidget(PoseStack poseStack, int $$1, int $$2, float $$3)
+        public void renderButton(PoseStack poseStack, int $$1, int $$2, float $$3)
         {
             RenderSystem.disableDepthTest();
             int u = this.xTexStart;
@@ -375,24 +375,8 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
             v += this.isStateTriggered ? this.height * 2 : 0;
             v += this.isHoveredOrFocused() ? this.height : 0;
             RenderSystem.setShaderTexture(0, this.resourceLocation);
-            GuiComponent.blit(poseStack, this.getX(), this.getY(), u, v, this.width, this.height);
+            this.blit(poseStack, this.x, this.y, u, v, this.width, this.height);
             RenderSystem.enableDepthTest();
-        }
-
-        @Override
-        public void setStateTriggered(boolean state)
-        {
-            boolean original = this.isStateTriggered();
-            super.setStateTriggered(state);
-            if(original != state)
-            {
-                this.updateTooltip();
-            }
-        }
-
-        private void updateTooltip()
-        {
-            this.setTooltip(Tooltip.create(this.isStateTriggered ? SEARCH_NEIGHBOURS_ON : SEARCH_NEIGHBOURS_OFF));
         }
     }
 
@@ -441,30 +425,23 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         private final int iconV;
         private final Category category;
 
-        protected CategoryButton(int x, int y, int iconU, int iconV, Category category)
+        protected CategoryButton(Screen screen, int x, int y, int iconU, int iconV, Category category)
         {
             super(x, y, 20, 16, CommonComponents.EMPTY, btn -> {
                 ((CategoryButton) btn).toggle();
-            }, DEFAULT_NARRATION);
+            }, (btn, poseStack, mouseX, mouseY) -> {
+                if(category.tags.length > 0) {
+                    ResourceLocation tagId = category.tags[0].location();
+                    String tooltipTitle = String.format("filterCategory.%s.%s", tagId.getNamespace(), tagId.getPath().replace("/", "."));
+                    String tooltipDesc = tooltipTitle + ".desc";
+                    screen.renderTooltip(poseStack, ScreenHelper.createMultilineTooltip(List.of(Component.translatable(tooltipTitle), Component.translatable(tooltipDesc).withStyle(ChatFormatting.GRAY))), mouseX, mouseY);
+                } else {
+                    screen.renderTooltip(poseStack, Components.GUI_SHOW_ALL_CATEGORIES, mouseX, mouseY);
+                }
+            });
             this.iconU = iconU;
             this.iconV = iconV;
             this.category = category;
-            this.updateTooltip();
-        }
-
-        private void updateTooltip()
-        {
-            if(this.category.tags.length > 0)
-            {
-                ResourceLocation tagId = this.category.tags[0].location();
-                String tooltipTitle = String.format("filterCategory.%s.%s", tagId.getNamespace(), tagId.getPath().replace("/", "."));
-                String tooltipDesc = tooltipTitle + ".desc";
-                this.setTooltip(ScreenHelper.createMultilineTooltip(List.of(Component.translatable(tooltipTitle), Component.translatable(tooltipDesc).withStyle(ChatFormatting.GRAY))));
-            }
-            else
-            {
-                this.setTooltip(Tooltip.create(Components.GUI_SHOW_ALL_CATEGORIES));
-            }
         }
 
         private void toggle()
@@ -476,12 +453,16 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         }
 
         @Override
-        public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
+        public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
         {
             int textureV = this.isHovered ? 87 : this.category.enabled ? 71 : 55;
             RenderSystem.setShaderTexture(0, WORKBENCH_TEXTURE);
-            GuiComponent.blit(poseStack, this.getX(), this.getY(), 216, textureV, 20, 16);
-            GuiComponent.blit(poseStack, this.getX() + 3, this.getY() + 1, this.iconU, this.iconV, 14, 14);
+            this.blit(poseStack, this.x, this.y, 216, textureV, 20, 16);
+            this.blit(poseStack, this.x + 3, this.y + 1, this.iconU, this.iconV, 14, 14);
+            if(this.isHoveredOrFocused())
+            {
+                this.renderToolTip(poseStack, mouseX, mouseY);
+            }
         }
     }
 }

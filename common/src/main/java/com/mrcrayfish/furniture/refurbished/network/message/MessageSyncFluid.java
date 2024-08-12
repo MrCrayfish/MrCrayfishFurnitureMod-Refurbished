@@ -4,7 +4,7 @@ import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.mrcrayfish.furniture.refurbished.network.play.ClientPlayHandler;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.material.Fluid;
 
@@ -38,7 +38,7 @@ public class MessageSyncFluid extends PlayMessage<MessageSyncFluid>
     public MessageSyncFluid decode(FriendlyByteBuf buffer)
     {
         BlockPos pos = buffer.readBlockPos();
-        Fluid fluid = BuiltInRegistries.FLUID.get(buffer.readResourceLocation());
+        Fluid fluid = Registry.FLUID.get(buffer.readResourceLocation());
         long amount = buffer.readLong();
         return new MessageSyncFluid(pos, fluid, amount);
     }

@@ -216,7 +216,7 @@ public class TrampolineBlock extends FurnitureBlock implements BlockTagSupplier
     {
         if(level.isClientSide())
         {
-            level.playLocalSound(pos, ModSounds.BLOCK_TRAMPOLINE_SUPER_BOUNCE.get(), SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.1F + 0.75F, false);
+            level.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), ModSounds.BLOCK_TRAMPOLINE_SUPER_BOUNCE.get(), SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.1F + 0.75F, false);
             this.spawnBounceParticle(level, entity, pos, true);
         }
     }
@@ -259,9 +259,10 @@ public class TrampolineBlock extends FurnitureBlock implements BlockTagSupplier
     {
         Level level = boat.getLevel();
         boat.setDeltaMovement(velocity.x, -velocity.y, velocity.z);
-        if(boat.isControlledByLocalInstance() && !boat.isEffectiveAi())
+        if(boat.isControlledByLocalInstance() && boat.level.isClientSide)
         {
-            level.playLocalSound(boat.blockPosition(), ModSounds.BLOCK_TRAMPOLINE_BOUNCE.get(), SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.2F + 0.9F, false);
+            BlockPos pos = boat.blockPosition();
+            level.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), ModSounds.BLOCK_TRAMPOLINE_BOUNCE.get(), SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.2F + 0.9F, false);
         }
         else
         {

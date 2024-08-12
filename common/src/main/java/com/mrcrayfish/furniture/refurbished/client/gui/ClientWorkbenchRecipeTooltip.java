@@ -45,7 +45,7 @@ public class ClientWorkbenchRecipeTooltip implements ClientTooltipComponent
     }
 
     @Override
-    public void renderImage(Font font, int start, int top, PoseStack poseStack, ItemRenderer renderer)
+    public void renderImage(Font font, int start, int top, PoseStack poseStack, ItemRenderer renderer, int $$5)
     {
         Map<Integer, Integer> counted = new HashMap<>();
         List<StackedIngredient> materials = this.recipe.getMaterials();
@@ -54,14 +54,16 @@ public class ClientWorkbenchRecipeTooltip implements ClientTooltipComponent
             StackedIngredient material = materials.get(i);
             ItemStack copy = this.getStack(material).copy();
             copy.setCount(material.count());
-            renderer.renderAndDecorateFakeItem(poseStack, copy, start + i * 18, top);
+
+            renderer.renderAndDecorateFakeItem(copy, start + i * 18, top);
+            renderer.renderGuiItemDecorations(font, copy, start + i * 18, top);
 
             // Draw check or cross depending on if we have the materials
             poseStack.pushPose();
             poseStack.translate(0, 0, 200);
             boolean checked = this.menu.hasMaterials(material, counted);
             RenderSystem.setShaderTexture(0, WorkbenchScreen.WORKBENCH_TEXTURE);
-            GuiComponent.blit(poseStack, start + i * 18, top, checked ? 246 : 240, 40, 6, 5);
+            GuiComponent.blit(poseStack, start + i * 18, top, checked ? 246 : 240, 40, 6, 5, 256, 256);
             poseStack.popPose();
         }
     }

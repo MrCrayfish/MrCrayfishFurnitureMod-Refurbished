@@ -1,16 +1,16 @@
 package com.mrcrayfish.furniture.refurbished.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
 import com.mrcrayfish.furniture.refurbished.blockentity.FlipAnimation;
 import com.mrcrayfish.furniture.refurbished.blockentity.GrillBlockEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -59,12 +59,12 @@ public class GrillBlockEntityRenderer implements BlockEntityRenderer<GrillBlockE
         float flipHeight = 0.75F;
         poseStack.translate(0, flipProgress * flipHeight, 0);
         poseStack.translate(0.3 + 0.4 * (quadrant % 2), 1.0, 0.3 + 0.4 * (quadrant / 2));
-        poseStack.mulPose(Axis.XP.rotation(Mth.HALF_PI));
-        poseStack.mulPose(Axis.ZP.rotation(Mth.HALF_PI * space.getRotation()));
-        poseStack.mulPose(Axis.XP.rotation(Mth.PI * -3 * time));
-        poseStack.mulPose(Axis.XP.rotation(!animation.isPlaying() && space.isFlipped() ? Mth.PI : 0));
+        poseStack.mulPose(Vector3f.XP.rotation(Mth.HALF_PI));
+        poseStack.mulPose(Vector3f.ZP.rotation(Mth.HALF_PI * space.getRotation()));
+        poseStack.mulPose(Vector3f.XP.rotation(Mth.PI * -3 * time));
+        poseStack.mulPose(Vector3f.XP.rotation(!animation.isPlaying() && space.isFlipped() ? Mth.PI : 0));
         poseStack.scale(0.375F, 0.375F, 0.375F);
-        this.renderer.renderStatic(cookingStack, ItemDisplayContext.FIXED, light, overlay, poseStack, source, grill.getLevel(), 0);
+        this.renderer.renderStatic(cookingStack, ItemTransforms.TransformType.FIXED, light, overlay, poseStack, source, 0);
         poseStack.popPose();
     }
 
@@ -72,12 +72,12 @@ public class GrillBlockEntityRenderer implements BlockEntityRenderer<GrillBlockE
     {
         poseStack.pushPose();
         poseStack.translate(0.3 + 0.2 * (index % 3), 0.85, 0.3 + 0.2 * (index / 3));
-        poseStack.mulPose(Axis.XP.rotation(Mth.HALF_PI));
-        poseStack.mulPose(Axis.YP.rotationDegrees(10F));
-        poseStack.mulPose(Axis.ZP.rotationDegrees(10F));
-        poseStack.mulPose(Axis.XP.rotationDegrees(5F));
+        poseStack.mulPose(Vector3f.XP.rotation(Mth.HALF_PI));
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(10F));
+        poseStack.mulPose(Vector3f.ZP.rotationDegrees(10F));
+        poseStack.mulPose(Vector3f.XP.rotationDegrees(5F));
         poseStack.scale(0.375F, 0.375F, 0.375F);
-        this.renderer.renderStatic(fuelStack, ItemDisplayContext.FIXED, light, overlay, poseStack, source, grill.getLevel(), 0);
+        this.renderer.renderStatic(fuelStack, ItemTransforms.TransformType.FIXED, light, overlay, poseStack, source, 0);
         poseStack.popPose();
     }
 

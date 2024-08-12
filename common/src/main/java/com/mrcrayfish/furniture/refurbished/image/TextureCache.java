@@ -150,6 +150,6 @@ public class TextureCache
         int red = FastColor.ARGB32.red(value);
         int green = FastColor.ARGB32.green(value);
         int blue = FastColor.ARGB32.blue(value);
-        return FastColor.ABGR32.color(alpha, blue, green, red);
+        return FastColor.ARGB32.color(alpha, blue, green, red);
     }
 }

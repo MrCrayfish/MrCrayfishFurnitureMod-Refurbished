@@ -5,18 +5,22 @@ import com.mrcrayfish.furniture.refurbished.Constants;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -164,15 +168,11 @@ public class Utils
      */
     public static boolean canTakeFromContainer(Container container, int slot, ItemStack stack, @Nullable Direction direction)
     {
-        if(container.canTakeItem(container, slot, stack))
+        if(direction != null && container instanceof WorldlyContainer worldly)
         {
-            if(direction != null && container instanceof WorldlyContainer worldly)
-            {
-                return worldly.canTakeItemThroughFace(slot, stack, direction);
-            }
-            return true;
+            return worldly.canTakeItemThroughFace(slot, stack, direction);
         }
-        return false;
+        return true;
     }
 
     public static Ingredient getIngredient(JsonObject object, String key)
@@ -189,14 +189,14 @@ public class Utils
         if(GsonHelper.isStringValue(object, key))
         {
             ResourceLocation id = new ResourceLocation(GsonHelper.getAsString(object, key));
-            Item item = BuiltInRegistries.ITEM.getOptional(id).orElseThrow(() -> new IllegalStateException("The item '%s' does not exist".formatted(id)));
+            Item item = Registry.ITEM.getOptional(id).orElseThrow(() -> new IllegalStateException("The item '%s' does not exist".formatted(id)));
             return new ItemStack(item);
         }
         else if(GsonHelper.isObjectNode(object, key))
         {
             JsonObject itemObject = GsonHelper.getAsJsonObject(object, key);
             ResourceLocation id = new ResourceLocation(GsonHelper.getAsString(itemObject, "item"));
-            Item item = BuiltInRegistries.ITEM.getOptional(id).orElseThrow(() -> new IllegalStateException("The item '%s' does not exist".formatted(id)));
+            Item item = Registry.ITEM.getOptional(id).orElseThrow(() -> new IllegalStateException("The item '%s' does not exist".formatted(id)));
             int count = GsonHelper.getAsInt(itemObject, "count", 1);
             return new ItemStack(item, count);
         }
@@ -206,6 +206,12 @@ public class Utils
     public static Fluid getFluid(JsonObject object, String key)
     {
         ResourceLocation id = new ResourceLocation(GsonHelper.getAsString(object, key));
-        return BuiltInRegistries.FLUID.getOptional(id).orElseThrow(() -> new RuntimeException("The fluid '%s' does not exist".formatted(id)));
+        return Registry.FLUID.getOptional(id).orElseThrow(() -> new RuntimeException("The fluid '%s' does not exist".formatted(id)));
+    }
+
+    public static boolean isInInteractableRange(BlockEntity blockEntity, Player player)
+    {
+        Vec3 center = Vec3.atCenterOf(blockEntity.getBlockPos());
+        return player.getEyePosition().distanceToSqr(center) < ServerGamePacketListenerImpl.MAX_INTERACTION_DISTANCE;
     }
 }

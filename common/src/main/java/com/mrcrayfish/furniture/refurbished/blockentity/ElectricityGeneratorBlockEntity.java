@@ -62,7 +62,7 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
     public ElectricityGeneratorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
     {
         super(type, pos, state, 1);
-        this.audioPosition = pos.getCenter().add(0, -0.375, 0);
+        this.audioPosition = Vec3.atCenterOf(pos).add(0, -0.375, 0);
     }
 
     @Override

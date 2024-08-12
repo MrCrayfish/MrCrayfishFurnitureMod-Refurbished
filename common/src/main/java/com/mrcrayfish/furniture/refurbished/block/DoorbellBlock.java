@@ -128,7 +128,7 @@ public class DoorbellBlock extends FurnitureHorizontalEntityBlock implements Blo
         {
             level.setBlock(pos, state.setValue(ENABLED, true), Block.UPDATE_ALL);
             level.scheduleTick(pos, this, 20);
-            level.playSound(null, pos, ModSounds.BLOCK_DOORBELL_CHIME.get(), SoundSource.BLOCKS);
+            level.playSound(null, pos, ModSounds.BLOCK_DOORBELL_CHIME.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
             level.updateNeighbourForOutputSignal(pos, this);
             doorbell.sendNotificationToOwner(player);
             return InteractionResult.sidedSuccess(level.isClientSide());

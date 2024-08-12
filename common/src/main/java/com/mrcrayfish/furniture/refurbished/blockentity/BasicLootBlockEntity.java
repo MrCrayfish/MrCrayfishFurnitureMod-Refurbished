@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Player;
@@ -99,7 +100,7 @@ public abstract class BasicLootBlockEntity extends RandomizableContainerBlockEnt
     @Override
     public boolean canTakeItemThroughFace(int slotIndex, ItemStack stack, Direction direction)
     {
-        return this.canTakeItem(this, slotIndex, stack);
+        return true;
     }
 
     /**

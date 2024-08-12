@@ -13,7 +13,6 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -64,14 +63,16 @@ public class DoorMatScreen extends AbstractContainerScreen<DoorMatMenu>
     protected void init()
     {
         super.init();
-        Button previousPreset = this.addRenderableWidget(new IconButton(this.leftPos + this.imageWidth / 2 - 45 - 20, this.topPos + 14, 0, 20, btn -> {
+        this.addRenderableWidget(new IconButton(this.leftPos + this.imageWidth / 2 - 45 - 20, this.topPos + 14, 0, 20, btn -> {
             this.image = PRESETS[Math.floorMod(--currentPreset, PRESETS.length)].copy();
+        }, (btn, poseStack, mouseX, mouseY) -> {
+            this.renderTooltip(poseStack, Utils.translation("gui", "previous_preset"), mouseX, mouseY);
         }));
-        previousPreset.setTooltip(Tooltip.create(Utils.translation("gui", "previous_preset")));
-        Button nextPreset = this.addRenderableWidget(new IconButton(this.leftPos + this.imageWidth / 2 + 45, this.topPos + 14, 10, 20, btn -> {
+        this.addRenderableWidget(new IconButton(this.leftPos + this.imageWidth / 2 + 45, this.topPos + 14, 10, 20, btn -> {
             this.image = PRESETS[Math.floorMod(++currentPreset, PRESETS.length)].copy();
+        }, (btn, poseStack, mouseX, mouseY) -> {
+            this.renderTooltip(poseStack, Utils.translation("gui", "next_preset"), mouseX, mouseY);
         }));
-        nextPreset.setTooltip(Tooltip.create(Utils.translation("gui", "next_preset")));
         for(int i = 1; i < PaletteImage.COLOURS.length; i++)
         {
             this.addRenderableWidget(new ColourButton(this.leftPos + (i - 1) * 8 + 7, this.topPos + 65, i));
@@ -79,9 +80,9 @@ public class DoorMatScreen extends AbstractContainerScreen<DoorMatMenu>
         this.addRenderableWidget(new ToolButton(this.leftPos + 6, this.topPos + 77, 30, 10, Tool.PENCIL));
         this.addRenderableWidget(new ToolButton(this.leftPos + 29, this.topPos + 77, 40, 10, Tool.ERASER));
         this.addRenderableWidget(new ToolButton(this.leftPos + 52, this.topPos + 77, 50, 10, Tool.FILL));
-        this.addRenderableWidget(Button.builder(Utils.translation("gui", "save"), var1 -> {
+        this.addRenderableWidget(new Button(this.leftPos + 75, this.topPos + 77, 53, 20, Utils.translation("gui", "save"), var1 -> {
             Network.getPlay().sendToServer(new MessageUpdatePainting(this.image));
-        }).pos(this.leftPos + 75, this.topPos + 77).size(53, 20).build());
+        }));
     }
 
     @Override
@@ -92,7 +93,7 @@ public class DoorMatScreen extends AbstractContainerScreen<DoorMatMenu>
     {
         this.renderBackground(poseStack);
         RenderSystem.setShaderTexture(0, TEXTURE);
-        GuiComponent.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        this.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
         for(int y = 0; y < this.image.getHeight(); y++)
         {
             for(int x = 0; x < this.image.getWidth(); x++)
@@ -164,9 +165,9 @@ public class DoorMatScreen extends AbstractContainerScreen<DoorMatMenu>
         }
 
         @Override
-        public boolean isHovered()
+        public boolean isHoveredOrFocused()
         {
-            return super.isHovered() || DoorMatScreen.this.currentTool == this.tool;
+            return super.isHoveredOrFocused() || DoorMatScreen.this.currentTool == this.tool;
         }
     }
 
@@ -179,7 +180,8 @@ public class DoorMatScreen extends AbstractContainerScreen<DoorMatMenu>
             super(8, 8, CommonComponents.EMPTY, btn -> {
                 DoorMatScreen.this.selectedColourIndex = colourIndex;
             });
-            this.setPosition(x, y);
+            this.x = x;
+            this.y = y;
             this.colourIndex = colourIndex;
             this.setBackgroundColour(PaletteImage.COLOURS[colourIndex]);
             this.setBackgroundHighlightColour(PaletteImage.COLOURS[colourIndex]);
@@ -188,9 +190,9 @@ public class DoorMatScreen extends AbstractContainerScreen<DoorMatMenu>
         }
 
         @Override
-        public boolean isHovered()
+        public boolean isHoveredOrFocused()
         {
-            return super.isHovered() || DoorMatScreen.this.selectedColourIndex == this.colourIndex;
+            return super.isHoveredOrFocused() || DoorMatScreen.this.selectedColourIndex == this.colourIndex;
         }
 
         public int getColourIndex()

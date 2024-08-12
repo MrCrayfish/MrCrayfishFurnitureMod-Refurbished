@@ -3,7 +3,7 @@ package com.mrcrayfish.furniture.refurbished.data;
 import com.mrcrayfish.framework.Registration;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.block.DoorMatBlock;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.CopyNameFunction;
@@ -21,7 +21,7 @@ public class CommonLootTableProvider
         public static void accept(LootBuilder.Block builder)
         {
             // TODO system to customise instead of dropping self
-            Registration.get(Registries.BLOCK).stream().filter(entry -> entry.getId().getNamespace().equals(Constants.MOD_ID)).forEach(entry -> {
+            Registration.get(Registry.BLOCK_REGISTRY).stream().filter(entry -> entry.getId().getNamespace().equals(Constants.MOD_ID)).forEach(entry -> {
                 net.minecraft.world.level.block.Block block = (net.minecraft.world.level.block.Block) entry.get();
                 if(block instanceof DropWithName) {
                     builder.custom(block, createDropWithName(block));

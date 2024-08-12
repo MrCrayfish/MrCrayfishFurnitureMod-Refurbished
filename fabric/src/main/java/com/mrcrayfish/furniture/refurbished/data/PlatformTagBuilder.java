@@ -10,9 +10,9 @@ import net.minecraft.tags.TagKey;
  */
 public class PlatformTagBuilder<T> implements TagBuilder<T>
 {
-    private final FabricTagProvider<T>.FabricTagBuilder builder;
+    private final FabricTagProvider<T>.FabricTagBuilder<T> builder;
 
-    public PlatformTagBuilder(FabricTagProvider<T>.FabricTagBuilder builder)
+    public PlatformTagBuilder(FabricTagProvider<T>.FabricTagBuilder<T> builder)
     {
         this.builder = builder;
     }

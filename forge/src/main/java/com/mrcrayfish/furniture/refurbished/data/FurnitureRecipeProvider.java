@@ -1,6 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.data;
 
-import net.minecraft.data.PackOutput;
+import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
@@ -13,13 +13,13 @@ import java.util.function.Consumer;
  */
 public class FurnitureRecipeProvider extends RecipeProvider
 {
-    public FurnitureRecipeProvider(PackOutput output)
+    public FurnitureRecipeProvider(DataGenerator generator)
     {
-        super(output);
+        super(generator);
     }
 
     @Override
-    protected void buildRecipes(Consumer<FinishedRecipe> consumer)
+    protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer)
     {
         new CommonRecipeProvider(consumer, (modId, recipeName, builder) -> {
             // Need to accept a custom consumer to get access to advancement id

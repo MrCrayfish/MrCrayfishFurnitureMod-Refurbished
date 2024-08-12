@@ -54,22 +54,28 @@ public class ElectricityGeneratorScreen extends AbstractContainerScreen<Electric
     protected void renderBg(PoseStack poseStack, float partialTick, int mouseX, int mouseY)
     {
         RenderSystem.setShaderTexture(0, TEXTURE);
-        GuiComponent.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        this.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
         if(this.menu.getEnergy() > 0 && this.menu.getTotalEnergy() > 0)
         {
             float normalEnergy = this.menu.getEnergy() / (float) this.menu.getTotalEnergy();
             int v = (int) Math.ceil(14 * normalEnergy);
-            GuiComponent.blit(poseStack, this.leftPos + 26, this.topPos + 25 + 14 - v, 176, 14 - v, 14, v);
+            this.blit(poseStack, this.leftPos + 26, this.topPos + 25 + 14 - v, 176, 14 - v, 14, v);
         }
         Status status = this.getStatus();
         RenderSystem.setShaderTexture(0, IconButton.ICON_TEXTURES);
         GuiComponent.blit(poseStack, this.leftPos + 66, this.topPos + 29, status.iconU, status.iconV, 10, 10, 64, 64);
         GuiComponent.blit(poseStack, this.leftPos + 66, this.topPos + 46, 0, 10, 10, 10, 64, 64);
+    }
 
+    @Override
+    protected void renderTooltip(PoseStack poseStack, int mouseX, int mouseY)
+    {
         if(this.menu.getEnergy() > 0 && this.menu.getTotalEnergy() > 0 && ScreenHelper.isMouseWithinBounds(mouseX, mouseY, this.leftPos + 26, this.topPos + 25, 14, 14))
         {
-            this.setTooltipForNextRenderPass(Utils.translation("gui", "progress", this.menu.getEnergy(), Components.GUI_SLASH, this.menu.getTotalEnergy()));
+            this.renderTooltip(poseStack, Utils.translation("gui", "progress", this.menu.getEnergy(), Components.GUI_SLASH, this.menu.getTotalEnergy()), mouseX, mouseY);
+            return;
         }
+        super.renderTooltip(poseStack, mouseX, mouseY);
     }
 
     @Override

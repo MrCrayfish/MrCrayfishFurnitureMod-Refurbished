@@ -9,11 +9,10 @@ import com.mrcrayfish.furniture.refurbished.inventory.IElectricityMenu;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
@@ -26,6 +25,8 @@ public abstract class ElectricityContainerScreen<T extends AbstractContainerMenu
 {
     private static final ResourceLocation TEXTURE = Utils.resource("textures/gui/widgets.png");
 
+    private List<FormattedCharSequence> tooltip;
+
     protected ElectricityContainerScreen(T menu, Inventory playerInventory, Component title)
     {
         super(menu, playerInventory, title);
@@ -34,6 +35,7 @@ public abstract class ElectricityContainerScreen<T extends AbstractContainerMenu
     @Override
     protected void renderBg(PoseStack poseStack, float partialTick, int mouseX, int mouseY)
     {
+        this.tooltip = null;
         if(!this.menu.isPowered())
         {
             poseStack.pushPose();
@@ -63,15 +65,25 @@ public abstract class ElectricityContainerScreen<T extends AbstractContainerMenu
             // Set tooltip if the mouse is hovering the banner
             if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, bannerStart, bannerTop, bannerWidth, 18))
             {
-                Tooltip tooltip = ScreenHelper.createMultilineTooltip(List.of(
+                this.tooltip = ScreenHelper.createMultilineTooltip(List.of(
                     Components.GUI_NO_POWER.plainCopy().withStyle(ChatFormatting.RED),
                     Components.GUI_CONNECT_TO_POWER
                 ));
-                this.setTooltipForNextRenderPass(tooltip, DefaultTooltipPositioner.INSTANCE, false);this.setTooltipForNextRenderPass(tooltip, DefaultTooltipPositioner.INSTANCE, false);
             }
 
             poseStack.popPose();
         }
+    }
+
+    @Override
+    protected void renderTooltip(PoseStack poseStack, int mouseX, int mouseY)
+    {
+        if(this.tooltip != null)
+        {
+            this.renderTooltip(poseStack, this.tooltip, mouseX, mouseY);
+            return;
+        }
+        super.renderTooltip(poseStack, mouseX, mouseY);
     }
 
     protected int getBannerTop()

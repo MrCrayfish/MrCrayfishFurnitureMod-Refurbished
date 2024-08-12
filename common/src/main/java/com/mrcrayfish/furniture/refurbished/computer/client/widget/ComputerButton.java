@@ -32,18 +32,22 @@ public class ComputerButton extends Button
 
     public ComputerButton(int width, int height, Component label, OnPress onPress)
     {
-        super(0, 0, width, height, label, onPress, DEFAULT_NARRATION);
+        super(0, 0, width, height, label, onPress, (btn, poseStack, mouseX, mouseY) -> {});
     }
 
     @Override
-    public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
+    public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
     {
         Minecraft mc = Minecraft.getInstance();
-        GuiComponent.fill(poseStack, this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), this.getOutlineColour());
-        GuiComponent.fill(poseStack, this.getX() + 1, this.getY() + 1, this.getX() + this.getWidth() - 1, this.getY() + this.getHeight() - 1, this.getBackgroundColour());
+        GuiComponent.fill(poseStack, this.x, this.y, this.x + this.getWidth(), this.y + this.getHeight(), this.getOutlineColour());
+        GuiComponent.fill(poseStack, this.x + 1, this.y + 1, this.x + this.getWidth() - 1, this.y + this.getHeight() - 1, this.getBackgroundColour());
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         int messageWidth = mc.font.width(this.getMessage());
-        ScreenHelper.drawString(poseStack, this.getMessage(), this.getX() + (this.getWidth() - messageWidth) / 2 + 1, this.getY() + (this.getHeight() - mc.font.lineHeight) / 2 + 1 + this.textOffset, this.getTextColour(), false);
+        ScreenHelper.drawString(poseStack, this.getMessage(), this.x + (this.getWidth() - messageWidth) / 2 + 1, this.y + (this.getHeight() - mc.font.lineHeight) / 2 + 1 + this.textOffset, this.getTextColour(), false);
+        if(this.isHoveredOrFocused())
+        {
+            this.renderToolTip(poseStack, mouseX, mouseY);
+        }
     }
 
     @Override

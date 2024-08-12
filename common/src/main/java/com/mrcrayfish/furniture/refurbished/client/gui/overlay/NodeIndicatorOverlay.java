@@ -15,6 +15,7 @@ import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Author: MrCrayfish
@@ -51,7 +52,7 @@ public class NodeIndicatorOverlay implements IHudOverlay
                     return;
                 }
 
-                int nodeLinkLength = (int) (linking.getNodePosition().getCenter().distanceTo(target.getNodePosition().getCenter()) + 0.5);
+                int nodeLinkLength = (int) (Vec3.atCenterOf(linking.getNodePosition()).distanceTo(Vec3.atCenterOf(target.getNodePosition())) + 0.5);
                 if(nodeLinkLength > LinkManager.MAX_LINK_LENGTH)
                 {
                     this.drawLabel(mc, poseStack, Components.GUI_LINK_TOO_LONG, 40, 0);
@@ -118,7 +119,6 @@ public class NodeIndicatorOverlay implements IHudOverlay
         int messageWidth = mc.font.width(label);
         int contentWidth = padding + iconSize + padding + messageWidth + padding;
         int contentHeight = padding + mc.font.lineHeight + padding;
-        // TODO 1.19.4 is this right?
         int guiWidth = mc.getWindow().getGuiScaledWidth();
         int guiHeight = mc.getWindow().getGuiScaledHeight();
         int contentStart = (guiWidth - contentWidth) / 2;

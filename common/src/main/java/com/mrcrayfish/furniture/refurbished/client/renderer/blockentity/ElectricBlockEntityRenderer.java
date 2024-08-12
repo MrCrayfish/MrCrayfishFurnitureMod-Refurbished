@@ -1,7 +1,8 @@
 package com.mrcrayfish.furniture.refurbished.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.client.DeferredElectricRenderer;
 import com.mrcrayfish.furniture.refurbished.client.ExtraModels;
@@ -20,7 +21,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4f;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -87,8 +87,8 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNod
                 int color = getConnectionColour(connection, node.getNodeLevel());
                 float offset = (float) (Math.sin(Util.getMillis() / 500.0) + 1.0F) / 2.0F * 0.2F;
                 AABB box = new AABB(0, -0.03125, -0.03125, delta.length(), 0.03125, 0.03125);
-                pose.mulPose(Axis.YP.rotation((float) yaw));
-                pose.mulPose(Axis.ZP.rotation((float) pitch));
+                pose.mulPose(Vector3f.YP.rotation((float) yaw));
+                pose.mulPose(Vector3f.ZP.rotation((float) pitch));
                 Matrix4f matrix = pose.last().pose();
                 renderer.drawColouredBox(matrix, consumer, box, color, 0.7F + offset);
                 renderer.drawColouredBox(matrix, consumer, box.inflate(0.03125), color, 0.5F + offset);

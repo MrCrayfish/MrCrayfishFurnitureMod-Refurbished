@@ -4,6 +4,7 @@ import com.google.common.base.MoreObjects;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -18,7 +19,7 @@ import java.util.function.Function;
  */
 public class TextInputScreen extends Screen
 {
-    public static final ResourceLocation RECIPE_BOOK_TEXTURE = new ResourceLocation("textures/gui/recipe_book.png");
+    public static final ResourceLocation TEXT_INPUT_TEXTURE = Utils.resource("textures/gui/text_input.png");
     public static final int WINDOW_WIDTH = 160;
     public static final int WINDOW_HEIGHT = 72;
 
@@ -59,14 +60,14 @@ public class TextInputScreen extends Screen
         {
             this.editBox.setValue(this.input);
         }
-        this.addRenderableWidget(this.closeButton = Button.builder(Component.literal("Close"), btn -> {
+        this.addRenderableWidget(this.closeButton = new Button(startX + 6, startY + 45, (WINDOW_WIDTH - 12) / 2 - 2, 20, Component.literal("Close"), btn -> {
             this.minecraft.setScreen(null);
-        }).pos(startX + 6, startY + 45).size((WINDOW_WIDTH - 12) / 2 - 2, 20).build());
-        this.addRenderableWidget(this.acceptButton = Button.builder(MoreObjects.firstNonNull(this.acceptLabel, Component.literal("Accept")), btn -> {
+        }));
+        this.addRenderableWidget(this.acceptButton = new Button(startX + (WINDOW_WIDTH - 12) / 2 + 2 + 6, startY + 45, (WINDOW_WIDTH - 12) / 2 - 2, 20, MoreObjects.firstNonNull(this.acceptLabel, Component.literal("Accept")), btn -> {
             if(this.callback.apply(this.input)) {
                 this.minecraft.setScreen(null);
             }
-        }).pos(startX + (WINDOW_WIDTH - 12) / 2 + 2 + 6, startY + 45).size((WINDOW_WIDTH - 12) / 2 - 2, 20).build());
+        }));
         this.updateAcceptButton(this.input);
     }
 
@@ -90,9 +91,8 @@ public class TextInputScreen extends Screen
         this.renderBackground(poseStack);
         int startX = (this.width - WINDOW_WIDTH) / 2;
         int startY = (this.height - WINDOW_HEIGHT) / 2;
-        // x, y, width, height, corner_size, sub_image_width, sub_image_height, sub_image_u, sub_image_v
-        RenderSystem.setShaderTexture(0, RECIPE_BOOK_TEXTURE);
-        GuiComponent.blitNineSliced(poseStack, startX, startY, WINDOW_WIDTH, WINDOW_HEIGHT, 4, 32, 32, 82, 208);
+        RenderSystem.setShaderTexture(0, TEXT_INPUT_TEXTURE);
+        blit(poseStack, startX, startY, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
         ScreenHelper.drawString(poseStack, this.title, startX + 6, startY + 7, 0x404040, false);
         super.render(poseStack, mouseX, mouseY, partialTick);
     }

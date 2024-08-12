@@ -1,11 +1,8 @@
 package com.mrcrayfish.furniture.refurbished.client.util;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -34,16 +31,13 @@ public class ScreenHelper
      * @param lines a list of components
      * @return a tooltip with a custom lines
      */
-    public static Tooltip createMultilineTooltip(List<Component> lines)
+    public static List<FormattedCharSequence> createMultilineTooltip(List<Component> lines)
     {
         if(!lines.isEmpty())
         {
-            Tooltip tooltip = Tooltip.create(lines.get(0));
-            List<FormattedCharSequence> sequences = lines.stream().map(c -> Minecraft.getInstance().font.split(c, 170)).flatMap(Collection::stream).toList();
-            ClientServices.PLATFORM.setTooltipCache(tooltip, sequences);
-            return tooltip;
+            return lines.stream().map(c -> Minecraft.getInstance().font.split(c, 170)).flatMap(Collection::stream).toList();
         }
-        return Tooltip.create(CommonComponents.EMPTY);
+        return List.of();
     }
 
     /**
@@ -97,15 +91,14 @@ public class ScreenHelper
     /**
      * Draws an item on the screen
      *
-     * @param poseStack the current pose stack
-     * @param stack     the item to draw
-     * @param x         the x position to draw
-     * @param y         the y position to draw
+     * @param stack the item to draw
+     * @param x     the x position to draw
+     * @param y     the y position to draw
      */
-    public static void drawItem(PoseStack poseStack, ItemStack stack, int x, int y)
+    public static void drawItem(ItemStack stack, int x, int y)
     {
         Minecraft mc = Minecraft.getInstance();
-        mc.getItemRenderer().renderAndDecorateItem(poseStack, stack, x, y);
+        mc.getItemRenderer().renderAndDecorateItem(stack, x, y);
     }
 
     /**

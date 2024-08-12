@@ -2,7 +2,7 @@ package com.mrcrayfish.furniture.refurbished.client.particle;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
@@ -44,7 +44,7 @@ public class ItemFlushParticle extends Particle
         Vec3 pos = new Vec3(this.x, this.y - 0.35 * progress - 0.1, this.z).subtract(camera.getPosition());
         PoseStack stack = new PoseStack();
         stack.translate(pos.x, pos.y, pos.z);
-        stack.mulPose(Axis.YP.rotationDegrees(rotation));
+        stack.mulPose(Vector3f.YP.rotationDegrees(rotation));
         stack.translate(-pos.x, -pos.y, -pos.z);
         this.dispatcher.render(this.entity, pos.x, pos.y, pos.z, this.entity.getYRot(), 0, stack, source, light);
         source.endBatch();

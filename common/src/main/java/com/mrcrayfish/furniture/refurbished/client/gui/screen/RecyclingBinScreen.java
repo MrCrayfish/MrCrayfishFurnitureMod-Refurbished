@@ -7,6 +7,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.math.Matrix4f;
 import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.IconButton;
@@ -25,7 +26,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
-import org.joml.Matrix4f;
 
 import java.text.DecimalFormat;
 
@@ -74,12 +74,12 @@ public class RecyclingBinScreen extends ElectricityContainerScreen<RecycleBinMen
     {
         super.renderBg(poseStack, partialTick, mouseX, mouseY);
         RenderSystem.setShaderTexture(0, RECYCLING_BIN_TEXTURE);
-        GuiComponent.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        this.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
         if(this.menu.getProcessTime() >= 0)
         {
             int maxProcessTime = Config.SERVER.recycleBin.processingTime.get();
             int width = (int) Math.ceil(25 * (this.menu.getProcessTime() / (float) maxProcessTime));
-            GuiComponent.blit(poseStack, this.leftPos + 85, this.topPos + 28, 176, 0, width, 17);
+            this.blit(poseStack, this.leftPos + 85, this.topPos + 28, 176, 0, width, 17);
         }
         int maxLevel = Config.SERVER.recycleBin.maximumExperienceLevels.get();
         double currentLevel = Mth.clamp(this.getExperienceLevel(), 0, maxLevel);
@@ -91,7 +91,7 @@ public class RecyclingBinScreen extends ElectricityContainerScreen<RecycleBinMen
 
         if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, this.leftPos + 118, this.topPos + 22, 32, 48))
         {
-            this.setTooltipForNextRenderPass(Utils.translation("gui", "experience_points", (int) this.getExperiencePoints()));
+            this.renderTooltip(poseStack, Utils.translation("gui", "experience_points", (int) this.getExperiencePoints()), mouseX, mouseY);
         }
     }
 

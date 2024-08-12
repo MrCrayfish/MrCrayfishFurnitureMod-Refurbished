@@ -31,11 +31,15 @@ dependencies {
     // JEI
     modCompileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
     modCompileOnly "mezz.jei:jei-${minecraft_version}-fabric-api:${jei_version}"
-    modRuntimeOnly "mezz.jei:jei-${minecraft_version}-fabric:${jei_version}"
+    modRuntimeOnly ("mezz.jei:jei-${minecraft_version}-fabric:${jei_version}") {
+        exclude group: "net.fabricmc"
+    }
 
     // CraftTweaker
     modCompileOnly "com.blamejared.crafttweaker:CraftTweaker-common-${minecraft_version}:${crafttweaker_version}"
-    modRuntimeOnly "com.blamejared.crafttweaker:CraftTweaker-fabric-${minecraft_version}:${crafttweaker_version}"
+    modRuntimeOnly ("com.blamejared.crafttweaker:CraftTweaker-fabric-${minecraft_version}:${crafttweaker_version}") {
+        exclude group: "net.fabricmc"
+    }
 
     implementation project(":common")
 }

@@ -48,7 +48,9 @@ public class Desktop
             {
                 shortcuts.add(new ProgramShortcutButton(this.screen, index++, 42, 32, this.getProgramName(id), icon, btn -> {
                     Network.getPlay().sendToServer(new MessageComputerOpenProgram(id));
-                    btn.setFocused(false);
+                    if(btn.isFocused()) {
+                        btn.changeFocus(true);
+                    }
                 }));
             }
         }
@@ -66,7 +68,8 @@ public class Desktop
         this.shortcuts.forEach(shortcut -> {
             int shortcutX = startX + (shortcut.getIndex() % SHORTCUT_COLUMNS) * 42 + (shortcut.getIndex() % SHORTCUT_COLUMNS) * 4;
             int shortcutY = startY + (shortcut.getIndex() / SHORTCUT_COLUMNS) * 32 + (shortcut.getIndex() / SHORTCUT_COLUMNS) * 4;
-            shortcut.setPosition(shortcutX, shortcutY);
+            shortcut.x = shortcutX;
+            shortcut.y = shortcutY;
         });
     }
 

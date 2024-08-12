@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.Container;
@@ -235,7 +236,7 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
                     return false;
                 }
 
-                ItemStack result = optional.get().getResultItem(this.level.registryAccess());
+                ItemStack result = optional.get().getResultItem();
                 if(!this.canOutput(stack, result))
                 {
                     return false;
@@ -265,7 +266,7 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
             {
                 Item remainingItem = stack.getItem().getCraftingRemainingItem();
                 Optional<? extends ProcessingRecipe> optional = this.getRecipe(this.processRecipeCache[i], stack);
-                ItemStack result = optional.map(recipe -> recipe.getResultItem(this.level.registryAccess())).orElse(ItemStack.EMPTY);
+                ItemStack result = optional.map(ProcessingRecipe::getResultItem).orElse(ItemStack.EMPTY);
                 stack.shrink(1);
                 if(!result.isEmpty())
                 {
@@ -420,7 +421,7 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
     }
 
     @Override
-    public boolean canTakeItem(Container container, int slotIndex, ItemStack stack)
+    public boolean canTakeItemThroughFace(int slotIndex, ItemStack stack, Direction direction)
     {
         // By default, items can be taken from any face
         if(this.slotsContains(this.getOutputSlots(), slotIndex))

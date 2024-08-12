@@ -21,12 +21,12 @@ public class OnOffSlider extends Button
     {
         super(x, y, 22, 12, label, btn -> {
             ((OnOffSlider) btn).enabled = !((OnOffSlider) btn).enabled;
-        }, DEFAULT_NARRATION);
+        }, (var1, var2, var3, var4) -> {});
     }
 
     public OnOffSlider(int x, int y, Component label, OnPress onPress)
     {
-        super(x, y, 22, 12, label, onPress, DEFAULT_NARRATION);
+        super(x, y, 22, 12, label, onPress, (var1, var2, var3, var4) -> {});
     }
 
     public void setEnabled(boolean enabled)
@@ -40,13 +40,13 @@ public class OnOffSlider extends Button
     }
 
     @Override
-    public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
+    public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
     {
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
         RenderSystem.setShaderTexture(0, WIDGETS);
-        GuiComponent.blit(poseStack, this.getX(), this.getY(), 0, this.enabled ? this.getHeight() : 0, this.getWidth(), this.getHeight(), 64, 64);
+        GuiComponent.blit(poseStack, this.x, this.y, 0, this.enabled ? this.getHeight() : 0, this.getWidth(), this.getHeight(), 64, 64);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     }
 }

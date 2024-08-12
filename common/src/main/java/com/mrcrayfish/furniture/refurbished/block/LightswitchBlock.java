@@ -98,7 +98,7 @@ public class LightswitchBlock extends FurnitureAttachedFaceBlock implements Enti
      */
     private Vec3 getPositionForSound(BlockState state, BlockPos pos)
     {
-        Vec3 center = pos.getCenter();
+        Vec3 center = Vec3.atCenterOf(pos);
         AttachFace face = state.getValue(FACE);
         return switch(face) {
             case FLOOR -> center.subtract(0, 0.5, 0);

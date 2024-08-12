@@ -77,7 +77,7 @@ public class OvenBakingCategory implements IRecipeCategory<OvenBakingRecipe>
     {
         int offset = (int) (Util.getMillis() / 100) % 3;
         RenderSystem.setShaderTexture(0, Plugin.TEXTURES_2);
-        GuiComponent.blit(poseStack, 5, 10, 120, offset * 40, 40, 40);
+        GuiComponent.blit(poseStack, 5, 10, 120, offset * 40, 40, 40, 256, 256);
         this.arrow.draw(poseStack, 57, 23);
     }
 }

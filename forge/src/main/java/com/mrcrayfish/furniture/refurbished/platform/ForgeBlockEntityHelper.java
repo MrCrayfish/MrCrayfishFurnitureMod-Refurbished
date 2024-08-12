@@ -1,7 +1,9 @@
 package com.mrcrayfish.furniture.refurbished.platform;
 
+import com.mrcrayfish.furniture.refurbished.blockentity.ForgeFreezerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.ForgeRecycleBinBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.ForgeStoveBlockEntity;
+import com.mrcrayfish.furniture.refurbished.blockentity.FreezerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.RecycleBinBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.StoveBlockEntity;
 import com.mrcrayfish.furniture.refurbished.platform.services.IBlockEntityHelper;
@@ -23,6 +25,11 @@ import org.jetbrains.annotations.Nullable;
  */
 public class ForgeBlockEntityHelper implements IBlockEntityHelper
 {
+    @Override
+    public FreezerBlockEntity createFreezerBlockEntity(BlockPos pos, BlockState state)
+    {
+        return new ForgeFreezerBlockEntity(pos, state);
+    }
 
     @Override
     public RecycleBinBlockEntity createRecycleBinBlockEntity(BlockPos pos, BlockState state)

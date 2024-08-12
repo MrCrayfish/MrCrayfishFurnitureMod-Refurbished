@@ -9,6 +9,7 @@ import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -199,10 +200,9 @@ public class ToasterBlockEntity extends ElectricityModuleProcessingLootBlockEnti
     }
 
     @Override
-    public boolean canTakeItem(Container container, int slotIndex, ItemStack stack)
+    public boolean canTakeItemThroughFace(int slotIndex, ItemStack stack, Direction direction)
     {
-        // Prevents taking items when heating
-        return !this.isHeating() && super.canTakeItem(container, slotIndex, stack);
+        return !this.isHeating() && super.canTakeItemThroughFace(slotIndex, stack, direction);
     }
 
     @Override

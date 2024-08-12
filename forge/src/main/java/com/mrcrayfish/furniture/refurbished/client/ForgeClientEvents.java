@@ -40,7 +40,6 @@ import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.client.event.RegisterRecipeBookCategoriesEvent;
 import net.minecraftforge.client.event.RenderHighlightEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
-import net.minecraftforge.event.CreativeModeTabEvent;
 import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.List;
@@ -51,8 +50,6 @@ import java.util.function.Function;
  */
 public class ForgeClientEvents
 {
-    public static CreativeModeTab creativeTab;
-
     public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event)
     {
         ClientBootstrap.registerScreens(new ScreenRegister() {
@@ -78,32 +75,37 @@ public class ForgeClientEvents
             @Override
             public <T extends ParticleOptions> void apply(ParticleType<T> type, SpriteProvider<T> provider)
             {
-                event.registerSpriteSet(type, provider::apply);
+                event.register(type, provider::apply);
             }
         });
     }
 
     public static void onRenderLevelStage(RenderLevelStageEvent event)
     {
-        if(event.getStage() != RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES)
-            return;
-
         Minecraft mc = Minecraft.getInstance();
         if(mc.player == null || mc.level == null)
             return;
 
-        // Draw active link
         PoseStack stack = event.getPoseStack();
         stack.pushPose();
         Vec3 view = event.getCamera().getPosition();
         stack.translate(-view.x(), -view.y(), -view.z());
-        LinkHandler.get().render(mc.player, stack, mc.renderBuffers().bufferSource(), event.getPartialTick());
-        ToolAnimationRenderer.get().render(mc.level, stack, mc.renderBuffers().bufferSource(), event.getPartialTick());
-        DeferredElectricRenderer.get().draw(stack);
+        if(event.getStage() == RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS)
+        {
+            ToolAnimationRenderer.get().render(mc.level, stack, mc.renderBuffers().bufferSource(), event.getPartialTick());
+        }
+        else if(event.getStage() == RenderLevelStageEvent.Stage.AFTER_TRIPWIRE_BLOCKS)
+        {
+            LinkHandler.get().render(mc.player, stack, mc.renderBuffers().bufferSource(), event.getPartialTick());
+            DeferredElectricRenderer.get().draw(stack);
+        }
         stack.popPose();
 
         // End render types
-        mc.renderBuffers().bufferSource().endBatch(ClientServices.PLATFORM.getTelevisionScreenRenderType(CustomSheets.TV_CHANNELS_SHEET));
+        if(event.getStage() == RenderLevelStageEvent.Stage.AFTER_TRIPWIRE_BLOCKS)
+        {
+            mc.renderBuffers().bufferSource().endBatch(ClientServices.PLATFORM.getTelevisionScreenRenderType(CustomSheets.TV_CHANNELS_SHEET));
+        }
     }
 
     public static void onKeyTriggered(InputEvent.InteractionKeyMappingTriggered event)
@@ -170,15 +172,6 @@ public class ForgeClientEvents
             public void applyFinder(RecipeType<?> type, Function<Recipe<?>, RecipeBookCategories> function) {
                 event.registerRecipeCategoryFinder(type, function);
             }
-        });
-    }
-
-    public static void onRegisterCreativeModeTab(CreativeModeTabEvent.Register event)
-    {
-        FurnitureMod.creativeModeTab = event.registerCreativeModeTab(Utils.resource("creative_tab"), builder -> {
-            builder.icon(() -> new ItemStack(ModBlocks.TABLE_OAK.get()));
-            builder.title(Component.translatable("itemGroup." + Constants.MOD_ID).withStyle(ChatFormatting.GOLD));
-            builder.displayItems((params, output) -> ModCreativeTabs.buildCreativeModeTab(output::accept));
         });
     }
 }

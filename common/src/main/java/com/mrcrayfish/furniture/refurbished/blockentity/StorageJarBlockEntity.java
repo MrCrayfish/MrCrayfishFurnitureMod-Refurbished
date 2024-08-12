@@ -116,7 +116,7 @@ public class StorageJarBlockEntity extends BasicLootBlockEntity
     }
 
     @Override
-    public boolean canTakeItem(Container container, int slotIndex, ItemStack stack)
+    public boolean canTakeItemThroughFace(int slotIndex, ItemStack stack, Direction direction)
     {
         if(this.getHeadIndex() > 0 && this.getItem(this.getHeadIndex() - 1).isEmpty())
         {

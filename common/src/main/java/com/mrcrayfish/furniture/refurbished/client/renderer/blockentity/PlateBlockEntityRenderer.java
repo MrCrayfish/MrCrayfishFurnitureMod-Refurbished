@@ -3,10 +3,10 @@ package com.mrcrayfish.furniture.refurbished.client.renderer.blockentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.blockentity.PlateBlockEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -32,7 +32,7 @@ public class PlateBlockEntityRenderer implements BlockEntityRenderer<PlateBlockE
         poseStack.translate(0.5, 0.03125 + 0.015625, 0.5);
         poseStack.mulPose(plate.getPlacedDirection().getRotation());
         poseStack.scale(0.499F, 0.499F, 0.499F);
-        this.renderer.renderStatic(stack, ItemDisplayContext.FIXED, light, overlay, poseStack, source, plate.getLevel(), 0);
+        this.renderer.renderStatic(stack, ItemTransforms.TransformType.FIXED, light, overlay, poseStack, source, 0);
         poseStack.popPose();
     }
 }

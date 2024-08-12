@@ -68,7 +68,7 @@ public class MicrowaveBlockEntity extends ElectricityModuleProcessingLootBlockEn
     public MicrowaveBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, RecipeType<? extends ProcessingRecipe> recipeType)
     {
         super(type, pos, state, 2, recipeType);
-        this.audioPosition = pos.getCenter();
+        this.audioPosition = Vec3.atCenterOf(pos);
     }
 
     @Override

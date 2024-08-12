@@ -110,8 +110,8 @@ public class Connection
             Set<BlockPos> bPowerSources = b.getPowerSources();
             if(!aPowerSources.equals(bPowerSources))
             {
-                Vec3 aPos = this.a.pos.getCenter();
-                Vec3 bPos = this.b.pos.getCenter();
+                Vec3 aPos = Vec3.atCenterOf(this.a.pos);
+                Vec3 bPos = Vec3.atCenterOf(this.b.pos);
                 for(BlockPos source : Sets.symmetricDifference(aPowerSources, bPowerSources))
                 {
                     AABB box = ISourceNode.createPowerableZone(level, source);

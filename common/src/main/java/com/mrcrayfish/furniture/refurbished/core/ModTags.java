@@ -1,7 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.core;
 
 import com.mrcrayfish.furniture.refurbished.Constants;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -45,7 +45,7 @@ public class ModTags
 
         private static TagKey<Item> tag(String name)
         {
-            return TagKey.create(Registries.ITEM, new ResourceLocation(Constants.MOD_ID, name));
+            return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(Constants.MOD_ID, name));
         }
     }
 
@@ -55,7 +55,7 @@ public class ModTags
 
         private static TagKey<Block> tag(String name)
         {
-            return TagKey.create(Registries.BLOCK, new ResourceLocation(Constants.MOD_ID, name));
+            return TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(Constants.MOD_ID, name));
         }
     }
 }

@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class EntityMixin
 {
     @Shadow
-    private Level level;
+    public Level level;
 
     @Shadow
     protected abstract BlockPos getBlockPosBelowThatAffectsMyMovement();

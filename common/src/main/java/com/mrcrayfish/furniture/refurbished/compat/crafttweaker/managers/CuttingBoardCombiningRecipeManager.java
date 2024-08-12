@@ -46,12 +46,12 @@ public class CuttingBoardCombiningRecipeManager implements IRecipeManager<Cuttin
     {
         if(inputs.length == 0)
         {
-            Plugin.LOGGER.error("Cutting Board combining inputs cannot be empty");
+            CraftTweakerAPI.LOGGER.error("[MrCrayfish's Furniture Mod: Refurbished] Cutting Board combining inputs cannot be empty");
             return false;
         }
         if(inputs.length > CuttingBoardCombiningRecipe.MAX_INGREDIENTS)
         {
-            Plugin.LOGGER.error("Cutting Board combining inputs can only have between 2 and " + CuttingBoardCombiningRecipe.MAX_INGREDIENTS + " ingredients");
+            CraftTweakerAPI.LOGGER.error("[MrCrayfish's Furniture Mod: Refurbished] Cutting Board combining inputs can only have between 2 and " + CuttingBoardCombiningRecipe.MAX_INGREDIENTS + " ingredients");
             return false;
         }
         return true;

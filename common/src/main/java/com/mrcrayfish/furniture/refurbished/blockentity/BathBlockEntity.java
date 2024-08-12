@@ -115,7 +115,7 @@ public class BathBlockEntity extends BlockEntity implements IFluidContainerBlock
                 if(filled > 0)
                 {
                     this.sendTapWaterAnimation();
-                    Objects.requireNonNull(this.level).playSound(null, this.worldPosition, ModSounds.BLOCK_KITCHEN_SINK_FILL.get(), SoundSource.BLOCKS);
+                    Objects.requireNonNull(this.level).playSound(null, this.worldPosition, ModSounds.BLOCK_KITCHEN_SINK_FILL.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
                     return InteractionResult.SUCCESS;
                 }
             }
@@ -132,7 +132,7 @@ public class BathBlockEntity extends BlockEntity implements IFluidContainerBlock
                     ItemEntity entity = new ItemEntity(level, pos.x, pos.y, pos.z, new ItemStack(Blocks.OBSIDIAN));
                     entity.setDefaultPickUpDelay();
                     level.addFreshEntity(entity);
-                    level.playSound(null, this.worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS);
+                    level.playSound(null, this.worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 1.0F, 1.0F);
                     level.levelEvent(LevelEvent.LAVA_FIZZ, this.worldPosition, 0);
                     this.sendTapWaterAnimation();
                     return InteractionResult.SUCCESS;

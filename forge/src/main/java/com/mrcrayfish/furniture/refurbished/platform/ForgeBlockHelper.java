@@ -21,8 +21,8 @@ public class ForgeBlockHelper implements IBlockHelper
     }
 
     @Override
-    public DamageSource ceilingFanDamageSource(Level level)
+    public DamageSource createDamageSource(String name)
     {
-        return level.damageSources().source(ModDamageTypes.CEILING_FAN);
+        return new DamageSource(name);
     }
 }

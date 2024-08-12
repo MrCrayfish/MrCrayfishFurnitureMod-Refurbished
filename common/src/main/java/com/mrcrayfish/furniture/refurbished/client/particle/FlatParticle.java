@@ -1,13 +1,13 @@
 package com.mrcrayfish.furniture.refurbished.client.particle;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3f;
 
 /**
  * Author: MrCrayfish

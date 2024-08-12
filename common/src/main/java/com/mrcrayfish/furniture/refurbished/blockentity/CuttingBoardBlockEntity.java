@@ -8,6 +8,7 @@ import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardCombiningRecipe
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -197,7 +198,7 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
     private void spawnSliceResultFromRecipe(int sliceIndex, SingleItemRecipe recipe, boolean spawnIntoLevel)
     {
         Preconditions.checkNotNull(this.level);
-        ItemStack result = recipe.getResultItem(this.level.registryAccess());
+        ItemStack result = recipe.getResultItem();
         if(spawnIntoLevel)
         {
             this.spawnItemIntoLevel(this.level, result);
@@ -263,13 +264,13 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
     }
 
     @Override
-    public boolean canTakeItem(Container container, int slotIndex, ItemStack stack)
+    public boolean canTakeItemThroughFace(int slotIndex, ItemStack stack, Direction direction)
     {
         if(slotIndex >= 0 && slotIndex < this.useableContainerSize && slotIndex == this.getHeadIndex() && this.canExtract)
         {
             return this.outputCache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level)).isEmpty();
         }
-        return false;
+        return true;
     }
 
     @Override
@@ -370,7 +371,7 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
             return;
 
         Level level = Objects.requireNonNull(this.level);
-        ItemStack stack = recipe.assemble(this, level.registryAccess());
+        ItemStack stack = recipe.assemble(this);
         List<ItemStack> remainingItems = this.getCraftingRemainingItems();
 
         this.clearContent();

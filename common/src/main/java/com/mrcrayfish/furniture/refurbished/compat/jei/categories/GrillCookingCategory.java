@@ -84,7 +84,7 @@ public class GrillCookingCategory extends FurnitureRecipeCategory<ProcessingReci
         if(recipe.getType() == net.minecraft.world.item.crafting.RecipeType.CAMPFIRE_COOKING)
         {
             GuiComponent.fill(poseStack, 99, 5, 99 + 16, 5 + 16, 0x33000000);
-            ScreenHelper.drawItem(poseStack, this.campfireStack, 99, 5);
+            ScreenHelper.drawItem(this.campfireStack, 99, 5);
         }
     }
 

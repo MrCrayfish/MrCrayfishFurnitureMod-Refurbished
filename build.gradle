@@ -26,6 +26,7 @@ subprojects {
         from(rootProject.file("ASSETS_LICENSE")) {
             rename { "${it}_${mod_id}" }
         }
+        from(rootProject.file("JOML_LICENSE"))
         manifest {
             attributes([
                 'Specification-Title'     : mod_name,
@@ -49,6 +50,7 @@ subprojects {
         from(rootProject.file("ASSETS_LICENSE")) {
             rename { "${it}_${mod_id}" }
         }
+        from(rootProject.file("JOML_LICENSE"))
     }
 
     repositories {

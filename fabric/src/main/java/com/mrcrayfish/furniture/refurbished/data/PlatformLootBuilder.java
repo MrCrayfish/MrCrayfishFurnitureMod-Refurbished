@@ -1,6 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.data;
 
-import net.minecraft.data.loot.BlockLootSubProvider;
+import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -15,9 +15,9 @@ public class PlatformLootBuilder
 {
     public static class Block implements LootBuilder.Block
     {
-        private final BlockLootSubProvider provider;
+        private final BlockLoot provider;
 
-        public Block(BlockLootSubProvider provider)
+        public Block(BlockLoot provider)
         {
             this.provider = provider;
         }
@@ -31,7 +31,7 @@ public class PlatformLootBuilder
         @Override
         public void custom(net.minecraft.world.level.block.Block block, LootPool.Builder builder)
         {
-            this.provider.add(block, LootTable.lootTable().withPool(this.provider.applyExplosionCondition(block, builder)));
+            this.provider.add(block, LootTable.lootTable().withPool(BlockLoot.applyExplosionCondition(block, builder)));
         }
     }
 

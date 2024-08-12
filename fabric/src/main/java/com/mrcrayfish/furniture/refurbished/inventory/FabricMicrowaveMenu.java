@@ -85,12 +85,19 @@ public class FabricMicrowaveMenu extends SimpleContainerMenu implements IPowerSw
 
             if(slotStack.isEmpty())
             {
-                slot.setByPlayer(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             }
             else
             {
                 slot.setChanged();
             }
+
+            if(slotStack.getCount() == stack.getCount())
+            {
+                return ItemStack.EMPTY;
+            }
+
+            slot.onTake(player, slotStack);
         }
         return stack;
     }

@@ -133,7 +133,7 @@ public class Bootstrap
         // Spawns the items contained in a package into the level
         DispenserBlock.registerBehavior(ModItems.PACKAGE::get, (source, stack) -> {
             Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
-            Vec3 pos = source.getPos().relative(direction).getCenter();
+            Vec3 pos = Vec3.atCenterOf(source.getPos().relative(direction));
             PackageItem.getPackagedItems(stack).forEach(s -> {
                 Containers.dropItemStack(source.getLevel(), pos.x, pos.y, pos.z, s);
             });
@@ -150,7 +150,8 @@ public class Bootstrap
                 CompoundTag tag = BlockItem.getBlockEntityData(stack);
                 if(tag != null) {
                     if(!level.isClientSide()) {
-                        ItemStack copy = stack.copyWithCount(1);
+                        ItemStack copy = stack.copy();
+                        copy.setCount(1);
                         BlockItem.setBlockEntityData(copy, ModBlockEntities.DOOR_MAT.get(), new CompoundTag());
                         stack.shrink(1);
                         if(stack.isEmpty()) {

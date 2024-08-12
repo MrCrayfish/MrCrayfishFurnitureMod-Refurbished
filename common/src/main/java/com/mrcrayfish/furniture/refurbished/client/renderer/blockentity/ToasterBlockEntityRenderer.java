@@ -1,17 +1,17 @@
 package com.mrcrayfish.furniture.refurbished.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
 import com.mrcrayfish.furniture.refurbished.block.ToasterBlock;
 import com.mrcrayfish.furniture.refurbished.blockentity.ToasterBlockEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -48,9 +48,9 @@ public class ToasterBlockEntityRenderer implements BlockEntityRenderer<ToasterBl
             Vec3i normal = direction.getNormal();
             poseStack.translate(0.095 * normal.getX() * offset, 0, 0.095 * normal.getZ() * offset);
             poseStack.mulPose(direction.getRotation());
-            poseStack.mulPose(Axis.XN.rotation(Mth.HALF_PI));
+            poseStack.mulPose(Vector3f.XN.rotation(Mth.HALF_PI));
             poseStack.scale(0.5F, 0.5F, 0.5F);
-            this.renderer.renderStatic(stack, ItemDisplayContext.NONE, light, overlay, poseStack, source, level, 0);
+            this.renderer.renderStatic(stack, ItemTransforms.TransformType.NONE, light, overlay, poseStack, source, 0);
             poseStack.popPose();
         }
     }

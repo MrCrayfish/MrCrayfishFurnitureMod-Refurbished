@@ -88,7 +88,7 @@ public class BasinBlockEntity extends BlockEntity implements IFluidContainerBloc
                 if(filled > 0)
                 {
                     Network.getPlay().sendToTrackingBlockEntity(() -> this, new MessageWaterTapAnimation(this.worldPosition));
-                    Objects.requireNonNull(this.level).playSound(null, this.worldPosition, ModSounds.BLOCK_KITCHEN_SINK_FILL.get(), SoundSource.BLOCKS);
+                    Objects.requireNonNull(this.level).playSound(null, this.worldPosition, ModSounds.BLOCK_KITCHEN_SINK_FILL.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
                     return InteractionResult.SUCCESS;
                 }
             }
@@ -105,7 +105,7 @@ public class BasinBlockEntity extends BlockEntity implements IFluidContainerBloc
                     ItemEntity entity = new ItemEntity(level, pos.x, pos.y, pos.z, new ItemStack(Blocks.OBSIDIAN));
                     entity.setDefaultPickUpDelay();
                     level.addFreshEntity(entity);
-                    level.playSound(null, this.worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS);
+                    level.playSound(null, this.worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 1.0F, 1.0F);
                     level.levelEvent(LevelEvent.LAVA_FIZZ, this.worldPosition, 0);
                     Network.getPlay().sendToTrackingBlockEntity(() -> this, new MessageWaterTapAnimation(this.worldPosition));
                     return InteractionResult.SUCCESS;

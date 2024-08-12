@@ -8,13 +8,13 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.math.Matrix4f;
 import com.mrcrayfish.framework.api.event.ClientConnectionEvents;
 import com.mrcrayfish.framework.api.event.ScreenEvents;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.IconButton;
 import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import com.mrcrayfish.furniture.refurbished.client.util.VanillaTextures;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
-import com.mrcrayfish.furniture.refurbished.core.ModCreativeTabs;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.core.ModTags;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
@@ -24,20 +24,17 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
-import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import org.joml.Matrix4f;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -67,7 +64,7 @@ public class CreativeFilters
     private final List<FilterCategory> categories;
     private AbstractWidget scrollUpButton;
     private AbstractWidget scrollDownButton;
-    private CreativeModeTab lastTab;
+    private int lastTab;
     private int guiLeft;
     private int guiTop;
     private int scroll;
@@ -76,7 +73,7 @@ public class CreativeFilters
     {
         ImmutableList.Builder<FilterCategory> builder = ImmutableList.builder();
         builder.add(new FilterCategory(ModTags.Items.GENERAL, new ItemStack(ModBlocks.CHAIR_OAK.get())));
-        builder.add(new FilterCategory(ModTags.Items.BEDROOM, new ItemStack(ModBlocks.DRAWER_CHERRY.get())));
+        builder.add(new FilterCategory(ModTags.Items.BEDROOM, new ItemStack(ModBlocks.DRAWER_MANGROVE.get())));
         builder.add(new FilterCategory(ModTags.Items.KITCHEN, new ItemStack(ModBlocks.KITCHEN_SINK_YELLOW.get())));
         builder.add(new FilterCategory(ModTags.Items.OUTDOORS, new ItemStack(ModBlocks.GRILL_RED.get())));
         builder.add(new FilterCategory(ModTags.Items.BATHROOM, new ItemStack(ModBlocks.TOILET_OAK.get())));
@@ -110,10 +107,18 @@ public class CreativeFilters
         /* Handles sending an event when the current creative mode tab is changed */
         ScreenEvents.AFTER_DRAW.register((screen, graphics, mouseX, mouseY, partialTick) -> {
             if(screen instanceof CreativeModeInventoryScreen creativeScreen) {
-                CreativeModeTab tab = ClientServices.PLATFORM.getSelectedCreativeModeTab();
-                if(this.lastTab != tab) {
-                    this.onSwitchCreativeTab(tab, creativeScreen);
-                    this.lastTab = tab;
+                int selectedTab = ClientServices.PLATFORM.getSelectedCreativeModeTab();
+                if(this.lastTab != selectedTab) {
+                    this.onSwitchCreativeTab(selectedTab, creativeScreen);
+                    this.lastTab = selectedTab;
+                }
+                // Draw tooltips from injected widgets
+                if(creativeScreen.getSelectedTab() == Services.PLATFORM.getCreativeModeTab().getId()) {
+                    this.categories.forEach(category -> {
+                        if(category.filterTab != null && category.filterTab.isHoveredOrFocused()) {
+                            category.filterTab.renderToolTip(graphics, mouseX, mouseY);
+                        }
+                    });
                 }
             }
         });
@@ -136,7 +141,7 @@ public class CreativeFilters
     private void injectWidgets(CreativeModeInventoryScreen screen, Consumer<AbstractWidget> add)
     {
         this.categories.forEach(category -> {
-            FilterTab tab = new FilterTab(this.guiLeft - 28, this.guiTop, category, btn -> {
+            FilterTab tab = new FilterTab(screen, this.guiLeft - 28, this.guiTop, category, btn -> {
                 // Holding ctrl down will allow multiple categories to be enabled
                 if(Screen.hasControlDown() || Screen.hasShiftDown()) {
                     category.setEnabled(!category.isEnabled());
@@ -170,7 +175,10 @@ public class CreativeFilters
     {
         Set<Item> seenItems = new HashSet<>();
         LinkedHashSet<ItemStack> categorisedItems = new LinkedHashSet<>();
-        Services.PLATFORM.getCreativeModeTab().getDisplayItems().forEach(stack -> {
+        NonNullList<ItemStack> items = NonNullList.create();
+        for(Item item : Registry.ITEM) // TODO cache?
+            item.fillItemCategory(Services.PLATFORM.getCreativeModeTab(), items);
+        items.forEach(stack -> {
             this.categories.stream().filter(FilterCategory::isEnabled).forEach(category -> {
                 Item item = stack.getItem();
                 if(!seenItems.contains(item) && stack.is(category.tag)) {
@@ -179,9 +187,8 @@ public class CreativeFilters
                 }
             });
         });
-        NonNullList<ItemStack> items = screen.getMenu().items;
-        items.clear();
-        items.addAll(categorisedItems);
+        screen.getMenu().items.clear();
+        screen.getMenu().items.addAll(categorisedItems);
         screen.getMenu().scrollTo(0);
     }
 
@@ -196,7 +203,7 @@ public class CreativeFilters
         for(int i = this.scroll; i < this.scroll + 4 && i < this.categories.size(); i++)
         {
             FilterCategory category = this.categories.get(i);
-            category.setY(this.guiTop + 29 * (i - this.scroll) + 11);
+            category.setY(this.guiTop + 29 * (i - this.scroll) + 10);
             category.setVisible(true);
         }
         this.scrollUpButton.active = this.scroll > 0;
@@ -206,12 +213,12 @@ public class CreativeFilters
     /**
      * Called when the creative mode tab is switched to a different tab.
      *
-     * @param tab    the new creative mode tab
-     * @param screen the instance of the creative mode screen
+     * @param tabIndex the new creative mode tab index
+     * @param screen   the instance of the creative mode screen
      */
-    private void onSwitchCreativeTab(CreativeModeTab tab, CreativeModeInventoryScreen screen)
+    private void onSwitchCreativeTab(int tabIndex, CreativeModeInventoryScreen screen)
     {
-        boolean isFurnitureTab = tab == Services.PLATFORM.getCreativeModeTab();
+        boolean isFurnitureTab = tabIndex == Services.PLATFORM.getCreativeModeTab().getId();
         this.scrollUpButton.visible = isFurnitureTab;
         this.scrollDownButton.visible = isFurnitureTab;
         if(isFurnitureTab)
@@ -233,8 +240,8 @@ public class CreativeFilters
      */
     public boolean onMouseScroll(double mouseX, double mouseY, double scroll)
     {
-        CreativeModeTab selectedTab = ClientServices.PLATFORM.getSelectedCreativeModeTab();
-        if(selectedTab != Services.PLATFORM.getCreativeModeTab())
+        int selectedTab = ClientServices.PLATFORM.getSelectedCreativeModeTab();
+        if(selectedTab != Services.PLATFORM.getCreativeModeTab().getId())
             return false;
 
         double startX = this.guiLeft - 28;
@@ -342,7 +349,7 @@ public class CreativeFilters
         {
             if(this.filterTab != null)
             {
-                this.filterTab.setY(y);
+                this.filterTab.y = y;
             }
         }
 
@@ -356,7 +363,7 @@ public class CreativeFilters
             if(this.items != null)
                 return;
             this.items = new ArrayList<>();
-            BuiltInRegistries.ITEM.stream().forEach(item -> {
+            Registry.ITEM.stream().forEach(item -> {
                 if(item.builtInRegistryHolder().is(this.getTag())){
                     this.items.add(item);
                 }
@@ -376,29 +383,31 @@ public class CreativeFilters
     {
         private final FilterCategory category;
 
-        protected FilterTab(int x, int y, FilterCategory category, OnPress onPress)
+        protected FilterTab(CreativeModeInventoryScreen screen, int x, int y, FilterCategory category, OnPress onPress)
         {
-            super(x, y, 32, 26, CommonComponents.EMPTY, onPress, DEFAULT_NARRATION);
+            super(x, y, 32, 28, CommonComponents.EMPTY, onPress, (btn, poseStack, mouseX, mouseY) -> {
+                ResourceLocation tagId = category.getTag().location();
+                String tooltipTitle = String.format("filterCategory.%s.%s", tagId.getNamespace(), tagId.getPath().replace("/", "."));
+                String tooltipDesc = tooltipTitle + ".desc";
+                List<FormattedCharSequence> lines = ScreenHelper.createMultilineTooltip(List.of(Component.translatable(tooltipTitle), Component.translatable(tooltipDesc).withStyle(ChatFormatting.GRAY)));
+                screen.renderTooltip(poseStack, lines, mouseX, mouseY);
+            });
             this.category = category;
             category.setFilterTab(this);
-            ResourceLocation tagId = category.getTag().location();
-            String tooltipTitle = String.format("filterCategory.%s.%s", tagId.getNamespace(), tagId.getPath().replace("/", "."));
-            String tooltipDesc = tooltipTitle + ".desc";
-            this.setTooltip(ScreenHelper.createMultilineTooltip(List.of(Component.translatable(tooltipTitle), Component.translatable(tooltipDesc).withStyle(ChatFormatting.GRAY))));
         }
 
         @Override
-        public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTicks)
+        public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTicks)
         {
-            int textureX = 26;
+            int textureX = 28;
             int textureY = this.category.isEnabled() ? 32 : 0;
             int textureWidth = this.category.isEnabled() ? 32 : 28;
-            int textureHeight = 26;
+            int textureHeight = 28;
             RenderSystem.setShaderTexture(0, VanillaTextures.CREATIVE_TABS);
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
-            this.drawRotatedTexture(poseStack.last().pose(), this.getX(), this.getY(), textureX, textureY, textureWidth, textureHeight);
-            ScreenHelper.drawItem(poseStack, this.category.getIcon(), this.getX() + 8, this.getY() + 5);
+            this.drawRotatedTexture(poseStack.last().pose(), this.x, this.y, textureX, textureY, textureWidth, textureHeight);
+            ScreenHelper.drawItem(this.category.getIcon(), this.x + 8, this.y + 6);
         }
 
         /**
@@ -416,12 +425,6 @@ public class CreativeFilters
             builder.vertex(matrix4f, x + textureWidth, y, 0).uv((float) textureX * scaleX, (float) (textureY + textureWidth) * scaleY).endVertex();
             builder.vertex(matrix4f, x, y, 0).uv((float) textureX * scaleX, (float) textureY * scaleY).endVertex();
             BufferUploader.drawWithShader(builder.end());
-        }
-
-        @Override
-        protected ClientTooltipPositioner createTooltipPositioner()
-        {
-            return DefaultTooltipPositioner.INSTANCE;
         }
     }
 }

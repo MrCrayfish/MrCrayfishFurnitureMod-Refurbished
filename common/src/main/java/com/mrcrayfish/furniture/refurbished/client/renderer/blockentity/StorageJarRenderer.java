@@ -1,11 +1,12 @@
 package com.mrcrayfish.furniture.refurbished.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
 import com.mrcrayfish.furniture.refurbished.block.CuttingBoardBlock;
 import com.mrcrayfish.furniture.refurbished.blockentity.StorageJarBlockEntity;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -16,9 +17,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
@@ -60,19 +59,18 @@ public class StorageJarRenderer implements BlockEntityRenderer<StorageJarBlockEn
 
             BakedModel model = this.renderer.getModel(stack, storageJar.getLevel(), null, 0);
             float offset = model.isGui3d() ? 0.0375F : 0.0625F;
-            this.drawItem(stack, storageJar.getLevel(), direction, poseStack, source, light, overlay, !model.isGui3d(), offset);
-
+            this.drawItem(stack, direction, poseStack, source, light, overlay, !model.isGui3d(), offset);
         }
         poseStack.popPose();
 
         this.drawHoveredLabel(filter, storageJar.getBlockPos(), poseStack, source);
     }
 
-    private void drawItem(ItemStack stack, Level level, Direction facing, PoseStack poseStack, MultiBufferSource source, int light, int overlay, boolean flat, float offset)
+    private void drawItem(ItemStack stack, Direction facing, PoseStack poseStack, MultiBufferSource source, int light, int overlay, boolean flat, float offset)
     {
         poseStack.pushPose();
         this.setupItemRotation(poseStack, facing, flat);
-        this.renderer.renderStatic(stack, ItemDisplayContext.NONE, light, overlay, poseStack, source, level, 0);
+        this.renderer.renderStatic(stack, ItemTransforms.TransformType.NONE, light, overlay, poseStack, source, 0);
         poseStack.popPose();
         poseStack.translate(0, offset, 0);
         this.postDrawItem(poseStack, flat);
@@ -82,14 +80,14 @@ public class StorageJarRenderer implements BlockEntityRenderer<StorageJarBlockEn
     {
         if(!flat) return;
         poseStack.mulPose(facing.getRotation());
-        poseStack.mulPose(Axis.YP.rotation(Mth.PI));
+        poseStack.mulPose(Vector3f.YP.rotation(Mth.PI));
     }
 
     private void postDrawItem(PoseStack poseStack, boolean flat)
     {
         if(flat)
         {
-            poseStack.mulPose(Axis.YP.rotation(Mth.HALF_PI / 2.01F));
+            poseStack.mulPose(Vector3f.YP.rotation(Mth.HALF_PI / 2.01F));
             return;
         }
         poseStack.scale(0.998F, 0.998F, 0.998F);
@@ -114,7 +112,7 @@ public class StorageJarRenderer implements BlockEntityRenderer<StorageJarBlockEn
         poseStack.scale(-0.025F, -0.025F, 0.025F);
         Component name = stack.getHoverName();
         int width = this.font.width(name);
-        this.font.drawInBatch(name, (float) -width / 2, 0, -1, false, poseStack.last().pose(), source, Font.DisplayMode.NORMAL, 0x22000000, 0xF000F0);
+        this.font.drawInBatch(name, (float) -width / 2, 0, -1, false, poseStack.last().pose(), source, false, 0x22000000, 0xF000F0);
         poseStack.popPose();
     }
 }

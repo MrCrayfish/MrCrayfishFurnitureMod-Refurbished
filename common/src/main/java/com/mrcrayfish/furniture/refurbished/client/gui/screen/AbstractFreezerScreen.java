@@ -64,15 +64,22 @@ public abstract class AbstractFreezerScreen<T extends AbstractContainerMenu & IE
     {
         super.renderBg(poseStack, partialTick, mouseX, mouseY);
         RenderSystem.setShaderTexture(0, TEXTURE);
-        GuiComponent.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        this.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
         if(this.menu.getMaxProcessTime() > 0 && this.menu.getProcessTime() >= 0)
         {
             int width = (int) Math.ceil(25 * (this.menu.getProcessTime() / (float) this.menu.getMaxProcessTime()));
-            GuiComponent.blit(poseStack, this.leftPos + 71, this.topPos + 34, 176, 0, width, 17);
+            this.blit(poseStack, this.leftPos + 71, this.topPos + 34, 176, 0, width, 17);
         }
+    }
+
+    @Override
+    protected void renderTooltip(PoseStack poseStack, int mouseX, int mouseY)
+    {
         if(this.menu.getProcessTime() > 0 && this.menu.getMaxProcessTime() > 0 && ScreenHelper.isMouseWithinBounds(mouseX, mouseY, this.leftPos + 71, this.topPos + 34, 25, 17))
         {
-            this.setTooltipForNextRenderPass(Utils.translation("gui", "progress", this.menu.getProcessTime(), Components.GUI_SLASH, this.menu.getMaxProcessTime()));
+            this.renderTooltip(poseStack, Utils.translation("gui", "progress", this.menu.getProcessTime(), Components.GUI_SLASH, this.menu.getMaxProcessTime()), mouseX, mouseY);
+            return;
         }
+        super.renderTooltip(poseStack, mouseX, mouseY);
     }
 }

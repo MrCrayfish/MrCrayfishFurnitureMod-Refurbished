@@ -21,7 +21,7 @@ public class MicrowaveRecipeBookComponent extends RecipeBookComponent
         {
             Slot inputSlot = slots.get(0);
             Slot resultSlot = slots.get(this.menu.getResultSlotIndex());
-            ItemStack stack = heatingRecipe.getResultItem(this.minecraft.level.registryAccess());
+            ItemStack stack = heatingRecipe.getResultItem();
             this.ghostRecipe.setRecipe(heatingRecipe);
             this.ghostRecipe.addIngredient(Ingredient.of(stack), resultSlot.x, resultSlot.y);
             this.ghostRecipe.addIngredient(heatingRecipe.getIngredient(), inputSlot.x, inputSlot.y);

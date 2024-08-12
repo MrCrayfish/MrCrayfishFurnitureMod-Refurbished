@@ -1,6 +1,5 @@
 package com.mrcrayfish.furniture.refurbished.platform;
 
-import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mrcrayfish.furniture.refurbished.client.FabricRenderType;
@@ -13,12 +12,10 @@ import com.mrcrayfish.furniture.refurbished.inventory.FabricStoveMenu;
 import com.mrcrayfish.furniture.refurbished.platform.services.IClientHelper;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
@@ -26,10 +23,8 @@ import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.material.Fluid;
@@ -56,15 +51,9 @@ public class FabricClientHelper implements IClientHelper
     }
 
     @Override
-    public CreativeModeTab getSelectedCreativeModeTab()
+    public int getSelectedCreativeModeTab()
     {
         return CreativeModeInventoryScreen.selectedTab;
-    }
-
-    @Override
-    public void setTooltipCache(Tooltip tooltip, List<FormattedCharSequence> lines)
-    {
-        tooltip.cachedTooltip = ImmutableList.copyOf(lines);
     }
 
     @Override
@@ -93,9 +82,9 @@ public class FabricClientHelper implements IClientHelper
     }
 
     @Override
-    public void renderTooltip(Screen screen, PoseStack poseStack, List<ClientTooltipComponent> components, int mouseX, int mouseY, ClientTooltipPositioner position)
+    public void renderTooltip(Screen screen, PoseStack poseStack, List<ClientTooltipComponent> components, int mouseX, int mouseY)
     {
-        screen.renderTooltipInternal(poseStack, components, mouseX, mouseY, position);
+        screen.renderTooltipInternal(poseStack, components, mouseX, mouseY);
     }
 
     @Override
@@ -118,5 +107,4 @@ public class FabricClientHelper implements IClientHelper
     {
         return new FabricStoveScreen((FabricStoveMenu) menu, playerInventory, title);
     }
-
 }

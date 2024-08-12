@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 import com.mrcrayfish.furniture.refurbished.block.CeilingFanBlock;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
+import com.mrcrayfish.furniture.refurbished.core.ModDamageTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.electricity.IModuleNode;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
@@ -13,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -52,7 +54,7 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implemen
     public CeilingFanBlockEntity(BlockPos pos, BlockState state)
     {
         super(ModBlockEntities.CEILING_FAN.get(), pos, state);
-        this.audioPosition = pos.getCenter().add(0, 0.375, 0);
+        this.audioPosition = Vec3.atCenterOf(pos).add(0, 0.375, 0);
     }
 
     @Override
@@ -117,7 +119,7 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implemen
             AABB box = this.getDamageBox(direction).move(this.getBlockPos());
             List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, box);
             entities.forEach(entity -> {
-                entity.hurt(Services.BLOCK.ceilingFanDamageSource(level), 0.5F);
+                entity.hurt(ModDamageTypes.CEILING_FAN, 0.5F);
                 entity.setLastHurtByMob(entity); // Is this going to be a problem?
             });
         }

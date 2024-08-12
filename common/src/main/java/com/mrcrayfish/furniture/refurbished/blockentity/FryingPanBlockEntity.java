@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.mojang.math.Vector3f;
 import com.mrcrayfish.furniture.refurbished.block.RangeHoodBlock;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
@@ -12,6 +13,7 @@ import com.mrcrayfish.furniture.refurbished.network.message.MessageFlipAnimation
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -38,7 +40,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -52,7 +53,7 @@ import java.util.Optional;
  */
 public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICookingBlock, ILevelAudio
 {
-    public static final Vector3f OIL_COLOUR = Vec3.fromRGB24(0xE1A803).toVector3f();
+    public static final Vector3f OIL_COLOUR = new Vector3f(Vec3.fromRGB24(0xE1A803));
     public static final double MAX_AUDIO_DISTANCE = Mth.square(8);
 
     protected final RecipeManager.CachedCheck<Container, ? extends ProcessingRecipe> recipeCache;
@@ -76,7 +77,7 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
         super(type, pos, state, 1);
         this.recipeCache = RecipeManager.createCheck(recipeType);
         this.campfireCookingCache = RecipeManager.createCheck(RecipeType.CAMPFIRE_COOKING);
-        this.audioPosition = pos.getCenter().add(0, -0.375, 0);
+        this.audioPosition = Vec3.atCenterOf(pos).add(0, -0.375, 0);
     }
 
     public boolean isFlippingNeeded()
@@ -238,7 +239,7 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
         {
             Item remainingItem = stack.getItem().getCraftingRemainingItem();
             Optional<? extends ProcessingRecipe> optional = this.getRecipe(stack);
-            ItemStack result = optional.map(recipe -> recipe.getResultItem(this.level.registryAccess())).orElse(ItemStack.EMPTY);
+            ItemStack result = optional.map(ProcessingRecipe::getResultItem).orElse(ItemStack.EMPTY);
             stack.shrink(1);
             if(!result.isEmpty())
             {
@@ -260,9 +261,9 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
     }
 
     @Override
-    public boolean canTakeItem(Container container, int slotIndex, ItemStack stack)
+    public boolean canTakeItemThroughFace(int slotIndex, ItemStack stack, Direction direction)
     {
-        return slotIndex == 0 && super.canTakeItem(container, slotIndex, stack) && this.getRecipe(stack).isEmpty();
+        return slotIndex == 0 && this.getRecipe(stack).isEmpty();
     }
 
     @Override
@@ -294,7 +295,7 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
 
     private Optional<ProcessingRecipe> getCookingRecipe(RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> cache, ItemStack stack)
     {
-        return cache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level)).map(recipe -> ProcessingRecipe.Item.from(recipe, this.level.registryAccess()));
+        return cache.getRecipeFor(new SimpleContainer(stack), Objects.requireNonNull(this.level)).map(ProcessingRecipe.Item::from);
     }
 
     /**

@@ -19,7 +19,7 @@ public class OvenRecipeBookComponent extends RecipeBookComponent
     {
         if(recipe instanceof OvenBakingRecipe bakingRecipe)
         {
-            ItemStack stack = bakingRecipe.getResultItem(this.minecraft.level.registryAccess());
+            ItemStack stack = bakingRecipe.getResultItem();
             this.ghostRecipe.setRecipe(bakingRecipe);
             this.ghostRecipe.addIngredient(Ingredient.of(stack), slots.get(3).x, slots.get(3).y);
             this.ghostRecipe.addIngredient(bakingRecipe.getIngredient(), slots.get(0).x, slots.get(0).y);

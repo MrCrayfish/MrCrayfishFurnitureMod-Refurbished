@@ -19,7 +19,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
-import org.joml.Vector2i;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +34,7 @@ public class WorkbenchConstructingCategory extends FurnitureRecipeCategory<Workb
     private final IGuiHelper helper;
     private final IDrawable background;
     private final IDrawable icon;
-    private List<Pair<Vector2i, IDrawable>> slots = new ArrayList<>();
+    private List<Pair<Pair<Integer, Integer>, IDrawable>> slots = new ArrayList<>();
 
     public WorkbenchConstructingCategory(IGuiHelper helper)
     {
@@ -90,7 +89,7 @@ public class WorkbenchConstructingCategory extends FurnitureRecipeCategory<Workb
                 return copy;
             }).toList();
             builder.addSlot(RecipeIngredientRole.INPUT, x, y).addItemStacks(stacks);
-            this.slots.add(Pair.of(new Vector2i(x - 1, y - 1), this.helper.createDrawable(Plugin.TEXTURES_2, 0, 64, 18, 18)));
+            this.slots.add(Pair.of(Pair.of(x - 1, y - 1), this.helper.createDrawable(Plugin.TEXTURES_2, 0, 64, 18, 18)));
         }
         builder.addSlot(RecipeIngredientRole.OUTPUT, 96, 24).addItemStack(Plugin.getResult(recipe));
     }
@@ -99,8 +98,8 @@ public class WorkbenchConstructingCategory extends FurnitureRecipeCategory<Workb
     public void draw(WorkbenchContructingRecipe recipe, IRecipeSlotsView view, PoseStack poseStack, double mouseX, double mouseY)
     {
         this.slots.forEach(pair -> {
-            Vector2i pos = pair.left();
-            pair.right().draw(poseStack, pos.x(), pos.y());
+            Pair<Integer, Integer> pos = pair.left();
+            pair.right().draw(poseStack, pos.left(), pos.right());
         });
     }
 }

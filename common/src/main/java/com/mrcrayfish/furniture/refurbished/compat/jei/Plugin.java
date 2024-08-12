@@ -27,8 +27,8 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -131,7 +131,7 @@ public class Plugin implements IModPlugin
         List<ProcessingRecipe> recipes = new ArrayList<>();
         recipes.addAll(this.getRecipes(ModRecipeTypes.FRYING_PAN_COOKING.get()));
         recipes.addAll(this.getRecipes(RecipeType.CAMPFIRE_COOKING).stream().map(recipe -> {
-            return ProcessingRecipe.Item.from(recipe, getRegistryAccess());
+            return ProcessingRecipe.Item.from(recipe);
         }).toList());
         return recipes;
     }
@@ -141,7 +141,7 @@ public class Plugin implements IModPlugin
         List<ProcessingRecipe> recipes = new ArrayList<>();
         recipes.addAll(this.getRecipes(ModRecipeTypes.GRILL_COOKING.get()));
         recipes.addAll(this.getRecipes(RecipeType.CAMPFIRE_COOKING).stream().map(recipe -> {
-            return ProcessingRecipe.Item.from(recipe, getRegistryAccess());
+            return ProcessingRecipe.Item.from(recipe);
         }).toList());
         return recipes;
     }
@@ -165,12 +165,12 @@ public class Plugin implements IModPlugin
 
     public static ItemStack getResult(Recipe<?> recipe)
     {
-        return recipe.getResultItem(getRegistryAccess());
+        return recipe.getResultItem();
     }
 
     public static List<ItemStack> getTagItems(TagKey<Item> tag)
     {
-        return StreamSupport.stream(BuiltInRegistries.ITEM.getTagOrEmpty(tag).spliterator(), false).map(holder -> {
+        return StreamSupport.stream(Registry.ITEM.getTagOrEmpty(tag).spliterator(), false).map(holder -> {
             return new ItemStack(holder.value());
         }).toList();
     }

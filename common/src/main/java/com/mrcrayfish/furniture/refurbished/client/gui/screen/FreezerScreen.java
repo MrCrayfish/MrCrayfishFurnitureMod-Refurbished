@@ -41,8 +41,10 @@ public class FreezerScreen extends AbstractFreezerScreen<FreezerMenu> implements
         this.addRenderableWidget(new ImageButton(this.leftPos + 14, this.height / 2 - 49, 20, 18, 0, 0, 19, VanillaTextures.RECIPE_BUTTON, (button) -> {
             this.recipeBookComponent.toggleVisibility();
             this.leftPos = this.recipeBookComponent.updateScreenPosition(this.width, this.imageWidth);
-            button.setPosition(this.leftPos + 14, this.height / 2 - 49);
-            this.slider.setPosition(this.leftPos + this.imageWidth - 22 - 6, this.topPos + 5);
+            button.x = this.leftPos + 14;
+            button.y = this.height / 2 - 49;
+            this.slider.x = this.leftPos + this.imageWidth - 22 - 6;
+            this.slider.y = this.topPos + 5;
         }));
         this.addWidget(this.recipeBookComponent);
         this.setInitialFocus(this.recipeBookComponent);

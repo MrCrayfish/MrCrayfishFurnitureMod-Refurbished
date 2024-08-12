@@ -86,7 +86,7 @@ public class MarketplaceGraphics extends DisplayableProgram<Marketplace>
         {
             GuiComponent.fill(poseStack, 0, 0, this.program.getWidth(), 16, 0xFF653938);
             RenderSystem.setShaderTexture(0, TEXTURE);
-            GuiComponent.blit(poseStack, 5, 2, 0, 0, 12, 12);
+            GuiComponent.blit(poseStack, 5, 2, 0, 0, 12, 12, 256, 256);
             ScreenHelper.drawString(poseStack, Integer.toString(this.getEmeraldCount()), 50, 5, 0xFFFFFFFF, true);
         }
 
@@ -117,7 +117,8 @@ public class MarketplaceGraphics extends DisplayableProgram<Marketplace>
             {
                 //graphics.drawString(Minecraft.getInstance().font, "Hello", 0, top, 0xFFFFFFFF);
                 GuiComponent.fill(poseStack, left, top, left + rowWidth, top + rowHeight, 0xFFFFFFFF);
-                this.buyButton.setPosition(left + rowWidth - this.buyButton.getWidth(), top);
+                this.buyButton.x = left + rowWidth - this.buyButton.getWidth();
+                this.buyButton.y = top;
                 this.buyButton.render(poseStack, mouseX, mouseY, partialTick);
             }
 

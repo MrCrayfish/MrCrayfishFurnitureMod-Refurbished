@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class CreativeModeInventoryScreenMixin
 {
     @Shadow
-    private static CreativeModeTab selectedTab;
+    private static int selectedTab;
 
     @Inject(method = "mouseScrolled", at = @At(value = "HEAD"), cancellable = true)
     private void refurbishedFurnitureMouseScrollHead(double mouseX, double mouseY, double scroll, CallbackInfoReturnable<Boolean> cir)
@@ -37,16 +37,16 @@ public class CreativeModeInventoryScreenMixin
     @Inject(method = "renderLabels", at = @At(value = "HEAD"), cancellable = true)
     private void furnitureRefurbishedBeforeRenderLabels(PoseStack poseStack, int mouseX, int mouseY, CallbackInfo ci)
     {
-        if(selectedTab == Services.PLATFORM.getCreativeModeTab())
+        if(selectedTab == Services.PLATFORM.getCreativeModeTab().getId())
         {
             int contentStart = 8;
             int contentTop = 4;
             int contentHeight = 12;
-            int contentWidth = Minecraft.getInstance().font.width(selectedTab.getDisplayName()) + 4;
+            int contentWidth = Minecraft.getInstance().font.width(Services.PLATFORM.getCreativeModeTab().getDisplayName()) + 4;
             GuiComponent.fill(poseStack, contentStart, contentTop + 1, contentStart + 1, contentTop + contentHeight - 1, 0x77000000);
             GuiComponent.fill(poseStack, contentStart + 1, contentTop, contentStart + contentWidth - 1, contentTop + contentHeight, 0x77000000);
             GuiComponent.fill(poseStack, contentStart + contentWidth - 1, contentTop + 1, contentStart + contentWidth, contentTop + contentHeight - 1, 0x77000000);
-            ScreenHelper.drawString(poseStack, selectedTab.getDisplayName(), 10, 6, 0x404040, true);
+            ScreenHelper.drawString(poseStack, Services.PLATFORM.getCreativeModeTab().getDisplayName(), 10, 6, 0xFFFFAA00, true);
             ci.cancel();
         }
     }

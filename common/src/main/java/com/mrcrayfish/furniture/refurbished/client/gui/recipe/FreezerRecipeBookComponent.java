@@ -21,7 +21,7 @@ public class FreezerRecipeBookComponent extends RecipeBookComponent
         {
             Slot inputSlot = slots.get(0);
             Slot resultSlot = slots.get(this.menu.getResultSlotIndex());
-            ItemStack stack = solidifyingRecipe.getResultItem(this.minecraft.level.registryAccess());
+            ItemStack stack = solidifyingRecipe.getResultItem();
             this.ghostRecipe.setRecipe(solidifyingRecipe);
             this.ghostRecipe.addIngredient(Ingredient.of(stack), resultSlot.x, resultSlot.y);
             this.ghostRecipe.addIngredient(solidifyingRecipe.getIngredient(), inputSlot.x, inputSlot.y);

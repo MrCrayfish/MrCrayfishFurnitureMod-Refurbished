@@ -1,16 +1,17 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -62,7 +63,7 @@ public class ToolAnimationRenderer
     {
         this.animationMap.forEach((pos, animation) -> {
             int light = LevelRenderer.getLightColor(level, animation.pos);
-            animation.render(level, poseStack, source, light, partialTick);
+            animation.render(poseStack, source, light, partialTick);
         });
     }
 
@@ -126,19 +127,18 @@ public class ToolAnimationRenderer
         /**
          * Renders the tool animation in the level
          *
-         * @param level the level the animation is playing in
-         * @param poseStack the current pose stack
-         * @param source a buffer source
-         * @param light the light level to apply to models
+         * @param poseStack   the current pose stack
+         * @param source      a buffer source
+         * @param light       the light level to apply to models
          * @param partialTick the current partial tick
          */
-        public void render(Level level, PoseStack poseStack, MultiBufferSource.BufferSource source, int light, float partialTick)
+        public void render(PoseStack poseStack, MultiBufferSource.BufferSource source, int light, float partialTick)
         {
             poseStack.pushPose();
             poseStack.translate(this.pos.getX() + 0.5, this.pos.getY(), this.pos.getZ() + 0.5);
-            poseStack.mulPose(Axis.YP.rotation(-Mth.HALF_PI * this.direction.get2DDataValue()));
+            poseStack.mulPose(Vector3f.YP.rotation(-Mth.HALF_PI * this.direction.get2DDataValue()));
             this.tool.transform.accept(poseStack, this.time + partialTick);
-            Minecraft.getInstance().getItemRenderer().renderStatic(this.stack, ItemDisplayContext.NONE, light, OverlayTexture.NO_OVERLAY, poseStack, source, level, 0);
+            Minecraft.getInstance().getItemRenderer().renderStatic(this.stack, ItemTransforms.TransformType.NONE, light, OverlayTexture.NO_OVERLAY, poseStack, source, 0);
             poseStack.popPose();
         }
     }
@@ -148,23 +148,23 @@ public class ToolAnimationRenderer
         SPATULA(() -> new ItemStack(ModItems.SPATULA.get()), 6, (poseStack, time) -> {
             poseStack.translate(0, 0.375, 0);
             poseStack.translate(-0.5, 0, -0.5);
-            poseStack.mulPose(Axis.XP.rotation(Mth.HALF_PI / 2));
-            if(time >= 2) poseStack.mulPose(Axis.XN.rotation((Mth.HALF_PI / 2) * ((time - 2) / 2.0F)));
+            poseStack.mulPose(Vector3f.XP.rotation(Mth.HALF_PI / 2));
+            if(time >= 2) poseStack.mulPose(Vector3f.XN.rotation((Mth.HALF_PI / 2) * ((time - 2) / 2.0F)));
             poseStack.translate(0.5, 0, 0.5);
             poseStack.translate(0, 0, -0.5 + Mth.sin(time / 6F) * 0.375);
-            poseStack.mulPose(Axis.XP.rotation(Mth.HALF_PI));
-            poseStack.mulPose(Axis.ZP.rotation(Mth.HALF_PI / 2));
+            poseStack.mulPose(Vector3f.XP.rotation(Mth.HALF_PI));
+            poseStack.mulPose(Vector3f.ZP.rotation(Mth.HALF_PI / 2));
             poseStack.scale(0.75F, 0.75F, 0.75F);
         }),
         KNIFE(() -> new ItemStack(ModItems.KNIFE.get()), 4, (poseStack, time) -> {
             poseStack.translate(0, 0.375, 0);
             poseStack.translate(-0.5, 0, -0.5);
-            if(time >= 2) poseStack.mulPose(Axis.XP.rotation((Mth.HALF_PI / 2) * ((time - 2) / 2.0F)));
+            if(time >= 2) poseStack.mulPose(Vector3f.XP.rotation((Mth.HALF_PI / 2) * ((time - 2) / 2.0F)));
             poseStack.translate(0.5, 0, 0.5);
             poseStack.translate(0, 0, -0.5 + time / 4F * 0.375);
-            poseStack.mulPose(Axis.XP.rotation(Mth.HALF_PI));
-            poseStack.mulPose(Axis.YN.rotation(Mth.HALF_PI));
-            poseStack.mulPose(Axis.ZP.rotation(Mth.HALF_PI / 2));
+            poseStack.mulPose(Vector3f.XP.rotation(Mth.HALF_PI));
+            poseStack.mulPose(Vector3f.YN.rotation(Mth.HALF_PI));
+            poseStack.mulPose(Vector3f.ZP.rotation(Mth.HALF_PI / 2));
             poseStack.scale(0.75F, 0.75F, 0.75F);
         });
 

@@ -1,7 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.data;
 
 import com.mrcrayfish.furniture.refurbished.data.tag.TagBuilder;
-import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
+import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagKey;
@@ -11,9 +11,9 @@ import net.minecraft.tags.TagKey;
  */
 public class PlatformTagBuilder<T> implements TagBuilder<T>
 {
-    private final IntrinsicHolderTagsProvider.IntrinsicTagAppender<T> appender;
+    private final TagsProvider.TagAppender<T> appender;
 
-    public PlatformTagBuilder(IntrinsicHolderTagsProvider.IntrinsicTagAppender<T> appender)
+    public PlatformTagBuilder(TagsProvider.TagAppender<T> appender)
     {
         this.appender = appender;
     }

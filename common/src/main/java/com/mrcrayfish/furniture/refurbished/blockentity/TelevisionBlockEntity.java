@@ -75,7 +75,7 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
     public TelevisionBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
     {
         super(type, pos, state);
-        this.audioPosition = pos.getCenter();
+        this.audioPosition = Vec3.atCenterOf(pos);
     }
 
     public Channel getCurrentChannel()

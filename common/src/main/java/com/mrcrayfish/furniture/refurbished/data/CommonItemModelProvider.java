@@ -41,7 +41,6 @@ public class CommonItemModelProvider
         this.ceilingFan(ModBlocks.CEILING_FAN_ACACIA_LIGHT.get());
         this.ceilingFan(ModBlocks.CEILING_FAN_DARK_OAK_LIGHT.get());
         this.ceilingFan(ModBlocks.CEILING_FAN_MANGROVE_LIGHT.get());
-        this.ceilingFan(ModBlocks.CEILING_FAN_CHERRY_LIGHT.get());
         this.ceilingFan(ModBlocks.CEILING_FAN_CRIMSON_LIGHT.get());
         this.ceilingFan(ModBlocks.CEILING_FAN_WARPED_LIGHT.get());
         this.ceilingFan(ModBlocks.CEILING_FAN_OAK_DARK.get());
@@ -51,7 +50,6 @@ public class CommonItemModelProvider
         this.ceilingFan(ModBlocks.CEILING_FAN_ACACIA_DARK.get());
         this.ceilingFan(ModBlocks.CEILING_FAN_DARK_OAK_DARK.get());
         this.ceilingFan(ModBlocks.CEILING_FAN_MANGROVE_DARK.get());
-        this.ceilingFan(ModBlocks.CEILING_FAN_CHERRY_DARK.get());
         this.ceilingFan(ModBlocks.CEILING_FAN_CRIMSON_DARK.get());
         this.ceilingFan(ModBlocks.CEILING_FAN_WARPED_DARK.get());
         this.woodenBath(ModBlocks.BATH_OAK.get());
@@ -61,7 +59,6 @@ public class CommonItemModelProvider
         this.woodenBath(ModBlocks.BATH_ACACIA.get());
         this.woodenBath(ModBlocks.BATH_DARK_OAK.get());
         this.woodenBath(ModBlocks.BATH_MANGROVE.get());
-        this.woodenBath(ModBlocks.BATH_CHERRY.get());
         this.woodenBath(ModBlocks.BATH_CRIMSON.get());
         this.woodenBath(ModBlocks.BATH_WARPED.get());
         this.colouredBath(ModBlocks.BATH_WHITE.get());

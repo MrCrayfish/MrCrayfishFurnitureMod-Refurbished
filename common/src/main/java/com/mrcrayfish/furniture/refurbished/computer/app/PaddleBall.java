@@ -6,14 +6,13 @@ import com.mrcrayfish.furniture.refurbished.computer.IService;
 import com.mrcrayfish.furniture.refurbished.computer.Program;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessagePaddleBall;
+import com.mrcrayfish.furniture.refurbished.util.joml.Intersectionf;
+import com.mrcrayfish.furniture.refurbished.util.joml.Vector2f;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
-import org.joml.Intersectionf;
-import org.joml.Math;
-import org.joml.Vector2f;
 
 import javax.annotation.Nullable;
 import java.util.ArrayDeque;
@@ -418,7 +417,7 @@ public class PaddleBall extends Program
          */
         public void reflectYVelocity(float hit)
         {
-            hit = Math.clamp(hit, 0.0F, 1.0F);
+            hit = Mth.clamp(hit, 0.0F, 1.0F);
             hit = (hit - 0.5F) * 2F;
             this.velocity.y = this.game.difficulty.ballYSpeed * hit;
         }
