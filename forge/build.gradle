@@ -75,6 +75,13 @@ repositories {
     }
 }
 
+// Fixes an issue where net.sf.jopt-simple:jopt-simple cannot be resolved
+configurations.configureEach {
+    resolutionStrategy {
+        it.force 'net.sf.jopt-simple:jopt-simple:5.0.4'
+    }
+}
+
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
