@@ -23,12 +23,11 @@ import net.minecraft.world.inventory.Slot;
 /**
  * Author: MrCrayfish
  */
-public class StoveScreen extends ElectricityContainerScreen<StoveMenu> implements RecipeUpdateListener
+public class StoveScreen extends AbstractStoveScreen<StoveMenu> implements RecipeUpdateListener
 {
     private static final ResourceLocation TEXTURE = Utils.resource("textures/gui/container/stove.png");
 
     private final OvenRecipeBookComponent recipeBookComponent = new OvenRecipeBookComponent();
-    private OnOffSlider slider;
     private boolean widthTooNarrow;
 
     public StoveScreen(StoveMenu menu, Inventory inventory, Component title)
@@ -37,67 +36,38 @@ public class StoveScreen extends ElectricityContainerScreen<StoveMenu> implement
     }
 
     @Override
-    protected void init()
+    protected void initWidgets()
     {
-        super.init();
-
-        // Disables recipe book support from Fabric
-        if(!Services.PLATFORM.getPlatform().isFabric())
-        {
-            this.widthTooNarrow = this.width < 379;
-            this.recipeBookComponent.init(this.width, this.height, this.minecraft, this.widthTooNarrow, this.menu);
-            this.leftPos = this.recipeBookComponent.updateScreenPosition(this.width, this.imageWidth);
-        }
-
+        this.widthTooNarrow = this.width < 379;
+        this.recipeBookComponent.init(this.width, this.height, this.minecraft, this.widthTooNarrow, this.menu);
+        this.leftPos = this.recipeBookComponent.updateScreenPosition(this.width, this.imageWidth);
         this.slider = this.addRenderableWidget(new OnOffSlider(this.leftPos + this.imageWidth - 22 - 6, this.topPos + 5, Components.GUI_TOGGLE_POWER, btn -> {
             Network.getPlay().sendToServer(new MessageTogglePower());
         }));
-
-        // Disables recipe book support from Fabric
-        if(!Services.PLATFORM.getPlatform().isFabric())
-        {
-            this.addRenderableWidget(new ImageButton(this.leftPos + 7, this.height / 2 - 49, 20, 18, 0, 0, 19, VanillaTextures.RECIPE_BUTTON, (button) -> {
-                this.recipeBookComponent.toggleVisibility();
-                this.leftPos = this.recipeBookComponent.updateScreenPosition(this.width, this.imageWidth);
-                button.setPosition(this.leftPos + 7, this.height / 2 - 49);
-                this.slider.setPosition(this.leftPos + this.imageWidth - 22 - 6, this.topPos + 5);
-            }));
-            this.addWidget(this.recipeBookComponent);
-            this.setInitialFocus(this.recipeBookComponent);
-        }
+        this.addRenderableWidget(new ImageButton(this.leftPos + 7, this.height / 2 - 49, 20, 18, 0, 0, 19, VanillaTextures.RECIPE_BUTTON, (button) -> {
+            this.recipeBookComponent.toggleVisibility();
+            this.leftPos = this.recipeBookComponent.updateScreenPosition(this.width, this.imageWidth);
+            button.setPosition(this.leftPos + 7, this.height / 2 - 49);
+            this.slider.setPosition(this.leftPos + this.imageWidth - 22 - 6, this.topPos + 5);
+        }));
+        this.addWidget(this.recipeBookComponent);
+        this.setInitialFocus(this.recipeBookComponent);
     }
 
     @Override
     protected void containerTick()
     {
         super.containerTick();
-
-        // Disables recipe book support from Fabric
-        if(!Services.PLATFORM.getPlatform().isFabric())
-        {
-            this.recipeBookComponent.tick();
-        }
+        this.recipeBookComponent.tick();
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    protected void afterRender(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
-        this.slider.setEnabled(this.menu.isEnabled());
-        this.renderBackground(graphics);
-        super.render(graphics, mouseX, mouseY, partialTick);
-
-        // Disables recipe book support from Fabric
-        if(!Services.PLATFORM.getPlatform().isFabric())
-        {
-            this.recipeBookComponent.render(graphics, mouseX, mouseY, partialTick);
-            this.recipeBookComponent.renderGhostRecipe(graphics, this.leftPos, this.topPos, true, partialTick);
-            this.renderTooltip(graphics, mouseX, mouseY);
-            this.recipeBookComponent.renderTooltip(graphics, this.leftPos, this.topPos, mouseX, mouseY);
-        }
-        else
-        {
-            this.renderTooltip(graphics, mouseX, mouseY);
-        }
+        this.recipeBookComponent.render(graphics, mouseX, mouseY, partialTick);
+        this.recipeBookComponent.renderGhostRecipe(graphics, this.leftPos, this.topPos, true, partialTick);
+        this.renderTooltip(graphics, mouseX, mouseY);
+        this.recipeBookComponent.renderTooltip(graphics, this.leftPos, this.topPos, mouseX, mouseY);
     }
 
     @Override
@@ -123,22 +93,12 @@ public class StoveScreen extends ElectricityContainerScreen<StoveMenu> implement
     @Override
     protected boolean isHovering(int left, int top, int width, int height, double mouseX, double mouseY)
     {
-        // Disables recipe book support from Fabric
-        if(Services.PLATFORM.getPlatform().isFabric())
-        {
-            return super.isHovering(left, top, width, height, mouseX, mouseY);
-        }
         return (!this.widthTooNarrow || !this.recipeBookComponent.isVisible()) && super.isHovering(left, top, width, height, mouseX, mouseY);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button)
     {
-        // Disables recipe book support from Fabric
-        if(Services.PLATFORM.getPlatform().isFabric())
-        {
-            return super.mouseClicked(mouseX, mouseY, button);
-        }
         if(this.recipeBookComponent.mouseClicked(mouseX, mouseY, button))
         {
             this.setFocused(this.recipeBookComponent);
@@ -150,11 +110,6 @@ public class StoveScreen extends ElectricityContainerScreen<StoveMenu> implement
     @Override
     protected boolean hasClickedOutside(double mouseX, double mouseY, int left, int top, int button)
     {
-        // Disables recipe book support from Fabric
-        if(Services.PLATFORM.getPlatform().isFabric())
-        {
-            return super.hasClickedOutside(mouseX, mouseY, left, top, button);
-        }
         boolean outside = mouseX < left || mouseY < top || mouseX >= left + this.imageWidth || mouseY >= top + this.imageHeight;
         return this.recipeBookComponent.hasClickedOutside(mouseX, mouseY, this.leftPos, this.topPos, this.imageWidth, this.imageHeight, button) && outside;
     }
@@ -163,22 +118,13 @@ public class StoveScreen extends ElectricityContainerScreen<StoveMenu> implement
     protected void slotClicked(Slot slot, int mouseX, int mouseY, ClickType type)
     {
         super.slotClicked(slot, mouseX, mouseY, type);
-
-        // Disables recipe book support from Fabric
-        if(!Services.PLATFORM.getPlatform().isFabric())
-        {
-            this.recipeBookComponent.slotClicked(slot);
-        }
+        this.recipeBookComponent.slotClicked(slot);
     }
 
     @Override
     public void recipesUpdated()
     {
-        // Disables recipe book support from Fabric
-        if(!Services.PLATFORM.getPlatform().isFabric())
-        {
-            this.recipeBookComponent.recipesUpdated();
-        }
+        this.recipeBookComponent.recipesUpdated();
     }
 
     @Override

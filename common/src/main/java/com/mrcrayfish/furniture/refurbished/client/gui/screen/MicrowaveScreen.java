@@ -1,7 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 
 import com.mrcrayfish.furniture.refurbished.Components;
-import com.mrcrayfish.furniture.refurbished.client.gui.recipe.EmptyRecipeBookComponent;
 import com.mrcrayfish.furniture.refurbished.client.gui.recipe.MicrowaveRecipeBookComponent;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.OnOffSlider;
 import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
@@ -24,13 +23,11 @@ import net.minecraft.world.inventory.Slot;
 /**
  * Author: MrCrayfish
  */
-public class MicrowaveScreen extends ElectricityContainerScreen<MicrowaveMenu> implements RecipeUpdateListener
+public class MicrowaveScreen extends AbstractMicrowaveScreen<MicrowaveMenu> implements RecipeUpdateListener
 {
     private static final ResourceLocation TEXTURE = Utils.resource("textures/gui/container/microwave.png");
 
-    private final RecipeBookComponent recipeBookComponent =
-        Services.PLATFORM.getPlatform().isFabric() ? new EmptyRecipeBookComponent() : new MicrowaveRecipeBookComponent();
-    private OnOffSlider slider;
+    private final RecipeBookComponent recipeBookComponent = new MicrowaveRecipeBookComponent();
     private boolean widthTooNarrow;
 
     public MicrowaveScreen(MicrowaveMenu menu, Inventory inventory, Component title)
@@ -39,34 +36,22 @@ public class MicrowaveScreen extends ElectricityContainerScreen<MicrowaveMenu> i
     }
 
     @Override
-    protected void init()
+    protected void initWidgets()
     {
-        super.init();
-
-        // Disables recipe book support from Fabric
-        if(!Services.PLATFORM.getPlatform().isFabric())
-        {
-            this.widthTooNarrow = this.width < 379;
-            this.recipeBookComponent.init(this.width, this.height, this.minecraft, this.widthTooNarrow, this.menu);
-            this.leftPos = this.recipeBookComponent.updateScreenPosition(this.width, this.imageWidth);
-        }
-
+        this.widthTooNarrow = this.width < 379;
+        this.recipeBookComponent.init(this.width, this.height, this.minecraft, this.widthTooNarrow, this.menu);
+        this.leftPos = this.recipeBookComponent.updateScreenPosition(this.width, this.imageWidth);
         this.slider = this.addRenderableWidget(new OnOffSlider(this.leftPos + this.imageWidth - 22 - 6, this.topPos + 5, Components.GUI_TOGGLE_POWER, btn -> {
             Network.getPlay().sendToServer(new MessageTogglePower());
         }));
-
-        // Disables recipe book support from Fabric
-        if(!Services.PLATFORM.getPlatform().isFabric())
-        {
-            this.addRenderableWidget(new ImageButton(this.leftPos + 14, this.height / 2 - 49, 20, 18, 0, 0, 19, VanillaTextures.RECIPE_BUTTON, (button) -> {
-                this.recipeBookComponent.toggleVisibility();
-                this.leftPos = this.recipeBookComponent.updateScreenPosition(this.width, this.imageWidth);
-                button.setPosition(this.leftPos + 14, this.height / 2 - 49);
-                this.slider.setPosition(this.leftPos + this.imageWidth - 22 - 6, this.topPos + 5);
-            }));
-            this.addWidget(this.recipeBookComponent);
-            this.setInitialFocus(this.recipeBookComponent);
-        }
+        this.addRenderableWidget(new ImageButton(this.leftPos + 14, this.height / 2 - 49, 20, 18, 0, 0, 19, VanillaTextures.RECIPE_BUTTON, (button) -> {
+            this.recipeBookComponent.toggleVisibility();
+            this.leftPos = this.recipeBookComponent.updateScreenPosition(this.width, this.imageWidth);
+            button.setPosition(this.leftPos + 14, this.height / 2 - 49);
+            this.slider.setPosition(this.leftPos + this.imageWidth - 22 - 6, this.topPos + 5);
+        }));
+        this.addWidget(this.recipeBookComponent);
+        this.setInitialFocus(this.recipeBookComponent);
     }
 
     @Override

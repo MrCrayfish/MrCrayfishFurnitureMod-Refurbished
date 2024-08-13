@@ -4,6 +4,12 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mrcrayfish.furniture.refurbished.client.FabricRenderType;
+import com.mrcrayfish.furniture.refurbished.client.screen.FabricFreezerScreen;
+import com.mrcrayfish.furniture.refurbished.client.screen.FabricMicrowaveScreen;
+import com.mrcrayfish.furniture.refurbished.client.screen.FabricStoveScreen;
+import com.mrcrayfish.furniture.refurbished.inventory.FabricFreezerMenu;
+import com.mrcrayfish.furniture.refurbished.inventory.FabricMicrowaveMenu;
+import com.mrcrayfish.furniture.refurbished.inventory.FabricStoveMenu;
 import com.mrcrayfish.furniture.refurbished.platform.services.IClientHelper;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
@@ -11,8 +17,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
+import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.client.renderer.RenderType;
@@ -21,8 +29,11 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -87,14 +98,30 @@ public class FabricClientHelper implements IClientHelper
     }
 
     @Override
-    public SimpleParticleType createSimpleParticleType(boolean ignoreLimit)
-    {
-        return FabricParticleTypes.simple(ignoreLimit);
-    }
-
-    @Override
     public void renderTooltip(GuiGraphics graphics, Font font, List<ClientTooltipComponent> components, int mouseX, int mouseY, ClientTooltipPositioner position)
     {
         graphics.renderTooltipInternal(font, components, mouseX, mouseY, position);
     }
+
+    @Override
+    @SuppressWarnings("rawtypes")
+    public AbstractContainerScreen createFreezerScreen(AbstractContainerMenu menu, Inventory playerInventory, Component title)
+    {
+        return new FabricFreezerScreen((FabricFreezerMenu) menu, playerInventory, title);
+    }
+
+    @Override
+    @SuppressWarnings("rawtypes")
+    public AbstractContainerScreen createMicrowaveScreen(AbstractContainerMenu menu, Inventory playerInventory, Component title)
+    {
+        return new FabricMicrowaveScreen((FabricMicrowaveMenu) menu, playerInventory, title);
+    }
+
+    @Override
+    @SuppressWarnings("rawtypes")
+    public AbstractContainerScreen createStoveScreen(AbstractContainerMenu menu, Inventory playerInventory, Component title)
+    {
+        return new FabricStoveScreen((FabricStoveMenu) menu, playerInventory, title);
+    }
+
 }

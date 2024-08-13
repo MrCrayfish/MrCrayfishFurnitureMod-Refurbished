@@ -1,12 +1,11 @@
 package com.mrcrayfish.furniture.refurbished.inventory;
 
-import com.mrcrayfish.furniture.refurbished.blockentity.FreezerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.IPowerSwitch;
+import com.mrcrayfish.furniture.refurbished.blockentity.StoveBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.inventory.slot.ResultSlot;
-import com.mrcrayfish.furniture.refurbished.platform.Services;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -24,26 +23,26 @@ import net.minecraft.world.level.Level;
 /**
  * Author: MrCrayfish
  */
-public class FreezerMenu extends SimpleRecipeContainerMenu<Container> implements IPowerSwitchMenu, IElectricityMenu, IContainerHolder, IProcessingMenu
+public class FabricStoveMenu extends SimpleContainerMenu implements IPowerSwitchMenu, IElectricityMenu, IContainerHolder, IBakingMenu
 {
     private final ContainerData data;
     private final Level level;
 
-    public FreezerMenu(int windowId, Inventory playerInventory)
+    public FabricStoveMenu(int windowId, Inventory playerInventory)
     {
-        this(windowId, playerInventory, new SimpleContainer(2), new SimpleContainerData(4));
+        this(windowId, playerInventory, new SimpleContainer(6), new SimpleContainerData(8));
     }
 
-    public FreezerMenu(int windowId, Inventory playerInventory, Container container, ContainerData data)
+    public FabricStoveMenu(int windowId, Inventory playerInventory, Container container, ContainerData data)
     {
-        super(ModMenuTypes.FREEZER.get(), windowId, container);
-        checkContainerSize(container, 2);
-        checkContainerDataCount(data, 4);
+        super(ModMenuTypes.STOVE.get(), windowId, container);
+        checkContainerSize(container, 6);
+        checkContainerDataCount(data, 8);
         container.startOpen(playerInventory.player);
         this.data = data;
         this.level = playerInventory.player.level();
-        this.addSlot(new Slot(container, 0, 48, 35));
-        this.addSlot(new ResultSlot(container, 1, 108, 35));
+        this.addContainerSlots(85, 18, 3, 1, 0);
+        this.addContainerSlots(85, 54, 3, 1, 3, ResultSlot::new);
         this.addPlayerInventorySlots(8, 84, playerInventory);
         this.addDataSlots(data);
     }
@@ -66,7 +65,7 @@ public class FreezerMenu extends SimpleRecipeContainerMenu<Container> implements
             }
             else if(this.isRecipe(slotStack))
             {
-                if(!this.moveItemStackTo(slotStack, 0, this.container.getContainerSize(), false))
+                if(!this.moveItemStackTo(slotStack, 0, 3, false))
                 {
                     return ItemStack.EMPTY;
                 }
@@ -97,31 +96,41 @@ public class FreezerMenu extends SimpleRecipeContainerMenu<Container> implements
 
     private boolean isRecipe(ItemStack stack)
     {
-        return this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.FREEZER_SOLIDIFYING.get(), new SimpleContainer(stack), this.level).isPresent();
+        return this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.OVEN_BAKING.get(), new SimpleContainer(stack), this.level).isPresent();
     }
 
     @Override
-    public int getProcessTime()
+    public int getBakingProgress(int index)
     {
-        return this.data.get(FreezerBlockEntity.DATA_PROCESS_TIME);
+        return switch(index) {
+            case 0 -> this.data.get(StoveBlockEntity.DATA_PROGRESS_1);
+            case 1 -> this.data.get(StoveBlockEntity.DATA_PROGRESS_2);
+            case 2 -> this.data.get(StoveBlockEntity.DATA_PROGRESS_3);
+            default -> 0;
+        };
     }
 
     @Override
-    public int getMaxProcessTime()
+    public int getTotalBakingProgress(int index)
     {
-        return this.data.get(FreezerBlockEntity.DATA_MAX_PROCESS_TIME);
+        return switch(index) {
+            case 0 -> this.data.get(StoveBlockEntity.DATA_TOTAL_PROGRESS_1);
+            case 1 -> this.data.get(StoveBlockEntity.DATA_TOTAL_PROGRESS_2);
+            case 2 -> this.data.get(StoveBlockEntity.DATA_TOTAL_PROGRESS_3);
+            default -> 0;
+        };
     }
 
     @Override
     public boolean isPowered()
     {
-        return this.data.get(FreezerBlockEntity.DATA_POWERED) != 0;
+        return this.data.get(StoveBlockEntity.DATA_POWERED) != 0;
     }
 
     @Override
     public boolean isEnabled()
     {
-        return this.data.get(FreezerBlockEntity.DATA_ENABLED) != 0;
+        return this.data.get(StoveBlockEntity.DATA_ENABLED) != 0;
     }
 
     @Override
@@ -131,64 +140,6 @@ public class FreezerMenu extends SimpleRecipeContainerMenu<Container> implements
         {
             powerSwitch.togglePower();
         }
-    }
-
-    @Override
-    public void fillCraftSlotsStackedContents(StackedContents contents)
-    {
-        if(this.container instanceof StackedContentsCompatible)
-        {
-            ((StackedContentsCompatible) this.container).fillStackedContents(contents);
-        }
-    }
-
-    @Override
-    public void clearCraftingContent()
-    {
-        this.getSlot(0).set(ItemStack.EMPTY);
-        this.getSlot(1).set(ItemStack.EMPTY);
-    }
-
-    @Override
-    public boolean recipeMatches(Recipe<? super Container> recipe)
-    {
-        return recipe.matches(this.container, this.level);
-    }
-
-    @Override
-    public int getResultSlotIndex()
-    {
-        return 1;
-    }
-
-    @Override
-    public int getGridWidth()
-    {
-        return 1;
-    }
-
-    @Override
-    public int getGridHeight()
-    {
-        return 1;
-    }
-
-    @Override
-    public int getSize()
-    {
-        return 2;
-    }
-
-    @Override
-    public RecipeBookType getRecipeBookType()
-    {
-        return Services.PLATFORM.getPlatform().isFabric() ? RecipeBookType.SMOKER : ModRecipeBookTypes.FREEZER.get();
-    }
-
-    @Override
-    public boolean shouldMoveToInventory(int slot)
-    {
-        return slot != this.getResultSlotIndex();
     }
 
     @Override

@@ -145,7 +145,7 @@ public class ModBlockEntities
             ModBlocks.FRIDGE_DARK.get()
     });
 
-    public static final RegistryEntry<BlockEntityType<FreezerBlockEntity>> FREEZER = RegistryEntry.blockEntity(Utils.resource("freezer"), FreezerBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<FreezerBlockEntity>> FREEZER = RegistryEntry.blockEntity(Utils.resource("freezer"), Services.BLOCK_ENTITY::createFreezerBlockEntity, () -> new Block[]{
             ModBlocks.FREEZER_LIGHT.get(),
             ModBlocks.FREEZER_DARK.get()
     });
