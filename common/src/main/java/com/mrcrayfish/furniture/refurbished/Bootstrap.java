@@ -4,6 +4,7 @@ import com.mrcrayfish.framework.api.FrameworkAPI;
 import com.mrcrayfish.framework.api.event.PlayerEvents;
 import com.mrcrayfish.framework.api.event.ServerEvents;
 import com.mrcrayfish.framework.api.event.TickEvents;
+import com.mrcrayfish.framework.config.FrameworkConfigManager;
 import com.mrcrayfish.furniture.refurbished.block.FryingPanBlock;
 import com.mrcrayfish.furniture.refurbished.blockentity.CuttingBoardBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.FryingPanBlockEntity;
@@ -30,6 +31,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BlockItem;
@@ -44,8 +46,6 @@ import net.minecraft.world.phys.Vec3;
  */
 public class Bootstrap
 {
-    private static boolean started;
-
     public static void init()
     {
         Network.init();
@@ -70,17 +70,6 @@ public class Bootstrap
         TickEvents.START_SERVER.register(server -> {
             DeliveryService.get(server).ifPresent(DeliveryService::serverTick);
             Computer.get().getServices().forEach(IService::tick);
-        });
-        ServerEvents.STARTED.register(server -> {
-            Bootstrap.started = true;
-        });
-        ServerEvents.STOPPED.register(server -> {
-            Bootstrap.started = false;
-        });
-        TickEvents.START_LEVEL.register(level -> {
-            if(Bootstrap.started) {
-                ElectricityTicker.get(level).earlyTick();
-            }
         });
         TickEvents.END_PLAYER.register(player -> {
             MinecraftServer server = player.getServer();

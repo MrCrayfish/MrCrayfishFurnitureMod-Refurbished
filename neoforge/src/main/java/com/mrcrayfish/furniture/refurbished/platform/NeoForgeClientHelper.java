@@ -4,6 +4,12 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mrcrayfish.furniture.refurbished.client.NeoForgeRenderType;
+import com.mrcrayfish.furniture.refurbished.client.gui.screen.FreezerScreen;
+import com.mrcrayfish.furniture.refurbished.client.gui.screen.MicrowaveScreen;
+import com.mrcrayfish.furniture.refurbished.client.gui.screen.StoveScreen;
+import com.mrcrayfish.furniture.refurbished.inventory.FreezerMenu;
+import com.mrcrayfish.furniture.refurbished.inventory.MicrowaveMenu;
+import com.mrcrayfish.furniture.refurbished.inventory.StoveMenu;
 import com.mrcrayfish.furniture.refurbished.platform.services.IClientHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -19,8 +25,11 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -90,15 +99,30 @@ public class NeoForgeClientHelper implements IClientHelper
     }
 
     @Override
-    public SimpleParticleType createSimpleParticleType(boolean ignoreLimit)
-    {
-        return new SimpleParticleType(ignoreLimit);
-    }
-
-    @Override
     public void renderTooltip(GuiGraphics graphics, Font font, List<ClientTooltipComponent> components, int mouseX, int mouseY, ClientTooltipPositioner position)
     {
         graphics.renderTooltipInternal(font, components, mouseX, mouseY, position);
+    }
+
+    @Override
+    @SuppressWarnings("rawtypes")
+    public AbstractContainerScreen createFreezerScreen(AbstractContainerMenu menu, Inventory playerInventory, Component title)
+    {
+        return new FreezerScreen((FreezerMenu) menu, playerInventory, title);
+    }
+
+    @Override
+    @SuppressWarnings("rawtypes")
+    public AbstractContainerScreen createMicrowaveScreen(AbstractContainerMenu menu, Inventory playerInventory, Component title)
+    {
+        return new MicrowaveScreen((MicrowaveMenu) menu, playerInventory, title);
+    }
+
+    @Override
+    @SuppressWarnings("rawtypes")
+    public AbstractContainerScreen createStoveScreen(AbstractContainerMenu menu, Inventory playerInventory, Component title)
+    {
+        return new StoveScreen((StoveMenu) menu, playerInventory, title);
     }
 
     private Function<ResourceLocation, TextureAtlasSprite> getBlockTextures()

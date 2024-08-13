@@ -3,11 +3,11 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.block.FreezerBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
-import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.inventory.BuildableContainerData;
-import com.mrcrayfish.furniture.refurbished.inventory.FreezerMenu;
+import com.mrcrayfish.furniture.refurbished.inventory.IContainerHolder;
+import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
@@ -37,7 +37,7 @@ import javax.annotation.Nullable;
 public class FreezerBlockEntity extends ElectricityModuleProcessingLootBlockEntity implements IPowerSwitch, IHomeControlDevice, StackedContentsCompatible
 {
     public static final int[] INPUT_SLOTS = new int[]{0};
-    public static final int[] OUTPUT_SLOTS = new int[]{0, 1};
+    public static final int[] OUTPUT_SLOTS = new int[]{1};
     public static final int DATA_POWERED = 0;
     public static final int DATA_ENABLED = 1;
     public static final int DATA_PROCESS_TIME = 2;
@@ -72,13 +72,13 @@ public class FreezerBlockEntity extends ElectricityModuleProcessingLootBlockEnti
     @Override
     protected AbstractContainerMenu createMenu(int windowId, Inventory playerInventory)
     {
-        return new FreezerMenu(ModMenuTypes.FREEZER.get(), windowId, playerInventory, this, this.data);
+        return Services.MENU.createFreezerMenu(windowId, playerInventory, this, this.data);
     }
 
     @Override
     public boolean isMatchingContainerMenu(AbstractContainerMenu menu)
     {
-        return menu instanceof FreezerMenu freezer && freezer.getContainer() == this;
+        return menu instanceof IContainerHolder holder && holder.container() == this;
     }
 
     @Override

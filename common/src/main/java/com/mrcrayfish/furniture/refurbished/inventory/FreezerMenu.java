@@ -6,13 +6,13 @@ import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.inventory.slot.ResultSlot;
+import com.mrcrayfish.furniture.refurbished.platform.Services;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
@@ -25,19 +25,19 @@ import net.minecraft.world.level.Level;
 /**
  * Author: MrCrayfish
  */
-public class FreezerMenu extends SimpleRecipeContainerMenu<Container> implements IPowerSwitchMenu, IElectricityMenu
+public class FreezerMenu extends SimpleRecipeContainerMenu<Container> implements IPowerSwitchMenu, IElectricityMenu, IContainerHolder, IProcessingMenu
 {
     private final ContainerData data;
     private final Level level;
 
     public FreezerMenu(int windowId, Inventory playerInventory)
     {
-        this(ModMenuTypes.FREEZER.get(), windowId, playerInventory, new SimpleContainer(2), new SimpleContainerData(4));
+        this(windowId, playerInventory, new SimpleContainer(2), new SimpleContainerData(4));
     }
 
-    public FreezerMenu(MenuType<?> type, int windowId, Inventory playerInventory, Container container, ContainerData data)
+    public FreezerMenu(int windowId, Inventory playerInventory, Container container, ContainerData data)
     {
-        super(type, windowId, container);
+        super(ModMenuTypes.FREEZER.get(), windowId, container);
         checkContainerSize(container, 2);
         checkContainerDataCount(data, 4);
         container.startOpen(playerInventory.player);
@@ -101,11 +101,13 @@ public class FreezerMenu extends SimpleRecipeContainerMenu<Container> implements
         return this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.FREEZER_SOLIDIFYING.get(), new SimpleContainer(stack), this.level).isPresent();
     }
 
+    @Override
     public int getProcessTime()
     {
         return this.data.get(FreezerBlockEntity.DATA_PROCESS_TIME);
     }
 
+    @Override
     public int getMaxProcessTime()
     {
         return this.data.get(FreezerBlockEntity.DATA_MAX_PROCESS_TIME);
@@ -181,12 +183,18 @@ public class FreezerMenu extends SimpleRecipeContainerMenu<Container> implements
     @Override
     public RecipeBookType getRecipeBookType()
     {
-        return ModRecipeBookTypes.FREEZER.get();
+        return Services.PLATFORM.getPlatform().isFabric() ? RecipeBookType.SMOKER : ModRecipeBookTypes.FREEZER.get();
     }
 
     @Override
     public boolean shouldMoveToInventory(int slot)
     {
         return slot != this.getResultSlotIndex();
+    }
+
+    @Override
+    public Container container()
+    {
+        return this.container;
     }
 }

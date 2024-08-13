@@ -19,6 +19,10 @@ public class ModCreativeTabs
         builder.icon(() -> new ItemStack(ModBlocks.TABLE_OAK.get()));
         builder.title(Component.translatable("itemGroup." + Constants.MOD_ID).withStyle(ChatFormatting.GOLD));
         builder.displayItems((params, output) -> {
+            output.accept(ModBlocks.WORKBENCH.get());
+            output.accept(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get());
+            output.accept(ModBlocks.ELECTRICITY_GENERATOR_DARK.get());
+            output.accept(ModItems.WRENCH.get());
             output.accept(ModBlocks.CHAIR_OAK.get());
             output.accept(ModBlocks.CHAIR_SPRUCE.get());
             output.accept(ModBlocks.CHAIR_BIRCH.get());
@@ -458,9 +462,6 @@ public class ModCreativeTabs
             output.accept(ModBlocks.BATH_GREEN.get());
             output.accept(ModBlocks.BATH_RED.get());
             output.accept(ModBlocks.BATH_BLACK.get());
-            output.accept(ModItems.WRENCH.get());
-            output.accept(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get());
-            output.accept(ModBlocks.ELECTRICITY_GENERATOR_DARK.get());
             output.accept(ModBlocks.CEILING_LIGHT_LIGHT.get());
             output.accept(ModBlocks.CEILING_LIGHT_DARK.get());
             output.accept(ModBlocks.LIGHTSWITCH_LIGHT.get());
@@ -469,7 +470,6 @@ public class ModCreativeTabs
             output.accept(ModBlocks.TELEVISION.get());
             output.accept(ModItems.TELEVISION_REMOTE.get());
             output.accept(ModBlocks.COMPUTER.get());
-            output.accept(ModBlocks.WORKBENCH.get());
             output.accept(ModItems.SEA_SALT.get());
             output.accept(ModItems.WHEAT_FLOUR.get());
             output.accept(ModItems.DOUGH.get());

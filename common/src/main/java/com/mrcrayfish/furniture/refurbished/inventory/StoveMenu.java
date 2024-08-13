@@ -24,7 +24,7 @@ import net.minecraft.world.level.Level;
 /**
  * Author: MrCrayfish
  */
-public class StoveMenu extends SimpleRecipeContainerMenu<Container> implements IPowerSwitchMenu, IElectricityMenu
+public class StoveMenu extends SimpleRecipeContainerMenu<Container> implements IPowerSwitchMenu, IElectricityMenu, IContainerHolder, IBakingMenu
 {
     private final ContainerData data;
     private final Level level;
@@ -100,6 +100,7 @@ public class StoveMenu extends SimpleRecipeContainerMenu<Container> implements I
         return this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.OVEN_BAKING.get(), new SimpleContainer(stack), this.level).isPresent();
     }
 
+    @Override
     public int getBakingProgress(int index)
     {
         return switch(index) {
@@ -110,6 +111,7 @@ public class StoveMenu extends SimpleRecipeContainerMenu<Container> implements I
         };
     }
 
+    @Override
     public int getTotalBakingProgress(int index)
     {
         return switch(index) {
@@ -197,5 +199,11 @@ public class StoveMenu extends SimpleRecipeContainerMenu<Container> implements I
     public boolean shouldMoveToInventory(int slot)
     {
         return slot < this.getGridWidth() * this.getGridHeight();
+    }
+
+    @Override
+    public Container container()
+    {
+        return this.container;
     }
 }
