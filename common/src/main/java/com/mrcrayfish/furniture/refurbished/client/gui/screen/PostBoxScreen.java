@@ -99,13 +99,8 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
         }
 
         this.addRenderableWidget(this.messageEditBox = new MultiLineEditBox(this.font, this.leftPos + 118, this.topPos + 13, 116, 54, Utils.translation("gui", "enter_message"), Utils.translation("gui", "package_message")) {
-            // TODO 1.19.4 what append to dis
-            /*@Override
-            public void renderBorder(PoseStack graphics, int x, int y, int width, int height) {}*/
-
             @Override
-            protected boolean scrollbarVisible()
-            {
+            protected boolean scrollbarVisible() {
                 return false;
             }
         });

@@ -78,7 +78,7 @@ public class CuttingBoardHelperOverlay implements IHudOverlay
         int areaWidth = COLUMNS * 18 + 8;
         int areaHeight = this.getAreaHeight(placeable, drawPlaceableElement, drawSliceableElement);
         int areaStart = 5;
-        int guiHeight = mc.getWindow().getGuiScaledHeight(); // TODO 1.19.4 is this right?
+        int guiHeight = mc.getWindow().getGuiScaledHeight();
         int areaTop = (guiHeight - areaHeight) / 2;
 
         if(drawPlaceableElement)

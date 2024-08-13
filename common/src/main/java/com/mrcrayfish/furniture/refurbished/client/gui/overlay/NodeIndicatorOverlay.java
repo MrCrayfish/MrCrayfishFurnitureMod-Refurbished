@@ -118,7 +118,6 @@ public class NodeIndicatorOverlay implements IHudOverlay
         int messageWidth = mc.font.width(label);
         int contentWidth = padding + iconSize + padding + messageWidth + padding;
         int contentHeight = padding + mc.font.lineHeight + padding;
-        // TODO 1.19.4 is this right?
         int guiWidth = mc.getWindow().getGuiScaledWidth();
         int guiHeight = mc.getWindow().getGuiScaledHeight();
         int contentStart = (guiWidth - contentWidth) / 2;
