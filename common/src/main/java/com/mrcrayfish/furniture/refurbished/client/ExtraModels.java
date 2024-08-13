@@ -25,7 +25,6 @@ public enum ExtraModels
     ACACIA_LIGHT_CEILING_FAN_BLADE(Utils.resource("extra/acacia_light_ceiling_fan_blade")),
     DARK_OAK_LIGHT_CEILING_FAN_BLADE(Utils.resource("extra/dark_oak_light_ceiling_fan_blade")),
     MANGROVE_LIGHT_CEILING_FAN_BLADE(Utils.resource("extra/mangrove_light_ceiling_fan_blade")),
-    CHERRY_LIGHT_CEILING_FAN_BLADE(Utils.resource("extra/cherry_light_ceiling_fan_blade")),
     CRIMSON_LIGHT_CEILING_FAN_BLADE(Utils.resource("extra/crimson_light_ceiling_fan_blade")),
     WARPED_LIGHT_CEILING_FAN_BLADE(Utils.resource("extra/warped_light_ceiling_fan_blade")),
     OAK_DARK_CEILING_FAN_BLADE(Utils.resource("extra/oak_dark_ceiling_fan_blade")),
@@ -35,7 +34,6 @@ public enum ExtraModels
     ACACIA_DARK_CEILING_FAN_BLADE(Utils.resource("extra/acacia_dark_ceiling_fan_blade")),
     DARK_OAK_DARK_CEILING_FAN_BLADE(Utils.resource("extra/dark_oak_dark_ceiling_fan_blade")),
     MANGROVE_DARK_CEILING_FAN_BLADE(Utils.resource("extra/mangrove_dark_ceiling_fan_blade")),
-    CHERRY_DARK_CEILING_FAN_BLADE(Utils.resource("extra/cherry_dark_ceiling_fan_blade")),
     CRIMSON_DARK_CEILING_FAN_BLADE(Utils.resource("extra/crimson_dark_ceiling_fan_blade")),
     WARPED_DARK_CEILING_FAN_BLADE(Utils.resource("extra/warped_dark_ceiling_fan_blade"));
 

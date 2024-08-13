@@ -22,7 +22,6 @@ public class ModCreativeTabs
         builder.accept(ModBlocks.CHAIR_ACACIA.get());
         builder.accept(ModBlocks.CHAIR_DARK_OAK.get());
         builder.accept(ModBlocks.CHAIR_MANGROVE.get());
-        builder.accept(ModBlocks.CHAIR_CHERRY.get());
         builder.accept(ModBlocks.CHAIR_CRIMSON.get());
         builder.accept(ModBlocks.CHAIR_WARPED.get());
         builder.accept(ModBlocks.TABLE_OAK.get());
@@ -32,7 +31,6 @@ public class ModCreativeTabs
         builder.accept(ModBlocks.TABLE_ACACIA.get());
         builder.accept(ModBlocks.TABLE_DARK_OAK.get());
         builder.accept(ModBlocks.TABLE_MANGROVE.get());
-        builder.accept(ModBlocks.TABLE_CHERRY.get());
         builder.accept(ModBlocks.TABLE_CRIMSON.get());
         builder.accept(ModBlocks.TABLE_WARPED.get());
         builder.accept(ModBlocks.DESK_OAK.get());
@@ -42,7 +40,6 @@ public class ModCreativeTabs
         builder.accept(ModBlocks.DESK_ACACIA.get());
         builder.accept(ModBlocks.DESK_DARK_OAK.get());
         builder.accept(ModBlocks.DESK_MANGROVE.get());
-        builder.accept(ModBlocks.DESK_CHERRY.get());
         builder.accept(ModBlocks.DESK_CRIMSON.get());
         builder.accept(ModBlocks.DESK_WARPED.get());
         builder.accept(ModBlocks.DRAWER_OAK.get());
@@ -52,7 +49,6 @@ public class ModCreativeTabs
         builder.accept(ModBlocks.DRAWER_ACACIA.get());
         builder.accept(ModBlocks.DRAWER_DARK_OAK.get());
         builder.accept(ModBlocks.DRAWER_MANGROVE.get());
-        builder.accept(ModBlocks.DRAWER_CHERRY.get());
         builder.accept(ModBlocks.DRAWER_CRIMSON.get());
         builder.accept(ModBlocks.DRAWER_WARPED.get());
         builder.accept(ModBlocks.SOFA_WHITE.get());
@@ -110,7 +106,6 @@ public class ModCreativeTabs
         builder.accept(ModBlocks.CEILING_FAN_ACACIA_LIGHT.get());
         builder.accept(ModBlocks.CEILING_FAN_DARK_OAK_LIGHT.get());
         builder.accept(ModBlocks.CEILING_FAN_MANGROVE_LIGHT.get());
-        builder.accept(ModBlocks.CEILING_FAN_CHERRY_LIGHT.get());
         builder.accept(ModBlocks.CEILING_FAN_CRIMSON_LIGHT.get());
         builder.accept(ModBlocks.CEILING_FAN_WARPED_LIGHT.get());
         builder.accept(ModBlocks.CEILING_FAN_OAK_DARK.get());
@@ -120,7 +115,6 @@ public class ModCreativeTabs
         builder.accept(ModBlocks.CEILING_FAN_ACACIA_DARK.get());
         builder.accept(ModBlocks.CEILING_FAN_DARK_OAK_DARK.get());
         builder.accept(ModBlocks.CEILING_FAN_MANGROVE_DARK.get());
-        builder.accept(ModBlocks.CEILING_FAN_CHERRY_DARK.get());
         builder.accept(ModBlocks.CEILING_FAN_CRIMSON_DARK.get());
         builder.accept(ModBlocks.CEILING_FAN_WARPED_DARK.get());
         builder.accept(ModBlocks.STORAGE_CABINET_OAK.get());
@@ -130,7 +124,6 @@ public class ModCreativeTabs
         builder.accept(ModBlocks.STORAGE_CABINET_ACACIA.get());
         builder.accept(ModBlocks.STORAGE_CABINET_DARK_OAK.get());
         builder.accept(ModBlocks.STORAGE_CABINET_MANGROVE.get());
-        builder.accept(ModBlocks.STORAGE_CABINET_CHERRY.get());
         builder.accept(ModBlocks.STORAGE_CABINET_CRIMSON.get());
         builder.accept(ModBlocks.STORAGE_CABINET_WARPED.get());
         builder.accept(ModBlocks.KITCHEN_CABINETRY_OAK.get());
@@ -140,7 +133,6 @@ public class ModCreativeTabs
         builder.accept(ModBlocks.KITCHEN_CABINETRY_ACACIA.get());
         builder.accept(ModBlocks.KITCHEN_CABINETRY_DARK_OAK.get());
         builder.accept(ModBlocks.KITCHEN_CABINETRY_MANGROVE.get());
-        builder.accept(ModBlocks.KITCHEN_CABINETRY_CHERRY.get());
         builder.accept(ModBlocks.KITCHEN_CABINETRY_CRIMSON.get());
         builder.accept(ModBlocks.KITCHEN_CABINETRY_WARPED.get());
         builder.accept(ModBlocks.KITCHEN_DRAWER_OAK.get());
@@ -150,7 +142,6 @@ public class ModCreativeTabs
         builder.accept(ModBlocks.KITCHEN_DRAWER_ACACIA.get());
         builder.accept(ModBlocks.KITCHEN_DRAWER_DARK_OAK.get());
         builder.accept(ModBlocks.KITCHEN_DRAWER_MANGROVE.get());
-        builder.accept(ModBlocks.KITCHEN_DRAWER_CHERRY.get());
         builder.accept(ModBlocks.KITCHEN_DRAWER_CRIMSON.get());
         builder.accept(ModBlocks.KITCHEN_DRAWER_WARPED.get());
         builder.accept(ModBlocks.KITCHEN_SINK_OAK.get());
@@ -160,7 +151,6 @@ public class ModCreativeTabs
         builder.accept(ModBlocks.KITCHEN_SINK_ACACIA.get());
         builder.accept(ModBlocks.KITCHEN_SINK_DARK_OAK.get());
         builder.accept(ModBlocks.KITCHEN_SINK_MANGROVE.get());
-        builder.accept(ModBlocks.KITCHEN_SINK_CHERRY.get());
         builder.accept(ModBlocks.KITCHEN_SINK_CRIMSON.get());
         builder.accept(ModBlocks.KITCHEN_SINK_WARPED.get());
         builder.accept(ModBlocks.KITCHEN_STORAGE_CABINET_OAK.get());
@@ -170,7 +160,6 @@ public class ModCreativeTabs
         builder.accept(ModBlocks.KITCHEN_STORAGE_CABINET_ACACIA.get());
         builder.accept(ModBlocks.KITCHEN_STORAGE_CABINET_DARK_OAK.get());
         builder.accept(ModBlocks.KITCHEN_STORAGE_CABINET_MANGROVE.get());
-        builder.accept(ModBlocks.KITCHEN_STORAGE_CABINET_CHERRY.get());
         builder.accept(ModBlocks.KITCHEN_STORAGE_CABINET_CRIMSON.get());
         builder.accept(ModBlocks.KITCHEN_STORAGE_CABINET_WARPED.get());
         builder.accept(ModBlocks.KITCHEN_CABINETRY_WHITE.get());
@@ -256,7 +245,6 @@ public class ModCreativeTabs
         builder.accept(ModBlocks.CUTTING_BOARD_ACACIA.get());
         builder.accept(ModBlocks.CUTTING_BOARD_DARK_OAK.get());
         builder.accept(ModBlocks.CUTTING_BOARD_MANGROVE.get());
-        builder.accept(ModBlocks.CUTTING_BOARD_CHERRY.get());
         builder.accept(ModBlocks.CUTTING_BOARD_CRIMSON.get());
         builder.accept(ModBlocks.CUTTING_BOARD_WARPED.get());
         builder.accept(ModBlocks.PLATE.get());
@@ -267,7 +255,6 @@ public class ModCreativeTabs
         builder.accept(ModBlocks.STORAGE_JAR_ACACIA.get());
         builder.accept(ModBlocks.STORAGE_JAR_DARK_OAK.get());
         builder.accept(ModBlocks.STORAGE_JAR_MANGROVE.get());
-        builder.accept(ModBlocks.STORAGE_JAR_CHERRY.get());
         builder.accept(ModBlocks.STORAGE_JAR_CRIMSON.get());
         builder.accept(ModBlocks.STORAGE_JAR_WARPED.get());
         builder.accept(ModItems.SPATULA.get());
@@ -279,7 +266,6 @@ public class ModCreativeTabs
         builder.accept(ModBlocks.CRATE_ACACIA.get());
         builder.accept(ModBlocks.CRATE_DARK_OAK.get());
         builder.accept(ModBlocks.CRATE_MANGROVE.get());
-        builder.accept(ModBlocks.CRATE_CHERRY.get());
         builder.accept(ModBlocks.CRATE_CRIMSON.get());
         builder.accept(ModBlocks.CRATE_WARPED.get());
         builder.accept(ModBlocks.GRILL_WHITE.get());
@@ -321,7 +307,6 @@ public class ModCreativeTabs
         builder.accept(ModBlocks.MAIL_BOX_ACACIA.get());
         builder.accept(ModBlocks.MAIL_BOX_DARK_OAK.get());
         builder.accept(ModBlocks.MAIL_BOX_MANGROVE.get());
-        builder.accept(ModBlocks.MAIL_BOX_CHERRY.get());
         builder.accept(ModBlocks.MAIL_BOX_CRIMSON.get());
         builder.accept(ModBlocks.MAIL_BOX_WARPED.get());
         builder.accept(ModBlocks.POST_BOX.get());
@@ -348,7 +333,6 @@ public class ModCreativeTabs
         builder.accept(ModBlocks.HEDGE_ACACIA.get());
         builder.accept(ModBlocks.HEDGE_DARK_OAK.get());
         builder.accept(ModBlocks.HEDGE_MANGROVE.get());
-        builder.accept(ModBlocks.HEDGE_CHERRY.get());
         builder.accept(ModBlocks.HEDGE_AZALEA.get());
         builder.accept(ModBlocks.STEPPING_STONES_STONE.get());
         builder.accept(ModBlocks.STEPPING_STONES_GRANITE.get());
@@ -362,7 +346,6 @@ public class ModCreativeTabs
         builder.accept(ModBlocks.LATTICE_FENCE_ACACIA.get());
         builder.accept(ModBlocks.LATTICE_FENCE_DARK_OAK.get());
         builder.accept(ModBlocks.LATTICE_FENCE_MANGROVE.get());
-        builder.accept(ModBlocks.LATTICE_FENCE_CHERRY.get());
         builder.accept(ModBlocks.LATTICE_FENCE_CRIMSON.get());
         builder.accept(ModBlocks.LATTICE_FENCE_WARPED.get());
         builder.accept(ModBlocks.LATTICE_FENCE_GATE_OAK.get());
@@ -372,7 +355,6 @@ public class ModCreativeTabs
         builder.accept(ModBlocks.LATTICE_FENCE_GATE_ACACIA.get());
         builder.accept(ModBlocks.LATTICE_FENCE_GATE_DARK_OAK.get());
         builder.accept(ModBlocks.LATTICE_FENCE_GATE_MANGROVE.get());
-        builder.accept(ModBlocks.LATTICE_FENCE_GATE_CHERRY.get());
         builder.accept(ModBlocks.LATTICE_FENCE_GATE_CRIMSON.get());
         builder.accept(ModBlocks.LATTICE_FENCE_GATE_WARPED.get());
         builder.accept(ModBlocks.DOOR_MAT.get());
@@ -383,7 +365,6 @@ public class ModCreativeTabs
         builder.accept(ModBlocks.TOILET_ACACIA.get());
         builder.accept(ModBlocks.TOILET_DARK_OAK.get());
         builder.accept(ModBlocks.TOILET_MANGROVE.get());
-        builder.accept(ModBlocks.TOILET_CHERRY.get());
         builder.accept(ModBlocks.TOILET_CRIMSON.get());
         builder.accept(ModBlocks.TOILET_WARPED.get());
         builder.accept(ModBlocks.TOILET_WHITE.get());
@@ -409,7 +390,6 @@ public class ModCreativeTabs
         builder.accept(ModBlocks.BASIN_ACACIA.get());
         builder.accept(ModBlocks.BASIN_DARK_OAK.get());
         builder.accept(ModBlocks.BASIN_MANGROVE.get());
-        builder.accept(ModBlocks.BASIN_CHERRY.get());
         builder.accept(ModBlocks.BASIN_CRIMSON.get());
         builder.accept(ModBlocks.BASIN_WARPED.get());
         builder.accept(ModBlocks.BASIN_WHITE.get());
@@ -435,7 +415,6 @@ public class ModCreativeTabs
         builder.accept(ModBlocks.BATH_ACACIA.get());
         builder.accept(ModBlocks.BATH_DARK_OAK.get());
         builder.accept(ModBlocks.BATH_MANGROVE.get());
-        builder.accept(ModBlocks.BATH_CHERRY.get());
         builder.accept(ModBlocks.BATH_CRIMSON.get());
         builder.accept(ModBlocks.BATH_WARPED.get());
         builder.accept(ModBlocks.BATH_WHITE.get());

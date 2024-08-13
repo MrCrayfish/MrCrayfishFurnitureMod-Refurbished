@@ -144,7 +144,6 @@ public class CommonRecipeProvider
         this.table(Blocks.ACACIA_PLANKS, ModBlocks.TABLE_ACACIA.get());
         this.table(Blocks.DARK_OAK_PLANKS, ModBlocks.TABLE_DARK_OAK.get());
         this.table(Blocks.MANGROVE_PLANKS, ModBlocks.TABLE_MANGROVE.get());
-        this.table(Blocks.CHERRY_PLANKS, ModBlocks.TABLE_CHERRY.get());
         this.table(Blocks.CRIMSON_PLANKS, ModBlocks.TABLE_CRIMSON.get());
         this.table(Blocks.WARPED_PLANKS, ModBlocks.TABLE_WARPED.get());
         this.chair(Blocks.OAK_PLANKS, ModBlocks.CHAIR_OAK.get());
@@ -154,7 +153,6 @@ public class CommonRecipeProvider
         this.chair(Blocks.ACACIA_PLANKS, ModBlocks.CHAIR_ACACIA.get());
         this.chair(Blocks.DARK_OAK_PLANKS, ModBlocks.CHAIR_DARK_OAK.get());
         this.chair(Blocks.MANGROVE_PLANKS, ModBlocks.CHAIR_MANGROVE.get());
-        this.chair(Blocks.CHERRY_PLANKS, ModBlocks.CHAIR_CHERRY.get());
         this.chair(Blocks.CRIMSON_PLANKS, ModBlocks.CHAIR_CRIMSON.get());
         this.chair(Blocks.WARPED_PLANKS, ModBlocks.CHAIR_WARPED.get());
         this.desk(Blocks.OAK_PLANKS, ModBlocks.DESK_OAK.get());
@@ -164,7 +162,6 @@ public class CommonRecipeProvider
         this.desk(Blocks.ACACIA_PLANKS, ModBlocks.DESK_ACACIA.get());
         this.desk(Blocks.DARK_OAK_PLANKS, ModBlocks.DESK_DARK_OAK.get());
         this.desk(Blocks.MANGROVE_PLANKS, ModBlocks.DESK_MANGROVE.get());
-        this.desk(Blocks.CHERRY_PLANKS, ModBlocks.DESK_CHERRY.get());
         this.desk(Blocks.CRIMSON_PLANKS, ModBlocks.DESK_CRIMSON.get());
         this.desk(Blocks.WARPED_PLANKS, ModBlocks.DESK_WARPED.get());
         this.drawer(Blocks.OAK_PLANKS, ModBlocks.DRAWER_OAK.get());
@@ -174,7 +171,6 @@ public class CommonRecipeProvider
         this.drawer(Blocks.ACACIA_PLANKS, ModBlocks.DRAWER_ACACIA.get());
         this.drawer(Blocks.DARK_OAK_PLANKS, ModBlocks.DRAWER_DARK_OAK.get());
         this.drawer(Blocks.MANGROVE_PLANKS, ModBlocks.DRAWER_MANGROVE.get());
-        this.drawer(Blocks.CHERRY_PLANKS, ModBlocks.DRAWER_CHERRY.get());
         this.drawer(Blocks.CRIMSON_PLANKS, ModBlocks.DRAWER_CRIMSON.get());
         this.drawer(Blocks.WARPED_PLANKS, ModBlocks.DRAWER_WARPED.get());
         this.woodenKitchenCabinetry(Blocks.OAK_PLANKS, ModBlocks.KITCHEN_CABINETRY_OAK.get());
@@ -184,7 +180,6 @@ public class CommonRecipeProvider
         this.woodenKitchenCabinetry(Blocks.ACACIA_PLANKS, ModBlocks.KITCHEN_CABINETRY_ACACIA.get());
         this.woodenKitchenCabinetry(Blocks.DARK_OAK_PLANKS, ModBlocks.KITCHEN_CABINETRY_DARK_OAK.get());
         this.woodenKitchenCabinetry(Blocks.MANGROVE_PLANKS, ModBlocks.KITCHEN_CABINETRY_MANGROVE.get());
-        this.woodenKitchenCabinetry(Blocks.CHERRY_PLANKS, ModBlocks.KITCHEN_CABINETRY_CHERRY.get());
         this.woodenKitchenCabinetry(Blocks.CRIMSON_PLANKS, ModBlocks.KITCHEN_CABINETRY_CRIMSON.get());
         this.woodenKitchenCabinetry(Blocks.WARPED_PLANKS, ModBlocks.KITCHEN_CABINETRY_WARPED.get());
         this.woodenKitchenDrawer(Blocks.OAK_PLANKS, ModBlocks.KITCHEN_DRAWER_OAK.get());
@@ -194,7 +189,6 @@ public class CommonRecipeProvider
         this.woodenKitchenDrawer(Blocks.ACACIA_PLANKS, ModBlocks.KITCHEN_DRAWER_ACACIA.get());
         this.woodenKitchenDrawer(Blocks.DARK_OAK_PLANKS, ModBlocks.KITCHEN_DRAWER_DARK_OAK.get());
         this.woodenKitchenDrawer(Blocks.MANGROVE_PLANKS, ModBlocks.KITCHEN_DRAWER_MANGROVE.get());
-        this.woodenKitchenDrawer(Blocks.CHERRY_PLANKS, ModBlocks.KITCHEN_DRAWER_CHERRY.get());
         this.woodenKitchenDrawer(Blocks.CRIMSON_PLANKS, ModBlocks.KITCHEN_DRAWER_CRIMSON.get());
         this.woodenKitchenDrawer(Blocks.WARPED_PLANKS, ModBlocks.KITCHEN_DRAWER_WARPED.get());
         this.woodenKitchenSink(Blocks.OAK_PLANKS, ModBlocks.KITCHEN_SINK_OAK.get());
@@ -204,7 +198,6 @@ public class CommonRecipeProvider
         this.woodenKitchenSink(Blocks.ACACIA_PLANKS, ModBlocks.KITCHEN_SINK_ACACIA.get());
         this.woodenKitchenSink(Blocks.DARK_OAK_PLANKS, ModBlocks.KITCHEN_SINK_DARK_OAK.get());
         this.woodenKitchenSink(Blocks.MANGROVE_PLANKS, ModBlocks.KITCHEN_SINK_MANGROVE.get());
-        this.woodenKitchenSink(Blocks.CHERRY_PLANKS, ModBlocks.KITCHEN_SINK_CHERRY.get());
         this.woodenKitchenSink(Blocks.CRIMSON_PLANKS, ModBlocks.KITCHEN_SINK_CRIMSON.get());
         this.woodenKitchenSink(Blocks.WARPED_PLANKS, ModBlocks.KITCHEN_SINK_WARPED.get());
         this.woodenKitchenStorageCabinet(Blocks.OAK_PLANKS, ModBlocks.KITCHEN_STORAGE_CABINET_OAK.get());
@@ -214,7 +207,6 @@ public class CommonRecipeProvider
         this.woodenKitchenStorageCabinet(Blocks.ACACIA_PLANKS, ModBlocks.KITCHEN_STORAGE_CABINET_ACACIA.get());
         this.woodenKitchenStorageCabinet(Blocks.DARK_OAK_PLANKS, ModBlocks.KITCHEN_STORAGE_CABINET_DARK_OAK.get());
         this.woodenKitchenStorageCabinet(Blocks.MANGROVE_PLANKS, ModBlocks.KITCHEN_STORAGE_CABINET_MANGROVE.get());
-        this.woodenKitchenStorageCabinet(Blocks.CHERRY_PLANKS, ModBlocks.KITCHEN_STORAGE_CABINET_CHERRY.get());
         this.woodenKitchenStorageCabinet(Blocks.CRIMSON_PLANKS, ModBlocks.KITCHEN_STORAGE_CABINET_CRIMSON.get());
         this.woodenKitchenStorageCabinet(Blocks.WARPED_PLANKS, ModBlocks.KITCHEN_STORAGE_CABINET_WARPED.get());
         this.colouredKitchenCabinetry(Items.WHITE_DYE, ModBlocks.KITCHEN_CABINETRY_WHITE.get());
@@ -294,7 +286,6 @@ public class CommonRecipeProvider
         this.cuttingBoard(Blocks.ACACIA_PLANKS, ModBlocks.CUTTING_BOARD_ACACIA.get());
         this.cuttingBoard(Blocks.DARK_OAK_PLANKS, ModBlocks.CUTTING_BOARD_DARK_OAK.get());
         this.cuttingBoard(Blocks.MANGROVE_PLANKS, ModBlocks.CUTTING_BOARD_MANGROVE.get());
-        this.cuttingBoard(Blocks.CHERRY_PLANKS, ModBlocks.CUTTING_BOARD_CHERRY.get());
         this.cuttingBoard(Blocks.CRIMSON_PLANKS, ModBlocks.CUTTING_BOARD_CRIMSON.get());
         this.cuttingBoard(Blocks.WARPED_PLANKS, ModBlocks.CUTTING_BOARD_WARPED.get());
         this.plate(ModBlocks.PLATE.get());
@@ -305,7 +296,6 @@ public class CommonRecipeProvider
         this.crate(Blocks.ACACIA_PLANKS, ModBlocks.CRATE_ACACIA.get());
         this.crate(Blocks.DARK_OAK_PLANKS, ModBlocks.CRATE_DARK_OAK.get());
         this.crate(Blocks.MANGROVE_PLANKS, ModBlocks.CRATE_MANGROVE.get());
-        this.crate(Blocks.CHERRY_PLANKS, ModBlocks.CRATE_CHERRY.get());
         this.crate(Blocks.CRIMSON_PLANKS, ModBlocks.CRATE_CRIMSON.get());
         this.crate(Blocks.WARPED_PLANKS, ModBlocks.CRATE_WARPED.get());
         this.grill(Items.WHITE_DYE, ModBlocks.GRILL_WHITE.get());
@@ -347,7 +337,6 @@ public class CommonRecipeProvider
         this.mailbox(Blocks.ACACIA_PLANKS, ModBlocks.MAIL_BOX_ACACIA.get());
         this.mailbox(Blocks.DARK_OAK_PLANKS, ModBlocks.MAIL_BOX_DARK_OAK.get());
         this.mailbox(Blocks.MANGROVE_PLANKS, ModBlocks.MAIL_BOX_MANGROVE.get());
-        this.mailbox(Blocks.CHERRY_PLANKS, ModBlocks.MAIL_BOX_CHERRY.get());
         this.mailbox(Blocks.CRIMSON_PLANKS, ModBlocks.MAIL_BOX_CRIMSON.get());
         this.mailbox(Blocks.WARPED_PLANKS, ModBlocks.MAIL_BOX_WARPED.get());
         this.postBox(ModBlocks.POST_BOX.get());
@@ -374,7 +363,6 @@ public class CommonRecipeProvider
         this.hedge(Blocks.ACACIA_LEAVES, ModBlocks.HEDGE_ACACIA.get());
         this.hedge(Blocks.DARK_OAK_LEAVES, ModBlocks.HEDGE_DARK_OAK.get());
         this.hedge(Blocks.MANGROVE_LEAVES, ModBlocks.HEDGE_MANGROVE.get());
-        this.hedge(Blocks.CHERRY_LEAVES, ModBlocks.HEDGE_CHERRY.get());
         this.hedge(Blocks.AZALEA_LEAVES, ModBlocks.HEDGE_AZALEA.get());
         this.steppingStone(Blocks.STONE, ModBlocks.STEPPING_STONES_STONE.get());
         this.steppingStone(Blocks.GRANITE, ModBlocks.STEPPING_STONES_GRANITE.get());
@@ -388,7 +376,6 @@ public class CommonRecipeProvider
         this.latticeFence(Blocks.ACACIA_PLANKS, ModBlocks.LATTICE_FENCE_ACACIA.get());
         this.latticeFence(Blocks.DARK_OAK_PLANKS, ModBlocks.LATTICE_FENCE_DARK_OAK.get());
         this.latticeFence(Blocks.MANGROVE_PLANKS, ModBlocks.LATTICE_FENCE_MANGROVE.get());
-        this.latticeFence(Blocks.CHERRY_PLANKS, ModBlocks.LATTICE_FENCE_CHERRY.get());
         this.latticeFence(Blocks.CRIMSON_PLANKS, ModBlocks.LATTICE_FENCE_CRIMSON.get());
         this.latticeFence(Blocks.WARPED_PLANKS, ModBlocks.LATTICE_FENCE_WARPED.get());
         this.latticeFenceGate(Blocks.OAK_PLANKS, ModBlocks.LATTICE_FENCE_GATE_OAK.get());
@@ -398,7 +385,6 @@ public class CommonRecipeProvider
         this.latticeFenceGate(Blocks.ACACIA_PLANKS, ModBlocks.LATTICE_FENCE_GATE_ACACIA.get());
         this.latticeFenceGate(Blocks.DARK_OAK_PLANKS, ModBlocks.LATTICE_FENCE_GATE_DARK_OAK.get());
         this.latticeFenceGate(Blocks.MANGROVE_PLANKS, ModBlocks.LATTICE_FENCE_GATE_MANGROVE.get());
-        this.latticeFenceGate(Blocks.CHERRY_PLANKS, ModBlocks.LATTICE_FENCE_GATE_CHERRY.get());
         this.latticeFenceGate(Blocks.CRIMSON_PLANKS, ModBlocks.LATTICE_FENCE_GATE_CRIMSON.get());
         this.latticeFenceGate(Blocks.WARPED_PLANKS, ModBlocks.LATTICE_FENCE_GATE_WARPED.get());
         this.doorMat(ModBlocks.DOOR_MAT.get());
@@ -457,7 +443,6 @@ public class CommonRecipeProvider
         this.ceilingFan(Blocks.ACACIA_PLANKS, ModBlocks.CEILING_FAN_ACACIA_LIGHT.get(), ModBlocks.CEILING_FAN_ACACIA_DARK.get());
         this.ceilingFan(Blocks.DARK_OAK_PLANKS, ModBlocks.CEILING_FAN_DARK_OAK_LIGHT.get(), ModBlocks.CEILING_FAN_DARK_OAK_DARK.get());
         this.ceilingFan(Blocks.MANGROVE_PLANKS, ModBlocks.CEILING_FAN_MANGROVE_LIGHT.get(), ModBlocks.CEILING_FAN_MANGROVE_DARK.get());
-        this.ceilingFan(Blocks.CHERRY_PLANKS, ModBlocks.CEILING_FAN_CHERRY_LIGHT.get(), ModBlocks.CEILING_FAN_CHERRY_DARK.get());
         this.ceilingFan(Blocks.CRIMSON_PLANKS, ModBlocks.CEILING_FAN_CRIMSON_LIGHT.get(), ModBlocks.CEILING_FAN_CRIMSON_DARK.get());
         this.ceilingFan(Blocks.WARPED_PLANKS, ModBlocks.CEILING_FAN_WARPED_LIGHT.get(), ModBlocks.CEILING_FAN_WARPED_DARK.get());
         this.ceilingLight(ModBlocks.CEILING_LIGHT_LIGHT.get(), ModBlocks.CEILING_LIGHT_DARK.get());
@@ -471,7 +456,6 @@ public class CommonRecipeProvider
         this.storageCabinet(Blocks.ACACIA_PLANKS, ModBlocks.STORAGE_CABINET_ACACIA.get());
         this.storageCabinet(Blocks.DARK_OAK_PLANKS, ModBlocks.STORAGE_CABINET_DARK_OAK.get());
         this.storageCabinet(Blocks.MANGROVE_PLANKS, ModBlocks.STORAGE_CABINET_MANGROVE.get());
-        this.storageCabinet(Blocks.CHERRY_PLANKS, ModBlocks.STORAGE_CABINET_CHERRY.get());
         this.storageCabinet(Blocks.CRIMSON_PLANKS, ModBlocks.STORAGE_CABINET_CRIMSON.get());
         this.storageCabinet(Blocks.WARPED_PLANKS, ModBlocks.STORAGE_CABINET_WARPED.get());
         this.storageJar(Blocks.OAK_PLANKS, ModBlocks.STORAGE_JAR_OAK.get());
@@ -481,7 +465,6 @@ public class CommonRecipeProvider
         this.storageJar(Blocks.ACACIA_PLANKS, ModBlocks.STORAGE_JAR_ACACIA.get());
         this.storageJar(Blocks.DARK_OAK_PLANKS, ModBlocks.STORAGE_JAR_DARK_OAK.get());
         this.storageJar(Blocks.MANGROVE_PLANKS, ModBlocks.STORAGE_JAR_MANGROVE.get());
-        this.storageJar(Blocks.CHERRY_PLANKS, ModBlocks.STORAGE_JAR_CHERRY.get());
         this.storageJar(Blocks.CRIMSON_PLANKS, ModBlocks.STORAGE_JAR_CRIMSON.get());
         this.storageJar(Blocks.WARPED_PLANKS, ModBlocks.STORAGE_JAR_WARPED.get());
         this.woodenToilet(Blocks.OAK_PLANKS, ModBlocks.TOILET_OAK.get());
@@ -491,7 +474,6 @@ public class CommonRecipeProvider
         this.woodenToilet(Blocks.ACACIA_PLANKS, ModBlocks.TOILET_ACACIA.get());
         this.woodenToilet(Blocks.DARK_OAK_PLANKS, ModBlocks.TOILET_DARK_OAK.get());
         this.woodenToilet(Blocks.MANGROVE_PLANKS, ModBlocks.TOILET_MANGROVE.get());
-        this.woodenToilet(Blocks.CHERRY_PLANKS, ModBlocks.TOILET_CHERRY.get());
         this.woodenToilet(Blocks.CRIMSON_PLANKS, ModBlocks.TOILET_CRIMSON.get());
         this.woodenToilet(Blocks.WARPED_PLANKS, ModBlocks.TOILET_WARPED.get());
         this.colouredToilet(Items.WHITE_DYE, ModBlocks.TOILET_WHITE.get());
@@ -517,7 +499,6 @@ public class CommonRecipeProvider
         this.woodenBasin(Blocks.ACACIA_PLANKS, ModBlocks.BASIN_ACACIA.get());
         this.woodenBasin(Blocks.DARK_OAK_PLANKS, ModBlocks.BASIN_DARK_OAK.get());
         this.woodenBasin(Blocks.MANGROVE_PLANKS, ModBlocks.BASIN_MANGROVE.get());
-        this.woodenBasin(Blocks.CHERRY_PLANKS, ModBlocks.BASIN_CHERRY.get());
         this.woodenBasin(Blocks.CRIMSON_PLANKS, ModBlocks.BASIN_CRIMSON.get());
         this.woodenBasin(Blocks.WARPED_PLANKS, ModBlocks.BASIN_WARPED.get());
         this.colouredBasin(Items.WHITE_DYE, ModBlocks.BASIN_WHITE.get());
@@ -543,7 +524,6 @@ public class CommonRecipeProvider
         this.woodenBath(Blocks.ACACIA_PLANKS, ModBlocks.BATH_ACACIA.get());
         this.woodenBath(Blocks.DARK_OAK_PLANKS, ModBlocks.BATH_DARK_OAK.get());
         this.woodenBath(Blocks.MANGROVE_PLANKS, ModBlocks.BATH_MANGROVE.get());
-        this.woodenBath(Blocks.CHERRY_PLANKS, ModBlocks.BATH_CHERRY.get());
         this.woodenBath(Blocks.CRIMSON_PLANKS, ModBlocks.BATH_CRIMSON.get());
         this.woodenBath(Blocks.WARPED_PLANKS, ModBlocks.BATH_WARPED.get());
         this.colouredBath(Items.WHITE_DYE, ModBlocks.BATH_WHITE.get());

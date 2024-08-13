@@ -26,7 +26,6 @@ public class ModBlockEntities
             ModBlocks.DRAWER_ACACIA.get(),
             ModBlocks.DRAWER_DARK_OAK.get(),
             ModBlocks.DRAWER_MANGROVE.get(),
-            ModBlocks.DRAWER_CHERRY.get(),
             ModBlocks.DRAWER_CRIMSON.get(),
             ModBlocks.DRAWER_WARPED.get()
     });
@@ -39,7 +38,6 @@ public class ModBlockEntities
             ModBlocks.CRATE_ACACIA.get(),
             ModBlocks.CRATE_DARK_OAK.get(),
             ModBlocks.CRATE_MANGROVE.get(),
-            ModBlocks.CRATE_CHERRY.get(),
             ModBlocks.CRATE_CRIMSON.get(),
             ModBlocks.CRATE_WARPED.get()
     });
@@ -52,7 +50,6 @@ public class ModBlockEntities
             ModBlocks.KITCHEN_DRAWER_ACACIA.get(),
             ModBlocks.KITCHEN_DRAWER_DARK_OAK.get(),
             ModBlocks.KITCHEN_DRAWER_MANGROVE.get(),
-            ModBlocks.KITCHEN_DRAWER_CHERRY.get(),
             ModBlocks.KITCHEN_DRAWER_CRIMSON.get(),
             ModBlocks.KITCHEN_DRAWER_WARPED.get(),
             ModBlocks.KITCHEN_DRAWER_WHITE.get(),
@@ -81,7 +78,6 @@ public class ModBlockEntities
             ModBlocks.KITCHEN_SINK_ACACIA.get(),
             ModBlocks.KITCHEN_SINK_DARK_OAK.get(),
             ModBlocks.KITCHEN_SINK_MANGROVE.get(),
-            ModBlocks.KITCHEN_SINK_CHERRY.get(),
             ModBlocks.KITCHEN_SINK_CRIMSON.get(),
             ModBlocks.KITCHEN_SINK_WARPED.get(),
             ModBlocks.KITCHEN_SINK_WHITE.get(),
@@ -178,7 +174,6 @@ public class ModBlockEntities
             ModBlocks.CUTTING_BOARD_ACACIA.get(),
             ModBlocks.CUTTING_BOARD_DARK_OAK.get(),
             ModBlocks.CUTTING_BOARD_MANGROVE.get(),
-            ModBlocks.CUTTING_BOARD_CHERRY.get(),
             ModBlocks.CUTTING_BOARD_CRIMSON.get(),
             ModBlocks.CUTTING_BOARD_WARPED.get(),
     });
@@ -195,7 +190,6 @@ public class ModBlockEntities
             ModBlocks.MAIL_BOX_ACACIA.get(),
             ModBlocks.MAIL_BOX_DARK_OAK.get(),
             ModBlocks.MAIL_BOX_MANGROVE.get(),
-            ModBlocks.MAIL_BOX_CHERRY.get(),
             ModBlocks.MAIL_BOX_CRIMSON.get(),
             ModBlocks.MAIL_BOX_WARPED.get()
     });
@@ -247,7 +241,6 @@ public class ModBlockEntities
             ModBlocks.STORAGE_JAR_ACACIA.get(),
             ModBlocks.STORAGE_JAR_DARK_OAK.get(),
             ModBlocks.STORAGE_JAR_MANGROVE.get(),
-            ModBlocks.STORAGE_JAR_CHERRY.get(),
             ModBlocks.STORAGE_JAR_CRIMSON.get(),
             ModBlocks.STORAGE_JAR_WARPED.get()
     });
@@ -264,7 +257,6 @@ public class ModBlockEntities
             ModBlocks.CEILING_FAN_ACACIA_LIGHT.get(),
             ModBlocks.CEILING_FAN_DARK_OAK_LIGHT.get(),
             ModBlocks.CEILING_FAN_MANGROVE_LIGHT.get(),
-            ModBlocks.CEILING_FAN_CHERRY_LIGHT.get(),
             ModBlocks.CEILING_FAN_CRIMSON_LIGHT.get(),
             ModBlocks.CEILING_FAN_WARPED_LIGHT.get(),
             ModBlocks.CEILING_FAN_OAK_DARK.get(),
@@ -274,7 +266,6 @@ public class ModBlockEntities
             ModBlocks.CEILING_FAN_ACACIA_DARK.get(),
             ModBlocks.CEILING_FAN_DARK_OAK_DARK.get(),
             ModBlocks.CEILING_FAN_MANGROVE_DARK.get(),
-            ModBlocks.CEILING_FAN_CHERRY_DARK.get(),
             ModBlocks.CEILING_FAN_CRIMSON_DARK.get(),
             ModBlocks.CEILING_FAN_WARPED_DARK.get()
     });
@@ -287,7 +278,6 @@ public class ModBlockEntities
             ModBlocks.STORAGE_CABINET_ACACIA.get(),
             ModBlocks.STORAGE_CABINET_DARK_OAK.get(),
             ModBlocks.STORAGE_CABINET_MANGROVE.get(),
-            ModBlocks.STORAGE_CABINET_CHERRY.get(),
             ModBlocks.STORAGE_CABINET_CRIMSON.get(),
             ModBlocks.STORAGE_CABINET_WARPED.get(),
             ModBlocks.KITCHEN_STORAGE_CABINET_OAK.get(),
@@ -297,7 +287,6 @@ public class ModBlockEntities
             ModBlocks.KITCHEN_STORAGE_CABINET_ACACIA.get(),
             ModBlocks.KITCHEN_STORAGE_CABINET_DARK_OAK.get(),
             ModBlocks.KITCHEN_STORAGE_CABINET_MANGROVE.get(),
-            ModBlocks.KITCHEN_STORAGE_CABINET_CHERRY.get(),
             ModBlocks.KITCHEN_STORAGE_CABINET_CRIMSON.get(),
             ModBlocks.KITCHEN_STORAGE_CABINET_WARPED.get(),
             ModBlocks.KITCHEN_STORAGE_CABINET_WHITE.get(),
@@ -330,7 +319,6 @@ public class ModBlockEntities
             ModBlocks.BASIN_ACACIA.get(),
             ModBlocks.BASIN_DARK_OAK.get(),
             ModBlocks.BASIN_MANGROVE.get(),
-            ModBlocks.BASIN_CHERRY.get(),
             ModBlocks.BASIN_CRIMSON.get(),
             ModBlocks.BASIN_WARPED.get(),
             ModBlocks.BASIN_WHITE.get(),
@@ -359,7 +347,6 @@ public class ModBlockEntities
             ModBlocks.TOILET_ACACIA.get(),
             ModBlocks.TOILET_DARK_OAK.get(),
             ModBlocks.TOILET_MANGROVE.get(),
-            ModBlocks.TOILET_CHERRY.get(),
             ModBlocks.TOILET_CRIMSON.get(),
             ModBlocks.TOILET_WARPED.get(),
             ModBlocks.TOILET_WHITE.get(),
@@ -388,7 +375,6 @@ public class ModBlockEntities
             ModBlocks.BATH_ACACIA.get(),
             ModBlocks.BATH_DARK_OAK.get(),
             ModBlocks.BATH_MANGROVE.get(),
-            ModBlocks.BATH_CHERRY.get(),
             ModBlocks.BATH_CRIMSON.get(),
             ModBlocks.BATH_WARPED.get(),
             ModBlocks.BATH_WHITE.get(),

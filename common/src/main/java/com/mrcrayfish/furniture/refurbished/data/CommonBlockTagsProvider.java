@@ -49,7 +49,6 @@ public class CommonBlockTagsProvider
             .add(ModBlocks.LATTICE_FENCE_ACACIA.get())
             .add(ModBlocks.LATTICE_FENCE_DARK_OAK.get())
             .add(ModBlocks.LATTICE_FENCE_MANGROVE.get())
-            .add(ModBlocks.LATTICE_FENCE_CHERRY.get())
             .add(ModBlocks.LATTICE_FENCE_CRIMSON.get())
             .add(ModBlocks.LATTICE_FENCE_WARPED.get());
 
@@ -61,7 +60,6 @@ public class CommonBlockTagsProvider
             .add(ModBlocks.LATTICE_FENCE_GATE_ACACIA.get())
             .add(ModBlocks.LATTICE_FENCE_GATE_DARK_OAK.get())
             .add(ModBlocks.LATTICE_FENCE_GATE_MANGROVE.get())
-            .add(ModBlocks.LATTICE_FENCE_GATE_CHERRY.get())
             .add(ModBlocks.LATTICE_FENCE_GATE_CRIMSON.get())
             .add(ModBlocks.LATTICE_FENCE_GATE_WARPED.get());
 
@@ -78,7 +76,6 @@ public class CommonBlockTagsProvider
             .add(ModBlocks.BATH_ACACIA.get())
             .add(ModBlocks.BATH_DARK_OAK.get())
             .add(ModBlocks.BATH_MANGROVE.get())
-            .add(ModBlocks.BATH_CHERRY.get())
             .add(ModBlocks.BATH_CRIMSON.get())
             .add(ModBlocks.BATH_WARPED.get())
             .add(ModBlocks.BATH_WHITE.get())

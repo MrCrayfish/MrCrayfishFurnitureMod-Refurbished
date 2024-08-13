@@ -10,7 +10,6 @@ public enum LeafType
     BIRCH("birch"),
     JUNGLE("jungle"),
     ACACIA("acacia"),
-    CHERRY("cherry"),
     DARK_OAK("dark_oak"),
     MANGROVE("mangrove"),
     AZALEA("azalea");

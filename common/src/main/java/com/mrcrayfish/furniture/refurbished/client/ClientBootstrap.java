@@ -93,7 +93,6 @@ public class ClientBootstrap
         CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_JUNGLE_LIGHT.get(), ExtraModels.JUNGLE_LIGHT_CEILING_FAN_BLADE::getModel);
         CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_ACACIA_LIGHT.get(), ExtraModels.ACACIA_LIGHT_CEILING_FAN_BLADE::getModel);
         CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_DARK_OAK_LIGHT.get(), ExtraModels.DARK_OAK_LIGHT_CEILING_FAN_BLADE::getModel);
-        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_CHERRY_LIGHT.get(), ExtraModels.CHERRY_LIGHT_CEILING_FAN_BLADE::getModel);
         CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_MANGROVE_LIGHT.get(), ExtraModels.MANGROVE_LIGHT_CEILING_FAN_BLADE::getModel);
         CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_CRIMSON_LIGHT.get(), ExtraModels.CRIMSON_LIGHT_CEILING_FAN_BLADE::getModel);
         CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_WARPED_LIGHT.get(), ExtraModels.WARPED_LIGHT_CEILING_FAN_BLADE::getModel);
@@ -103,7 +102,6 @@ public class ClientBootstrap
         CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_JUNGLE_DARK.get(), ExtraModels.JUNGLE_DARK_CEILING_FAN_BLADE::getModel);
         CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_ACACIA_DARK.get(), ExtraModels.ACACIA_DARK_CEILING_FAN_BLADE::getModel);
         CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_DARK_OAK_DARK.get(), ExtraModels.DARK_OAK_DARK_CEILING_FAN_BLADE::getModel);
-        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_CHERRY_DARK.get(), ExtraModels.CHERRY_DARK_CEILING_FAN_BLADE::getModel);
         CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_MANGROVE_DARK.get(), ExtraModels.MANGROVE_DARK_CEILING_FAN_BLADE::getModel);
         CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_CRIMSON_DARK.get(), ExtraModels.CRIMSON_DARK_CEILING_FAN_BLADE::getModel);
         CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_WARPED_DARK.get(), ExtraModels.WARPED_DARK_CEILING_FAN_BLADE::getModel);
@@ -191,7 +189,6 @@ public class ClientBootstrap
         register.apply(ModBlocks.MAIL_BOX_ACACIA.get(), RenderType.cutout());
         register.apply(ModBlocks.MAIL_BOX_DARK_OAK.get(), RenderType.cutout());
         register.apply(ModBlocks.MAIL_BOX_MANGROVE.get(), RenderType.cutout());
-        register.apply(ModBlocks.MAIL_BOX_CHERRY.get(), RenderType.cutout());
         register.apply(ModBlocks.MAIL_BOX_CRIMSON.get(), RenderType.cutout());
         register.apply(ModBlocks.MAIL_BOX_WARPED.get(), RenderType.cutout());
         register.apply(ModBlocks.CEILING_LIGHT_LIGHT.get(), RenderType.translucent());
@@ -221,7 +218,6 @@ public class ClientBootstrap
         register.apply(ModBlocks.STORAGE_JAR_ACACIA.get(), RenderType.cutout());
         register.apply(ModBlocks.STORAGE_JAR_DARK_OAK.get(), RenderType.cutout());
         register.apply(ModBlocks.STORAGE_JAR_MANGROVE.get(), RenderType.cutout());
-        register.apply(ModBlocks.STORAGE_JAR_CHERRY.get(), RenderType.cutout());
         register.apply(ModBlocks.STORAGE_JAR_CRIMSON.get(), RenderType.cutout());
         register.apply(ModBlocks.STORAGE_JAR_WARPED.get(), RenderType.cutout());
         register.apply(ModBlocks.CEILING_FAN_OAK_LIGHT.get(), RenderType.translucent());
@@ -231,7 +227,6 @@ public class ClientBootstrap
         register.apply(ModBlocks.CEILING_FAN_ACACIA_LIGHT.get(), RenderType.translucent());
         register.apply(ModBlocks.CEILING_FAN_DARK_OAK_LIGHT.get(), RenderType.translucent());
         register.apply(ModBlocks.CEILING_FAN_MANGROVE_LIGHT.get(), RenderType.translucent());
-        register.apply(ModBlocks.CEILING_FAN_CHERRY_LIGHT.get(), RenderType.translucent());
         register.apply(ModBlocks.CEILING_FAN_CRIMSON_LIGHT.get(), RenderType.translucent());
         register.apply(ModBlocks.CEILING_FAN_WARPED_LIGHT.get(), RenderType.translucent());
         register.apply(ModBlocks.CEILING_FAN_OAK_DARK.get(), RenderType.translucent());
@@ -241,7 +236,6 @@ public class ClientBootstrap
         register.apply(ModBlocks.CEILING_FAN_ACACIA_DARK.get(), RenderType.translucent());
         register.apply(ModBlocks.CEILING_FAN_DARK_OAK_DARK.get(), RenderType.translucent());
         register.apply(ModBlocks.CEILING_FAN_MANGROVE_DARK.get(), RenderType.translucent());
-        register.apply(ModBlocks.CEILING_FAN_CHERRY_DARK.get(), RenderType.translucent());
         register.apply(ModBlocks.CEILING_FAN_CRIMSON_DARK.get(), RenderType.translucent());
         register.apply(ModBlocks.CEILING_FAN_WARPED_DARK.get(), RenderType.translucent());
         register.apply(ModBlocks.TRAMPOLINE_WHITE.get(), RenderType.cutout());
@@ -269,7 +263,6 @@ public class ClientBootstrap
         register.apply(ModBlocks.HEDGE_ACACIA.get(), RenderType.cutout());
         register.apply(ModBlocks.HEDGE_DARK_OAK.get(), RenderType.cutout());
         register.apply(ModBlocks.HEDGE_MANGROVE.get(), RenderType.cutout());
-        register.apply(ModBlocks.HEDGE_CHERRY.get(), RenderType.cutout());
         register.apply(ModBlocks.HEDGE_AZALEA.get(), RenderType.cutout());
         register.apply(ModBlocks.TOILET_OAK.get(), RenderType.cutout());
         register.apply(ModBlocks.TOILET_SPRUCE.get(), RenderType.cutout());
@@ -278,7 +271,6 @@ public class ClientBootstrap
         register.apply(ModBlocks.TOILET_ACACIA.get(), RenderType.cutout());
         register.apply(ModBlocks.TOILET_DARK_OAK.get(), RenderType.cutout());
         register.apply(ModBlocks.TOILET_MANGROVE.get(), RenderType.cutout());
-        register.apply(ModBlocks.TOILET_CHERRY.get(), RenderType.cutout());
         register.apply(ModBlocks.TOILET_CRIMSON.get(), RenderType.cutout());
         register.apply(ModBlocks.TOILET_WARPED.get(), RenderType.cutout());
         register.apply(ModBlocks.TOILET_WHITE.get(), RenderType.cutout());
@@ -304,7 +296,6 @@ public class ClientBootstrap
         register.apply(ModBlocks.LATTICE_FENCE_ACACIA.get(), RenderType.cutout());
         register.apply(ModBlocks.LATTICE_FENCE_DARK_OAK.get(), RenderType.cutout());
         register.apply(ModBlocks.LATTICE_FENCE_MANGROVE.get(), RenderType.cutout());
-        register.apply(ModBlocks.LATTICE_FENCE_CHERRY.get(), RenderType.cutout());
         register.apply(ModBlocks.LATTICE_FENCE_CRIMSON.get(), RenderType.cutout());
         register.apply(ModBlocks.LATTICE_FENCE_WARPED.get(), RenderType.cutout());
         register.apply(ModBlocks.LATTICE_FENCE_GATE_OAK.get(), RenderType.cutout());
@@ -314,7 +305,6 @@ public class ClientBootstrap
         register.apply(ModBlocks.LATTICE_FENCE_GATE_ACACIA.get(), RenderType.cutout());
         register.apply(ModBlocks.LATTICE_FENCE_GATE_DARK_OAK.get(), RenderType.cutout());
         register.apply(ModBlocks.LATTICE_FENCE_GATE_MANGROVE.get(), RenderType.cutout());
-        register.apply(ModBlocks.LATTICE_FENCE_GATE_CHERRY.get(), RenderType.cutout());
         register.apply(ModBlocks.LATTICE_FENCE_GATE_CRIMSON.get(), RenderType.cutout());
         register.apply(ModBlocks.LATTICE_FENCE_GATE_WARPED.get(), RenderType.cutout());
         register.apply(ModBlocks.TELEVISION.get(), RenderType.cutout());
