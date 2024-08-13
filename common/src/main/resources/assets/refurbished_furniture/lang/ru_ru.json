@@ -519,7 +519,7 @@
   "gui.refurbished_furniture.post_box_info": "Выберите почтовый ящик из списка. Вы можете искать почтовый ящик по имени или игрока, добавив @ перед именем. Поместите предметы в слоты для посылки и, при желании, добавьте сообщение. Нажмите кнопку отправки, чтобы доставить посылку.",
   "gui.refurbished_furniture.workbench_info": "Выберите рецепт крафта из списка и соберите необходимые материалы для создания предмета. Верстак будет искать материалы в вашем инвентаре, в своем хранилище и в соседних блоках хранилища.",
   "gui.refurbished_furniture.package_sent_by": "Отправлено %s",
-  "gui.refurbished_furniture.package_open": "Щелкните правой кнопкой мыши, чтобы открыть",
+  "gui.refurbished_furniture.package_open": "Щёлкните ПКМ, чтобы открыть",
   "gui.refurbished_furniture.set_doorbell_name": "Задать имя дверного звонка",
   "gui.refurbished_furniture.doorbell_rang": "Дверной звонок",
   "gui.refurbished_furniture.status.online": "В сети",
