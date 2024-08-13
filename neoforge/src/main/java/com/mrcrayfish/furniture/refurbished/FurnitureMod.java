@@ -67,6 +67,10 @@ public class FurnitureMod
 
     private void onRegisterCapabilities(RegisterCapabilitiesEvent event)
     {
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlockEntities.FREEZER.get(), (entity, context) -> {
+            return context == Direction.DOWN ? new SidedInvWrapper(entity, Direction.DOWN) : new InvWrapper(entity);
+        });
+
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlockEntities.STOVE.get(), (entity, context) -> {
             return context == Direction.DOWN ? new SidedInvWrapper(entity.getContainer(), Direction.DOWN) : new InvWrapper(entity);
         });

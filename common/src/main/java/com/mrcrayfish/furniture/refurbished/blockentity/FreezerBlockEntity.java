@@ -38,8 +38,10 @@ import org.jetbrains.annotations.Nullable;
  */
 public class FreezerBlockEntity extends ElectricityModuleProcessingLootBlockEntity implements IPowerSwitch, IHomeControlDevice, StackedContentsCompatible
 {
-    public static final int[] INPUT_SLOTS = new int[]{0};
-    public static final int[] OUTPUT_SLOTS = new int[]{1};
+    public static final int[] PROCESSABLE_INPUT_SLOTS = new int[]{0};
+    public static final int[] PROCESSABLE_OUTPUT_SLOTS = new int[]{1};
+    public static final int[] PUSHABLE_SLOTS = new int[]{0};
+    public static final int[] PULLABLE_SLOTS = new int[]{0, 1};
     public static final int DATA_POWERED = 0;
     public static final int DATA_ENABLED = 1;
     public static final int DATA_PROCESS_TIME = 2;
@@ -86,19 +88,19 @@ public class FreezerBlockEntity extends ElectricityModuleProcessingLootBlockEnti
     @Override
     public int[] getSlotsForFace(Direction direction)
     {
-        return direction == Direction.DOWN ? OUTPUT_SLOTS : INPUT_SLOTS;
+        return direction == Direction.DOWN ? PULLABLE_SLOTS : PUSHABLE_SLOTS;
     }
 
     @Override
     public int[] getInputSlots()
     {
-        return INPUT_SLOTS;
+        return PROCESSABLE_INPUT_SLOTS;
     }
 
     @Override
     public int[] getOutputSlots()
     {
-        return OUTPUT_SLOTS;
+        return PROCESSABLE_OUTPUT_SLOTS;
     }
 
     @Override
