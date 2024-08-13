@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.blockentity.FreezerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
+import com.mrcrayfish.furniture.refurbished.platform.Services;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.InteractionHand;
@@ -105,7 +106,7 @@ public class FreezerBlock extends FridgeBlock
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
     {
-        return new FreezerBlockEntity(pos, state);
+        return Services.BLOCK_ENTITY.createFreezerBlockEntity(pos, state);
     }
 
     @Nullable
