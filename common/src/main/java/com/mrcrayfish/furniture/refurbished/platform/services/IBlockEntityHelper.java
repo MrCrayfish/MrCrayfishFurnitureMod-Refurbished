@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.platform.services;
 
+import com.mrcrayfish.furniture.refurbished.blockentity.FreezerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.RecycleBinBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.StoveBlockEntity;
 import net.minecraft.core.BlockPos;
@@ -15,6 +16,8 @@ import org.jetbrains.annotations.Nullable;
  */
 public interface IBlockEntityHelper
 {
+    FreezerBlockEntity createFreezerBlockEntity(BlockPos pos, BlockState state);
+
     RecycleBinBlockEntity createRecycleBinBlockEntity(BlockPos pos, BlockState state);
 
     StoveBlockEntity createStoveBlockEntity(BlockPos pos, BlockState state);
