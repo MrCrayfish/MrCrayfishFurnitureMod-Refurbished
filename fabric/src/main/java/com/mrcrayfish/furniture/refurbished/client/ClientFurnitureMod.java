@@ -60,7 +60,7 @@ public class ClientFurnitureMod implements ClientModInitializer
 
         ModelLoadingRegistry.INSTANCE.registerModelProvider((manager, out) -> ExtraModels.register(out));
 
-        WorldRenderEvents.LAST.register(context -> {
+        WorldRenderEvents.AFTER_ENTITIES.register(context -> {
             Minecraft mc = Minecraft.getInstance();
             if(mc.player == null || mc.level == null)
                 return;
