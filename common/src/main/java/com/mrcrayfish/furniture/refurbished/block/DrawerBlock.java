@@ -9,6 +9,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Container;
+import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -105,5 +107,20 @@ public class DrawerBlock extends DeskBlock implements EntityBlock
     public List<TagKey<Block>> getTags()
     {
         return List.of(BlockTags.MINEABLE_WITH_AXE);
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving)
+    {
+        if(!state.is(newState.getBlock()))
+        {
+            BlockEntity blockEntity = level.getBlockEntity(pos);
+            if(blockEntity instanceof Container container)
+            {
+                Containers.dropContents(level, pos, container);
+                level.updateNeighbourForOutputSignal(pos, this);
+            }
+        }
+        super.onRemove(state, level, pos, newState, isMoving);
     }
 }
