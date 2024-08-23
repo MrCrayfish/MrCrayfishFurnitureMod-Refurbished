@@ -104,6 +104,14 @@ dependencies {
     implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 }
 
+jar {
+    manifest {
+        attributes([
+            "MixinConfigs": "${mod_id}.common.mixins.json"
+        ])
+    }
+}
+
 tasks.register('signJar', SignJar) {
     dependsOn jar
     onlyIf {
