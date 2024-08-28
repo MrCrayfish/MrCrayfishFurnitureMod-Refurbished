@@ -116,3 +116,6 @@ sourceSets.each {
     it.output.resourcesDir = dir
     it.java.destinationDirectory = dir
 }
+
+// Fixes forge appending "_mapped_" in POM
+fg.component(publishing.publications.named("mavenJava").get() as MavenPublication)
