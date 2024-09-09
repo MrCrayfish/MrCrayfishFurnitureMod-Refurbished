@@ -15,7 +15,7 @@ jobs:
         java-version: '21'
         distribution: 'adopt'
     - name: Validate Gradle Wrapper
-      uses: gradle/wrapper-validation-action@v3
+      uses: gradle/actions/wrapper-validation@v4
     - name: Read mod data from gradle.properties
       id: mod_data
       uses: christian-draeger/read-properties@1.1.1
