@@ -39,9 +39,7 @@ repositories {
         }
     }
     if (!System.getenv("CI")) {
-        maven {
-            url "file://" + System.getenv("LOCAL_MAVEN")
-        }
+        mavenLocal()
     }
     maven {
         name = 'BlameJared'
