@@ -516,7 +516,7 @@
     "gui.refurbished_furniture.package_message": "包裹信息",
     "gui.refurbished_furniture.send": "发送",
     "gui.refurbished_furniture.how_to": "如何使用",
-    "gui.refurbished_furniture.post_box_info": "从列表中选择一个邮箱。您可以按名称搜索邮箱，也可以通过前缀为 @ 来搜索玩家。将项目放置在包槽中，并选择性地包含一条消息。单击发送按钮以交付包。",
+    "gui.refurbished_furniture.post_box_info": "从列表中选择一个邮箱。您可以按名称搜索邮箱，也可以通过前缀 @ 来搜索玩家。将项目放置在包裹物品栏中，并选择性地包含一条消息。单击发送按钮以邮寄包裹。",
     "gui.refurbished_furniture.workbench_info": "从列表中选择一个制作配方并集齐制作物品所需的材料。制作台将搜索您的物品栏、自己的存储和相邻的容器以查找材料。",
     "gui.refurbished_furniture.package_sent_by": "发送自 %s",
     "gui.refurbished_furniture.package_open": "右击打开",
