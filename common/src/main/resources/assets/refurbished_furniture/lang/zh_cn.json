@@ -1,4 +1,4 @@
- {
+{
     "itemGroup.refurbished_furniture": "MrCrayfish的家具模组",
     "filterCategory.refurbished_furniture.general": "常规",
     "filterCategory.refurbished_furniture.general.desc": "基本的家具，椅子、桌子等",
@@ -335,7 +335,7 @@
     "block.refurbished_furniture.black_trampoline": "黑色蹦床",
     "block.refurbished_furniture.light_range_hood": "亮色油烟机",
     "block.refurbished_furniture.dark_range_hood": "暗色油烟机",
-    "block.refurbished_furniture.plate": "Plate",
+    "block.refurbished_furniture.plate": "盘子",
     "block.refurbished_furniture.white_stool": "白色凳",
     "block.refurbished_furniture.orange_stool": "橙色凳",
     "block.refurbished_furniture.magenta_stool": "品红色凳",
@@ -642,6 +642,6 @@
     "jei_category.refurbished_furniture.cutting_board_combining": "组合",
     "jei_category.refurbished_furniture.workbench_constructing": "制作家具",
     "jei_category.refurbished_furniture.oven_baking": "烘焙",
-    "jei_category.refurbished_furniture.sink_fluid_transmuting": "流体转变"
+    "jei_category.refurbished_furniture.sink_fluid_transmuting": "流体转化"
 
 }
