@@ -30,6 +30,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
@@ -75,6 +76,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     protected double scroll; // 0 - content height
     protected int hoveredIndex = -1;
     protected int clickedY = -1;
+    protected List<FormattedCharSequence> tooltip;
 
     public WorkbenchScreen(WorkbenchMenu menu, Inventory playerInventory, Component title)
     {
@@ -146,15 +148,20 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         {
             this.renderRecipeTooltip(poseStack, mouseX, mouseY, this.hoveredIndex);
         }
-        if(this.craftableOnlyButton.isHoveredOrFocused())
+        else if(this.craftableOnlyButton.isHoveredOrFocused())
         {
             Component text = this.craftableOnlyButton.isStateTriggered() ? CraftableButton.VANILLA_ONLY_CRAFTABLE : CraftableButton.VANILLA_ALL_RECIPES;
             this.renderTooltip(poseStack, text, mouseX, mouseY);
         }
-        if(this.searchNeighboursButton.isHoveredOrFocused())
+        else if(this.searchNeighboursButton.isHoveredOrFocused())
         {
             Component text = (this.searchNeighboursButton.isStateTriggered() ? SearchNeighboursButton.SEARCH_NEIGHBOURS_ON : SearchNeighboursButton.SEARCH_NEIGHBOURS_OFF);
             this.renderTooltip(poseStack, text, mouseX, mouseY);
+        }
+        else if(this.tooltip != null)
+        {
+            this.renderTooltip(poseStack, this.tooltip, mouseX, mouseY);
+            this.tooltip = null;
         }
     }
 
@@ -331,6 +338,11 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         super.setFocused(listener);
     }
 
+    public void setActiveTooltip(List<FormattedCharSequence> tooltip)
+    {
+        this.tooltip = tooltip;
+    }
+
     private class CraftableButton extends StateSwitchingButton
     {
         private static final Component VANILLA_ONLY_CRAFTABLE = Component.translatable("gui.recipebook.toggleRecipes.craftable");
@@ -425,7 +437,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         private final int iconV;
         private final Category category;
 
-        protected CategoryButton(Screen screen, int x, int y, int iconU, int iconV, Category category)
+        protected CategoryButton(WorkbenchScreen screen, int x, int y, int iconU, int iconV, Category category)
         {
             super(x, y, 20, 16, CommonComponents.EMPTY, btn -> {
                 ((CategoryButton) btn).toggle();
@@ -434,9 +446,9 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
                     ResourceLocation tagId = category.tags[0].location();
                     String tooltipTitle = String.format("filterCategory.%s.%s", tagId.getNamespace(), tagId.getPath().replace("/", "."));
                     String tooltipDesc = tooltipTitle + ".desc";
-                    screen.renderTooltip(poseStack, ScreenHelper.createMultilineTooltip(List.of(Component.translatable(tooltipTitle), Component.translatable(tooltipDesc).withStyle(ChatFormatting.GRAY))), mouseX, mouseY);
+                    screen.setActiveTooltip(ScreenHelper.createMultilineTooltip(List.of(Component.translatable(tooltipTitle), Component.translatable(tooltipDesc).withStyle(ChatFormatting.GRAY))));
                 } else {
-                    screen.renderTooltip(poseStack, Components.GUI_SHOW_ALL_CATEGORIES, mouseX, mouseY);
+                    screen.setActiveTooltip(ScreenHelper.createMultilineTooltip(List.of(Components.GUI_SHOW_ALL_CATEGORIES)));
                 }
             });
             this.iconU = iconU;
