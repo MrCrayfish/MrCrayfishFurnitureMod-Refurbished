@@ -219,7 +219,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
                     .map(GameProfile::getName)
                     .map(Component::literal)
                     .orElse(UNKNOWN_MAILBOX_OWNER);
-                this.tooltip = ScreenHelper.createMultilineTooltip(List.of(Component.literal(ownerName)));
+                this.tooltip = ScreenHelper.createMultilineTooltip(List.of(ownerName));
             }
         }
         GuiComponent.disableScissor();
