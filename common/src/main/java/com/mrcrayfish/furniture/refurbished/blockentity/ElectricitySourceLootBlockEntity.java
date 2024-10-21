@@ -5,6 +5,7 @@ import com.mrcrayfish.furniture.refurbished.electricity.Connection;
 import com.mrcrayfish.furniture.refurbished.electricity.ISourceNode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -70,14 +71,17 @@ public abstract class ElectricitySourceLootBlockEntity extends BasicLootBlockEnt
     public void load(CompoundTag tag)
     {
         super.load(tag);
-        this.readNodeNbt(tag);
+        if(tag.contains("Overloaded", Tag.TAG_BYTE))
+        {
+            this.overloaded = tag.getBoolean("Overloaded");
+        }
     }
 
     @Override
     protected void saveAdditional(CompoundTag tag)
     {
         super.saveAdditional(tag);
-        this.writeNodeNbt(tag);
+        tag.putBoolean("Overloaded", this.overloaded);
     }
 
     @Nullable

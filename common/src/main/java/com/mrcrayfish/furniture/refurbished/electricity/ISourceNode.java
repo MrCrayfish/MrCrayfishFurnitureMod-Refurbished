@@ -84,20 +84,6 @@ public interface ISourceNode extends IElectricityNode
         return true; // Source nodes are always in a network
     }
 
-    @Override
-    default void readNodeNbt(CompoundTag tag)
-    {
-        IElectricityNode.super.readNodeNbt(tag);
-        this.setNodeOverloaded(tag.getBoolean("Overloaded"));
-    }
-
-    @Override
-    default void writeNodeNbt(CompoundTag tag)
-    {
-        IElectricityNode.super.writeNodeNbt(tag);
-        tag.putBoolean("Overloaded", this.isNodeOverloaded());
-    }
-
     /**
      * An early tick called at the start of the level tick before other block entities are ticked
      */
