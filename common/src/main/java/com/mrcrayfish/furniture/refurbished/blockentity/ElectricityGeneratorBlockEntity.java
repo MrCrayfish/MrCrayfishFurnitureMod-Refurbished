@@ -23,6 +23,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -203,6 +204,7 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
     public void addEnergy(int energy)
     {
         this.energy += energy;
+        this.setChanged();
     }
 
     @Override
@@ -231,7 +233,11 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
                     {
                         stack.shrink(1);
                     }
-                    this.totalEnergy = energy;
+                    if(this.totalEnergy != energy)
+                    {
+                        this.totalEnergy = energy;
+                        this.setChanged();
+                    }
                 }
                 return energy;
             }

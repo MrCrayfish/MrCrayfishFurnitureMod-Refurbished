@@ -59,6 +59,7 @@ public abstract class ElectricitySourceLootBlockEntity extends BasicLootBlockEnt
     public void setNodeOverloaded(boolean overloaded)
     {
         this.overloaded = overloaded;
+        this.setChanged();
     }
 
     @Override

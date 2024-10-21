@@ -611,6 +611,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
             if(this.totalBakingTime != time)
             {
                 this.totalBakingTime = time;
+                StoveBlockEntity.this.setChanged();
             }
             return this.totalBakingTime;
         }
@@ -631,6 +632,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
         public void setProcessingTime(int time)
         {
             this.bakingTime = time;
+            StoveBlockEntity.this.setChanged();
         }
 
         @Override
@@ -654,6 +656,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
                     else if(ItemStack.isSameItemSameTags(copy, outputStack) && outputStack.getCount() + copy.getCount() <= outputStack.getMaxStackSize())
                     {
                         outputStack.grow(copy.getCount());
+                        StoveBlockEntity.this.setChanged();
                     }
                     if(remainingItem != null)
                     {

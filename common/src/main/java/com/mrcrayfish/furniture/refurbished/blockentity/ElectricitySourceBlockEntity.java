@@ -59,6 +59,7 @@ public abstract class ElectricitySourceBlockEntity extends BlockEntity implement
     public void setNodeOverloaded(boolean overloaded)
     {
         this.overloaded = overloaded;
+        this.setChanged();
     }
 
     @Override

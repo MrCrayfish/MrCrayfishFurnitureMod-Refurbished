@@ -230,7 +230,7 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
         if(!this.flipped)
         {
             this.needsFlipping = true;
-            this.sync();
+            this.setChanged();
             return;
         }
 
@@ -320,7 +320,7 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
             this.flipped = true;
             this.needsFlipping = false;
             this.sendFlipAnimationToPlayers();
-            this.sync();
+            this.setChanged();
             return;
         }
         if(!this.getItem(0).isEmpty())
@@ -347,7 +347,7 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
             this.rotation = rotation;
             this.flipped = false;
             this.needsFlipping = false;
-            this.sync();
+            this.setChanged();
             this.playPlaceIngredientSound(false, 0.85F);
             return true;
         }
@@ -369,7 +369,7 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
             this.level.addFreshEntity(entity);
             this.flipped = false;
             this.needsFlipping = false;
-            this.sync();
+            this.setChanged();
         }
     }
 

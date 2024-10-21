@@ -95,6 +95,7 @@ public class ToasterBlockEntity extends ElectricityModuleProcessingLootBlockEnti
         this.heating = heating;
         this.level.setBlock(this.worldPosition, this.getBlockState().setValue(ToasterBlock.POWERED, this.heating), Block.UPDATE_ALL);
         this.playLeverSound(heating);
+        this.setChanged();
         this.sync();
     }
 
