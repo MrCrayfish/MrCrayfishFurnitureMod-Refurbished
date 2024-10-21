@@ -549,6 +549,8 @@
     "gui.refurbished_furniture.mail_box_limit": "You've reached your limit on Mailboxes",
     "gui.refurbished_furniture.invalid_dimension": "Mailboxes cannot be placed in this dimension",
     "gui.refurbished_furniture.invalid_mailbox": "Mailbox is disabled as it is not in an allowed dimension",
+    "gui.refurbished_furniture.default_mailbox_name": "Mailbox",
+    "gui.refurbished_furniture.unknown_mailbox_owner": "Unknown Player",
     "gui.refurbished_furniture.delivery_service.unknown_mailbox": "Unknown or invalid mailbox",
     "gui.refurbished_furniture.delivery_service.mailbox_queue_full": "The selected mailbox has reached its max mail queue",
     "gui.refurbished_furniture.delivery_service.undeliverable_dimension": "The selected mailbox is in an undeliverable dimension",

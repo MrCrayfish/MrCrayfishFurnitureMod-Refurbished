@@ -24,6 +24,7 @@ import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -50,6 +51,8 @@ import java.util.UUID;
 public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
 {
     private static final Component MAILBOXES_LABEL = Utils.translation("gui", "mailboxes");
+    private static final MutableComponent DEFAULT_MAILBOX_NAME = Utils.translation("gui", "default_mailbox_name");
+    private static final MutableComponent UNKNOWN_MAILBOX_OWNER = Utils.translation("gui", "unknown_mailbox_owner");
     private static final ResourceLocation POST_BOX_TEXTURE = Utils.resource("textures/gui/container/post_box.png");
     private static final ResourceLocation VILLAGER_TEXTURE = new ResourceLocation("textures/gui/container/villager2.png");
     private static final List<IMailbox> MAILBOX_CACHE = new ArrayList<>();
@@ -203,13 +206,19 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
             }
 
             // Draw the name of the mailbox
-            String mailboxName = mailbox.getCustomName().orElse("Mailbox");
+            Component mailboxName = mailbox.getCustomName()
+                .filter(s -> !s.isBlank())
+                .map(Component::literal)
+                .orElse(DEFAULT_MAILBOX_NAME);
             ScreenHelper.drawString(poseStack, mailboxName, entryX + 15, entryY + 3, selected ? 0xFFFFFF55 : 0xFFFFFFFF, true);
 
             // Create a tooltip of the owners username if the cursor hovers the face image
             if(this.isHovering((entryX - this.leftPos) + 3, (entryY - this.topPos) + 3, 8, 8, mouseX, mouseY))
             {
-                String ownerName = mailbox.getOwner().map(GameProfile::getName).orElse("Unknown Player");
+                Component ownerName = mailbox.getOwner()
+                    .map(GameProfile::getName)
+                    .map(Component::literal)
+                    .orElse(UNKNOWN_MAILBOX_OWNER);
                 this.tooltip = ScreenHelper.createMultilineTooltip(List.of(Component.literal(ownerName)));
             }
         }
