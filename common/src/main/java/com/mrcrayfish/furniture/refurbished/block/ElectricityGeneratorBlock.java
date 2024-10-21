@@ -111,4 +111,10 @@ public class ElectricityGeneratorBlock extends FurnitureHorizontalEntityBlock im
     {
         return List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL);
     }
+
+    @Override
+    public boolean useShapeForLightOcclusion(BlockState state)
+    {
+        return true;
+    }
 }
