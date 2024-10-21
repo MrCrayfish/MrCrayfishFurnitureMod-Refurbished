@@ -90,6 +90,7 @@ public record Mailbox(UUID id, ResourceKey<Level> levelKey, BlockPos pos, Mutabl
             if(blockEntity.deliverItem(stack))
             {
                 this.queue.remove();
+                this.service.setDirty();
             }
         }
         else
