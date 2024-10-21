@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.client.gui.overlay;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.Components;
+import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.client.LinkHandler;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.IconButton;
 import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
@@ -107,7 +108,10 @@ public class NodeIndicatorOverlay implements IHudOverlay
             BlockEntity entity = mc.level.getBlockEntity(result.getBlockPos());
             if(entity instanceof IElectricityNode node1 && !node1.isNodeInPowerableNetwork())
             {
-                this.drawLabel(mc, poseStack, Components.GUI_NO_POWER, 20, 20);
+                if(!Config.SERVER.electricity.cheats.everythingIsPowered.get())
+                {
+                    this.drawLabel(mc, poseStack, Components.GUI_NO_POWER, 20, 20);
+                }
             }
         }
     }

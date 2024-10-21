@@ -145,6 +145,22 @@ public class Config
                 The maximum amount of nodes in a network that can be powered by an electricity
                 source, like the electricity generator.""")
             public final IntProperty maximumNodesInNetwork = IntProperty.create(64, 1, 512);
+
+            @ConfigProperty(name = "cheats", comment = "Cheats for electricity. Free power, etc.")
+            public final Cheats cheats = new Cheats();
+
+            public static class Cheats
+            {
+                @ConfigProperty(name = "freeGeneratorPower", comment = """
+                Electricity Generators will now output free power, and stay on forever.""")
+                public final BoolProperty freeGeneratorPower = BoolProperty.create(false);
+
+                @ConfigProperty(name = "everythingIsPowered", comment = """
+                Makes all blocks that require electricity always be powered without them being
+                connected to an Electricity Generator. Warning, some blocks may no longer work as
+                expected. Use at your own risk of a downgraded experience.""")
+                public final BoolProperty everythingIsPowered = BoolProperty.create(false);
+            }
         }
 
         public static class RecycleBin

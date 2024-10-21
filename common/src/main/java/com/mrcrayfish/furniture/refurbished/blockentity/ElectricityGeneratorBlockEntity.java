@@ -197,6 +197,11 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
     @Override
     public int getEnergy()
     {
+        // Free generator power
+        if(Config.SERVER.electricity.cheats.freeGeneratorPower.get())
+        {
+            return 1;
+        }
         return this.energy;
     }
 
