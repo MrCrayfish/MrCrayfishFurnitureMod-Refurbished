@@ -295,6 +295,14 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
         {
             this.enabled = tag.getBoolean("Enabled");
         }
+        if(tag.contains("Energy", Tag.TAG_INT))
+        {
+            this.energy = tag.getInt("Energy");
+        }
+        if(tag.contains("TotalEnergy", Tag.TAG_INT))
+        {
+            this.totalEnergy = tag.getInt("TotalEnergy");
+        }
     }
 
     @Override
@@ -302,6 +310,8 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
     {
         super.saveAdditional(tag);
         tag.putBoolean("Enabled", this.enabled);
+        tag.putInt("Energy", this.energy);
+        tag.putInt("TotalEnergy", this.totalEnergy);
     }
 
     @Override
