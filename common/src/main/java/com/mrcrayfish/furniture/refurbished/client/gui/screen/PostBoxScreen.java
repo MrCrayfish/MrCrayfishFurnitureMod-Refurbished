@@ -181,7 +181,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
         // Draw mailboxes list
         GuiComponent.enableScissor(this.leftPos + CONTAINER_LEFT, this.topPos + CONTAINER_TOP, this.leftPos + CONTAINER_LEFT + CONTAINER_WIDTH, this.topPos + CONTAINER_TOP + CONTAINER_HEIGHT);
         int scroll = this.clampScroll(this.scroll + this.getDeltaScroll(mouseY));
-        int startIndex = Mth.clamp(scroll / MAILBOX_ENTRY_HEIGHT, 0, Math.max(0, this.mailboxes.size() - 1 - MAX_VISIBLE_ITEMS));
+        int startIndex = Mth.clamp(scroll / MAILBOX_ENTRY_HEIGHT, 0, Math.max(0, this.mailboxes.size() - MAX_VISIBLE_ITEMS));
         int maxItems = Math.min(MAX_VISIBLE_ITEMS, this.mailboxes.size());
         for(int i = 0; i < maxItems; i++)
         {
