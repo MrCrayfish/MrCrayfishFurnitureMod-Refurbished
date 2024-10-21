@@ -80,7 +80,6 @@ public class Bootstrap
         PlayerEvents.LOGGED_OUT.register(player -> {
             MinecraftServer server = player.getServer();
             if(server != null) {
-                DeliveryService.get(server).ifPresent(service -> service.playerLoggedOut(player));
                 LinkManager.get(server).ifPresent(manager -> manager.onPlayerLoggedOut(player));
             }
         });

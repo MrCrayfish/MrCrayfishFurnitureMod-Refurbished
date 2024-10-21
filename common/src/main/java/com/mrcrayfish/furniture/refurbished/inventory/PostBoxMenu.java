@@ -4,6 +4,7 @@ import com.mrcrayfish.furniture.refurbished.blockentity.PostBoxBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.inventory.slot.PostBoxSlot;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
+import com.mrcrayfish.furniture.refurbished.mail.IMailbox;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -11,14 +12,21 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Author: MrCrayfish
  */
 public class PostBoxMenu extends SimpleContainerMenu
 {
-    public PostBoxMenu(int windowId, Inventory playerInventory)
+    protected final List<IMailbox> mailboxes = new ArrayList<>();
+
+    public PostBoxMenu(int windowId, Inventory playerInventory, List<IMailbox> mailboxes)
     {
         this(windowId, playerInventory, new SimpleContainer(PostBoxBlockEntity.CONTAINER_SIZE));
+        this.mailboxes.addAll(mailboxes);
     }
 
     public PostBoxMenu(int windowId, Inventory playerInventory, Container container)
@@ -87,5 +95,10 @@ public class PostBoxMenu extends SimpleContainerMenu
             slot.onTake(player, slotStack);
         }
         return stack;
+    }
+
+    public List<IMailbox> getMailboxes()
+    {
+        return Collections.unmodifiableList(this.mailboxes);
     }
 }

@@ -55,7 +55,6 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
     private static final MutableComponent UNKNOWN_MAILBOX_OWNER = Utils.translation("gui", "unknown_mailbox_owner");
     private static final ResourceLocation POST_BOX_TEXTURE = Utils.resource("textures/gui/container/post_box.png");
     private static final ResourceLocation VILLAGER_TEXTURE = new ResourceLocation("textures/gui/container/villager2.png");
-    private static final List<IMailbox> MAILBOX_CACHE = new ArrayList<>();
     private static final Map<UUID, PlayerInfo> PLAYER_INFO_CACHE = new HashMap<>();
 
     private static final int SCROLL_SPEED = 5;
@@ -431,7 +430,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
      */
     private void updateSearchFilter()
     {
-        List<IMailbox> filteredMailboxes = MAILBOX_CACHE.stream().filter(mailbox -> {
+        List<IMailbox> filteredMailboxes = this.menu.getMailboxes().stream().filter(mailbox -> {
             if(this.query.startsWith("@")) {
                 String ownerName = mailbox.getOwner().map(GameProfile::getName).orElse("Unknown");
                 return StringUtils.containsIgnoreCase(ownerName, this.query.substring(1));
@@ -497,15 +496,5 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
     public void clearMessage()
     {
         this.messageEditBox.setValue("");
-    }
-
-    /**
-     * Updates the mailbox cache from the server
-     * @param mailboxes the list of new mailboxes
-     */
-    public static void updateMailboxes(Collection<? extends IMailbox> mailboxes)
-    {
-        MAILBOX_CACHE.clear();
-        MAILBOX_CACHE.addAll(mailboxes);
     }
 }

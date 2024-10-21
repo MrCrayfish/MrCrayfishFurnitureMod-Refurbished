@@ -69,11 +69,6 @@ public class ClientPlayHandler
         }
     }
 
-    public static void handleMessageUpdateMailboxes(MessageUpdateMailboxes message)
-    {
-        PostBoxScreen.updateMailboxes(message.getMailboxes());
-    }
-
     public static void handleMessageClearMessage(MessageClearMessage message)
     {
         Minecraft mc = Minecraft.getInstance();

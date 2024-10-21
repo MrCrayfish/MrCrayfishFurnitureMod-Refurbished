@@ -1,21 +1,22 @@
 package com.mrcrayfish.furniture.refurbished.mail;
 
+import com.google.common.collect.ImmutableList;
+import com.mojang.authlib.GameProfile;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.blockentity.MailboxBlockEntity;
-import com.mrcrayfish.furniture.refurbished.network.Network;
-import com.mrcrayfish.furniture.refurbished.network.message.MessageUpdateMailboxes;
+import com.mrcrayfish.furniture.refurbished.client.ClientMailbox;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -25,7 +26,14 @@ import org.apache.commons.lang3.mutable.MutableObject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Queue;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 // TODO require ender pearl to send items
@@ -52,7 +60,6 @@ public class DeliveryService extends SavedData
     private final Map<UUID, Mailbox> mailboxes = new ConcurrentHashMap<>();
     private final Queue<Mailbox> removal = new ArrayDeque<>();
     private final Map<UUID, Pair<ResourceLocation, BlockPos>> pendingNames = new HashMap<>();
-    private final Set<UUID> playerRequests = new HashSet<>();
 
     public DeliveryService(MinecraftServer server)
     {
@@ -90,20 +97,6 @@ public class DeliveryService extends SavedData
 
         // Try to deliver mail from queues to the block entity in the level
         this.mailboxes.forEach((uuid, mailbox) -> mailbox.tick());
-    }
-
-    /**
-     * Called when a player logs out of the server. Since {@link #playerRequests} is persistent,
-     * if a player logged out and closed their client, the server still thinks they have already
-     * requested the mailboxes and won't send it again if they start the client and join the server.
-     * To solve this issue, their player id is simply removed from {@link #playerRequests} when they
-     * log out.
-     *
-     * @param player the player that logged out
-     */
-    public void playerLoggedOut(Player player)
-    {
-        this.playerRequests.remove(player.getUUID());
     }
 
     /**
@@ -254,24 +247,40 @@ public class DeliveryService extends SavedData
     }
 
     /**
-     * Sends the registered mailboxes to the given player
-     *
-     * @param player the player to recieve the mailboxes update
+     * Encodes the mailboxes to a FriendlyByteBuf
      */
-    public void sendMailboxesToPlayer(ServerPlayer player)
+    public void encodeMailboxes(FriendlyByteBuf buf)
     {
-        if(!this.playerRequests.contains(player.getUUID()))
-        {
-            Network.getPlay().sendToPlayer(() -> player, new MessageUpdateMailboxes(this.mailboxes.values()));
-            this.playerRequests.add(player.getUUID());
-        }
+        buf.writeCollection(this.mailboxes.values(), (buf1, mailbox) -> {
+            buf1.writeUUID(mailbox.getId());
+            buf1.writeOptional(mailbox.getOwner(), (buf2, profile) -> {
+                buf2.writeUUID(profile.getId());
+                buf2.writeOptional(Optional.ofNullable(profile.getName()), FriendlyByteBuf::writeUtf);
+            });
+            buf1.writeOptional(mailbox.getCustomName(), FriendlyByteBuf::writeUtf);
+        });
     }
 
-    @Override
-    public void setDirty()
+    /**
+     * Decodes the mailboxes from a FriendlyByteBuf. The list returned is immutable and the mailboxes
+     * are simply a read only view of the mailboxes from the server.
+     *
+     * @param buf the FriendlyByteBuf to read from
+     * @return an immutable list of mailboxes
+     */
+    public static List<IMailbox> decodeMailboxes(FriendlyByteBuf buf)
     {
-        super.setDirty();
-        this.playerRequests.clear();
+        List<IMailbox> list = buf.readList(buf1 -> {
+            UUID mailboxId = buf1.readUUID();
+            Optional<GameProfile> profile = buf1.readOptional(buf2 -> {
+                UUID playerId = buf2.readUUID();
+                Optional<String> name = buf2.readOptional(FriendlyByteBuf::readUtf);
+                return new GameProfile(playerId, name.orElse("Unknown"));
+            });
+            Optional<String> mailboxName = buf1.readOptional(FriendlyByteBuf::readUtf);
+            return new ClientMailbox(mailboxId, profile, mailboxName);
+        });
+        return ImmutableList.copyOf(list);
     }
 
     private void load(CompoundTag compound)
