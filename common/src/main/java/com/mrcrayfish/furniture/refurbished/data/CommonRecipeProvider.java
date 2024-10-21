@@ -123,6 +123,20 @@ public class CommonRecipeProvider
                 .unlockedBy("has_leather", this.hasItem.apply(Items.LEATHER))
                 .save(this.consumer);
 
+        ShapedRecipeBuilder.shaped(ModItems.TELEVISION_REMOTE.get())
+            .pattern("NLN")
+            .pattern("NRN")
+            .pattern("NCN")
+            .define('C', Items.COPPER_INGOT)
+            .define('R', Items.REDSTONE)
+            .define('L', Items.REDSTONE_LAMP)
+            .define('N', Items.IRON_NUGGET)
+            .unlockedBy("has_copper_ingot", this.hasItem.apply(Items.COPPER_INGOT))
+            .unlockedBy("has_iron_nugget", this.hasItem.apply(Items.IRON_NUGGET))
+            .unlockedBy("has_redstone", this.hasItem.apply(Items.REDSTONE))
+            .unlockedBy("has_redstone_lamp", this.hasItem.apply(Items.REDSTONE_LAMP))
+            .save(this.consumer);
+
         ShapelessRecipeBuilder.shapeless(ModItems.CHEESE.get(), 2)
             .requires(ModItems.SEA_SALT.get())
             .requires(Items.MILK_BUCKET)
