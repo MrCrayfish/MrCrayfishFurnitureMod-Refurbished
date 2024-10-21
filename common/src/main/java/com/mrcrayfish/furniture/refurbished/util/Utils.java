@@ -59,6 +59,11 @@ public class Utils
         return Component.translatable(String.format("%s.%s.%s", category, Constants.MOD_ID, path), params);
     }
 
+    public static String translationKey(String category, String path)
+    {
+        return String.format("%s.%s.%s", category, Constants.MOD_ID, path);
+    }
+
     /**
      * A Fisher–Yates shuffle implementation that uses Minecraft's RandomSource.
      *

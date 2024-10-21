@@ -3,7 +3,10 @@ package com.mrcrayfish.furniture.refurbished.item;
 import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
@@ -37,5 +40,20 @@ public class MailboxItem extends BlockItem
             }
         }
         return super.canPlace(context, state);
+    }
+
+    @Override
+    public InteractionResult place(BlockPlaceContext context)
+    {
+        if(!DeliveryService.isDeliverableDimension(context.getLevel()))
+        {
+            Player player = context.getPlayer();
+            if(player instanceof ServerPlayer serverPlayer)
+            {
+                serverPlayer.sendSystemMessage(Utils.translation("gui", "invalid_dimension"), true);
+            }
+            return InteractionResult.FAIL;
+        }
+        return super.place(context);
     }
 }

@@ -16,6 +16,7 @@ import com.mrcrayfish.furniture.refurbished.inventory.PostBoxMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.RecycleBinMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.WorkbenchMenu;
 import com.mrcrayfish.furniture.refurbished.item.PackageItem;
+import com.mrcrayfish.furniture.refurbished.mail.DeliveryResult;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.*;
@@ -66,9 +67,15 @@ public class ServerPlayHandler
 
             DeliveryService.get(player.server).ifPresent(service -> {
                 ItemStack stack = PackageItem.create(container, message.getMessage(), player.getGameProfile().getName());
-                if(service.sendMail(message.getMailboxId(), stack)) {
+                DeliveryResult result = service.sendMail(message.getMailboxId(), stack);
+                if(result.success()) {
                     container.clearContent();
                     Network.getPlay().sendToPlayer(() -> player, new MessageClearMessage());
+                    Network.getPlay().sendToPlayer(() -> player, new MessageShowDeliveryResult(result));
+                } else {
+                    result.message().ifPresent(s -> {
+                        Network.getPlay().sendToPlayer(() -> player, new MessageShowDeliveryResult(result));
+                    });
                 }
             });
         }

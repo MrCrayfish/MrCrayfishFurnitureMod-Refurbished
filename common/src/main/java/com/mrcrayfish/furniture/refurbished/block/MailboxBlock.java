@@ -8,6 +8,7 @@ import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
 import com.mrcrayfish.furniture.refurbished.mail.Mailbox;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageNameMailbox;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -98,6 +99,12 @@ public class MailboxBlock extends FurnitureHorizontalEntityBlock implements Bloc
     {
         if(!level.isClientSide() && level.getBlockEntity(pos) instanceof MailboxBlockEntity blockEntity)
         {
+            if(!DeliveryService.isDeliverableDimension(level))
+            {
+                ((ServerPlayer) player).sendSystemMessage(Utils.translation("gui", "invalid_mailbox"), true);
+                return InteractionResult.SUCCESS;
+            }
+
             // Remove the little flag once the player open the mailbox
             if(state.getValue(ENABLED))
             {

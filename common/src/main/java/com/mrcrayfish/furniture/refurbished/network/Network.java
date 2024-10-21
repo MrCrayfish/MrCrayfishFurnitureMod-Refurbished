@@ -45,6 +45,7 @@ public class Network
             .registerPlayMessage(MessageWorkbench.SearchNeighbours.class, MessageDirection.PLAY_SERVER_BOUND)
             .registerPlayMessage(MessageNameMailbox.class, MessageDirection.PLAY_CLIENT_BOUND)
             .registerPlayMessage(MessageWithdrawExperience.class, MessageDirection.PLAY_SERVER_BOUND)
+            .registerPlayMessage(MessageShowDeliveryResult.class, MessageDirection.PLAY_CLIENT_BOUND)
             .build();
     }
 

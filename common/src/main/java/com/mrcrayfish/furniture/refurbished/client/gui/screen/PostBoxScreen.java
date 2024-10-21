@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.IconButton;
 import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import com.mrcrayfish.furniture.refurbished.inventory.PostBoxMenu;
+import com.mrcrayfish.furniture.refurbished.mail.DeliveryResult;
 import com.mrcrayfish.furniture.refurbished.mail.IMailbox;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSendPackage;
@@ -31,6 +32,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.level.GameType;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -63,6 +65,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
     private static final int CONTAINER_HEIGHT = 130;
     private static final int CONTAINER_WIDTH = 85;
     private static final int MAX_VISIBLE_ITEMS = Mth.ceil((double) CONTAINER_HEIGHT / MAILBOX_ENTRY_HEIGHT) + 1;
+    private static final int MAX_RESPONSE_DISPLAY_TIME = 100;
 
     protected List<IMailbox> mailboxes = new ArrayList<>();
     protected IMailbox selected;
@@ -74,6 +77,9 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
     protected int scroll;
     protected int clickedY = -1;
     protected List<FormattedCharSequence> tooltip;
+    protected @Nullable String responseTranslationKey;
+    protected boolean responseSuccess;
+    protected int responseTimer;
 
     public PostBoxScreen(PostBoxMenu menu, Inventory playerInventory, Component title)
     {
@@ -134,6 +140,14 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
     {
         this.searchEditBox.tick();
         this.messageEditBox.tick();
+        if(this.responseTranslationKey != null)
+        {
+            this.responseTimer++;
+            if(this.responseTimer == MAX_RESPONSE_DISPLAY_TIME)
+            {
+                this.responseTranslationKey = null;
+            }
+        }
     }
 
     @Override
@@ -216,6 +230,37 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
                     GuiComponent.blit(poseStack, this.leftPos + 235 + i * 18, this.topPos + 14 + j * 18, 85, 172, 16, 16, 512, 256);
                 }
             }
+        }
+
+        // Draw response message
+        if(this.responseTranslationKey != null && this.responseTimer < MAX_RESPONSE_DISPLAY_TIME)
+        {
+            Component responseMessage = Component.translatable(this.responseTranslationKey);
+            int contentWidth = this.font.width(responseMessage) + 4;
+            int responseToastWidth = 4 + contentWidth + 3;
+            int responseToastLeft = this.leftPos + this.imageWidth / 2 - responseToastWidth / 2;
+            int responseToastTop = this.topPos - 22;
+            poseStack.pushPose();
+            if(this.responseTimer < 5)
+            {
+                float frameTime = this.minecraft.getFrameTime();
+                poseStack.translate(0, (5 - (this.responseTimer + frameTime)) * 5, 0);
+            }
+            else if(MAX_RESPONSE_DISPLAY_TIME - this.responseTimer < 5)
+            {
+                float frameTime = this.minecraft.getFrameTime();
+                float offset = 5 - (MAX_RESPONSE_DISPLAY_TIME - (this.responseTimer + frameTime));
+                poseStack.translate(0, offset * 5, 0);
+            }
+            GuiComponent.enableScissor(responseToastLeft, this.topPos - 22, responseToastLeft + responseToastWidth, this.topPos);
+            RenderSystem.setShaderTexture(0, POST_BOX_TEXTURE);
+            int toastU = this.responseSuccess ? 8 : 0;
+            GuiComponent.blit(poseStack, responseToastLeft, responseToastTop, toastU, 200, 4, 18, 512, 256);
+            GuiComponent.blit(poseStack, responseToastLeft + 4, responseToastTop, contentWidth, 18, toastU + 4, 200, 1, 18, 512, 256);
+            GuiComponent.blit(poseStack, responseToastLeft + 4 + contentWidth, responseToastTop, toastU + 5, 200, 3, 18, 512, 256);
+            this.font.draw(poseStack, responseMessage, responseToastLeft + 6, responseToastTop + 5, 0xFFFFFFFF);
+            GuiComponent.disableScissor();
+            poseStack.popPose();
         }
 
         if(this.isHovering(91, 5, 10, 10, mouseX, mouseY))
@@ -419,6 +464,21 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
         return PLAYER_INFO_CACHE.computeIfAbsent(profile.getId(), uuid -> {
             ClientboundPlayerInfoPacket.PlayerUpdate update = new ClientboundPlayerInfoPacket.PlayerUpdate(profile, 0, GameType.SURVIVAL, null, null);
             return new PlayerInfo(update, this.minecraft.getServiceSignatureValidator(), false);
+        });
+    }
+
+    /**
+     * Shows a response message if received one from the server. This is called when a mail queue is
+     * full or the selected mailbox is in an undeliverable dimension.
+     *
+     * @param result the result of the delivery
+     */
+    public void showResponse(DeliveryResult result)
+    {
+        result.message().ifPresent(key -> {
+            this.responseSuccess = result.success();
+            this.responseTranslationKey = key;
+            this.responseTimer = 0;
         });
     }
 
