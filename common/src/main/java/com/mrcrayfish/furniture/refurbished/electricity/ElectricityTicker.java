@@ -68,7 +68,7 @@ public final class ElectricityTicker
         {
             BlockPos pos = it.next();
             T node = getter.apply(pos);
-            if(node == null)
+            if(node == null || !node.isNodeValid())
             {
                 Constants.LOG.debug("Stopping ticking node at {}", pos);
                 it.remove();
