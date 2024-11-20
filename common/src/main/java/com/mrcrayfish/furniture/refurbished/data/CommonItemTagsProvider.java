@@ -1034,5 +1034,9 @@ public class CommonItemTagsProvider
         blockDisplay.add(Items.MELON);
         blockDisplay.add(Items.SLIME_BLOCK);
         blockDisplay.add(Items.HONEYCOMB_BLOCK);
+
+        // Compat to mods using forge:salts
+        TagBuilder<Item> food = builder.apply(net.minecraft.tags.ItemTags.create(new ResourceLocation("forge", "salts")));
+        food.add(ModItems.SEA_SALT.get());
     }
 }

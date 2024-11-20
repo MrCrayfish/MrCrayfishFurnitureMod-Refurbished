@@ -44,6 +44,8 @@ public class CommonRecipeProvider
     private final Function<ItemLike, CriterionTriggerInstance> hasItem;
     private final Function<TagKey<Item>, CriterionTriggerInstance> hasTag;
 
+    private static final TagKey<Item> FORGE_SALTS = net.minecraft.tags.ItemTags.create(new ResourceLocation("forge", "salts"));
+
     public CommonRecipeProvider(Consumer<FinishedRecipe> consumer, ConditionalModConsumer modLoadedConsumer, Function<ItemLike, CriterionTriggerInstance> hasItem, Function<TagKey<Item>, CriterionTriggerInstance> hasTag)
     {
         this.consumer = consumer;
@@ -138,10 +140,10 @@ public class CommonRecipeProvider
             .save(this.consumer);
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, ModItems.CHEESE.get(), 2)
-            .requires(ModItems.SEA_SALT.get())
+            .requires(FORGE_SALTS)
             .requires(Items.MILK_BUCKET)
             .unlockedBy("has_milk", this.hasItem.apply(Items.MILK_BUCKET))
-            .unlockedBy("has_salt", this.hasItem.apply(ModItems.SEA_SALT.get()))
+            .unlockedBy("has_salt", this.hasItem.apply(FORGE_SALTS))
             .save(this.consumer);
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, ModItems.DOUGH.get(), 2)
