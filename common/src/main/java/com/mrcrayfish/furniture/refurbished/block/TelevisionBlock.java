@@ -65,7 +65,7 @@ public class TelevisionBlock extends FurnitureHorizontalEntityBlock implements B
             {
                 television.interact();
             }
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }

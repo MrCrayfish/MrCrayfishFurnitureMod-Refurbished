@@ -20,7 +20,10 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -72,19 +75,20 @@ public class RecyclingBinScreen extends ElectricityContainerScreen<RecycleBinMen
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
     {
         super.renderBg(graphics, partialTick, mouseX, mouseY);
-        graphics.blit(RECYCLING_BIN_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        graphics.blit(RenderType::guiTextured, RECYCLING_BIN_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
         if(this.menu.getProcessTime() >= 0)
         {
             int maxProcessTime = Config.SERVER.recycleBin.processingTime.get();
             int width = (int) Math.ceil(25 * (this.menu.getProcessTime() / (float) maxProcessTime));
-            graphics.blit(RECYCLING_BIN_TEXTURE, this.leftPos + 85, this.topPos + 28, 176, 0, width, 17);
+            graphics.blit(RenderType::guiTextured, RECYCLING_BIN_TEXTURE, this.leftPos + 85, this.topPos + 28, 176, 0, width, 17, 256, 256);
         }
         int maxLevel = Config.SERVER.recycleBin.maximumExperienceLevels.get();
         double currentLevel = Mth.clamp(this.getExperienceLevel(), 0, maxLevel);
         Component levelLabel = Utils.translation("gui", "experience_level", FORMAT.format(currentLevel), maxLevel);
         int labelWidth = this.minecraft.font.width(levelLabel) / 2;
         Matrix4f matrix = graphics.pose().last().pose();
-        this.minecraft.font.drawInBatch8xOutline(levelLabel.getVisualOrderText(), this.leftPos + 68 - labelWidth, this.topPos + 60, 0xFFC8FF8F, 0xFF2D2102, matrix, graphics.bufferSource(), 0xF000F0);
+        MultiBufferSource.BufferSource source = this.minecraft.renderBuffers().bufferSource();
+        this.minecraft.font.drawInBatch8xOutline(levelLabel.getVisualOrderText(), this.leftPos + 68 - labelWidth, this.topPos + 60, 0xFFC8FF8F, 0xFF2D2102, matrix, source, 0xF000F0);
         this.drawExperienceFluid(graphics, (float) (currentLevel / maxLevel));
 
         if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, this.leftPos + 118, this.topPos + 22, 32, 48))
@@ -129,7 +133,7 @@ public class RecyclingBinScreen extends ElectricityContainerScreen<RecycleBinMen
         float scale = (float) 1 / 256;
         RenderSystem.enableBlend();
         RenderSystem.setShaderTexture(0, RECYCLING_BIN_TEXTURE);
-        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+        RenderSystem.setShader(CoreShaders.POSITION_TEX_COLOR);
         Matrix4f matrix = graphics.pose().last().pose();
         BufferBuilder builder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
         builder.addVertex(matrix, x, y, 0).setUv(u * scale, v * scale).setColor(1.0F, 1.0F, 1.0F, alpha);

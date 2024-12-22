@@ -26,7 +26,8 @@ public class OvenBakingRecipeManager implements IRecipeManager<OvenBakingRecipe>
     @ZenCodeType.Method
     public void addRecipe(String name, String category, IIngredient ingredient, IItemStack result, @ZenCodeType.OptionalInt(300) int processTime)
     {
-        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new RecipeHolder<>(CraftTweakerConstants.rl(name), new OvenBakingRecipe(ProcessingRecipe.Category.byName(category), ingredient.asVanillaIngredient(), result.getInternal(), processTime))));
+        // TODO 1.21.3 craft tweaker support
+        //CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new RecipeHolder<>(CraftTweakerConstants.rl(name), new OvenBakingRecipe(ProcessingRecipe.Category.byName(category), ingredient.asVanillaIngredient(), result.getInternal(), processTime))));
     }
 
     @Override

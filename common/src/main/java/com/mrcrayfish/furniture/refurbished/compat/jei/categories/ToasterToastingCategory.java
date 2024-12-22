@@ -63,8 +63,8 @@ public class ToasterToastingCategory extends FurnitureRecipeCategory<ToasterHeat
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, ToasterHeatingRecipe recipe, IFocusGroup focuses)
     {
-        builder.addSlot(RecipeIngredientRole.INPUT, 18, 4).addIngredients(recipe.getIngredients().get(0));
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 83, 19).addItemStack(Plugin.getResult(recipe));
+        builder.addSlot(RecipeIngredientRole.INPUT, 18, 4).addIngredients(recipe.getIngredient());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 83, 19).addItemStack(recipe.getResult());
         this.arrow = this.helper.createAnimatedDrawable(this.helper.createDrawable(Plugin.TEXTURES, 93, 0, 24, 17), recipe.getTime(), IDrawableAnimated.StartDirection.LEFT, false);
     }
 

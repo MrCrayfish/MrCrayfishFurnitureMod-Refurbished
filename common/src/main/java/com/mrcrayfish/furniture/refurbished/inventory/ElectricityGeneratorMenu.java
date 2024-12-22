@@ -13,6 +13,7 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 /**
  * Author: MrCrayfish
@@ -20,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 public class ElectricityGeneratorMenu extends SimpleContainerMenu implements IPowerSwitchMenu
 {
     private final ContainerData data;
+    private final Level level;
 
     public ElectricityGeneratorMenu(int windowId, Inventory playerInventory)
     {
@@ -33,7 +35,8 @@ public class ElectricityGeneratorMenu extends SimpleContainerMenu implements IPo
         checkContainerDataCount(data, 6);
         container.startOpen(playerInventory.player);
         this.data = data;
-        this.addSlot(new FuelSlot(container, 0, 26, 42));
+        this.level = playerInventory.player.level();
+        this.addSlot(new FuelSlot(container, this.level, 0, 26, 42));
         this.addPlayerInventorySlots(8, 84, playerInventory);
         this.addDataSlots(data);
     }
@@ -87,7 +90,7 @@ public class ElectricityGeneratorMenu extends SimpleContainerMenu implements IPo
 
     private boolean isFuel(ItemStack stack)
     {
-        return Services.ITEM.getBurnTime(stack, null) > 0;
+        return this.level.fuelValues().isFuel(stack);
     }
 
     public int getEnergy()

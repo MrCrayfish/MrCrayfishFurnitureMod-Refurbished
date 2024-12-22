@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.network.message;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
+import com.mrcrayfish.framework.api.network.PlayMessageContext;
 import com.mrcrayfish.furniture.refurbished.network.play.ServerPlayHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -21,7 +22,7 @@ public record MessageDeleteLink(BlockPos a, BlockPos b)
         return new MessageDeleteLink(a, b);
     });
 
-    public static void handle(MessageDeleteLink message, MessageContext context)
+    public static void handle(MessageDeleteLink message, PlayMessageContext context)
     {
         context.execute(() -> ServerPlayHandler.handleMessageDeleteLink(message, context.getPlayer().orElse(null)));
         context.setHandled(true);

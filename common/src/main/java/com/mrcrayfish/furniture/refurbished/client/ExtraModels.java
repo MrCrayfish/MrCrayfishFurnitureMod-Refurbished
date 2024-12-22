@@ -41,11 +41,11 @@ public enum ExtraModels
     CRIMSON_DARK_CEILING_FAN_BLADE(Utils.resource("extra/crimson_dark_ceiling_fan_blade")),
     WARPED_DARK_CEILING_FAN_BLADE(Utils.resource("extra/warped_dark_ceiling_fan_blade"));
 
-    private final ModelResourceLocation location;
+    private final ResourceLocation location;
 
     ExtraModels(ResourceLocation location)
     {
-        this.location = FrameworkClientAPI.createModelResourceLocation(location);
+        this.location = location;
     }
 
     /**
@@ -53,7 +53,7 @@ public enum ExtraModels
      */
     public BakedModel getModel()
     {
-        return ClientServices.PLATFORM.getBakedModel(this.location);
+        return FrameworkClientAPI.getStandaloneBakedModel(this.location);
     }
 
     /**
@@ -61,7 +61,7 @@ public enum ExtraModels
      * specific level.
      * @param register a consumer accepting a resource location path to the model
      */
-    public static void register(Consumer<ModelResourceLocation> register)
+    public static void register(Consumer<ResourceLocation> register)
     {
         for(ExtraModels model : values())
         {

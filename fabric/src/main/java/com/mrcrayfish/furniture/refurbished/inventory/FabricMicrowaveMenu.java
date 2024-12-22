@@ -4,8 +4,10 @@ import com.mrcrayfish.furniture.refurbished.blockentity.IPowerSwitch;
 import com.mrcrayfish.furniture.refurbished.blockentity.MicrowaveBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookTypes;
+import com.mrcrayfish.furniture.refurbished.core.ModRecipePropertySets;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.inventory.slot.ResultSlot;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -19,6 +21,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.StackedContentsCompatible;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipePropertySet;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 
@@ -29,6 +32,7 @@ public class FabricMicrowaveMenu extends SimpleContainerMenu implements IPowerSw
 {
     private final ContainerData data;
     private final Level level;
+    private final RecipePropertySet recipeSet;
 
     public FabricMicrowaveMenu(int windowId, Inventory playerInventory)
     {
@@ -43,6 +47,7 @@ public class FabricMicrowaveMenu extends SimpleContainerMenu implements IPowerSw
         container.startOpen(playerInventory.player);
         this.data = data;
         this.level = playerInventory.player.level();
+        this.recipeSet = this.level.recipeAccess().propertySet(ModRecipePropertySets.MICROWAVE_INPUT);
         this.addSlot(new Slot(container, 0, 48, 35));
         this.addSlot(new ResultSlot(container, 1, 108, 35));
         this.addPlayerInventorySlots(8, 84, playerInventory);
@@ -98,7 +103,7 @@ public class FabricMicrowaveMenu extends SimpleContainerMenu implements IPowerSw
 
     private boolean isRecipe(ItemStack stack)
     {
-        return this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.MICROWAVE_HEATING.get(), new SingleRecipeInput(stack), this.level).isPresent();
+        return this.recipeSet.test(stack);
     }
 
     @Override

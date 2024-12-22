@@ -9,11 +9,17 @@ import net.minecraft.Util;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.Holder;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Author: MrCrayfish
@@ -22,15 +28,18 @@ public class ClientWorkbenchRecipeTooltip implements ClientTooltipComponent
 {
     private final WorkbenchMenu menu;
     private final WorkbenchContructingRecipe recipe;
+    private final List<DisplayStack> displayStacks;
 
     public ClientWorkbenchRecipeTooltip(WorkbenchMenu menu, WorkbenchContructingRecipe recipe)
     {
         this.menu = menu;
         this.recipe = recipe;
+        this.displayStacks = recipe.getMaterials().stream()
+            .map(i -> new DisplayStack(-1, ItemStack.EMPTY)).collect(Collectors.toList());
     }
 
     @Override
-    public int getHeight()
+    public int getHeight(Font font)
     {
         return 20;
     }
@@ -43,15 +52,14 @@ public class ClientWorkbenchRecipeTooltip implements ClientTooltipComponent
     }
 
     @Override
-    public void renderImage(Font font, int start, int top, GuiGraphics graphics)
+    public void renderImage(Font font, int start, int top, int width, int height, GuiGraphics graphics)
     {
         Map<Integer, Integer> counted = new HashMap<>();
         List<StackedIngredient> materials = this.recipe.getMaterials();
         for(int i = 0; i < materials.size(); i++)
         {
             StackedIngredient material = materials.get(i);
-            ItemStack copy = this.getStack(material).copy();
-            copy.setCount(material.count());
+            ItemStack copy = this.getDisplayStack(i, material);
             graphics.renderFakeItem(copy, start + i * 18, top);
             graphics.renderItemDecorations(font, copy, start + i * 18, top);
 
@@ -60,15 +68,26 @@ public class ClientWorkbenchRecipeTooltip implements ClientTooltipComponent
             pose.pushPose();
             pose.translate(0, 0, 200);
             boolean checked = this.menu.hasMaterials(material, counted);
-            graphics.blit(WorkbenchScreen.WORKBENCH_TEXTURE, start + i * 18, top, checked ? 246 : 240, 40, 6, 5);
+            graphics.blit(RenderType::guiTextured, WorkbenchScreen.WORKBENCH_TEXTURE, start + i * 18, top, checked ? 246 : 240, 40, 6, 5, 256, 256);
             pose.popPose();
         }
     }
 
-    private ItemStack getStack(StackedIngredient material)
+    private ItemStack getDisplayStack(int index, StackedIngredient material)
     {
-        ItemStack[] items = material.ingredient().getItems();
-        int index = (int) ((Util.getMillis() / 1000) % items.length);
-        return items[index];
+        long time = Util.getMillis() / 1000;
+        DisplayStack display = this.displayStacks.get(index);
+        if(display.lastUpdate != time) // Only run once every second. We expensively collect items
+        {
+            List<Holder<Item>> items = material.ingredient().items().toList();
+            int itemIndex = (int) time % items.size();
+            ItemStack stack = new ItemStack(items.get(itemIndex));
+            stack.setCount(material.count());
+            this.displayStacks.set(index, new DisplayStack(time, stack));
+            return stack;
+        }
+        return display.stack;
     }
+
+    private record DisplayStack(long lastUpdate, ItemStack stack) {}
 }

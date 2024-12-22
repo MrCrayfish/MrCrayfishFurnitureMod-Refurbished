@@ -27,6 +27,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -91,9 +92,10 @@ public class DoorbellBlock extends FurnitureHorizontalEntityBlock implements Blo
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState relativeState, LevelAccessor level, BlockPos pos, BlockPos relativePos)
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess access, BlockPos pos, Direction direction, BlockPos pos1, BlockState state1, RandomSource rand)
     {
-        return !state.canSurvive(level, pos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, direction, relativeState, level, pos, relativePos);
+        // TODO introduce new optimisation for 1.21.3
+        return !state.canSurvive(level, pos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, level, access, pos, direction, pos1, state1, rand);
     }
 
     @Override
@@ -140,7 +142,7 @@ public class DoorbellBlock extends FurnitureHorizontalEntityBlock implements Blo
             level.playSound(null, pos, ModSounds.BLOCK_DOORBELL_CHIME.get(), SoundSource.BLOCKS);
             level.updateNeighbourForOutputSignal(pos, this);
             doorbell.sendNotificationToOwner(player);
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
         return InteractionResult.FAIL;
     }

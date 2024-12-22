@@ -30,7 +30,7 @@ public class OvenBakingRecipeHandler implements IRecipeHandler<OvenBakingRecipe>
     {
         return "%s.addRecipe(%s, %s, %s, %s);".formatted(
             manager.getCommandString(),
-            StringUtil.quoteAndEscape(holder.id()),
+            StringUtil.quoteAndEscape(holder.id().location()),
             IIngredient.fromIngredient(holder.value().getIngredient()).getCommandString(),
             IItemStack.ofMutable(holder.value().getResult()).getCommandString(),
             holder.value().getTime()

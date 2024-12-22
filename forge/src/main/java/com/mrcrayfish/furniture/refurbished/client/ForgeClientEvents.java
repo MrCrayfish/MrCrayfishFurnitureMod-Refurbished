@@ -1,19 +1,13 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mrcrayfish.framework.api.client.FrameworkClientAPI;
 import com.mrcrayfish.furniture.refurbished.client.registration.ParticleProviderRegister;
-import com.mrcrayfish.furniture.refurbished.client.registration.RecipeCategoryRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
-import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.chat.Component;
@@ -21,24 +15,13 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
-//import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
-import net.minecraftforge.client.event.RegisterRecipeBookCategoriesEvent;
 import net.minecraftforge.client.event.RenderHighlightEvent;
-import net.minecraftforge.client.event.RenderLevelStageEvent;
 import org.apache.commons.lang3.function.TriFunction;
-
-import java.util.List;
-import java.util.function.Function;
 
 /**
  * Author: MrCrayfish
@@ -70,7 +53,7 @@ public class ForgeClientEvents
         });
     }
 
-    public static void onRenderLevelStage(RenderLevelStageEvent event)
+    /*public static void onRenderLevelStage(RenderLevelStageEvent event)
     {
         if(event.getStage() != RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES)
             return;
@@ -95,7 +78,7 @@ public class ForgeClientEvents
 
         // End render types
         mc.renderBuffers().bufferSource().endBatch(ClientServices.PLATFORM.getTelevisionScreenRenderType(CustomSheets.TV_CHANNELS_SHEET));
-    }
+    }*/
 
     public static void onKeyTriggered(InputEvent.InteractionKeyMappingTriggered event)
     {
@@ -145,7 +128,7 @@ public class ForgeClientEvents
         });
     }*/
 
-    public static void onRegisterRecipeCategories(RegisterRecipeBookCategoriesEvent event)
+    /*public static void onRegisterRecipeCategories(RegisterRecipeBookCategoriesEvent event)
     {
         ClientBootstrap.registerRecipeBookCategories(new RecipeCategoryRegister()
         {
@@ -167,5 +150,5 @@ public class ForgeClientEvents
                 event.registerRecipeCategoryFinder(type, function);
             }
         });
-    }
+    }*/
 }

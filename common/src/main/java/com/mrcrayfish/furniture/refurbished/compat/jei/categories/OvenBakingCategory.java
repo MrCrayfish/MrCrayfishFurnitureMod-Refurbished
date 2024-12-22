@@ -16,6 +16,7 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -66,7 +67,7 @@ public class OvenBakingCategory implements IRecipeCategory<OvenBakingRecipe>
     public void setRecipe(IRecipeLayoutBuilder builder, OvenBakingRecipe recipe, IFocusGroup focuses)
     {
         builder.addSlot(RecipeIngredientRole.INPUT, 58, 5).addIngredients(recipe.getIngredient());
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 58, 41).addItemStack(Plugin.getResult(recipe));
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 58, 41).addItemStack(recipe.getResult());
         this.arrow = this.helper.createAnimatedDrawable(this.helper.createDrawable(Plugin.TEXTURES_2, 160, 0, 17, 16), recipe.getTime(), IDrawableAnimated.StartDirection.TOP, false);
     }
 
@@ -74,7 +75,7 @@ public class OvenBakingCategory implements IRecipeCategory<OvenBakingRecipe>
     public void draw(OvenBakingRecipe recipe, IRecipeSlotsView view, GuiGraphics graphics, double mouseX, double mouseY)
     {
         int offset = (int) (Util.getMillis() / 100) % 3;
-        graphics.blit(Plugin.TEXTURES_2, 5, 10, 120, offset * 40, 40, 40);
+        graphics.blit(RenderType::guiTextured, Plugin.TEXTURES_2, 5, 10, 120, offset * 40, 40, 40, 40, 40);
         this.arrow.draw(graphics, 57, 23);
     }
 }

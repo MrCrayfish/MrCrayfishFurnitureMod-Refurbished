@@ -103,7 +103,7 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
         if(state.hasProperty(TelevisionBlock.DIRECTION))
         {
             Direction direction = state.getValue(TelevisionBlock.DIRECTION).getOpposite();
-            Vec3i normal = direction.getNormal();
+            Vec3i normal = direction.getUnitVec3i();
             return this.audioPosition.add(normal.getX() * 0.375, normal.getY(), normal.getZ() * 0.375);
         }
         return this.audioPosition;

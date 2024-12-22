@@ -1,24 +1,30 @@
 package com.mrcrayfish.furniture.refurbished;
 
 import com.mrcrayfish.framework.FrameworkSetup;
+import com.mrcrayfish.framework.api.datagen.FrameworkModelProvider;
 import com.mrcrayfish.furniture.refurbished.blockentity.CuttingBoardBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.KitchenSinkBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.StorageJarBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
-import com.mrcrayfish.furniture.refurbished.data.FurnitureBlockTagsProvider;
-import com.mrcrayfish.furniture.refurbished.data.FurnitureItemTagsProvider;
-import com.mrcrayfish.furniture.refurbished.data.FurnitureLootTableProvider;
-import com.mrcrayfish.furniture.refurbished.data.FurnitureModelProvider;
-import com.mrcrayfish.furniture.refurbished.data.FurnitureRecipeProvider;
+import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
+import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchContructingRecipe;
+import com.mrcrayfish.furniture.refurbished.data.CommonBlockStatesGenerator;
+import com.mrcrayfish.furniture.refurbished.data.CommonBlockTagsProvider;
+import com.mrcrayfish.furniture.refurbished.data.CommonItemModelsGenerator;
+import com.mrcrayfish.furniture.refurbished.data.CommonItemTagsProvider;
+import com.mrcrayfish.furniture.refurbished.data.CommonLootTableProvider;
+import com.mrcrayfish.furniture.refurbished.data.CommonRecipeProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureRegistryProvider;
+import com.mrcrayfish.furniture.refurbished.network.Network;
+import com.mrcrayfish.furniture.refurbished.network.message.MessageWorkbench;
 import com.mrcrayfish.furniture.refurbished.platform.FabricFluidHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
@@ -34,6 +40,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
@@ -44,9 +51,9 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import java.util.List;
 import java.util.Optional;
 
-@SuppressWarnings("UnstableApiUsage")
 public class FurnitureMod implements ModInitializer, DataGeneratorEntrypoint
 {
     public static final Fluid MILK = Registry.register(BuiltInRegistries.FLUID, Utils.resource("milk"), new Fluid()
@@ -197,17 +204,25 @@ public class FurnitureMod implements ModInitializer, DataGeneratorEntrypoint
             }
             return InteractionResult.PASS;
         });
+
+        ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) -> {
+            List<RecipeHolder<WorkbenchContructingRecipe>> recipes = List.copyOf(player.server.getRecipeManager().recipes
+                .byType(ModRecipeTypes.WORKBENCH_CONSTRUCTING.get()));
+            Network.getPlay().sendToPlayer(() -> player, new MessageWorkbench.SyncRecipes(recipes));
+        });
     }
 
     @Override
+    @SuppressWarnings("UnstableApiUsage")
     public void onInitializeDataGenerator(FabricDataGenerator generator)
     {
         FabricDataGenerator.Pack pack = generator.createPack();
-        FurnitureBlockTagsProvider provider = pack.addProvider(FurnitureBlockTagsProvider::new);
-        pack.addProvider((output, lookupProvider) -> new FurnitureItemTagsProvider(output, lookupProvider, provider));
-        FurnitureLootTableProvider.addProviders(pack);
-        pack.addProvider(FurnitureRecipeProvider::new);
-        pack.addProvider(FurnitureModelProvider::new);
+        CommonBlockTagsProvider provider = pack.addProvider(CommonBlockTagsProvider::new);
+        pack.addProvider((output, lookupProvider) -> new CommonItemTagsProvider(output, lookupProvider, provider.contentsGetter()));
+        pack.addProvider(CommonLootTableProvider::new);
+        pack.addProvider(CommonRecipeProvider.Runner::new);
         pack.addProvider(FurnitureRegistryProvider::new);
+        pack.addProvider((FabricDataGenerator.Pack.Factory<FrameworkModelProvider>) output ->
+            new FrameworkModelProvider(output, CommonBlockStatesGenerator::new, CommonItemModelsGenerator::new));
     }
 }

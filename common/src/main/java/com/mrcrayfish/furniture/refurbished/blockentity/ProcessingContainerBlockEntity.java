@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.Item;
@@ -246,7 +247,7 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
                     return false;
                 }
 
-                ItemStack result = optional.get().getResultItem(this.level.registryAccess());
+                ItemStack result = optional.get().assemble(new SingleRecipeInput(stack), this.level.registryAccess());
                 if(!this.canOutput(stack, result))
                 {
                     return false;
@@ -274,9 +275,9 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
             ItemStack stack = this.getItem(slot);
             if(!stack.isEmpty())
             {
-                Item remainingItem = stack.getItem().getCraftingRemainingItem();
+                ItemStack remainingStack = stack.getItem().getCraftingRemainder();
                 Optional<? extends ProcessingRecipe> optional = this.getRecipe(this.processRecipeCache[i], stack);
-                ItemStack result = optional.map(recipe -> recipe.getResultItem(this.level.registryAccess())).orElse(ItemStack.EMPTY);
+                ItemStack result = optional.map(recipe -> recipe.assemble(new SingleRecipeInput(stack), this.level.registryAccess())).orElse(ItemStack.EMPTY);
                 stack.shrink(1);
                 if(!result.isEmpty())
                 {
@@ -286,9 +287,9 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
                         this.pushOutput(copy);
                         this.setChanged();
                     }
-                    if(remainingItem != null)
+                    if(!remainingStack.isEmpty())
                     {
-                        this.setItem(slot, new ItemStack(remainingItem));
+                        this.setItem(slot, remainingStack.copy());
                     }
                 }
                 if(!this.shouldProcessAll())
@@ -324,7 +325,7 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
                 return true;
 
             // Special case where input can output to itself, instead of a different slot
-            if(this.isOutputInput(slot) && input.getItem().getCraftingRemainingItem() == null)
+            if(this.isOutputInput(slot) && stack.getItem().getCraftingRemainder().isEmpty())
                 return true;
 
             if(ItemStack.isSameItemSameComponents(result, stack))
@@ -403,7 +404,11 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
      */
     private Optional<? extends ProcessingRecipe> getRecipe(RecipeManager.CachedCheck<SingleRecipeInput, ? extends ProcessingRecipe> cache, ItemStack stack)
     {
-        return cache.getRecipeFor(new SingleRecipeInput(stack), Objects.requireNonNull(this.level)).map(RecipeHolder::value);
+        if(this.level instanceof ServerLevel serverLevel)
+        {
+            return cache.getRecipeFor(new SingleRecipeInput(stack), serverLevel).map(RecipeHolder::value);
+        }
+        return Optional.empty();
     }
 
     /**
@@ -411,9 +416,9 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
      * @param stack the item stack to check
      * @return True if it matches a recipe
      */
-    public boolean isRecipe(ItemStack stack)
+    public boolean isRecipe(ItemStack stack, ServerLevel level)
     {
-        return this.inputRecipeCache.getRecipeFor(new SingleRecipeInput(stack), Objects.requireNonNull(this.level)).isPresent();
+        return this.inputRecipeCache.getRecipeFor(new SingleRecipeInput(stack), level).isPresent();
     }
 
     @Override

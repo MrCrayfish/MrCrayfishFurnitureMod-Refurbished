@@ -7,9 +7,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CrossCollisionBlock;
 import net.minecraft.world.level.block.FenceGateBlock;
@@ -53,34 +56,36 @@ public class LatticeFenceBlock extends CrossCollisionBlock implements BlockTagSu
         return CODEC;
     }
 
+
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState newState, LevelAccessor level, BlockPos pos, BlockPos newPos)
+    protected BlockState updateShape(BlockState state, LevelReader reader, ScheduledTickAccess access, BlockPos pos, Direction direction, BlockPos p_60546_, BlockState p_60543_, RandomSource p_374120_)
     {
-        return this.getFenceState(state, level, pos);
+        if(direction.getAxis().isHorizontal())
+        {
+            return state.setValue(PROPERTY_BY_DIRECTION.get(direction), this.canConnectToFace(reader, pos, direction));
+        }
+        return state;
     }
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context)
     {
-        return this.getFenceState(this.defaultBlockState(), context.getLevel(), context.getClickedPos());
+        LevelReader reader = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        FluidState fluid = reader.getFluidState(pos);
+        boolean north = this.canConnectToFace(reader, pos, Direction.NORTH);
+        boolean east = this.canConnectToFace(reader, pos, Direction.EAST);
+        boolean south = this.canConnectToFace(reader, pos, Direction.SOUTH);
+        boolean west = this.canConnectToFace(reader, pos, Direction.WEST);
+        return this.defaultBlockState().setValue(NORTH, north).setValue(EAST, east).setValue(SOUTH, south).setValue(WEST, west).setValue(WATERLOGGED, fluid.getType() == Fluids.WATER);
     }
 
-    private BlockState getFenceState(BlockState state, LevelAccessor level, BlockPos pos)
-    {
-        FluidState fluid = level.getFluidState(pos);
-        boolean north = this.canConnectToFace(level, pos, Direction.NORTH);
-        boolean east = this.canConnectToFace(level, pos, Direction.EAST);
-        boolean south = this.canConnectToFace(level, pos, Direction.SOUTH);
-        boolean west = this.canConnectToFace(level, pos, Direction.WEST);
-        return state.setValue(NORTH, north).setValue(EAST, east).setValue(SOUTH, south).setValue(WEST, west).setValue(WATERLOGGED, fluid.getType() == Fluids.WATER);
-    }
-
-    private boolean canConnectToFace(LevelAccessor level, BlockPos pos, Direction direction)
+    private boolean canConnectToFace(LevelReader reader, BlockPos pos, Direction direction)
     {
         pos = pos.relative(direction);
-        BlockState state = level.getBlockState(pos);
+        BlockState state = reader.getBlockState(pos);
         boolean isGate = state.getBlock() instanceof LatticeFenceGateBlock && FenceGateBlock.connectsToDirection(state, direction);
-        return !isExceptionForConnection(state) && state.isFaceSturdy(level, pos, direction.getOpposite()) || state.getBlock() instanceof LatticeFenceBlock || isGate;
+        return !isExceptionForConnection(state) && state.isFaceSturdy(reader, pos, direction.getOpposite()) || state.getBlock() instanceof LatticeFenceBlock || isGate;
     }
 
     @Override

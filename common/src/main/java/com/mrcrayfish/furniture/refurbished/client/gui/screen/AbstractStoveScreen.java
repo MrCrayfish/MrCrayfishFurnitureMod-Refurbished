@@ -1,29 +1,20 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 
 import com.mrcrayfish.furniture.refurbished.Components;
-import com.mrcrayfish.furniture.refurbished.client.gui.recipe.OvenRecipeBookComponent;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.OnOffSlider;
-import com.mrcrayfish.furniture.refurbished.client.util.VanillaTextures;
 import com.mrcrayfish.furniture.refurbished.inventory.IBakingMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.IElectricityMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.IPowerSwitchMenu;
-import com.mrcrayfish.furniture.refurbished.inventory.IProcessingMenu;
-import com.mrcrayfish.furniture.refurbished.inventory.StoveMenu;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageTogglePower;
-import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
-import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.inventory.Slot;
 
 /**
  * Author: MrCrayfish
@@ -64,16 +55,18 @@ public class AbstractStoveScreen<T extends AbstractContainerMenu & IElectricityM
     protected void afterRender(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
         this.renderTooltip(graphics, mouseX, mouseY);
+
+        // TODO draw tooltip for progress
     }
 
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
     {
         super.renderBg(graphics, partialTick, mouseX, mouseY);
-        graphics.blit(TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        graphics.blit(RenderType::guiTextured, TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
 
         int offset = this.menu.isPowered() && this.menu.isEnabled() ? (int) (Util.getMillis() / 100) % 3 : 0;
-        graphics.blit(TEXTURE, this.leftPos + 32, this.topPos + 23, 176, 16 + offset * 40, 40, 40);
+        graphics.blit(RenderType::guiTextured, TEXTURE, this.leftPos + 32, this.topPos + 23, 176, 16 + offset * 40, 40, 40, 256, 256);
 
         for(int i = 0; i < 3; i++)
         {
@@ -82,7 +75,7 @@ public class AbstractStoveScreen<T extends AbstractContainerMenu & IElectricityM
             if(totalProgress == 0)
                 continue;
             int height = (int) Math.ceil(16 * (progress / (float) totalProgress));
-            graphics.blit(TEXTURE, this.leftPos + 84 + i * 18, this.topPos + 36, 190, 0, 17, height);
+            graphics.blit(RenderType::guiTextured, TEXTURE, this.leftPos + 84 + i * 18, this.topPos + 36, 190, 0, 17, height, 256, 256);
         }
     }
 }

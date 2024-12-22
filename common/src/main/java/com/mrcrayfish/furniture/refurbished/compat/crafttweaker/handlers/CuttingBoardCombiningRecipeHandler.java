@@ -31,7 +31,7 @@ public class CuttingBoardCombiningRecipeHandler implements IRecipeHandler<Cuttin
     {
         return String.format("%s.addRecipe(%s, %s, %s);",
             manager.getCommandString(),
-            StringUtil.quoteAndEscape(holder.id()),
+            StringUtil.quoteAndEscape(holder.id().location()),
             IItemStack.ofMutable(holder.value().getResult()).getCommandString(),
             "[" + String.join(", ", holder.value().getIngredients().stream().map(ingredient -> IIngredient.fromIngredient(ingredient).getCommandString()).toArray(String[]::new)) + "]");
     }
@@ -39,14 +39,14 @@ public class CuttingBoardCombiningRecipeHandler implements IRecipeHandler<Cuttin
     @Override
     public <U extends Recipe<?>> boolean doesConflict(IRecipeManager<? super CuttingBoardCombiningRecipe> manager, CuttingBoardCombiningRecipe firstRecipe, U secondRecipe)
     {
-        if(!(secondRecipe instanceof CuttingBoardCombiningRecipe))
+        if(!(secondRecipe instanceof CuttingBoardCombiningRecipe combiningRecipe))
             return false;
         NonNullList<Ingredient> firstIngredients = firstRecipe.getIngredients();
-        NonNullList<Ingredient> secondIngredients = secondRecipe.getIngredients();
+        NonNullList<Ingredient> secondIngredients = combiningRecipe.getIngredients();
         int minSize = Math.min(firstIngredients.size(), secondIngredients.size());
         for(int i = 0; i < minSize; i++)
         {
-            if(Collections.disjoint(firstIngredients.get(i).getStackingIds(), secondIngredients.get(i).getStackingIds()))
+            if(Collections.disjoint(firstIngredients, secondIngredients))
             {
                 // TODO test
                 Plugin.LOGGER.error("Cutting Board combining inputs cannot be empty");
@@ -71,6 +71,6 @@ public class CuttingBoardCombiningRecipeHandler implements IRecipeHandler<Cuttin
     {
         Ingredient[] ingredients = recipe.getOrThrow(BuiltinRecipeComponents.Input.INGREDIENTS).stream().map(IIngredient::asVanillaIngredient).toArray(Ingredient[]::new);
         ItemStack result = recipe.getOrThrowSingle(BuiltinRecipeComponents.Output.ITEMS).getInternal();
-        return Optional.of(new CuttingBoardCombiningRecipe(NonNullList.of(Ingredient.EMPTY, ingredients), result));
+        return Optional.of(new CuttingBoardCombiningRecipe(NonNullList.of(Ingredient.of(), ingredients), result));
     }
 }

@@ -25,7 +25,6 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -37,8 +36,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-
 import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -149,7 +148,7 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
             {
                 level.playSound(null, this.worldPosition, ModSounds.ITEM_KNIFE_CHOP.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
                 this.spawnSliceParticles(input);
-                this.spawnSliceResultFromRecipe(sliceIndex, recipe.get(), spawnIntoLevel);
+                this.spawnSliceResultFromRecipe(sliceIndex, input, recipe.get(), spawnIntoLevel);
             }
             return true;
         }
@@ -199,10 +198,10 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
      * @param recipe         the recipe to get the result item
      * @param spawnIntoLevel if the item should spawn into the level or remain on the cutting board
      */
-    private void spawnSliceResultFromRecipe(int sliceIndex, SingleItemRecipe recipe, boolean spawnIntoLevel)
+    private void spawnSliceResultFromRecipe(int sliceIndex, ItemStack stack, SingleItemRecipe recipe, boolean spawnIntoLevel)
     {
         Preconditions.checkNotNull(this.level);
-        ItemStack result = recipe.getResultItem(this.level.registryAccess());
+        ItemStack result = recipe.assemble(new SingleRecipeInput(stack), this.level.registryAccess());
         if(spawnIntoLevel)
         {
             this.spawnItemIntoLevel(this.level, result);
@@ -272,7 +271,7 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
     {
         if(slotIndex >= 0 && slotIndex < this.useableContainerSize && slotIndex == this.getHeadIndex() && this.canExtract)
         {
-            return this.outputCache.getRecipeFor(new SingleRecipeInput(stack), Objects.requireNonNull(this.level)).isEmpty();
+            return this.getSlicingRecipe(stack).isEmpty();
         }
         return false;
     }
@@ -317,14 +316,19 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
 
     /**
      * Gets the cutting board recipe from the input item. If no recipe exists for the given input
-     * item stack, then this method will simply return an empty optional.
+     * item stack, then this method will simply return an empty optional. This method will always
+     * return an empty recipe if calling with a client level.
      *
      * @param stack the input item
      * @return the recipe for the input or empty optional if no recipe exists.
      */
     private Optional<? extends SingleItemRecipe> getSlicingRecipe(ItemStack stack)
     {
-        return this.slicingRecipeCache.getRecipeFor(new SingleRecipeInput(stack), Objects.requireNonNull(this.level)).map(RecipeHolder::value);
+        if(this.level instanceof ServerLevel serverLevel)
+        {
+            return this.slicingRecipeCache.getRecipeFor(new SingleRecipeInput(stack), serverLevel).map(RecipeHolder::value);
+        }
+        return Optional.empty();
     }
 
     /**
@@ -333,7 +337,11 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
      */
     private Optional<CuttingBoardCombiningRecipe> getCombiningRecipe()
     {
-        return this.combiningRecipeCache.getRecipeFor(new ContainerInput(this), Objects.requireNonNull(this.level)).map(RecipeHolder::value);
+        if(this.level instanceof ServerLevel serverLevel)
+        {
+            return this.combiningRecipeCache.getRecipeFor(new ContainerInput(this), serverLevel).map(RecipeHolder::value);
+        }
+        return Optional.empty();
     }
 
     /**
@@ -347,6 +355,9 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
      */
     private Optional<CuttingBoardCombiningRecipe> getNextCombiningRecipe(ItemStack stack)
     {
+        if(!(this.level instanceof ServerLevel serverLevel))
+            return Optional.empty();
+
         int placeIndex = this.getPlaceIndex();
         if(placeIndex >= this.useableContainerSize)
             return Optional.empty();
@@ -354,7 +365,7 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
         Container container = new SimpleContainer(placeIndex + 1);
         IntStream.range(0, placeIndex + 1).forEach(index -> container.setItem(index, this.getItem(index)));
         container.setItem(container.getContainerSize() - 1, stack);
-        return this.combiningRecipeCache.getRecipeFor(new ContainerInput(container), Objects.requireNonNull(this.level)).map(RecipeHolder::value);
+        return this.combiningRecipeCache.getRecipeFor(new ContainerInput(container), serverLevel).map(RecipeHolder::value);
     }
 
     /**
@@ -410,12 +421,12 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
         for(int i = 0; i < this.useableContainerSize; i++)
         {
             ItemStack stack = this.getItem(i);
-            if(!stack.isEmpty() && stack.getItem().hasCraftingRemainingItem())
+            if(!stack.isEmpty())
             {
-                Item item = stack.getItem().getCraftingRemainingItem();
-                if(item != null)
+                ItemStack remainingStack = stack.getItem().getCraftingRemainder();
+                if(!remainingStack.isEmpty())
                 {
-                    remainingItems.add(new ItemStack(item));
+                    remainingItems.add(remainingStack.copy());
                 }
             }
         }

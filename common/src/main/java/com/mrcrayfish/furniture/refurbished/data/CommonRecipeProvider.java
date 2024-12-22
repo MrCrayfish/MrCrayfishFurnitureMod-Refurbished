@@ -7,13 +7,18 @@ import com.mrcrayfish.furniture.refurbished.core.ModTags;
 import com.mrcrayfish.furniture.refurbished.crafting.*;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.advancements.Criterion;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.data.recipes.SingleItemRecipeBuilder;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -21,51 +26,49 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 /**
  * Author: MrCrayfish
  */
-public class CommonRecipeProvider
+public class CommonRecipeProvider extends RecipeProvider
 {
-    private final RecipeOutput output;
-    private final ConditionalModConsumer modLoadedConsumer;
-    private final Function<ItemLike, Criterion<?>> hasItem;
-    private final Function<TagKey<Item>, Criterion<?>> hasTag;
+    private final HolderLookup.RegistryLookup<Item> items;
 
-    public CommonRecipeProvider(RecipeOutput output, ConditionalModConsumer modLoadedConsumer, Function<ItemLike, Criterion<?>> hasItem, Function<TagKey<Item>, Criterion<?>> hasTag)
+    public CommonRecipeProvider(HolderLookup.Provider provider, RecipeOutput output)
     {
-        this.output = output;
-        this.modLoadedConsumer = modLoadedConsumer;
-        this.hasItem = hasItem;
-        this.hasTag = hasTag;
+        super(provider, output);
+        this.items = provider.lookupOrThrow(Registries.ITEM);
     }
 
-    public void run()
+    @Override
+    public void buildRecipes()
     {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get())
+        ShapedRecipeBuilder.shaped(this.items, RecipeCategory.MISC, ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get())
                 .pattern("III")
                 .pattern("IRI")
                 .pattern("IFI")
                 .define('I', Items.IRON_INGOT)
                 .define('R', Items.REDSTONE_BLOCK)
                 .define('F', Items.BLAST_FURNACE)
-                .unlockedBy("has_iron_ingot", this.hasItem.apply(Items.IRON_INGOT))
-                .unlockedBy("has_redstone", this.hasItem.apply(Items.REDSTONE))
+                .unlockedBy("has_iron_ingot", this.has(Items.IRON_INGOT))
+                .unlockedBy("has_redstone", this.has(Items.REDSTONE))
                 .save(this.output);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModBlocks.ELECTRICITY_GENERATOR_DARK.get())
+        ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.MISC, ModBlocks.ELECTRICITY_GENERATOR_DARK.get())
                 .requires(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get())
                 .requires(Items.BLACK_DYE)
-                .unlockedBy("has_iron_ingot", this.hasItem.apply(Items.IRON_INGOT))
-                .unlockedBy("has_redstone", this.hasItem.apply(Items.REDSTONE))
+                .unlockedBy("has_iron_ingot", this.has(Items.IRON_INGOT))
+                .unlockedBy("has_redstone", this.has(Items.REDSTONE))
                 .save(this.output);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.WORKBENCH.get())
+        ShapedRecipeBuilder.shaped(this.items, RecipeCategory.MISC, ModBlocks.WORKBENCH.get())
                 .pattern("SBS")
                 .pattern("PRP")
                 .pattern("PIP")
@@ -74,49 +77,49 @@ public class CommonRecipeProvider
                 .define('B', Items.STONECUTTER)
                 .define('R', Items.REDSTONE_BLOCK)
                 .define('I', Items.IRON_INGOT)
-                .unlockedBy("has_slabs", this.hasTag.apply(ItemTags.WOODEN_SLABS))
-                .unlockedBy("has_planks", this.hasTag.apply(ItemTags.PLANKS))
-                .unlockedBy("has_redstone", this.hasItem.apply(Items.REDSTONE))
-                .unlockedBy("has_iron_ingot", this.hasItem.apply(Items.IRON_INGOT))
+                .unlockedBy("has_slabs", this.has(ItemTags.WOODEN_SLABS))
+                .unlockedBy("has_planks", this.has(ItemTags.PLANKS))
+                .unlockedBy("has_redstone", this.has(Items.REDSTONE))
+                .unlockedBy("has_iron_ingot", this.has(Items.IRON_INGOT))
                 .save(this.output);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.WRENCH.get())
+        ShapedRecipeBuilder.shaped(this.items, RecipeCategory.MISC, ModItems.WRENCH.get())
                 .pattern(" I ")
                 .pattern("SII")
                 .pattern("LS ")
                 .define('I', Items.IRON_INGOT)
                 .define('S', Items.STRING)
                 .define('L', Items.LEATHER)
-                .unlockedBy("has_iron_ingot", this.hasItem.apply(Items.IRON_INGOT))
-                .unlockedBy("has_string", this.hasItem.apply(Items.STRING))
-                .unlockedBy("has_leather", this.hasItem.apply(Items.LEATHER))
+                .unlockedBy("has_iron_ingot", this.has(Items.IRON_INGOT))
+                .unlockedBy("has_string", this.has(Items.STRING))
+                .unlockedBy("has_leather", this.has(Items.LEATHER))
                 .save(this.output);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.SPATULA.get())
+        ShapedRecipeBuilder.shaped(this.items, RecipeCategory.MISC, ModItems.SPATULA.get())
                 .pattern(" I ")
                 .pattern("SIS")
                 .pattern(" L ")
                 .define('I', Items.IRON_INGOT)
                 .define('S', Items.STRING)
                 .define('L', Items.LEATHER)
-                .unlockedBy("has_iron_ingot", this.hasItem.apply(Items.IRON_INGOT))
-                .unlockedBy("has_string", this.hasItem.apply(Items.STRING))
-                .unlockedBy("has_leather", this.hasItem.apply(Items.LEATHER))
+                .unlockedBy("has_iron_ingot", this.has(Items.IRON_INGOT))
+                .unlockedBy("has_string", this.has(Items.STRING))
+                .unlockedBy("has_leather", this.has(Items.LEATHER))
                 .save(this.output);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.KNIFE.get())
+        ShapedRecipeBuilder.shaped(this.items, RecipeCategory.MISC, ModItems.KNIFE.get())
                 .pattern(" S ")
                 .pattern("LII")
                 .pattern(" S ")
                 .define('I', Items.IRON_INGOT)
                 .define('S', Items.STRING)
                 .define('L', Items.LEATHER)
-                .unlockedBy("has_iron_ingot", this.hasItem.apply(Items.IRON_INGOT))
-                .unlockedBy("has_string", this.hasItem.apply(Items.STRING))
-                .unlockedBy("has_leather", this.hasItem.apply(Items.LEATHER))
+                .unlockedBy("has_iron_ingot", this.has(Items.IRON_INGOT))
+                .unlockedBy("has_string", this.has(Items.STRING))
+                .unlockedBy("has_leather", this.has(Items.LEATHER))
                 .save(this.output);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.TELEVISION_REMOTE.get())
+        ShapedRecipeBuilder.shaped(this.items, RecipeCategory.MISC, ModItems.TELEVISION_REMOTE.get())
             .pattern("NLN")
             .pattern("NRN")
             .pattern("NCN")
@@ -124,24 +127,24 @@ public class CommonRecipeProvider
             .define('R', Items.REDSTONE)
             .define('L', Items.REDSTONE_LAMP)
             .define('N', Items.IRON_NUGGET)
-            .unlockedBy("has_copper_ingot", this.hasItem.apply(Items.COPPER_INGOT))
-            .unlockedBy("has_iron_nugget", this.hasItem.apply(Items.IRON_NUGGET))
-            .unlockedBy("has_redstone", this.hasItem.apply(Items.REDSTONE))
-            .unlockedBy("has_redstone_lamp", this.hasItem.apply(Items.REDSTONE_LAMP))
+            .unlockedBy("has_copper_ingot", this.has(Items.COPPER_INGOT))
+            .unlockedBy("has_iron_nugget", this.has(Items.IRON_NUGGET))
+            .unlockedBy("has_redstone", this.has(Items.REDSTONE))
+            .unlockedBy("has_redstone_lamp", this.has(Items.REDSTONE_LAMP))
             .save(this.output);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, ModItems.CHEESE.get(), 2)
+        ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.FOOD, ModItems.CHEESE.get(), 2)
             .requires(ModItems.SEA_SALT.get())
             .requires(Items.MILK_BUCKET)
-            .unlockedBy("has_milk", this.hasItem.apply(Items.MILK_BUCKET))
-            .unlockedBy("has_salt", this.hasItem.apply(ModItems.SEA_SALT.get()))
+            .unlockedBy("has_milk", this.has(Items.MILK_BUCKET))
+            .unlockedBy("has_salt", this.has(ModItems.SEA_SALT.get()))
             .save(this.output);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, ModItems.DOUGH.get(), 2)
+        ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.FOOD, ModItems.DOUGH.get(), 2)
             .requires(ModItems.WHEAT_FLOUR.get())
             .requires(Items.WATER_BUCKET)
-            .unlockedBy("has_water", this.hasItem.apply(Items.WATER_BUCKET))
-            .unlockedBy("has_flour", this.hasItem.apply(ModItems.WHEAT_FLOUR.get()))
+            .unlockedBy("has_water", this.has(Items.WATER_BUCKET))
+            .unlockedBy("has_flour", this.has(ModItems.WHEAT_FLOUR.get()))
             .save(this.output);
 
         this.table(Blocks.OAK_PLANKS, ModBlocks.TABLE_OAK.get());
@@ -677,10 +680,10 @@ public class CommonRecipeProvider
 
     private void simpleCombined(ItemLike first, ItemLike second, ItemLike result, int count, RecipeCategory category)
     {
-        ShapelessRecipeBuilder.shapeless(category, result, count)
+        ShapelessRecipeBuilder.shapeless(this.items, category, result, count)
                 .requires(first).requires(second)
-                .unlockedBy("has_first", this.hasItem.apply(first))
-                .unlockedBy("has_second", this.hasItem.apply(second))
+                .unlockedBy("has_first", this.has(first))
+                .unlockedBy("has_second", this.has(second))
                 .save(this.output);
     }
 
@@ -727,47 +730,47 @@ public class CommonRecipeProvider
     private void colouredKitchenCabinetry(Item dye, Block result)
     {
         this.workbenchConstructing(result, 1, Material.of(dye, 1), Material.of("wooden_kitchen_cabinetry", ModTags.Items.WOODEN_KITCHEN_CABINETRY, 1));
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
+        ShapedRecipeBuilder.shaped(this.items, RecipeCategory.DECORATIONS, result)
                 .pattern("D")
                 .pattern("K")
                 .define('D', dye)
                 .define('K', ModTags.Items.COLOURED_KITCHEN_CABINETRY)
-                .unlockedBy("has_dye", this.hasItem.apply(dye))
+                .unlockedBy("has_dye", this.has(dye))
                 .save(this.output, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
     }
 
     private void colouredKitchenDrawer(Item dye, Block result)
     {
         this.workbenchConstructing(result, 1, Material.of(dye, 1), Material.of("wooden_kitchen_drawers", ModTags.Items.WOODEN_KITCHEN_DRAWERS, 1));
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
+        ShapedRecipeBuilder.shaped(this.items, RecipeCategory.DECORATIONS, result)
                 .pattern("D")
                 .pattern("K")
                 .define('D', dye)
                 .define('K', ModTags.Items.COLOURED_KITCHEN_DRAWERS)
-                .unlockedBy("has_dye", this.hasItem.apply(dye))
+                .unlockedBy("has_dye", this.has(dye))
                 .save(this.output, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
     }
 
     private void colouredKitchenSink(Item dye, Block result)
     {
         this.workbenchConstructing(result, 1, Material.of(dye, 1), Material.of("wooden_kitchen_sinks", ModTags.Items.WOODEN_KITCHEN_SINKS, 1));
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
+        ShapedRecipeBuilder.shaped(this.items, RecipeCategory.DECORATIONS, result)
                 .pattern("D")
                 .pattern("K")
                 .define('D', dye)
                 .define('K', ModTags.Items.COLOURED_KITCHEN_SINKS)
-                .unlockedBy("has_dye", this.hasItem.apply(dye))
+                .unlockedBy("has_dye", this.has(dye))
                 .save(this.output, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
     }
 
     private void colouredKitchenStorageCabinet(Item dye, Block result)
     {
         this.workbenchConstructing(result, 1, Material.of(dye, 1), Material.of("wooden_kitchen_storage_cabinets", ModTags.Items.WOODEN_KITCHEN_STORAGE_CABINETS, 1));
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result)
+        ShapedRecipeBuilder.shaped(this.items, RecipeCategory.DECORATIONS, result)
                 .pattern("KD")
                 .define('D', dye)
                 .define('K', ModTags.Items.COLOURED_KITCHEN_STORAGE_CABINETS)
-                .unlockedBy("has_dye", this.hasItem.apply(dye))
+                .unlockedBy("has_dye", this.has(dye))
                 .save(this.output, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
     }
 
@@ -775,11 +778,11 @@ public class CommonRecipeProvider
     {
         this.workbenchConstructing(light, 1, Material.of(Items.IRON_INGOT, 4), Material.of(Items.REDSTONE, 2));
         this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
+        ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.DECORATIONS, dark)
                 .requires(light)
                 .requires(Items.BLACK_DYE)
-                .unlockedBy("has_toaster", this.hasItem.apply(light))
-                .unlockedBy("has_dye", this.hasItem.apply(Items.BLACK_DYE))
+                .unlockedBy("has_toaster", this.has(light))
+                .unlockedBy("has_dye", this.has(Items.BLACK_DYE))
                 .save(this.output);
     }
 
@@ -787,11 +790,11 @@ public class CommonRecipeProvider
     {
         this.workbenchConstructing(light, 1, Material.of(Items.IRON_INGOT, 6), Material.of(Items.GLASS, 1), Material.of(Items.REDSTONE, 4));
         this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
+        ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.DECORATIONS, dark)
                 .requires(light)
                 .requires(Items.BLACK_DYE)
-                .unlockedBy("has_microwave", this.hasItem.apply(light))
-                .unlockedBy("has_dye", this.hasItem.apply(Items.BLACK_DYE))
+                .unlockedBy("has_microwave", this.has(light))
+                .unlockedBy("has_dye", this.has(Items.BLACK_DYE))
                 .save(this.output);
     }
 
@@ -799,11 +802,11 @@ public class CommonRecipeProvider
     {
         this.workbenchConstructing(light, 1, Material.of(Items.IRON_INGOT, 12), Material.of(Items.GLASS, 1), Material.of(Items.REDSTONE, 6));
         this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
+        ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.DECORATIONS, dark)
                 .requires(light)
                 .requires(Items.BLACK_DYE)
-                .unlockedBy("has_stove", this.hasItem.apply(light))
-                .unlockedBy("has_dye", this.hasItem.apply(Items.BLACK_DYE))
+                .unlockedBy("has_stove", this.has(light))
+                .unlockedBy("has_dye", this.has(Items.BLACK_DYE))
                 .save(this.output);
     }
 
@@ -811,11 +814,11 @@ public class CommonRecipeProvider
     {
         this.workbenchConstructing(light, 1, Material.of(Items.IRON_INGOT, 2), Material.of(Items.REDSTONE, 2));
         this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
+        ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.DECORATIONS, dark)
                 .requires(light)
                 .requires(Items.BLACK_DYE)
-                .unlockedBy("has_range_hood", this.hasItem.apply(light))
-                .unlockedBy("has_dye", this.hasItem.apply(Items.BLACK_DYE))
+                .unlockedBy("has_range_hood", this.has(light))
+                .unlockedBy("has_dye", this.has(Items.BLACK_DYE))
                 .save(this.output);
     }
 
@@ -847,20 +850,20 @@ public class CommonRecipeProvider
     private void grill(Item dye, Block result)
     {
         this.workbenchConstructing(result, 1, Material.of(Items.IRON_INGOT, 8), Material.of(dye, 1));
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, result)
+        ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.DECORATIONS, result)
                 .requires(dye)
                 .requires(ModTags.Items.GRILLS)
-                .unlockedBy("has_dye", this.hasItem.apply(dye))
+                .unlockedBy("has_dye", this.has(dye))
                 .save(this.output, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
     }
 
     private void cooler(Item dye, Block result)
     {
         this.workbenchConstructing(result, 1, Material.of("planks", ItemTags.PLANKS, 4), Material.of(Items.WHITE_DYE, 1), Material.of("colouring_dye", dye, 1));
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, result)
+        ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.DECORATIONS, result)
                 .requires(dye)
                 .requires(ModTags.Items.COOLERS)
-                .unlockedBy("has_dye", this.hasItem.apply(dye))
+                .unlockedBy("has_dye", this.has(dye))
                 .save(this.output, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
 
     }
@@ -878,10 +881,10 @@ public class CommonRecipeProvider
     private void trampoline(Item dye, Block result)
     {
         this.workbenchConstructing(result, 4, Material.of(Items.IRON_INGOT, 4), Material.of(Items.STRING, 8), Material.of(dye, 1), Material.of(Items.SLIME_BALL, 1));
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, result)
+        ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.DECORATIONS, result)
                 .requires(dye)
                 .requires(ModTags.Items.TRAMPOLINES)
-                .unlockedBy("has_dye", this.hasItem.apply(dye))
+                .unlockedBy("has_dye", this.has(dye))
                 .save(this.output, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
     }
 
@@ -913,30 +916,30 @@ public class CommonRecipeProvider
     private void sofa(Item dye, Block result)
     {
         this.workbenchConstructing(result, 2, Material.of("planks", ItemTags.PLANKS, 6), Material.of(Items.WHEAT, 16), Material.of(Items.WHITE_WOOL, 2), Material.of(dye, 1));
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, result)
+        ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.DECORATIONS, result)
                 .requires(dye)
                 .requires(ModTags.Items.SOFAS)
-                .unlockedBy("has_dye", this.hasItem.apply(dye))
+                .unlockedBy("has_dye", this.has(dye))
                 .save(this.output, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
     }
 
     private void stool(Item dye, Block result)
     {
         this.workbenchConstructing(result, 2, Material.of("planks", ItemTags.PLANKS, 3), Material.of(Items.WHEAT, 8), Material.of(Items.WHITE_WOOL, 1), Material.of(dye, 1));
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, result)
+        ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.DECORATIONS, result)
                 .requires(dye)
                 .requires(ModTags.Items.STOOLS)
-                .unlockedBy("has_dye", this.hasItem.apply(dye))
+                .unlockedBy("has_dye", this.has(dye))
                 .save(this.output, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
     }
 
     private void lamp(Item dye, Block result)
     {
         this.workbenchConstructing(result, 1, Material.of("planks", ItemTags.PLANKS, 2), Material.of(Items.REDSTONE, 4), Material.of(Items.GLOWSTONE_DUST, 4), Material.of(Items.WHITE_WOOL, 1), Material.of(dye, 1));
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, result)
+        ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.DECORATIONS, result)
                 .requires(dye)
                 .requires(ModTags.Items.LAMPS)
-                .unlockedBy("has_dye", this.hasItem.apply(dye))
+                .unlockedBy("has_dye", this.has(dye))
                 .save(this.output, BuiltInRegistries.ITEM.getKey(result.asItem()) + "_from_dyeing");
     }
 
@@ -944,11 +947,11 @@ public class CommonRecipeProvider
     {
         this.workbenchConstructing(light, 1, Material.of(Items.IRON_INGOT, 3), Material.of(plank, 4), Material.of(Items.REDSTONE, 4), Material.of(Items.GLOWSTONE_DUST, 4));
         this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
+        ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.DECORATIONS, dark)
                 .requires(light)
                 .requires(Items.BLACK_DYE)
-                .unlockedBy("has_ceiling_fan", this.hasItem.apply(light))
-                .unlockedBy("has_dye", this.hasItem.apply(Items.BLACK_DYE))
+                .unlockedBy("has_ceiling_fan", this.has(light))
+                .unlockedBy("has_dye", this.has(Items.BLACK_DYE))
                 .save(this.output);
     }
 
@@ -956,11 +959,11 @@ public class CommonRecipeProvider
     {
         this.workbenchConstructing(light, 1, Material.of(Items.IRON_INGOT, 2), Material.of(Items.REDSTONE, 3), Material.of(Items.GLOWSTONE_DUST, 4));
         this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
+        ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.DECORATIONS, dark)
                 .requires(light)
                 .requires(Items.BLACK_DYE)
-                .unlockedBy("has_ceiling_light", this.hasItem.apply(light))
-                .unlockedBy("has_dye", this.hasItem.apply(Items.BLACK_DYE))
+                .unlockedBy("has_ceiling_light", this.has(light))
+                .unlockedBy("has_dye", this.has(Items.BLACK_DYE))
                 .save(this.output);
     }
 
@@ -968,11 +971,11 @@ public class CommonRecipeProvider
     {
         this.workbenchConstructing(light, 1, Material.of(Items.IRON_INGOT, 2), Material.of(Items.REDSTONE, 3));
         this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
+        ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.DECORATIONS, dark)
                 .requires(light)
                 .requires(Items.BLACK_DYE)
-                .unlockedBy("has_lightswitch", this.hasItem.apply(light))
-                .unlockedBy("has_dye", this.hasItem.apply(Items.BLACK_DYE))
+                .unlockedBy("has_lightswitch", this.has(light))
+                .unlockedBy("has_dye", this.has(Items.BLACK_DYE))
                 .save(this.output);
     }
 
@@ -999,11 +1002,11 @@ public class CommonRecipeProvider
     private void colouredToilet(Item dye, Block result)
     {
         this.workbenchConstructing(result, 1, Material.of("toilets", ModTags.Items.WOODEN_TOILETS, 1), Material.of(dye, 1));
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, result)
+        ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.DECORATIONS, result)
                 .requires(ModTags.Items.WOODEN_TOILETS)
                 .requires(dye)
-                .unlockedBy("has_ceiling_fan", this.hasTag.apply(ModTags.Items.WOODEN_TOILETS))
-                .unlockedBy("has_dye", this.hasItem.apply(dye))
+                .unlockedBy("has_ceiling_fan", this.has(ModTags.Items.WOODEN_TOILETS))
+                .unlockedBy("has_dye", this.has(dye))
                 .save(this.output);
     }
 
@@ -1031,11 +1034,11 @@ public class CommonRecipeProvider
     {
         this.workbenchConstructing(light, 1, Material.of(Items.IRON_INGOT, 9), Material.of(Items.COPPER_INGOT, 3), Material.of(Items.REDSTONE, 4));
         this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, dark)
+        ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.DECORATIONS, dark)
                 .requires(light)
                 .requires(Items.BLACK_DYE)
-                .unlockedBy("has_fridge", this.hasItem.apply(light))
-                .unlockedBy("has_dye", this.hasItem.apply(Items.BLACK_DYE))
+                .unlockedBy("has_fridge", this.has(light))
+                .unlockedBy("has_dye", this.has(Items.BLACK_DYE))
                 .save(this.output);
     }
 
@@ -1057,18 +1060,19 @@ public class CommonRecipeProvider
 
     private void workbenchConstructing(String name, ItemLike result, int count, Material<?> ... materials)
     {
-        WorkbenchContructingRecipe.Builder builder = WorkbenchContructingRecipe.builder(result, count, this.hasItem, this.hasTag);
+        WorkbenchContructingRecipe.Builder builder = WorkbenchContructingRecipe.builder(this.items, result, count, this::has, this::has);
         for(Material<?> material : materials)
         {
             builder.requiresMaterial(material);
         }
-        builder.save(this.output, Utils.resource("constructing/" + name));
+        ResourceKey<Recipe<?>> key = ResourceKey.create(Registries.RECIPE, Utils.resource("constructing/" + name));
+        builder.save(this.output, key);
     }
 
     private <T extends ProcessingRecipe> void processing(ProcessingRecipe.Factory<T> factory, String folder, ProcessingRecipe.Category category, Ingredient ingredient, ItemLike result, int count, int time)
     {
-        ResourceLocation recipeId = Utils.resource(folder + "/" + Utils.getItemName(result.asItem()));
-        ProcessingRecipe.builder(factory, category, ingredient, new ItemStack(result, count), time).save(this.output, recipeId);
+        ResourceKey<Recipe<?>> key = ResourceKey.create(Registries.RECIPE, Utils.resource(folder + "/" + Utils.getItemName(result.asItem())));
+        ProcessingRecipe.builder(factory, category, ingredient, new ItemStack(result, count), time).save(this.output, key);
     }
 
     private void grillCooking(ProcessingRecipe.Category category, ItemLike rawItem, ItemLike cookedItem, int cookingTime, float experience)
@@ -1106,7 +1110,8 @@ public class CommonRecipeProvider
         String baseName = Utils.getItemName(baseItem.asItem());
         String resultName = Utils.getItemName(resultItem.asItem());
         SingleItemRecipeBuilder builder = new SingleItemRecipeBuilder(RecipeCategory.MISC, CuttingBoardSlicingRecipe::new, Ingredient.of(baseItem), resultItem, resultCount);
-        builder.unlockedBy("has_" + baseName, this.hasItem.apply(baseItem)).save(this.output, Utils.resource("slicing/" + resultName + "_from_" + baseName));
+        ResourceKey<Recipe<?>> key = ResourceKey.create(Registries.RECIPE, Utils.resource("slicing/" + resultName + "_from_" + baseName));
+        builder.unlockedBy("has_" + baseName, this.has(baseItem)).save(this.output, key);
     }
 
     private void cuttingBoardCombining(ItemLike combinedItem, int count, Ingredient ... inputs)
@@ -1117,6 +1122,27 @@ public class CommonRecipeProvider
         {
             builder.add(inputs[i]);
         }
-        builder.save(this.output, Utils.resource("combining/" + baseName));
+        ResourceKey<Recipe<?>> key = ResourceKey.create(Registries.RECIPE, Utils.resource("combining/" + baseName));
+        builder.save(this.output, key);
+    }
+
+    public static final class Runner extends RecipeProvider.Runner
+    {
+        public Runner(PackOutput output, CompletableFuture<HolderLookup.Provider> completableFuture)
+        {
+            super(output, completableFuture);
+        }
+
+        @Override
+        protected RecipeProvider createRecipeProvider(HolderLookup.Provider provider, RecipeOutput output)
+        {
+            return new CommonRecipeProvider(provider, output);
+        }
+
+        @Override
+        public String getName()
+        {
+            return "Refurbished Furniture Recipes";
+        }
     }
 }

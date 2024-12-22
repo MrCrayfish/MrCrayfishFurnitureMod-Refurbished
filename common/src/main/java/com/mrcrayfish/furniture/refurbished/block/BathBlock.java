@@ -16,7 +16,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -125,7 +125,7 @@ public abstract class BathBlock extends FurnitureHorizontalEntityBlock implement
     }
 
     @Override
-    public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+    public InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
     {
         if(!level.isClientSide())
         {
@@ -134,7 +134,7 @@ public abstract class BathBlock extends FurnitureHorizontalEntityBlock implement
                 return bath.interact(player, hand, result);
             }
         }
-        return ItemInteractionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
@@ -200,7 +200,7 @@ public abstract class BathBlock extends FurnitureHorizontalEntityBlock implement
             }
             else if(container.getStoredFluid().isSame(Fluids.WATER))
             {
-                if(!entity.isSilent() && entity.wasOnFire)
+                if(!entity.isSilent() && entity.isOnFire())
                 {
                     float volume = 0.7F;
                     float pitch = 1.6F + 0.4F * (level.random.nextFloat() - level.random.nextFloat());

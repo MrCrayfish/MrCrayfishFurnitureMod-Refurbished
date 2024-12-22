@@ -6,6 +6,7 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -43,28 +44,17 @@ public class IconButton extends Button
     public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
     {
         super.renderWidget(graphics, mouseX, mouseY, partialTicks);
-
-        Minecraft mc = Minecraft.getInstance();
-        int contentWidth = 10 + mc.font.width(this.label) + (!this.label.getString().isEmpty() ? 4 : 0);
-        int contentLeft = (this.width - contentWidth) / 2;
-        int iconX = this.getX() + contentLeft;
-        int iconY = this.getY() + 5;
+        Minecraft minecraft = Minecraft.getInstance();
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
+        int contentWidth = 10 + minecraft.font.width(this.label) + (!this.label.getString().isEmpty() ? 4 : 0);
+        int iconX = this.getX() + (this.width - contentWidth) / 2;
+        int iconY = this.getY() + (this.height - 10) / 2;
         float brightness = this.active ? 1.0F : 0.5F;
-        RenderSystem.enableBlend();
-        graphics.setColor(brightness, brightness, brightness, this.alpha);
-        graphics.blit(ICON_TEXTURES, iconX, iconY, this.u, this.v, 10, 10, 64, 64);
-        graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
-
-        int start = iconX + 14;
-        int end = iconX + contentWidth;
-        int labelColour = 0xFFFFFF | Mth.ceil(this.alpha * 255) << 24;
-        renderScrollingString(graphics, mc.font, this.label, start, this.getY(), end, this.getY() + this.getHeight(), labelColour);
+        RenderSystem.setShaderColor(brightness, brightness, brightness, this.alpha);
+        graphics.blit(RenderType::guiTextured, ICON_TEXTURES, iconX, iconY, this.u, this.v, 10, 10, 64, 64);
+        RenderSystem.setShaderColor(brightness, brightness, brightness, this.alpha);
+        int textColor = this.active ? 16777215 : 10526880;
+        renderScrollingString(graphics, minecraft.font, this.label, iconX + 14, this.getY(), iconX + contentWidth, this.getY() + this.getHeight(), textColor);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     }
-
-    // TODO what appen to dis thing
-    /*@Override
-    protected ClientTooltipPositioner createTooltipPositioner()
-    {
-        return DefaultTooltipPositioner.INSTANCE;
-    }*/
 }

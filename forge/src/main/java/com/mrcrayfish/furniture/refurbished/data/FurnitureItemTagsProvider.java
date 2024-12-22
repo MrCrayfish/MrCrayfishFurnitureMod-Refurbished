@@ -26,8 +26,6 @@ public class FurnitureItemTagsProvider extends ItemTagsProvider
     @Override
     protected void addTags(HolderLookup.Provider provider)
     {
-        CommonItemTagsProvider.accept(key -> new PlatformTagBuilder<>(this.tag(key)));
-
         // Allows knife to be used with farmers delight and other mods
         this.tag(PlatformTags.Items.TOOLS_KNIVES)
                 .addTag(ModTags.Items.TOOLS_KNIVES);

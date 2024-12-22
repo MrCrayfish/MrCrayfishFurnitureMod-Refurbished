@@ -11,6 +11,7 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -104,10 +105,10 @@ public class ComputerScreen extends ElectricityContainerScreen<ComputerMenu>
     {
         super.renderBg(graphics, partialTick, mouseX, mouseY);
 
-        float frameTime = this.minecraft.getTimer().getGameTimeDeltaPartialTick(true);
+        float frameTime = this.minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(true);
 
         // Draw background
-        graphics.blit(TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        graphics.blit(RenderType::guiTextured, TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
 
         // Draw desktop and window
         int displayLeft = this.leftPos + DISPLAY_LEFT;
@@ -124,7 +125,7 @@ public class ComputerScreen extends ElectricityContainerScreen<ComputerMenu>
             graphics.fill(loadingBarStart - 1, displayBottom - 31, loadingBarStart + LOADING_BAR_WIDTH + 1, displayBottom - 23, 0xFF47403E);
             graphics.fill(loadingBarStart, displayBottom - 30, loadingBarStart + loadingBarWidth, displayBottom - 24, 0xFFFFFFFF);
             graphics.drawCenteredString(this.font, Components.GUI_BOOTING, displayLeft + DISPLAY_WIDTH / 2, displayBottom - 42, 0xFFFFFFFF);
-            graphics.blit(TEXTURE, displayLeft + (DISPLAY_WIDTH - 32) / 2, displayTop + 23, 32, 36, 0, this.imageHeight, 16, 18, 256, 256);
+            graphics.blit(RenderType::guiTextured, TEXTURE, displayLeft + (DISPLAY_WIDTH - 32) / 2, displayTop + 23, 0, this.imageHeight, 32, 36, 16, 18, 256, 256);
             return;
         }
 

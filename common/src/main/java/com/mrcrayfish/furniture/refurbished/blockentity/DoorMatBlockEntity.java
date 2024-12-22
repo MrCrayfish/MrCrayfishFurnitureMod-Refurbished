@@ -144,6 +144,15 @@ public class DoorMatBlockEntity extends BlockEntity implements MenuProvider, IPa
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
         super.loadAdditional(tag, provider);
+        if(tag.contains("Image", Tag.TAG_LONG_ARRAY))
+        {
+            long[] data = tag.getLongArray("Image");
+            BitSet bits = BitSet.valueOf(data);
+            if(bits.size() >= IMAGE_WIDTH * IMAGE_HEIGHT)
+            {
+                this.image = new PaletteImage(IMAGE_WIDTH, IMAGE_HEIGHT, () -> bits);
+            }
+        }
         if(tag.contains("Finalised", Tag.TAG_BYTE))
         {
             this.finalised = tag.getBoolean("Finalised");
@@ -154,6 +163,11 @@ public class DoorMatBlockEntity extends BlockEntity implements MenuProvider, IPa
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
         super.saveAdditional(tag, provider);
+        if(this.image != null)
+        {
+            long[] data = this.image.getData().toLongArray();
+            tag.putLongArray("Image", data);
+        }
         tag.putBoolean("Finalised", this.finalised);
     }
 

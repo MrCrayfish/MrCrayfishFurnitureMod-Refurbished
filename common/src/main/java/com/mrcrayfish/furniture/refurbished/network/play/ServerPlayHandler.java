@@ -4,6 +4,7 @@ import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.furniture.refurbished.blockentity.INameable;
 import com.mrcrayfish.furniture.refurbished.blockentity.IPaintable;
 import com.mrcrayfish.furniture.refurbished.blockentity.RecycleBinBlockEntity;
+import com.mrcrayfish.furniture.refurbished.client.ClientRecipes;
 import com.mrcrayfish.furniture.refurbished.computer.app.HomeControl;
 import com.mrcrayfish.furniture.refurbished.computer.app.PaddleBall;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
@@ -20,6 +21,7 @@ import com.mrcrayfish.furniture.refurbished.mail.DeliveryResult;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.*;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
@@ -223,6 +225,14 @@ public class ServerPlayHandler
                     entity.withdrawExperience(serverPlayer);
                 }
             }
+        }
+    }
+
+    public static void handleMessageWorkbenchSyncRecipes(MessageWorkbench.SyncRecipes message, Player player)
+    {
+        if(player instanceof LocalPlayer localPlayer)
+        {
+            ((ClientRecipes.Access) localPlayer.connection).refurbishedFurniture$clientRecipes().accept(message.recipes());
         }
     }
 }

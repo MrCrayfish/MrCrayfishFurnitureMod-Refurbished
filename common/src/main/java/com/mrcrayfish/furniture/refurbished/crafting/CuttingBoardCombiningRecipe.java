@@ -15,18 +15,24 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategories;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.Nullable;
+
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -65,30 +71,29 @@ public class CuttingBoardCombiningRecipe implements Recipe<ContainerInput>
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height)
-    {
-        return true;
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider provider)
-    {
-        return this.result;
-    }
-
-    @Override
-    public RecipeSerializer<?> getSerializer()
+    public RecipeSerializer<CuttingBoardCombiningRecipe> getSerializer()
     {
         return ModRecipeSerializers.CUTTING_BOARD_COMBINING_RECIPE.get();
     }
 
     @Override
-    public RecipeType<?> getType()
+    public RecipeType<CuttingBoardCombiningRecipe> getType()
     {
         return ModRecipeTypes.CUTTING_BOARD_COMBINING.get();
     }
 
     @Override
+    public PlacementInfo placementInfo()
+    {
+        return PlacementInfo.NOT_PLACEABLE;
+    }
+
+    @Override
+    public RecipeBookCategory recipeBookCategory()
+    {
+        return RecipeBookCategories.CRAFTING_MISC;
+    }
+
     public NonNullList<Ingredient> getIngredients()
     {
         return this.ingredients;
@@ -118,18 +123,17 @@ public class CuttingBoardCombiningRecipe implements Recipe<ContainerInput>
     public static class Serializer implements RecipeSerializer<CuttingBoardCombiningRecipe>
     {
         public static final MapCodec<CuttingBoardCombiningRecipe> CODEC = RecordCodecBuilder.mapCodec(builder -> {
-            return builder.group(Ingredient.CODEC_NONEMPTY.listOf().fieldOf("ingredients").flatXmap(ingredients -> {
-                Ingredient[] inputs = ingredients.stream().filter((ingredient) -> {
-                    return !ingredient.isEmpty();
-                }).toArray(Ingredient[]::new);
-                if(inputs.length > MAX_INGREDIENTS) {
+            return builder.group(Ingredient.CODEC.listOf().fieldOf("ingredients").flatXmap(ingredients -> {
+                NonNullList<Ingredient> inputs = NonNullList.create();
+                inputs.addAll(ingredients);
+                if(inputs.size() > MAX_INGREDIENTS) {
                     return DataResult.error(() -> "Too many ingredients");
-                } else if(inputs.length == 0) {
+                } else if(inputs.isEmpty()) {
                     return DataResult.error(() -> "No ingredients");
                 }
-                return DataResult.success(NonNullList.of(Ingredient.EMPTY, inputs));
+                return DataResult.success(inputs);
             }, DataResult::success).forGetter((recipe) -> {
-                return recipe.getIngredients();
+                return recipe.ingredients;
             }), ItemStack.CODEC.fieldOf("result").forGetter((recipe) -> {
                 return recipe.result;
             })).apply(builder, CuttingBoardCombiningRecipe::new);
@@ -143,7 +147,7 @@ public class CuttingBoardCombiningRecipe implements Recipe<ContainerInput>
             ItemStack.STREAM_CODEC.encode(buf, recipe.result);
         }, buf -> {
             int ingredientCount = buf.readInt();
-            NonNullList<Ingredient> ingredients = NonNullList.withSize(ingredientCount, Ingredient.EMPTY);
+            NonNullList<Ingredient> ingredients = NonNullList.withSize(ingredientCount, Ingredient.of());
             IntStream.range(0, ingredientCount).forEach(i -> ingredients.set(i, Ingredient.CONTENTS_STREAM_CODEC.decode(buf)));
             ItemStack result = ItemStack.STREAM_CODEC.decode(buf);
             return new CuttingBoardCombiningRecipe(ingredients, result);
@@ -196,8 +200,9 @@ public class CuttingBoardCombiningRecipe implements Recipe<ContainerInput>
             return this.result.getItem();
         }
 
+
         @Override
-        public void save(RecipeOutput output, ResourceLocation id)
+        public void save(RecipeOutput output, ResourceKey<Recipe<?>> id)
         {
             this.validate();
             output.accept(id, new CuttingBoardCombiningRecipe(this.ingredients, this.result), null);

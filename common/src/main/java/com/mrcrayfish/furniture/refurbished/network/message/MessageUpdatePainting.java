@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.network.message;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
+import com.mrcrayfish.framework.api.network.PlayMessageContext;
 import com.mrcrayfish.furniture.refurbished.image.PaletteImage;
 import com.mrcrayfish.furniture.refurbished.network.play.ServerPlayHandler;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -16,7 +17,7 @@ public record MessageUpdatePainting(PaletteImage image)
         MessageUpdatePainting::new
     );
 
-    public static void handle(MessageUpdatePainting message, MessageContext context)
+    public static void handle(MessageUpdatePainting message, PlayMessageContext context)
     {
         context.execute(() -> ServerPlayHandler.handleMessageUpdatePainting(message, context.getPlayer().orElse(null)));
         context.setHandled(true);

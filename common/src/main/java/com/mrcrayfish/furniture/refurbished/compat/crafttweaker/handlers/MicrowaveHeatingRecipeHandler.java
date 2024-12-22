@@ -30,7 +30,7 @@ public class MicrowaveHeatingRecipeHandler implements IRecipeHandler<MicrowaveHe
     {
         return "%s.addRecipe(%s, %s, %s, %s);".formatted(
             manager.getCommandString(),
-            StringUtil.quoteAndEscape(holder.id()),
+            StringUtil.quoteAndEscape(holder.id().location()),
             IIngredient.fromIngredient(holder.value().getIngredient()).getCommandString(),
             IItemStack.ofMutable(holder.value().getResult()).getCommandString(),
             holder.value().getTime()
@@ -54,7 +54,7 @@ public class MicrowaveHeatingRecipeHandler implements IRecipeHandler<MicrowaveHe
             .with(BuiltinRecipeComponents.Input.INGREDIENTS, IIngredient.fromIngredient(recipe.getIngredient()))
             .with(BuiltinRecipeComponents.Output.ITEMS, IItemStack.ofMutable(recipe.getResult()))
             .with(BuiltinRecipeComponents.Processing.TIME, recipe.getTime())
-            .with(BuiltinRecipeComponents.Metadata.GROUP, recipe.getGroup())
+            .with(BuiltinRecipeComponents.Metadata.GROUP, recipe.group())
             .build();
         return Optional.of(decomposedRecipe);
     }

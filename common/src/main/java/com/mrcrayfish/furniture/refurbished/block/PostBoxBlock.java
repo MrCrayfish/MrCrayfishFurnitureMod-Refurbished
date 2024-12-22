@@ -65,7 +65,6 @@ public class PostBoxBlock extends FurnitureHorizontalEntityBlock implements Bloc
     {
         if(!level.isClientSide() && level.getBlockEntity(pos) instanceof PostBoxBlockEntity postBox)
         {
-            // TODO test
             DeliveryService.get(((ServerLevel) level).getServer()).ifPresent(service -> {
                 FrameworkAPI.openMenuWithData((ServerPlayer) player, postBox, new PostBoxMenu.CustomData(service.getMailboxes()));
             });

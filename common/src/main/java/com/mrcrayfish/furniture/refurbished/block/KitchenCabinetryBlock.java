@@ -5,9 +5,12 @@ import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -78,9 +81,9 @@ public abstract class KitchenCabinetryBlock extends FurnitureHorizontalBlock imp
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState newState, LevelAccessor level, BlockPos pos, BlockPos newPos)
+    protected BlockState updateShape(BlockState state, LevelReader reader, ScheduledTickAccess access, BlockPos pos, Direction direction, BlockPos pos1, BlockState state1, RandomSource rand)
     {
-        return state.setValue(SHAPE, this.getShape(state, level, pos));
+        return state.setValue(SHAPE, this.getShape(state, reader, pos));
     }
 
     @Override
@@ -90,10 +93,10 @@ public abstract class KitchenCabinetryBlock extends FurnitureHorizontalBlock imp
         builder.add(SHAPE);
     }
 
-    public Shape getShape(BlockState state, LevelAccessor level, BlockPos pos)
+    public Shape getShape(BlockState state, LevelReader reader, BlockPos pos)
     {
         Direction facing = state.getValue(DIRECTION);
-        Direction front = this.getCabinetryDirection(level, pos, state.getValue(DIRECTION).getOpposite());
+        Direction front = this.getCabinetryDirection(reader, pos, state.getValue(DIRECTION).getOpposite());
         if(front != null)
         {
             if(front == facing.getClockWise())
@@ -105,7 +108,7 @@ public abstract class KitchenCabinetryBlock extends FurnitureHorizontalBlock imp
                 return Shape.INSIDE_CORNER_LEFT;
             }
         }
-        Direction behind = this.getCabinetryDirection(level, pos, state.getValue(DIRECTION));
+        Direction behind = this.getCabinetryDirection(reader, pos, state.getValue(DIRECTION));
         if(behind != null)
         {
             if(behind == facing.getClockWise())
@@ -120,9 +123,9 @@ public abstract class KitchenCabinetryBlock extends FurnitureHorizontalBlock imp
         return Shape.DEFAULT;
     }
 
-    public Direction getCabinetryDirection(LevelAccessor level, BlockPos pos, Direction side)
+    public Direction getCabinetryDirection(LevelReader reader, BlockPos pos, Direction side)
     {
-        BlockState relativeState = level.getBlockState(pos.relative(side));
+        BlockState relativeState = reader.getBlockState(pos.relative(side));
         return relativeState.getBlock() instanceof IKitchenCabinetry cabinetry ? cabinetry.getDirection(relativeState) : null;
     }
 

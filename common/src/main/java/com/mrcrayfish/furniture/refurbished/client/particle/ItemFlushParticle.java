@@ -46,7 +46,7 @@ public class ItemFlushParticle extends Particle
         stack.translate(pos.x, pos.y, pos.z);
         stack.mulPose(Axis.YP.rotationDegrees(rotation));
         stack.translate(-pos.x, -pos.y, -pos.z);
-        this.dispatcher.render(this.entity, pos.x, pos.y, pos.z, this.entity.getYRot(), 0, stack, source, light);
+        this.dispatcher.render(this.entity, pos.x, pos.y, pos.z, this.entity.getYRot(), stack, source, light);
         source.endBatch();
     }
 

@@ -9,28 +9,29 @@ import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeInput;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,13 +39,14 @@ import java.util.Map;
  */
 public abstract class ProcessingRecipe implements Recipe<SingleRecipeInput>
 {
-    protected final RecipeType<?> type;
+    protected final RecipeType<? extends Recipe<SingleRecipeInput>> type;
     protected final Category category;
     protected final Ingredient ingredient;
     protected final ItemStack result;
     protected final int time;
+    private @Nullable PlacementInfo placementInfo;
 
-    public ProcessingRecipe(RecipeType<?> type, Category category, Ingredient ingredient, ItemStack result, int time)
+    public ProcessingRecipe(RecipeType<? extends Recipe<SingleRecipeInput>> type, Category category, Ingredient ingredient, ItemStack result, int time)
     {
         this.type = type;
         this.category = category;
@@ -54,7 +56,7 @@ public abstract class ProcessingRecipe implements Recipe<SingleRecipeInput>
     }
 
     @Override
-    public RecipeType<?> getType()
+    public RecipeType<? extends Recipe<SingleRecipeInput>> getType()
     {
         return this.type;
     }
@@ -62,12 +64,6 @@ public abstract class ProcessingRecipe implements Recipe<SingleRecipeInput>
     public Category getCategory()
     {
         return this.category;
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider provider)
-    {
-        return this.result;
     }
 
     @Override
@@ -83,17 +79,13 @@ public abstract class ProcessingRecipe implements Recipe<SingleRecipeInput>
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height)
+    public PlacementInfo placementInfo()
     {
-        return true;
-    }
-
-    @Override
-    public NonNullList<Ingredient> getIngredients()
-    {
-        NonNullList<Ingredient> ingredients = NonNullList.create();
-        ingredients.add(this.ingredient);
-        return ingredients;
+        if(this.placementInfo == null)
+        {
+            this.placementInfo = PlacementInfo.create(this.ingredient);
+        }
+        return this.placementInfo;
     }
 
     /**
@@ -170,32 +162,44 @@ public abstract class ProcessingRecipe implements Recipe<SingleRecipeInput>
         }
 
         @Override
-        public void save(RecipeOutput output, ResourceLocation id)
+        public void save(RecipeOutput output, ResourceKey<Recipe<?>> id)
         {
             Advancement.Builder builder = output.advancement()
                 .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
                 .rewards(AdvancementRewards.Builder.recipe(id))
                 .requirements(AdvancementRequirements.Strategy.OR);
             this.criteria.forEach(builder::addCriterion);
-            output.accept(id, this.factory.create(this.category, this.input, this.output, this.processTime), builder.build(id.withPrefix("recipes/" + this.category.getSerializedName() + "/")));
+            output.accept(id, this.factory.create(this.category, this.input, this.output, this.processTime), builder.build(id.location().withPrefix("recipes/" + this.category.getSerializedName() + "/")));
         }
     }
 
     public static abstract class Item extends ProcessingRecipe
     {
-        public Item(RecipeType<?> type, Category category, Ingredient ingredient, ItemStack result, int time)
+        public Item(RecipeType<? extends Recipe<SingleRecipeInput>> type, Category category, Ingredient ingredient, ItemStack result, int time)
         {
             super(type, category, ingredient, result, time);
         }
 
-        public static ProcessingRecipe from(AbstractCookingRecipe recipe, RegistryAccess access)
+        public static ProcessingRecipe fromCookingRecipe(AbstractCookingRecipe recipe, RegistryAccess access)
         {
-            return new ProcessingRecipe(recipe.getType(), Category.FOOD, recipe.getIngredients().get(0), recipe.getResultItem(access), recipe.getCookingTime())
+            return new ProcessingRecipe(recipe.getType(), Category.FOOD, recipe.input(), recipe.assemble(new SingleRecipeInput(ItemStack.EMPTY), access), recipe.cookingTime())
             {
                 @Override
-                public RecipeSerializer<?> getSerializer()
+                public RecipeSerializer<? extends Recipe<SingleRecipeInput>> getSerializer()
                 {
                     return recipe.getSerializer();
+                }
+
+                @Override
+                public RecipeBookCategory recipeBookCategory()
+                {
+                    return recipe.recipeBookCategory();
+                }
+
+                @Override
+                public PlacementInfo placementInfo()
+                {
+                    return recipe.placementInfo();
                 }
             };
         }
@@ -214,7 +218,7 @@ public abstract class ProcessingRecipe implements Recipe<SingleRecipeInput>
                 this.codec = RecordCodecBuilder.mapCodec(builder -> {
                     return builder.group(Category.CODEC.fieldOf("category").forGetter(recipe -> {
                             return recipe.category;
-                    }), Ingredient.CODEC_NONEMPTY.fieldOf("ingredient").forGetter((recipe) -> {
+                    }), Ingredient.CODEC.fieldOf("ingredient").forGetter((recipe) -> {
                         return recipe.ingredient;
                     }), ItemStack.SINGLE_ITEM_CODEC.fieldOf("result").forGetter((recipe) -> {
                         return recipe.result;
@@ -252,7 +256,7 @@ public abstract class ProcessingRecipe implements Recipe<SingleRecipeInput>
 
     public static abstract class ItemWithCount extends ProcessingRecipe
     {
-        public ItemWithCount(RecipeType<?> type, Category category, Ingredient ingredient, ItemStack result, int time)
+        public ItemWithCount(RecipeType<? extends Recipe<SingleRecipeInput>> type, Category category, Ingredient ingredient, ItemStack result, int time)
         {
             super(type, category, ingredient, result, time);
         }
@@ -271,7 +275,7 @@ public abstract class ProcessingRecipe implements Recipe<SingleRecipeInput>
                 this.codec = RecordCodecBuilder.mapCodec(builder -> {
                     return builder.group(Category.CODEC.fieldOf("category").forGetter(recipe -> {
                         return recipe.category;
-                    }), Ingredient.CODEC_NONEMPTY.fieldOf("ingredient").forGetter((recipe) -> {
+                    }), Ingredient.CODEC.fieldOf("ingredient").forGetter((recipe) -> {
                         return recipe.ingredient;
                     }), ItemStack.CODEC.fieldOf("result").forGetter((recipe) -> {
                         return recipe.result;

@@ -225,15 +225,15 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
         ItemStack stack = this.getItem(0);
         if(!stack.isEmpty())
         {
-            int energy = Services.ITEM.getBurnTime(stack, null) * Config.SERVER.electricity.fuelToPowerRatio.get();
+            int energy = this.level.fuelValues().burnDuration(stack) * Config.SERVER.electricity.fuelToPowerRatio.get();
             if(energy > 0)
             {
                 if(!simulate)
                 {
-                    Item remainingItem = stack.getItem().getCraftingRemainingItem();
-                    if(stack.getMaxStackSize() == 1 && remainingItem != null)
+                    ItemStack remainingStack = stack.getItem().getCraftingRemainder();
+                    if(stack.getMaxStackSize() == 1 && !remainingStack.isEmpty())
                     {
-                        this.setItem(0, new ItemStack(remainingItem));
+                        this.setItem(0, remainingStack.copy());
                     }
                     else
                     {

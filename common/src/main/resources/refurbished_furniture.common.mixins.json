@@ -11,6 +11,7 @@
         "LevelChunkMixin",
         "LevelMixin",
         "LivingEntityMixin",
+        "RecipeManagerMixin",
         "ServerLevelMixin"
     ],
     "client": [
@@ -18,7 +19,8 @@
         "client.ClientRecipeBookMixin",
         "client.CreativeModeInventoryScreenMixin",
         "client.ModelManagerMixin",
-        "client.ScreenAccessor"
+        "client.ScreenAccessor",
+        "client.ClientPacketListenerMixin"
     ],
     "injectors": {
         "defaultRequire": 1,

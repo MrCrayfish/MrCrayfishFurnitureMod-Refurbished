@@ -1,10 +1,14 @@
 package com.mrcrayfish.furniture.refurbished.crafting;
 
+import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookCategories;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeSerializers;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleItemRecipe;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
@@ -16,7 +20,7 @@ public class CuttingBoardSlicingRecipe extends SingleItemRecipe
 {
     public CuttingBoardSlicingRecipe(Ingredient ingredient, ItemStack result)
     {
-        super(ModRecipeTypes.CUTTING_BOARD_SLICING.get(), ModRecipeSerializers.CUTTING_BOARD_SLICING_RECIPE.get(), "", ingredient, result);
+        super("", ingredient, result);
     }
 
     public CuttingBoardSlicingRecipe(String group, Ingredient ingredient, ItemStack result)
@@ -25,18 +29,26 @@ public class CuttingBoardSlicingRecipe extends SingleItemRecipe
     }
 
     @Override
-    public boolean matches(SingleRecipeInput input, Level level)
+    public RecipeSerializer<CuttingBoardSlicingRecipe> getSerializer()
     {
-        return this.ingredient.test(input.item());
+        return ModRecipeSerializers.CUTTING_BOARD_SLICING_RECIPE.get();
     }
 
-    public Ingredient getIngredient()
+    @Override
+    public RecipeType<CuttingBoardSlicingRecipe> getType()
     {
-        return this.ingredient;
+        return ModRecipeTypes.CUTTING_BOARD_SLICING.get();
     }
 
-    public ItemStack getResult()
+    @Override
+    public RecipeBookCategory recipeBookCategory()
     {
-        return this.result;
+        return ModRecipeBookCategories.CUTTING_BOARD.get();
+    }
+
+    @Override
+    public ItemStack result()
+    {
+        return super.result();
     }
 }

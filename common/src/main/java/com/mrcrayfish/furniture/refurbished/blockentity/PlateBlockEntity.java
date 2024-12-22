@@ -23,6 +23,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 /**
  * Author: MrCrayfish
  */
@@ -120,10 +122,10 @@ public class PlateBlockEntity extends BasicLootBlockEntity
     public boolean eat(Player player)
     {
         ItemStack stack = this.getItem(0);
-        if(stack.has(DataComponents.FOOD) && player.canEat(false))
+        if(stack.has(DataComponents.CONSUMABLE) && player.canEat(false))
         {
             Services.ENTITY.spawnFoodParticles(player, stack);
-            player.eat(player.level(), stack);
+            Objects.requireNonNull(stack.get(DataComponents.CONSUMABLE)).onConsume(player.level(), player, stack);
             this.setChanged();
             return true;
         }

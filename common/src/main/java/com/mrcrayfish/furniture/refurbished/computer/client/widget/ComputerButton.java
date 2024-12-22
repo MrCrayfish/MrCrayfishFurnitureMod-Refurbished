@@ -7,7 +7,6 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.util.FastColor;
 
 /**
  * Author: MrCrayfish
@@ -38,7 +37,6 @@ public class ComputerButton extends Button
         Minecraft mc = Minecraft.getInstance();
         graphics.fill(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), this.getOutlineColour());
         graphics.fill(this.getX() + 1, this.getY() + 1, this.getX() + this.getWidth() - 1, this.getY() + this.getHeight() - 1, this.getBackgroundColour());
-        graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
         int messageWidth = mc.font.width(this.getMessage());
         graphics.drawString(mc.font, this.getMessage(), this.getX() + (this.getWidth() - messageWidth) / 2 + 1, this.getY() + (this.getHeight() - mc.font.lineHeight) / 2 + 1 + this.textOffset, this.getTextColour(), false);
     }
@@ -105,7 +103,7 @@ public class ComputerButton extends Button
     /**
      * Sets the outline colour of the button when enabled
      *
-     * @param outlineColour an ARGB integer of the colour. See {@link FastColor.ARGB32} for utilities
+     * @param outlineColour an ARGB integer of the colour. See {@link net.minecraft.util.ARGB} for utilities
      */
     public void setOutlineColour(int outlineColour)
     {
@@ -115,7 +113,7 @@ public class ComputerButton extends Button
     /**
      * Sets the outline colour of the button when hovered/focused
      *
-     * @param outlineHighlightColour an ARGB integer of the colour. See {@link FastColor.ARGB32} for utilities
+     * @param outlineHighlightColour an ARGB integer of the colour. See {@link net.minecraft.util.ARGB} for utilities
      */
     public void setOutlineHighlightColour(int outlineHighlightColour)
     {
@@ -125,7 +123,7 @@ public class ComputerButton extends Button
     /**
      * Sets the outline colour of the button when it is not {@link #active}
      *
-     * @param outlineDisabledColour an ARGB integer of the colour. See {@link FastColor.ARGB32} for utilities
+     * @param outlineDisabledColour an ARGB integer of the colour. See {@link net.minecraft.util.ARGB} for utilities
      */
     public void setOutlineDisabledColour(int outlineDisabledColour)
     {
@@ -135,7 +133,7 @@ public class ComputerButton extends Button
     /**
      * Sets the background colour of the button when enabled
      *
-     * @param backgroundColour an ARGB integer of the colour. See {@link FastColor.ARGB32} for utilities
+     * @param backgroundColour an ARGB integer of the colour. See {@link net.minecraft.util.ARGB} for utilities
      */
     public void setBackgroundColour(int backgroundColour)
     {
@@ -145,7 +143,7 @@ public class ComputerButton extends Button
     /**
      * Sets the background colour of the button when hovered/focused
      *
-     * @param backgroundHighlightColour an ARGB integer of the colour. See {@link FastColor.ARGB32} for utilities
+     * @param backgroundHighlightColour an ARGB integer of the colour. See {@link net.minecraft.util.ARGB} for utilities
      */
     public void setBackgroundHighlightColour(int backgroundHighlightColour)
     {
@@ -155,7 +153,7 @@ public class ComputerButton extends Button
     /**
      * Sets the background colour of the button when it is not {@link #active}
      *
-     * @param backgroundDisabledColour an ARGB integer of the colour. See {@link FastColor.ARGB32} for utilities
+     * @param backgroundDisabledColour an ARGB integer of the colour. See {@link net.minecraft.util.ARGB} for utilities
      */
     public void setBackgroundDisabledColour(int backgroundDisabledColour)
     {
@@ -165,7 +163,7 @@ public class ComputerButton extends Button
     /**
      * Sets the text colour of the button when enabled
      *
-     * @param textColour an ARGB integer of the colour. See {@link FastColor.ARGB32} for utilities
+     * @param textColour an ARGB integer of the colour. See {@link net.minecraft.util.ARGB} for utilities
      */
     public void setTextColour(int textColour)
     {
@@ -175,7 +173,7 @@ public class ComputerButton extends Button
     /**
      * Sets the text colour of the button when hovered/focused
      *
-     * @param textHighlightColour an ARGB integer of the colour. See {@link FastColor.ARGB32} for utilities
+     * @param textHighlightColour an ARGB integer of the colour. See {@link net.minecraft.util.ARGB} for utilities
      */
     public void setTextHighlightColour(int textHighlightColour)
     {
@@ -185,7 +183,7 @@ public class ComputerButton extends Button
     /**
      * Sets the text colour of the button when disabled
      *
-     * @param textDisabledColour an ARGB integer of the colour. See {@link FastColor.ARGB32} for utilities
+     * @param textDisabledColour an ARGB integer of the colour. See {@link net.minecraft.util.ARGB} for utilities
      */
     public void setTextDisabledColour(int textDisabledColour)
     {

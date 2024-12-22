@@ -4,14 +4,19 @@ import com.mrcrayfish.furniture.refurbished.blockentity.IPowerSwitch;
 import com.mrcrayfish.furniture.refurbished.blockentity.StoveBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookTypes;
+import com.mrcrayfish.furniture.refurbished.core.ModRecipePropertySets;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
+import com.mrcrayfish.furniture.refurbished.crafting.MicrowaveHeatingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.OvenBakingRecipe;
 import com.mrcrayfish.furniture.refurbished.inventory.slot.ResultSlot;
+import net.minecraft.recipebook.ServerPlaceRecipe;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.StackedContents;
+import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.inventory.SimpleContainerData;
@@ -20,16 +25,20 @@ import net.minecraft.world.inventory.StackedContentsCompatible;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipePropertySet;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
+
+import java.util.List;
 
 /**
  * Author: MrCrayfish
  */
-public class StoveMenu extends SimpleRecipeContainerMenu<SingleRecipeInput, OvenBakingRecipe> implements IPowerSwitchMenu, IElectricityMenu, IContainerHolder, IBakingMenu
+public class StoveMenu extends SimpleRecipeContainerMenu implements IPowerSwitchMenu, IElectricityMenu, IContainerHolder, IBakingMenu
 {
     private final ContainerData data;
     private final Level level;
+    private final RecipePropertySet recipeTest;
 
     public StoveMenu(int windowId, Inventory playerInventory)
     {
@@ -44,6 +53,7 @@ public class StoveMenu extends SimpleRecipeContainerMenu<SingleRecipeInput, Oven
         container.startOpen(playerInventory.player);
         this.data = data;
         this.level = playerInventory.player.level();
+        this.recipeTest = this.level.recipeAccess().propertySet(ModRecipePropertySets.OVEN_INPUT);
         this.addContainerSlots(85, 18, 3, 1, 0);
         this.addContainerSlots(85, 54, 3, 1, 3, ResultSlot::new);
         this.addPlayerInventorySlots(8, 84, playerInventory);
@@ -66,7 +76,7 @@ public class StoveMenu extends SimpleRecipeContainerMenu<SingleRecipeInput, Oven
                     return ItemStack.EMPTY;
                 }
             }
-            else if(this.isRecipe(slotStack))
+            else if(this.recipeTest.test(slotStack))
             {
                 if(!this.moveItemStackTo(slotStack, 0, 3, false))
                 {
@@ -95,11 +105,6 @@ public class StoveMenu extends SimpleRecipeContainerMenu<SingleRecipeInput, Oven
             }
         }
         return stack;
-    }
-
-    private boolean isRecipe(ItemStack stack)
-    {
-        return this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.OVEN_BAKING.get(), new SingleRecipeInput(stack), this.level).isPresent();
     }
 
     @Override
@@ -146,7 +151,37 @@ public class StoveMenu extends SimpleRecipeContainerMenu<SingleRecipeInput, Oven
     }
 
     @Override
-    public void fillCraftSlotsStackedContents(StackedContents contents)
+    @SuppressWarnings("unchecked")
+    public PostPlaceAction handlePlacement(boolean useMax, boolean creativeMode, RecipeHolder<?> holder, ServerLevel level, Inventory inventory)
+    {
+        RecipeHolder<OvenBakingRecipe> recipeHolder = (RecipeHolder<OvenBakingRecipe>) holder;
+        final List<Slot> inputSlots = List.of(this.getSlot(0));
+        final List<Slot> craftingSlots = List.of(this.getSlot(0), this.getSlot(3));
+        ServerPlaceRecipe.CraftingMenuAccess<OvenBakingRecipe> access = new ServerPlaceRecipe.CraftingMenuAccess<>()
+        {
+            @Override
+            public void fillCraftSlotsStackedContents(StackedItemContents contents)
+            {
+                StoveMenu.this.fillCraftSlotsStackedContents(contents);
+            }
+
+            @Override
+            public void clearCraftingContent()
+            {
+                craftingSlots.forEach(slot -> slot.set(ItemStack.EMPTY));
+            }
+
+            @Override
+            public boolean recipeMatches(RecipeHolder<OvenBakingRecipe> holder)
+            {
+                return holder.value().matches(new SingleRecipeInput(StoveMenu.this.container.getItem(0)), StoveMenu.this.level);
+            }
+        };
+        return ServerPlaceRecipe.placeRecipe(access, 1, 1, inputSlots, craftingSlots, inventory, recipeHolder, useMax, creativeMode);
+    }
+
+    @Override
+    public void fillCraftSlotsStackedContents(StackedItemContents contents)
     {
         if(this.container instanceof StackedContentsCompatible)
         {
@@ -155,52 +190,9 @@ public class StoveMenu extends SimpleRecipeContainerMenu<SingleRecipeInput, Oven
     }
 
     @Override
-    public void clearCraftingContent()
-    {
-        this.getSlot(0).set(ItemStack.EMPTY);
-        this.getSlot(3).set(ItemStack.EMPTY);
-    }
-
-    @Override
-    public boolean recipeMatches(RecipeHolder<OvenBakingRecipe> holder)
-    {
-        return holder.value().matches(new SingleRecipeInput(this.container.getItem(0)), this.level);
-    }
-
-    @Override
-    public int getResultSlotIndex()
-    {
-        return 3;
-    }
-
-    @Override
-    public int getGridWidth()
-    {
-        return 1;
-    }
-
-    @Override
-    public int getGridHeight()
-    {
-        return 1;
-    }
-
-    @Override
-    public int getSize()
-    {
-        return 6;
-    }
-
-    @Override
     public RecipeBookType getRecipeBookType()
     {
         return ModRecipeBookTypes.OVEN.get();
-    }
-
-    @Override
-    public boolean shouldMoveToInventory(int slot)
-    {
-        return slot == 0 || slot == 3;
     }
 
     @Override

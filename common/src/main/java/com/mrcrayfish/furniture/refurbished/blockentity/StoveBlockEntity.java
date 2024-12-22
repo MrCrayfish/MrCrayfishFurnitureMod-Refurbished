@@ -30,6 +30,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.StackedContents;
+import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.StackedContentsCompatible;
@@ -557,7 +558,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     }
 
     @Override
-    public void fillStackedContents(StackedContents contents)
+    public void fillStackedContents(StackedItemContents contents)
     {
         for(ItemStack stack : this.items)
         {
@@ -643,10 +644,10 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
             ItemStack stack = StoveBlockEntity.this.getItem(this.inputIndex);
             if(!stack.isEmpty())
             {
-                Item remainingItem = stack.getMaxStackSize() == 1 ? stack.getItem().getCraftingRemainingItem() : null;
+                ItemStack remainingItem = stack.getMaxStackSize() == 1 ? stack.getItem().getCraftingRemainder() : ItemStack.EMPTY;
                 Optional<? extends ProcessingRecipe> optional = this.getRecipe();
                 Level level = Objects.requireNonNull(StoveBlockEntity.this.getLevel());
-                ItemStack result = optional.map(recipe -> recipe.getResultItem(level.registryAccess())).orElse(ItemStack.EMPTY);
+                ItemStack result = optional.map(recipe -> recipe.assemble(new SingleRecipeInput(stack), level.registryAccess())).orElse(ItemStack.EMPTY);
                 stack.shrink(1);
                 if(!result.isEmpty())
                 {
@@ -661,9 +662,9 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
                         outputStack.grow(copy.getCount());
                         StoveBlockEntity.this.setChanged();
                     }
-                    if(remainingItem != null)
+                    if(!remainingItem.isEmpty())
                     {
-                        StoveBlockEntity.this.setItem(this.inputIndex, new ItemStack(remainingItem));
+                        StoveBlockEntity.this.setItem(this.inputIndex, remainingItem.copy());
                     }
                 }
             }
@@ -685,7 +686,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
                 }
 
                 Level level = Objects.requireNonNull(StoveBlockEntity.this.getLevel());
-                ItemStack result = optional.get().getResultItem(level.registryAccess());
+                ItemStack result = optional.get().assemble(new SingleRecipeInput(stack), level.registryAccess());
                 return this.canOutput(result);
             }
             return false;
@@ -702,10 +703,9 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
         private Optional<? extends ProcessingRecipe> getRecipe()
         {
             ItemStack stack = StoveBlockEntity.this.getItem(this.inputIndex);
-            if(!stack.isEmpty())
+            if(!stack.isEmpty() && StoveBlockEntity.this.getLevel() instanceof ServerLevel serverLevel)
             {
-                Level level = StoveBlockEntity.this.getLevel();
-                return this.inputRecipeCache.getRecipeFor(new SingleRecipeInput(stack), Objects.requireNonNull(level)).map(RecipeHolder::value);
+                return this.inputRecipeCache.getRecipeFor(new SingleRecipeInput(stack), serverLevel).map(RecipeHolder::value);
             }
             return Optional.empty();
         }

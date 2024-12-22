@@ -9,7 +9,6 @@ import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
@@ -19,6 +18,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.client.player.ClientPreAttackCallback;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.color.item.ItemTintSources;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
@@ -54,7 +54,6 @@ public class ClientFurnitureMod implements ClientModInitializer
         ClientBootstrap.registerEntityRenderers(EntityRendererRegistry::register);
         ClientBootstrap.registerRenderTypes(BlockRenderLayerMap.INSTANCE::putBlock);
         ClientBootstrap.registerBlockColors(ColorProviderRegistry.BLOCK::register);
-        ClientBootstrap.registerItemColors(ColorProviderRegistry.ITEM::register);
         ClientBootstrap.registerHudOverlays((id, overlay) -> HudRenderCallback.EVENT.register(overlay::draw));
         ClientBootstrap.registerParticleProviders(new ParticleProviderRegister() {
             @Override

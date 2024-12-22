@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.mrcrayfish.furniture.refurbished.block.CuttingBoardBlock;
 import com.mrcrayfish.furniture.refurbished.blockentity.StorageJarBlockEntity;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
@@ -11,10 +12,13 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -55,13 +59,13 @@ public class StorageJarRenderer implements BlockEntityRenderer<StorageJarBlockEn
         for(int i = 0; i < storageJar.getContainerSize(); i++)
         {
             ItemStack stack = storageJar.getItem(i);
-            if(stack.isEmpty())
-                continue;
+            // TODO improve storage jar label with item
+            this.renderer.renderStatic(stack, ItemDisplayContext.GUI, light, overlay, poseStack, source, storageJar.getLevel(), 0);
 
-            BakedModel model = this.renderer.getModel(stack, storageJar.getLevel(), null, 0);
-            float offset = model.isGui3d() ? 0.0375F : 0.0625F;
+            //BakedModel model = this.renderer.getModel(stack, storageJar.getLevel(), null, 0);
+            /*float offset = model.isGui3d() ? 0.0375F : 0.0625F;
             this.drawItem(stack, storageJar.getLevel(), direction, poseStack, source, light, overlay, !model.isGui3d(), offset);
-
+*/
         }
         poseStack.popPose();
 

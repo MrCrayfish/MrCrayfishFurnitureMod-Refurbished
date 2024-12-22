@@ -1,8 +1,9 @@
 package com.mrcrayfish.furniture.refurbished.block;
 
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 
 /**
  * Author: MrCrayfish
@@ -18,6 +19,6 @@ public interface BlockProperties
     BooleanProperty RIGHT = BooleanProperty.create("right");
     BooleanProperty POWERED = BlockStateProperties.POWERED;
     BooleanProperty ENABLED = BlockStateProperties.ENABLED;
-    DirectionProperty FACING = BlockStateProperties.FACING;
+    EnumProperty<Direction> FACING = BlockStateProperties.FACING;
     BooleanProperty LIT = BlockStateProperties.LIT;
 }

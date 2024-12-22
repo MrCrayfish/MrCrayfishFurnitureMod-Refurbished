@@ -6,9 +6,9 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
-
+import net.minecraft.util.ARGB;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -132,7 +132,7 @@ public class TextureCache
             {
                 int colour = PaletteImage.COLOURS[image.get(x, y)];
                 colour = convertARGBToABGR(colour);
-                nativeImage.setPixelRGBA(x, y, colour);
+                nativeImage.setPixel(x, y, colour);
             }
         }
         return nativeImage;
@@ -146,10 +146,10 @@ public class TextureCache
      */
     private static int convertARGBToABGR(int value)
     {
-        int alpha = FastColor.ARGB32.alpha(value);
-        int red = FastColor.ARGB32.red(value);
-        int green = FastColor.ARGB32.green(value);
-        int blue = FastColor.ARGB32.blue(value);
-        return FastColor.ABGR32.color(alpha, blue, green, red);
+        int alpha = ARGB.alpha(value);
+        int red = ARGB.red(value);
+        int green = ARGB.green(value);
+        int blue = ARGB.blue(value);
+        return ARGB.color(alpha, blue, green, red);
     }
 }

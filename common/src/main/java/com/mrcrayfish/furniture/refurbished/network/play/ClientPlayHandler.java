@@ -85,7 +85,7 @@ public class ClientPlayHandler
             Minecraft mc = Minecraft.getInstance();
             Component title = Utils.translation("gui", "doorbell_rang");
             Component description = Component.literal(message.name());
-            mc.getToasts().addToast(new ItemToast(title, description, new ItemStack(Items.BELL)));
+            mc.getToastManager().addToast(new ItemToast(title, description, new ItemStack(Items.BELL)));
         }
     }
 

@@ -110,8 +110,11 @@ public abstract class ElectricitySourceContainerBlockEntity extends Randomizable
     }
 
     @Override
-    public void saveToItem(ItemStack stack, HolderLookup.Provider provider)
+    public void removeComponentsFromTag(CompoundTag tag)
     {
-        this.saveNodeNbtToItem(stack, provider);
+        tag.remove("Connections"); // Don't include connections as this breaks node limits
+        tag.remove("NodePos"); // Don't include fix for connections since none are present anyway
+        tag.remove("Powered"); // Remove the powered property
+        tag.remove("Overloaded"); // Remove the overloaded property
     }
 }

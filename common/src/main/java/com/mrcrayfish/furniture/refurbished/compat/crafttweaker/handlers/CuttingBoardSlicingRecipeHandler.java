@@ -28,9 +28,9 @@ public class CuttingBoardSlicingRecipeHandler implements IRecipeHandler<CuttingB
     {
         return "%s.addRecipe(%s, %s, %s);".formatted(
             manager.getCommandString(),
-            StringUtil.quoteAndEscape(holder.id()),
-            IIngredient.fromIngredient(holder.value().getIngredient()).getCommandString(),
-            IItemStack.ofMutable(holder.value().getResult()).getCommandString()
+            StringUtil.quoteAndEscape(holder.id().location()),
+            IIngredient.fromIngredient(holder.value().input()).getCommandString(),
+            IItemStack.ofMutable(holder.value().result()).getCommandString()
         );
     }
 
@@ -40,15 +40,15 @@ public class CuttingBoardSlicingRecipeHandler implements IRecipeHandler<CuttingB
         if(!(secondRecipe instanceof CuttingBoardSlicingRecipe slicingRecipe))
             return true;
         // Cutting board recipes are conflicting if the input is the same
-        return IngredientUtil.canConflict(firstRecipe.getIngredient(), slicingRecipe.getIngredient());
+        return IngredientUtil.canConflict(firstRecipe.input(), slicingRecipe.input());
     }
 
     @Override
     public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super CuttingBoardSlicingRecipe> manager, RegistryAccess registryAccess, CuttingBoardSlicingRecipe recipe)
     {
         IDecomposedRecipe decomposedRecipe = IDecomposedRecipe.builder()
-            .with(BuiltinRecipeComponents.Input.INGREDIENTS, IIngredient.fromIngredient(recipe.getIngredient()))
-            .with(BuiltinRecipeComponents.Output.ITEMS, IItemStack.ofMutable(recipe.getResult()))
+            .with(BuiltinRecipeComponents.Input.INGREDIENTS, IIngredient.fromIngredient(recipe.input()))
+            .with(BuiltinRecipeComponents.Output.ITEMS, IItemStack.ofMutable(recipe.result()))
             .build();
         return Optional.of(decomposedRecipe);
     }

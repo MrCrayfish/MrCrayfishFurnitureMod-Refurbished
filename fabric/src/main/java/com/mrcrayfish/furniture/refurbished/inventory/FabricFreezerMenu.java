@@ -3,11 +3,13 @@ package com.mrcrayfish.furniture.refurbished.inventory;
 import com.mrcrayfish.furniture.refurbished.blockentity.FreezerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.IPowerSwitch;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
+import com.mrcrayfish.furniture.refurbished.core.ModRecipePropertySets;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.inventory.IElectricityMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.IPowerSwitchMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.SimpleContainerMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.slot.ResultSlot;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -17,6 +19,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipePropertySet;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 
@@ -27,6 +30,7 @@ public class FabricFreezerMenu extends SimpleContainerMenu implements IPowerSwit
 {
     private final ContainerData data;
     private final Level level;
+    private final RecipePropertySet recipeSet;
 
     public FabricFreezerMenu(int windowId, Inventory playerInventory)
     {
@@ -41,6 +45,7 @@ public class FabricFreezerMenu extends SimpleContainerMenu implements IPowerSwit
         container.startOpen(playerInventory.player);
         this.data = data;
         this.level = playerInventory.player.level();
+        this.recipeSet = this.level.recipeAccess().propertySet(ModRecipePropertySets.FREEZER_INPUT);
         this.addSlot(new Slot(container, 0, 48, 35));
         this.addSlot(new ResultSlot(container, 1, 108, 35));
         this.addPlayerInventorySlots(8, 84, playerInventory);
@@ -96,7 +101,7 @@ public class FabricFreezerMenu extends SimpleContainerMenu implements IPowerSwit
 
     private boolean isRecipe(ItemStack stack)
     {
-        return this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.FREEZER_SOLIDIFYING.get(), new SingleRecipeInput(stack), this.level).isPresent();
+        return this.recipeSet.test(stack);
     }
 
     @Override

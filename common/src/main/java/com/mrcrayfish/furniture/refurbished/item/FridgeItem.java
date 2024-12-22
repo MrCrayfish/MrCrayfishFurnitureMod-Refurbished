@@ -9,8 +9,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemNameBlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.block.Block;
@@ -22,7 +22,7 @@ import java.util.Optional;
 /**
  * Author: MrCrayfish
  */
-public class FridgeItem extends ItemNameBlockItem
+public class FridgeItem extends BlockItem
 {
     private final FridgeBlock fridge;
 

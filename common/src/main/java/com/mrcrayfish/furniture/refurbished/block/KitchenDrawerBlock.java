@@ -6,6 +6,7 @@ import com.mrcrayfish.furniture.refurbished.blockentity.KitchenDrawerBlockEntity
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -88,7 +89,7 @@ public abstract class KitchenDrawerBlock extends FurnitureHorizontalEntityBlock 
     }
 
     @Override
-    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random)
+    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random)
     {
         if(level.getBlockEntity(pos) instanceof KitchenDrawerBlockEntity blockEntity)
         {

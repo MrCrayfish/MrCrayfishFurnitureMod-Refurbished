@@ -14,30 +14,32 @@ import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategories;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
-
 import org.jetbrains.annotations.Nullable;
+
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -58,18 +60,6 @@ public class WorkbenchContructingRecipe implements Recipe<SingleRecipeInput>
     }
 
     @Override
-    public RecipeType<?> getType()
-    {
-        return ModRecipeTypes.WORKBENCH_CONSTRUCTING.get();
-    }
-
-    @Override
-    public RecipeSerializer<?> getSerializer()
-    {
-        return ModRecipeSerializers.WORKBENCH_RECIPE.get();
-    }
-
-    @Override
     public boolean matches(SingleRecipeInput input, Level level)
     {
         return true;
@@ -82,21 +72,33 @@ public class WorkbenchContructingRecipe implements Recipe<SingleRecipeInput>
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height)
-    {
-        return true;
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider provider)
-    {
-        return this.result;
-    }
-
-    @Override
     public boolean showNotification()
     {
         return this.notification;
+    }
+
+    @Override
+    public RecipeSerializer<WorkbenchContructingRecipe> getSerializer()
+    {
+        return ModRecipeSerializers.WORKBENCH_RECIPE.get();
+    }
+
+    @Override
+    public RecipeType<WorkbenchContructingRecipe> getType()
+    {
+        return ModRecipeTypes.WORKBENCH_CONSTRUCTING.get();
+    }
+
+    @Override
+    public PlacementInfo placementInfo()
+    {
+        return PlacementInfo.NOT_PLACEABLE;
+    }
+
+    @Override
+    public RecipeBookCategory recipeBookCategory()
+    {
+        return RecipeBookCategories.CRAFTING_MISC;
     }
 
     public NonNullList<StackedIngredient> getMaterials()
@@ -114,19 +116,18 @@ public class WorkbenchContructingRecipe implements Recipe<SingleRecipeInput>
         return this.result;
     }
 
-    public static Builder builder(ItemLike result, int count, Function<ItemLike, Criterion<?>> hasItem, Function<TagKey<Item>, Criterion<?>> hasTag)
+    public static Builder builder(HolderLookup.RegistryLookup<Item> items, ItemLike result, int count, Function<ItemLike, Criterion<?>> hasItem, Function<TagKey<Item>, Criterion<?>> hasTag)
     {
-        return new Builder(result.asItem(), count, hasItem, hasTag);
+        return new Builder(items, result.asItem(), count, hasItem, hasTag);
     }
 
     public static class Serializer implements RecipeSerializer<WorkbenchContructingRecipe>
     {
         public static final MapCodec<WorkbenchContructingRecipe> CODEC = RecordCodecBuilder.mapCodec(builder -> {
             return builder.group(StackedIngredient.CODEC.listOf().fieldOf("materials").flatXmap(materials -> {
-                StackedIngredient[] inputs = materials.stream().filter((ingredient) -> {
-                    return !ingredient.ingredient().isEmpty() || ingredient.count() <= 0;
-                }).toArray(StackedIngredient[]::new);
-                return DataResult.success(NonNullList.of(StackedIngredient.EMPTY, inputs));
+                NonNullList<StackedIngredient> inputs = NonNullList.create();
+                inputs.addAll(materials);
+                return DataResult.success(inputs);
             }, DataResult::success).forGetter(o -> {
                 return o.materials;
             }), ItemStack.CODEC.fieldOf("result").forGetter(recipe -> {
@@ -137,14 +138,12 @@ public class WorkbenchContructingRecipe implements Recipe<SingleRecipeInput>
         });
 
         public static final StreamCodec<RegistryFriendlyByteBuf, WorkbenchContructingRecipe> STREAM_CODEC = StreamCodec.of((buf, recipe) -> {
-            buf.writeInt(recipe.materials.size());
-            recipe.materials.forEach(ingredient -> ingredient.toNetwork(buf));
+            buf.writeCollection(recipe.materials, (o, ingredient) -> ingredient.toNetwork(buf));
             ItemStack.STREAM_CODEC.encode(buf, recipe.result);
             buf.writeBoolean(recipe.notification);
         }, buf -> {
-            int materialCount = buf.readInt();
-            NonNullList<StackedIngredient> materials = NonNullList.withSize(materialCount, StackedIngredient.EMPTY);
-            IntStream.range(0, materialCount).forEach(i -> materials.set(i, StackedIngredient.fromNetwork(buf)));
+            NonNullList<StackedIngredient> materials = NonNullList.create();
+            materials.addAll(buf.readList(buf1 -> StackedIngredient.fromNetwork(buf)));
             ItemStack result = ItemStack.STREAM_CODEC.decode(buf);
             boolean notification = buf.readBoolean();
             return new WorkbenchContructingRecipe(materials, result, notification);
@@ -165,6 +164,7 @@ public class WorkbenchContructingRecipe implements Recipe<SingleRecipeInput>
 
     public static class Builder implements RecipeBuilder
     {
+        private final HolderLookup.RegistryLookup<Item> items;
         private final Item result;
         private final int count;
         private final Function<ItemLike, Criterion<?>> hasItem;
@@ -174,8 +174,9 @@ public class WorkbenchContructingRecipe implements Recipe<SingleRecipeInput>
         private RecipeCategory category = RecipeCategory.MISC;
         private boolean showNotification;
 
-        private Builder(Item result, int count, Function<ItemLike, Criterion<?>> hasItem, Function<TagKey<Item>, Criterion<?>> hasTag)
+        private Builder(HolderLookup.RegistryLookup<Item> items, Item result, int count, Function<ItemLike, Criterion<?>> hasItem, Function<TagKey<Item>, Criterion<?>> hasTag)
         {
+            this.items = items;
             this.result = result;
             this.count = count;
             this.hasItem = hasItem;
@@ -184,7 +185,7 @@ public class WorkbenchContructingRecipe implements Recipe<SingleRecipeInput>
 
         public Builder requiresMaterial(Material<?> material)
         {
-            this.materials.add(material.asStackedIngredient());
+            this.materials.add(material.asStackedIngredient(this.items));
             return this.unlockedBy("has_" + material.getName(), material.createTrigger(this.hasItem, this.hasTag));
         }
 
@@ -220,7 +221,7 @@ public class WorkbenchContructingRecipe implements Recipe<SingleRecipeInput>
         }
 
         @Override
-        public void save(RecipeOutput output, ResourceLocation id)
+        public void save(RecipeOutput output, ResourceKey<Recipe<?>> id)
         {
             this.validate(id);
             Advancement.Builder builder = output.advancement()
@@ -228,18 +229,18 @@ public class WorkbenchContructingRecipe implements Recipe<SingleRecipeInput>
                 .rewards(AdvancementRewards.Builder.recipe(id))
                 .requirements(AdvancementRequirements.Strategy.OR);
             this.criteria.forEach(builder::addCriterion);
-            output.accept(id, new WorkbenchContructingRecipe(this.materials, new ItemStack(this.result), this.showNotification), builder.build(id.withPrefix("recipes/" + this.category.getFolderName() + "/")));
+            output.accept(id, new WorkbenchContructingRecipe(this.materials, new ItemStack(this.result), this.showNotification), builder.build(id.location().withPrefix("recipes/" + this.category.getFolderName() + "/")));
         }
 
-        private void validate(ResourceLocation id)
+        private void validate(ResourceKey<Recipe<?>> id)
         {
             if(this.materials.isEmpty())
             {
-                throw new IllegalArgumentException("There must be at least one material for workbench crafting recipe %s".formatted(id));
+                throw new IllegalArgumentException("There must be at least one material for workbench crafting recipe %s".formatted(id.location()));
             }
             if(this.criteria.isEmpty())
             {
-                throw new IllegalStateException("No way of obtaining recipe " + id);
+                throw new IllegalStateException("No way of obtaining recipe " + id.location());
             }
         }
     }

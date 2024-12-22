@@ -25,6 +25,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -102,7 +103,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
             Map<ResourceLocation, Integer> map = new HashMap<>();
             List<RecipeHolder<WorkbenchContructingRecipe>> recipes = menu.getRecipes();
             for(int i = 0; i < recipes.size(); i++) {
-                map.put(recipes.get(i).id(), i);
+                map.put(recipes.get(i).id().location(), i);
             }
             return ImmutableMap.copyOf(map);
         });
@@ -164,7 +165,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
     {
-        graphics.blit(WORKBENCH_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        graphics.blit(RenderType::guiTextured, WORKBENCH_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
         this.renderScrollbar(graphics, mouseY);
         this.renderRecipes(graphics, partialTick, mouseX, mouseY);
         this.renderOverlay(graphics);
@@ -179,7 +180,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     private void renderScrollbar(GuiGraphics graphics, int mouseY)
     {
         int textureU = this.getMaxScroll() > 0 ? 216 : 228;
-        graphics.blit(WORKBENCH_TEXTURE, this.leftPos + 169, this.topPos + 18 + this.getScrollbarPosition(mouseY), textureU, 40, 12, SCROLLBAR_HEIGHT);
+        graphics.blit(RenderType::guiTextured, WORKBENCH_TEXTURE, this.leftPos + 169, this.topPos + 18 + this.getScrollbarPosition(mouseY), textureU, 40, 12, SCROLLBAR_HEIGHT, 256, 256);
     }
 
     private void renderRecipes(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
@@ -194,15 +195,15 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         for(int i = startIndex; i < endIndex && i < recipes.size(); i++)
         {
             RecipeHolder<WorkbenchContructingRecipe> recipe = recipes.get(i);
-            int recipeIndex = this.recipeToIndex.get(recipe.id());
+            int recipeIndex = this.recipeToIndex.get(recipe.id().location());
             boolean canCraft = this.menu.canCraft(recipe);
             boolean selected = recipeIndex == this.menu.getSelectedRecipeIndex();
             int buttonX = this.leftPos + 46 + (i % RECIPES_PER_ROW) * BUTTON_SIZE;
             int buttonY = this.topPos + 18 + (i / RECIPES_PER_ROW) * BUTTON_SIZE - (int) scroll;
             int textureU = 216 + (!canCraft ? BUTTON_SIZE : 0);
             int textureV = selected ? BUTTON_SIZE : 0;
-            graphics.blit(WORKBENCH_TEXTURE, buttonX, buttonY, textureU, textureV, BUTTON_SIZE, BUTTON_SIZE);
-            graphics.renderFakeItem(recipe.value().getResultItem(this.menu.getLevel().registryAccess()), buttonX + 2, buttonY + 2);
+            graphics.blit(RenderType::guiTextured, WORKBENCH_TEXTURE, buttonX, buttonY, textureU, textureV, BUTTON_SIZE, BUTTON_SIZE, 256, 256);
+            graphics.renderFakeItem(recipe.value().getResult(), buttonX + 2, buttonY + 2);
             if(mouseInWindow && ScreenHelper.isMouseWithinBounds(mouseX, mouseY, buttonX, buttonY, BUTTON_SIZE, BUTTON_SIZE))
             {
                 this.hoveredIndex = recipeIndex;
@@ -227,7 +228,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     {
         RecipeHolder<WorkbenchContructingRecipe> holder = this.menu.getRecipes().get(recipeIndex);
         List<ClientTooltipComponent> components = new ArrayList<>();
-        components.add(new ClientTextTooltip(holder.value().getResultItem(this.menu.getLevel().registryAccess()).getHoverName().getVisualOrderText()));
+        components.add(new ClientTextTooltip(holder.value().getResult().getHoverName().getVisualOrderText()));
         if(!Screen.hasShiftDown())
         {
             components.add(new ClientWorkbenchRecipeTooltip(this.menu, holder.value()));
@@ -487,8 +488,8 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
         {
             int textureV = this.isHovered ? 87 : this.category.enabled ? 71 : 55;
-            graphics.blit(WORKBENCH_TEXTURE, this.getX(), this.getY(), 216, textureV, 20, 16);
-            graphics.blit(WORKBENCH_TEXTURE, this.getX() + 3, this.getY() + 1, this.iconU, this.iconV, 14, 14);
+            graphics.blit(RenderType::guiTextured, WORKBENCH_TEXTURE, this.getX(), this.getY(), 216, textureV, 20, 16, 256, 256);
+            graphics.blit(RenderType::guiTextured, WORKBENCH_TEXTURE, this.getX() + 3, this.getY() + 1, this.iconU, this.iconV, 14, 14, 256, 256);
         }
     }
 }

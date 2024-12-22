@@ -7,7 +7,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -43,21 +42,20 @@ public class WrenchItem extends Item
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand)
+    public InteractionResult use(Level level, Player player, InteractionHand hand)
     {
         float range = player.isCreative() ? 5.0F : 4.5F;
         NodeHitResult result = performNodeRaycast(level, player, range, 1F);
         if(result.getType() != HitResult.Type.MISS)
         {
-            if(!level.isClientSide() && level instanceof ServerLevel serverLevel)
+            if(level instanceof ServerLevel serverLevel)
             {
                 LinkManager.get(serverLevel.getServer()).ifPresent(manager -> {
                     manager.onNodeInteract(level, player, result.getNode());
                 });
             }
-            return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());
         }
-        return InteractionResultHolder.success(player.getItemInHand(hand));
+        return InteractionResult.SUCCESS;
     }
 
     public static NodeHitResult performNodeRaycast(Level level, Player player, double range, float partialTick)

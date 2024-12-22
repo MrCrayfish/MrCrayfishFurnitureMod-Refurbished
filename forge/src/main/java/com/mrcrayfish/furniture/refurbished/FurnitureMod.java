@@ -1,14 +1,14 @@
 package com.mrcrayfish.furniture.refurbished;
 
 import com.mrcrayfish.furniture.refurbished.client.ClientBootstrap;
-import com.mrcrayfish.furniture.refurbished.client.ClientFurnitureMod;
 import com.mrcrayfish.furniture.refurbished.client.ForgeClientEvents;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookTypes;
-import com.mrcrayfish.furniture.refurbished.data.FurnitureBlockTagsProvider;
+import com.mrcrayfish.furniture.refurbished.data.CommonBlockTagsProvider;
+import com.mrcrayfish.furniture.refurbished.data.CommonItemTagsProvider;
+import com.mrcrayfish.furniture.refurbished.data.CommonLootTableProvider;
+import com.mrcrayfish.furniture.refurbished.data.CommonRecipeProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureItemTagsProvider;
-import com.mrcrayfish.furniture.refurbished.data.FurnitureLootTableProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureModelProvider;
-import com.mrcrayfish.furniture.refurbished.data.FurnitureRecipeProvider;
 import com.mrcrayfish.furniture.refurbished.data.RegistriesProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
@@ -34,24 +34,23 @@ import java.util.concurrent.CompletableFuture;
 @Mod(Constants.MOD_ID)
 public class FurnitureMod
 {
-    public FurnitureMod()
+    public FurnitureMod(FMLJavaModLoadingContext context)
     {
         ModRecipeBookTypes.getAllTypes().forEach(holder -> RecipeBookType.create(holder.constantName()));
         ForgeMod.enableMilkFluid();
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+        IEventBus bus = context.getModEventBus();
         bus.addListener(this::onCommonSetup);
         bus.addListener(this::onClientSetup);
         bus.addListener(this::onGatherData);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-            ClientFurnitureMod.init();
             bus.addListener(ForgeClientEvents::onRegisterRenderers);
             bus.addListener(ForgeClientEvents::onRegisterParticleProviders);
             bus.addListener(ForgeClientEvents::onRegisterBlockColors);
             bus.addListener(ForgeClientEvents::onRegisterItemColors);
             //bus.addListener(ForgeClientEvents::onRegisterGuiOverlays);
-            bus.addListener(ForgeClientEvents::onRegisterRecipeCategories);
+            //bus.addListener(ForgeClientEvents::onRegisterRecipeCategories);
             MinecraftForge.EVENT_BUS.addListener(ForgeClientEvents::onKeyTriggered);
-            MinecraftForge.EVENT_BUS.addListener(ForgeClientEvents::onRenderLevelStage);
+            //MinecraftForge.EVENT_BUS.addListener(ForgeClientEvents::onRenderLevelStage);
             MinecraftForge.EVENT_BUS.addListener(ForgeClientEvents::onDrawHighlight);
         });
         MinecraftForge.EVENT_BUS.addGenericListener(BlockEntity.class, ForgeEvents::onAttachCapability);
@@ -73,10 +72,11 @@ public class FurnitureMod
         PackOutput output = generator.getPackOutput();
         ExistingFileHelper helper = event.getExistingFileHelper();
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
-        FurnitureBlockTagsProvider blockTagsProvider = generator.addProvider(event.includeServer(), new FurnitureBlockTagsProvider(output, lookupProvider, helper));
+        CommonBlockTagsProvider blockTagsProvider = generator.addProvider(event.includeServer(), new CommonBlockTagsProvider(output, lookupProvider));
+        generator.addProvider(event.includeServer(), new CommonItemTagsProvider(output, lookupProvider, blockTagsProvider.contentsGetter()));
         generator.addProvider(event.includeServer(), new FurnitureItemTagsProvider(output, lookupProvider, blockTagsProvider.contentsGetter(), helper));
-        generator.addProvider(event.includeServer(), new FurnitureLootTableProvider(output, lookupProvider));
-        generator.addProvider(event.includeServer(), new FurnitureRecipeProvider(output, lookupProvider));
+        generator.addProvider(event.includeServer(), new CommonLootTableProvider(output, lookupProvider));
+        generator.addProvider(event.includeServer(), new CommonRecipeProvider.Runner(output, lookupProvider));
         generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(output, lookupProvider, RegistriesProvider.BUILDER, Set.of(Constants.MOD_ID)));
         generator.addProvider(event.includeClient(), new FurnitureModelProvider(output, helper));
     }

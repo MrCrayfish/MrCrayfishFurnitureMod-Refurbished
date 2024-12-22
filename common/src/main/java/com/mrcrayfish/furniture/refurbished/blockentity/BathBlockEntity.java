@@ -21,7 +21,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -100,12 +100,12 @@ public class BathBlockEntity extends BlockEntity implements IFluidContainerBlock
         return null;
     }
 
-    public ItemInteractionResult interact(Player player, InteractionHand hand, BlockHitResult result)
+    public InteractionResult interact(Player player, InteractionHand hand, BlockHitResult result)
     {
         FluidContainer tank = this.getFluidContainer();
         if(tank == null)
         {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
         if(Config.SERVER.bath.dispenseWater.get() && player.getItemInHand(hand).isEmpty())
@@ -118,7 +118,7 @@ public class BathBlockEntity extends BlockEntity implements IFluidContainerBlock
                 {
                     this.sendTapWaterAnimation();
                     Objects.requireNonNull(this.level).playSound(null, this.worldPosition, ModSounds.BLOCK_KITCHEN_SINK_FILL.get(), SoundSource.BLOCKS);
-                    return ItemInteractionResult.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 }
             }
 
@@ -137,7 +137,7 @@ public class BathBlockEntity extends BlockEntity implements IFluidContainerBlock
                     level.playSound(null, this.worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS);
                     level.levelEvent(LevelEvent.LAVA_FIZZ, this.worldPosition, 0);
                     this.sendTapWaterAnimation();
-                    return ItemInteractionResult.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 }
             }
         }

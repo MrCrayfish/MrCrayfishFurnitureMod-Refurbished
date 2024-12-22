@@ -23,7 +23,7 @@ import com.mrcrayfish.furniture.refurbished.client.registration.BlockColorsRegis
 import com.mrcrayfish.furniture.refurbished.client.registration.BlockEntityRendererRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.EntityRendererRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.HudOverlayRegister;
-import com.mrcrayfish.furniture.refurbished.client.registration.ItemColorsRegister;
+import com.mrcrayfish.furniture.refurbished.client.registration.ItemTintRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ParticleProviderRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.RecipeCategoryRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.RenderTypeRegister;
@@ -52,17 +52,14 @@ import com.mrcrayfish.furniture.refurbished.image.TextureCache;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.block.state.BlockState;
-
-import java.util.stream.Stream;
 
 /**
  * Author: MrCrayfish
@@ -339,19 +336,19 @@ public class ClientBootstrap
     public static void registerBlockColors(BlockColorsRegister register)
     {
         register.apply((state, reader, pos, index) -> {
-            return reader != null && pos != null ? BiomeColors.getAverageFoliageColor(reader, pos) : FoliageColor.getDefaultColor();
+            return reader != null && pos != null ? BiomeColors.getAverageFoliageColor(reader, pos) : FoliageColor.FOLIAGE_DEFAULT;
         }, ModBlocks.HEDGE_OAK.get(), ModBlocks.HEDGE_JUNGLE.get(), ModBlocks.HEDGE_ACACIA.get(), ModBlocks.HEDGE_DARK_OAK.get());
 
         register.apply((state, reader, pos, i) -> {
-            return FoliageColor.getEvergreenColor();
+            return FoliageColor.FOLIAGE_EVERGREEN;
         }, ModBlocks.HEDGE_SPRUCE.get());
 
         register.apply((state, reader, pos, i) -> {
-            return FoliageColor.getBirchColor();
+            return FoliageColor.FOLIAGE_BIRCH;
         }, ModBlocks.HEDGE_BIRCH.get());
 
         register.apply((state, reader, pos, i) -> {
-            return FoliageColor.getMangroveColor();
+            return FoliageColor.FOLIAGE_MANGROVE;
         }, ModBlocks.HEDGE_MANGROVE.get());
 
         register.apply((state, reader, pos, i) -> {
@@ -360,14 +357,6 @@ public class ClientBootstrap
             }
             return 0xFFFFFF;
         }, ModBlocks.STOVE_LIGHT.get(), ModBlocks.STOVE_DARK.get());
-    }
-
-    public static void registerItemColors(ItemColorsRegister register)
-    {
-        register.apply((stack, index) -> {
-            BlockState state = ((BlockItem) stack.getItem()).getBlock().defaultBlockState();
-            return Minecraft.getInstance().getBlockColors().getColor(state, null, null, index);
-        }, ModBlocks.HEDGE_OAK.get(), ModBlocks.HEDGE_SPRUCE.get(), ModBlocks.HEDGE_BIRCH.get(), ModBlocks.HEDGE_JUNGLE.get(), ModBlocks.HEDGE_ACACIA.get(), ModBlocks.HEDGE_DARK_OAK.get(), ModBlocks.HEDGE_MANGROVE.get());
     }
 
     public static void registerHudOverlays(HudOverlayRegister register)
@@ -379,21 +368,21 @@ public class ClientBootstrap
     public static void registerRecipeBookCategories(RecipeCategoryRegister register)
     {
         registerIntoRecipeBook(register, ModRecipeTypes.FREEZER_SOLIDIFYING.get(), ModRecipeBookTypes.FREEZER.get(),
-            ModRecipeBookCategories.FREEZER_SEARCH.get(),
+            //ModRecipeBookCategories.FREEZER_SEARCH.get(),
             ModRecipeBookCategories.FREEZER_BLOCKS.get(),
             ModRecipeBookCategories.FREEZER_ITEMS.get(),
             ModRecipeBookCategories.FREEZER_FOOD.get(),
             ModRecipeBookCategories.FREEZER_MISC.get()
         );
         registerIntoRecipeBook(register, ModRecipeTypes.MICROWAVE_HEATING.get(), ModRecipeBookTypes.MICROWAVE.get(),
-            ModRecipeBookCategories.MICROWAVE_SEARCH.get(),
+            //ModRecipeBookCategories.MICROWAVE_SEARCH.get(),
             ModRecipeBookCategories.MICROWAVE_BLOCKS.get(),
             ModRecipeBookCategories.MICROWAVE_ITEMS.get(),
             ModRecipeBookCategories.MICROWAVE_FOOD.get(),
             ModRecipeBookCategories.MICROWAVE_MISC.get()
         );
         registerIntoRecipeBook(register, ModRecipeTypes.OVEN_BAKING.get(), ModRecipeBookTypes.OVEN.get(),
-            ModRecipeBookCategories.OVEN_SEARCH.get(),
+            //ModRecipeBookCategories.OVEN_SEARCH.get(),
             ModRecipeBookCategories.OVEN_BLOCKS.get(),
             ModRecipeBookCategories.OVEN_ITEMS.get(),
             ModRecipeBookCategories.OVEN_FOOD.get(),
@@ -401,7 +390,7 @@ public class ClientBootstrap
         );
     }
 
-    private static void registerIntoRecipeBook(RecipeCategoryRegister register, RecipeType<?> recipeType, RecipeBookType bookType, RecipeBookCategories ... categories)
+    private static void registerIntoRecipeBook(RecipeCategoryRegister register, RecipeType<?> recipeType, RecipeBookType bookType, RecipeBookCategory... categories)
     {
         Preconditions.checkArgument(categories.length == 5, "Invalid categories. There must be exactly five.");
         register.applyCategory(bookType, categories);

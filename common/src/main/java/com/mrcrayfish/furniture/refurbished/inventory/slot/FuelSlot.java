@@ -4,20 +4,24 @@ import com.mrcrayfish.furniture.refurbished.platform.Services;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 /**
  * Author: MrCrayfish
  */
 public class FuelSlot extends Slot
 {
-    public FuelSlot(Container container, int slot, int x, int y)
+    private final Level level;
+
+    public FuelSlot(Container container, Level level, int slot, int x, int y)
     {
         super(container, slot, x, y);
+        this.level = level;
     }
 
     @Override
     public boolean mayPlace(ItemStack stack)
     {
-        return Services.ITEM.getBurnTime(stack, null) > 0;
+        return this.level.fuelValues().isFuel(stack);
     }
 }

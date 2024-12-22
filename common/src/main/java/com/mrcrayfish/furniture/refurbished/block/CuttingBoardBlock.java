@@ -14,7 +14,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -74,7 +74,7 @@ public class CuttingBoardBlock extends FurnitureHorizontalEntityBlock implements
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
     {
         if(level.getBlockEntity(pos) instanceof CuttingBoardBlockEntity cuttingBoard)
         {
@@ -88,15 +88,15 @@ public class CuttingBoardBlock extends FurnitureHorizontalEntityBlock implements
                     {
                         heldItem.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
                     }
-                    return ItemInteractionResult.sidedSuccess(level.isClientSide());
                 }
+                return InteractionResult.SUCCESS;
             }
-            else if(cuttingBoard.placeItem(heldItem))
+            else if(cuttingBoard.placeItem(heldItem)) // Modify to only be server side
             {
-                return ItemInteractionResult.sidedSuccess(level.isClientSide());
+                return InteractionResult.SUCCESS;
             }
         }
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     @Nullable

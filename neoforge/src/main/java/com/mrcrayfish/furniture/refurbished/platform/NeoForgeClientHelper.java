@@ -86,13 +86,8 @@ public class NeoForgeClientHelper implements IClientHelper
     @Override
     public void drawBakedModel(BakedModel model, PoseStack poseStack, VertexConsumer consumer, int light, int overlay)
     {
-        Minecraft.getInstance().getItemRenderer().renderModelLists(model, ItemStack.EMPTY, light, overlay, poseStack, consumer);
-    }
-
-    @Override
-    public BakedModel getBakedModel(ModelResourceLocation location)
-    {
-        return Minecraft.getInstance().getModelManager().getModel(location);
+        // TODO 1.12.4 test
+        Minecraft.getInstance().getBlockRenderer().getModelRenderer().renderModel(poseStack.last(), consumer, null, model, 1, 1, 1, light, overlay);
     }
 
     @Override
@@ -104,7 +99,7 @@ public class NeoForgeClientHelper implements IClientHelper
     @Override
     public void renderTooltip(GuiGraphics graphics, Font font, List<ClientTooltipComponent> components, int mouseX, int mouseY, ClientTooltipPositioner position)
     {
-        graphics.renderTooltipInternal(font, components, mouseX, mouseY, position);
+        graphics.renderTooltipInternal(font, components, mouseX, mouseY, position, null);
     }
 
     @Override

@@ -11,8 +11,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -130,12 +133,13 @@ public class TableBlock extends FurnitureBlock implements BlockTagSupplier
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState newState, LevelAccessor level, BlockPos pos, BlockPos newPos)
+    protected BlockState updateShape(BlockState state, LevelReader reader, ScheduledTickAccess access, BlockPos pos, Direction direction, BlockPos pos1, BlockState state1, RandomSource rand)
     {
-        boolean north = level.getBlockState(pos.north()).getBlock() instanceof TableBlock;
-        boolean east = level.getBlockState(pos.east()).getBlock() instanceof TableBlock;
-        boolean south = level.getBlockState(pos.south()).getBlock() instanceof TableBlock;
-        boolean west = level.getBlockState(pos.west()).getBlock() instanceof TableBlock;
+        // TODO 1.21.3 optimise with the direction
+        boolean north = reader.getBlockState(pos.north()).getBlock() instanceof TableBlock;
+        boolean east = reader.getBlockState(pos.east()).getBlock() instanceof TableBlock;
+        boolean south = reader.getBlockState(pos.south()).getBlock() instanceof TableBlock;
+        boolean west = reader.getBlockState(pos.west()).getBlock() instanceof TableBlock;
         return state.setValue(NORTH, north).setValue(EAST, east).setValue(SOUTH, south).setValue(WEST, west);
     }
 

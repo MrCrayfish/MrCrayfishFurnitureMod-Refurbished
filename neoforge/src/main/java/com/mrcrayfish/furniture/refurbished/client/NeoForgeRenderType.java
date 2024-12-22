@@ -6,6 +6,7 @@ import com.mrcrayfish.furniture.refurbished.Constants;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.TriState;
 
 import java.util.function.Function;
 
@@ -18,7 +19,7 @@ public class NeoForgeRenderType extends RenderType
         return RenderType.create(Constants.MOD_ID + "_television_screen", DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS, 0x200000, true, false, CompositeState.builder()
                 .setLightmapState(LIGHTMAP)
                 .setShaderState(RENDERTYPE_SOLID_SHADER)
-                .setTextureState(new TextureStateShard(id, false, false))
+                .setTextureState(new TextureStateShard(id, TriState.FALSE, false))
                 .createCompositeState(true));
     });
 

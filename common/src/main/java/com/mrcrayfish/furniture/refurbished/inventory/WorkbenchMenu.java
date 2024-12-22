@@ -1,20 +1,25 @@
 package com.mrcrayfish.furniture.refurbished.inventory;
 
+import com.mrcrayfish.framework.api.Environment;
 import com.mrcrayfish.framework.api.menu.IMenuData;
+import com.mrcrayfish.framework.api.util.TaskRunner;
 import com.mrcrayfish.furniture.refurbished.blockentity.IWorkbench;
 import com.mrcrayfish.furniture.refurbished.blockentity.WorkbenchBlockEntity;
 import com.mrcrayfish.furniture.refurbished.client.ClientWorkbench;
+import com.mrcrayfish.furniture.refurbished.client.ClientRecipes;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
-import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.crafting.StackedIngredient;
 import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchContructingRecipe;
+import com.mrcrayfish.furniture.refurbished.platform.Services;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -30,12 +35,16 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 
+import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish
@@ -102,11 +111,22 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
 
     private List<RecipeHolder<WorkbenchContructingRecipe>> setupRecipes(Level level)
     {
-        return level.getRecipeManager()
-            .getAllRecipesFor(ModRecipeTypes.WORKBENCH_CONSTRUCTING.get())
-            .stream()
-            .sorted(Comparator.comparing(holder -> holder.value().getResultId()))
-            .collect(Collectors.toList());
+        List<RecipeHolder<WorkbenchContructingRecipe>> recipes = new ArrayList<>(this.getWorkbenchRecipeHolders(level));
+        recipes.sort(Comparator.comparing(holder -> holder.value().getResultId()));
+        return recipes;
+    }
+
+    private Collection<RecipeHolder<WorkbenchContructingRecipe>> getWorkbenchRecipeHolders(Level level)
+    {
+        if(level instanceof ServerLevel serverLevel)
+        {
+            return Services.RECIPE.getWorkbenchRecipes(serverLevel);
+        }
+        else if(level instanceof ClientLevel)
+        {
+            return TaskRunner.callIf(Environment.CLIENT, () -> ClientRecipes::get).map(ClientRecipes::workbenchRecipes).orElse(Collections.emptyList());
+        }
+        return Collections.emptyList();
     }
 
     private void updateResultSlot()
@@ -120,7 +140,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
                 if(this.workbench.canCraft(recipe))
                 {
                     ItemStack result = this.getSlot(WorkbenchBlockEntity.RESULT_SLOT).getItem();
-                    ItemStack output = recipe.value().getResultItem(this.level.registryAccess());
+                    ItemStack output = recipe.value().getResult().copy();
                     if(!ItemStack.matches(result, output))
                     {
                         this.resultSlot.set(output.copy());
@@ -261,7 +281,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
 
     public boolean canCraft(RecipeHolder<WorkbenchContructingRecipe> recipe)
     {
-        return this.isPowered() && this.recipeToCraftable.computeIfAbsent(recipe.id(), id -> {
+        return this.isPowered() && this.recipeToCraftable.computeIfAbsent(recipe.id().location(), id -> {
             Map<Integer, Integer> found = new HashMap<>();
             for(StackedIngredient material : recipe.value().getMaterials()) {
                 if(!this.hasMaterials(material, found)) {
@@ -274,25 +294,24 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
 
     public boolean hasMaterials(StackedIngredient material, Map<Integer, Integer> counted)
     {
-        int remaining = material.count();
-        for(ItemStack stack : material.ingredient().getItems())
-        {
-            int itemId = Item.getId(stack.getItem());
-            int count = this.counts.getOrDefault(itemId, 0);
-            count -= counted.getOrDefault(itemId, 0); // Remove already counted items
-            if(count > 0)
-            {
-                if(count >= remaining)
-                {
-                    counted.merge(itemId, remaining, Integer::sum);
-                    remaining = 0;
-                    break;
+        final MutableInt remaining = new MutableInt(material.count());
+        material.ingredient().items()
+            .takeWhile(holder -> remaining.getValue() > 0)
+            .forEach(holder -> {
+                int itemId = Item.getId(holder.value());
+                int count = this.counts.getOrDefault(itemId, 0);
+                count -= counted.getOrDefault(itemId, 0); // Remove already counted items
+                if(count > 0) {
+                    if(count >= remaining.getValue()) {
+                        counted.merge(itemId, remaining.getValue(), Integer::sum);
+                        remaining.setValue(0);
+                        return;
+                    }
+                    counted.merge(itemId, count, Integer::sum);
+                    remaining.decrement();
                 }
-                counted.merge(itemId, count, Integer::sum);
-                remaining -= count;
-            }
-        }
-        return remaining <= 0;
+            });
+        return remaining.getValue() <= 0;
     }
 
     public void setUpdateCallback(Runnable callback)

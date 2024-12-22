@@ -4,6 +4,7 @@ import com.mrcrayfish.furniture.refurbished.blockentity.IPowerSwitch;
 import com.mrcrayfish.furniture.refurbished.blockentity.StoveBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookTypes;
+import com.mrcrayfish.furniture.refurbished.core.ModRecipePropertySets;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.inventory.slot.ResultSlot;
 import net.minecraft.world.Container;
@@ -18,6 +19,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.StackedContentsCompatible;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipePropertySet;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 
@@ -27,7 +29,7 @@ import net.minecraft.world.level.Level;
 public class FabricStoveMenu extends SimpleContainerMenu implements IPowerSwitchMenu, IElectricityMenu, IContainerHolder, IBakingMenu
 {
     private final ContainerData data;
-    private final Level level;
+    private final RecipePropertySet recipeSet;
 
     public FabricStoveMenu(int windowId, Inventory playerInventory)
     {
@@ -40,8 +42,9 @@ public class FabricStoveMenu extends SimpleContainerMenu implements IPowerSwitch
         checkContainerSize(container, 6);
         checkContainerDataCount(data, 8);
         container.startOpen(playerInventory.player);
+        Level level = playerInventory.player.level();
         this.data = data;
-        this.level = playerInventory.player.level();
+        this.recipeSet = level.recipeAccess().propertySet(ModRecipePropertySets.MICROWAVE_INPUT);
         this.addContainerSlots(85, 18, 3, 1, 0);
         this.addContainerSlots(85, 54, 3, 1, 3, ResultSlot::new);
         this.addPlayerInventorySlots(8, 84, playerInventory);
@@ -97,7 +100,7 @@ public class FabricStoveMenu extends SimpleContainerMenu implements IPowerSwitch
 
     private boolean isRecipe(ItemStack stack)
     {
-        return this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.OVEN_BAKING.get(), new SingleRecipeInput(stack), this.level).isPresent();
+        return this.recipeSet.test(stack);
     }
 
     @Override

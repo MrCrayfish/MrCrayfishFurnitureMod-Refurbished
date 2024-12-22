@@ -11,6 +11,7 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -55,7 +56,7 @@ public class MarketplaceGraphics extends DisplayableProgram<Marketplace>
             Icon icon = Display.get().getIcon(this.program.getProgram().getId());
             if(icon != null)
             {
-                graphics.blit(icon.texture(), (this.program.getWidth() - 16) / 2, 10, icon.u(), icon.v(), 16, 16, 128, 128);
+                graphics.blit(RenderType::guiTextured, icon.texture(), (this.program.getWidth() - 16) / 2, 10, icon.u(), icon.v(), 16, 16, 128, 128);
             }
             graphics.drawCenteredString(Minecraft.getInstance().font, "Coming Soon!", MAX_CONTENT_WIDTH / 4, 35, 0xFFFFFFFF);
         }
@@ -88,7 +89,7 @@ public class MarketplaceGraphics extends DisplayableProgram<Marketplace>
         public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
         {
             graphics.fill(0, 0, this.program.getWidth(), 16, 0xFF653938);
-            graphics.blit(TEXTURE, 5, 2, 0, 0, 12, 12);
+            graphics.blit(RenderType::guiTextured, TEXTURE, 5, 2, 0, 0, 12, 12, 12, 12);
             graphics.drawString(Minecraft.getInstance().font, Integer.toString(this.getEmeraldCount()), 50, 5, 0xFFFFFFFF);
         }
 

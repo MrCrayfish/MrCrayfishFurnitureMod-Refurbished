@@ -38,13 +38,7 @@ public class DoorMatCopyRecipe extends CustomRecipe
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height)
-    {
-        return width * height >= 2;
-    }
-
-    @Override
-    public RecipeSerializer<?> getSerializer()
+    public RecipeSerializer<DoorMatCopyRecipe> getSerializer()
     {
         return ModRecipeSerializers.DOOR_MAT_COPY_RECIPE.get();
     }

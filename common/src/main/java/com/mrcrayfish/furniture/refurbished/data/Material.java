@@ -2,6 +2,8 @@ package com.mrcrayfish.furniture.refurbished.data;
 
 import com.mrcrayfish.furniture.refurbished.crafting.StackedIngredient;
 import net.minecraft.advancements.Criterion;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -25,7 +27,7 @@ public abstract sealed class Material<T>
         this.count = count;
     }
 
-    public abstract StackedIngredient asStackedIngredient();
+    public abstract StackedIngredient asStackedIngredient(HolderLookup.RegistryLookup<Item> items);
 
     public abstract Criterion<?> createTrigger(Function<ItemLike, Criterion<?>> hasItem, Function<TagKey<Item>, Criterion<?>> hasTag);
 
@@ -72,7 +74,7 @@ public abstract sealed class Material<T>
         }
 
         @Override
-        public StackedIngredient asStackedIngredient()
+        public StackedIngredient asStackedIngredient(HolderLookup.RegistryLookup<Item> items)
         {
             return new StackedIngredient(Ingredient.of(this.t), this.count);
         }
@@ -92,9 +94,10 @@ public abstract sealed class Material<T>
         }
 
         @Override
-        public StackedIngredient asStackedIngredient()
+        public StackedIngredient asStackedIngredient(HolderLookup.RegistryLookup<Item> items)
         {
-            return new StackedIngredient(Ingredient.of(this.t), this.count);
+            HolderSet<Item> tagItems = items.get(this.t).orElseThrow(() -> new IllegalStateException("Missing tag " + this.t));
+            return new StackedIngredient(Ingredient.of(tagItems), this.count);
         }
 
         @Override

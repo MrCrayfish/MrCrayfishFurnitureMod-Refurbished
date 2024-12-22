@@ -14,6 +14,7 @@ import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -38,6 +39,7 @@ import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
+import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,6 +47,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.StreamSupport;
 
 /**
  * Author: MrCrayfish
@@ -251,25 +255,24 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
         Map<Item, Integer> materials = new HashMap<>();
         for(StackedIngredient material : recipe.getMaterials())
         {
-            int remaining = material.count();
-            for(ItemStack stack : material.ingredient().getItems())
-            {
-                Item item = stack.getItem();
-                int count = counts.getOrDefault(item, 0);
-                count -= materials.getOrDefault(item, 0);
-                if(count > 0)
-                {
-                    if(count >= remaining)
-                    {
-                        materials.merge(item, remaining, Integer::sum);
-                        remaining = 0;
-                        break;
+            final MutableInt remaining = new MutableInt(material.count());
+            material.ingredient().items()
+                .takeWhile(holder -> remaining.getValue() > 0)
+                .forEach(holder -> {
+                    Item item = holder.value();
+                    int count = counts.getOrDefault(item, 0);
+                    count -= materials.getOrDefault(item, 0);
+                    if(count > 0) {
+                        if(count >= remaining.getValue()) {
+                            materials.merge(item, remaining.getValue(), Integer::sum);
+                            remaining.setValue(0);
+                            return;
+                        }
+                        materials.merge(item, count, Integer::sum);
+                        remaining.decrement();
                     }
-                    materials.merge(item, count, Integer::sum);
-                    remaining -= count;
-                }
-            }
-            if(remaining > 0)
+                });
+            if(remaining.getValue() > 0)
             {
                 return null;
             }

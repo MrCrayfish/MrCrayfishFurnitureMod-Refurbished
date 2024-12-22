@@ -63,8 +63,8 @@ public class MicrowaveHeatingCategory extends FurnitureRecipeCategory<MicrowaveH
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, MicrowaveHeatingRecipe recipe, IFocusGroup focuses)
     {
-        builder.addSlot(RecipeIngredientRole.INPUT, 7, 10).addIngredients(recipe.getIngredients().get(0));
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 67, 10).addItemStack(Plugin.getResult(recipe));
+        builder.addSlot(RecipeIngredientRole.INPUT, 7, 10).addIngredients(recipe.getIngredient());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 67, 10).addItemStack(recipe.getResult());
         this.waveform = this.helper.createAnimatedDrawable(this.helper.createDrawable(Plugin.TEXTURES, 93, 154, 24, 17), recipe.getTime(), IDrawableAnimated.StartDirection.LEFT, false);
     }
 

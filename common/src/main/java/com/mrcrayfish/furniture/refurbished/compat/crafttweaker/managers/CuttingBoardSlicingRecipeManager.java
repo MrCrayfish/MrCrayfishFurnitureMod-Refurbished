@@ -25,7 +25,8 @@ public class CuttingBoardSlicingRecipeManager implements IRecipeManager<CuttingB
     @ZenCodeType.Method
     public void addRecipe(String name, IIngredient ingredient, IItemStack result)
     {
-        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new RecipeHolder<>(CraftTweakerConstants.rl(name), new CuttingBoardSlicingRecipe(ingredient.asVanillaIngredient(), result.getInternal()))));
+        // TODO 1.21.3 craft tweaker support
+        //CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new RecipeHolder<>(CraftTweakerConstants.rl(name), new CuttingBoardSlicingRecipe(ingredient.asVanillaIngredient(), result.getInternal()))));
     }
 
     @Override

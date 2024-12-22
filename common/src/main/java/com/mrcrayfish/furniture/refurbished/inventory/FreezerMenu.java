@@ -4,33 +4,39 @@ import com.mrcrayfish.furniture.refurbished.blockentity.FreezerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.IPowerSwitch;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookTypes;
+import com.mrcrayfish.furniture.refurbished.core.ModRecipePropertySets;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.FreezerSolidifyingRecipe;
 import com.mrcrayfish.furniture.refurbished.inventory.slot.ResultSlot;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
+import net.minecraft.recipebook.ServerPlaceRecipe;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.StackedContents;
+import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.StackedContentsCompatible;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipePropertySet;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
+
+import java.util.List;
 
 /**
  * Author: MrCrayfish
  */
-public class FreezerMenu extends SimpleRecipeContainerMenu<SingleRecipeInput, FreezerSolidifyingRecipe> implements IPowerSwitchMenu, IElectricityMenu, IContainerHolder, IProcessingMenu
+public class FreezerMenu extends SimpleRecipeContainerMenu implements IPowerSwitchMenu, IElectricityMenu, IContainerHolder, IProcessingMenu
 {
     private final ContainerData data;
     private final Level level;
+    private final RecipePropertySet recipeTest;
 
     public FreezerMenu(int windowId, Inventory playerInventory)
     {
@@ -45,6 +51,7 @@ public class FreezerMenu extends SimpleRecipeContainerMenu<SingleRecipeInput, Fr
         container.startOpen(playerInventory.player);
         this.data = data;
         this.level = playerInventory.player.level();
+        this.recipeTest = this.level.recipeAccess().propertySet(ModRecipePropertySets.FREEZER_INPUT);
         this.addSlot(new Slot(container, 0, 48, 35));
         this.addSlot(new ResultSlot(container, 1, 108, 35));
         this.addPlayerInventorySlots(8, 84, playerInventory);
@@ -67,7 +74,7 @@ public class FreezerMenu extends SimpleRecipeContainerMenu<SingleRecipeInput, Fr
                     return ItemStack.EMPTY;
                 }
             }
-            else if(this.isRecipe(slotStack))
+            else if(this.recipeTest.test(slotStack))
             {
                 if(!this.moveItemStackTo(slotStack, 0, this.container.getContainerSize(), false))
                 {
@@ -96,11 +103,6 @@ public class FreezerMenu extends SimpleRecipeContainerMenu<SingleRecipeInput, Fr
             }
         }
         return stack;
-    }
-
-    private boolean isRecipe(ItemStack stack)
-    {
-        return this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.FREEZER_SOLIDIFYING.get(), new SingleRecipeInput(stack), this.level).isPresent();
     }
 
     @Override
@@ -137,7 +139,13 @@ public class FreezerMenu extends SimpleRecipeContainerMenu<SingleRecipeInput, Fr
     }
 
     @Override
-    public void fillCraftSlotsStackedContents(StackedContents contents)
+    public Container container()
+    {
+        return this.container;
+    }
+
+    @Override
+    public void fillCraftSlotsStackedContents(StackedItemContents contents)
     {
         if(this.container instanceof StackedContentsCompatible)
         {
@@ -146,57 +154,38 @@ public class FreezerMenu extends SimpleRecipeContainerMenu<SingleRecipeInput, Fr
     }
 
     @Override
-    public void clearCraftingContent()
+    @SuppressWarnings("unchecked")
+    public PostPlaceAction handlePlacement(boolean useMax, boolean creativeMode, RecipeHolder<?> holder, ServerLevel level, Inventory inventory)
     {
-        this.getSlot(0).set(ItemStack.EMPTY);
-        this.getSlot(1).set(ItemStack.EMPTY);
-    }
+        RecipeHolder<FreezerSolidifyingRecipe> recipeHolder = (RecipeHolder<FreezerSolidifyingRecipe>) holder;
+        final List<Slot> inputSlots = List.of(this.getSlot(0));
+        final List<Slot> craftingSlots = List.of(this.getSlot(0), this.getSlot(1));
+        ServerPlaceRecipe.CraftingMenuAccess<FreezerSolidifyingRecipe> access = new ServerPlaceRecipe.CraftingMenuAccess<>()
+        {
+            @Override
+            public void fillCraftSlotsStackedContents(StackedItemContents contents)
+            {
+                FreezerMenu.this.fillCraftSlotsStackedContents(contents);
+            }
 
-    @Override
-    public boolean recipeMatches(RecipeHolder<FreezerSolidifyingRecipe> holder)
-    {
-        return holder.value().matches(new SingleRecipeInput(this.container.getItem(0)), this.level);
-    }
+            @Override
+            public void clearCraftingContent()
+            {
+                craftingSlots.forEach(slot -> slot.set(ItemStack.EMPTY));
+            }
 
-    @Override
-    public int getResultSlotIndex()
-    {
-        return 1;
-    }
-
-    @Override
-    public int getGridWidth()
-    {
-        return 1;
-    }
-
-    @Override
-    public int getGridHeight()
-    {
-        return 1;
-    }
-
-    @Override
-    public int getSize()
-    {
-        return 2;
+            @Override
+            public boolean recipeMatches(RecipeHolder<FreezerSolidifyingRecipe> holder)
+            {
+                return holder.value().matches(new SingleRecipeInput(FreezerMenu.this.container.getItem(0)), FreezerMenu.this.level);
+            }
+        };
+        return ServerPlaceRecipe.placeRecipe(access, 1, 1, inputSlots, craftingSlots, inventory, recipeHolder, useMax, creativeMode);
     }
 
     @Override
     public RecipeBookType getRecipeBookType()
     {
         return Services.PLATFORM.getPlatform().isFabric() ? RecipeBookType.SMOKER : ModRecipeBookTypes.FREEZER.get();
-    }
-
-    @Override
-    public boolean shouldMoveToInventory(int slot)
-    {
-        return slot != this.getResultSlotIndex();
-    }
-
-    @Override
-    public Container container()
-    {
-        return this.container;
     }
 }

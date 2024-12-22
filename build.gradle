@@ -1,6 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.7-SNAPSHOT' apply false
-    id 'net.neoforged.moddev' version '0.1.110' apply false
+    id 'net.neoforged.moddev' version '2.0.44-beta' apply false
 }
 
 def incrementBuild(path) {
@@ -17,3 +16,4 @@ tasks.register('incrementBuilds') {
         incrementBuild('/release_build_neoforge');
     }
 }
+

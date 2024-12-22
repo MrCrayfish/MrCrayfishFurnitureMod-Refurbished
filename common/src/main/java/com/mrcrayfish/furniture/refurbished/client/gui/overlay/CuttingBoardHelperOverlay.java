@@ -39,7 +39,9 @@ public class CuttingBoardHelperOverlay implements IHudOverlay
     @Override
     public void draw(GuiGraphics graphics, DeltaTracker deltaTracker)
     {
-        if(!Config.CLIENT.showCuttingBoardHelper.get())
+        // TODO replace with overlay
+
+        /*if(!Config.CLIENT.showCuttingBoardHelper.get())
             return;
 
         Minecraft mc = Minecraft.getInstance();
@@ -56,7 +58,7 @@ public class CuttingBoardHelperOverlay implements IHudOverlay
         int placeIndex = cuttingBoard.getPlaceIndex();
         Container container = new SimpleContainer(placeIndex);
         IntStream.range(0, placeIndex).forEach(index -> container.setItem(index, cuttingBoard.getItem(index)));
-        List<RecipeHolder<CuttingBoardCombiningRecipe>> recipes = mc.level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.CUTTING_BOARD_COMBINING.get());
+        List<RecipeHolder<CuttingBoardCombiningRecipe>> recipes = mc.level.recipeAccess().getAllRecipesFor(ModRecipeTypes.CUTTING_BOARD_COMBINING.get());
 
         // Get stream of combinable recipes and filter recipes that match the currently placed items
         Stream<Item> combinable = recipes.stream()
@@ -105,7 +107,7 @@ public class CuttingBoardHelperOverlay implements IHudOverlay
             ScreenHelper.fillRounded(graphics, areaStart, contentTop, areaWidth, elementHeight, 0x9937AE37);
             graphics.renderFakeItem(new ItemStack(ModItems.KNIFE.get()), labelStart, contentTop + 1);
             graphics.drawString(Minecraft.getInstance().font, sliceableLabel, labelStart + 18, contentTop + 5, 0xFFFFFFFF);
-        }
+        }*/
     }
 
     private int getAreaHeight(List<Item> placeable, boolean combining, boolean slicing)
@@ -124,12 +126,12 @@ public class CuttingBoardHelperOverlay implements IHudOverlay
 
     private boolean canSlice(CuttingBoardBlockEntity entity)
     {
-        ItemStack placedItem = entity.getItem(0);
+        /*ItemStack placedItem = entity.getItem(0);
         if(entity.getHeadIndex() == 0 && !placedItem.isEmpty())
         {
             Level level = Objects.requireNonNull(entity.getLevel());
             return level.getRecipeManager().getRecipeFor(ModRecipeTypes.CUTTING_BOARD_SLICING.get(), new SingleRecipeInput(placedItem), level).isPresent();
-        }
+        }*/
         return false;
     }
 }

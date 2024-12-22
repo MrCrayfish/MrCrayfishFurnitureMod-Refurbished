@@ -1,9 +1,12 @@
 package com.mrcrayfish.furniture.refurbished.crafting;
 
+import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookCategories;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeSerializers;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeBookCategories;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
 /**
@@ -17,8 +20,14 @@ public class ToasterHeatingRecipe extends ProcessingRecipe.Item
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer()
+    public RecipeSerializer<ToasterHeatingRecipe> getSerializer()
     {
         return ModRecipeSerializers.TOASTER_RECIPE.get();
+    }
+
+    @Override
+    public RecipeBookCategory recipeBookCategory()
+    {
+        return ModRecipeBookCategories.TOASTER.get();
     }
 }

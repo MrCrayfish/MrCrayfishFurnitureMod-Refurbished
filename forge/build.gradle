@@ -91,10 +91,10 @@ dependencies {
     runtimeOnly "com.mrcrayfish:catalogue-forge:${minecraft_version}-${catalogue_version}"
     //compileOnly fg.deobf("maven.modrinth:farmers-delight:${minecraft_version}-${catalogue_version}")
 
-    compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
-    runtimeOnly "mezz.jei:jei-${minecraft_version}-forge:${jei_version}"
+    compileOnly "mezz.jei:jei-${jei_minecraft_version}-common-api:${jei_version}"
+    //runtimeOnly "mezz.jei:jei-${jei_minecraft_version}-forge:${jei_version}"
 
-    compileOnly "com.blamejared.crafttweaker:CraftTweaker-common-${minecraft_version}:${crafttweaker_version}"
+    compileOnly "com.blamejared.crafttweaker:CraftTweaker-common-${crafttweaker_minecraft_version}:${crafttweaker_version}"
     //runtimeOnly fg.deobf( "com.blamejared.crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}")
 
     annotationProcessor "org.spongepowered:mixin:0.8.5-SNAPSHOT:processor"

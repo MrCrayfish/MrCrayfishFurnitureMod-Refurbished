@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -20,6 +21,8 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -140,9 +143,10 @@ public class SofaBlock extends FurnitureHorizontalBlock implements BlockTagSuppl
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState newState, LevelAccessor level, BlockPos pos, BlockPos newPos)
+    protected BlockState updateShape(BlockState state, LevelReader reader, ScheduledTickAccess access, BlockPos pos, Direction direction, BlockPos pos1, BlockState state1, RandomSource rand)
     {
-        return state.setValue(SHAPE, this.getShape(state, level, pos));
+        // TODO introduce new optimisation for 1.21.3
+        return state.setValue(SHAPE, this.getShape(state, reader, pos));
     }
 
     @Override
@@ -152,10 +156,10 @@ public class SofaBlock extends FurnitureHorizontalBlock implements BlockTagSuppl
         builder.add(SHAPE);
     }
 
-    public Shape getShape(BlockState state, LevelAccessor level, BlockPos pos)
+    public Shape getShape(BlockState state, LevelReader reader, BlockPos pos)
     {
         Direction facing = state.getValue(DIRECTION);
-        Direction front = this.getSofaDirection(level, pos, facing.getOpposite());
+        Direction front = this.getSofaDirection(reader, pos, facing.getOpposite());
         if(front != null)
         {
             if(front == facing.getClockWise())
@@ -167,8 +171,8 @@ public class SofaBlock extends FurnitureHorizontalBlock implements BlockTagSuppl
                 return Shape.CORNER_LEFT;
             }
         }
-        boolean left = this.isConnectable(level, pos, facing, facing.getCounterClockWise());
-        boolean right = this.isConnectable(level, pos, facing, facing.getClockWise());
+        boolean left = this.isConnectable(reader, pos, facing, facing.getCounterClockWise());
+        boolean right = this.isConnectable(reader, pos, facing, facing.getClockWise());
         if(left && right)
         {
             return Shape.MIDDLE;
@@ -184,22 +188,22 @@ public class SofaBlock extends FurnitureHorizontalBlock implements BlockTagSuppl
         return Shape.DEFAULT;
     }
 
-    private Direction getSofaDirection(LevelAccessor level, BlockPos pos, Direction side)
+    private Direction getSofaDirection(LevelReader reader, BlockPos pos, Direction side)
     {
-        BlockState relativeState = level.getBlockState(pos.relative(side));
+        BlockState relativeState = reader.getBlockState(pos.relative(side));
         return relativeState.getBlock() instanceof SofaBlock ? relativeState.getValue(DIRECTION) : null;
     }
 
-    private boolean isConnectable(LevelAccessor level, BlockPos pos, Direction facing, Direction offset)
+    private boolean isConnectable(LevelReader reader, BlockPos pos, Direction facing, Direction offset)
     {
         BlockPos relativePos = pos.relative(offset);
-        BlockState relativeState = level.getBlockState(pos.relative(offset));
+        BlockState relativeState = reader.getBlockState(pos.relative(offset));
         if(relativeState.getBlock() instanceof SofaBlock)
         {
             Direction other = relativeState.getValue(DIRECTION);
             return other == facing || other == offset;
         }
-        return relativeState.isFaceSturdy(level, relativePos, offset.getOpposite());
+        return relativeState.isFaceSturdy(reader, relativePos, offset.getOpposite());
     }
 
     @Override

@@ -35,7 +35,8 @@ public class WorkbenchConstructingRecipeManager implements IRecipeManager<Workbe
                 .map(IIngredient::asIIngredientWithAmount)
                 .map(v -> StackedIngredient.of(v.ingredient().asVanillaIngredient(), v.amount()))
                 .collect(NonNullList::create, AbstractList::add, AbstractCollection::addAll);
-        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new RecipeHolder<>(CraftTweakerConstants.rl(name), new WorkbenchContructingRecipe(ingredients, result.getInternal(), notification))));
+        // TODO 1.21.3 craft tweaker support
+        //CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new RecipeHolder<>(CraftTweakerConstants.rl(name), new WorkbenchContructingRecipe(ingredients, result.getInternal(), notification))));
     }
 
     @Override

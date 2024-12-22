@@ -4,58 +4,83 @@ import com.mrcrayfish.framework.Registration;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.block.DoorMatBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModDataComponents;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.loot.BlockLootSubProvider;
+import net.minecraft.data.loot.LootTableProvider;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction;
-import net.minecraft.world.level.storage.loot.functions.CopyCustomDataFunction;
 import net.minecraft.world.level.storage.loot.functions.CopyNameFunction;
-import net.minecraft.world.level.storage.loot.providers.nbt.ContextNbtProvider;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
 
 /**
  * Author: MrCrayfish
  */
-public class CommonLootTableProvider
+public class CommonLootTableProvider extends LootTableProvider
 {
-    public static class Block
+    public CommonLootTableProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> completableFuture)
     {
-        public static void accept(LootBuilder.Block builder)
+        super(output, Set.of(), List.of(new LootTableProvider.SubProviderEntry(FurnitureBlock::new, LootContextParamSets.BLOCK)), completableFuture);
+    }
+
+    public static class FurnitureBlock extends BlockLootSubProvider
+    {
+        protected FurnitureBlock(HolderLookup.Provider provider)
         {
-            // TODO system to customise instead of dropping self
+            super(Collections.emptySet(), FeatureFlagSet.of(), provider);
+        }
+
+        @Override
+        public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> consumer)
+        {
+            this.map.forEach(consumer);
+        }
+
+        @Override
+        public void generate()
+        {
             Registration.get(Registries.BLOCK).stream().filter(entry -> entry.getId().getNamespace().equals(Constants.MOD_ID)).forEach(entry -> {
-                net.minecraft.world.level.block.Block block = (net.minecraft.world.level.block.Block) entry.get();
+                Block block = (Block) entry.get();
                 if(block instanceof DropWithName) {
-                    builder.custom(block, createDropWithName(block));
+                    this.add(block, this::createDropWithName);
                 } else if(block instanceof DoorMatBlock) {
-                    builder.custom(block, createDoorMatLootPool(block));
+                    this.add(block, this::createDoorMatLootPool);
                 } else {
-                    builder.self(block);
+                    this.dropSelf(block);
                 }
             });
         }
 
-        private static LootPool.Builder createDoorMatLootPool(net.minecraft.world.level.block.Block block)
+        private LootTable.Builder createDoorMatLootPool(Block block)
         {
-            return LootPool.lootPool()
-                .setRolls(ConstantValue.exactly(1.0F))
-                .add(LootItem.lootTableItem(block)
-                    .apply(CopyComponentsFunction.copyComponents(
-                        CopyComponentsFunction.Source.BLOCK_ENTITY).include(ModDataComponents.PALETTE_IMAGE.get())
-                    ));
+            return LootTable.lootTable()
+                .withPool(this.applyExplosionCondition(block, LootPool.lootPool()
+                    .setRolls(ConstantValue.exactly(1.0F))
+                    .add(LootItem.lootTableItem(block)
+                        .apply(CopyComponentsFunction.copyComponents(CopyComponentsFunction.Source.BLOCK_ENTITY)
+                            .include(ModDataComponents.PALETTE_IMAGE.get())))));
         }
 
-        private static LootPool.Builder createDropWithName(net.minecraft.world.level.block.Block block)
+        private LootTable.Builder createDropWithName(Block block)
         {
-            return LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)).add(LootItem.lootTableItem(block).apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY)));
-        }
-    }
-
-    public static class Entity
-    {
-        public static void accept(LootBuilder.Entity builder)
-        {
-            //builder.add(EntityType.ALLAY, LootTable.lootTable());
+            return LootTable.lootTable()
+                .withPool(this.applyExplosionCondition(block, LootPool.lootPool()
+                    .setRolls(ConstantValue.exactly(1.0F))
+                    .add(LootItem.lootTableItem(block)
+                        .apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY)))));
         }
     }
 }

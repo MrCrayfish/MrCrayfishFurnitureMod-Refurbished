@@ -34,7 +34,8 @@ public class CuttingBoardCombiningRecipeManager implements IRecipeManager<Cuttin
             return;
         NonNullList<Ingredient> ingredientList = NonNullList.create();
         Arrays.stream(ingredients).map(IIngredient::asVanillaIngredient).forEach(ingredientList::add);
-        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new RecipeHolder<>(CraftTweakerConstants.rl(name), new CuttingBoardCombiningRecipe(ingredientList, result.getInternal()))));
+        // TODO 1.21.3 craft tweaker support
+        //CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new RecipeHolder<>(CraftTweakerConstants.rl(name), new CuttingBoardCombiningRecipe(ingredientList, result.getInternal()))));
     }
 
     @Override

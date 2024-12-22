@@ -24,6 +24,8 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
     protected int itemSpacing = 2;
     protected boolean scrolling;
 
+    // TODO debug entire list
+
     public ComputerSelectionList(int width, int height, int x, int y, int itemHeight)
     {
         super(Minecraft.getInstance(), width, height, y, itemHeight);
@@ -92,7 +94,7 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
     @Override
     public int getRowRight()
     {
-        if(this.getMaxScroll() > 0)
+        if(this.maxScrollAmount() > 0)
         {
             return this.getX() + this.getWidth() - this.contentPadding - OUTLINE_SIZE - this.contentPadding - this.scrollBarWidth - this.contentPadding - OUTLINE_SIZE;
         }
@@ -100,13 +102,13 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
     }
 
     @Override
-    protected int getRowTop(int index)
+    public int getRowTop(int index)
     {
-        return this.getY() + OUTLINE_SIZE + this.contentPadding - (int) this.getScrollAmount() + index * this.itemHeight + index * this.itemSpacing;
+        return this.getY() + OUTLINE_SIZE + this.contentPadding - (int) this.scrollAmount() + index * this.itemHeight + index * this.itemSpacing;
     }
 
     @Override
-    protected int getScrollbarPosition()
+    protected int scrollBarX()
     {
         return this.getX() + this.getWidth() - this.scrollBarWidth - this.contentPadding - OUTLINE_SIZE;
     }
@@ -114,13 +116,13 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
     private int getScrollbarHeight()
     {
         int scrollAreaHeight = this.getScrollAreaHeight();
-        int scrollBarHeight = (int) (Mth.square(scrollAreaHeight) / (float) this.getMaxPosition());
+        int scrollBarHeight = (int) (Mth.square(scrollAreaHeight) / (float) this.contentHeight());
         return Mth.clamp(scrollBarHeight, 32, scrollAreaHeight);
     }
 
     public int getScrollBottom()
     {
-        return (int) this.getScrollAmount() - this.height;
+        return (int) this.scrollAmount() - this.height;
     }
 
     public int getScrollAreaHeight()
@@ -134,13 +136,19 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
     }
 
     @Override
-    public int getMaxScroll()
+    public int maxScrollAmount()
     {
-        return Math.max(0, this.getMaxPosition() - this.height + this.contentPadding * 2 + OUTLINE_SIZE * 2);
+        return Math.max(0, this.scrollerHeight() - this.height + this.contentPadding * 2 + OUTLINE_SIZE * 2);
     }
 
+    /*@Override
+    protected int scrollerHeight()
+    {
+        return super.scrollerHeight();
+    }*/
+
     @Override
-    protected int getMaxPosition()
+    protected int scrollerHeight()
     {
         return this.getItemCount() * (this.itemHeight + this.itemSpacing) - this.itemSpacing;
     }
@@ -158,17 +166,17 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
         graphics.disableScissor();
 
         // Only draw scroll bar if enough items
-        int maxScroll = this.getMaxScroll();
+        int maxScroll = this.maxScrollAmount();
         if(maxScroll > 0)
         {
             // Draw divider between items and scroll bar
-            graphics.fill(this.getScrollbarPosition() - this.contentPadding - 1, this.getY() + 1, this.getScrollbarPosition() - this.contentPadding, this.getY() + this.getHeight() - 1, this.outlineColour);
+            graphics.fill(this.scrollBarX() - this.contentPadding - 1, this.getY() + 1, this.scrollBarX() - this.contentPadding, this.getY() + this.getHeight() - 1, this.outlineColour);
 
             // Draw scroll bar
-            int scrollBarStart = this.getScrollbarPosition();
+            int scrollBarStart = this.scrollBarX();
             int scrollBarEnd = scrollBarStart + this.scrollBarWidth;
             int scrollBarHeight = this.getScrollbarHeight();
-            int scrollBarTop = (int) (this.getScrollAreaTop() + (this.getScrollAreaHeight() - this.getScrollbarHeight()) * (this.getScrollAmount() / maxScroll));
+            int scrollBarTop = (int) (this.getScrollAreaTop() + (this.getScrollAreaHeight() - this.getScrollbarHeight()) * (this.scrollAmount() / maxScroll));
             int scrollBarColour = ScreenHelper.isMouseWithinBounds(mouseX, mouseY, scrollBarStart, scrollBarTop, this.scrollBarWidth, scrollBarHeight) ? this.scrollBarHighlightColour : this.scrollBarColour;
             graphics.fill(scrollBarStart, scrollBarTop, scrollBarEnd, scrollBarTop + scrollBarHeight, scrollBarColour);
         }
@@ -183,7 +191,7 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
         int rowCount = this.getItemCount();
 
         // For efficiency, find the index to start drawing based on scroll amount
-        int startIndex = Math.max(0, (int) ((this.getScrollAmount() - this.contentPadding) / (rowHeight + this.itemSpacing)));
+        int startIndex = Math.max(0, (int) ((this.scrollAmount() - this.contentPadding) / (rowHeight + this.itemSpacing)));
         for(int i = startIndex; i < rowCount; i++)
         {
             int rowTop = this.getRowTop(i);
@@ -208,10 +216,11 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
     }
 
     @Override
-    protected void updateScrollingState(double mouseX, double mouseY, int button)
+    public boolean updateScrolling(double mouseX, double mouseY, int button)
     {
         this.scrolling = button == GLFW.GLFW_MOUSE_BUTTON_LEFT
-                && ScreenHelper.isMouseWithinBounds(mouseX, mouseY, this.getScrollbarPosition(), this.getScrollAreaTop(), 6, this.getScrollAreaHeight());
+            && ScreenHelper.isMouseWithinBounds(mouseX, mouseY, this.scrollBarX(), this.getScrollAreaTop(), 6, this.getScrollAreaHeight());
+        return super.updateScrolling(mouseX, mouseY, button);
     }
 
     @Override
@@ -225,8 +234,8 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
             }
             if(this.scrolling)
             {
-                double unitsPerScroll = (double) this.getMaxScroll() / (this.getScrollAreaHeight() - this.getScrollbarHeight());
-                this.setScrollAmount(this.getScrollAmount() + deltaY * unitsPerScroll);
+                double unitsPerScroll = (double) this.maxScrollAmount() / (this.getScrollAreaHeight() - this.getScrollbarHeight());
+                this.setScrollAmount(this.scrollAmount() + deltaY * unitsPerScroll);
                 return true;
             }
         }
@@ -242,7 +251,7 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
             int rowWidth = this.getRowWidth();
             int rowHeight = this.itemHeight;
             int rowCount = this.getItemCount();
-            int startIndex = Math.max(0, (int) ((this.getScrollAmount() - this.contentPadding) / (rowHeight + this.itemSpacing)));
+            int startIndex = Math.max(0, (int) ((this.scrollAmount() - this.contentPadding) / (rowHeight + this.itemSpacing)));
             for(int i = startIndex; i < rowCount; i++)
             {
                 int rowTop = this.getRowTop(i);

@@ -6,6 +6,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -82,7 +83,7 @@ public class TextInputScreen extends Screen
         super.renderBackground(graphics, mouseX, mouseY, partialTick);
         int startX = (this.width - WINDOW_WIDTH) / 2;
         int startY = (this.height - WINDOW_HEIGHT) / 2;
-        graphics.blitSprite(WINDOW_SPRITE, startX, startY, WINDOW_WIDTH, WINDOW_HEIGHT);
+        graphics.blitSprite(RenderType::guiTextured, WINDOW_SPRITE, startX, startY, WINDOW_WIDTH, WINDOW_HEIGHT);
     }
 
     @Override

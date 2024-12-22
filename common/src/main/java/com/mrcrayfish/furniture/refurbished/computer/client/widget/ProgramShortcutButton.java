@@ -6,6 +6,7 @@ import com.mrcrayfish.furniture.refurbished.computer.client.Icon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 
 /**
@@ -42,7 +43,7 @@ public class ProgramShortcutButton extends ComputerButton
         graphics.fill(this.getX() + 1, this.getY() + 1, this.getX() + this.getWidth() - 1, this.getY() + this.getHeight() - 1, this.getBackgroundColour());
 
         // Draw program icon
-        graphics.blit(this.icon.texture(), this.getX() + (this.width - 16) / 2, this.getY() + 4, this.icon.u(), this.icon.v(), 16, 16, 128, 128);
+        graphics.blit(RenderType::guiTextured, this.icon.texture(), this.getX() + (this.width - 16) / 2, this.getY() + 4, this.icon.u(), this.icon.v(), 16, 16, 128, 128);
 
         // Draw program name in unicode font
         PoseStack pose = graphics.pose();

@@ -1,8 +1,9 @@
 package com.mrcrayfish.furniture.refurbished.client.registration;
 
-import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategories;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeType;
 
 import java.util.function.Function;
@@ -12,9 +13,9 @@ import java.util.function.Function;
  */
 public interface RecipeCategoryRegister
 {
-    void applyCategory(RecipeBookType type, RecipeBookCategories ... categories);
+    void applyCategory(RecipeBookType type, RecipeBookCategory... categories);
 
-    void applyAggregate(RecipeBookCategories category, RecipeBookCategories ... categories);
+    void applyAggregate(RecipeBookCategory category, RecipeBookCategory ... categories);
 
-    void applyFinder(RecipeType<?> type, Function<Recipe<?>, RecipeBookCategories> function);
+    void applyFinder(RecipeType<?> type, Function<Recipe<?>, RecipeBookCategory> function);
 }

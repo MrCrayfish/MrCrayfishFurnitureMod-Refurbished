@@ -11,8 +11,10 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.ShapeRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.debug.DebugRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
@@ -53,7 +55,7 @@ public class CeilingFanBlockEntityRenderer implements BlockEntityRenderer<Ceilin
 
         if(this.entityRenderer.shouldRenderHitBoxes())
         {
-            LevelRenderer.renderLineBox(poseStack, source.getBuffer(RenderType.lines()), ceilingFan.getDamageBox(direction), 1.0F, 1.0F, 1.0F, 1.0F);
+            ShapeRenderer.renderLineBox(poseStack, source.getBuffer(RenderType.lines()), ceilingFan.getDamageBox(direction), 1.0F, 1.0F, 1.0F, 1.0F);
         }
     }
 

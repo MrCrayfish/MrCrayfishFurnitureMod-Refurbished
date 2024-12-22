@@ -10,7 +10,8 @@ import org.apache.logging.log4j.Logger;
 /**
  * Author: MrCrayfish
  */
-@CraftTweakerPlugin(Constants.MOD_ID + ":plugin")
+// TODO add back crafttweaker support
+//@CraftTweakerPlugin(Constants.MOD_ID + ":plugin")
 public class Plugin implements ICraftTweakerPlugin
 {
     public static final Logger LOGGER = CraftTweakerAPI.getLogger("RefurbishedFurniture");

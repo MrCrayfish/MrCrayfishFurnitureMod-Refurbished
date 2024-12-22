@@ -1,22 +1,21 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
+import com.mojang.serialization.MapCodec;
 import com.mrcrayfish.furniture.refurbished.Constants;
+import com.mrcrayfish.furniture.refurbished.client.registration.ItemTintRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ParticleProviderRegister;
-import com.mrcrayfish.furniture.refurbished.client.registration.RecipeCategoryRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
-import net.minecraft.client.RecipeBookCategories;
+import net.minecraft.client.color.item.ItemTintSource;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.RecipeBookType;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -26,11 +25,9 @@ import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
-import net.neoforged.neoforge.client.event.RegisterRecipeBookCategoriesEvent;
 import org.apache.commons.lang3.function.TriFunction;
 
-import java.util.List;
-import java.util.function.Function;
+import java.util.function.BiConsumer;
 
 /**
  * Author: MrCrayfish
@@ -83,12 +80,6 @@ public class ClientFurnitureMod
     }
 
     @SubscribeEvent
-    private static void onRegisterItemColors(RegisterColorHandlersEvent.Item event)
-    {
-        ClientBootstrap.registerItemColors(event::register);
-    }
-
-    @SubscribeEvent
     private static void onRegisterGuiOverlays(RegisterGuiLayersEvent event)
     {
         ClientBootstrap.registerHudOverlays((id, overlay) -> {
@@ -96,7 +87,7 @@ public class ClientFurnitureMod
         });
     }
 
-    @SubscribeEvent
+    /*@SubscribeEvent
     private static void onRegisterRecipeCategories(RegisterRecipeBookCategoriesEvent event)
     {
         ClientBootstrap.registerRecipeBookCategories(new RecipeCategoryRegister()
@@ -119,5 +110,5 @@ public class ClientFurnitureMod
                 event.registerRecipeCategoryFinder(type, holder -> function.apply(holder.value()));
             }
         });
-    }
+    }*/
 }

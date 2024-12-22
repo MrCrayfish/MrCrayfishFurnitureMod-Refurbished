@@ -15,6 +15,7 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -204,7 +205,7 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
         @Override
         public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
         {
-            graphics.blit(TEXTURE, (this.game.width - 128) / 2, 10, 16, 0, 128, 24);
+            graphics.blit(RenderType::guiTextured, TEXTURE, (this.game.width - 128) / 2, 10, 16, 0, 128, 24, 256, 256);
         }
 
         private static class MenuButton extends ComputerButton
@@ -220,8 +221,8 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
                 super.renderWidget(graphics, mouseX, mouseY, partialTick);
                 if(this.isActive() && this.isHoveredOrFocused())
                 {
-                    graphics.blit(TEXTURE, this.getX() - 6, this.getY() + 6, 12, 0, 4, 4);
-                    graphics.blit(TEXTURE, this.getX() + this.getWidth() + 2, this.getY() + 6, 12, 0, 4, 4);
+                    graphics.blit(RenderType::guiTextured, TEXTURE, this.getX() - 6, this.getY() + 6, 12, 0, 4, 4, 256, 256);
+                    graphics.blit(RenderType::guiTextured, TEXTURE, this.getX() + this.getWidth() + 2, this.getY() + 6, 12, 0, 4, 4, 256, 256);
                 }
             }
         }
@@ -251,7 +252,7 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
         @Override
         public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
         {
-            graphics.blit(TEXTURE, (this.game.width - 128) / 2, 10, 16, 0, 128, 24);
+            graphics.blit(RenderType::guiTextured, TEXTURE, (this.game.width - 128) / 2, 10, 16, 0, 128, 24, 256, 256);
 
             String loading = switch((int) (Util.getMillis() / 300L % 4L)) {
                 default -> "O o o";
@@ -341,14 +342,14 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
             stack.pushPose();
             float smoothHostPos = Mth.lerp(partialTick, this.game.lastPlayerPos, this.game.playerPos);
             stack.translate(4, smoothHostPos, 0);
-            graphics.blit(TEXTURE, 0, 0, 0, 0, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT);
+            graphics.blit(RenderType::guiTextured, TEXTURE, 0, 0, 0, 0, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT);
             stack.popPose();
 
             // Draw opponent paddle
             stack.pushPose();
             float smoothOpponentPos = Mth.lerp(partialTick, this.game.lastOpponentPos, this.game.opponentPos);
             stack.translate((PaddleBall.BOARD_WIDTH) - 8, smoothOpponentPos, 0);
-            graphics.blit(TEXTURE, -2, 0, 6, 0, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT);
+            graphics.blit(RenderType::guiTextured, TEXTURE, -2, 0, 6, 0, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT);
             stack.popPose();
 
             // Draw ball
@@ -357,7 +358,7 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
             float smoothBallY = Mth.lerp(partialTick, this.game.lastBallY, this.game.ballY);
             smoothBallX = this.game.leftPaddle ? smoothBallX : PaddleBall.BOARD_WIDTH - smoothBallX;
             stack.translate(smoothBallX, smoothBallY, 0);
-            graphics.blit(TEXTURE, 0, 0, 12, 0, 4, 4);
+            graphics.blit(RenderType::guiTextured, TEXTURE, 0, 0, 12, 0, 4, 4, 4, 4);
             stack.popPose();
 
             if(this.game.scoreAnimation > 0 && (this.game.scoreAnimation / 5) % 2 == 0)

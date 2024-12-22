@@ -6,7 +6,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -28,27 +28,25 @@ public class TelevisionRemoteItem extends Item
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand)
+    public InteractionResult use(Level level, Player player, InteractionHand hand)
     {
-        ItemStack stack = player.getItemInHand(hand);
-
         // Perform a raycast for blocks
         Vec3 start = player.getEyePosition();
         Vec3 end = start.add(player.getLookAngle().scale(16));
         BlockHitResult result = level.clip(new ClipContext(start, end, ClipContext.Block.VISUAL, ClipContext.Fluid.ANY, player));
         if(result.getType() != HitResult.Type.BLOCK)
-            return InteractionResultHolder.fail(stack);
+            return InteractionResult.FAIL;
 
         // Check if the hit block is a television
         BlockPos pos = result.getBlockPos();
         BlockState state = level.getBlockState(pos);
         if(!state.is(ModBlocks.TELEVISION.get()))
-            return InteractionResultHolder.fail(stack);
+            return InteractionResult.FAIL;
 
         // Check if the hit face is the front of the television
         Direction direction = state.getValue(TelevisionBlock.DIRECTION);
         if(direction.getOpposite() != result.getDirection())
-            return InteractionResultHolder.fail(stack);
+            return InteractionResult.FAIL;
 
         // Interact with the tv if server side
         if(!level.isClientSide())
@@ -58,6 +56,6 @@ public class TelevisionRemoteItem extends Item
                 television.interact();
             }
         }
-        return InteractionResultHolder.consume(stack);
+        return InteractionResult.CONSUME;
     }
 }

@@ -4,14 +4,19 @@ import com.mrcrayfish.furniture.refurbished.blockentity.IPowerSwitch;
 import com.mrcrayfish.furniture.refurbished.blockentity.MicrowaveBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookTypes;
+import com.mrcrayfish.furniture.refurbished.core.ModRecipePropertySets;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
+import com.mrcrayfish.furniture.refurbished.crafting.FreezerSolidifyingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.MicrowaveHeatingRecipe;
 import com.mrcrayfish.furniture.refurbished.inventory.slot.ResultSlot;
+import net.minecraft.recipebook.ServerPlaceRecipe;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.StackedContents;
+import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.RecipeBookType;
@@ -21,16 +26,20 @@ import net.minecraft.world.inventory.StackedContentsCompatible;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipePropertySet;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
+
+import java.util.List;
 
 /**
  * Author: MrCrayfish
  */
-public class MicrowaveMenu extends SimpleRecipeContainerMenu<SingleRecipeInput, MicrowaveHeatingRecipe> implements IPowerSwitchMenu, IElectricityMenu, IContainerHolder, IProcessingMenu
+public class MicrowaveMenu extends SimpleRecipeContainerMenu implements IPowerSwitchMenu, IElectricityMenu, IContainerHolder, IProcessingMenu
 {
     private final ContainerData data;
     private final Level level;
+    private final RecipePropertySet recipeTest;
 
     public MicrowaveMenu(int windowId, Inventory playerInventory)
     {
@@ -45,6 +54,7 @@ public class MicrowaveMenu extends SimpleRecipeContainerMenu<SingleRecipeInput, 
         container.startOpen(playerInventory.player);
         this.data = data;
         this.level = playerInventory.player.level();
+        this.recipeTest = this.level.recipeAccess().propertySet(ModRecipePropertySets.MICROWAVE_INPUT);
         this.addSlot(new Slot(container, 0, 48, 35));
         this.addSlot(new ResultSlot(container, 1, 108, 35));
         this.addPlayerInventorySlots(8, 84, playerInventory);
@@ -67,7 +77,7 @@ public class MicrowaveMenu extends SimpleRecipeContainerMenu<SingleRecipeInput, 
                     return ItemStack.EMPTY;
                 }
             }
-            else if(this.isRecipe(slotStack))
+            else if(this.recipeTest.test(slotStack))
             {
                 if(!this.moveItemStackTo(slotStack, 0, this.container.getContainerSize(), false))
                 {
@@ -96,11 +106,6 @@ public class MicrowaveMenu extends SimpleRecipeContainerMenu<SingleRecipeInput, 
             }
         }
         return stack;
-    }
-
-    private boolean isRecipe(ItemStack stack)
-    {
-        return this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.MICROWAVE_HEATING.get(), new SingleRecipeInput(stack), this.level).isPresent();
     }
 
     @Override
@@ -137,7 +142,37 @@ public class MicrowaveMenu extends SimpleRecipeContainerMenu<SingleRecipeInput, 
     }
 
     @Override
-    public void fillCraftSlotsStackedContents(StackedContents contents)
+    @SuppressWarnings("unchecked")
+    public PostPlaceAction handlePlacement(boolean useMax, boolean creativeMode, RecipeHolder<?> holder, ServerLevel level, Inventory inventory)
+    {
+        RecipeHolder<MicrowaveHeatingRecipe> recipeHolder = (RecipeHolder<MicrowaveHeatingRecipe>) holder;
+        final List<Slot> inputSlots = List.of(this.getSlot(0));
+        final List<Slot> craftingSlots = List.of(this.getSlot(0), this.getSlot(1));
+        ServerPlaceRecipe.CraftingMenuAccess<MicrowaveHeatingRecipe> access = new ServerPlaceRecipe.CraftingMenuAccess<>()
+        {
+            @Override
+            public void fillCraftSlotsStackedContents(StackedItemContents contents)
+            {
+                MicrowaveMenu.this.fillCraftSlotsStackedContents(contents);
+            }
+
+            @Override
+            public void clearCraftingContent()
+            {
+                craftingSlots.forEach(slot -> slot.set(ItemStack.EMPTY));
+            }
+
+            @Override
+            public boolean recipeMatches(RecipeHolder<MicrowaveHeatingRecipe> holder)
+            {
+                return holder.value().matches(new SingleRecipeInput(MicrowaveMenu.this.container.getItem(0)), MicrowaveMenu.this.level);
+            }
+        };
+        return ServerPlaceRecipe.placeRecipe(access, 1, 1, inputSlots, craftingSlots, inventory, recipeHolder, useMax, creativeMode);
+    }
+
+    @Override
+    public void fillCraftSlotsStackedContents(StackedItemContents contents)
     {
         if(this.container instanceof StackedContentsCompatible)
         {
@@ -146,52 +181,9 @@ public class MicrowaveMenu extends SimpleRecipeContainerMenu<SingleRecipeInput, 
     }
 
     @Override
-    public void clearCraftingContent()
-    {
-        this.getSlot(0).set(ItemStack.EMPTY);
-        this.getSlot(1).set(ItemStack.EMPTY);
-    }
-
-    @Override
-    public boolean recipeMatches(RecipeHolder<MicrowaveHeatingRecipe> holder)
-    {
-        return holder.value().matches(new SingleRecipeInput(this.container.getItem(0)), this.level);
-    }
-
-    @Override
-    public int getResultSlotIndex()
-    {
-        return 1;
-    }
-
-    @Override
-    public int getGridWidth()
-    {
-        return 1;
-    }
-
-    @Override
-    public int getGridHeight()
-    {
-        return 1;
-    }
-
-    @Override
-    public int getSize()
-    {
-        return 2;
-    }
-
-    @Override
     public RecipeBookType getRecipeBookType()
     {
         return ModRecipeBookTypes.MICROWAVE.get();
-    }
-
-    @Override
-    public boolean shouldMoveToInventory(int slot)
-    {
-        return slot != this.getResultSlotIndex();
     }
 
     @Override

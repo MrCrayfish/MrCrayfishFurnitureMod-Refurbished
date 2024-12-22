@@ -43,6 +43,7 @@ public class Network
             .registerPlayMessage("workbench_item_counts", MessageWorkbench.ItemCounts.class, MessageWorkbench.ItemCounts.STREAM_CODEC, MessageWorkbench.ItemCounts::handle, PacketFlow.CLIENTBOUND)
             .registerPlayMessage("workbench_select_recipe", MessageWorkbench.SelectRecipe.class, MessageWorkbench.SelectRecipe.STREAM_CODEC, MessageWorkbench.SelectRecipe::handle, PacketFlow.SERVERBOUND)
             .registerPlayMessage("workbench_search_neighbours", MessageWorkbench.SearchNeighbours.class, MessageWorkbench.SearchNeighbours.STREAM_CODEC, MessageWorkbench.SearchNeighbours::handle, PacketFlow.SERVERBOUND)
+            .registerPlayMessage("workbench_sync_recipes", MessageWorkbench.SyncRecipes.class, MessageWorkbench.SyncRecipes.STREAM_CODEC, MessageWorkbench.SyncRecipes::handle, PacketFlow.CLIENTBOUND)
             .registerPlayMessage("name_mailbox", MessageNameMailbox.class, MessageNameMailbox.STREAM_CODEC, MessageNameMailbox::handle, PacketFlow.CLIENTBOUND)
             .registerPlayMessage("withdraw_experience", MessageWithdrawExperience.class, MessageWithdrawExperience.STREAM_CODEC, MessageWithdrawExperience::handle, PacketFlow.SERVERBOUND)
             .registerPlayMessage("show_delivery_result", MessageShowDeliveryResult.class, MessageShowDeliveryResult.STREAM_CODEC, MessageShowDeliveryResult::handle, PacketFlow.CLIENTBOUND)

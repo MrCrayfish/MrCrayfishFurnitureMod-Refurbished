@@ -11,6 +11,9 @@ import com.blamejared.crafttweaker_annotations.annotations.Document;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.FreezerSolidifyingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.openzen.zencode.java.ZenCodeType;
@@ -26,7 +29,8 @@ public class FreezerSolidifyingRecipeManager implements IRecipeManager<FreezerSo
     @ZenCodeType.Method
     public void addRecipe(String name, String category, IIngredient ingredient, IItemStack result, @ZenCodeType.OptionalInt(200) int time)
     {
-        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new RecipeHolder<>(CraftTweakerConstants.rl(name), new FreezerSolidifyingRecipe(ProcessingRecipe.Category.byName(category), ingredient.asVanillaIngredient(), result.getInternal(), time))));
+        ResourceKey<Recipe<?>> key = ResourceKey.create(Registries.RECIPE, CraftTweakerConstants.rl(name));
+        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new RecipeHolder<>(key, new FreezerSolidifyingRecipe(ProcessingRecipe.Category.byName(category), ingredient.asVanillaIngredient(), result.getInternal(), time))));
     }
 
     @Override

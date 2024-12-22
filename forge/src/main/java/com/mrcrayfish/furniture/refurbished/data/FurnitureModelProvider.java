@@ -45,11 +45,12 @@ public class FurnitureModelProvider extends BlockStateProvider
     public static final ExistingFileHelper.ResourceType MODEL = new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".json", "models");
 
     private final ExtraModelProvider extraModelProvider;
+    private final ExistingFileHelper helper;
 
     public FurnitureModelProvider(PackOutput output, ExistingFileHelper helper)
     {
         super(output, Constants.MOD_ID, helper);
-        this.registerExistingResources(helper);
+        this.helper = helper;
         this.extraModelProvider = new ExtraModelProvider(output, Constants.MOD_ID, helper);
     }
 
@@ -83,6 +84,7 @@ public class FurnitureModelProvider extends BlockStateProvider
     @SuppressWarnings({"unchecked", "rawtypes"})
     protected void registerStatesAndModels()
     {
+        this.registerExistingResources(this.helper); // TODO Is this fine?
         new CommonBlockModelProvider(builder -> {
             // Variant block states
             Block block = builder.getBlock();

@@ -9,6 +9,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 
 /**
  * Author: MrCrayfish
@@ -21,7 +22,7 @@ public record MessageSyncFluid(BlockPos pos, Fluid fluid, long amount)
         buf.writeLong(message.amount);
     }, buf -> {
         BlockPos pos = buf.readBlockPos();
-        Fluid fluid = BuiltInRegistries.FLUID.get(buf.readResourceLocation());
+        Fluid fluid = BuiltInRegistries.FLUID.getValue(buf.readResourceLocation());
         long amount = buf.readLong();
         return new MessageSyncFluid(pos, fluid, amount);
     });

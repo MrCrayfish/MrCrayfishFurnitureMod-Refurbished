@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.network.message;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
+import com.mrcrayfish.framework.api.network.PlayMessageContext;
 import com.mrcrayfish.furniture.refurbished.network.play.ServerPlayHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -23,7 +24,7 @@ public record MessageComputerOpenProgram(ResourceLocation id)
         return new MessageComputerOpenProgram(id);
     });
 
-    public static void handle(MessageComputerOpenProgram message, MessageContext context)
+    public static void handle(MessageComputerOpenProgram message, PlayMessageContext context)
     {
         context.execute(() -> ServerPlayHandler.handleMessageComputerOpenProgram(message, context.getPlayer().orElse(null)));
         context.setHandled(true);

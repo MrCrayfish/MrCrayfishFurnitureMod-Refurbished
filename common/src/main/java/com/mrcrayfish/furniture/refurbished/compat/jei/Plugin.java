@@ -32,21 +32,20 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeAccess;
 import net.minecraft.world.item.crafting.RecipeInput;
-import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.StreamSupport;
@@ -54,7 +53,16 @@ import java.util.stream.StreamSupport;
 /**
  * Author: MrCrayfish
  */
-@JeiPlugin
+/*
+ * TODO add back JEI support
+ * Disabled until JEI is updated
+ *
+ * Remember to add back fabric entrypoint
+ * "jei_mod_plugin": [
+ *     "com.mrcrayfish.furniture.refurbished.compat.jei.Plugin"
+ * ]
+ */
+//@JeiPlugin
 public class Plugin implements IModPlugin
 {
     public static final ResourceLocation TEXTURES = Utils.resource("textures/gui/jei.png");
@@ -85,7 +93,6 @@ public class Plugin implements IModPlugin
     @Override
     public void registerRecipes(IRecipeRegistration registration)
     {
-        RecipeManager manager = getRecipeManager();
         registration.addRecipes(FreezerSolidifyingCategory.TYPE, this.getRecipes(ModRecipeTypes.FREEZER_SOLIDIFYING.get()));
         registration.addRecipes(CuttingBoardSlicingCategory.TYPE, this.getRecipes(ModRecipeTypes.CUTTING_BOARD_SLICING.get()));
         registration.addRecipes(FryingPanCookingCategory.TYPE, this.getFryingPanRecipes());
@@ -124,7 +131,8 @@ public class Plugin implements IModPlugin
 
     private <C extends RecipeInput, T extends Recipe<C>> List<T> getRecipes(RecipeType<T> type)
     {
-        return getRecipeManager().getAllRecipesFor(type).stream().map(RecipeHolder::value).toList();
+        return Collections.emptyList(); // TODO 1.21.3 recipes no longer synced
+        //return getRecipeManager().propertySet(type).stream().map(RecipeHolder::value).toList();
     }
 
     private List<ProcessingRecipe> getFryingPanRecipes()
@@ -132,7 +140,7 @@ public class Plugin implements IModPlugin
         List<ProcessingRecipe> recipes = new ArrayList<>();
         recipes.addAll(this.getRecipes(ModRecipeTypes.FRYING_PAN_COOKING.get()));
         recipes.addAll(this.getRecipes(RecipeType.CAMPFIRE_COOKING).stream().map(recipe -> {
-            return ProcessingRecipe.Item.from(recipe, getRegistryAccess());
+            return ProcessingRecipe.Item.fromCookingRecipe(recipe, getRegistryAccess());
         }).toList());
         return recipes;
     }
@@ -142,15 +150,15 @@ public class Plugin implements IModPlugin
         List<ProcessingRecipe> recipes = new ArrayList<>();
         recipes.addAll(this.getRecipes(ModRecipeTypes.GRILL_COOKING.get()));
         recipes.addAll(this.getRecipes(RecipeType.CAMPFIRE_COOKING).stream().map(recipe -> {
-            return ProcessingRecipe.Item.from(recipe, getRegistryAccess());
+            return ProcessingRecipe.Item.fromCookingRecipe(recipe, getRegistryAccess());
         }).toList());
         return recipes;
     }
 
-    public static RecipeManager getRecipeManager()
+    public static RecipeAccess getRecipeManager()
     {
         ClientPacketListener listener = Objects.requireNonNull(Minecraft.getInstance().getConnection());
-        return listener.getRecipeManager();
+        return listener.recipes();
     }
 
     public static Font getFont()
@@ -162,11 +170,6 @@ public class Plugin implements IModPlugin
     {
         ClientPacketListener listener = Objects.requireNonNull(Minecraft.getInstance().getConnection());
         return listener.registryAccess();
-    }
-
-    public static ItemStack getResult(Recipe<?> recipe)
-    {
-        return recipe.getResultItem(getRegistryAccess());
     }
 
     public static List<ItemStack> getTagItems(TagKey<Item> tag)

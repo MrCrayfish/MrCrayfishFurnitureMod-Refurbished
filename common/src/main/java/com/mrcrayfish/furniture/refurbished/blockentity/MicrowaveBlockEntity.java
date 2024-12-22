@@ -23,6 +23,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.StackedContents;
+import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.StackedContentsCompatible;
@@ -295,7 +296,7 @@ public class MicrowaveBlockEntity extends ElectricityModuleProcessingLootBlockEn
     }
 
     @Override
-    public void fillStackedContents(StackedContents contents)
+    public void fillStackedContents(StackedItemContents contents)
     {
         for(ItemStack stack : this.items)
         {

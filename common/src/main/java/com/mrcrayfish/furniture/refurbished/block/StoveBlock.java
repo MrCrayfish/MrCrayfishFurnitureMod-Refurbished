@@ -13,6 +13,7 @@ import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
@@ -31,6 +32,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
@@ -119,10 +121,9 @@ public class StoveBlock extends FurnitureHorizontalEntityBlock implements BlockT
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos neighbourPos, boolean movedByPiston)
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean movedByPiston)
     {
-        super.neighborChanged(state, level, pos, block, neighbourPos, movedByPiston);
-        if(pos.above().equals(neighbourPos) && level.getBlockEntity(pos) instanceof StoveBlockEntity stove)
+        if(level.getBlockEntity(pos) instanceof StoveBlockEntity stove)
         {
             stove.onNeighbourChanged();
         }
@@ -155,7 +156,7 @@ public class StoveBlock extends FurnitureHorizontalEntityBlock implements BlockT
     }
 
     @Override
-    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random)
+    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random)
     {
         if(level.getBlockEntity(pos) instanceof BasicLootBlockEntity blockEntity)
         {

@@ -1,6 +1,6 @@
 plugins {
     id 'multiloader-loader'
-    id 'fabric-loom' version '1.7-SNAPSHOT'
+    id 'fabric-loom' version '1.9-SNAPSHOT'
 }
 
 dependencies {
@@ -11,19 +11,20 @@ dependencies {
     modImplementation "com.mrcrayfish:framework-fabric:${minecraft_version}-${framework_version}"
 
     // JEI
-    modCompileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
-    modCompileOnly "mezz.jei:jei-${minecraft_version}-fabric-api:${jei_version}"
-    modRuntimeOnly "mezz.jei:jei-${minecraft_version}-fabric:${jei_version}"
+    modCompileOnly "mezz.jei:jei-${jei_minecraft_version}-common-api:${jei_version}"
+    modCompileOnly "mezz.jei:jei-${jei_minecraft_version}-fabric-api:${jei_version}"
+    //modRuntimeOnly "mezz.jei:jei-${jei_minecraft_version}-fabric:${jei_version}"
 
     // CraftTweaker
-    modCompileOnly "com.blamejared.crafttweaker:CraftTweaker-common-${minecraft_version}:${crafttweaker_version}"
-    modRuntimeOnly "com.blamejared.crafttweaker:CraftTweaker-fabric-${minecraft_version}:${crafttweaker_version}"
+    modCompileOnly "com.blamejared.crafttweaker:CraftTweaker-common-${crafttweaker_minecraft_version}:${crafttweaker_version}"
+    //modRuntimeOnly "com.blamejared.crafttweaker:CraftTweaker-fabric-${crafttweaker_minecraft_version}:${crafttweaker_version}"
 }
 
 sourceSets.main.resources.srcDir 'src/generated/resources'
 
 fabricApi {
     configureDataGeneration {
+        client = true
         outputDirectory.set(file("src/generated/resources"))
     }
 }
@@ -35,5 +36,19 @@ loom {
     }
     mixin {
         defaultRefmapName.set("${mod_id}.refmap.json")
+    }
+    runs {
+        client {
+            name("Fabric: Client")
+            ideConfigGenerated(true)
+        }
+        server {
+            name("Fabric: Server")
+            ideConfigGenerated(true)
+        }
+        datagen {
+            name("Fabric: Data")
+            ideConfigGenerated(true)
+        }
     }
 }

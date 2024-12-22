@@ -11,6 +11,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -48,12 +49,12 @@ public abstract class ElectricityContainerScreen<T extends AbstractContainerMenu
             int bannerTop = this.getBannerTop();
 
             // Draw background
-            graphics.blit(TEXTURE, bannerStart, bannerTop, 0, 46, 4, 18, 64, 64);
-            graphics.blit(TEXTURE, bannerStart + 4, bannerTop, bannerWidth - 7, 18, 4, 46, 1, 18, 64, 64);
-            graphics.blit(TEXTURE, bannerStart + 4 + bannerWidth - 7, bannerTop, 5, 46, 3, 18, 64, 64);
+            graphics.blit(RenderType::guiTextured, TEXTURE, bannerStart, bannerTop, 0, 46, 4, 18, 64, 64);
+            graphics.blit(RenderType::guiTextured, TEXTURE, bannerStart + 4, bannerTop, 4, 46, bannerWidth - 7, 18, 1, 18, 64, 64);
+            graphics.blit(RenderType::guiTextured, TEXTURE, bannerStart + 4 + bannerWidth - 7, bannerTop, 5, 46, 3, 18, 64, 64);
 
             // Draw icon
-            graphics.blit(IconButton.ICON_TEXTURES, bannerStart + padding, bannerTop + 4, 20, 20, 10, 10, 64, 64);
+            graphics.blit(RenderType::guiTextured, IconButton.ICON_TEXTURES, bannerStart + padding, bannerTop + 4, 20, 20, 10, 10, 64, 64);
 
             // Draw message
             graphics.drawString(this.minecraft.font, Components.GUI_NO_POWER, bannerStart + padding + iconSize + 3, bannerTop + 5, 0xFFFFFFFF);

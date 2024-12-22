@@ -17,7 +17,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -31,7 +30,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -275,7 +273,7 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
                 ItemStack fuel = grill.fuel.get(i);
                 if(!fuel.isEmpty())
                 {
-                    grill.remainingFuel = Services.ITEM.getBurnTime(fuel, RecipeType.SMELTING);
+                    grill.remainingFuel = level.fuelValues().burnDuration(fuel);
                     grill.fuel.set(i, ItemStack.EMPTY);
                     grill.setChanged();
 
@@ -355,7 +353,7 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
                             Optional<? extends ProcessingRecipe> optional = this.getRecipe(this.cooking.get(i));
                             if(optional.isPresent())
                             {
-                                this.cooking.set(i, optional.get().getResultItem(level.registryAccess()).copy());
+                                this.cooking.set(i, optional.get().getResult().copy());
                             }
                         }
                         this.syncCookingSpace(i);
@@ -495,12 +493,20 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
 
     private Optional<? extends ProcessingRecipe> getRecipeFromCache(RecipeManager.CachedCheck<SingleRecipeInput, ? extends ProcessingRecipe> cache, ItemStack stack)
     {
-        return cache.getRecipeFor(new SingleRecipeInput(stack), Objects.requireNonNull(this.level)).map(RecipeHolder::value);
+        if(this.level instanceof ServerLevel serverLevel)
+        {
+            return cache.getRecipeFor(new SingleRecipeInput(stack), serverLevel).map(RecipeHolder::value);
+        }
+        return Optional.empty();
     }
 
     private Optional<? extends ProcessingRecipe> getCookingRecipeFromCache(RecipeManager.CachedCheck<SingleRecipeInput, ? extends AbstractCookingRecipe> cache, ItemStack stack)
     {
-        return cache.getRecipeFor(new SingleRecipeInput(stack), Objects.requireNonNull(this.level)).map(RecipeHolder::value).map(recipe -> ProcessingRecipe.Item.from(recipe, this.level.registryAccess()));
+        if(this.level instanceof ServerLevel serverLevel)
+        {
+            return cache.getRecipeFor(new SingleRecipeInput(stack), serverLevel).map(RecipeHolder::value).map(recipe -> ProcessingRecipe.Item.fromCookingRecipe(recipe, this.level.registryAccess()));
+        }
+        return Optional.empty();
     }
 
     @Override

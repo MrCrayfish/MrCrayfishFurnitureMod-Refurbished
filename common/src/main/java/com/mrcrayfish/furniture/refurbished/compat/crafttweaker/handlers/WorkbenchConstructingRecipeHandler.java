@@ -31,7 +31,7 @@ public class WorkbenchConstructingRecipeHandler implements IRecipeHandler<Workbe
     {
         return String.format("%s.addRecipe(%s, %s, %s);",
             manager.getCommandString(),
-            StringUtil.quoteAndEscape(holder.id()),
+            StringUtil.quoteAndEscape(holder.id().location()),
             IItemStack.ofMutable(holder.value().getResult()).getCommandString(),
             "[" + String.join(", ", holder.value().getMaterials().stream().map(v -> IIngredient.fromIngredient(v.ingredient()).mul(v.count()).getCommandString()).toArray(String[]::new)) + "]"
         );

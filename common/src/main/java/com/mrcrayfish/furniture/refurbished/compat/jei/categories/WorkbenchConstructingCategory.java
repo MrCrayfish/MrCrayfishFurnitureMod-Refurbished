@@ -84,15 +84,15 @@ public class WorkbenchConstructingCategory extends FurnitureRecipeCategory<Workb
             int x = left + (i % 3) * slotSize + (boxSize - width) / 2;
             int y = top + (i / 3) * slotSize + (boxSize - height) / 2;
             StackedIngredient material = materials.get(i);
-            List<ItemStack> stacks = Arrays.stream(material.ingredient().getItems()).map(stack -> {
-                ItemStack copy = stack.copy();
+            List<ItemStack> stacks = material.ingredient().items().map(holder -> {
+                ItemStack copy = new ItemStack(holder.value());
                 copy.setCount(material.count());
                 return copy;
             }).toList();
             builder.addSlot(RecipeIngredientRole.INPUT, x, y).addItemStacks(stacks);
             this.slots.add(Pair.of(new Vector2i(x - 1, y - 1), this.helper.createDrawable(Plugin.TEXTURES_2, 0, 64, 18, 18)));
         }
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 96, 24).addItemStack(Plugin.getResult(recipe));
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 96, 24).addItemStack(recipe.getResult());
     }
 
     @Override

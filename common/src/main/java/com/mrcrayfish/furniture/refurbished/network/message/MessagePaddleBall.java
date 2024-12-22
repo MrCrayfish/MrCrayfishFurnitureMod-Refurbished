@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.network.message;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
+import com.mrcrayfish.framework.api.network.PlayMessageContext;
 import com.mrcrayfish.furniture.refurbished.computer.app.PaddleBall;
 import com.mrcrayfish.furniture.refurbished.network.play.ClientPlayHandler;
 import com.mrcrayfish.furniture.refurbished.network.play.ServerPlayHandler;
@@ -65,7 +66,7 @@ public class MessagePaddleBall
             return new Action(action, data);
         });
 
-        public static void handle(Action message, MessageContext context)
+        public static void handle(Action message, PlayMessageContext context)
         {
             context.execute(() -> ServerPlayHandler.handleMessageTennisGame(message, context.getPlayer().orElse(null)));
             context.setHandled(true);

@@ -26,7 +26,8 @@ public class GrillCookingRecipeManager implements IRecipeManager<GrillCookingRec
     @ZenCodeType.Method
     public void addRecipe(String name, String category, IIngredient ingredient, IItemStack result, @ZenCodeType.OptionalInt(200) int time)
     {
-        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new RecipeHolder<>(CraftTweakerConstants.rl(name), new GrillCookingRecipe(ProcessingRecipe.Category.byName(category), ingredient.asVanillaIngredient(), result.getInternal(), time))));
+        // TODO 1.21.3 craft tweaker support
+        //CraftTweakerAPI.apply(new ActionAddRecipe<>(this, new RecipeHolder<>(CraftTweakerConstants.rl(name), new GrillCookingRecipe(ProcessingRecipe.Category.byName(category), ingredient.asVanillaIngredient(), result.getInternal(), time))));
     }
 
     @Override

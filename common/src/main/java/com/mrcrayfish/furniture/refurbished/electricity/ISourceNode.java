@@ -158,8 +158,8 @@ public interface ISourceNode extends IElectricityNode
         double maxX = pos.getX() + radius + 1;
         double maxY = pos.getY() + radius + 1;
         double maxZ = pos.getZ() + radius + 1;
-        minY = Math.max(minY, level.getMinBuildHeight());
-        maxY = Math.min(maxY, level.getMaxBuildHeight());
+        minY = Math.max(minY, level.getMinY());
+        maxY = Math.min(maxY, level.getMaxY());
         return new AABB(minX, minY, minZ, maxX, maxY, maxZ);
     }
 }

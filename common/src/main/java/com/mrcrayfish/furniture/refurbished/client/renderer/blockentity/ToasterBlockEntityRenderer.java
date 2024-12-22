@@ -45,7 +45,7 @@ public class ToasterBlockEntityRenderer implements BlockEntityRenderer<ToasterBl
         if(!stack.isEmpty())
         {
             poseStack.pushPose();
-            Vec3i normal = direction.getNormal();
+            Vec3i normal = direction.getUnitVec3i();
             poseStack.translate(0.095 * normal.getX() * offset, 0, 0.095 * normal.getZ() * offset);
             poseStack.mulPose(direction.getRotation());
             poseStack.mulPose(Axis.XN.rotation(Mth.HALF_PI));

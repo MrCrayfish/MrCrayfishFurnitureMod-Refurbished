@@ -65,6 +65,6 @@ public class CuttingBoardCombiningCategory implements IRecipeCategory<CuttingBoa
         {
             builder.addSlot(RecipeIngredientRole.INPUT, 25, 69 - i * 16).addIngredients(ingredients.get(i));
         }
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 77, 69).addItemStack(Plugin.getResult(recipe));
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 77, 69).addItemStack(recipe.getResult());
     }
 }

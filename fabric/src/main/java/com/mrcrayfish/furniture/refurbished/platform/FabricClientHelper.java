@@ -13,7 +13,6 @@ import com.mrcrayfish.furniture.refurbished.inventory.FabricStoveMenu;
 import com.mrcrayfish.furniture.refurbished.platform.services.IClientHelper;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
@@ -81,14 +80,8 @@ public class FabricClientHelper implements IClientHelper
     @Override
     public void drawBakedModel(BakedModel model, PoseStack poseStack, VertexConsumer consumer, int light, int overlay)
     {
-        Minecraft.getInstance().getItemRenderer().renderModelLists(model, ItemStack.EMPTY, light, overlay, poseStack, consumer);
-    }
-
-    @Override
-    public BakedModel getBakedModel(ModelResourceLocation location)
-    {
-        ModelManager manager = Minecraft.getInstance().getModelManager();
-        return manager.bakedRegistry.getOrDefault(location, manager.getMissingModel());
+        // TODO 1.12.4 test
+        Minecraft.getInstance().getBlockRenderer().getModelRenderer().renderModel(poseStack.last(), consumer, null, model, 1, 1, 1, light, overlay);
     }
 
     @Override
@@ -100,7 +93,7 @@ public class FabricClientHelper implements IClientHelper
     @Override
     public void renderTooltip(GuiGraphics graphics, Font font, List<ClientTooltipComponent> components, int mouseX, int mouseY, ClientTooltipPositioner position)
     {
-        graphics.renderTooltipInternal(font, components, mouseX, mouseY, position);
+        graphics.renderTooltipInternal(font, components, mouseX, mouseY, position, null);
     }
 
     @Override

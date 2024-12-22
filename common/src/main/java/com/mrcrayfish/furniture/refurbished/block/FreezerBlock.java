@@ -77,7 +77,7 @@ public class FreezerBlock extends FridgeBlock
     {
         BlockPos abovePos = context.getClickedPos().above();
         Level level = context.getLevel();
-        if(abovePos.getY() < level.getMaxBuildHeight() && level.getBlockState(abovePos).canBeReplaced(context))
+        if(abovePos.getY() < level.getMaxY() && level.getBlockState(abovePos).canBeReplaced(context))
         {
             return super.getStateForPlacement(context);
         }

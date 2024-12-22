@@ -19,16 +19,15 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerChunkCache;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -41,7 +40,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3f;
 
 import org.jetbrains.annotations.Nullable;
 import java.util.List;
@@ -55,7 +53,7 @@ import java.util.Optional;
  */
 public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICookingBlock, ILevelAudio
 {
-    public static final Vector3f OIL_COLOUR = Vec3.fromRGB24(0xE1A803).toVector3f();
+    public static final int OIL_COLOUR = 0xE1A803;
     public static final double MAX_AUDIO_DISTANCE = Mth.square(8);
 
     protected final RecipeManager.CachedCheck<SingleRecipeInput, ? extends ProcessingRecipe> recipeCache;
@@ -239,18 +237,18 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
         ItemStack stack = this.getItem(0);
         if(!stack.isEmpty())
         {
-            Item remainingItem = stack.getItem().getCraftingRemainingItem();
+            ItemStack remainingStack = stack.getItem().getCraftingRemainder();
             Optional<? extends ProcessingRecipe> optional = this.getRecipe(stack);
-            ItemStack result = optional.map(recipe -> recipe.getResultItem(this.level.registryAccess())).orElse(ItemStack.EMPTY);
+            ItemStack result = optional.map(recipe -> recipe.getResult().copy()).orElse(ItemStack.EMPTY);
             stack.shrink(1);
             if(!result.isEmpty())
             {
                 ItemStack copy = result.copy();
                 this.setItem(0, copy);
-                if(remainingItem != null)
+                if(!remainingStack.isEmpty())
                 {
                     BlockPos pos = this.worldPosition;
-                    this.level.addFreshEntity(new ItemEntity(this.level, pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5, new ItemStack(remainingItem)));
+                    this.level.addFreshEntity(new ItemEntity(this.level, pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5, remainingStack.copy()));
                 }
             }
         }
@@ -304,12 +302,23 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
      */
     private Optional<? extends ProcessingRecipe> getRecipe(RecipeManager.CachedCheck<SingleRecipeInput, ? extends ProcessingRecipe> cache, ItemStack stack)
     {
-        return cache.getRecipeFor(new SingleRecipeInput(stack), Objects.requireNonNull(this.level)).map(RecipeHolder::value);
+        if(this.level instanceof ServerLevel serverLevel)
+        {
+            return cache.getRecipeFor(new SingleRecipeInput(stack), serverLevel)
+                .map(RecipeHolder::value);
+        }
+        return Optional.empty();
     }
 
     private Optional<ProcessingRecipe> getCookingRecipe(RecipeManager.CachedCheck<SingleRecipeInput, ? extends AbstractCookingRecipe> cache, ItemStack stack)
     {
-        return cache.getRecipeFor(new SingleRecipeInput(stack), Objects.requireNonNull(this.level)).map(RecipeHolder::value).map(recipe -> ProcessingRecipe.Item.from(recipe, this.level.registryAccess()));
+        if(this.level instanceof ServerLevel serverLevel)
+        {
+            return cache.getRecipeFor(new SingleRecipeInput(stack), serverLevel)
+                .map(RecipeHolder::value)
+                .map(recipe -> ProcessingRecipe.Item.fromCookingRecipe(recipe, this.level.registryAccess()));
+        }
+        return Optional.empty();
     }
 
     /**

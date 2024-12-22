@@ -16,10 +16,12 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.StackedContents;
+import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.StackedContentsCompatible;
@@ -112,7 +114,7 @@ public class FreezerBlockEntity extends ElectricityModuleProcessingLootBlockEnti
     @Override
     public boolean canTakeItem(Container container, int slotIndex, ItemStack stack)
     {
-        return slotIndex != 0 || !this.isRecipe(stack);
+        return slotIndex != 0 || this.level instanceof ServerLevel serverLevel && !this.isRecipe(stack, serverLevel);
     }
 
     @Override
@@ -218,7 +220,7 @@ public class FreezerBlockEntity extends ElectricityModuleProcessingLootBlockEnti
     }
 
     @Override
-    public void fillStackedContents(StackedContents contents)
+    public void fillStackedContents(StackedItemContents contents)
     {
         for(ItemStack stack : this.items)
         {

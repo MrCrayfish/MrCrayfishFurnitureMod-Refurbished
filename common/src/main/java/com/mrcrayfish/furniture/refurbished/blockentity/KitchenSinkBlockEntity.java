@@ -21,7 +21,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -79,7 +79,7 @@ public class KitchenSinkBlockEntity extends BlockEntity implements IFluidContain
         return this.tank;
     }
 
-    public ItemInteractionResult interact(Player player, InteractionHand hand, BlockHitResult result)
+    public InteractionResult interact(Player player, InteractionHand hand, BlockHitResult result)
     {
         Level level = player.level();
         // TODO allow this to be triggered with redstone
@@ -93,7 +93,7 @@ public class KitchenSinkBlockEntity extends BlockEntity implements IFluidContain
                 {
                     Network.getPlay().sendToTrackingBlockEntity(() -> this, new MessageWaterTapAnimation(this.worldPosition));
                     Objects.requireNonNull(this.level).playSound(null, this.worldPosition, ModSounds.BLOCK_KITCHEN_SINK_FILL.get(), SoundSource.BLOCKS);
-                    return ItemInteractionResult.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 }
             }
 
@@ -111,7 +111,7 @@ public class KitchenSinkBlockEntity extends BlockEntity implements IFluidContain
                     level.playSound(null, this.worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS);
                     level.levelEvent(LevelEvent.LAVA_FIZZ, this.worldPosition, 0);
                     Network.getPlay().sendToTrackingBlockEntity(() -> this, new MessageWaterTapAnimation(this.worldPosition));
-                    return ItemInteractionResult.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 }
             }
         }

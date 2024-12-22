@@ -12,7 +12,7 @@ import net.minecraft.world.item.crafting.RecipeInput;
 /**
  * Author: MrCrayfish
  */
-public abstract class SimpleRecipeContainerMenu<I extends RecipeInput, R extends Recipe<I>> extends RecipeBookMenu<I, R>
+public abstract class SimpleRecipeContainerMenu extends RecipeBookMenu
 {
     protected final Container container;
 

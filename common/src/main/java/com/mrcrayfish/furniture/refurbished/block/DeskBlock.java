@@ -11,7 +11,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -86,15 +89,16 @@ public class DeskBlock extends FurnitureHorizontalBlock implements BlockTagSuppl
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState newState, LevelAccessor level, BlockPos pos, BlockPos newPos)
+    protected BlockState updateShape(BlockState state, LevelReader reader, ScheduledTickAccess access, BlockPos pos, Direction direction, BlockPos pos1, BlockState state1, RandomSource rand)
     {
+        // TODO introduce new optimisation for 1.21.3
         Direction facing = state.getValue(DIRECTION);
-        boolean left = this.isConnectable(level, pos, facing.getClockWise(), facing);
-        boolean right = this.isConnectable(level, pos, facing.getCounterClockWise(), facing);
+        boolean left = this.isConnectable(reader, pos, facing.getClockWise(), facing);
+        boolean right = this.isConnectable(reader, pos, facing.getCounterClockWise(), facing);
         return state.setValue(LEFT, left).setValue(RIGHT, right);
     }
 
-    public boolean isConnectable(LevelAccessor level, BlockPos pos, Direction checkDirection, Direction tableDirection)
+    public boolean isConnectable(LevelReader level, BlockPos pos, Direction checkDirection, Direction tableDirection)
     {
         BlockState state = level.getBlockState(pos.relative(checkDirection));
         return state.getBlock() instanceof DeskBlock && state.getValue(DIRECTION) == tableDirection;

@@ -38,23 +38,32 @@ public class TelevisionBlockEntityRenderer implements BlockEntityRenderer<Televi
             poseStack.translate(-0.5, 0, -0.345);
 
             // Draw tv screen quad with current channel
-            Material channelMaterial = CustomSheets.getTelevisionChannelMaterial(television.getCurrentChannel().id());
-            Matrix4f matrix = poseStack.last().pose();
-            VertexConsumer consumer = channelMaterial.buffer(source, ClientServices.PLATFORM::getTelevisionScreenRenderType);
             float offset = 0.003125F;
+            Matrix4f matrix = poseStack.last().pose();
+            Material channelMaterial = CustomSheets.getTelevisionChannelMaterial(television.getCurrentChannel().id());
+            VertexConsumer consumer = channelMaterial.buffer(source, ClientServices.PLATFORM::getTelevisionScreenRenderType);
 
-            // Weird hack needed for Fabric. Why lol?
-            TextureAtlasSprite sprite = channelMaterial.sprite();
-            boolean runningFabric = Services.PLATFORM.getPlatform().isFabric();
-            float minU = runningFabric ? sprite.getU0() : 0;
-            float maxU = runningFabric ? sprite.getU1() : 1;
-            float minV = runningFabric ? sprite.getV0() : 0;
-            float maxV = runningFabric ? sprite.getV1() : 1;
-
-            consumer.addVertex(matrix, 0.75F + offset, 0.625F + offset, 0).setColor(255, 255, 255, 255).setUv(minU, minV).setLight(0xF000F0).setNormal(0, 1, 0);
-            consumer.addVertex(matrix, 0.75F + offset, 0.1875F - offset, 0).setColor(255, 255, 255, 255).setUv(minU, maxV).setLight(0xF000F0).setNormal(0, 1, 0);
-            consumer.addVertex(matrix, 0.25F - offset, 0.1875F - offset, 0).setColor(255, 255, 255, 255).setUv(maxU, maxV).setLight(0xF000F0).setNormal(0, 1, 0);
-            consumer.addVertex(matrix, 0.25F - offset, 0.625F + offset, 0).setColor(255, 255, 255, 255).setUv(maxU, minV).setLight(0xF000F0).setNormal(0, 1, 0);
+            // No method chaining due to bug in SpriteCoordinateExpander
+            consumer.addVertex(matrix, 0.75F + offset, 0.625F + offset, 0);
+            consumer.setColor(255, 255, 255, 255);
+            consumer.setUv(0, 0);
+            consumer.setLight(0xF000F0);
+            consumer.setNormal(0, 1, 0);
+            consumer.addVertex(matrix, 0.75F + offset, 0.1875F - offset, 0);
+            consumer.setColor(255, 255, 255, 255);
+            consumer.setUv(0, 1);
+            consumer.setLight(0xF000F0);
+            consumer.setNormal(0, 1, 0);
+            consumer.addVertex(matrix, 0.25F - offset, 0.1875F - offset, 0);
+            consumer.setColor(255, 255, 255, 255);
+            consumer.setUv(1, 1);
+            consumer.setLight(0xF000F0);
+            consumer.setNormal(0, 1, 0);
+            consumer.addVertex(matrix, 0.25F - offset, 0.625F + offset, 0);
+            consumer.setColor(255, 255, 255, 255);
+            consumer.setUv(1, 0);
+            consumer.setLight(0xF000F0);
+            consumer.setNormal(0, 1, 0);
 
             poseStack.popPose();
         }

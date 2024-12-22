@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.network.message;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
+import com.mrcrayfish.framework.api.network.PlayMessageContext;
 import com.mrcrayfish.furniture.refurbished.network.play.ServerPlayHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -20,7 +21,7 @@ public class MessageHomeControl
             return new Toggle(buf.readBlockPos());
         });
 
-        public static void handle(Toggle message, MessageContext context)
+        public static void handle(Toggle message, PlayMessageContext context)
         {
             context.execute(() -> ServerPlayHandler.handleMessageHomeControlToggle(message, context.getPlayer().orElse(null)));
             context.setHandled(true);
@@ -35,7 +36,7 @@ public class MessageHomeControl
             return new UpdateAll(buf.readBoolean());
         });
 
-        public static void handle(UpdateAll message, MessageContext context)
+        public static void handle(UpdateAll message, PlayMessageContext context)
         {
             context.execute(() -> ServerPlayHandler.handleMessageHomeControlUpdateAll(message, context.getPlayer().orElse(null)));
             context.setHandled(true);

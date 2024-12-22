@@ -100,7 +100,7 @@ public class LightswitchBlock extends FurnitureAttachedFaceBlock implements Enti
         level.setBlock(pos, state.setValue(ENABLED, enabled), Block.UPDATE_ALL);
         Vec3 sound = this.getPositionForSound(state, pos);
         level.playSound(null, sound.x, sound.y, sound.z, ModSounds.BLOCK_LIGHTSWITCH_FLICK.get(), SoundSource.BLOCKS, 0.7F, enabled ? 1.0F : 0.8F);
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     /**

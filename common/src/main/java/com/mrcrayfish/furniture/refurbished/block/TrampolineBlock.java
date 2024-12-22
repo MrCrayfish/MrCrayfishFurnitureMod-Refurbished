@@ -16,6 +16,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,7 +26,8 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -107,9 +109,9 @@ public class TrampolineBlock extends FurnitureBlock implements BlockTagSupplier
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState newState, LevelAccessor level, BlockPos pos, BlockPos newPos)
+    protected BlockState updateShape(BlockState state, LevelReader reader, ScheduledTickAccess access, BlockPos pos, Direction direction, BlockPos p_60546_, BlockState p_60543_, RandomSource p_374120_)
     {
-        return this.getTrampolineState(state, level, pos);
+        return this.getTrampolineState(state, reader, pos);
     }
 
     /**
@@ -119,20 +121,20 @@ public class TrampolineBlock extends FurnitureBlock implements BlockTagSupplier
      * given position are trampolines, and also if the trampoline needs to draw the corner legs.
      *
      * @param state any block state of the trampoline
-     * @param level the level where the trampoline exists or will after placing
+     * @param reader the level where the trampoline exists or will after placing
      * @param pos   the block position of the trampoline or where it's going to be placed
      * @return an updated trampoline blockstate
      */
-    private BlockState getTrampolineState(BlockState state, LevelAccessor level, BlockPos pos)
+    private BlockState getTrampolineState(BlockState state, LevelReader reader, BlockPos pos)
     {
-        boolean connectedNorth = this.isTrampoline(level, pos.north());
-        boolean connectedEast = this.isTrampoline(level, pos.east());
-        boolean connectedSouth = this.isTrampoline(level, pos.south());
-        boolean connectedWest = this.isTrampoline(level, pos.west());
-        boolean legNorthWest = connectedNorth && connectedWest && !this.isTrampoline(level, pos.north().west());
-        boolean legNorthEast = connectedNorth && connectedEast && !this.isTrampoline(level, pos.north().east());
-        boolean legSouthEast = connectedSouth && connectedEast && !this.isTrampoline(level, pos.south().east());
-        boolean legSouthWest = connectedSouth && connectedWest && !this.isTrampoline(level, pos.south().west());
+        boolean connectedNorth = this.isTrampoline(reader, pos.north());
+        boolean connectedEast = this.isTrampoline(reader, pos.east());
+        boolean connectedSouth = this.isTrampoline(reader, pos.south());
+        boolean connectedWest = this.isTrampoline(reader, pos.west());
+        boolean legNorthWest = connectedNorth && connectedWest && !this.isTrampoline(reader, pos.north().west());
+        boolean legNorthEast = connectedNorth && connectedEast && !this.isTrampoline(reader, pos.north().east());
+        boolean legSouthEast = connectedSouth && connectedEast && !this.isTrampoline(reader, pos.south().east());
+        boolean legSouthWest = connectedSouth && connectedWest && !this.isTrampoline(reader, pos.south().west());
         int packedValue = Shape.createPackedValue(connectedNorth, connectedEast, connectedSouth, connectedWest, legNorthWest, legNorthEast, legSouthEast, legSouthWest);
         Shape shape = Shape.fromPackedValue(packedValue);
         return state.setValue(SHAPE, shape);
@@ -141,51 +143,50 @@ public class TrampolineBlock extends FurnitureBlock implements BlockTagSupplier
     /**
      * Tests if the block at the given block position in the level is a trampoline
      *
-     * @param level a level instance
+     * @param reader a level instance
      * @param pos   the block position to check
      * @return true if a trampoline at the block position
      */
-    private boolean isTrampoline(LevelAccessor level, BlockPos pos)
+    private boolean isTrampoline(LevelReader reader, BlockPos pos)
     {
-        return level.getBlockState(pos).getBlock() instanceof TrampolineBlock;
+        return reader.getBlockState(pos).getBlock() instanceof TrampolineBlock;
     }
 
     @Override
     public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, float fallDistance)
     {
-        if(entity.isSuppressingBounce())
-            return;
+        // Overriding with empty block prevents fall damage
+    }
 
-        Vec3 movement = entity.getDeltaMovement();
-        if(movement.y > 0)
+    public void applyPhysics(BlockPos pos, BlockState state, Entity entity, float fallPower)
+    {
+        if(entity.isSuppressingBounce())
             return;
 
         float bounceForce = 2.0F;
         float maxBounceHeight = Config.SERVER.trampoline.maxBounceHeight.get().floatValue() * state.getValue(SHAPE).bounceScale * 0.75F;
-        float bounceHeight = Math.min(entity.fallDistance * bounceForce, maxBounceHeight - 0.25F);
+        float bounceHeight = Math.min(fallPower * bounceForce, maxBounceHeight - 0.25F);
         entity.setDeltaMovement(entity.getDeltaMovement().multiply(1.5, 0, 1.5));
         entity.push(0, Math.sqrt(0.22 * (bounceHeight + 0.25F)), 0);
-        entity.resetFallDistance();
-        this.spawnBounceParticle(level, entity, pos, false);
+        Level level = entity.level();
+        this.spawnBounceParticle(level, entity, pos, !(entity instanceof Player));
         if(!level.isClientSide())
         {
             level.playSound(null, pos, ModSounds.BLOCK_TRAMPOLINE_BOUNCE.get(), SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.2F + 0.9F);
         }
+        else if(entity.isControlledByOrIsLocalPlayer())
+        {
+            level.playSound(entity.getControllingPassenger(), pos, ModSounds.BLOCK_TRAMPOLINE_BOUNCE.get(), SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.2F + 0.9F);
+        }
     }
 
     @Override
-    public void updateEntityAfterFallOn(BlockGetter getter, Entity entity)
+    public void updateEntityMovementAfterFallOn(BlockGetter getter, Entity entity)
     {
-        Vec3 velocity = entity.getDeltaMovement();
-        if(velocity.y < 0)
+        Vec3 movement = entity.getDeltaMovement();
+        if(movement.y < 0)
         {
-            // Special case for boats since they don't trigger the above method
-            if(entity instanceof Boat boat && -velocity.y > 0.1)
-            {
-                this.bounceBoat(boat, velocity);
-                return;
-            }
-            super.updateEntityAfterFallOn(getter, entity);
+            super.updateEntityMovementAfterFallOn(getter, entity);
         }
     }
 
@@ -249,7 +250,7 @@ public class TrampolineBlock extends FurnitureBlock implements BlockTagSupplier
         if(!level.isClientSide())
         {
             // Special case because animals don't trigger client side
-            if(!(bouncingEntity instanceof Player) && bouncingEntity instanceof LivingEntity)
+            if(!(bouncingEntity instanceof Player))
             {
                 ParticleOptions particle = superBounce ? ModParticleTypes.SUPER_BOUNCE.get() : ModParticleTypes.BOUNCE.get();
                 Vec3 particlePos = Vec3.upFromBottomCenterOf(pos, 0.82);

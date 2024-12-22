@@ -14,6 +14,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
@@ -236,7 +237,7 @@ public class ToasterBlockEntity extends ElectricityModuleProcessingLootBlockEnti
      * @param heldItem the held item to insert or empty to remove items
      * @return True if an action occurred, does not mean an item was inserted.
      */
-    public boolean insertItem(ItemStack heldItem)
+    public boolean insertItem(ItemStack heldItem, ServerLevel level)
     {
         if(this.isHeating())
         {
@@ -246,7 +247,7 @@ public class ToasterBlockEntity extends ElectricityModuleProcessingLootBlockEnti
         {
             return this.extractItem();
         }
-        if(this.isRecipe(heldItem))
+        if(this.isRecipe(heldItem, level))
         {
             for(int i = 0; i < this.getContainerSize(); i++)
             {

@@ -12,12 +12,11 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mrcrayfish.furniture.refurbished.Config;
-import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.phys.AABB;
 import org.joml.Matrix4f;
 
@@ -53,7 +52,7 @@ public class DeferredElectricRenderer
     public void draw(PoseStack pose)
     {
         Minecraft mc = Minecraft.getInstance();
-        RenderTarget target = mc.levelRenderer.entityTarget();
+        RenderTarget target = mc.levelRenderer.entityOutlineTarget();
         if(target == null || this.builders.isEmpty())
             return;
 
@@ -62,7 +61,7 @@ public class DeferredElectricRenderer
         // an outline is in view. This is a hacky fix at the expense of breaking entity outline glow.
         if(Config.CLIENT.experimental.electricityShadersFix.get())
         {
-            target.clear(Minecraft.ON_OSX);
+            target.clear();
         }
 
         // Draw to the entity outline layer
@@ -73,7 +72,7 @@ public class DeferredElectricRenderer
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         RenderSystem.depthMask(true);
-        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+        RenderSystem.setShader(CoreShaders.POSITION_TEX_COLOR);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, this.nodeTexture);
 
@@ -113,9 +112,9 @@ public class DeferredElectricRenderer
      */
     public void drawColouredBox(Matrix4f matrix, VertexConsumer consumer, AABB box, int colour, float alpha)
     {
-        float red = FastColor.ARGB32.red(colour) / 255F;
-        float green = FastColor.ARGB32.green(colour) / 255F;
-        float blue = FastColor.ARGB32.blue(colour) / 255F;
+        float red = ARGB.red(colour) / 255F;
+        float green = ARGB.green(colour) / 255F;
+        float blue = ARGB.blue(colour) / 255F;
         float minU = 0.0F;
         float minV = 0.25F;
         float maxU = minU + 0.25F;
@@ -164,9 +163,9 @@ public class DeferredElectricRenderer
      */
     public void drawInvertedColouredBox(Matrix4f matrix, VertexConsumer consumer, AABB box, int colour, float alpha)
     {
-        float red = FastColor.ARGB32.red(colour) / 255F;
-        float green = FastColor.ARGB32.green(colour) / 255F;
-        float blue = FastColor.ARGB32.blue(colour) / 255F;
+        float red = ARGB.red(colour) / 255F;
+        float green = ARGB.green(colour) / 255F;
+        float blue = ARGB.blue(colour) / 255F;
         float minU = 0.0F;
         float minV = 0.25F;
         float maxU = minU + 0.25F;

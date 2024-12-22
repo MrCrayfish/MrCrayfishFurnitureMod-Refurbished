@@ -3,12 +3,13 @@ package com.mrcrayfish.furniture.refurbished.client.renderer.entity;
 import com.mrcrayfish.furniture.refurbished.entity.Seat;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.resources.ResourceLocation;
 
 /**
  * Author: MrCrayfish
  */
-public class SeatRenderer extends EntityRenderer<Seat>
+public class SeatRenderer extends EntityRenderer<Seat, EntityRenderState>
 {
     public SeatRenderer(EntityRendererProvider.Context context)
     {
@@ -16,8 +17,8 @@ public class SeatRenderer extends EntityRenderer<Seat>
     }
 
     @Override
-    public ResourceLocation getTextureLocation(Seat seat)
+    public EntityRenderState createRenderState()
     {
-        return null;
+        return new EntityRenderState();
     }
 }

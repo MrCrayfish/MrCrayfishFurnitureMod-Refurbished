@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.crafting;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.tags.TagKey;
@@ -14,9 +15,8 @@ import net.minecraft.world.item.crafting.Ingredient;
  */
 public record StackedIngredient(Ingredient ingredient, int count)
 {
-    public static final StackedIngredient EMPTY = new StackedIngredient(Ingredient.EMPTY, 0);
     public static final Codec<StackedIngredient> CODEC = RecordCodecBuilder.create(builder -> {
-        return builder.group(Ingredient.CODEC_NONEMPTY.fieldOf("ingredient").forGetter(o -> {
+        return builder.group(Ingredient.CODEC.fieldOf("ingredient").forGetter(o -> {
             return o.ingredient;
         }), Codec.INT.fieldOf("count").orElse(1).forGetter(o -> {
             return o.count;
@@ -36,14 +36,14 @@ public record StackedIngredient(Ingredient ingredient, int count)
         buf.writeInt(this.count);
     }
 
-    public static StackedIngredient of(TagKey<Item> tag, int count)
+    public static StackedIngredient of(HolderSet<Item> items, int count)
     {
-        return new StackedIngredient(Ingredient.of(tag), count);
+        return new StackedIngredient(Ingredient.of(items), count);
     }
 
     public static StackedIngredient of(ItemStack stack)
     {
-        return new StackedIngredient(Ingredient.of(stack), stack.getCount());
+        return new StackedIngredient(Ingredient.of(stack.getItem()), stack.getCount());
     }
 
     public static StackedIngredient of(Ingredient ingredient, int count)
