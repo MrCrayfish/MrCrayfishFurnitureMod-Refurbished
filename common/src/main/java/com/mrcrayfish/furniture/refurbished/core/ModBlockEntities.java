@@ -28,7 +28,8 @@ public class ModBlockEntities
             ModBlocks.DRAWER_MANGROVE.get(),
             ModBlocks.DRAWER_CHERRY.get(),
             ModBlocks.DRAWER_CRIMSON.get(),
-            ModBlocks.DRAWER_WARPED.get()
+            ModBlocks.DRAWER_WARPED.get(),
+            ModBlocks.DRAWER_PALE_OAK.get()
     });
 
     public static final RegistryEntry<BlockEntityType<CrateBlockEntity>> CRATE = RegistryEntry.blockEntity(Utils.resource("crate"), CrateBlockEntity::new, () -> new Block[]{
@@ -41,7 +42,8 @@ public class ModBlockEntities
             ModBlocks.CRATE_MANGROVE.get(),
             ModBlocks.CRATE_CHERRY.get(),
             ModBlocks.CRATE_CRIMSON.get(),
-            ModBlocks.CRATE_WARPED.get()
+            ModBlocks.CRATE_WARPED.get(),
+            ModBlocks.CRATE_PALE_OAK.get()
     });
 
     public static final RegistryEntry<BlockEntityType<KitchenDrawerBlockEntity>> KITCHEN_DRAWER = RegistryEntry.blockEntity(Utils.resource("kitchen_drawer"), KitchenDrawerBlockEntity::new, () -> new Block[]{
@@ -55,6 +57,7 @@ public class ModBlockEntities
             ModBlocks.KITCHEN_DRAWER_CHERRY.get(),
             ModBlocks.KITCHEN_DRAWER_CRIMSON.get(),
             ModBlocks.KITCHEN_DRAWER_WARPED.get(),
+            ModBlocks.KITCHEN_DRAWER_PALE_OAK.get(),
             ModBlocks.KITCHEN_DRAWER_WHITE.get(),
             ModBlocks.KITCHEN_DRAWER_ORANGE.get(),
             ModBlocks.KITCHEN_DRAWER_MAGENTA.get(),
@@ -84,6 +87,7 @@ public class ModBlockEntities
             ModBlocks.KITCHEN_SINK_CHERRY.get(),
             ModBlocks.KITCHEN_SINK_CRIMSON.get(),
             ModBlocks.KITCHEN_SINK_WARPED.get(),
+            ModBlocks.KITCHEN_SINK_PALE_OAK.get(),
             ModBlocks.KITCHEN_SINK_WHITE.get(),
             ModBlocks.KITCHEN_SINK_ORANGE.get(),
             ModBlocks.KITCHEN_SINK_MAGENTA.get(),
@@ -181,6 +185,7 @@ public class ModBlockEntities
             ModBlocks.CUTTING_BOARD_CHERRY.get(),
             ModBlocks.CUTTING_BOARD_CRIMSON.get(),
             ModBlocks.CUTTING_BOARD_WARPED.get(),
+            ModBlocks.CUTTING_BOARD_PALE_OAK.get(),
     });
 
     public static final RegistryEntry<BlockEntityType<FryingPanBlockEntity>> FRYING_PAN = RegistryEntry.blockEntity(Utils.resource("frying_pan"), FryingPanBlockEntity::new, () -> new Block[]{
@@ -197,7 +202,8 @@ public class ModBlockEntities
             ModBlocks.MAIL_BOX_MANGROVE.get(),
             ModBlocks.MAIL_BOX_CHERRY.get(),
             ModBlocks.MAIL_BOX_CRIMSON.get(),
-            ModBlocks.MAIL_BOX_WARPED.get()
+            ModBlocks.MAIL_BOX_WARPED.get(),
+            ModBlocks.MAIL_BOX_PALE_OAK.get()
     });
 
     public static final RegistryEntry<BlockEntityType<PostBoxBlockEntity>> POST_BOX = RegistryEntry.blockEntity(Utils.resource("post_box"), PostBoxBlockEntity::new, () -> new Block[]{
@@ -249,7 +255,8 @@ public class ModBlockEntities
             ModBlocks.STORAGE_JAR_MANGROVE.get(),
             ModBlocks.STORAGE_JAR_CHERRY.get(),
             ModBlocks.STORAGE_JAR_CRIMSON.get(),
-            ModBlocks.STORAGE_JAR_WARPED.get()
+            ModBlocks.STORAGE_JAR_WARPED.get(),
+            ModBlocks.STORAGE_JAR_PALE_OAK.get()
     });
 
     public static final RegistryEntry<BlockEntityType<RecycleBinBlockEntity>> RECYCLE_BIN = RegistryEntry.blockEntity(Utils.resource("recycle_bin"), Services.BLOCK_ENTITY::createRecycleBinBlockEntity, () -> new Block[]{
@@ -267,6 +274,7 @@ public class ModBlockEntities
             ModBlocks.CEILING_FAN_CHERRY_LIGHT.get(),
             ModBlocks.CEILING_FAN_CRIMSON_LIGHT.get(),
             ModBlocks.CEILING_FAN_WARPED_LIGHT.get(),
+            ModBlocks.CEILING_FAN_PALE_OAK_LIGHT.get(),
             ModBlocks.CEILING_FAN_OAK_DARK.get(),
             ModBlocks.CEILING_FAN_SPRUCE_DARK.get(),
             ModBlocks.CEILING_FAN_BIRCH_DARK.get(),
@@ -276,7 +284,8 @@ public class ModBlockEntities
             ModBlocks.CEILING_FAN_MANGROVE_DARK.get(),
             ModBlocks.CEILING_FAN_CHERRY_DARK.get(),
             ModBlocks.CEILING_FAN_CRIMSON_DARK.get(),
-            ModBlocks.CEILING_FAN_WARPED_DARK.get()
+            ModBlocks.CEILING_FAN_WARPED_DARK.get(),
+            ModBlocks.CEILING_FAN_PALE_OAK_DARK.get()
     });
 
     public static final RegistryEntry<BlockEntityType<StorageCabinetBlockEntity>> STORAGE_CABINET = RegistryEntry.blockEntity(Utils.resource("cabinet"), StorageCabinetBlockEntity::new, () -> new Block[]{
@@ -290,6 +299,7 @@ public class ModBlockEntities
             ModBlocks.STORAGE_CABINET_CHERRY.get(),
             ModBlocks.STORAGE_CABINET_CRIMSON.get(),
             ModBlocks.STORAGE_CABINET_WARPED.get(),
+            ModBlocks.STORAGE_CABINET_PALE_OAK.get(),
             ModBlocks.KITCHEN_STORAGE_CABINET_OAK.get(),
             ModBlocks.KITCHEN_STORAGE_CABINET_SPRUCE.get(),
             ModBlocks.KITCHEN_STORAGE_CABINET_BIRCH.get(),
@@ -300,6 +310,7 @@ public class ModBlockEntities
             ModBlocks.KITCHEN_STORAGE_CABINET_CHERRY.get(),
             ModBlocks.KITCHEN_STORAGE_CABINET_CRIMSON.get(),
             ModBlocks.KITCHEN_STORAGE_CABINET_WARPED.get(),
+            ModBlocks.KITCHEN_STORAGE_CABINET_PALE_OAK.get(),
             ModBlocks.KITCHEN_STORAGE_CABINET_WHITE.get(),
             ModBlocks.KITCHEN_STORAGE_CABINET_ORANGE.get(),
             ModBlocks.KITCHEN_STORAGE_CABINET_MAGENTA.get(),
@@ -333,6 +344,7 @@ public class ModBlockEntities
             ModBlocks.BASIN_CHERRY.get(),
             ModBlocks.BASIN_CRIMSON.get(),
             ModBlocks.BASIN_WARPED.get(),
+            ModBlocks.BASIN_PALE_OAK.get(),
             ModBlocks.BASIN_WHITE.get(),
             ModBlocks.BASIN_ORANGE.get(),
             ModBlocks.BASIN_MAGENTA.get(),
@@ -362,6 +374,7 @@ public class ModBlockEntities
             ModBlocks.TOILET_CHERRY.get(),
             ModBlocks.TOILET_CRIMSON.get(),
             ModBlocks.TOILET_WARPED.get(),
+            ModBlocks.TOILET_PALE_OAK.get(),
             ModBlocks.TOILET_WHITE.get(),
             ModBlocks.TOILET_ORANGE.get(),
             ModBlocks.TOILET_MAGENTA.get(),
@@ -391,6 +404,7 @@ public class ModBlockEntities
             ModBlocks.BATH_CHERRY.get(),
             ModBlocks.BATH_CRIMSON.get(),
             ModBlocks.BATH_WARPED.get(),
+            ModBlocks.BATH_PALE_OAK.get(),
             ModBlocks.BATH_WHITE.get(),
             ModBlocks.BATH_ORANGE.get(),
             ModBlocks.BATH_MAGENTA.get(),

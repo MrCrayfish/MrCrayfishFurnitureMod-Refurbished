@@ -38,6 +38,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.TABLE_CHERRY.get().asItem())
             .add(ModBlocks.TABLE_CRIMSON.get().asItem())
             .add(ModBlocks.TABLE_WARPED.get().asItem())
+            .add(ModBlocks.TABLE_PALE_OAK.get().asItem())
             .add(ModBlocks.CHAIR_OAK.get().asItem())
             .add(ModBlocks.CHAIR_SPRUCE.get().asItem())
             .add(ModBlocks.CHAIR_BIRCH.get().asItem())
@@ -48,6 +49,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.CHAIR_CHERRY.get().asItem())
             .add(ModBlocks.CHAIR_CRIMSON.get().asItem())
             .add(ModBlocks.CHAIR_WARPED.get().asItem())
+            .add(ModBlocks.CHAIR_PALE_OAK.get().asItem())
             .add(ModBlocks.DESK_OAK.get().asItem())
             .add(ModBlocks.DESK_SPRUCE.get().asItem())
             .add(ModBlocks.DESK_BIRCH.get().asItem())
@@ -58,6 +60,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.DESK_CHERRY.get().asItem())
             .add(ModBlocks.DESK_CRIMSON.get().asItem())
             .add(ModBlocks.DESK_WARPED.get().asItem())
+            .add(ModBlocks.DESK_PALE_OAK.get().asItem())
             .add(ModBlocks.DRAWER_OAK.get().asItem())
             .add(ModBlocks.DRAWER_SPRUCE.get().asItem())
             .add(ModBlocks.DRAWER_BIRCH.get().asItem())
@@ -68,6 +71,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.DRAWER_CHERRY.get().asItem())
             .add(ModBlocks.DRAWER_CRIMSON.get().asItem())
             .add(ModBlocks.DRAWER_WARPED.get().asItem())
+            .add(ModBlocks.DRAWER_PALE_OAK.get().asItem())
             .add(ModBlocks.SOFA_WHITE.get().asItem())
             .add(ModBlocks.SOFA_ORANGE.get().asItem())
             .add(ModBlocks.SOFA_MAGENTA.get().asItem())
@@ -109,7 +113,8 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.STORAGE_CABINET_MANGROVE.get().asItem())
             .add(ModBlocks.STORAGE_CABINET_CHERRY.get().asItem())
             .add(ModBlocks.STORAGE_CABINET_CRIMSON.get().asItem())
-            .add(ModBlocks.STORAGE_CABINET_WARPED.get().asItem());
+            .add(ModBlocks.STORAGE_CABINET_WARPED.get().asItem())
+            .add(ModBlocks.STORAGE_CABINET_PALE_OAK.get().asItem());
 
         this.tag(ModTags.Items.BEDROOM)
             .add(ModBlocks.DESK_OAK.get().asItem())
@@ -122,6 +127,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.DESK_CHERRY.get().asItem())
             .add(ModBlocks.DESK_CRIMSON.get().asItem())
             .add(ModBlocks.DESK_WARPED.get().asItem())
+            .add(ModBlocks.DESK_PALE_OAK.get().asItem())
             .add(ModBlocks.DRAWER_OAK.get().asItem())
             .add(ModBlocks.DRAWER_SPRUCE.get().asItem())
             .add(ModBlocks.DRAWER_BIRCH.get().asItem())
@@ -132,6 +138,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.DRAWER_CHERRY.get().asItem())
             .add(ModBlocks.DRAWER_CRIMSON.get().asItem())
             .add(ModBlocks.DRAWER_WARPED.get().asItem())
+            .add(ModBlocks.DRAWER_PALE_OAK.get().asItem())
             .add(ModBlocks.LIGHTSWITCH_LIGHT.get().asItem())
             .add(ModBlocks.LIGHTSWITCH_DARK.get().asItem())
             .add(ModBlocks.CEILING_LIGHT_LIGHT.get().asItem())
@@ -162,6 +169,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.CEILING_FAN_CHERRY_LIGHT.get().asItem())
             .add(ModBlocks.CEILING_FAN_CRIMSON_LIGHT.get().asItem())
             .add(ModBlocks.CEILING_FAN_WARPED_LIGHT.get().asItem())
+            .add(ModBlocks.CEILING_FAN_PALE_OAK_LIGHT.get().asItem())
             .add(ModBlocks.CEILING_FAN_OAK_DARK.get().asItem())
             .add(ModBlocks.CEILING_FAN_SPRUCE_DARK.get().asItem())
             .add(ModBlocks.CEILING_FAN_BIRCH_DARK.get().asItem())
@@ -172,6 +180,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.CEILING_FAN_CHERRY_DARK.get().asItem())
             .add(ModBlocks.CEILING_FAN_CRIMSON_DARK.get().asItem())
             .add(ModBlocks.CEILING_FAN_WARPED_DARK.get().asItem())
+            .add(ModBlocks.CEILING_FAN_PALE_OAK_DARK.get().asItem())
             .add(ModBlocks.STORAGE_CABINET_OAK.get().asItem())
             .add(ModBlocks.STORAGE_CABINET_SPRUCE.get().asItem())
             .add(ModBlocks.STORAGE_CABINET_BIRCH.get().asItem())
@@ -182,6 +191,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.STORAGE_CABINET_CHERRY.get().asItem())
             .add(ModBlocks.STORAGE_CABINET_CRIMSON.get().asItem())
             .add(ModBlocks.STORAGE_CABINET_WARPED.get().asItem())
+            .add(ModBlocks.STORAGE_CABINET_PALE_OAK.get().asItem())
             .add(ModBlocks.STOOL_WHITE.get().asItem())
             .add(ModBlocks.STOOL_ORANGE.get().asItem())
             .add(ModBlocks.STOOL_MAGENTA.get().asItem())
@@ -210,6 +220,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.KITCHEN_CABINETRY_CHERRY.get().asItem())
             .add(ModBlocks.KITCHEN_CABINETRY_CRIMSON.get().asItem())
             .add(ModBlocks.KITCHEN_CABINETRY_WARPED.get().asItem())
+            .add(ModBlocks.KITCHEN_CABINETRY_PALE_OAK.get().asItem())
             .add(ModBlocks.KITCHEN_DRAWER_OAK.get().asItem())
             .add(ModBlocks.KITCHEN_DRAWER_SPRUCE.get().asItem())
             .add(ModBlocks.KITCHEN_DRAWER_BIRCH.get().asItem())
@@ -220,6 +231,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.KITCHEN_DRAWER_CHERRY.get().asItem())
             .add(ModBlocks.KITCHEN_DRAWER_CRIMSON.get().asItem())
             .add(ModBlocks.KITCHEN_DRAWER_WARPED.get().asItem())
+            .add(ModBlocks.KITCHEN_DRAWER_PALE_OAK.get().asItem())
             .add(ModBlocks.KITCHEN_SINK_OAK.get().asItem())
             .add(ModBlocks.KITCHEN_SINK_SPRUCE.get().asItem())
             .add(ModBlocks.KITCHEN_SINK_BIRCH.get().asItem())
@@ -230,6 +242,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.KITCHEN_SINK_CHERRY.get().asItem())
             .add(ModBlocks.KITCHEN_SINK_CRIMSON.get().asItem())
             .add(ModBlocks.KITCHEN_SINK_WARPED.get().asItem())
+            .add(ModBlocks.KITCHEN_SINK_PALE_OAK.get().asItem())
             .add(ModBlocks.KITCHEN_STORAGE_CABINET_OAK.get().asItem())
             .add(ModBlocks.KITCHEN_STORAGE_CABINET_SPRUCE.get().asItem())
             .add(ModBlocks.KITCHEN_STORAGE_CABINET_BIRCH.get().asItem())
@@ -240,6 +253,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.KITCHEN_STORAGE_CABINET_CHERRY.get().asItem())
             .add(ModBlocks.KITCHEN_STORAGE_CABINET_CRIMSON.get().asItem())
             .add(ModBlocks.KITCHEN_STORAGE_CABINET_WARPED.get().asItem())
+            .add(ModBlocks.KITCHEN_STORAGE_CABINET_PALE_OAK.get().asItem())
             .add(ModBlocks.KITCHEN_CABINETRY_WHITE.get().asItem())
             .add(ModBlocks.KITCHEN_CABINETRY_ORANGE.get().asItem())
             .add(ModBlocks.KITCHEN_CABINETRY_MAGENTA.get().asItem())
@@ -324,6 +338,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.CUTTING_BOARD_CHERRY.get().asItem())
             .add(ModBlocks.CUTTING_BOARD_CRIMSON.get().asItem())
             .add(ModBlocks.CUTTING_BOARD_WARPED.get().asItem())
+            .add(ModBlocks.CUTTING_BOARD_PALE_OAK.get().asItem())
             .add(ModBlocks.FRYING_PAN.get().asItem())
             .add(ModBlocks.STORAGE_JAR_OAK.get().asItem())
             .add(ModBlocks.STORAGE_JAR_SPRUCE.get().asItem())
@@ -335,6 +350,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.STORAGE_JAR_CHERRY.get().asItem())
             .add(ModBlocks.STORAGE_JAR_CRIMSON.get().asItem())
             .add(ModBlocks.STORAGE_JAR_WARPED.get().asItem())
+            .add(ModBlocks.STORAGE_JAR_PALE_OAK.get().asItem())
             .add(ModBlocks.RECYCLE_BIN.get().asItem())
             .add(ModBlocks.STORAGE_CABINET_OAK.get().asItem())
             .add(ModBlocks.STORAGE_CABINET_SPRUCE.get().asItem())
@@ -346,6 +362,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.STORAGE_CABINET_CHERRY.get().asItem())
             .add(ModBlocks.STORAGE_CABINET_CRIMSON.get().asItem())
             .add(ModBlocks.STORAGE_CABINET_WARPED.get().asItem())
+            .add(ModBlocks.STORAGE_CABINET_PALE_OAK.get().asItem())
             .add(ModBlocks.PLATE.get().asItem())
             .add(ModItems.SPATULA.get())
             .add(ModItems.KNIFE.get());
@@ -361,6 +378,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.CRATE_CHERRY.get().asItem())
             .add(ModBlocks.CRATE_CRIMSON.get().asItem())
             .add(ModBlocks.CRATE_WARPED.get().asItem())
+            .add(ModBlocks.CRATE_PALE_OAK.get().asItem())
             .add(ModBlocks.GRILL_WHITE.get().asItem())
             .add(ModBlocks.GRILL_ORANGE.get().asItem())
             .add(ModBlocks.GRILL_MAGENTA.get().asItem())
@@ -403,6 +421,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.MAIL_BOX_CHERRY.get().asItem())
             .add(ModBlocks.MAIL_BOX_CRIMSON.get().asItem())
             .add(ModBlocks.MAIL_BOX_WARPED.get().asItem())
+            .add(ModBlocks.MAIL_BOX_PALE_OAK.get().asItem())
             .add(ModBlocks.POST_BOX.get().asItem())
             .add(ModBlocks.DOORBELL.get().asItem())
             .add(ModBlocks.RECYCLE_BIN.get().asItem())
@@ -431,6 +450,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.HEDGE_MANGROVE.get().asItem())
             .add(ModBlocks.HEDGE_CHERRY.get().asItem())
             .add(ModBlocks.HEDGE_AZALEA.get().asItem())
+            .add(ModBlocks.HEDGE_PALE_OAK.get().asItem())
             .add(ModBlocks.DOOR_MAT.get().asItem())
             .add(ModBlocks.STEPPING_STONES_STONE.get().asItem())
             .add(ModBlocks.STEPPING_STONES_GRANITE.get().asItem())
@@ -447,6 +467,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.LATTICE_FENCE_CHERRY.get().asItem())
             .add(ModBlocks.LATTICE_FENCE_CRIMSON.get().asItem())
             .add(ModBlocks.LATTICE_FENCE_WARPED.get().asItem())
+            .add(ModBlocks.LATTICE_FENCE_PALE_OAK.get().asItem())
             .add(ModBlocks.LATTICE_FENCE_GATE_OAK.get().asItem())
             .add(ModBlocks.LATTICE_FENCE_GATE_SPRUCE.get().asItem())
             .add(ModBlocks.LATTICE_FENCE_GATE_BIRCH.get().asItem())
@@ -457,6 +478,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.LATTICE_FENCE_GATE_CHERRY.get().asItem())
             .add(ModBlocks.LATTICE_FENCE_GATE_CRIMSON.get().asItem())
             .add(ModBlocks.LATTICE_FENCE_GATE_WARPED.get().asItem())
+            .add(ModBlocks.LATTICE_FENCE_GATE_PALE_OAK.get().asItem())
             .add(ModItems.SPATULA.get())
             .add(ModItems.KNIFE.get());
 
@@ -471,6 +493,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.TOILET_CHERRY.get().asItem())
             .add(ModBlocks.TOILET_CRIMSON.get().asItem())
             .add(ModBlocks.TOILET_WARPED.get().asItem())
+            .add(ModBlocks.TOILET_PALE_OAK.get().asItem())
             .add(ModBlocks.TOILET_WHITE.get().asItem())
             .add(ModBlocks.TOILET_ORANGE.get().asItem())
             .add(ModBlocks.TOILET_MAGENTA.get().asItem())
@@ -497,6 +520,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.BASIN_CHERRY.get().asItem())
             .add(ModBlocks.BASIN_CRIMSON.get().asItem())
             .add(ModBlocks.BASIN_WARPED.get().asItem())
+            .add(ModBlocks.BASIN_PALE_OAK.get().asItem())
             .add(ModBlocks.BASIN_WHITE.get().asItem())
             .add(ModBlocks.BASIN_ORANGE.get().asItem())
             .add(ModBlocks.BASIN_MAGENTA.get().asItem())
@@ -523,6 +547,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.BATH_CHERRY.get().asItem())
             .add(ModBlocks.BATH_CRIMSON.get().asItem())
             .add(ModBlocks.BATH_WARPED.get().asItem())
+            .add(ModBlocks.BATH_PALE_OAK.get().asItem())
             .add(ModBlocks.BATH_WHITE.get().asItem())
             .add(ModBlocks.BATH_ORANGE.get().asItem())
             .add(ModBlocks.BATH_MAGENTA.get().asItem())
@@ -581,6 +606,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.CEILING_FAN_CHERRY_LIGHT.get().asItem())
             .add(ModBlocks.CEILING_FAN_CRIMSON_LIGHT.get().asItem())
             .add(ModBlocks.CEILING_FAN_WARPED_LIGHT.get().asItem())
+            .add(ModBlocks.CEILING_FAN_PALE_OAK_LIGHT.get().asItem())
             .add(ModBlocks.CEILING_FAN_OAK_DARK.get().asItem())
             .add(ModBlocks.CEILING_FAN_SPRUCE_DARK.get().asItem())
             .add(ModBlocks.CEILING_FAN_BIRCH_DARK.get().asItem())
@@ -591,6 +617,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.CEILING_FAN_CHERRY_DARK.get().asItem())
             .add(ModBlocks.CEILING_FAN_CRIMSON_DARK.get().asItem())
             .add(ModBlocks.CEILING_FAN_WARPED_DARK.get().asItem())
+            .add(ModBlocks.CEILING_FAN_PALE_OAK_DARK.get().asItem())
             .add(ModBlocks.TELEVISION.get().asItem())
             .add(ModBlocks.COMPUTER.get().asItem())
             .add(ModItems.TELEVISION_REMOTE.get());
@@ -606,6 +633,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.DRAWER_CHERRY.get().asItem())
             .add(ModBlocks.DRAWER_CRIMSON.get().asItem())
             .add(ModBlocks.DRAWER_WARPED.get().asItem())
+            .add(ModBlocks.DRAWER_PALE_OAK.get().asItem())
             .add(ModBlocks.CRATE_OAK.get().asItem())
             .add(ModBlocks.CRATE_SPRUCE.get().asItem())
             .add(ModBlocks.CRATE_BIRCH.get().asItem())
@@ -616,6 +644,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.CRATE_CHERRY.get().asItem())
             .add(ModBlocks.CRATE_CRIMSON.get().asItem())
             .add(ModBlocks.CRATE_WARPED.get().asItem())
+            .add(ModBlocks.CRATE_PALE_OAK.get().asItem())
             .add(ModBlocks.KITCHEN_DRAWER_OAK.get().asItem())
             .add(ModBlocks.KITCHEN_DRAWER_SPRUCE.get().asItem())
             .add(ModBlocks.KITCHEN_DRAWER_BIRCH.get().asItem())
@@ -626,6 +655,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.KITCHEN_DRAWER_CHERRY.get().asItem())
             .add(ModBlocks.KITCHEN_DRAWER_CRIMSON.get().asItem())
             .add(ModBlocks.KITCHEN_DRAWER_WARPED.get().asItem())
+            .add(ModBlocks.KITCHEN_DRAWER_PALE_OAK.get().asItem())
             .add(ModBlocks.KITCHEN_SINK_OAK.get().asItem())
             .add(ModBlocks.KITCHEN_SINK_SPRUCE.get().asItem())
             .add(ModBlocks.KITCHEN_SINK_BIRCH.get().asItem())
@@ -636,6 +666,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.KITCHEN_SINK_CHERRY.get().asItem())
             .add(ModBlocks.KITCHEN_SINK_CRIMSON.get().asItem())
             .add(ModBlocks.KITCHEN_SINK_WARPED.get().asItem())
+            .add(ModBlocks.KITCHEN_SINK_PALE_OAK.get().asItem())
             .add(ModBlocks.KITCHEN_DRAWER_WHITE.get().asItem())
             .add(ModBlocks.KITCHEN_DRAWER_ORANGE.get().asItem())
             .add(ModBlocks.KITCHEN_DRAWER_MAGENTA.get().asItem())
@@ -694,6 +725,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.MAIL_BOX_CHERRY.get().asItem())
             .add(ModBlocks.MAIL_BOX_CRIMSON.get().asItem())
             .add(ModBlocks.MAIL_BOX_WARPED.get().asItem())
+            .add(ModBlocks.MAIL_BOX_PALE_OAK.get().asItem())
             .add(ModItems.FRIDGE_LIGHT.get())
             .add(ModItems.FRIDGE_DARK.get())
             .add(ModBlocks.STORAGE_JAR_OAK.get().asItem())
@@ -706,6 +738,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.STORAGE_JAR_CHERRY.get().asItem())
             .add(ModBlocks.STORAGE_JAR_CRIMSON.get().asItem())
             .add(ModBlocks.STORAGE_JAR_WARPED.get().asItem())
+            .add(ModBlocks.STORAGE_JAR_PALE_OAK.get().asItem())
             .add(ModBlocks.RECYCLE_BIN.get().asItem())
             .add(ModBlocks.STORAGE_CABINET_OAK.get().asItem())
             .add(ModBlocks.STORAGE_CABINET_SPRUCE.get().asItem())
@@ -717,6 +750,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.STORAGE_CABINET_CHERRY.get().asItem())
             .add(ModBlocks.STORAGE_CABINET_CRIMSON.get().asItem())
             .add(ModBlocks.STORAGE_CABINET_WARPED.get().asItem())
+            .add(ModBlocks.STORAGE_CABINET_PALE_OAK.get().asItem())
             .add(ModBlocks.KITCHEN_STORAGE_CABINET_OAK.get().asItem())
             .add(ModBlocks.KITCHEN_STORAGE_CABINET_SPRUCE.get().asItem())
             .add(ModBlocks.KITCHEN_STORAGE_CABINET_BIRCH.get().asItem())
@@ -727,6 +761,7 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.KITCHEN_STORAGE_CABINET_CHERRY.get().asItem())
             .add(ModBlocks.KITCHEN_STORAGE_CABINET_CRIMSON.get().asItem())
             .add(ModBlocks.KITCHEN_STORAGE_CABINET_WARPED.get().asItem())
+            .add(ModBlocks.KITCHEN_STORAGE_CABINET_PALE_OAK.get().asItem())
             .add(ModBlocks.KITCHEN_STORAGE_CABINET_WHITE.get().asItem())
             .add(ModBlocks.KITCHEN_STORAGE_CABINET_ORANGE.get().asItem())
             .add(ModBlocks.KITCHEN_STORAGE_CABINET_MAGENTA.get().asItem())
@@ -779,7 +814,8 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.KITCHEN_CABINETRY_MANGROVE.get().asItem())
             .add(ModBlocks.KITCHEN_CABINETRY_CHERRY.get().asItem())
             .add(ModBlocks.KITCHEN_CABINETRY_CRIMSON.get().asItem())
-            .add(ModBlocks.KITCHEN_CABINETRY_WARPED.get().asItem());
+            .add(ModBlocks.KITCHEN_CABINETRY_WARPED.get().asItem())
+            .add(ModBlocks.KITCHEN_CABINETRY_PALE_OAK.get().asItem());
 
         this.tag(ModTags.Items.WOODEN_KITCHEN_DRAWERS)
             .add(ModBlocks.KITCHEN_DRAWER_OAK.get().asItem())
@@ -791,7 +827,8 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.KITCHEN_DRAWER_MANGROVE.get().asItem())
             .add(ModBlocks.KITCHEN_DRAWER_CHERRY.get().asItem())
             .add(ModBlocks.KITCHEN_DRAWER_CRIMSON.get().asItem())
-            .add(ModBlocks.KITCHEN_DRAWER_WARPED.get().asItem());
+            .add(ModBlocks.KITCHEN_DRAWER_WARPED.get().asItem())
+            .add(ModBlocks.KITCHEN_DRAWER_PALE_OAK.get().asItem());
 
         this.tag(ModTags.Items.WOODEN_KITCHEN_SINKS)
             .add(ModBlocks.KITCHEN_SINK_OAK.get().asItem())
@@ -803,7 +840,8 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.KITCHEN_SINK_MANGROVE.get().asItem())
             .add(ModBlocks.KITCHEN_SINK_CHERRY.get().asItem())
             .add(ModBlocks.KITCHEN_SINK_CRIMSON.get().asItem())
-            .add(ModBlocks.KITCHEN_SINK_WARPED.get().asItem());
+            .add(ModBlocks.KITCHEN_SINK_WARPED.get().asItem())
+            .add(ModBlocks.KITCHEN_SINK_PALE_OAK.get().asItem());
 
         this.tag(ModTags.Items.WOODEN_KITCHEN_STORAGE_CABINETS)
             .add(ModBlocks.KITCHEN_STORAGE_CABINET_OAK.get().asItem())
@@ -815,7 +853,8 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.KITCHEN_STORAGE_CABINET_MANGROVE.get().asItem())
             .add(ModBlocks.KITCHEN_STORAGE_CABINET_CHERRY.get().asItem())
             .add(ModBlocks.KITCHEN_STORAGE_CABINET_CRIMSON.get().asItem())
-            .add(ModBlocks.KITCHEN_STORAGE_CABINET_WARPED.get().asItem());
+            .add(ModBlocks.KITCHEN_STORAGE_CABINET_WARPED.get().asItem())
+            .add(ModBlocks.KITCHEN_STORAGE_CABINET_PALE_OAK.get().asItem());
 
         this.tag(ModTags.Items.COLOURED_KITCHEN_CABINETRY)
             .add(ModBlocks.KITCHEN_CABINETRY_WHITE.get().asItem())
@@ -1009,7 +1048,8 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.TOILET_MANGROVE.get().asItem())
             .add(ModBlocks.TOILET_CHERRY.get().asItem())
             .add(ModBlocks.TOILET_CRIMSON.get().asItem())
-            .add(ModBlocks.TOILET_WARPED.get().asItem());
+            .add(ModBlocks.TOILET_WARPED.get().asItem())
+            .add(ModBlocks.TOILET_PALE_OAK.get().asItem());
 
         this.tag(ModTags.Items.WOODEN_BASINS)
             .add(ModBlocks.BASIN_OAK.get().asItem())
@@ -1021,7 +1061,8 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.BASIN_MANGROVE.get().asItem())
             .add(ModBlocks.BASIN_CHERRY.get().asItem())
             .add(ModBlocks.BASIN_CRIMSON.get().asItem())
-            .add(ModBlocks.BASIN_WARPED.get().asItem());
+            .add(ModBlocks.BASIN_WARPED.get().asItem())
+            .add(ModBlocks.BASIN_PALE_OAK.get().asItem());
 
         this.tag(ModTags.Items.WOODEN_BATHS)
             .add(ModBlocks.BATH_OAK.get().asItem())
@@ -1033,7 +1074,8 @@ public class CommonItemTagsProvider extends ItemTagsProvider
             .add(ModBlocks.BATH_MANGROVE.get().asItem())
             .add(ModBlocks.BATH_CHERRY.get().asItem())
             .add(ModBlocks.BATH_CRIMSON.get().asItem())
-            .add(ModBlocks.BATH_WARPED.get().asItem());
+            .add(ModBlocks.BATH_WARPED.get().asItem())
+            .add(ModBlocks.BATH_PALE_OAK.get().asItem());
 
         this.tag(ModTags.Items.DISPLAY_AS_BLOCK)
             .add(Items.MANGROVE_ROOTS)

@@ -19,7 +19,8 @@ public enum LeafType implements StringRepresentable
     CHERRY("cherry"),
     DARK_OAK("dark_oak"),
     MANGROVE("mangrove"),
-    AZALEA("azalea");
+    AZALEA("azalea"),
+    PALE_OAK("pale_oak");
 
     public static final Codec<LeafType> CODEC = StringRepresentable.fromEnum(LeafType::values);
 

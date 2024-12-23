@@ -33,6 +33,7 @@ public class ModCreativeTabs
             output.accept(ModBlocks.CHAIR_CHERRY.get());
             output.accept(ModBlocks.CHAIR_CRIMSON.get());
             output.accept(ModBlocks.CHAIR_WARPED.get());
+            output.accept(ModBlocks.CHAIR_PALE_OAK.get());
             output.accept(ModBlocks.TABLE_OAK.get());
             output.accept(ModBlocks.TABLE_SPRUCE.get());
             output.accept(ModBlocks.TABLE_BIRCH.get());
@@ -43,6 +44,7 @@ public class ModCreativeTabs
             output.accept(ModBlocks.TABLE_CHERRY.get());
             output.accept(ModBlocks.TABLE_CRIMSON.get());
             output.accept(ModBlocks.TABLE_WARPED.get());
+            output.accept(ModBlocks.TABLE_PALE_OAK.get());
             output.accept(ModBlocks.DESK_OAK.get());
             output.accept(ModBlocks.DESK_SPRUCE.get());
             output.accept(ModBlocks.DESK_BIRCH.get());
@@ -53,6 +55,7 @@ public class ModCreativeTabs
             output.accept(ModBlocks.DESK_CHERRY.get());
             output.accept(ModBlocks.DESK_CRIMSON.get());
             output.accept(ModBlocks.DESK_WARPED.get());
+            output.accept(ModBlocks.DESK_PALE_OAK.get());
             output.accept(ModBlocks.DRAWER_OAK.get());
             output.accept(ModBlocks.DRAWER_SPRUCE.get());
             output.accept(ModBlocks.DRAWER_BIRCH.get());
@@ -63,6 +66,7 @@ public class ModCreativeTabs
             output.accept(ModBlocks.DRAWER_CHERRY.get());
             output.accept(ModBlocks.DRAWER_CRIMSON.get());
             output.accept(ModBlocks.DRAWER_WARPED.get());
+            output.accept(ModBlocks.DRAWER_PALE_OAK.get());
             output.accept(ModBlocks.SOFA_WHITE.get());
             output.accept(ModBlocks.SOFA_ORANGE.get());
             output.accept(ModBlocks.SOFA_MAGENTA.get());
@@ -121,6 +125,7 @@ public class ModCreativeTabs
             output.accept(ModBlocks.CEILING_FAN_CHERRY_LIGHT.get());
             output.accept(ModBlocks.CEILING_FAN_CRIMSON_LIGHT.get());
             output.accept(ModBlocks.CEILING_FAN_WARPED_LIGHT.get());
+            output.accept(ModBlocks.CEILING_FAN_PALE_OAK_LIGHT.get());
             output.accept(ModBlocks.CEILING_FAN_OAK_DARK.get());
             output.accept(ModBlocks.CEILING_FAN_SPRUCE_DARK.get());
             output.accept(ModBlocks.CEILING_FAN_BIRCH_DARK.get());
@@ -131,6 +136,7 @@ public class ModCreativeTabs
             output.accept(ModBlocks.CEILING_FAN_CHERRY_DARK.get());
             output.accept(ModBlocks.CEILING_FAN_CRIMSON_DARK.get());
             output.accept(ModBlocks.CEILING_FAN_WARPED_DARK.get());
+            output.accept(ModBlocks.CEILING_FAN_PALE_OAK_DARK.get());
             output.accept(ModBlocks.STORAGE_CABINET_OAK.get());
             output.accept(ModBlocks.STORAGE_CABINET_SPRUCE.get());
             output.accept(ModBlocks.STORAGE_CABINET_BIRCH.get());
@@ -141,6 +147,7 @@ public class ModCreativeTabs
             output.accept(ModBlocks.STORAGE_CABINET_CHERRY.get());
             output.accept(ModBlocks.STORAGE_CABINET_CRIMSON.get());
             output.accept(ModBlocks.STORAGE_CABINET_WARPED.get());
+            output.accept(ModBlocks.STORAGE_CABINET_PALE_OAK.get());
             output.accept(ModBlocks.KITCHEN_CABINETRY_OAK.get());
             output.accept(ModBlocks.KITCHEN_CABINETRY_SPRUCE.get());
             output.accept(ModBlocks.KITCHEN_CABINETRY_BIRCH.get());
@@ -151,6 +158,7 @@ public class ModCreativeTabs
             output.accept(ModBlocks.KITCHEN_CABINETRY_CHERRY.get());
             output.accept(ModBlocks.KITCHEN_CABINETRY_CRIMSON.get());
             output.accept(ModBlocks.KITCHEN_CABINETRY_WARPED.get());
+            output.accept(ModBlocks.KITCHEN_CABINETRY_PALE_OAK.get());
             output.accept(ModBlocks.KITCHEN_DRAWER_OAK.get());
             output.accept(ModBlocks.KITCHEN_DRAWER_SPRUCE.get());
             output.accept(ModBlocks.KITCHEN_DRAWER_BIRCH.get());
@@ -161,6 +169,7 @@ public class ModCreativeTabs
             output.accept(ModBlocks.KITCHEN_DRAWER_CHERRY.get());
             output.accept(ModBlocks.KITCHEN_DRAWER_CRIMSON.get());
             output.accept(ModBlocks.KITCHEN_DRAWER_WARPED.get());
+            output.accept(ModBlocks.KITCHEN_DRAWER_PALE_OAK.get());
             output.accept(ModBlocks.KITCHEN_SINK_OAK.get());
             output.accept(ModBlocks.KITCHEN_SINK_SPRUCE.get());
             output.accept(ModBlocks.KITCHEN_SINK_BIRCH.get());
@@ -171,6 +180,7 @@ public class ModCreativeTabs
             output.accept(ModBlocks.KITCHEN_SINK_CHERRY.get());
             output.accept(ModBlocks.KITCHEN_SINK_CRIMSON.get());
             output.accept(ModBlocks.KITCHEN_SINK_WARPED.get());
+            output.accept(ModBlocks.KITCHEN_SINK_PALE_OAK.get());
             output.accept(ModBlocks.KITCHEN_STORAGE_CABINET_OAK.get());
             output.accept(ModBlocks.KITCHEN_STORAGE_CABINET_SPRUCE.get());
             output.accept(ModBlocks.KITCHEN_STORAGE_CABINET_BIRCH.get());
@@ -181,6 +191,7 @@ public class ModCreativeTabs
             output.accept(ModBlocks.KITCHEN_STORAGE_CABINET_CHERRY.get());
             output.accept(ModBlocks.KITCHEN_STORAGE_CABINET_CRIMSON.get());
             output.accept(ModBlocks.KITCHEN_STORAGE_CABINET_WARPED.get());
+            output.accept(ModBlocks.KITCHEN_STORAGE_CABINET_PALE_OAK.get());
             output.accept(ModBlocks.KITCHEN_CABINETRY_WHITE.get());
             output.accept(ModBlocks.KITCHEN_CABINETRY_ORANGE.get());
             output.accept(ModBlocks.KITCHEN_CABINETRY_MAGENTA.get());
@@ -267,6 +278,7 @@ public class ModCreativeTabs
             output.accept(ModBlocks.CUTTING_BOARD_CHERRY.get());
             output.accept(ModBlocks.CUTTING_BOARD_CRIMSON.get());
             output.accept(ModBlocks.CUTTING_BOARD_WARPED.get());
+            output.accept(ModBlocks.CUTTING_BOARD_PALE_OAK.get());
             output.accept(ModBlocks.PLATE.get());
             output.accept(ModBlocks.STORAGE_JAR_OAK.get());
             output.accept(ModBlocks.STORAGE_JAR_SPRUCE.get());
@@ -278,6 +290,7 @@ public class ModCreativeTabs
             output.accept(ModBlocks.STORAGE_JAR_CHERRY.get());
             output.accept(ModBlocks.STORAGE_JAR_CRIMSON.get());
             output.accept(ModBlocks.STORAGE_JAR_WARPED.get());
+            output.accept(ModBlocks.STORAGE_JAR_PALE_OAK.get());
             output.accept(ModItems.SPATULA.get());
             output.accept(ModItems.KNIFE.get());
             output.accept(ModBlocks.CRATE_OAK.get());
@@ -290,6 +303,7 @@ public class ModCreativeTabs
             output.accept(ModBlocks.CRATE_CHERRY.get());
             output.accept(ModBlocks.CRATE_CRIMSON.get());
             output.accept(ModBlocks.CRATE_WARPED.get());
+            output.accept(ModBlocks.CRATE_PALE_OAK.get());
             output.accept(ModBlocks.GRILL_WHITE.get());
             output.accept(ModBlocks.GRILL_ORANGE.get());
             output.accept(ModBlocks.GRILL_MAGENTA.get());
@@ -332,6 +346,7 @@ public class ModCreativeTabs
             output.accept(ModBlocks.MAIL_BOX_CHERRY.get());
             output.accept(ModBlocks.MAIL_BOX_CRIMSON.get());
             output.accept(ModBlocks.MAIL_BOX_WARPED.get());
+            output.accept(ModBlocks.MAIL_BOX_PALE_OAK.get());
             output.accept(ModBlocks.POST_BOX.get());
             output.accept(ModBlocks.TRAMPOLINE_WHITE.get());
             output.accept(ModBlocks.TRAMPOLINE_ORANGE.get());
@@ -358,6 +373,7 @@ public class ModCreativeTabs
             output.accept(ModBlocks.HEDGE_MANGROVE.get());
             output.accept(ModBlocks.HEDGE_CHERRY.get());
             output.accept(ModBlocks.HEDGE_AZALEA.get());
+            output.accept(ModBlocks.HEDGE_PALE_OAK.get());
             output.accept(ModBlocks.STEPPING_STONES_STONE.get());
             output.accept(ModBlocks.STEPPING_STONES_GRANITE.get());
             output.accept(ModBlocks.STEPPING_STONES_DIORITE.get());
@@ -373,6 +389,7 @@ public class ModCreativeTabs
             output.accept(ModBlocks.LATTICE_FENCE_CHERRY.get());
             output.accept(ModBlocks.LATTICE_FENCE_CRIMSON.get());
             output.accept(ModBlocks.LATTICE_FENCE_WARPED.get());
+            output.accept(ModBlocks.LATTICE_FENCE_PALE_OAK.get());
             output.accept(ModBlocks.LATTICE_FENCE_GATE_OAK.get());
             output.accept(ModBlocks.LATTICE_FENCE_GATE_SPRUCE.get());
             output.accept(ModBlocks.LATTICE_FENCE_GATE_BIRCH.get());
@@ -383,6 +400,7 @@ public class ModCreativeTabs
             output.accept(ModBlocks.LATTICE_FENCE_GATE_CHERRY.get());
             output.accept(ModBlocks.LATTICE_FENCE_GATE_CRIMSON.get());
             output.accept(ModBlocks.LATTICE_FENCE_GATE_WARPED.get());
+            output.accept(ModBlocks.LATTICE_FENCE_GATE_PALE_OAK.get());
             output.accept(ModBlocks.DOOR_MAT.get());
             output.accept(ModBlocks.TOILET_OAK.get());
             output.accept(ModBlocks.TOILET_SPRUCE.get());
@@ -394,6 +412,7 @@ public class ModCreativeTabs
             output.accept(ModBlocks.TOILET_CHERRY.get());
             output.accept(ModBlocks.TOILET_CRIMSON.get());
             output.accept(ModBlocks.TOILET_WARPED.get());
+            output.accept(ModBlocks.TOILET_PALE_OAK.get());
             output.accept(ModBlocks.TOILET_WHITE.get());
             output.accept(ModBlocks.TOILET_ORANGE.get());
             output.accept(ModBlocks.TOILET_MAGENTA.get());
@@ -420,6 +439,7 @@ public class ModCreativeTabs
             output.accept(ModBlocks.BASIN_CHERRY.get());
             output.accept(ModBlocks.BASIN_CRIMSON.get());
             output.accept(ModBlocks.BASIN_WARPED.get());
+            output.accept(ModBlocks.BASIN_PALE_OAK.get());
             output.accept(ModBlocks.BASIN_WHITE.get());
             output.accept(ModBlocks.BASIN_ORANGE.get());
             output.accept(ModBlocks.BASIN_MAGENTA.get());
@@ -446,6 +466,7 @@ public class ModCreativeTabs
             output.accept(ModBlocks.BATH_CHERRY.get());
             output.accept(ModBlocks.BATH_CRIMSON.get());
             output.accept(ModBlocks.BATH_WARPED.get());
+            output.accept(ModBlocks.BATH_PALE_OAK.get());
             output.accept(ModBlocks.BATH_WHITE.get());
             output.accept(ModBlocks.BATH_ORANGE.get());
             output.accept(ModBlocks.BATH_MAGENTA.get());

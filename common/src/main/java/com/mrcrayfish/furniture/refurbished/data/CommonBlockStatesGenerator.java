@@ -55,6 +55,7 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         this.table(ModBlocks.TABLE_CHERRY.get());
         this.table(ModBlocks.TABLE_CRIMSON.get());
         this.table(ModBlocks.TABLE_WARPED.get());
+        this.table(ModBlocks.TABLE_PALE_OAK.get());
         this.chair(ModBlocks.CHAIR_OAK.get());
         this.chair(ModBlocks.CHAIR_SPRUCE.get());
         this.chair(ModBlocks.CHAIR_BIRCH.get());
@@ -65,6 +66,7 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         this.chair(ModBlocks.CHAIR_CHERRY.get());
         this.chair(ModBlocks.CHAIR_CRIMSON.get());
         this.chair(ModBlocks.CHAIR_WARPED.get());
+        this.chair(ModBlocks.CHAIR_PALE_OAK.get());
         this.desk(ModBlocks.DESK_OAK.get());
         this.desk(ModBlocks.DESK_SPRUCE.get());
         this.desk(ModBlocks.DESK_BIRCH.get());
@@ -75,6 +77,7 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         this.desk(ModBlocks.DESK_CHERRY.get());
         this.desk(ModBlocks.DESK_CRIMSON.get());
         this.desk(ModBlocks.DESK_WARPED.get());
+        this.desk(ModBlocks.DESK_PALE_OAK.get());
         this.drawer(ModBlocks.DRAWER_OAK.get());
         this.drawer(ModBlocks.DRAWER_SPRUCE.get());
         this.drawer(ModBlocks.DRAWER_BIRCH.get());
@@ -85,6 +88,7 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         this.drawer(ModBlocks.DRAWER_CHERRY.get());
         this.drawer(ModBlocks.DRAWER_CRIMSON.get());
         this.drawer(ModBlocks.DRAWER_WARPED.get());
+        this.drawer(ModBlocks.DRAWER_PALE_OAK.get());
         this.crate(ModBlocks.CRATE_OAK.get());
         this.crate(ModBlocks.CRATE_SPRUCE.get());
         this.crate(ModBlocks.CRATE_BIRCH.get());
@@ -95,6 +99,7 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         this.crate(ModBlocks.CRATE_CHERRY.get());
         this.crate(ModBlocks.CRATE_CRIMSON.get());
         this.crate(ModBlocks.CRATE_WARPED.get());
+        this.crate(ModBlocks.CRATE_PALE_OAK.get());
         this.woodenKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_OAK.get());
         this.woodenKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_SPRUCE.get());
         this.woodenKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_BIRCH.get());
@@ -105,6 +110,7 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         this.woodenKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_CHERRY.get());
         this.woodenKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_CRIMSON.get());
         this.woodenKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_WARPED.get());
+        this.woodenKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_PALE_OAK.get());
         this.woodenKitchenDrawer(ModBlocks.KITCHEN_DRAWER_OAK.get());
         this.woodenKitchenDrawer(ModBlocks.KITCHEN_DRAWER_SPRUCE.get());
         this.woodenKitchenDrawer(ModBlocks.KITCHEN_DRAWER_BIRCH.get());
@@ -115,6 +121,7 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         this.woodenKitchenDrawer(ModBlocks.KITCHEN_DRAWER_CHERRY.get());
         this.woodenKitchenDrawer(ModBlocks.KITCHEN_DRAWER_CRIMSON.get());
         this.woodenKitchenDrawer(ModBlocks.KITCHEN_DRAWER_WARPED.get());
+        this.woodenKitchenDrawer(ModBlocks.KITCHEN_DRAWER_PALE_OAK.get());
         this.woodenKitchenSink(ModBlocks.KITCHEN_SINK_OAK.get());
         this.woodenKitchenSink(ModBlocks.KITCHEN_SINK_SPRUCE.get());
         this.woodenKitchenSink(ModBlocks.KITCHEN_SINK_BIRCH.get());
@@ -125,6 +132,7 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         this.woodenKitchenSink(ModBlocks.KITCHEN_SINK_CHERRY.get());
         this.woodenKitchenSink(ModBlocks.KITCHEN_SINK_CRIMSON.get());
         this.woodenKitchenSink(ModBlocks.KITCHEN_SINK_WARPED.get());
+        this.woodenKitchenSink(ModBlocks.KITCHEN_SINK_PALE_OAK.get());
         this.colouredKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_WHITE.get());
         this.colouredKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_ORANGE.get());
         this.colouredKitchenCabinetry(ModBlocks.KITCHEN_CABINETRY_MAGENTA.get());
@@ -225,6 +233,7 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         this.cuttingBoard(ModBlocks.CUTTING_BOARD_CHERRY.get());
         this.cuttingBoard(ModBlocks.CUTTING_BOARD_CRIMSON.get());
         this.cuttingBoard(ModBlocks.CUTTING_BOARD_WARPED.get());
+        this.cuttingBoard(ModBlocks.CUTTING_BOARD_PALE_OAK.get());
         this.fryingPan(ModBlocks.FRYING_PAN.get());
         this.mailbox(ModBlocks.MAIL_BOX_OAK.get());
         this.mailbox(ModBlocks.MAIL_BOX_SPRUCE.get());
@@ -236,6 +245,7 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         this.mailbox(ModBlocks.MAIL_BOX_CHERRY.get());
         this.mailbox(ModBlocks.MAIL_BOX_CRIMSON.get());
         this.mailbox(ModBlocks.MAIL_BOX_WARPED.get());
+        this.mailbox(ModBlocks.MAIL_BOX_PALE_OAK.get());
         this.postBox(ModBlocks.POST_BOX.get());
         this.sofa(ModBlocks.SOFA_WHITE.get());
         this.sofa(ModBlocks.SOFA_ORANGE.get());
@@ -270,6 +280,7 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         this.storageJar(ModBlocks.STORAGE_JAR_CHERRY.get());
         this.storageJar(ModBlocks.STORAGE_JAR_CRIMSON.get());
         this.storageJar(ModBlocks.STORAGE_JAR_WARPED.get());
+        this.storageJar(ModBlocks.STORAGE_JAR_PALE_OAK.get());
         this.recycleBin(ModBlocks.RECYCLE_BIN.get());
         this.lamp(ModBlocks.LAMP_WHITE.get());
         this.lamp(ModBlocks.LAMP_ORANGE.get());
@@ -297,6 +308,7 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         this.ceilingFan(ModBlocks.CEILING_FAN_CHERRY_LIGHT.get());
         this.ceilingFan(ModBlocks.CEILING_FAN_CRIMSON_LIGHT.get());
         this.ceilingFan(ModBlocks.CEILING_FAN_WARPED_LIGHT.get());
+        this.ceilingFan(ModBlocks.CEILING_FAN_PALE_OAK_LIGHT.get());
         this.ceilingFan(ModBlocks.CEILING_FAN_OAK_DARK.get());
         this.ceilingFan(ModBlocks.CEILING_FAN_SPRUCE_DARK.get());
         this.ceilingFan(ModBlocks.CEILING_FAN_BIRCH_DARK.get());
@@ -307,6 +319,7 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         this.ceilingFan(ModBlocks.CEILING_FAN_CHERRY_DARK.get());
         this.ceilingFan(ModBlocks.CEILING_FAN_CRIMSON_DARK.get());
         this.ceilingFan(ModBlocks.CEILING_FAN_WARPED_DARK.get());
+        this.ceilingFan(ModBlocks.CEILING_FAN_PALE_OAK_DARK.get());
         this.storageCabinet(ModBlocks.STORAGE_CABINET_OAK.get());
         this.storageCabinet(ModBlocks.STORAGE_CABINET_SPRUCE.get());
         this.storageCabinet(ModBlocks.STORAGE_CABINET_BIRCH.get());
@@ -317,6 +330,7 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         this.storageCabinet(ModBlocks.STORAGE_CABINET_CHERRY.get());
         this.storageCabinet(ModBlocks.STORAGE_CABINET_CRIMSON.get());
         this.storageCabinet(ModBlocks.STORAGE_CABINET_WARPED.get());
+        this.storageCabinet(ModBlocks.STORAGE_CABINET_PALE_OAK.get());
         this.woodenKitchenCabinet(ModBlocks.KITCHEN_STORAGE_CABINET_OAK.get());
         this.woodenKitchenCabinet(ModBlocks.KITCHEN_STORAGE_CABINET_SPRUCE.get());
         this.woodenKitchenCabinet(ModBlocks.KITCHEN_STORAGE_CABINET_BIRCH.get());
@@ -327,6 +341,7 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         this.woodenKitchenCabinet(ModBlocks.KITCHEN_STORAGE_CABINET_CHERRY.get());
         this.woodenKitchenCabinet(ModBlocks.KITCHEN_STORAGE_CABINET_CRIMSON.get());
         this.woodenKitchenCabinet(ModBlocks.KITCHEN_STORAGE_CABINET_WARPED.get());
+        this.woodenKitchenCabinet(ModBlocks.KITCHEN_STORAGE_CABINET_PALE_OAK.get());
         this.colouredKitchenCabinet(ModBlocks.KITCHEN_STORAGE_CABINET_WHITE.get());
         this.colouredKitchenCabinet(ModBlocks.KITCHEN_STORAGE_CABINET_ORANGE.get());
         this.colouredKitchenCabinet(ModBlocks.KITCHEN_STORAGE_CABINET_MAGENTA.get());
@@ -385,6 +400,7 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         this.hedge(ModBlocks.HEDGE_MANGROVE.get(), 0xFF92C648);
         this.hedge(ModBlocks.HEDGE_CHERRY.get(), -1);
         this.hedge(ModBlocks.HEDGE_AZALEA.get(), -1);
+        this.hedge(ModBlocks.HEDGE_PALE_OAK.get(), -1); // TODO needs tint?
         this.steppingStones(ModBlocks.STEPPING_STONES_STONE.get());
         this.steppingStones(ModBlocks.STEPPING_STONES_GRANITE.get());
         this.steppingStones(ModBlocks.STEPPING_STONES_DIORITE.get());
@@ -400,6 +416,7 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         this.woodenToilet(ModBlocks.TOILET_CHERRY.get());
         this.woodenToilet(ModBlocks.TOILET_CRIMSON.get());
         this.woodenToilet(ModBlocks.TOILET_WARPED.get());
+        this.woodenToilet(ModBlocks.TOILET_PALE_OAK.get());
         this.colouredToilet(ModBlocks.TOILET_WHITE.get());
         this.colouredToilet(ModBlocks.TOILET_ORANGE.get());
         this.colouredToilet(ModBlocks.TOILET_MAGENTA.get());
@@ -426,6 +443,7 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         this.woodenBasin(ModBlocks.BASIN_CHERRY.get());
         this.woodenBasin(ModBlocks.BASIN_CRIMSON.get());
         this.woodenBasin(ModBlocks.BASIN_WARPED.get());
+        this.woodenBasin(ModBlocks.BASIN_PALE_OAK.get());
         this.colouredBasin(ModBlocks.BASIN_WHITE.get());
         this.colouredBasin(ModBlocks.BASIN_ORANGE.get());
         this.colouredBasin(ModBlocks.BASIN_MAGENTA.get());
@@ -452,6 +470,7 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         this.woodenBath(ModBlocks.BATH_CHERRY.get());
         this.woodenBath(ModBlocks.BATH_CRIMSON.get());
         this.woodenBath(ModBlocks.BATH_WARPED.get());
+        this.woodenBath(ModBlocks.BATH_PALE_OAK.get());
         this.colouredBath(ModBlocks.BATH_WHITE.get());
         this.colouredBath(ModBlocks.BATH_ORANGE.get());
         this.colouredBath(ModBlocks.BATH_MAGENTA.get());
@@ -478,6 +497,7 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         this.latticeFence(ModBlocks.LATTICE_FENCE_CHERRY.get());
         this.latticeFence(ModBlocks.LATTICE_FENCE_CRIMSON.get());
         this.latticeFence(ModBlocks.LATTICE_FENCE_WARPED.get());
+        this.latticeFence(ModBlocks.LATTICE_FENCE_PALE_OAK.get());
         this.latticeFenceGate(ModBlocks.LATTICE_FENCE_GATE_OAK.get());
         this.latticeFenceGate(ModBlocks.LATTICE_FENCE_GATE_SPRUCE.get());
         this.latticeFenceGate(ModBlocks.LATTICE_FENCE_GATE_BIRCH.get());
@@ -488,6 +508,7 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         this.latticeFenceGate(ModBlocks.LATTICE_FENCE_GATE_CHERRY.get());
         this.latticeFenceGate(ModBlocks.LATTICE_FENCE_GATE_CRIMSON.get());
         this.latticeFenceGate(ModBlocks.LATTICE_FENCE_GATE_WARPED.get());
+        this.latticeFenceGate(ModBlocks.LATTICE_FENCE_GATE_PALE_OAK.get());
         this.television(ModBlocks.TELEVISION.get());
         this.computer(ModBlocks.COMPUTER.get());
         this.doorMat(ModBlocks.DOOR_MAT.get());
