@@ -59,13 +59,9 @@ public class StorageJarRenderer implements BlockEntityRenderer<StorageJarBlockEn
         for(int i = 0; i < storageJar.getContainerSize(); i++)
         {
             ItemStack stack = storageJar.getItem(i);
-            // TODO improve storage jar label with item
-            this.renderer.renderStatic(stack, ItemDisplayContext.GUI, light, overlay, poseStack, source, storageJar.getLevel(), 0);
-
-            //BakedModel model = this.renderer.getModel(stack, storageJar.getLevel(), null, 0);
-            /*float offset = model.isGui3d() ? 0.0375F : 0.0625F;
-            this.drawItem(stack, storageJar.getLevel(), direction, poseStack, source, light, overlay, !model.isGui3d(), offset);
-*/
+            if(stack.isEmpty())
+                continue;
+            this.drawItem(stack, storageJar.getLevel(), direction, poseStack, source, light, overlay, true, 0.0625F);
         }
         poseStack.popPose();
 
