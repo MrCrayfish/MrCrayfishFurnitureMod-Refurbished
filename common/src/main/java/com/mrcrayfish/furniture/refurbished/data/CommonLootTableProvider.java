@@ -46,6 +46,7 @@ public class CommonLootTableProvider extends LootTableProvider
         @Override
         public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> consumer)
         {
+            this.generate();
             this.map.forEach(consumer);
         }
 
