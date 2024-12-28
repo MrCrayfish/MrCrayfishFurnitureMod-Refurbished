@@ -36,13 +36,15 @@ public class NeoForgeEvents
         if(player.isCrouching())
             return;
 
+        if(event.getAction() != PlayerInteractEvent.LeftClickBlock.Action.START)
+            return;
+
         if(level.getBlockEntity(pos) instanceof StorageJarBlockEntity storageJar && !storageJar.isEmpty())
         {
             if(!level.isClientSide())
             {
                 storageJar.popItem(player.getDirection().getOpposite());
             }
-            event.setCanceled(true);
         }
         else if(level.getBlockEntity(pos) instanceof CuttingBoardBlockEntity cuttingBoard && !cuttingBoard.isEmpty())
         {
@@ -50,7 +52,6 @@ public class NeoForgeEvents
             {
                 cuttingBoard.removeItem();
             }
-            event.setCanceled(true);
         }
     }
 }

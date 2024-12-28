@@ -156,13 +156,11 @@ public class FurnitureMod implements ModInitializer, DataGeneratorEntrypoint
                     if(!level.isClientSide()) {
                         storageJar.popItem(player.getDirection().getOpposite());
                     }
-                    return InteractionResult.SUCCESS;
                 }
                 else if(level.getBlockEntity(pos) instanceof CuttingBoardBlockEntity cuttingBoard && !cuttingBoard.isEmpty()) {
                     if(!level.isClientSide()) {
                         cuttingBoard.removeItem();
                     }
-                    return InteractionResult.SUCCESS;
                 }
             }
             return InteractionResult.PASS;
