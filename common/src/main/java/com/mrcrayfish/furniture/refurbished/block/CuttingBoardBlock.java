@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.mrcrayfish.furniture.refurbished.ConventionalTags;
 import com.mrcrayfish.furniture.refurbished.blockentity.CuttingBoardBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
@@ -79,7 +80,7 @@ public class CuttingBoardBlock extends FurnitureHorizontalEntityBlock implements
         if(level.getBlockEntity(pos) instanceof CuttingBoardBlockEntity cuttingBoard)
         {
             ItemStack heldItem = player.getItemInHand(hand);
-            if(heldItem.is(Services.TAG.getToolKnivesTag()))
+            if(heldItem.is(ConventionalTags.Items.TOOLS_KNIVES))
             {
                 boolean dropAsEntity = !Services.ENTITY.isFakePlayer(player);
                 if(cuttingBoard.sliceItem(level, dropAsEntity))

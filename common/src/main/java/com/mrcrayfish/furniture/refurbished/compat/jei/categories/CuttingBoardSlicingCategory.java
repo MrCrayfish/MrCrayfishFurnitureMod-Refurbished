@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.compat.jei.categories;
 
 import com.mrcrayfish.furniture.refurbished.Constants;
+import com.mrcrayfish.furniture.refurbished.ConventionalTags;
 import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import com.mrcrayfish.furniture.refurbished.compat.jei.Plugin;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
@@ -37,7 +38,7 @@ public class CuttingBoardSlicingCategory implements IRecipeCategory<CuttingBoard
     {
         this.background = helper.createDrawable(Plugin.TEXTURES, 0, 36, 133, 36);
         this.icon = helper.createDrawableItemStack(new ItemStack(ModItems.KNIFE.get()));
-        this.knives = Plugin.getTagItems(Services.TAG.getToolKnivesTag());
+        this.knives = Plugin.getTagItems(ConventionalTags.Items.TOOLS_KNIVES);
     }
 
     @Override
