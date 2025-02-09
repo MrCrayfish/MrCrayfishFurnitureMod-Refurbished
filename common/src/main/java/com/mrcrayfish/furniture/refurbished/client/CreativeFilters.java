@@ -253,7 +253,7 @@ public class CreativeFilters
         for(FilterCategory category : this.categories)
         {
             FilterTab tab = category.filterTab;
-            if(tab.visible && tab.isHovered())
+            if(tab != null && tab.visible && tab.isHovered())
             {
                 Minecraft mc = Minecraft.getInstance();
                 graphics.renderTooltip(mc.font, tab.cachedTooltip.toCharSequence(mc), mouseX, mouseY);
@@ -268,7 +268,7 @@ public class CreativeFilters
         private final ItemStack icon;
         private List<Item> items;
         private boolean enabled = true;
-        private FilterTab filterTab;
+        private @Nullable FilterTab filterTab;
 
         public FilterCategory(TagKey<Item> tag, ItemStack icon)
         {
