@@ -8,6 +8,7 @@ import com.mrcrayfish.furniture.refurbished.blockentity.DrawerBlockEntity;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
@@ -109,7 +110,7 @@ public class DrawerBlock extends DeskBlock implements EntityBlock
     }
 
     @Override
-    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random)
+    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random)
     {
         if(level.getBlockEntity(pos) instanceof DrawerBlockEntity drawer)
         {

@@ -7,6 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.blockentity.CrateBlockEntity;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
@@ -90,7 +91,7 @@ public class CrateBlock extends FurnitureEntityBlock implements BlockTagSupplier
     }
 
     @Override
-    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random)
+    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random)
     {
         if(level.getBlockEntity(pos) instanceof CrateBlockEntity crate)
         {
