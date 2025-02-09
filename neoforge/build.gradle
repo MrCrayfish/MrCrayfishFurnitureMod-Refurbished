@@ -2,7 +2,7 @@ import net.neoforged.gradle.common.tasks.PotentiallySignJar
 
 plugins {
     id 'multiloader-loader'
-    id 'net.neoforged.gradle.userdev' version '7.0.142'
+    id 'net.neoforged.gradle.userdev' version '7.0.167'
 }
 
 def at = file('src/main/resources/META-INF/accesstransformer.cfg')
@@ -41,7 +41,7 @@ dependencies {
 
     // JEI
     compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
-    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+    runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
 
     // CraftTweaker
     compileOnly "com.blamejared.crafttweaker:CraftTweaker-common-${minecraft_version}:${crafttweaker_version}"
