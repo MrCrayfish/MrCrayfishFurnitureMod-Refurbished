@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.google.common.collect.ImmutableList;
+import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.block.RangeHoodBlock;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
@@ -479,7 +480,8 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
     private Optional<? extends ProcessingRecipe> getRecipe(ItemStack stack)
     {
         Optional<? extends ProcessingRecipe> optional = this.getRecipeFromCache(this.recipeCache, stack);
-        optional = optional.isEmpty() ? this.getCookingRecipeFromCache(this.campfireCookingCache, stack) : optional;
+        if(Config.SERVER.recipes.inheritCampfireRecipes.get())
+            optional = optional.isEmpty() ? this.getCookingRecipeFromCache(this.campfireCookingCache, stack) : optional;
         return optional;
     }
 

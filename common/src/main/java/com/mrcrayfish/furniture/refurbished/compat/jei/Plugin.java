@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.compat.jei;
 
+import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.ComputerScreen;
 import com.mrcrayfish.furniture.refurbished.compat.jei.categories.CuttingBoardCombiningCategory;
 import com.mrcrayfish.furniture.refurbished.compat.jei.categories.CuttingBoardSlicingCategory;
@@ -130,9 +131,12 @@ public class Plugin implements IModPlugin
     {
         List<ProcessingRecipe> recipes = new ArrayList<>();
         recipes.addAll(this.getRecipes(ModRecipeTypes.FRYING_PAN_COOKING.get()));
-        recipes.addAll(this.getRecipes(RecipeType.CAMPFIRE_COOKING).stream().map(recipe -> {
-            return ProcessingRecipe.Item.from(recipe, getRegistryAccess());
-        }).toList());
+        if(Config.SERVER.recipes.inheritCampfireRecipes.get())
+        {
+            recipes.addAll(this.getRecipes(RecipeType.CAMPFIRE_COOKING).stream().map(recipe -> {
+                return ProcessingRecipe.Item.from(recipe, getRegistryAccess());
+            }).toList());
+        }
         return recipes;
     }
 
@@ -140,9 +144,12 @@ public class Plugin implements IModPlugin
     {
         List<ProcessingRecipe> recipes = new ArrayList<>();
         recipes.addAll(this.getRecipes(ModRecipeTypes.GRILL_COOKING.get()));
-        recipes.addAll(this.getRecipes(RecipeType.CAMPFIRE_COOKING).stream().map(recipe -> {
-            return ProcessingRecipe.Item.from(recipe, getRegistryAccess());
-        }).toList());
+        if(Config.SERVER.recipes.inheritCampfireRecipes.get())
+        {
+            recipes.addAll(this.getRecipes(RecipeType.CAMPFIRE_COOKING).stream().map(recipe -> {
+                return ProcessingRecipe.Item.from(recipe, getRegistryAccess());
+            }).toList());
+        }
         return recipes;
     }
 
