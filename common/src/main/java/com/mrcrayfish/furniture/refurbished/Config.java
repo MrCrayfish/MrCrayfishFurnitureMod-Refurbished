@@ -80,6 +80,9 @@ public class Config
         @ConfigProperty(name = "toilet", comment = "Toilet related properties")
         public final FluidStorage toilet = new FluidStorage(Services.FLUID.getBucketCapacity());
 
+        @ConfigProperty(name = "recipes", comment = "Recipe related properties")
+        public final Recipes recipes = new Recipes();
+
         public static class Mailing
         {
             @ConfigProperty(name = "maxMailboxesPerPlayer", comment = """
@@ -230,6 +233,14 @@ public class Config
             {
                 this.fluidCapacity = LongProperty.create(capacity, 1, Long.MAX_VALUE);
             }
+        }
+
+        public static class Recipes
+        {
+            @ConfigProperty(name = "inheritCampfireRecipes", comment = """
+                If enabled, the Frying Pan and Grill will inherit all the cooking recipes from the
+                vanilla Campfire.""")
+            public final BoolProperty inheritCampfireRecipes = BoolProperty.create(true);
         }
     }
 }
