@@ -268,7 +268,7 @@ public class CreativeFilters
         private final ItemStack icon;
         private List<Item> items;
         private boolean enabled = true;
-        private FilterTab filterTab;
+        private @Nullable FilterTab filterTab;
 
         public FilterCategory(TagKey<Item> tag, ItemStack icon)
         {
