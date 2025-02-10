@@ -2,18 +2,3 @@ plugins {
     id 'fabric-loom' version '1.7-SNAPSHOT' apply false
     id 'net.neoforged.moddev' version '2.0.73' apply false
 }
-
-def incrementBuild(path) {
-    var buildFile = file(path);
-    int version = buildFile.text.toInteger()
-    buildFile.text = version + 1
-}
-
-tasks.register('incrementBuilds') {
-    doLast {
-        incrementBuild('/release_build_common');
-        incrementBuild('/release_build_forge');
-        incrementBuild('/release_build_fabric');
-        incrementBuild('/release_build_neoforge');
-    }
-}
