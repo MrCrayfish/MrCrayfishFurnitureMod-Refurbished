@@ -20,7 +20,7 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
       - name: Validate Gradle Wrapper
-        uses: gradle/wrapper-validation-action@v3.5.0
+        uses: gradle/actions/wrapper-validation@v4
       - name: Read modid from gradle.properties
         id: mod_id
         uses: Reedyuk/read-properties@v1.0.4
