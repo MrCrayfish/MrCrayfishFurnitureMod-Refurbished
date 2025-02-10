@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.mixin;
 import com.mrcrayfish.furniture.refurbished.electricity.ElectricityTicker;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -14,6 +15,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Level.class)
 public abstract class LevelMixin implements ElectricityTicker.Access
 {
+    @Shadow
+    private boolean tickingBlockEntities;
+
     @Unique
     private ElectricityTicker refurbishedFurniture$electricityTicker;
 
@@ -27,10 +31,12 @@ public abstract class LevelMixin implements ElectricityTicker.Access
         return this.refurbishedFurniture$electricityTicker;
     }
 
-    @Inject(method = "tickBlockEntities", at = @At(value = "INVOKE", target = "Ljava/util/List;iterator()Ljava/util/Iterator;"))
+    @Inject(method = "tickBlockEntities", at = @At(value = "INVOKE", target = "Ljava/util/List;isEmpty()Z", ordinal = 0))
     private void refurbishedFurniture$TickBlockEntitiesHead(CallbackInfo ci)
     {
-        ElectricityTicker.get((Level) (Object) this).earlyTick();
-        ElectricityTicker.get((Level) (Object) this).tick();
+        this.tickingBlockEntities = true;
+        this.refurbishedFurniture$GetElectricityTicker().earlyTick();
+        this.refurbishedFurniture$GetElectricityTicker().tick();
+        this.tickingBlockEntities = false;
     }
 }
