@@ -30,7 +30,7 @@ public abstract class LevelMixin implements ElectricityTicker.Access
     @Inject(method = "tickBlockEntities", at = @At(value = "HEAD"))
     private void refurbishedFurniture$TickBlockEntitiesHead(CallbackInfo ci)
     {
-        ElectricityTicker.get((Level) (Object) this).earlyTick();
-        ElectricityTicker.get((Level) (Object) this).tick();
+        this.refurbishedFurniture$GetElectricityTicker().earlyTick();
+        this.refurbishedFurniture$GetElectricityTicker().tick();
     }
 }
