@@ -56,6 +56,9 @@ public class ForgeClientEvents
         ClientBootstrap.registerBlockEntityRenderers(event::registerBlockEntityRenderer);
         ClientBootstrap.registerEntityRenderers(event::registerEntityRenderer);
         ClientBootstrap.registerRenderTypes(ItemBlockRenderTypes::setRenderLayer);
+
+        // We put this here to make sure they are loaded
+        ExtraModels.register(FrameworkClientAPI::registerStandaloneModel);
     }
 
     public static void onRegisterParticleProviders(RegisterParticleProvidersEvent event)

@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mrcrayfish.framework.api.client.FrameworkClientAPI;
 import com.mrcrayfish.furniture.refurbished.FurnitureMod;
 import com.mrcrayfish.furniture.refurbished.client.registration.ParticleProviderRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
@@ -104,5 +105,8 @@ public class ClientFurnitureMod implements ClientModInitializer
 
         BlockRenderLayerMap.INSTANCE.putFluid(FurnitureMod.MILK, RenderType.solid());
         FluidRenderHandlerRegistry.INSTANCE.register(FurnitureMod.MILK, new SimpleFluidRenderHandler(Utils.resource("block/milk_still"), Utils.resource("block/milk_still")));
+
+        // We put this here to make sure they are loaded
+        ExtraModels.register(FrameworkClientAPI::registerStandaloneModel);
     }
 }

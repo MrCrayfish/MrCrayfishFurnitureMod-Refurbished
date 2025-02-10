@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
+import com.mrcrayfish.framework.api.client.FrameworkClientAPI;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.client.registration.ParticleProviderRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.RecipeCategoryRegister;
@@ -50,6 +51,9 @@ public class ClientFurnitureMod
         ClientBootstrap.registerBlockEntityRenderers(event::registerBlockEntityRenderer);
         ClientBootstrap.registerEntityRenderers(event::registerEntityRenderer);
         ClientBootstrap.registerRenderTypes(ItemBlockRenderTypes::setRenderLayer);
+
+        // We put this here to make sure they are loaded
+        ExtraModels.register(FrameworkClientAPI::registerStandaloneModel);
     }
 
     @SubscribeEvent
