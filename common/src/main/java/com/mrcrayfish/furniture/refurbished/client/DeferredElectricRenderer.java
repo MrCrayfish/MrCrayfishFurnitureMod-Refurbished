@@ -141,10 +141,10 @@ public class DeferredElectricRenderer
         consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).setUv(minU, maxV).setColor(red, green, blue, alpha);
         consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).setUv(maxU, maxV).setColor(red, green, blue, alpha);
         // Up
-        consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).setUv(maxV, minU).setColor(red, green, blue, alpha);
-        consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).setUv(minV, minU).setColor(red, green, blue, alpha);
-        consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).setUv(minV, maxV).setColor(red, green, blue, alpha);
-        consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).setUv(maxV, maxV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).setUv(maxU, minV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).setUv(minU, minV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).setUv(minU, maxV).setColor(red, green, blue, alpha);
+        consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).setUv(maxU, maxV).setColor(red, green, blue, alpha);
         // Down
         consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).setUv(maxU, minV).setColor(red, green, blue, alpha);
         consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).setUv(minU, minV).setColor(red, green, blue, alpha);
