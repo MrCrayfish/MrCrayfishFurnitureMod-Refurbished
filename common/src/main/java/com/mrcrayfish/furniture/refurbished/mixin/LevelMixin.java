@@ -15,9 +15,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Level.class)
 public abstract class LevelMixin implements ElectricityTicker.Access
 {
-    @Shadow
-    private boolean tickingBlockEntities;
-
     @Unique
     private ElectricityTicker refurbishedFurniture$electricityTicker;
 
@@ -34,9 +31,7 @@ public abstract class LevelMixin implements ElectricityTicker.Access
     @Inject(method = "tickBlockEntities", at = @At(value = "INVOKE", target = "Ljava/util/List;isEmpty()Z", ordinal = 0))
     private void refurbishedFurniture$TickBlockEntitiesHead(CallbackInfo ci)
     {
-        this.tickingBlockEntities = true;
         this.refurbishedFurniture$GetElectricityTicker().earlyTick();
         this.refurbishedFurniture$GetElectricityTicker().tick();
-        this.tickingBlockEntities = false;
     }
 }
