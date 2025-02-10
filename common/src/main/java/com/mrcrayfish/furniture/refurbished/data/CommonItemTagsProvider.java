@@ -1034,5 +1034,23 @@ public class CommonItemTagsProvider
         blockDisplay.add(Items.MELON);
         blockDisplay.add(Items.SLIME_BLOCK);
         blockDisplay.add(Items.HONEYCOMB_BLOCK);
+
+        // Common tags
+        TagBuilder<Item> enchantables = builder.apply(ModTags.Items.COMMON_ENCHANTABLES);
+        enchantables.add(ModItems.KNIFE.get());
+        enchantables.add(ModItems.SPATULA.get());
+
+        TagBuilder<Item> foods = builder.apply(ModTags.Items.COMMON_FOODS);
+        foods.addOptional(ModTags.Items.FOOD);
+
+        TagBuilder<Item> foodsBread = builder.apply(ModTags.Items.COMMON_FOODS_BREAD);
+        foodsBread.add(ModItems.BREAD_SLICE.get());
+        foodsBread.add(ModItems.TOAST.get());
+
+        TagBuilder<Item> commonToolsKnives = builder.apply(ModTags.Items.COMMON_TOOLS_KNIVES);
+        commonToolsKnives.addOptional(ModTags.Items.TOOLS_KNIVES);
+
+        TagBuilder<Item> toolsWrench = builder.apply(ModTags.Items.COMMON_TOOLS_WRENCH);
+        toolsWrench.add(ModItems.WRENCH.get());
     }
 }
