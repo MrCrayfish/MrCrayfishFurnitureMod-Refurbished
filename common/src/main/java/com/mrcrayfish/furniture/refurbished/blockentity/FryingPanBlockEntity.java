@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.block.RangeHoodBlock;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
@@ -289,7 +290,8 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
     private Optional<? extends ProcessingRecipe> getRecipe(ItemStack stack)
     {
         Optional<? extends ProcessingRecipe> optional = this.getRecipe(this.recipeCache, stack);
-        optional = optional.isEmpty() ? this.getCookingRecipe(this.campfireCookingCache, stack) : optional;
+        if(Config.SERVER.recipes.inheritCampfireRecipes.get())
+            optional = optional.isEmpty() ? this.getCookingRecipe(this.campfireCookingCache, stack) : optional;
         return optional;
     }
 
