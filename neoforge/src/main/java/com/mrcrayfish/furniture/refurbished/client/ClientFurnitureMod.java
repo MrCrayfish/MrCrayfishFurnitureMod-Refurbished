@@ -1,6 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
-import com.mojang.serialization.MapCodec;
+import com.mrcrayfish.framework.api.client.FrameworkClientAPI;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.client.registration.ItemTintRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ParticleProviderRegister;
@@ -47,6 +47,9 @@ public class ClientFurnitureMod
         ClientBootstrap.registerBlockEntityRenderers(event::registerBlockEntityRenderer);
         ClientBootstrap.registerEntityRenderers(event::registerEntityRenderer);
         ClientBootstrap.registerRenderTypes(ItemBlockRenderTypes::setRenderLayer);
+
+        // We put this here to make sure they are loaded
+        ExtraModels.register(FrameworkClientAPI::registerStandaloneModel);
     }
 
     @SubscribeEvent

@@ -116,9 +116,6 @@ public class ClientBootstrap
         Display.get().bind(HomeControl.class, HomeControlGraphics::new);
         Display.get().bind(Marketplace.class, MarketplaceGraphics::new);
         Display.get().bind(CoinMiner.class, CoinMinerGraphics::new);
-
-        // Register standalone models
-        ExtraModels.register(FrameworkClientAPI::registerStandaloneModel);
     }
 
     @SuppressWarnings("unchecked")
