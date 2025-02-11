@@ -1,16 +1,27 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
 import com.mrcrayfish.framework.api.client.FrameworkClientAPI;
+import com.mrcrayfish.framework.api.datagen.FrameworkModelProvider;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.client.registration.ItemTintRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ParticleProviderRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
+import com.mrcrayfish.furniture.refurbished.data.CommonBlockStatesGenerator;
+import com.mrcrayfish.furniture.refurbished.data.CommonBlockTagsProvider;
+import com.mrcrayfish.furniture.refurbished.data.CommonItemModelsGenerator;
+import com.mrcrayfish.furniture.refurbished.data.CommonItemTagsProvider;
+import com.mrcrayfish.furniture.refurbished.data.CommonLootTableProvider;
+import com.mrcrayfish.furniture.refurbished.data.CommonRecipeProvider;
+import com.mrcrayfish.furniture.refurbished.data.RegistriesProvider;
 import net.minecraft.client.color.item.ItemTintSource;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -25,8 +36,12 @@ import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 import org.apache.commons.lang3.function.TriFunction;
 
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
 /**
@@ -88,6 +103,14 @@ public class ClientFurnitureMod
         ClientBootstrap.registerHudOverlays((id, overlay) -> {
             event.registerAboveAll(id, overlay::draw);
         });
+    }
+
+    @SubscribeEvent
+    private static void onGatherData(GatherDataEvent.Client event)
+    {
+        DataGenerator generator = event.getGenerator();
+        PackOutput output = generator.getPackOutput();
+        event.addProvider(new FrameworkModelProvider(output, CommonBlockStatesGenerator::new, CommonItemModelsGenerator::new));
     }
 
     /*@SubscribeEvent

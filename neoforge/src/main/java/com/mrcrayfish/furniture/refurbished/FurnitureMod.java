@@ -1,14 +1,11 @@
 package com.mrcrayfish.furniture.refurbished;
 
-import com.mrcrayfish.framework.api.datagen.FrameworkModelProvider;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.IFluidContainerBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchContructingRecipe;
-import com.mrcrayfish.furniture.refurbished.data.CommonBlockStatesGenerator;
 import com.mrcrayfish.furniture.refurbished.data.CommonBlockTagsProvider;
-import com.mrcrayfish.furniture.refurbished.data.CommonItemModelsGenerator;
 import com.mrcrayfish.furniture.refurbished.data.CommonItemTagsProvider;
 import com.mrcrayfish.furniture.refurbished.data.CommonLootTableProvider;
 import com.mrcrayfish.furniture.refurbished.data.CommonRecipeProvider;
@@ -59,7 +56,7 @@ public class FurnitureMod
         event.enqueueWork(Bootstrap::init);
     }
 
-    private void onGatherData(GatherDataEvent.Client event)
+    private void onGatherData(GatherDataEvent.Server event)
     {
         DataGenerator generator = event.getGenerator();
         PackOutput output = generator.getPackOutput();
@@ -67,7 +64,6 @@ public class FurnitureMod
         CommonBlockTagsProvider blockTagsProvider = event.createProvider(CommonBlockTagsProvider::new);
         event.addProvider(new CommonItemTagsProvider(output, lookupProvider, blockTagsProvider.contentsGetter()));
         event.addProvider(new DatapackBuiltinEntriesProvider(output, lookupProvider, RegistriesProvider.BUILDER, Set.of(Constants.MOD_ID)));
-        event.addProvider(new FrameworkModelProvider(output, CommonBlockStatesGenerator::new, CommonItemModelsGenerator::new));
         event.createProvider(CommonLootTableProvider::new);
         event.createProvider(CommonRecipeProvider.Runner::new);
     }
