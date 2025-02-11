@@ -16,17 +16,24 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUtils;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
@@ -78,6 +85,18 @@ public class ToiletBlockEntity extends BlockEntity implements IFluidContainerBlo
     {
         Level level = Objects.requireNonNull(this.level);
         ItemStack heldItem = player.getItemInHand(hand);
+        Item item = heldItem.getItem();
+
+        if(item == Items.GLASS_BOTTLE && !this.tank.isEmpty() && this.tank.getStoredFluid().isSame(Fluids.WATER))
+        {
+            this.tank.pull(FluidContainer.BUCKET_CAPACITY, false);
+            player.setItemInHand(hand, ItemUtils.createFilledResult(heldItem, player, PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.WATER)));
+            player.awardStat(Stats.ITEM_USED.get(item));
+            player.level().playSound(null, this.worldPosition, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
+            player.level().gameEvent(null, GameEvent.FLUID_PICKUP, this.worldPosition);
+            return InteractionResult.SUCCESS;
+        }
+
         if(!Services.FLUID.isFluidContainerItem(heldItem))
         {
             Vec3 hit = result.getLocation().subtract(Vec3.atLowerCornerOf(this.worldPosition));
@@ -100,8 +119,8 @@ public class ToiletBlockEntity extends BlockEntity implements IFluidContainerBlo
             }
             return InteractionResult.PASS;
         }
-        Services.FLUID.performInteractionWithBlock(player, hand, this.getLevel(), this.getBlockPos(), result.getDirection());
-        return InteractionResult.SUCCESS;
+
+        return Services.FLUID.performInteractionWithBlock(player, hand, this.getLevel(), this.getBlockPos(), result.getDirection());
     }
 
     private InteractionResult fillWithWater(Level level)
