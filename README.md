@@ -27,7 +27,7 @@ Generated files such as crafting recipes, blockstates, models, etc are not avail
 
 Run the following command to generate the data for each respective modloaders subproject
 ```
-./gradlew :forge:Data :fabric:runDatagen :neoforge:runData 
+./gradlew :fabric:runDatagen :neoforge:runClientData 
 ```
 ### Building the JAR
 To build the mod, simply run the following command. This will produce an artifact for common and all the modloader subprojects. The outputted artifacts will be located in `<subproject>/build/libs`.
@@ -40,7 +40,7 @@ If you would like to target a specific modloader, you can simply run:
 ```
 You can also generate the data in the same command
 ```
-./gradlew :forge:Data :fabric:runDatagen :neoforge:runData  build
+./gradlew :fabric:runDatagen :neoforge:runClientData build
 ```
 It is important to note that if you build the mod yourself, you will have an unsigned version of the mod. This just means that others will not be able to confirm if the mod has been modified. The officially hosted versions on mrcrayfish.com, CurseForge, and Modrinth have been signed will a private key.
 ## License
