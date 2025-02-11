@@ -5,6 +5,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -23,18 +25,12 @@ public record StackedIngredient(Ingredient ingredient, int count)
         })).apply(builder, StackedIngredient::new);
     });
 
-    public static StackedIngredient fromNetwork(RegistryFriendlyByteBuf buf)
-    {
-        Ingredient ingredient = Ingredient.CONTENTS_STREAM_CODEC.decode(buf);
-        int count = buf.readInt();
-        return new StackedIngredient(ingredient, count);
-    }
-
-    public void toNetwork(RegistryFriendlyByteBuf buf)
-    {
-        Ingredient.CONTENTS_STREAM_CODEC.encode(buf, this.ingredient);
-        buf.writeInt(this.count);
-    }
+    public static final StreamCodec<RegistryFriendlyByteBuf, StackedIngredient> STREAM_CODEC = StreamCodec.composite(
+        Ingredient.CONTENTS_STREAM_CODEC,
+        StackedIngredient::ingredient,
+        ByteBufCodecs.VAR_INT,
+        StackedIngredient::count,
+        StackedIngredient::new);
 
     public static StackedIngredient of(HolderSet<Item> items, int count)
     {

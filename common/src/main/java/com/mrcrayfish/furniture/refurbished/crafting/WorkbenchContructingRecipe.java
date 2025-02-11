@@ -18,6 +18,7 @@ import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
@@ -35,6 +36,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -137,17 +139,15 @@ public class WorkbenchContructingRecipe implements Recipe<SingleRecipeInput>
             })).apply(builder, WorkbenchContructingRecipe::new);
         });
 
-        public static final StreamCodec<RegistryFriendlyByteBuf, WorkbenchContructingRecipe> STREAM_CODEC = StreamCodec.of((buf, recipe) -> {
-            buf.writeCollection(recipe.materials, (o, ingredient) -> ingredient.toNetwork(buf));
-            ItemStack.STREAM_CODEC.encode(buf, recipe.result);
-            buf.writeBoolean(recipe.notification);
-        }, buf -> {
-            NonNullList<StackedIngredient> materials = NonNullList.create();
-            materials.addAll(buf.readList(buf1 -> StackedIngredient.fromNetwork(buf)));
-            ItemStack result = ItemStack.STREAM_CODEC.decode(buf);
-            boolean notification = buf.readBoolean();
-            return new WorkbenchContructingRecipe(materials, result, notification);
-        });
+        public static final StreamCodec<RegistryFriendlyByteBuf, WorkbenchContructingRecipe> STREAM_CODEC = StreamCodec.composite(
+            StackedIngredient.STREAM_CODEC.apply(ByteBufCodecs.collection(NonNullList::createWithCapacity)),
+            WorkbenchContructingRecipe::getMaterials,
+            ItemStack.STREAM_CODEC,
+            WorkbenchContructingRecipe::getResult,
+            ByteBufCodecs.BOOL,
+            WorkbenchContructingRecipe::showNotification,
+            WorkbenchContructingRecipe::new
+        );
 
         @Override
         public MapCodec<WorkbenchContructingRecipe> codec()
