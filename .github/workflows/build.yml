@@ -45,6 +45,13 @@ jobs:
           encodedString: ${{ env.JKS }}
       - name: Make gradlew executable
         run: chmod +x ./gradlew
+      - name: Data Generation (NeoForge)
+        env:
+          GPR_USER: "MrCrayfish"
+          GPR_KEY: ${{ secrets.GPR_TOKEN }}
+          PACKAGES_REPO: ${{ vars.PACKAGES_REPOSITORY }}
+          TARGET_LOADER: "neoforge"
+        run: ./gradlew :neoforge:runData
       - name: Data Generation (Forge)
         env:
           GPR_USER: "MrCrayfish"
@@ -66,6 +73,16 @@ jobs:
           PACKAGES_REPO: ${{ vars.PACKAGES_REPOSITORY }}
           TARGET_LOADER: "common"
         run: ./gradlew :common:build
+      - name: Build (NeoForge)
+        env:
+          GPR_USER: "MrCrayfish"
+          GPR_KEY: ${{ secrets.GPR_TOKEN }}
+          PACKAGES_REPO: ${{ vars.PACKAGES_REPOSITORY }}
+          KEYSTORE: ${{ steps.load_keystore.outputs.filePath }}
+          KEYSTORE_ALIAS: ${{ secrets.MRCRAYFISH_JKS_ALIAS }}
+          KEYSTORE_PASS: ${{ secrets.MRCRAYFISH_JKS_PASSPHRASE }}
+          TARGET_LOADER: "neoforge"
+        run: ./gradlew :neoforge:build
       - name: Build (Forge)
         env:
           GPR_USER: "MrCrayfish"
@@ -89,6 +106,7 @@ jobs:
       - name: Construct artifact files
         id: artifacts
         run: |
+          echo "neoforge=neoforge/build/libs/${{ steps.mod_data.outputs.mod_id }}-neoforge-${{ steps.mod_data.outputs.minecraft_version }}-${{ steps.mod_data.outputs.mod_version }}-signed.jar" >> "$GITHUB_OUTPUT"
           echo "forge=forge/build/libs/${{ steps.mod_data.outputs.mod_id }}-forge-${{ steps.mod_data.outputs.minecraft_version }}-${{ steps.mod_data.outputs.mod_version }}-signed.jar" >> "$GITHUB_OUTPUT"
           echo "fabric=fabric/build/libs/${{ steps.mod_data.outputs.mod_id }}-fabric-${{ steps.mod_data.outputs.minecraft_version }}-${{ steps.mod_data.outputs.mod_version }}-signed.jar" >> "$GITHUB_OUTPUT"
       - name: Create Changelog Files
@@ -121,6 +139,7 @@ jobs:
           SIGNING_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         if: ${{ env.SIGNING_PASSPHRASE != '' }}
         run: |
+          gpg --batch --yes --passphrase "${{ env.SIGNING_PASSPHRASE }}" --armor --detach-sign ${{ steps.artifacts.outputs.neoforge }}
           gpg --batch --yes --passphrase "${{ env.SIGNING_PASSPHRASE }}" --armor --detach-sign ${{ steps.artifacts.outputs.forge }}
           gpg --batch --yes --passphrase "${{ env.SIGNING_PASSPHRASE }}" --armor --detach-sign ${{ steps.artifacts.outputs.fabric }}
       - name: Publish to GitHub Packages
@@ -137,11 +156,13 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           name: '${{ steps.mod_data.outputs.minecraft_version }}-${{ steps.mod_data.outputs.mod_version }}'
-          artifacts: "${{ steps.artifacts.outputs.forge }},${{ steps.artifacts.outputs.forge }}.asc,${{ steps.artifacts.outputs.fabric }},${{ steps.artifacts.outputs.fabric }}.asc,CHANGELOG.txt"
+          artifacts: "${{ steps.artifacts.outputs.neoforge }},${{ steps.artifacts.outputs.neoforge }}.asc,${{ steps.artifacts.outputs.forge }},${{ steps.artifacts.outputs.forge }}.asc,${{ steps.artifacts.outputs.fabric }},${{ steps.artifacts.outputs.fabric }}.asc,CHANGELOG.txt"
           bodyFile: "RELEASE_BODY.md"
       - name: Prepare Artifacts
         run: |
           mkdir artifacts
+          mv ${{ steps.artifacts.outputs.neoforge }} artifacts
+          mv ${{ steps.artifacts.outputs.neoforge }}.asc artifacts
           mv ${{ steps.artifacts.outputs.forge }} artifacts
           mv ${{ steps.artifacts.outputs.forge }}.asc artifacts
           mv ${{ steps.artifacts.outputs.fabric }} artifacts
