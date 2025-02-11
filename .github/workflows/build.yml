@@ -51,7 +51,7 @@ jobs:
           GPR_KEY: ${{ secrets.GPR_TOKEN }}
           PACKAGES_REPO: ${{ vars.PACKAGES_REPOSITORY }}
           TARGET_LOADER: "neoforge"
-        run: ./gradlew :neoforge:runClientData :neoforge:runServerData
+        run: ./gradlew :neoforge:runClientData
       - name: Data Generation (Fabric)
         env:
           GPR_USER: "MrCrayfish"
