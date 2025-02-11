@@ -31,9 +31,9 @@ jobs:
         uses: actions/cache@v4.2.0
         with:
           path: ~/.gradle/caches
-          key: gradle-minecraft-${{ steps.mc_version.outputs.value }}
+          key: gradle-minecraft-${{ steps.mod_data.outputs.minecraft_version }}
           restore-keys: |
-            gradle-minecraft-${{ steps.mc_version.outputs.value }}
+            gradle-minecraft-${{ steps.mod_data.outputs.minecraft_version }}
       - name: Load Keystore
         id: load_keystore
         env:
@@ -89,8 +89,8 @@ jobs:
       - name: Construct artifact files
         id: artifacts
         run: |
-          echo "neoforge=neoforge/build/libs/${{ steps.mod_id.outputs.value }}-neoforge-${{ steps.mc_version.outputs.value }}-${{ steps.mod_version.outputs.value }}-signed.jar" >> "$GITHUB_OUTPUT"
-          echo "fabric=fabric/build/libs/${{ steps.mod_id.outputs.value }}-fabric-${{ steps.mc_version.outputs.value }}-${{ steps.mod_version.outputs.value }}-signed.jar" >> "$GITHUB_OUTPUT"
+          echo "neoforge=neoforge/build/libs/${{ steps.mod_data.outputs.mod_id }}-neoforge-${{ steps.mod_data.outputs.minecraft_version }}-${{ steps.mod_data.outputs.mod_version }}-signed.jar" >> "$GITHUB_OUTPUT"
+          echo "fabric=fabric/build/libs/${{ steps.mod_data.outputs.mod_id }}-fabric-${{ steps.mod_data.outputs.minecraft_version }}-${{ steps.mod_data.outputs.mod_version }}-signed.jar" >> "$GITHUB_OUTPUT"
       - name: Create Changelog Files
         run: |
           echo "" > CHANGELOG.txt
@@ -105,7 +105,7 @@ jobs:
             echo "No changes"
           fi
           echo "### Download:" >> RELEASE_BODY.md
-          echo "- Official Website: https://mrcrayfish.com/mods/${{ steps.mod_id.outputs.value }}" >> RELEASE_BODY.md
+          echo "- Official Website: https://mrcrayfish.com/mods/${{ steps.mod_data.outputs.mod_id }}" >> RELEASE_BODY.md
           echo "- CurseForge: https://curseforge.com/minecraft/mc-mods/framework" >> RELEASE_BODY.md
       - name: Import GPG
         env:
@@ -136,7 +136,7 @@ jobs:
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          name: '${{ steps.mc_version.outputs.value }}-${{ steps.mod_version.outputs.value }}'
+          name: '${{ steps.mod_data.outputs.minecraft_version }}-${{ steps.mod_data.outputs.mod_version }}'
           artifacts: "${{ steps.artifacts.outputs.neoforge }},${{ steps.artifacts.outputs.neoforge }}.asc,${{ steps.artifacts.outputs.fabric }},${{ steps.artifacts.outputs.fabric }}.asc,CHANGELOG.txt"
           bodyFile: "RELEASE_BODY.md"
       - name: Prepare Artifacts
@@ -149,5 +149,5 @@ jobs:
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: '${{ steps.mod_id.outputs.value }}-${{ steps.mc_version.outputs.value }}-${{ steps.mod_version.outputs.value }}'
+          name: '${{ steps.mod_data.outputs.mod_id }}-${{ steps.mod_data.outputs.minecraft_version }}-${{ steps.mod_data.outputs.mod_version }}'
           path: artifacts
