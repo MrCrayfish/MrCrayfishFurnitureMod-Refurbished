@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.core;
 
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -43,9 +44,20 @@ public class ModTags
         public static final TagKey<Item> WOODEN_BATHS = tag("wooden_baths");
         public static final TagKey<Item> DISPLAY_AS_BLOCK = tag("display_as_block");
 
+        public static final TagKey<Item> COMMON_ENCHANTABLES = common("enchantables");
+        public static final TagKey<Item> COMMON_TOOLS_KNIVES = common("tools/knives");
+        public static final TagKey<Item> COMMON_TOOLS_WRENCH = common("tools/wrench");
+        public static final TagKey<Item> COMMON_FOODS = common("foods");
+        public static final TagKey<Item> COMMON_FOODS_BREAD = common("foods/bread");
+
         private static TagKey<Item> tag(String name)
         {
             return TagKey.create(Registries.ITEM, new ResourceLocation(Constants.MOD_ID, name));
+        }
+
+        public static TagKey<Item> common(String name)
+        {
+            return TagKey.create(Registries.ITEM, new ResourceLocation("c", name));
         }
     }
 
@@ -56,6 +68,11 @@ public class ModTags
         private static TagKey<Block> tag(String name)
         {
             return TagKey.create(Registries.BLOCK, new ResourceLocation(Constants.MOD_ID, name));
+        }
+
+        private static TagKey<Block> common(String name)
+        {
+            return TagKey.create(Registries.BLOCK, new ResourceLocation("c", name));
         }
     }
 }
