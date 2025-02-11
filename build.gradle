@@ -132,4 +132,9 @@ subprojects {
     tasks.withType(GenerateModuleMetadata).configureEach {
         enabled = false
     }
+
+    // Mute javadoc warnings
+    tasks.withType(Javadoc).configureEach {
+        options.addStringOption('Xdoclint:none', '-quiet')
+    }
 }
