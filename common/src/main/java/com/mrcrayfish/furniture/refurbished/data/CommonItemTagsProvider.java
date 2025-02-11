@@ -4,9 +4,11 @@ import com.mrcrayfish.furniture.refurbished.ConventionalTags;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.core.ModTags;
+import com.mrcrayfish.furniture.refurbished.data.tag.TagBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 
@@ -1086,5 +1088,23 @@ public class CommonItemTagsProvider extends ItemTagsProvider
 
         this.tag(ConventionalTags.Items.TOOLS_KNIVES)
             .addTag(ModTags.Items.TOOLS_KNIVES);
+
+        // Common tags
+        this.tag(ModTags.Items.COMMON_ENCHANTABLES)
+            .add(ModItems.KNIFE.get())
+            .add(ModItems.SPATULA.get());
+
+        this.tag(ModTags.Items.COMMON_FOODS)
+            .addTag(ModTags.Items.FOOD);
+
+        this.tag(ModTags.Items.COMMON_FOODS_BREAD)
+            .add(ModItems.BREAD_SLICE.get())
+            .add(ModItems.TOAST.get());
+
+        this.tag(ModTags.Items.COMMON_TOOLS_KNIVES)
+            .addTag(ModTags.Items.TOOLS_KNIVES);
+
+        this.tag(ModTags.Items.COMMON_TOOLS_WRENCH)
+            .add(ModItems.WRENCH.get());
     }
 }
