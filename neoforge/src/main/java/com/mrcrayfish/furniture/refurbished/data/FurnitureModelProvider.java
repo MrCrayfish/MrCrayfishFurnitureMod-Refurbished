@@ -43,44 +43,51 @@ public class FurnitureModelProvider extends BlockStateProvider
     public static final ExistingFileHelper.ResourceType MODEL = new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".json", "models");
 
     private final ExtraModelProvider extraModelProvider;
+    private final ExistingFileHelper helper;
 
     public FurnitureModelProvider(PackOutput output, ExistingFileHelper helper)
     {
         super(output, Constants.MOD_ID, helper);
-        this.registerExistingResources(helper);
         this.extraModelProvider = new ExtraModelProvider(output, Constants.MOD_ID, helper);
+        this.helper = helper;
     }
 
-    private void registerExistingResources(ExistingFileHelper helper)
+    private void registerExistingResources()
     {
         // Registers existing parent models since they aren't generated
-        ModelTemplate.all().forEach(model -> helper.trackGenerated(model, MODEL));
+        ModelTemplate.all().forEach(model -> this.helper.trackGenerated(model, MODEL));
 
         // Registers a default texture for all blocks in the mod
         Registration.get(Registries.BLOCK).stream().filter(entry -> entry.getId().getNamespace().equals(Constants.MOD_ID)).forEach(entry -> {
-            helper.trackGenerated(this.blockTexture((Block) entry.get()), TEXTURE);
+            this.helper.trackGenerated(this.blockTexture((Block) entry.get()), TEXTURE);
         });
 
         // Registers wood particle textures
         WoodType.values().forEach(type -> {
-            helper.trackGenerated(new ResourceLocation(Constants.MOD_ID, "block/" + type.name() + "_particle"), TEXTURE);
+            this.helper.trackGenerated(new ResourceLocation(Constants.MOD_ID, "block/" + this.sanitizeName(type.name()) + "_particle"), TEXTURE);
         });
 
         // Registers coloured particle textures
         Arrays.stream(DyeColor.values()).forEach(type -> {
-            helper.trackGenerated(new ResourceLocation(Constants.MOD_ID, "block/" + type.getName() + "_particle"), TEXTURE);
+            this.helper.trackGenerated(new ResourceLocation(Constants.MOD_ID, "block/" + this.sanitizeName(type.getName()) + "_particle"), TEXTURE);
         });
 
         // Registers metal particle textures
         Arrays.stream(MetalType.values()).forEach(type -> {
-            helper.trackGenerated(new ResourceLocation(Constants.MOD_ID, "block/" + type.getName() + "_particle"), TEXTURE);
+            this.helper.trackGenerated(new ResourceLocation(Constants.MOD_ID, "block/" + this.sanitizeName(type.getName()) + "_particle"), TEXTURE);
         });
+    }
+
+    private String sanitizeName(String name)
+    {
+        return name.replaceAll("[^a-z]", "_");
     }
 
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
     protected void registerStatesAndModels()
     {
+        this.registerExistingResources();
         new CommonBlockModelProvider(builder -> {
             // Variant block states
             Block block = builder.getBlock();
