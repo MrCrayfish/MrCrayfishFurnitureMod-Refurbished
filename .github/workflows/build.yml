@@ -95,7 +95,7 @@ jobs:
         run: |
           echo "" > CHANGELOG.txt
           echo "### Technical Changelog:" >> RELEASE_BODY.md
-          tag_count=$(git tag | wc -l)
+          tag_count=$(git tag --merged | wc -l)
           if [ "$tag_count" -ge 2 ]; then
             latest_tag=$(git describe --tags --abbrev=0)
             previous_tag=$(git describe --tags --abbrev=0 --exclude=$latest_tag)
