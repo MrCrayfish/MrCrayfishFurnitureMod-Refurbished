@@ -49,8 +49,8 @@ public class FurnitureModelProvider extends BlockStateProvider
     public FurnitureModelProvider(PackOutput output, ExistingFileHelper helper)
     {
         super(output, Constants.MOD_ID, helper);
-        this.registerExistingResources(helper);
         this.extraModelProvider = new ExtraModelProvider(output, Constants.MOD_ID, helper);
+        this.helper = helper;
     }
 
     private void registerExistingResources()
