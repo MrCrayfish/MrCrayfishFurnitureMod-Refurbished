@@ -59,8 +59,8 @@ public class Bootstrap
         Computer computer = Computer.get();
         computer.installProgram(Utils.resource("paddle_ball"), PaddleBall::new);
         computer.installProgram(Utils.resource("home_control"), HomeControl::new);
-        computer.installProgram(Utils.resource("marketplace"), Marketplace::new);
-        computer.installProgram(Utils.resource("coin_miner"), CoinMiner::new);
+        //computer.installProgram(Utils.resource("marketplace"), Marketplace::new);
+        //computer.installProgram(Utils.resource("coin_miner"), CoinMiner::new);
         computer.installService(PaddleBall.SERVICE);
     }
 
