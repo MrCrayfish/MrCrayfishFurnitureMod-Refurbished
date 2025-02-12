@@ -92,8 +92,8 @@ public class ToiletBlockEntity extends BlockEntity implements IFluidContainerBlo
             this.tank.pull(FluidContainer.BUCKET_CAPACITY, false);
             player.setItemInHand(hand, ItemUtils.createFilledResult(heldItem, player, PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.WATER)));
             player.awardStat(Stats.ITEM_USED.get(item));
-            player.level().playSound(null, this.worldPosition, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
-            player.level().gameEvent(null, GameEvent.FLUID_PICKUP, this.worldPosition);
+            player.level.playSound(null, this.worldPosition, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
+            player.level.gameEvent(null, GameEvent.FLUID_PICKUP, this.worldPosition);
             return InteractionResult.SUCCESS;
         }
 
