@@ -18,6 +18,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.client.player.ClientPreAttackCallback;
+import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemTintSources;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -28,6 +30,9 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -35,6 +40,9 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.function.TriFunction;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 /**
  * Author: MrCrayfish
@@ -74,13 +82,16 @@ public class ClientFurnitureMod implements ClientModInitializer
             Vec3 view = context.camera().getPosition();
             pose.translate(-view.x(), -view.y(), -view.z());
             float deltaTick = context.tickCounter().getGameTimeDeltaPartialTick(true);
-            LinkHandler.get().render(mc.player, pose, mc.renderBuffers().bufferSource(), deltaTick);
+            LinkHandler.get().render(mc.player, pose, context.tickCounter());
             ToolAnimationRenderer.get().render(mc.level, pose, mc.renderBuffers().bufferSource(), deltaTick);
-            DeferredElectricRenderer.get().draw(pose);
             pose.popPose();
 
             // End render types
             mc.renderBuffers().bufferSource().endBatch(ClientServices.PLATFORM.getTelevisionScreenRenderType(CustomSheets.TV_CHANNELS_SHEET));
+        });
+
+        WorldRenderEvents.END.register(context -> {
+            DeferredElectricRenderer.get().blitToScreen();
         });
 
         ClientPreAttackCallback.EVENT.register((client, player, clickCount) -> {
@@ -107,5 +118,16 @@ public class ClientFurnitureMod implements ClientModInitializer
 
         // We put this here to make sure they are loaded
         ExtraModels.register(FrameworkClientAPI::registerStandaloneModel);
+
+        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new IdentifiableResourceReloadListener() {
+            @Override
+            public ResourceLocation getFabricId() {
+                return DeferredElectricRenderer.ID;
+            }
+            @Override
+            public CompletableFuture<Void> reload(PreparationBarrier barrier, ResourceManager manager, Executor executor, Executor executor2) {
+                return DeferredElectricRenderer.get().reload(barrier, manager, executor, executor2);
+            }
+        });
     }
 }

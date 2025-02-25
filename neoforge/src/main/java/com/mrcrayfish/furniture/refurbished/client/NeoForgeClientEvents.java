@@ -11,7 +11,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.client.event.FrameGraphSetupEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.RenderHighlightEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
@@ -54,9 +54,8 @@ public class NeoForgeClientEvents
         Vec3 view = event.getCamera().getPosition();
         stack.translate(-view.x(), -view.y(), -view.z());
         float deltaTick = event.getPartialTick().getGameTimeDeltaPartialTick(true);
-        LinkHandler.get().render(mc.player, stack, mc.renderBuffers().bufferSource(), deltaTick);
+        LinkHandler.get().render(mc.player, stack, event.getPartialTick());
         ToolAnimationRenderer.get().render(mc.level, stack, mc.renderBuffers().bufferSource(), deltaTick);
-        DeferredElectricRenderer.get().draw(stack);
         stack.popPose();
 
         // End render types
@@ -74,6 +73,21 @@ public class NeoForgeClientEvents
             {
                 event.setCanceled(true);
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onSetupFrameGraph(FrameGraphSetupEvent event)
+    {
+        DeferredElectricRenderer.get().setupFramePass(event.getFrameGrapBuilder(), event.getCamera());
+    }
+
+    @SubscribeEvent
+    public static void afterRenderLevel(RenderLevelStageEvent event)
+    {
+        if(event.getStage() == RenderLevelStageEvent.Stage.AFTER_LEVEL)
+        {
+            DeferredElectricRenderer.get().blitToScreen();
         }
     }
 }

@@ -20,11 +20,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
-import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.event.*;
 import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.function.BiConsumer;
@@ -88,6 +84,12 @@ public class ClientFurnitureMod
         ClientBootstrap.registerHudOverlays((id, overlay) -> {
             event.registerAboveAll(id, overlay::draw);
         });
+    }
+
+    @SubscribeEvent
+    private static void onRegisterListeners(AddClientReloadListenersEvent event)
+    {
+        event.addListener(DeferredElectricRenderer.ID, DeferredElectricRenderer.get());
     }
 
     /*@SubscribeEvent

@@ -1,16 +1,18 @@
 {
-    "required": true,
-    "minVersion": "0.8",
-    "package": "com.mrcrayfish.furniture.refurbished.mixin",
-    "refmap": "${mod_id}.refmap.json",
-    "compatibilityLevel": "JAVA_21",
-    "mixins": [
-        "FabricLivingEntityMixin"
-    ],
-    "client": [],
-    "injectors": {
-        "defaultRequire": 1,
-        "maxShiftBy": 2
-    }
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.mrcrayfish.furniture.refurbished.mixin",
+  "refmap": "${mod_id}.refmap.json",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "FabricLivingEntityMixin"
+  ],
+  "client": [
+    "client.FabricLevelRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1,
+    "maxShiftBy": 2
+  }
 }
   

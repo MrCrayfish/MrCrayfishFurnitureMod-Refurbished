@@ -1,7 +1,11 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
-import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
+import com.mojang.blaze3d.framegraph.FramePass;
+import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.Window;
+import com.mojang.blaze3d.resource.ResourceHandle;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
@@ -11,13 +15,16 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 
 import java.util.LinkedList;
@@ -31,8 +38,10 @@ import java.util.function.BiConsumer;
  * <p>
  * Author: MrCrayfish
  */
-public class DeferredElectricRenderer
+public class DeferredElectricRenderer implements ResourceManagerReloadListener
 {
+    public static final String PASS_NAME = "refurbished_furniture_electricity";
+    public static final ResourceLocation ID = Utils.resource("deferred_electric_renderer");
     private static DeferredElectricRenderer instance;
 
     public static DeferredElectricRenderer get()
@@ -45,60 +54,68 @@ public class DeferredElectricRenderer
     }
 
     private final ResourceLocation nodeTexture = Utils.resource("textures/misc/electricity_nodes.png");
-    private final List<BiConsumer<PoseStack, VertexConsumer>> builders = new LinkedList<>();
+    private final List<BiConsumer<PoseStack, VertexConsumer>> deferredDrawCalls = new LinkedList<>();
+    private TextureTarget electricityTarget;
+    private ResourceHandle<TextureTarget> handle;
 
     private DeferredElectricRenderer() {}
 
-    public void draw(PoseStack pose)
+    /**
+     * Called when the resource managed is reloaded. Sets up a custom texture target specifically for electricity nodes
+     * and links. This texture is drawn in front of the world, which effectively allows nodes and electricity links to
+     * be seen through walls and such.
+     *
+     * @param manager a resource manager instance
+     */
+    @Override
+    public void onResourceManagerReload(ResourceManager manager)
     {
-        Minecraft mc = Minecraft.getInstance();
-        RenderTarget target = mc.levelRenderer.entityOutlineTarget();
-        if(target == null || this.builders.isEmpty())
-            return;
+        if(this.electricityTarget != null)
+            this.electricityTarget.destroyBuffers();
+        Window window = Minecraft.getInstance().getWindow();
+        this.electricityTarget = new TextureTarget(window.getWidth(), window.getHeight(), true);
+        this.electricityTarget.setClearColor(0, 0, 0, 0);
+        this.electricityTarget.clear();
+    }
 
-        // During testing, if the render target is not cleared before drawing, some shader packs
-        // will not draw electricity components correctly. This issue only happens if an entity with
-        // an outline is in view. This is a hacky fix at the expense of breaking entity outline glow.
-        if(Config.CLIENT.experimental.electricityShadersFix.get())
+    /**
+     * Simply resizes the electricity texture to the new window size
+     *
+     * @param width the new window width
+     * @param height the new window height
+     */
+    public void resize(int width, int height)
+    {
+        if(this.electricityTarget != null)
         {
-            target.clear();
+            this.electricityTarget.resize(width, height);
         }
+    }
 
-        // Draw to the entity outline layer
-        target.bindWrite(false);
-
-        Tesselator tesselator = Tesselator.getInstance();
-        RenderSystem.enableDepthTest();
-        RenderSystem.enableBlend();
-        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        RenderSystem.depthMask(true);
-        RenderSystem.setShader(CoreShaders.POSITION_TEX_COLOR);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, this.nodeTexture);
-
-        pose.pushPose();
-        BufferBuilder builder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-        for(BiConsumer<PoseStack, VertexConsumer> consumer : this.builders)
-            consumer.accept(pose, builder);
-        MeshData data = builder.build();
-        if(data != null)
-            BufferUploader.drawWithShader(data);
-        pose.popPose();
-
-        RenderSystem.disableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.depthMask(true);
-
-        // Restore main render target
-        mc.getMainRenderTarget().bindWrite(false);
-
-        this.builders.clear();
+    /**
+     * Sets up the frame pass required to draw the electricity texture target
+     *
+     * @param builder the FrameGraphBuilder of the current frame
+     * @param camera the current camera instance
+     */
+    public void setupFramePass(FrameGraphBuilder builder, Camera camera)
+    {
+        if(this.electricityTarget != null && LinkHandler.isHoldingWrench())
+        {
+            ResourceHandle<TextureTarget> handle = builder.importExternal(PASS_NAME, this.electricityTarget);
+            FramePass pass = builder.addPass(PASS_NAME);
+            this.handle = pass.readsAndWrites(handle);
+            pass.executes(() -> this.drawToTexture(camera, this.electricityTarget));
+        }
+        else
+        {
+            this.deferredDrawCalls.clear();
+        }
     }
 
     public void deferDraw(BiConsumer<PoseStack, VertexConsumer> consumer)
     {
-        this.builders.add(consumer);
+        this.deferredDrawCalls.add(consumer);
     }
 
     /**
@@ -244,5 +261,82 @@ public class DeferredElectricRenderer
         consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).setUv(minU, minV).setColor(1.0F, 1.0F, 1.0F, 1.0F);
         consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).setUv(minU, maxV).setColor(1.0F, 1.0F, 1.0F, 1.0F);
         consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).setUv(maxU, maxV).setColor(1.0F, 1.0F, 1.0F, 1.0F);
+    }
+
+    /**
+     * Prepares and draws the electricity nodes and link to a separate texture so it can overlay the world, similar to
+     * entity outlines. The texture is then later blit to screen in {@link #blitToScreen()}.
+     *
+     * @param camera the current camera
+     * @param texture the texture target to draw to
+     */
+    private void drawToTexture(Camera camera, TextureTarget texture)
+    {
+        // Clear and bind the electricity texture
+        texture.setClearColor(0, 0, 0, 0);
+        texture.clear();
+        texture.bindWrite(false);
+
+        // Draw the nodes and connections
+        PoseStack stack = new PoseStack();
+        stack.pushPose();
+        Vec3 view = camera.getPosition();
+        stack.translate(-view.x(), -view.y(), -view.z());
+        this.draw(stack);
+        stack.popPose();
+
+        // Restore main target
+        Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
+    }
+
+    private void draw(PoseStack pose)
+    {
+        if(this.deferredDrawCalls.isEmpty())
+            return;
+
+        Tesselator tesselator = Tesselator.getInstance();
+        RenderSystem.enableDepthTest();
+        RenderSystem.enableBlend();
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.depthMask(true);
+        RenderSystem.setShader(CoreShaders.POSITION_TEX_COLOR);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, this.nodeTexture);
+
+        pose.pushPose();
+        BufferBuilder builder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+        for(BiConsumer<PoseStack, VertexConsumer> consumer : this.deferredDrawCalls)
+            consumer.accept(pose, builder);
+        MeshData data = builder.build();
+        if(data != null)
+            BufferUploader.drawWithShader(data);
+        pose.popPose();
+
+        RenderSystem.disableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.depthMask(true);
+
+        this.deferredDrawCalls.clear();
+    }
+
+    /**
+     * Draws the electricity texture onto the screen. This is drawn after the world, but before the player hand and HUD.
+     * This will result in the electricity nodes and links drawn in front of everything, effectively removing the depth.
+     */
+    public void blitToScreen()
+    {
+        if(this.handle != null)
+        {
+            Window window = Minecraft.getInstance().getWindow();
+            RenderSystem.enableBlend();
+            RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE);
+            this.handle.get().blitAndBlendToScreen(window.getWidth(), window.getHeight());
+            RenderSystem.disableBlend();
+            RenderSystem.defaultBlendFunc();
+        }
+
+        // Once drawn, remove handle
+        this.handle = null;
     }
 }

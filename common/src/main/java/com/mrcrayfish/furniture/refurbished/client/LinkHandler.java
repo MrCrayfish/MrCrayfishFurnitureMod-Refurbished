@@ -14,7 +14,6 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Axis;
 import com.mrcrayfish.framework.api.config.event.FrameworkConfigEvents;
 import com.mrcrayfish.furniture.refurbished.Config;
-import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.ElectricBlockEntityRenderer;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
@@ -30,10 +29,9 @@ import com.mrcrayfish.furniture.refurbished.network.message.MessageDeleteLink;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.Util;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.CoreShaders;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
@@ -357,35 +355,36 @@ public class LinkHandler
      *
      * @param player      the player rendering the link
      * @param poseStack   the current pose stack
-     * @param source      a buffer source instance
-     * @param partialTick the current partial tick
      */
-    public void render(Player player, PoseStack poseStack, MultiBufferSource.BufferSource source, float partialTick)
+    public void render(Player player, PoseStack poseStack, DeltaTracker tracker)
     {
         if(!player.isAlive() || !isHoldingWrench())
         {
             this.lastNodePos = null;
         }
 
-        this.renderPowerableArea(poseStack, player, partialTick);
+        this.renderPowerableArea(poseStack, player, tracker.getGameTimeDeltaPartialTick(true));
 
         if(this.lastNodePos != null)
         {
-            this.renderUnfinishedLink(player, this.lastNodePos, partialTick);
+            this.renderUnfinishedLink(player, tracker);
         }
     }
 
     /**
-     * @param player
-     * @param pos
-     * @param partialTick
+     * Draws an electricity link from the selected nodes to where the player is currently looking at.
+     *
+     * @param player the player that is connecting the link
+     * @param tracker the delta tracker instance
      */
-    private void renderUnfinishedLink(Player player, BlockPos pos, float partialTick)
+    private void renderUnfinishedLink(Player player, DeltaTracker tracker)
     {
         DeferredElectricRenderer renderer = DeferredElectricRenderer.get();
         renderer.deferDraw((pose, consumer) -> {
-            Vec3 start = Vec3.atCenterOf(pos);
-            Vec3 end = this.getLinkEnd(player, partialTick);
+            if(this.lastNodePos == null)
+                return;
+            Vec3 start = Vec3.atCenterOf(this.lastNodePos);
+            Vec3 end = this.getLinkEnd(player, tracker.getGameTimeDeltaPartialTick(true));
             Vec3 delta = end.subtract(start);
             this.linkLength = delta.length();
             double yaw = Math.atan2(-delta.z, delta.x) + Math.PI;
@@ -675,6 +674,9 @@ public class LinkHandler
         }
     }
 
+    /**
+     * @return True if the player is currently holding the Wrench item. Client only
+     */
     public static boolean isHoldingWrench()
     {
         Minecraft mc = Minecraft.getInstance();
