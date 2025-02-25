@@ -38,7 +38,7 @@ repositories {
             password = findProperty("gpr.key") ?: System.getenv("GPR_KEY")
         }
     }
-    if (!System.getenv("CI")) {
+    if (!System.getenv("CI") && System.getenv("LOCAL_MAVEN")) {
         maven {
             url "file://" + System.getenv("LOCAL_MAVEN")
         }
@@ -165,7 +165,7 @@ publishing {
                     password = project.findProperty("gpr.key") ?: System.getenv("GPR_KEY")
                 }
             }
-        } else {
+        } else if(System.getenv("LOCAL_MAVEN")) {
             maven {
                 url "file://" + System.getenv("LOCAL_MAVEN")
             }
