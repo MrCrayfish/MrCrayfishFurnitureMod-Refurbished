@@ -32,9 +32,8 @@ import java.util.List;
 import java.util.function.BiConsumer;
 
 /**
- * This class is mostly a hack to make the electricity rendering compatible with shader mods. It
- * doesn't work with every shader. Everything is drawn onto the entity render target as this is
- * drawn after the world is drawn.
+ * Handles drawing electricity nodes and connections. They are drawn on a separate texture so it's can overlay the world.
+ *
  * <p>
  * Author: MrCrayfish
  */
