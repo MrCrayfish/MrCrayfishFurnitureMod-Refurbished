@@ -32,6 +32,7 @@ import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -44,6 +45,7 @@ public class CuttingBoardCombiningRecipe implements Recipe<ContainerInput>
 
     protected final NonNullList<Ingredient> ingredients;
     protected final ItemStack result;
+    protected @Nullable PlacementInfo placementInfo;
 
     public CuttingBoardCombiningRecipe(NonNullList<Ingredient> ingredients, ItemStack result)
     {
@@ -85,7 +87,11 @@ public class CuttingBoardCombiningRecipe implements Recipe<ContainerInput>
     @Override
     public PlacementInfo placementInfo()
     {
-        return PlacementInfo.NOT_PLACEABLE;
+        if(this.placementInfo == null)
+        {
+            this.placementInfo = PlacementInfo.createFromOptionals(this.ingredients.stream().map(Optional::of).toList());
+        }
+        return this.placementInfo;
     }
 
     @Override

@@ -36,10 +36,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -53,6 +50,7 @@ public class WorkbenchContructingRecipe implements Recipe<SingleRecipeInput>
     private final NonNullList<StackedIngredient> materials;
     private final ItemStack result;
     private final boolean notification;
+    private @Nullable PlacementInfo placementInfo;
 
     public WorkbenchContructingRecipe(NonNullList<StackedIngredient> materials, ItemStack result, boolean notification)
     {
@@ -94,7 +92,11 @@ public class WorkbenchContructingRecipe implements Recipe<SingleRecipeInput>
     @Override
     public PlacementInfo placementInfo()
     {
-        return PlacementInfo.NOT_PLACEABLE;
+        if(this.placementInfo == null)
+        {
+            this.placementInfo = PlacementInfo.createFromOptionals(this.materials.stream().map(i -> Optional.of(i.ingredient())).toList());
+        }
+        return this.placementInfo;
     }
 
     @Override
