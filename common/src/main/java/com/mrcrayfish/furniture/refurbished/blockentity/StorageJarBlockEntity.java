@@ -205,10 +205,7 @@ public class StorageJarBlockEntity extends BasicLootBlockEntity
     public void setChanged()
     {
         super.setChanged();
-        if(!this.level.isClientSide())
-        {
-            BlockEntityHelper.sendCustomUpdate(this, BlockEntity::getUpdateTag);
-        }
+        BlockEntityHelper.sendCustomUpdate(this, BlockEntity::getUpdateTag);
     }
 
     @Nullable

@@ -100,7 +100,7 @@ public class PlateBlockEntity extends BasicLootBlockEntity
      */
     public boolean popItem()
     {
-        if(!this.getItem(0).isEmpty())
+        if(this.level != null && !this.getItem(0).isEmpty())
         {
             ItemStack stack = this.getItem(0);
             BlockPos pos = this.worldPosition;
@@ -144,10 +144,7 @@ public class PlateBlockEntity extends BasicLootBlockEntity
     public void setChanged()
     {
         super.setChanged();
-        if(!this.level.isClientSide())
-        {
-            BlockEntityHelper.sendCustomUpdate(this, BlockEntity::getUpdateTag);
-        }
+        BlockEntityHelper.sendCustomUpdate(this, BlockEntity::getUpdateTag);
     }
 
     @Override
