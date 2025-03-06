@@ -427,10 +427,7 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
     public void setChanged()
     {
         super.setChanged();
-        if(!this.level.isClientSide())
-        {
-            this.sync();
-        }
+        this.sync();
     }
 
     /**

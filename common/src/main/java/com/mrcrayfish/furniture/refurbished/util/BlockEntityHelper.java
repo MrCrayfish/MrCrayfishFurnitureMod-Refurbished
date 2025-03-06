@@ -27,8 +27,8 @@ public class BlockEntityHelper
 {
     public static void sendCustomUpdate(BlockEntity entity, BiFunction<BlockEntity, RegistryAccess, CompoundTag> update)
     {
-        Level level = Objects.requireNonNull(entity.getLevel());
-        if(level.getChunkSource() instanceof ServerChunkCache cache)
+        Level level = entity.getLevel();
+        if(level != null && level.getChunkSource() instanceof ServerChunkCache cache)
         {
             BlockPos pos = entity.getBlockPos();
             ClientboundBlockEntityDataPacket packet = ClientboundBlockEntityDataPacket.create(entity, update);
