@@ -108,9 +108,8 @@ public abstract class FluidContainer
      */
     public final void sync(BlockEntity owner)
     {
-        Level level = Objects.requireNonNull(owner.getLevel());
-        Preconditions.checkState(!level.isClientSide());
-        if(level.getChunkSource() instanceof ServerChunkCache cache)
+        Level level = owner.getLevel();
+        if(level != null && level.getChunkSource() instanceof ServerChunkCache cache)
         {
             BlockPos pos = owner.getBlockPos();
             List<ServerPlayer> players = cache.chunkMap.getPlayers(new ChunkPos(pos), false);
