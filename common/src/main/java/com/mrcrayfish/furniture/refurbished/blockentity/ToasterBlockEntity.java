@@ -210,11 +210,7 @@ public class ToasterBlockEntity extends ElectricityModuleProcessingLootBlockEnti
     public void setChanged()
     {
         super.setChanged();
-        // Only sync from server side
-        if(!this.level.isClientSide())
-        {
-            this.sync();
-        }
+        this.sync();
     }
 
     /**
