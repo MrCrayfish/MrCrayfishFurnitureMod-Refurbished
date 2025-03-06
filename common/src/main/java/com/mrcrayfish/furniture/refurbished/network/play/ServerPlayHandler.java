@@ -71,6 +71,7 @@ public class ServerPlayHandler
                 DeliveryResult result = service.sendMail(message.mailboxId(), stack);
                 if(result.success()) {
                     container.clearContent();
+                    container.setChanged();
                     Network.getPlay().sendToPlayer(() -> serverPlayer, new MessageClearMessage());
                     Network.getPlay().sendToPlayer(() -> serverPlayer, new MessageShowDeliveryResult(result));
                 } else {
