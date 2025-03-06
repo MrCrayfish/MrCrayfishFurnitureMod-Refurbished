@@ -1,5 +1,8 @@
 {
 	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
+	"textures": {
+		"particle": "#texture"
+	},
 	"elements": [
 		{
 			"from": [0, 12, 0],
