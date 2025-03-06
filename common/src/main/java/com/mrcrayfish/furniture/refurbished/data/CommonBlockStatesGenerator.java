@@ -2705,7 +2705,7 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
                 .select(Direction.WEST, BathBlock.Type.BOTTOM, Variant.variant()
                     .with(VariantProperties.MODEL, bathBottomModel)
                     .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
-        this.registerItemWithModel(block, ModelDefinitions.BATH.create(block, textures, this.models::put));
+        this.registerItemWithModel(block, ModelDefinitions.BATH.create(block.asItem(), textures, this.models::put));
     }
 
     private void latticeFence(LatticeFenceBlock block)
