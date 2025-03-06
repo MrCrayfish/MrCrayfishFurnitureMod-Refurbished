@@ -390,6 +390,7 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
         List<ItemStack> remainingItems = this.getCraftingRemainingItems();
 
         this.clearContent();
+        this.setChanged();
         this.spawnSliceParticles(stack);
         this.spawnMagicParticles();
 
