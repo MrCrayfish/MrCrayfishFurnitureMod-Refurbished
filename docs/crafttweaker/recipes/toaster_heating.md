@@ -19,12 +19,13 @@ The Toaster is block that allows a player to heat/cook an item. It can cook up t
 
 Adds a new heating recipe to the toaster
 
-| Paramater  |                                          Type                                           | Required |                              Description                              |
-| :--------: | :-------------------------------------------------------------------------------------: | :------: | :-------------------------------------------------------------------: |
-|    name    |                                         string                                          |   Yes    |                The name of the recipe, must be unique.                |
-| ingredient | [IIngredient](https://docs.blamejared.com/1.20.4/en/vanilla/api/ingredient/IIngredient) |   Yes    |                       The ingredient to freeze                        |
-|   result   |     [IItemStack](https://docs.blamejared.com/1.20.4/en/vanilla/api/item/IItemStack)     |   Yes    | The resulting item from heating the `ingredient`, can have an amount. |
-|    time    |                                           int                                           |    No    |         The duration in ticks to heat the item. Default `200`         |
+| Paramater  |                                          Type                                           | Required |                                                                  Description                                                                   |
+| :--------: | :-------------------------------------------------------------------------------------: | :------: | :--------------------------------------------------------------------------------------------------------------------------------------------: |
+|    name    |                                         string                                          |   Yes    |                                                    The name of the recipe, must be unique.                                                     |
+|   group    |                                         string                                          |   Yes    | The group to place the recipe into. In the recipe book, this will show as a separate tab but will still be identified under the same category. |
+| ingredient | [IIngredient](https://docs.blamejared.com/1.20.4/en/vanilla/api/ingredient/IIngredient) |   Yes    |                                                            The ingredient to freeze                                                            |
+|   result   |     [IItemStack](https://docs.blamejared.com/1.20.4/en/vanilla/api/item/IItemStack)     |   Yes    |                                     The resulting item from heating the `ingredient`, can have an amount.                                      |
+|    time    |                                           int                                           |    No    |                                             The duration in ticks to heat the item. Default `200`                                              |
 
 #### Example
 <Tabs>

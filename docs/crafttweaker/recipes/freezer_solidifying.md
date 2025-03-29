@@ -19,12 +19,13 @@ Solidifying/Freezing is a feature of the Fridge in MrCrayfish's Furniture Mod: R
 
 Adds a new solidifying recipe to the freezer
 
-| Paramater  |                                          Type                                           | Required |                              Description                              |
-| :--------: | :-------------------------------------------------------------------------------------: | :------: | :-------------------------------------------------------------------: |
-|    name    |                                         string                                          |   Yes    |                The name of the recipe, must be unique.                |
-| ingredient | [IIngredient](https://docs.blamejared.com/1.20.4/en/vanilla/api/ingredient/IIngredient) |   Yes    |                       The ingredient to freeze                        |
-|   result   |     [IItemStack](https://docs.blamejared.com/1.20.4/en/vanilla/api/item/IItemStack)     |   Yes    | The resulting item from slicing the `ingredient`, can have an amount. |
-|    time    |                                           int                                           |    No    |        The duration in ticks to freeze the item. Default `200`        |
+| Paramater  |                                          Type                                           | Required |                                                                  Description                                                                   |
+| :--------: | :-------------------------------------------------------------------------------------: | :------: | :--------------------------------------------------------------------------------------------------------------------------------------------: |
+|    name    |                                         string                                          |   Yes    |                                                    The name of the recipe, must be unique.                                                     |
+|   group    |                                         string                                          |   Yes    | The group to place the recipe into. In the recipe book, this will show as a separate tab but will still be identified under the same category. |
+| ingredient | [IIngredient](https://docs.blamejared.com/1.20.4/en/vanilla/api/ingredient/IIngredient) |   Yes    |                                                            The ingredient to freeze                                                            |
+|   result   |     [IItemStack](https://docs.blamejared.com/1.20.4/en/vanilla/api/item/IItemStack)     |   Yes    |                                     The resulting item from slicing the `ingredient`, can have an amount.                                      |
+|    time    |                                           int                                           |    No    |                                            The duration in ticks to freeze the item. Default `200`                                             |
 
 #### Example
 <Tabs>
