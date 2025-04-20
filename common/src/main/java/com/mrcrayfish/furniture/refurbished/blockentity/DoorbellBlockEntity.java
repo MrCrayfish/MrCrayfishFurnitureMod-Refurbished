@@ -6,6 +6,7 @@ import com.mrcrayfish.furniture.refurbished.network.message.MessageDoorbellNotif
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
@@ -100,18 +101,9 @@ public class DoorbellBlockEntity extends ElectricityModuleBlockEntity implements
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
         super.loadAdditional(tag, provider);
-        if(tag.contains("Owner", Tag.TAG_INT_ARRAY))
-        {
-            this.owner = tag.getUUID("Owner");
-        }
-        if(tag.contains("CustomName", Tag.TAG_STRING))
-        {
-            this.customName = tag.getString("CustomName");
-        }
-        if(tag.contains("Powered", Tag.TAG_BYTE))
-        {
-            this.powered = tag.getBoolean("Powered");
-        }
+        tag.read("Owner", UUIDUtil.CODEC).ifPresent(value -> this.owner = value);
+        tag.getString("CustomName").ifPresent(value -> this.customName = value);
+        tag.getBoolean("Powered").ifPresent(value -> this.powered = value);
     }
 
     @Override
@@ -120,7 +112,7 @@ public class DoorbellBlockEntity extends ElectricityModuleBlockEntity implements
         super.saveAdditional(tag, provider);
         if(this.owner != null)
         {
-            tag.putUUID("Owner", this.owner);
+            tag.store("Owner", UUIDUtil.CODEC, this.owner);
         }
         tag.putBoolean("Powered", this.powered);
         tag.putString("CustomName", this.customName);

@@ -16,6 +16,7 @@ import java.util.Set;
  */
 public class Connection
 {
+    // TODO Migrate to a relative system instead of absolute
     private final Node a;
     private final Node b;
     private Integer hash;

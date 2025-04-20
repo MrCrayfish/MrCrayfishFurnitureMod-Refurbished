@@ -1,10 +1,8 @@
 package com.mrcrayfish.furniture.refurbished;
 
 import com.mrcrayfish.framework.api.FrameworkAPI;
-import com.mrcrayfish.framework.api.event.PlayerEvents;
-import com.mrcrayfish.framework.api.event.ServerEvents;
-import com.mrcrayfish.framework.api.event.TickEvents;
-import com.mrcrayfish.framework.config.FrameworkConfigManager;
+import com.mrcrayfish.framework.api.event.FrameworkPlayerEvents;
+import com.mrcrayfish.framework.api.event.FrameworkTickEvents;
 import com.mrcrayfish.furniture.refurbished.block.FryingPanBlock;
 import com.mrcrayfish.furniture.refurbished.blockentity.CuttingBoardBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.FryingPanBlockEntity;
@@ -15,11 +13,9 @@ import com.mrcrayfish.furniture.refurbished.computer.app.CoinMiner;
 import com.mrcrayfish.furniture.refurbished.computer.app.HomeControl;
 import com.mrcrayfish.furniture.refurbished.computer.app.Marketplace;
 import com.mrcrayfish.furniture.refurbished.computer.app.PaddleBall;
-import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModDataComponents;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
-import com.mrcrayfish.furniture.refurbished.electricity.ElectricityTicker;
 import com.mrcrayfish.furniture.refurbished.electricity.LinkManager;
 import com.mrcrayfish.furniture.refurbished.entity.Seat;
 import com.mrcrayfish.furniture.refurbished.image.PaletteImage;
@@ -31,13 +27,9 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.cauldron.CauldronInteraction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DispenserBlock;
@@ -51,13 +43,9 @@ public class Bootstrap
 {
     public static void init()
     {
-        Network.init();
-
         registerDispenserBehaviours();
         registerCauldronBehaviours();
         registerFrameworkEvents();
-
-        FrameworkAPI.registerSyncedDataKey(Seat.LOCK_YAW);
 
         Computer computer = Computer.get();
         computer.installProgram(Utils.resource("paddle_ball"), PaddleBall::new);
@@ -70,17 +58,17 @@ public class Bootstrap
     private static void registerFrameworkEvents()
     {
         // Link Manager and Delivery Service events
-        TickEvents.START_SERVER.register(server -> {
+        FrameworkTickEvents.START_SERVER.register(server -> {
             DeliveryService.get(server).ifPresent(DeliveryService::serverTick);
             Computer.get().getServices().forEach(IService::tick);
         });
-        TickEvents.END_PLAYER.register(player -> {
+        FrameworkTickEvents.END_PLAYER.register(player -> {
             MinecraftServer server = player.getServer();
             if(server != null) {
                 LinkManager.get(server).ifPresent(manager -> manager.onPlayerTick(player));
             }
         });
-        PlayerEvents.LOGGED_OUT.register(player -> {
+        FrameworkPlayerEvents.LOGGED_OUT.register(player -> {
             MinecraftServer server = player.getServer();
             if(server != null) {
                 LinkManager.get(server).ifPresent(manager -> manager.onPlayerLoggedOut(player));

@@ -137,12 +137,6 @@ public class LightswitchBlock extends FurnitureAttachedFaceBlock implements Enti
     }
 
     @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving)
-    {
-        super.onRemove(state, level, pos, newState, isMoving);
-    }
-
-    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
     {
         super.createBlockStateDefinition(builder);

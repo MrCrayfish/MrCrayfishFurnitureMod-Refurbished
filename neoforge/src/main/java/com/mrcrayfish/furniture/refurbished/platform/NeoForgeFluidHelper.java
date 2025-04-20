@@ -130,7 +130,7 @@ public class NeoForgeFluidHelper implements IFluidHelper
         @Override
         public void load(CompoundTag tag, HolderLookup.Provider provider)
         {
-            this.tank.readFromNBT(provider, tag.getCompound("FluidTank"));
+            this.tank.readFromNBT(provider, tag.getCompoundOrEmpty("FluidTank"));
         }
 
         @Override

@@ -460,18 +460,9 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
         super.loadAdditional(tag, provider);
-        if(tag.contains("NeedsFlipping", Tag.TAG_BYTE))
-        {
-            this.needsFlipping = tag.getBoolean("NeedsFlipping");
-        }
-        if(tag.contains("Flipped", Tag.TAG_BYTE))
-        {
-            this.flipped = tag.getBoolean("Flipped");
-        }
-        if(tag.contains("Rotation", Tag.TAG_INT))
-        {
-            this.rotation = tag.getInt("Rotation");
-        }
+        tag.getBoolean("NeedsFlipping").ifPresent(value -> this.needsFlipping = value);
+        tag.getBoolean("Flipped").ifPresent(value -> this.flipped = value);
+        tag.getInt("Rotation").ifPresent(value -> this.rotation = value);
     }
 
     @Override

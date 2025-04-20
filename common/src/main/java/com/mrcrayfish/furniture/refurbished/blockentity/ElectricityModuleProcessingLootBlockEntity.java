@@ -114,10 +114,7 @@ public abstract class ElectricityModuleProcessingLootBlockEntity extends Process
     {
         super.loadAdditional(tag, provider);
         this.readNodeNbt(tag);
-        if(tag.contains("Powered", Tag.TAG_BYTE))
-        {
-            this.powered = tag.getBoolean("Powered");
-        }
+        tag.getBoolean("Powered").ifPresent(value -> this.powered = value);
     }
 
     @Override

@@ -12,6 +12,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Objects;
 
@@ -23,7 +24,7 @@ public class ToiletBlockEntityRenderer implements BlockEntityRenderer<ToiletBloc
     public ToiletBlockEntityRenderer(BlockEntityRendererProvider.Context context) {}
 
     @Override
-    public void render(ToiletBlockEntity toilet, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay)
+    public void render(ToiletBlockEntity toilet, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay, Vec3 camera)
     {
         FluidContainer container = toilet.getFluidContainer();
         if(container == null || container.isEmpty())

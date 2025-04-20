@@ -2,7 +2,7 @@ import net.neoforged.gradle.common.tasks.PotentiallySignJar
 
 plugins {
     id 'multiloader-loader'
-    id 'net.neoforged.gradle.userdev' version '7.0.171'
+    id 'net.neoforged.gradle.userdev'
 }
 
 def at = file('src/main/resources/META-INF/accesstransformer.cfg')
@@ -35,9 +35,6 @@ dependencies {
     // Core dependencies
     implementation "net.neoforged:neoforge:${neoforge_version}"
     implementation "com.mrcrayfish:framework-neoforge:${minecraft_version}-${framework_version}"
-
-    // Runtime mods
-    runtimeOnly "com.mrcrayfish:catalogue-neoforge:${minecraft_version}-${catalogue_version}"
 
     // JEI
     compileOnly "mezz.jei:jei-${jei_minecraft_version}-common-api:${jei_version}"

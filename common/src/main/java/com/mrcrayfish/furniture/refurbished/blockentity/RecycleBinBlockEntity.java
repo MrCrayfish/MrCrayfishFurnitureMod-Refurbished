@@ -276,26 +276,11 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
         super.loadAdditional(tag, provider);
-        if(tag.contains("Powered", Tag.TAG_BYTE))
-        {
-            this.powered = tag.getBoolean("Powered");
-        }
-        if(tag.contains("Enabled", Tag.TAG_BYTE))
-        {
-            this.enabled = tag.getBoolean("Enabled");
-        }
-        if(tag.contains("ProcessTime", Tag.TAG_INT))
-        {
-            this.processingTime = tag.getInt("ProcessTime");
-        }
-        if(tag.contains("Processing", CompoundTag.TAG_BYTE))
-        {
-            this.processing = tag.getBoolean("Processing");
-        }
-        if(tag.contains("Recycled", Tag.TAG_INT))
-        {
-            this.recycled = Math.max(tag.getInt("Recycled"), 0);
-        }
+        tag.getBoolean("Powered").ifPresent(value -> this.powered = value);
+        tag.getBoolean("Enabled").ifPresent(value -> this.enabled = value);
+        tag.getInt("ProcessTime").ifPresent(value -> this.processingTime = value);
+        tag.getBoolean("Processing").ifPresent(value -> this.processing = value);
+        tag.getInt("Recycled").ifPresent(value -> this.recycled = Math.max(value, 0));
     }
 
     @Override

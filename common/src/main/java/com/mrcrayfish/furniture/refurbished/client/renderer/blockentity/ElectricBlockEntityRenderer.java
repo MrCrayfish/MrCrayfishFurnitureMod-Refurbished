@@ -2,18 +2,21 @@ package com.mrcrayfish.furniture.refurbished.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import com.mrcrayfish.framework.api.client.model.renderer.StandaloneModelRenderer;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.client.DeferredElectricRenderer;
-import com.mrcrayfish.furniture.refurbished.client.ExtraModels;
 import com.mrcrayfish.furniture.refurbished.client.LinkHandler;
+import com.mrcrayfish.furniture.refurbished.core.ModExtraModels;
 import com.mrcrayfish.furniture.refurbished.electricity.Connection;
 import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
@@ -39,7 +42,7 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNod
     public ElectricBlockEntityRenderer(BlockEntityRendererProvider.Context context) {}
 
     @Override
-    public void render(T node, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay)
+    public void render(T node, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay, Vec3 camera)
     {
         drawNodeAndConnections(node);
     }
@@ -123,11 +126,11 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNod
         return DEFAULT_COLOUR;
     }
 
-    private static BakedModel getNodeModel(IElectricityNode node)
+    private static BlockModelPart getNodeModel(IElectricityNode node)
     {
         if(node.isNodeConnectionLimitReached())
         {
-            return ExtraModels.ELECTRIC_NODE_ERROR.getModel();
+            return ModExtraModels.ELECTRIC_NODE_ERROR.getModel();
         }
 
         LinkHandler handler = LinkHandler.get();
@@ -135,17 +138,17 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNod
         {
             if(handler.canLinkToNode(node.getNodeLevel(), node))
             {
-                return ExtraModels.ELECTRIC_NODE_SUCCESS.getModel();
+                return ModExtraModels.ELECTRIC_NODE_SUCCESS.getModel();
             }
-            return ExtraModels.ELECTRIC_NODE_ERROR.getModel();
+            return ModExtraModels.ELECTRIC_NODE_ERROR.getModel();
         }
 
         if(node.isNodePowered())
         {
-            return ExtraModels.ELECTRIC_NODE_NEUTRAL.getModel();
+            return ModExtraModels.ELECTRIC_NODE_NEUTRAL.getModel();
         }
 
-        return ExtraModels.ELECTRIC_NODE_POWER.getModel();
+        return ModExtraModels.ELECTRIC_NODE_POWER.getModel();
     }
 
     @Override

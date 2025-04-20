@@ -395,22 +395,10 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
         super.loadAdditional(tag, provider);
-        if(tag.contains("Processing", Tag.TAG_BYTE))
-        {
-            this.processing = tag.getBoolean("Processing");
-        }
-        if(tag.contains("TotalProcessingTime", Tag.TAG_INT))
-        {
-            this.totalProcessingTime = tag.getInt("TotalProcessingTime");
-        }
-        if(tag.contains("ProcessingTime", Tag.TAG_INT))
-        {
-            this.processingTime = tag.getInt("ProcessingTime");
-        }
-        if(tag.contains("Enabled", Tag.TAG_BYTE))
-        {
-            this.enabled = tag.getBoolean("Enabled");
-        }
+        tag.getBoolean("Processing").ifPresent(value -> this.processing = value);
+        tag.getInt("ProcessingTime").ifPresent(value -> this.processingTime = value);
+        tag.getInt("TotalProcessingTime").ifPresent(value -> this.totalProcessingTime = value);
+        tag.getBoolean("Enabled").ifPresent(value -> this.enabled = value);
         this.readCookingSpaces(tag);
     }
 
@@ -542,19 +530,20 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
      */
     private void readCookingSpaces(CompoundTag compound)
     {
-        if(compound.contains("CookingSpaces", Tag.TAG_LIST))
-        {
-            ListTag list = compound.getList("CookingSpaces", Tag.TAG_COMPOUND);
-            list.forEach(nbt -> {
-                CompoundTag tag = (CompoundTag) nbt;
-                if(tag.contains("Position", Tag.TAG_INT)) {
-                    int position = tag.getInt("Position");
+        if(!compound.contains("CookingSpaces"))
+            return;
+
+        ListTag list = compound.getListOrEmpty("CookingSpaces");
+        list.forEach(nbt -> {
+            if(nbt instanceof CompoundTag tag) {
+                if(tag.contains("Position")) {
+                    int position = tag.getIntOr("Position", -1);
                     if(position >= 0 && position < this.spaces.size()) {
                         this.spaces.get(position).readFromTag(tag);
                     }
                 }
-            });
-        }
+            }
+        });
     }
 
     @Override
@@ -564,6 +553,13 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
         {
             contents.accountStack(stack);
         }
+    }
+
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state)
+    {
+        super.preRemoveSideEffects(pos, state);
+        this.onDestroyed(pos);
     }
 
     protected class CookingSpace implements IProcessingBlock
@@ -718,14 +714,8 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
 
         public void readFromTag(CompoundTag tag)
         {
-            if(tag.contains("CookingTime", Tag.TAG_INT))
-            {
-                this.bakingTime = tag.getInt("CookingTime");
-            }
-            if(tag.contains("TotalCookingTime", Tag.TAG_INT))
-            {
-                this.totalBakingTime = tag.getInt("TotalCookingTime");
-            }
+            tag.getInt("CookingTime").ifPresent(value -> this.bakingTime = value);
+            tag.getInt("TotalCookingTime").ifPresent(value -> this.totalBakingTime = value);
         }
     }
 }

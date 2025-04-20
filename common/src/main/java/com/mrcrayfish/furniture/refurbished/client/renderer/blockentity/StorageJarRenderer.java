@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.mrcrayfish.furniture.refurbished.block.CuttingBoardBlock;
 import com.mrcrayfish.furniture.refurbished.blockentity.StorageJarBlockEntity;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
@@ -12,19 +11,16 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.renderer.item.ItemModel;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Author: MrCrayfish
@@ -45,7 +41,7 @@ public class StorageJarRenderer implements BlockEntityRenderer<StorageJarBlockEn
     }
 
     @Override
-    public void render(StorageJarBlockEntity storageJar, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay)
+    public void render(StorageJarBlockEntity storageJar, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay, Vec3 camera)
     {
         ItemStack filter = storageJar.getItem(0);
         if(filter.isEmpty())

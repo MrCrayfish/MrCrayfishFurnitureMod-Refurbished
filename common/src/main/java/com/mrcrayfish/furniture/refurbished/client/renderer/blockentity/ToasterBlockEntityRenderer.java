@@ -14,6 +14,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Author: MrCrayfish
@@ -28,7 +29,7 @@ public class ToasterBlockEntityRenderer implements BlockEntityRenderer<ToasterBl
     }
 
     @Override
-    public void render(ToasterBlockEntity toaster, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay)
+    public void render(ToasterBlockEntity toaster, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay, Vec3 camera)
     {
         poseStack.pushPose();
         poseStack.translate(0.5, toaster.isHeating() ? 0.375 : 0.4375, 0.5);

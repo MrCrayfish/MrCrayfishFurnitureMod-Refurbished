@@ -14,7 +14,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -43,6 +46,12 @@ public class FreezerBlock extends FridgeBlock
     {
         super(type, properties);
         this.fridge = fridge;
+    }
+
+    @Override
+    public boolean isFreezer()
+    {
+        return true;
     }
 
     public Supplier<Block> getFridge()
@@ -93,13 +102,19 @@ public class FreezerBlock extends FridgeBlock
     }
 
     @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving)
+    public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
     {
-        super.onRemove(state, level, pos, newState, isMoving);
-        if(!state.is(newState.getBlock()) && level.getBlockState(pos.above()).getBlock() instanceof FridgeBlock)
+        if(this.isFreezer() && !level.isClientSide())
         {
-            level.removeBlock(pos.above(), false);
+            BlockPos abovePos = pos.above();
+            BlockState aboveState = level.getBlockState(abovePos);
+            if(aboveState.getBlock() instanceof FridgeBlock)
+            {
+                level.setBlock(abovePos, Blocks.AIR.defaultBlockState(), Block.UPDATE_SUPPRESS_DROPS | Block.UPDATE_CLIENTS | Block.UPDATE_NEIGHBORS);
+                level.levelEvent(null, LevelEvent.PARTICLES_DESTROY_BLOCK, abovePos, Block.getId(aboveState));
+            }
         }
+        return super.playerWillDestroy(level, pos, state, player);
     }
 
     @Nullable

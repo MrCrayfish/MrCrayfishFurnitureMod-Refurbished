@@ -61,20 +61,6 @@ public abstract class FurnitureAttachedFaceBlock extends FaceAttachedHorizontalD
     }
 
     @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving)
-    {
-        if(!state.is(newState.getBlock()))
-        {
-            if(level.getBlockEntity(pos) instanceof Container container)
-            {
-                Containers.dropContents(level, pos, container);
-                level.updateNeighbourForOutputSignal(pos, this);
-            }
-        }
-        super.onRemove(state, level, pos, newState, isMoving);
-    }
-
-    @Override
     public boolean triggerEvent(BlockState state, Level level, BlockPos pos, int id, int type)
     {
         BlockEntity blockEntity = level.getBlockEntity(pos);

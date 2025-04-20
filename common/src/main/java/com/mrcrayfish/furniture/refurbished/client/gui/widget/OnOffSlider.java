@@ -43,10 +43,6 @@ public class OnOffSlider extends Button
     @Override
     protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
-        RenderSystem.enableBlend();
-        RenderSystem.enableDepthTest();
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
         graphics.blit(RenderType::guiTextured, WIDGETS, this.getX(), this.getY(), 0, this.enabled ? this.getHeight() : 0, this.getWidth(), this.getHeight(), 64, 64);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     }
 }

@@ -50,7 +50,8 @@
         },
         "framework": {
             "containers": [
-                "com.mrcrayfish.furniture.refurbished.core"
+                "com.mrcrayfish.furniture.refurbished.core",
+                "com.mrcrayfish.furniture.refurbished.network"
             ],
             "configs": [
                 "com.mrcrayfish.furniture.refurbished.Config"

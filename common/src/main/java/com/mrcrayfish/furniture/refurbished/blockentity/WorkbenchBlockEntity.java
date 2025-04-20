@@ -373,14 +373,8 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
         super.loadAdditional(tag, provider);
-        if(tag.contains("SelectedRecipe", Tag.TAG_INT))
-        {
-            this.selectedRecipe.set(tag.getInt("SelectedRecipe"));
-        }
-        if(tag.contains("IncludeNeighbours", Tag.TAG_BYTE))
-        {
-            this.searchNeighbours.set(tag.getBoolean("IncludeNeighbours") ? 1 : 0);
-        }
+        tag.getInt("SelectedRecipe").ifPresent(this.selectedRecipe::set);
+        tag.getBoolean("IncludeNeighbours").ifPresent(value -> this.searchNeighbours.set(value ? 1 : 0));
     }
 
     @Override

@@ -1,8 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mrcrayfish.furniture.refurbished.Constants;
+import com.mrcrayfish.furniture.refurbished.core.ModRenderPipelines;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
@@ -14,12 +13,11 @@ import java.util.function.Function;
 /**
  * Author: MrCrayfish
  */
-public class FabricRenderType extends RenderType
+public class FabricRenderType
 {
     private static final Function<ResourceLocation, RenderType> TELEVISION_SCREEN = Util.memoize((id) -> {
-        return RenderType.create(Constants.MOD_ID + "_television_screen", DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS, 0x200000, true, false, RenderType.CompositeState.builder()
-                .setLightmapState(LIGHTMAP)
-                .setShaderState(RENDERTYPE_SOLID_SHADER)
+        return RenderType.create(Constants.MOD_ID + "_television_screen", 0x200000, true, false, ModRenderPipelines.TELEVISION, RenderType.CompositeState.builder()
+                .setLightmapState(RenderType.LIGHTMAP)
                 .setTextureState(new RenderStateShard.TextureStateShard(id, TriState.FALSE, false))
                 .createCompositeState(true));
     });
@@ -27,12 +25,5 @@ public class FabricRenderType extends RenderType
     public static RenderType televisionScreen(ResourceLocation id)
     {
         return TELEVISION_SCREEN.apply(id);
-    }
-
-    // Unused. Don't call
-    public FabricRenderType(String id, VertexFormat format, VertexFormat.Mode mode, int bufferSize, boolean b1, boolean b2, Runnable run1, Runnable run2)
-    {
-        super(id, format, mode, bufferSize, b1, b2, run1, run2);
-        throw new UnsupportedOperationException();
     }
 }

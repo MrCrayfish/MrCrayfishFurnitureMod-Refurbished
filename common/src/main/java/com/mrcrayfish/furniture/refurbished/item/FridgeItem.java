@@ -13,11 +13,13 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.block.Block;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * Author: MrCrayfish
@@ -45,7 +47,7 @@ public class FridgeItem extends BlockItem
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines, TooltipFlag flag)
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> lines, TooltipFlag flag)
     {
         TaskRunner.runIf(Environment.CLIENT, () -> () -> {
             Minecraft.getInstance().font.getSplitter().splitLines(PoweredItem.POWER_TOOLTIP, 150, Style.EMPTY).forEach(text -> {
@@ -55,9 +57,9 @@ public class FridgeItem extends BlockItem
                     line.append(Component.literal(s).withStyle(style));
                     return Optional.empty();
                 }, Style.EMPTY);
-                lines.add(line);
+                lines.accept(line);
             });
         });
-        super.appendHoverText(stack, context, lines, flag);
+        super.appendHoverText(stack, context, display, lines, flag);
     }
 }

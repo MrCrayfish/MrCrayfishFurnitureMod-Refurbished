@@ -1,28 +1,23 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
 import com.google.common.collect.Sets;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.buffers.BufferType;
+import com.mojang.blaze3d.buffers.BufferUsage;
+import com.mojang.blaze3d.buffers.GpuBuffer;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.MeshData;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.textures.GpuTexture;
+import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import com.mrcrayfish.framework.api.config.event.FrameworkConfigEvents;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.ElectricBlockEntityRenderer;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
+import com.mrcrayfish.furniture.refurbished.core.ModRenderPipelines;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
-import com.mrcrayfish.furniture.refurbished.electricity.Connection;
-import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
-import com.mrcrayfish.furniture.refurbished.electricity.ISourceNode;
-import com.mrcrayfish.furniture.refurbished.electricity.LinkHitResult;
-import com.mrcrayfish.furniture.refurbished.electricity.LinkManager;
-import com.mrcrayfish.furniture.refurbished.electricity.NodeHitResult;
+import com.mrcrayfish.furniture.refurbished.electricity.*;
 import com.mrcrayfish.furniture.refurbished.item.WrenchItem;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageDeleteLink;
@@ -31,7 +26,7 @@ import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.Util;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.CoreShaders;
+import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
@@ -44,14 +39,12 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Intersectiond;
 import org.joml.Matrix4f;
 import org.joml.Vector3d;
 
-import org.jetbrains.annotations.Nullable;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Author: MrCrayfish
@@ -593,28 +586,40 @@ public class LinkHandler
         areaAlpha = 1.0F - (float) Math.pow(1.0F - areaAlpha, 5);
 
         // Draw the powerable zone border
-        Tesselator tesselator = Tesselator.getInstance();
-        RenderSystem.enableBlend();
-        RenderSystem.enableDepthTest();
-        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        RenderSystem.setShaderTexture(0, this.linkInsideArea ? POWERABLE_AREA : UNPOWERABLE_AREA);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 0.6F * areaAlpha);
-        RenderSystem.depthMask(Minecraft.useShaderTransparency());
-        RenderSystem.setShader(CoreShaders.POSITION_TEX);
-        RenderSystem.polygonOffset(-3.0F, -3.0F);
-        RenderSystem.enablePolygonOffset();
-        BufferBuilder builder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        areaShape.toAabbs().forEach(box -> this.drawTexturedBox(poseStack, builder, box));
-        MeshData data = builder.build();
-        if(data != null)
+        RenderPipeline pipeline = ModRenderPipelines.POWERABLE_AREA;
+        try(ByteBufferBuilder quadBuilder = new ByteBufferBuilder(pipeline.getVertexFormat().getVertexSize() * 4))
         {
-            BufferUploader.drawWithShader(data);
+            BufferBuilder vertexBuilder = new BufferBuilder(quadBuilder, pipeline.getVertexFormatMode(), pipeline.getVertexFormat());
+            areaShape.toAabbs().forEach(box -> this.drawTexturedBox(poseStack, vertexBuilder, box));
+            try(MeshData data = vertexBuilder.build())
+            {
+                if(data != null)
+                {
+                    RenderTarget mainTarget = Minecraft.getInstance().getMainRenderTarget();
+                    GpuTexture mainColor = mainTarget.getColorTexture();
+                    GpuTexture mainDepth = mainTarget.getDepthTexture();
+
+                    AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(this.linkInsideArea ? POWERABLE_AREA : UNPOWERABLE_AREA);
+                    RenderSystem.AutoStorageIndexBuffer autoIndexBuffer = RenderSystem.getSequentialBuffer(pipeline.getVertexFormatMode());
+                    VertexFormat.IndexType indexType = autoIndexBuffer.type();
+                    GpuBuffer indexBuffer = autoIndexBuffer.getBuffer(data.drawState().indexCount());
+                    GpuBuffer vertexBuffer = RenderSystem.getDevice().createBuffer(() -> "Powerable Area", BufferType.VERTICES, BufferUsage.DYNAMIC_WRITE, data.vertexBuffer().remaining());
+                    RenderSystem.getDevice().createCommandEncoder().writeToBuffer(vertexBuffer, data.vertexBuffer(), 0);
+                    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 0.6F * areaAlpha);
+
+                    try(RenderPass pass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(mainColor, OptionalInt.empty(), mainDepth, OptionalDouble.empty()))
+                    {
+                        pass.setPipeline(pipeline);
+                        pass.setVertexBuffer(0, vertexBuffer);
+                        pass.setIndexBuffer(indexBuffer, indexType);
+                        pass.bindSampler("Sampler0", texture.getTexture());
+                        pass.drawIndexed(0, data.drawState().indexCount());
+                    }
+
+                    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+                }
+            }
         }
-        RenderSystem.polygonOffset(0.0F, 0.0F);
-        RenderSystem.disablePolygonOffset();
-        RenderSystem.disableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
     /**

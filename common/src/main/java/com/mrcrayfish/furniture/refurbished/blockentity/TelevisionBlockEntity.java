@@ -184,6 +184,7 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
             return;
         }
 
+        // TODO use WeightedList
         List<Channel> channels = new ArrayList<>(VIEWABLE_CHANNELS);
         channels.remove(this.lastChannel); // Don't select the current channel
         int totalWeight = channels.stream().mapToInt(Channel::weight).sum();
@@ -261,14 +262,11 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
         super.loadAdditional(tag, provider);
-        if(tag.contains("CurrentChannel", Tag.TAG_STRING))
-        {
-            ResourceLocation id = ResourceLocation.tryParse(tag.getString("CurrentChannel"));
-            if(id != null && !id.equals(WHITE_NOISE.id) && ID_TO_CHANNEL.containsKey(id))
-            {
-                this.currentChannel = ID_TO_CHANNEL.get(id);
+        tag.read("CurrentChannel", ResourceLocation.CODEC).ifPresent(value -> {
+            if(!value.equals(WHITE_NOISE.id) && ID_TO_CHANNEL.containsKey(value)) {
+                this.currentChannel = ID_TO_CHANNEL.get(value);
             }
-        }
+        });
     }
 
     @Override
@@ -277,7 +275,7 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
         super.saveAdditional(tag, provider);
         if(this.currentChannel != null && this.currentChannel != WHITE_NOISE)
         {
-            tag.putString("CurrentChannel", this.currentChannel.id.toString());
+            tag.store("CurrentChannel", ResourceLocation.CODEC, this.currentChannel.id);
         }
     }
 

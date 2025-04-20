@@ -153,7 +153,7 @@ public class TrampolineBlock extends FurnitureBlock implements BlockTagSupplier
     }
 
     @Override
-    public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, float fallDistance)
+    public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, double fallDistance)
     {
         // Overriding with empty block prevents fall damage
     }
@@ -170,13 +170,17 @@ public class TrampolineBlock extends FurnitureBlock implements BlockTagSupplier
         entity.push(0, Math.sqrt(0.22 * (bounceHeight + 0.25F)), 0);
         Level level = entity.level();
         this.spawnBounceParticle(level, entity, pos, !(entity instanceof Player));
-        if(!level.isClientSide())
+        if(level.isClientSide())
+        {
+            if(entity.isClientAuthoritative() && entity.getControllingPassenger() instanceof Player player)
+            {
+                entity = player;
+            }
+            level.playSound(entity, pos, ModSounds.BLOCK_TRAMPOLINE_BOUNCE.get(), SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.2F + 0.9F);
+        }
+        else
         {
             level.playSound(null, pos, ModSounds.BLOCK_TRAMPOLINE_BOUNCE.get(), SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.2F + 0.9F);
-        }
-        else if(entity.isControlledByOrIsLocalPlayer())
-        {
-            level.playSound(entity.getControllingPassenger(), pos, ModSounds.BLOCK_TRAMPOLINE_BOUNCE.get(), SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.2F + 0.9F);
         }
     }
 
@@ -262,26 +266,6 @@ public class TrampolineBlock extends FurnitureBlock implements BlockTagSupplier
         ParticleOptions particle = superBounce ? ModParticleTypes.SUPER_BOUNCE.get() : ModParticleTypes.BOUNCE.get();
         Vec3 particlePos = Vec3.upFromBottomCenterOf(pos, 0.82);
         level.addParticle(particle, bouncingEntity.xo, particlePos.y, bouncingEntity.zo, 0, 0, 0);
-    }
-
-    /**
-     * Handles logic for bouncing boat
-     *
-     * @param boat the boat that landed on the trampoline
-     * @param velocity the current velocity of the boat
-     */
-    private void bounceBoat(Boat boat, Vec3 velocity)
-    {
-        Level level = boat.level();
-        boat.setDeltaMovement(velocity.x, -velocity.y, velocity.z);
-        if(boat.isControlledByLocalInstance() && !boat.isEffectiveAi())
-        {
-            level.playLocalSound(boat.blockPosition(), ModSounds.BLOCK_TRAMPOLINE_BOUNCE.get(), SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.2F + 0.9F, false);
-        }
-        else
-        {
-            level.playSound(null, boat.blockPosition(), ModSounds.BLOCK_TRAMPOLINE_BOUNCE.get(), SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.2F + 0.9F);
-        }
     }
 
     // To reduce the number of block states, an enum is being used to define only valid shapes.

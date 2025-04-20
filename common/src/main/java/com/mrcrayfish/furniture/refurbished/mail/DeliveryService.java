@@ -9,6 +9,8 @@ import com.mrcrayfish.furniture.refurbished.client.ClientMailbox;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -24,6 +26,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.apache.commons.lang3.tuple.Pair;
@@ -40,21 +43,30 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DeliveryService extends SavedData
 {
-    private static final String STORAGE_ID = "refurbished_furniture_delivery_service";
+    @SuppressWarnings("DataFlowIssue")
+    private static final SavedDataType<DeliveryService> TYPE = new SavedDataType<>("refurbished_furniture_delivery_service", context -> {
+        return new DeliveryService(context.levelOrThrow().getServer());
+    }, context -> {
+        return CompoundTag.CODEC.xmap(tag -> {
+            ServerLevel level = context.levelOrThrow();
+            MinecraftServer server = level.getServer();
+            RegistryAccess access = level.registryAccess();
+            return new DeliveryService(server, tag, access);
+        }, service -> {
+            ServerLevel level = context.levelOrThrow();
+            RegistryAccess access = level.registryAccess();
+            return service.save(access);
+        });
+    }, null);
 
     public static Optional<DeliveryService> get(MinecraftServer server)
     {
         ServerLevel level = server.getLevel(Level.OVERWORLD);
         if(level != null)
         {
-            return Optional.of(level.getDataStorage().computeIfAbsent(createFactory(server), STORAGE_ID));
+            return Optional.of(level.getDataStorage().computeIfAbsent(TYPE));
         }
         return Optional.empty();
-    }
-
-    public static SavedData.Factory<DeliveryService> createFactory(MinecraftServer server)
-    {
-        return new SavedData.Factory<>(() -> new DeliveryService(server), (tag, provider) -> new DeliveryService(server, tag, provider), DataFixTypes.SAVED_DATA_FORCED_CHUNKS);
     }
 
     private final MinecraftServer server;
@@ -292,28 +304,25 @@ public class DeliveryService extends SavedData
 
     private void load(CompoundTag compound, HolderLookup.Provider provider)
     {
-        if(compound.contains("Mailboxes", Tag.TAG_LIST))
+        if(compound.contains("Mailboxes"))
         {
-            ListTag list = compound.getList("Mailboxes", Tag.TAG_COMPOUND);
+            ListTag list = compound.getListOrEmpty("Mailboxes");
             list.forEach(tag ->
             {
+                if(!(tag instanceof CompoundTag mailboxTag))
+                    return;
+
                 try
                 {
-                    CompoundTag mailboxTag = (CompoundTag) tag;
-                    ResourceKey<Level> levelKey = createLevelKey(mailboxTag.getString("Level"));
-                    if(levelKey == null)
-                    {
-                        Constants.LOG.error("Failed to load a mailbox due to invalid dimension");
-                        return;
-                    }
-                    UUID id = mailboxTag.getUUID("UUID");
-                    BlockPos pos = BlockPos.of(mailboxTag.getLong("BlockPosition"));
+                    ResourceKey<Level> levelKey = createLevelKey(mailboxTag.getString("Level").orElseThrow());
+                    UUID id = mailboxTag.read("UUID", UUIDUtil.CODEC).orElseThrow();
+                    BlockPos pos = BlockPos.of(mailboxTag.getLong("BlockPosition").orElseThrow());
                     MutableObject<UUID> owner = new MutableObject<>();
-                    if(mailboxTag.contains("Owner", Tag.TAG_INT_ARRAY))
+                    if(mailboxTag.contains("Owner"))
                     {
-                        owner.setValue(mailboxTag.getUUID("Owner"));
+                        mailboxTag.read("Owner", UUIDUtil.CODEC).ifPresent(owner::setValue);
                     }
-                    String customName = mailboxTag.getString("CustomName");
+                    String customName = mailboxTag.getString("CustomName").orElse("Mailbox");
                     customName = customName.substring(0, Math.min(customName.length(), 32));
                     Queue<ItemStack> queue = Mailbox.readQueueListTag(mailboxTag, provider);
                     Mailbox mailbox = new Mailbox(id, levelKey, pos, owner, new MutableObject<>(customName), queue, new MutableBoolean(), this);
@@ -328,19 +337,19 @@ public class DeliveryService extends SavedData
         }
     }
 
-    @Override
-    public CompoundTag save(CompoundTag tag, HolderLookup.Provider provider)
+    public CompoundTag save(HolderLookup.Provider provider)
     {
+        CompoundTag tag = new CompoundTag();
         ListTag list = new ListTag();
         this.mailboxes.forEach((uuid, mailbox) ->
         {
             if(!mailbox.removed().booleanValue())
             {
                 CompoundTag mailboxTag = new CompoundTag();
-                mailboxTag.putUUID("UUID", uuid);
+                mailboxTag.store("UUID", UUIDUtil.CODEC, uuid);
                 mailboxTag.putString("Level", mailbox.levelKey().location().toString());
                 mailboxTag.putLong("BlockPosition", mailbox.pos().asLong());
-                Optional.ofNullable(mailbox.owner().getValue()).ifPresent(id -> mailboxTag.putUUID("Owner", id));
+                Optional.ofNullable(mailbox.owner().getValue()).ifPresent(id -> mailboxTag.store("Owner", UUIDUtil.CODEC, id));
                 Optional.ofNullable(mailbox.customName().getValue()).ifPresent(name -> mailboxTag.putString("CustomName", name));
                 mailbox.writeQueue(mailboxTag, provider);
                 list.add(mailboxTag);

@@ -185,7 +185,7 @@ public class BathBlockEntity extends BlockEntity implements IFluidContainerBlock
         super.loadAdditional(tag, provider);
         if(this.tank != null)
         {
-            this.tank.load(tag.getCompound("FluidTank"), provider);
+            this.tank.load(tag.getCompoundOrEmpty("FluidTank"), provider);
         }
     }
 

@@ -151,10 +151,7 @@ public class PlateBlockEntity extends BasicLootBlockEntity
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
         super.loadAdditional(tag, provider);
-        if(tag.contains("Rotation", Tag.TAG_INT))
-        {
-            this.rotation = tag.getInt("Rotation");
-        }
+        tag.getInt("Rotation").ifPresent(value -> this.rotation = value);
     }
 
     @Override

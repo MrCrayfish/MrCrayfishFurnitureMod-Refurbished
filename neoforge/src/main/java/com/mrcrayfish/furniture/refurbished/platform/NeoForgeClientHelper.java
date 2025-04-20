@@ -1,8 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.platform;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mrcrayfish.furniture.refurbished.client.NeoForgeRenderType;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.FreezerScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.MicrowaveScreen;
@@ -19,13 +18,11 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -33,7 +30,6 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
@@ -84,13 +80,6 @@ public class NeoForgeClientHelper implements IClientHelper
     }
 
     @Override
-    public void drawBakedModel(BakedModel model, PoseStack poseStack, VertexConsumer consumer, int light, int overlay)
-    {
-        // TODO 1.12.4 test
-        Minecraft.getInstance().getBlockRenderer().getModelRenderer().renderModel(poseStack.last(), consumer, null, model, 1, 1, 1, light, overlay);
-    }
-
-    @Override
     public RenderType getTelevisionScreenRenderType(ResourceLocation id)
     {
         return NeoForgeRenderType.televisionScreen(id);
@@ -121,6 +110,12 @@ public class NeoForgeClientHelper implements IClientHelper
     public AbstractContainerScreen createStoveScreen(AbstractContainerMenu menu, Inventory playerInventory, Component title)
     {
         return new StoveScreen((StoveMenu) menu, playerInventory, title);
+    }
+
+    @Override
+    public RenderPipeline.Snippet getMatricesColorSnippet()
+    {
+        return RenderPipelines.MATRICES_COLOR_SNIPPET;
     }
 
     private Function<ResourceLocation, TextureAtlasSprite> getBlockTextures()

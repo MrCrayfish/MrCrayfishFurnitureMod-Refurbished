@@ -1,10 +1,17 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
+import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.platform.DepthTestFunction;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mrcrayfish.framework.api.client.FrameworkClientAPI;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.client.registration.ItemTintRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ParticleProviderRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
+import com.mrcrayfish.furniture.refurbished.core.ModRenderPipelines;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.color.item.ItemTintSource;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
@@ -25,6 +32,8 @@ import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.function.BiConsumer;
 
+import static net.minecraft.client.renderer.RenderPipelines.MATRICES_COLOR_SNIPPET;
+
 /**
  * Author: MrCrayfish
  */
@@ -43,9 +52,6 @@ public class ClientFurnitureMod
         ClientBootstrap.registerBlockEntityRenderers(event::registerBlockEntityRenderer);
         ClientBootstrap.registerEntityRenderers(event::registerEntityRenderer);
         ClientBootstrap.registerRenderTypes(ItemBlockRenderTypes::setRenderLayer);
-
-        // We put this here to make sure they are loaded
-        ExtraModels.register(FrameworkClientAPI::registerStandaloneModel);
     }
 
     @SubscribeEvent
@@ -90,6 +96,12 @@ public class ClientFurnitureMod
     private static void onRegisterListeners(AddClientReloadListenersEvent event)
     {
         event.addListener(DeferredElectricRenderer.ID, DeferredElectricRenderer.get());
+    }
+
+    @SubscribeEvent
+    private static void onRegisterRenderPipelines(RegisterRenderPipelinesEvent event)
+    {
+        event.registerPipeline(ModRenderPipelines.ELECTRICITY);
     }
 
     /*@SubscribeEvent

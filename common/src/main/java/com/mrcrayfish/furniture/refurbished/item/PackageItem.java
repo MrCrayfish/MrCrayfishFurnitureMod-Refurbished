@@ -23,10 +23,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemContainerContents;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Author: MrCrayfish
@@ -45,21 +47,21 @@ public class PackageItem extends Item
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines, TooltipFlag flag)
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> lines, TooltipFlag flag)
     {
         PackageInfo info = stack.get(ModDataComponents.PACKAGE_INFO.get());
         if(info != null)
         {
             info.sender().ifPresent(s -> {
-                lines.add(Utils.translation("gui", "package_sent_by", s).withStyle(ChatFormatting.AQUA));
+                lines.accept(Utils.translation("gui", "package_sent_by", s).withStyle(ChatFormatting.AQUA));
             });
             info.message().ifPresent(s -> {
                 TaskRunner.runIf(Environment.CLIENT, () -> () -> {
-                    ScreenHelper.splitText(s, 170).forEach(component -> lines.add(component.withStyle(ChatFormatting.GRAY)));
+                    ScreenHelper.splitText(s, 170).forEach(component -> lines.accept(component.withStyle(ChatFormatting.GRAY)));
                 });
             });
         }
-        lines.add(Utils.translation("gui", "package_open").withStyle(ChatFormatting.YELLOW));
+        lines.accept(Utils.translation("gui", "package_open").withStyle(ChatFormatting.YELLOW));
     }
 
     @Override

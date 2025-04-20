@@ -8,6 +8,7 @@ import com.mrcrayfish.furniture.refurbished.blockentity.TelevisionBlockEntity;
 import com.mrcrayfish.furniture.refurbished.client.CustomSheets;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -15,6 +16,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 
 /**
@@ -25,7 +27,7 @@ public class TelevisionBlockEntityRenderer implements BlockEntityRenderer<Televi
     public TelevisionBlockEntityRenderer(BlockEntityRendererProvider.Context context) {}
 
     @Override
-    public void render(TelevisionBlockEntity television, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay)
+    public void render(TelevisionBlockEntity television, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay, Vec3 camera)
     {
         if(television.isNodePowered())
         {
@@ -48,22 +50,18 @@ public class TelevisionBlockEntityRenderer implements BlockEntityRenderer<Televi
             consumer.setColor(255, 255, 255, 255);
             consumer.setUv(0, 0);
             consumer.setLight(0xF000F0);
-            consumer.setNormal(0, 1, 0);
             consumer.addVertex(matrix, 0.75F + offset, 0.1875F - offset, 0);
             consumer.setColor(255, 255, 255, 255);
             consumer.setUv(0, 1);
             consumer.setLight(0xF000F0);
-            consumer.setNormal(0, 1, 0);
             consumer.addVertex(matrix, 0.25F - offset, 0.1875F - offset, 0);
             consumer.setColor(255, 255, 255, 255);
             consumer.setUv(1, 1);
             consumer.setLight(0xF000F0);
-            consumer.setNormal(0, 1, 0);
             consumer.addVertex(matrix, 0.25F - offset, 0.625F + offset, 0);
             consumer.setColor(255, 255, 255, 255);
             consumer.setUv(1, 0);
             consumer.setLight(0xF000F0);
-            consumer.setNormal(0, 1, 0);
 
             poseStack.popPose();
         }

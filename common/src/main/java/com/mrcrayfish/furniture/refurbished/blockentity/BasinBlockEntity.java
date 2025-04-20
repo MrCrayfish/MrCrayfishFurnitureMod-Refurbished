@@ -142,7 +142,7 @@ public class BasinBlockEntity extends BlockEntity implements IFluidContainerBloc
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
         super.loadAdditional(tag, provider);
-        this.tank.load(tag.getCompound("FluidTank"), provider);
+        this.tank.load(tag.getCompoundOrEmpty("FluidTank"), provider);
     }
 
     @Override

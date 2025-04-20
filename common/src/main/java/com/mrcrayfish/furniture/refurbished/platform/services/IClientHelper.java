@@ -1,7 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.platform.services;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
@@ -10,8 +9,6 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -41,8 +38,6 @@ public interface IClientHelper
 
     TextureAtlasSprite[] getFluidSprites(Fluid fluid, @Nullable BlockAndTintGetter getter, @Nullable BlockPos pos, FluidState state);
 
-    void drawBakedModel(BakedModel model, PoseStack poseStack, VertexConsumer consumer, int light, int overlay);
-
     RenderType getTelevisionScreenRenderType(ResourceLocation id);
 
     void renderTooltip(GuiGraphics graphics, Font font, List<ClientTooltipComponent> components, int mouseX, int mouseY, ClientTooltipPositioner position);
@@ -55,4 +50,6 @@ public interface IClientHelper
 
     @SuppressWarnings("rawtypes")
     AbstractContainerScreen createStoveScreen(AbstractContainerMenu menu, Inventory playerInventory, Component title);
+
+    RenderPipeline.Snippet getMatricesColorSnippet();
 }

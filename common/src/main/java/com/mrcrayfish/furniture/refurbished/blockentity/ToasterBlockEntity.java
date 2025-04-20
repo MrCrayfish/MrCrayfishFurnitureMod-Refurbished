@@ -324,10 +324,7 @@ public class ToasterBlockEntity extends ElectricityModuleProcessingLootBlockEnti
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
         super.loadAdditional(tag, provider);
-        if(tag.contains("Heating", Tag.TAG_BYTE))
-        {
-            this.heating = tag.getBoolean("Heating");
-        }
+        tag.getBoolean("Heating").ifPresent(value -> this.heating = value);
     }
 
     @Override

@@ -12,7 +12,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.component.Consumables;
 import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
@@ -25,8 +24,8 @@ public class ModItems
 {
     public static final RegistryEntry<FridgeItem> FRIDGE_LIGHT = RegistryEntry.item(Utils.resource("light_fridge"), properties -> new FridgeItem(ModBlocks.FRIDGE_LIGHT.get(), ModBlocks.FREEZER_LIGHT.get(), properties), Item.Properties::new);
     public static final RegistryEntry<FridgeItem> FRIDGE_DARK = RegistryEntry.item(Utils.resource("dark_fridge"), properties -> new FridgeItem(ModBlocks.FRIDGE_DARK.get(), ModBlocks.FREEZER_DARK.get(), properties), Item.Properties::new);
-    public static final RegistryEntry<Item> SPATULA = RegistryEntry.item(Utils.resource("spatula"), properties -> new SwordItem(ToolMaterial.WOOD, 3.0F, -2.4F, properties), () -> new Item.Properties().durability(256));
-    public static final RegistryEntry<Item> KNIFE = RegistryEntry.item(Utils.resource("knife"), properties -> new SwordItem(ToolMaterial.STONE, 3.0F, -2.4F, properties), () -> new Item.Properties().durability(256));
+    public static final RegistryEntry<Item> SPATULA = RegistryEntry.item(Utils.resource("spatula"), Item::new, () -> new Item.Properties().durability(256).sword(ToolMaterial.WOOD, 3.0F, -2.4F));
+    public static final RegistryEntry<Item> KNIFE = RegistryEntry.item(Utils.resource("knife"), Item::new, () -> new Item.Properties().durability(256).sword(ToolMaterial.STONE, 3.0F, -2.4F));
     public static final RegistryEntry<Item> PACKAGE = RegistryEntry.item(Utils.resource("package"), PackageItem::new, () -> new Item.Properties().stacksTo(1));
     public static final RegistryEntry<Item> WRENCH = RegistryEntry.item(Utils.resource("wrench"), WrenchItem::new, () -> new Item.Properties().stacksTo(1));
     public static final RegistryEntry<Item> BREAD_SLICE = RegistryEntry.item(Utils.resource("bread_slice"), Item::new, () -> new Item.Properties().food(new FoodProperties.Builder().nutrition(1).saturationModifier(0.2F).build()));
@@ -46,6 +45,6 @@ public class ModItems
     public static final RegistryEntry<Item> VEGETABLE_PIZZA_SLICE = RegistryEntry.item(Utils.resource("vegetable_pizza_slice"), Item::new, () -> new Item.Properties().food(new FoodProperties.Builder().nutrition(5).saturationModifier(0.8F).build()));
     public static final RegistryEntry<Item> RAW_MEATLOVERS_PIZZA = RegistryEntry.item(Utils.resource("raw_meatlovers_pizza"), Item::new, Item.Properties::new);
     public static final RegistryEntry<Item> COOKED_MEATLOVERS_PIZZA = RegistryEntry.item(Utils.resource("cooked_meatlovers_pizza"), Item::new, Item.Properties::new);
-    public static final RegistryEntry<Item> MEATLOVERS_PIZZA_SLICE = RegistryEntry.item(Utils.resource("meatlovers_pizza_slice"), Item::new, () -> new Item.Properties().food(new FoodProperties.Builder().nutrition(8).saturationModifier(0.8F).build(), Consumables.defaultFood().onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 100), 1.0F)).build()));
+    public static final RegistryEntry<Item> MEATLOVERS_PIZZA_SLICE = RegistryEntry.item(Utils.resource("meatlovers_pizza_slice"), Item::new, () -> new Item.Properties().food(new FoodProperties.Builder().nutrition(8).saturationModifier(0.8F).build(), Consumables.defaultFood().onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.HASTE, 100), 1.0F)).build()));
     public static final RegistryEntry<TelevisionRemoteItem> TELEVISION_REMOTE = RegistryEntry.item(Utils.resource("television_remote"), TelevisionRemoteItem::new, () -> new Item.Properties().stacksTo(1));
 }

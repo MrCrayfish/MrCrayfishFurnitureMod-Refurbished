@@ -116,9 +116,6 @@ public class ClientFurnitureMod implements ClientModInitializer
         BlockRenderLayerMap.INSTANCE.putFluid(FurnitureMod.MILK, RenderType.solid());
         FluidRenderHandlerRegistry.INSTANCE.register(FurnitureMod.MILK, new SimpleFluidRenderHandler(Utils.resource("block/milk_still"), Utils.resource("block/milk_still")));
 
-        // We put this here to make sure they are loaded
-        ExtraModels.register(FrameworkClientAPI::registerStandaloneModel);
-
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new IdentifiableResourceReloadListener() {
             @Override
             public ResourceLocation getFabricId() {

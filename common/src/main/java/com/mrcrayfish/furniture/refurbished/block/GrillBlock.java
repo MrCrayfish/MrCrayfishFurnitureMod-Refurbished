@@ -75,20 +75,6 @@ public class GrillBlock extends FurnitureHorizontalEntityBlock implements BlockT
     }
 
     @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving)
-    {
-        if(state.getBlock() != newState.getBlock())
-        {
-            if(level.getBlockEntity(pos) instanceof GrillBlockEntity grill)
-            {
-                Containers.dropContents(level, pos, grill.getCookingItems());
-                Containers.dropContents(level, pos, grill.getFuelItems());
-            }
-            super.onRemove(state, level, pos, newState, isMoving);
-        }
-    }
-
-    @Override
     public InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
     {
         if(!level.isClientSide() && result.getDirection() == Direction.UP)

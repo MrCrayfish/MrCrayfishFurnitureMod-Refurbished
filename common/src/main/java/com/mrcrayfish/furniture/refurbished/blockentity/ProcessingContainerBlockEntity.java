@@ -495,18 +495,9 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
         super.loadAdditional(tag, provider);
-        if(tag.contains("MaxProcessTime", Tag.TAG_INT))
-        {
-            this.totalProcessingTime = tag.getInt("MaxProcessTime");
-        }
-        if(tag.contains("ProcessTime", Tag.TAG_INT))
-        {
-            this.processingTime = tag.getInt("ProcessTime");
-        }
-        if(tag.contains("Energy", Tag.TAG_INT))
-        {
-            this.energy = tag.getInt("Energy");
-        }
+        tag.getInt("MaxProcessTime").ifPresent(value -> this.totalProcessingTime = value);
+        tag.getInt("ProcessTime").ifPresent(value -> this.processingTime = value);
+        tag.getInt("Energy").ifPresent(value -> this.energy = value);
     }
 
     @Override

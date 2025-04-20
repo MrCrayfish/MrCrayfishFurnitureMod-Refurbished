@@ -14,6 +14,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 
 /**
@@ -24,7 +25,7 @@ public class DoorMatBlockEntityRenderer implements BlockEntityRenderer<DoorMatBl
     public DoorMatBlockEntityRenderer(BlockEntityRendererProvider.Context context) {}
 
     @Override
-    public void render(DoorMatBlockEntity doorMat, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay)
+    public void render(DoorMatBlockEntity doorMat, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay, Vec3 camera)
     {
         BlockState state = doorMat.getBlockState();
         if(!state.hasProperty(DoorMatBlock.DIRECTION))

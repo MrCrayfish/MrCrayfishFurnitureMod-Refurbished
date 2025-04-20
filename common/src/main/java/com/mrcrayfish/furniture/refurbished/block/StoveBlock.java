@@ -108,19 +108,6 @@ public class StoveBlock extends FurnitureHorizontalEntityBlock implements BlockT
     }
 
     @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving)
-    {
-        if(!state.is(newState.getBlock()))
-        {
-            if(level.getBlockEntity(pos) instanceof StoveBlockEntity stove)
-            {
-                stove.onDestroyed(pos);
-            }
-        }
-        super.onRemove(state, level, pos, newState, isMoving);
-    }
-
-    @Override
     protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean movedByPiston)
     {
         if(level.getBlockEntity(pos) instanceof StoveBlockEntity stove)

@@ -39,7 +39,7 @@ public class HedgeBlock extends CrossCollisionBlock implements BlockTagSupplier
 
     public HedgeBlock(LeafType type, Properties properties)
     {
-        super(4, 4, 16, 16, 24, properties);
+        super(4, 16, 4, 16, 24, properties);
         this.registerDefaultState(this.getStateDefinition().any().setValue(NORTH, false).setValue(EAST, false).setValue(SOUTH, false).setValue(WEST, false).setValue(WATERLOGGED, false));
         this.type = type;
     }

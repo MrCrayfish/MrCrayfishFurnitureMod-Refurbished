@@ -4,6 +4,7 @@ import com.mrcrayfish.framework.api.sync.Serializers;
 import com.mrcrayfish.framework.api.sync.SyncedClassKey;
 import com.mrcrayfish.framework.api.sync.SyncedDataKey;
 import com.mrcrayfish.furniture.refurbished.core.ModEntities;
+import com.mrcrayfish.furniture.refurbished.core.ModSyncedDataKeys;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -27,14 +28,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public class Seat extends Entity
 {
-    public static final SyncedClassKey<Seat> SEAT = new SyncedClassKey<>(Seat.class, Utils.resource("seat"));
-    public static final SyncedDataKey<Seat, Boolean> LOCK_YAW = SyncedDataKey.builder(SEAT, Serializers.BOOLEAN)
-            .id(Utils.resource("lock_yaw"))
-            .defaultValueSupplier(() -> false)
-            .syncMode(SyncedDataKey.SyncMode.TRACKING_ONLY)
-            .saveToFile()
-            .build();
-
     public Seat(Level level)
     {
         super(ModEntities.SEAT.get(), level);
@@ -45,7 +38,7 @@ public class Seat extends Entity
         this(level);
         this.setPos(Vec3.atBottomCenterOf(pos).add(0, seatHeight, 0));
         this.setRot(seatYaw, 0);
-        LOCK_YAW.setValue(this, lockYaw);
+        ModSyncedDataKeys.LOCK_YAW.setValue(this, lockYaw);
     }
 
     @Override
@@ -98,7 +91,7 @@ public class Seat extends Entity
     @Override
     public Vec3 getDismountLocationForPassenger(LivingEntity entity)
     {
-        Direction front = LOCK_YAW.getValue(this) ? this.getDirection() : entity.getDirection();
+        Direction front = ModSyncedDataKeys.LOCK_YAW.getValue(this) ? this.getDirection() : entity.getDirection();
         Direction[] sides = {front, front.getClockWise(), front.getCounterClockWise(), front.getOpposite()};
         for(Direction side : sides)
         {
@@ -113,7 +106,7 @@ public class Seat extends Entity
 
     private void clampPassengerYaw(Entity entity)
     {
-        if(LOCK_YAW.getValue(this))
+        if(ModSyncedDataKeys.LOCK_YAW.getValue(this))
         {
             entity.setYBodyRot(this.getYRot());
             float wrappedYaw = Mth.wrapDegrees(entity.getYRot() - this.getYRot());

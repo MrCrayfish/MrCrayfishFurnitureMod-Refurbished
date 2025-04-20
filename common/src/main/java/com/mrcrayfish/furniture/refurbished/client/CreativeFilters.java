@@ -1,8 +1,8 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
 import com.google.common.collect.ImmutableList;
-import com.mrcrayfish.framework.api.event.ClientConnectionEvents;
-import com.mrcrayfish.framework.api.event.ScreenEvents;
+import com.mrcrayfish.framework.api.event.client.FrameworkClientConnectionEvents;
+import com.mrcrayfish.framework.api.event.client.FrameworkScreenEvents;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.IconButton;
 import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
@@ -30,14 +30,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-
 import org.jetbrains.annotations.Nullable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+
+import java.util.*;
 import java.util.function.Consumer;
 
 /**
@@ -82,7 +77,7 @@ public class CreativeFilters
         this.categories = builder.build();
 
         /* Initializes and injects widgets into the creative mode screen for the filter system */
-        ScreenEvents.MODIFY_WIDGETS.register((screen, widgets, add, remove) -> {
+        FrameworkScreenEvents.INIT.register((screen, widgets, add, remove) -> {
             if(screen instanceof CreativeModeInventoryScreen creativeScreen) {
                 this.guiLeft = ClientServices.PLATFORM.getGuiLeft(creativeScreen);
                 this.guiTop = ClientServices.PLATFORM.getGuiTop(creativeScreen);
@@ -92,7 +87,7 @@ public class CreativeFilters
         });
 
         /* Handles removing widget from memory when screen is closed */
-        ScreenEvents.CLOSED.register(screen -> {
+        FrameworkScreenEvents.CLOSED.register(screen -> {
             if(screen instanceof CreativeModeInventoryScreen) {
                 this.categories.forEach(category -> {
                     this.scrollUpButton = null;
@@ -103,7 +98,7 @@ public class CreativeFilters
         });
 
         /* Handles sending an event when the current creative mode tab is changed */
-        ScreenEvents.AFTER_DRAW.register((screen, graphics, mouseX, mouseY, partialTick) -> {
+        FrameworkScreenEvents.AFTER_DRAW.register((screen, graphics, mouseX, mouseY, partialTick) -> {
             if(screen instanceof CreativeModeInventoryScreen creativeScreen) {
                 CreativeModeTab tab = ClientServices.PLATFORM.getSelectedCreativeModeTab();
                 if(this.lastTab != tab) {
@@ -115,7 +110,7 @@ public class CreativeFilters
         });
 
         /* Handles resetting categories when the local player exits the world */
-        ClientConnectionEvents.LOGGING_OUT.register(player -> {
+        FrameworkClientConnectionEvents.LOGGING_OUT.register(player -> {
             this.categories.forEach(category -> {
                 category.resetItems();
                 category.setEnabled(true);

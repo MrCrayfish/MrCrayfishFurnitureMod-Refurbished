@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Author: MrCrayfish
@@ -25,7 +26,7 @@ public class FryingPanBlockEntityRenderer implements BlockEntityRenderer<FryingP
     }
 
     @Override
-    public void render(FryingPanBlockEntity fryingPan, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay)
+    public void render(FryingPanBlockEntity fryingPan, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay, Vec3 camera)
     {
         ItemStack stack = fryingPan.getItem(0);
         if(!stack.isEmpty())

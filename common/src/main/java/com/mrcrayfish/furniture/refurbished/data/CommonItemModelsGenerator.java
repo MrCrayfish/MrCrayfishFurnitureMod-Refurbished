@@ -4,12 +4,8 @@ import com.mrcrayfish.framework.api.datagen.FrameworkGenerator;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.data.model.ModelDefinitions;
-import net.minecraft.client.data.models.blockstates.BlockStateGenerator;
-import net.minecraft.client.data.models.model.ItemModelUtils;
-import net.minecraft.client.data.models.model.ModelInstance;
-import net.minecraft.client.data.models.model.ModelTemplates;
-import net.minecraft.client.data.models.model.TextureMapping;
-import net.minecraft.client.data.models.model.TextureSlot;
+import net.minecraft.client.data.models.blockstates.BlockModelDefinitionGenerator;
+import net.minecraft.client.data.models.model.*;
 import net.minecraft.client.renderer.item.ClientItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -24,7 +20,7 @@ import java.util.Map;
 @SuppressWarnings("UnstableApiUsage")
 public class CommonItemModelsGenerator extends FrameworkGenerator
 {
-    public CommonItemModelsGenerator(Map<Block, BlockStateGenerator> generators, Map<Item, ClientItem> items, Map<ResourceLocation, ModelInstance> models)
+    public CommonItemModelsGenerator(Map<Block, BlockModelDefinitionGenerator> generators, Map<Item, ClientItem> items, Map<ResourceLocation, ModelInstance> models)
     {
         super(generators, items, models);
     }

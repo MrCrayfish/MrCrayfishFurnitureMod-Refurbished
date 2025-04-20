@@ -146,7 +146,7 @@ public class FabricFluidHelper implements IFluidHelper
         @Override
         public void load(CompoundTag tag, HolderLookup.Provider provider)
         {
-            this.tank.readNbt(tag.getCompound("FluidTank"), provider);
+            this.tank.readNbt(tag.getCompoundOrEmpty("FluidTank"), provider);
         }
 
         @Override

@@ -1,33 +1,19 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
 import com.google.common.base.Preconditions;
-import com.mrcrayfish.framework.api.client.FrameworkClientAPI;
-import com.mrcrayfish.framework.api.event.ClientConnectionEvents;
-import com.mrcrayfish.framework.api.event.PlayerEvents;
-import com.mrcrayfish.framework.api.event.TickEvents;
+import com.mrcrayfish.framework.api.event.FrameworkPlayerEvents;
+import com.mrcrayfish.framework.api.event.client.FrameworkClientConnectionEvents;
+import com.mrcrayfish.framework.api.event.client.FrameworkClientTickEvents;
 import com.mrcrayfish.furniture.refurbished.block.StoveBlock;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.client.gui.overlay.CuttingBoardHelperOverlay;
 import com.mrcrayfish.furniture.refurbished.client.gui.overlay.NodeIndicatorOverlay;
-import com.mrcrayfish.furniture.refurbished.client.gui.screen.ComputerScreen;
-import com.mrcrayfish.furniture.refurbished.client.gui.screen.DoorMatScreen;
-import com.mrcrayfish.furniture.refurbished.client.gui.screen.ElectricityGeneratorScreen;
-import com.mrcrayfish.furniture.refurbished.client.gui.screen.PostBoxScreen;
-import com.mrcrayfish.furniture.refurbished.client.gui.screen.RecyclingBinScreen;
-import com.mrcrayfish.furniture.refurbished.client.gui.screen.WorkbenchScreen;
+import com.mrcrayfish.furniture.refurbished.client.gui.screen.*;
 import com.mrcrayfish.furniture.refurbished.client.particle.BounceParticle;
 import com.mrcrayfish.furniture.refurbished.client.particle.SteamParticle;
 import com.mrcrayfish.furniture.refurbished.client.particle.SuperBounceParticle;
 import com.mrcrayfish.furniture.refurbished.client.particle.TapWaterParticle;
-import com.mrcrayfish.furniture.refurbished.client.registration.BlockColorsRegister;
-import com.mrcrayfish.furniture.refurbished.client.registration.BlockEntityRendererRegister;
-import com.mrcrayfish.furniture.refurbished.client.registration.EntityRendererRegister;
-import com.mrcrayfish.furniture.refurbished.client.registration.HudOverlayRegister;
-import com.mrcrayfish.furniture.refurbished.client.registration.ItemTintRegister;
-import com.mrcrayfish.furniture.refurbished.client.registration.ParticleProviderRegister;
-import com.mrcrayfish.furniture.refurbished.client.registration.RecipeCategoryRegister;
-import com.mrcrayfish.furniture.refurbished.client.registration.RenderTypeRegister;
-import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
+import com.mrcrayfish.furniture.refurbished.client.registration.*;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.*;
 import com.mrcrayfish.furniture.refurbished.client.renderer.entity.SeatRenderer;
 import com.mrcrayfish.furniture.refurbished.computer.Display;
@@ -39,27 +25,17 @@ import com.mrcrayfish.furniture.refurbished.computer.client.graphics.CoinMinerGr
 import com.mrcrayfish.furniture.refurbished.computer.client.graphics.HomeControlGraphics;
 import com.mrcrayfish.furniture.refurbished.computer.client.graphics.MarketplaceGraphics;
 import com.mrcrayfish.furniture.refurbished.computer.client.graphics.PaddleBallGraphics;
-import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
-import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
-import com.mrcrayfish.furniture.refurbished.core.ModEntities;
-import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
-import com.mrcrayfish.furniture.refurbished.core.ModParticleTypes;
-import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookCategories;
-import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookTypes;
-import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
+import com.mrcrayfish.furniture.refurbished.core.*;
 import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import com.mrcrayfish.furniture.refurbished.image.TextureCache;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.inventory.RecipeBookType;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.FoliageColor;
-import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Author: MrCrayfish
@@ -71,45 +47,45 @@ public class ClientBootstrap
         CreativeFilters.get();
 
         // Events
-        TickEvents.END_CLIENT.register(() -> {
+        FrameworkClientTickEvents.END_CLIENT.register(() -> {
             TextureCache.get().tick();
             ToolAnimationRenderer.get().tick();
             AudioManager.get().update();
         });
-        TickEvents.START_RENDER.register(tracker -> {
+        FrameworkClientTickEvents.START_RENDER.register(tracker -> {
             LinkHandler.get().beforeRender(tracker.getGameTimeDeltaPartialTick(true));
             ElectricBlockEntityRenderer.clearDrawn();
         });
-        ClientConnectionEvents.LOGGING_OUT.register(connection -> {
+        FrameworkClientConnectionEvents.LOGGING_OUT.register(connection -> {
             AudioManager.get().resetSounds();
         });
-        PlayerEvents.CHANGE_DIMENSION.register((player, oldDimension, newDimension) -> {
+        FrameworkPlayerEvents.CHANGE_DIMENSION.register((player, oldDimension, newDimension) -> {
             AudioManager.get().resetSounds();
         });
 
         // Bind ceiling fan blocks to models
-        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_OAK_LIGHT.get(), ExtraModels.OAK_LIGHT_CEILING_FAN_BLADE::getModel);
-        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_SPRUCE_LIGHT.get(), ExtraModels.SPRUCE_LIGHT_CEILING_FAN_BLADE::getModel);
-        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_BIRCH_LIGHT.get(), ExtraModels.BIRCH_LIGHT_CEILING_FAN_BLADE::getModel);
-        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_JUNGLE_LIGHT.get(), ExtraModels.JUNGLE_LIGHT_CEILING_FAN_BLADE::getModel);
-        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_ACACIA_LIGHT.get(), ExtraModels.ACACIA_LIGHT_CEILING_FAN_BLADE::getModel);
-        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_DARK_OAK_LIGHT.get(), ExtraModels.DARK_OAK_LIGHT_CEILING_FAN_BLADE::getModel);
-        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_CHERRY_LIGHT.get(), ExtraModels.CHERRY_LIGHT_CEILING_FAN_BLADE::getModel);
-        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_MANGROVE_LIGHT.get(), ExtraModels.MANGROVE_LIGHT_CEILING_FAN_BLADE::getModel);
-        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_CRIMSON_LIGHT.get(), ExtraModels.CRIMSON_LIGHT_CEILING_FAN_BLADE::getModel);
-        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_WARPED_LIGHT.get(), ExtraModels.WARPED_LIGHT_CEILING_FAN_BLADE::getModel);
-        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_PALE_OAK_LIGHT.get(), ExtraModels.PALE_OAK_LIGHT_CEILING_FAN_BLADE::getModel);
-        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_OAK_DARK.get(), ExtraModels.OAK_DARK_CEILING_FAN_BLADE::getModel);
-        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_SPRUCE_DARK.get(), ExtraModels.SPRUCE_DARK_CEILING_FAN_BLADE::getModel);
-        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_BIRCH_DARK.get(), ExtraModels.BIRCH_DARK_CEILING_FAN_BLADE::getModel);
-        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_JUNGLE_DARK.get(), ExtraModels.JUNGLE_DARK_CEILING_FAN_BLADE::getModel);
-        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_ACACIA_DARK.get(), ExtraModels.ACACIA_DARK_CEILING_FAN_BLADE::getModel);
-        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_DARK_OAK_DARK.get(), ExtraModels.DARK_OAK_DARK_CEILING_FAN_BLADE::getModel);
-        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_CHERRY_DARK.get(), ExtraModels.CHERRY_DARK_CEILING_FAN_BLADE::getModel);
-        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_MANGROVE_DARK.get(), ExtraModels.MANGROVE_DARK_CEILING_FAN_BLADE::getModel);
-        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_CRIMSON_DARK.get(), ExtraModels.CRIMSON_DARK_CEILING_FAN_BLADE::getModel);
-        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_WARPED_DARK.get(), ExtraModels.WARPED_DARK_CEILING_FAN_BLADE::getModel);
-        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_PALE_OAK_DARK.get(), ExtraModels.PALE_OAK_DARK_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_OAK_LIGHT.get(), ModExtraModels.OAK_LIGHT_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_SPRUCE_LIGHT.get(), ModExtraModels.SPRUCE_LIGHT_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_BIRCH_LIGHT.get(), ModExtraModels.BIRCH_LIGHT_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_JUNGLE_LIGHT.get(), ModExtraModels.JUNGLE_LIGHT_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_ACACIA_LIGHT.get(), ModExtraModels.ACACIA_LIGHT_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_DARK_OAK_LIGHT.get(), ModExtraModels.DARK_OAK_LIGHT_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_CHERRY_LIGHT.get(), ModExtraModels.CHERRY_LIGHT_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_MANGROVE_LIGHT.get(), ModExtraModels.MANGROVE_LIGHT_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_CRIMSON_LIGHT.get(), ModExtraModels.CRIMSON_LIGHT_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_WARPED_LIGHT.get(), ModExtraModels.WARPED_LIGHT_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_PALE_OAK_LIGHT.get(), ModExtraModels.PALE_OAK_LIGHT_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_OAK_DARK.get(), ModExtraModels.OAK_DARK_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_SPRUCE_DARK.get(), ModExtraModels.SPRUCE_DARK_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_BIRCH_DARK.get(), ModExtraModels.BIRCH_DARK_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_JUNGLE_DARK.get(), ModExtraModels.JUNGLE_DARK_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_ACACIA_DARK.get(), ModExtraModels.ACACIA_DARK_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_DARK_OAK_DARK.get(), ModExtraModels.DARK_OAK_DARK_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_CHERRY_DARK.get(), ModExtraModels.CHERRY_DARK_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_MANGROVE_DARK.get(), ModExtraModels.MANGROVE_DARK_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_CRIMSON_DARK.get(), ModExtraModels.CRIMSON_DARK_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_WARPED_DARK.get(), ModExtraModels.WARPED_DARK_CEILING_FAN_BLADE::getModel);
+        CeilingFanBlockEntityRenderer.registerFanBlade(ModBlocks.CEILING_FAN_PALE_OAK_DARK.get(), ModExtraModels.PALE_OAK_DARK_CEILING_FAN_BLADE::getModel);
 
         // Bind computer programs to graphics handler
         Display.get().bind(PaddleBall.class, PaddleBallGraphics::new);

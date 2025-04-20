@@ -88,7 +88,7 @@ public interface ISourceNode extends IElectricityNode
     default void readNodeNbt(CompoundTag tag)
     {
         IElectricityNode.super.readNodeNbt(tag);
-        this.setNodeOverloaded(tag.getBoolean("Overloaded"));
+        this.setNodeOverloaded(tag.getBooleanOr("Overloaded", false));
     }
 
     @Override

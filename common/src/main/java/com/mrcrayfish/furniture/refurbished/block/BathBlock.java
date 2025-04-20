@@ -18,14 +18,15 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -49,6 +50,7 @@ import java.util.stream.Collectors;
  */
 public abstract class BathBlock extends FurnitureHorizontalEntityBlock implements BlockTagSupplier
 {
+    // TODO eventually fix break particle. The larger shape seems to be affecting it.
     protected static final VoxelShape BASE_SHAPE = Block.box(0, 2, 0, 32, 16, 16);
     protected static final VoxelShape COLLISION_SHAPE = Shapes.join(BASE_SHAPE, Block.box(2, 4, 2, 28, 16, 14), BooleanOp.ONLY_FIRST);
 
@@ -97,31 +99,26 @@ public abstract class BathBlock extends FurnitureHorizontalEntityBlock implement
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack)
     {
-        super.setPlacedBy(level, pos, state, entity, stack);
-        if(!level.isClientSide())
-        {
-            BlockPos headPos = pos.relative(state.getValue(DIRECTION));
-            level.setBlock(headPos, state.setValue(TYPE, Type.HEAD), Block.UPDATE_ALL);
-            level.blockUpdated(pos, Blocks.AIR);
-            state.updateNeighbourShapes(level, pos, Block.UPDATE_ALL);
-        }
+        BlockPos headPos = pos.relative(state.getValue(DIRECTION));
+        level.setBlock(headPos, state.setValue(TYPE, Type.HEAD), Block.UPDATE_ALL);
     }
 
     @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving)
+    public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
     {
-        super.onRemove(state, level, pos, newState, isMoving);
-        if(!state.is(newState.getBlock()))
+        if(!level.isClientSide())
         {
             Direction direction = state.getValue(DIRECTION);
-            Type type = state.getValue(TYPE);
-            BlockPos otherPos = pos.relative(type == Type.HEAD ? direction.getOpposite() : direction);
-            BlockState otherState = level.getBlockState(otherPos);
-            if(otherState.getBlock() instanceof BathBlock && otherState.getValue(TYPE) != type)
+            direction = state.getValue(TYPE) == Type.HEAD ? direction.getOpposite() : direction;
+            BlockPos relativePos = pos.relative(direction);
+            BlockState relativeState = level.getBlockState(relativePos);
+            if(relativeState.is(this))
             {
-                level.removeBlock(otherPos, false);
+                level.setBlock(relativePos, Blocks.AIR.defaultBlockState(), Block.UPDATE_SUPPRESS_DROPS | Block.UPDATE_CLIENTS | Block.UPDATE_NEIGHBORS);
+                level.levelEvent(null, LevelEvent.PARTICLES_DESTROY_BLOCK, relativePos, Block.getId(relativeState));
             }
         }
+        return super.playerWillDestroy(level, pos, state, player);
     }
 
     @Override
@@ -180,7 +177,7 @@ public abstract class BathBlock extends FurnitureHorizontalEntityBlock implement
     }
 
     @Override
-    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity)
+    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier applier)
     {
         if(level.getBlockEntity(pos) instanceof BathBlockEntity bath)
         {

@@ -2,11 +2,13 @@ package com.mrcrayfish.furniture.refurbished.block;
 
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
@@ -58,21 +60,6 @@ public abstract class FurnitureEntityBlock extends BaseEntityBlock implements Bl
     public boolean hasAnalogOutputSignal(BlockState state)
     {
         return state.getBlock() instanceof EntityBlock;
-    }
-
-    @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving)
-    {
-        if(!state.is(newState.getBlock()))
-        {
-            BlockEntity blockEntity = level.getBlockEntity(pos);
-            if(blockEntity instanceof Container container)
-            {
-                Containers.dropContents(level, pos, container);
-                level.updateNeighbourForOutputSignal(pos, this);
-            }
-        }
-        super.onRemove(state, level, pos, newState, isMoving);
     }
 
     @Override

@@ -135,14 +135,16 @@ public record Mailbox(UUID id, ResourceKey<Level> levelKey, BlockPos pos, Mutabl
      */
     public static Queue<ItemStack> readQueueListTag(CompoundTag compound, HolderLookup.Provider provider)
     {
-        if(compound.contains("Queue", Tag.TAG_LIST))
+        if(compound.contains("Queue"))
         {
             Queue<ItemStack> queue = new ArrayDeque<>();
-            ListTag list = compound.getList("Queue", Tag.TAG_COMPOUND);
-            list.forEach(tag -> {
-                ItemStack stack = ItemStack.parseOptional(provider, (CompoundTag) tag);
-                if(!stack.isEmpty()) {
-                    queue.offer(stack);
+            ListTag list = compound.getListOrEmpty("Queue");
+            list.forEach(nbt -> {
+                if(nbt instanceof CompoundTag tag) {
+                    ItemStack stack = ItemStack.parse(provider, tag).orElse(ItemStack.EMPTY);
+                    if(!stack.isEmpty()) {
+                        queue.offer(stack);
+                    }
                 }
             });
             return queue;

@@ -12,6 +12,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Author: MrCrayfish
@@ -26,7 +27,7 @@ public class GrillBlockEntityRenderer implements BlockEntityRenderer<GrillBlockE
     }
 
     @Override
-    public void render(GrillBlockEntity grill, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay)
+    public void render(GrillBlockEntity grill, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay, Vec3 camera)
     {
         NonNullList<ItemStack> items = grill.getCookingItems();
         for(int i = 0; i < items.size(); i++)

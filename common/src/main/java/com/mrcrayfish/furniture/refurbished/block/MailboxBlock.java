@@ -96,19 +96,6 @@ public class MailboxBlock extends FurnitureHorizontalEntityBlock implements Bloc
     }
 
     @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving)
-    {
-        if(!level.isClientSide() && !state.is(newState.getBlock()))
-        {
-            if(level.getBlockEntity(pos) instanceof MailboxBlockEntity mailbox)
-            {
-                Optional.ofNullable(mailbox.getMailbox()).ifPresent(Mailbox::remove);
-            }
-        }
-        super.onRemove(state, level, pos, newState, isMoving);
-    }
-
-    @Override
     public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult result)
     {
         if(!level.isClientSide() && level.getBlockEntity(pos) instanceof MailboxBlockEntity blockEntity)

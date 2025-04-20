@@ -659,24 +659,16 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
         super.loadAdditional(tag, provider);
-        if(tag.contains("Grill", Tag.TAG_LIST))
-        {
+        tag.getList("Grill").ifPresent(value -> {
             this.cooking.clear();
             BlockEntityHelper.loadItems("Grill", provider, tag, this.cooking);
-        }
-        if(tag.contains("Fuel", Tag.TAG_LIST))
-        {
+        });
+        tag.getList("Fuel").ifPresent(value -> {
             this.fuel.clear();
             BlockEntityHelper.loadItems("Fuel", provider, tag, this.fuel);
-        }
-        if(tag.contains("RemainingFuel", Tag.TAG_INT))
-        {
-            this.remainingFuel = tag.getInt("RemainingFuel");
-        }
-        if(tag.contains("StoredExperience", Tag.TAG_FLOAT))
-        {
-            this.storedExperience = tag.getFloat("StoredExperience");
-        }
+        });
+        tag.getInt("RemainingFuel").ifPresent(value -> this.remainingFuel = value);
+        tag.getFloat("StoredExperience").ifPresent(value -> this.storedExperience = value);
         this.readCookingSpaces(tag);
     }
 
@@ -784,22 +776,18 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
      */
     private void readCookingSpaces(CompoundTag compound)
     {
-        if(compound.contains("CookingSpaces", Tag.TAG_LIST))
-        {
-            ListTag list = compound.getList("CookingSpaces", Tag.TAG_COMPOUND);
-            list.forEach(nbt ->
-            {
-                CompoundTag tag = (CompoundTag) nbt;
-                if(tag.contains("Position", Tag.TAG_INT))
-                {
-                    int position = tag.getInt("Position");
-                    if(position >= 0 && position < this.spaces.size())
-                    {
-                        this.spaces.get(position).readFromTag(tag);
-                    }
+        if(!compound.contains("CookingSpaces"))
+            return;
+
+        ListTag list = compound.getListOrEmpty("CookingSpaces");
+        list.forEach(nbt -> {
+            if(nbt instanceof CompoundTag tag) {
+                int position = tag.getIntOr("Position", -1);
+                if(position >= 0 && position < this.spaces.size()) {
+                    this.spaces.get(position).readFromTag(tag);
                 }
-            });
-        }
+            }
+        });
     }
 
     @Nullable
@@ -1051,26 +1039,11 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
 
         public void readFromTag(CompoundTag tag)
         {
-            if(tag.contains("CookingTime", Tag.TAG_INT))
-            {
-                this.cookingTime = tag.getInt("CookingTime");
-            }
-            if(tag.contains("TotalCookingTime", Tag.TAG_INT))
-            {
-                this.totalCookingTime = tag.getInt("TotalCookingTime");
-            }
-            if(tag.contains("Flipped", Tag.TAG_BYTE))
-            {
-                this.flipped = tag.getBoolean("Flipped");
-            }
-            if(tag.contains("Experience", Tag.TAG_FLOAT))
-            {
-                this.experience = tag.getFloat("Experience");
-            }
-            if(tag.contains("Rotation", Tag.TAG_INT))
-            {
-                this.rotation = tag.getInt("Rotation");
-            }
+            tag.getInt("CookingTime").ifPresent(value -> this.cookingTime = value);
+            tag.getInt("TotalCookingTime").ifPresent(value -> this.totalCookingTime = value);
+            tag.getBoolean("Flipped").ifPresent(value -> this.flipped = value);
+            tag.getFloat("Experience").ifPresent(value -> this.experience = value);
+            tag.getInt("Rotation").ifPresent(value -> this.rotation = value);
         }
 
         public FlipAnimation getAnimation()

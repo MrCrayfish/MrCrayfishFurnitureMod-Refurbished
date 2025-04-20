@@ -303,18 +303,9 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
         super.loadAdditional(tag, provider);
-        if(tag.contains("Enabled", Tag.TAG_BYTE))
-        {
-            this.enabled = tag.getBoolean("Enabled");
-        }
-        if(tag.contains("Energy", Tag.TAG_INT))
-        {
-            this.energy = tag.getInt("Energy");
-        }
-        if(tag.contains("TotalEnergy", Tag.TAG_INT))
-        {
-            this.totalEnergy = tag.getInt("TotalEnergy");
-        }
+        tag.getBoolean("Enabled").ifPresent(value -> this.enabled = value);
+        tag.getInt("Energy").ifPresent(value -> this.energy = value);
+        tag.getInt("TotalEnergy").ifPresent(value -> this.totalEnergy = value);
     }
 
     @Override

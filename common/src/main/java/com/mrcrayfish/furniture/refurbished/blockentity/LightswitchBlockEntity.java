@@ -125,10 +125,9 @@ public class LightswitchBlockEntity extends ElectricityModuleBlockEntity impleme
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
         super.loadAdditional(tag, provider);
-        if(tag.contains("CustomName", Tag.TAG_STRING))
-        {
-            this.name = Component.Serializer.fromJson(tag.getString("CustomName"), provider);
-        }
+        tag.getString("CustomName").ifPresent(value -> {
+            this.name = Component.Serializer.fromJson(value, provider);
+        });
     }
 
     @Override

@@ -123,19 +123,4 @@ public class DrawerBlock extends DeskBlock implements EntityBlock
     {
         return List.of(BlockTags.MINEABLE_WITH_AXE);
     }
-
-    @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving)
-    {
-        if(!state.is(newState.getBlock()))
-        {
-            BlockEntity blockEntity = level.getBlockEntity(pos);
-            if(blockEntity instanceof Container container)
-            {
-                Containers.dropContents(level, pos, container);
-                level.updateNeighbourForOutputSignal(pos, this);
-            }
-        }
-        super.onRemove(state, level, pos, newState, isMoving);
-    }
 }

@@ -54,7 +54,7 @@ public abstract class EntityMixin
             {
                 BlockPos pos = entity.getOnPosLegacy();
                 BlockState state = entity.level().getBlockState(pos);
-                if(entity.isControlledByLocalInstance())
+                if(entity.isLocalInstanceAuthoritative())
                 {
                     if(state.getBlock() instanceof TrampolineBlock trampoline)
                     {

@@ -2,21 +2,18 @@ package com.mrcrayfish.furniture.refurbished.network;
 
 import com.mrcrayfish.framework.api.FrameworkAPI;
 import com.mrcrayfish.framework.api.network.FrameworkNetwork;
-import com.mrcrayfish.furniture.refurbished.Constants;
+import com.mrcrayfish.framework.api.registry.RegistryContainer;
 import com.mrcrayfish.furniture.refurbished.network.message.*;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.network.protocol.PacketFlow;
-import net.minecraft.resources.ResourceLocation;
 
 /**
  * Author: MrCrayfish
  */
-public class Network
+@RegistryContainer
+public final class Network
 {
-    public static FrameworkNetwork play;
-
-    public static void init() {
-        Network.play = FrameworkAPI.createNetworkBuilder(Utils.resource("play"), 1)
+    private static final FrameworkNetwork PLAY = FrameworkAPI.createNetworkBuilder(Utils.resource("play"), 1)
             .registerPlayMessage("sync_fluid", MessageSyncFluid.class, MessageSyncFluid.STREAM_CODEC, MessageSyncFluid::handle, PacketFlow.CLIENTBOUND)
             .registerPlayMessage("flip_animation", MessageFlipAnimation.class, MessageFlipAnimation.STREAM_CODEC, MessageFlipAnimation::handle, PacketFlow.CLIENTBOUND)
             .registerPlayMessage("set_name", MessageSetName.class, MessageSetName.STREAM_CODEC, MessageSetName::handle, PacketFlow.SERVERBOUND)
@@ -48,10 +45,9 @@ public class Network
             .registerPlayMessage("withdraw_experience", MessageWithdrawExperience.class, MessageWithdrawExperience.STREAM_CODEC, MessageWithdrawExperience::handle, PacketFlow.SERVERBOUND)
             .registerPlayMessage("show_delivery_result", MessageShowDeliveryResult.class, MessageShowDeliveryResult.STREAM_CODEC, MessageShowDeliveryResult::handle, PacketFlow.CLIENTBOUND)
             .build();
-    }
 
     public static FrameworkNetwork getPlay()
     {
-        return play;
+        return PLAY;
     }
 }

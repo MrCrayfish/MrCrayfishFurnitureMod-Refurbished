@@ -56,22 +56,17 @@ public class BlockEntityHelper
     public static void loadItems(String key, HolderLookup.Provider provider, CompoundTag tag, NonNullList<ItemStack> items)
     {
         items.clear();
-        if(tag.contains(key, Tag.TAG_LIST))
-        {
-            ListTag list = tag.getList(key, Tag.TAG_COMPOUND);
-            list.forEach(nbt ->
-            {
-                CompoundTag slot = (CompoundTag) nbt;
-                if(slot.contains("Slot", Tag.TAG_BYTE))
-                {
-                    int index = slot.getByte("Slot");
-                    if(index >= 0 && index < items.size())
-                    {
-                        items.set(index, ItemStack.parseOptional(provider, slot));
-                    }
+        tag.getList(key).ifPresent(list -> {
+            list.forEach(nbt -> {
+                if(nbt instanceof CompoundTag slot) {
+                    slot.getByte("Slot").ifPresent(index -> {
+                        if(index >= 0 && index < items.size()) {
+                            items.set(index, ItemStack.parse(provider, slot).orElse(ItemStack.EMPTY));
+                        }
+                    });
                 }
             });
-        }
+        });
     }
 
     public static NonNullList<ItemStack> nonNullListFromContainer(Container container)

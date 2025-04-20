@@ -13,11 +13,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 
-import java.util.ArrayDeque;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -161,14 +157,15 @@ public interface IElectricityNode
      */
     default void readNodeNbt(CompoundTag tag)
     {
-        if(tag.contains("Connections", Tag.TAG_LONG_ARRAY))
+        if(tag.contains("Connections"))
         {
             // Hack to offset connections when using clone command. Does not support rotation
             BlockPos offset = BlockPos.ZERO;
-            if(tag.contains("NodePos", Tag.TAG_LONG))
+            Optional<Long> nodePos = tag.getLong("NodePos");
+            if(nodePos.isPresent())
             {
                 BlockPos current = this.getNodePosition();
-                BlockPos previous = BlockPos.of(tag.getLong("NodePos"));
+                BlockPos previous = BlockPos.of(nodePos.get());
                 if(!current.equals(previous))
                 {
                     offset = current.subtract(previous);
@@ -177,7 +174,7 @@ public interface IElectricityNode
             BlockPos pos = this.getNodePosition();
             Set<Connection> connections = this.getNodeConnections();
             connections.clear();
-            long[] nodes = tag.getLongArray("Connections");
+            long[] nodes = tag.getLongArray("Connections").orElse(new long[0]);
             for(long node : nodes)
             {
                 connections.add(Connection.of(pos, BlockPos.of(node).offset(offset)));
@@ -193,7 +190,7 @@ public interface IElectricityNode
     default void writeNodeNbt(CompoundTag tag)
     {
         Set<Connection> connections = this.getNodeConnections();
-        tag.putLongArray("Connections", connections.stream().map(Connection::getPosB).map(BlockPos::asLong).toList());
+        tag.putLongArray("Connections", connections.stream().map(Connection::getPosB).map(BlockPos::asLong).mapToLong(Long::longValue).toArray());
         tag.putLong("NodePos", this.getNodePosition().asLong());
     }
 

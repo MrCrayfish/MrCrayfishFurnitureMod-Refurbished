@@ -14,6 +14,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Author: MrCrayfish
@@ -29,7 +30,7 @@ public class CuttingBoardBlockEntityRenderer implements BlockEntityRenderer<Cutt
     }
 
     @Override
-    public void render(CuttingBoardBlockEntity cuttingBoard, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay)
+    public void render(CuttingBoardBlockEntity cuttingBoard, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay, Vec3 camera)
     {
         Direction direction = cuttingBoard.getBlockState().getValue(CuttingBoardBlock.DIRECTION);
         poseStack.pushPose();

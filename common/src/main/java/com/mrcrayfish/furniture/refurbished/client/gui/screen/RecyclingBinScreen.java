@@ -1,12 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.MeshData;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.*;
 import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.IconButton;
@@ -20,8 +14,6 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.CoreShaders;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
@@ -131,18 +123,19 @@ public class RecyclingBinScreen extends ElectricityContainerScreen<RecycleBinMen
     private void drawBlitWithAlpha(GuiGraphics graphics, int x, int y, int u, int v, int width, int height, float alpha)
     {
         float scale = (float) 1 / 256;
-        RenderSystem.enableBlend();
-        RenderSystem.setShaderTexture(0, RECYCLING_BIN_TEXTURE);
-        RenderSystem.setShader(CoreShaders.POSITION_TEX_COLOR);
+        RenderType type = RenderType.guiTextured(RECYCLING_BIN_TEXTURE);
         Matrix4f matrix = graphics.pose().last().pose();
         BufferBuilder builder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
         builder.addVertex(matrix, x, y, 0).setUv(u * scale, v * scale).setColor(1.0F, 1.0F, 1.0F, alpha);
         builder.addVertex(matrix, x, y + height, 0).setUv(u * scale, (v + height) * scale).setColor(1.0F, 1.0F, 1.0F, alpha);
         builder.addVertex(matrix, x + width, y + height, 0).setUv((u + width) * scale, (v + height) * scale).setColor(1.0F, 1.0F, 1.0F, alpha);
         builder.addVertex(matrix, x + width, y, 0).setUv((u + width) * scale, v * scale).setColor(1.0F, 1.0F, 1.0F, alpha);
-        MeshData data = builder.build();
-        if(data != null)
-            BufferUploader.drawWithShader(data);
-        RenderSystem.disableBlend();
+        try(MeshData data = builder.build())
+        {
+            if(data != null)
+            {
+                type.draw(data);
+            }
+        }
     }
 }

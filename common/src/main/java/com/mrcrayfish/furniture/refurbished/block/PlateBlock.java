@@ -14,10 +14,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.Container;
-import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.player.Player;
@@ -102,21 +99,6 @@ public class PlateBlock extends FallingBlock implements EntityBlock, BlockTagSup
         return InteractionResult.PASS;
     }
 
-    @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving)
-    {
-        if(!state.is(newState.getBlock()))
-        {
-            BlockEntity blockEntity = level.getBlockEntity(pos);
-            if(blockEntity instanceof Container container)
-            {
-                Containers.dropContents(level, pos, container);
-                level.updateNeighbourForOutputSignal(pos, this);
-            }
-        }
-        super.onRemove(state, level, pos, newState, isMoving);
-    }
-
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
@@ -128,6 +110,12 @@ public class PlateBlock extends FallingBlock implements EntityBlock, BlockTagSup
     protected void falling(FallingBlockEntity entity)
     {
         entity.disableDrop();
+    }
+
+    @Override
+    public int getDustColor(BlockState state, BlockGetter getter, BlockPos pos)
+    {
+        return state.getMapColor(getter, pos).col;
     }
 
     @Override

@@ -160,10 +160,7 @@ public class FreezerBlockEntity extends ElectricityModuleProcessingLootBlockEnti
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
         super.loadAdditional(tag, provider);
-        if(tag.contains("Enabled", Tag.TAG_BYTE))
-        {
-            this.enabled = tag.getBoolean("Enabled");
-        }
+        tag.getBoolean("Enabled").ifPresent(value -> this.enabled = value);
     }
 
     @Override

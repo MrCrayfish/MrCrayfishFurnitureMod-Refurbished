@@ -5,22 +5,18 @@ import com.mrcrayfish.furniture.refurbished.block.*;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.data.model.ModelDefinitions;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
-import net.minecraft.client.data.models.blockstates.BlockStateGenerator;
-import net.minecraft.client.data.models.blockstates.Condition;
-import net.minecraft.client.data.models.blockstates.MultiPartGenerator;
-import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
-import net.minecraft.client.data.models.blockstates.PropertyDispatch;
-import net.minecraft.client.data.models.blockstates.Variant;
-import net.minecraft.client.data.models.blockstates.VariantProperties;
-import net.minecraft.client.data.models.model.ItemModelUtils;
-import net.minecraft.client.data.models.model.ModelInstance;
-import net.minecraft.client.data.models.model.ModelLocationUtils;
-import net.minecraft.client.data.models.model.TextureMapping;
-import net.minecraft.client.data.models.model.TextureSlot;
+import net.minecraft.client.data.models.MultiVariant;
+import net.minecraft.client.data.models.blockstates.*;
+import net.minecraft.client.data.models.model.*;
+import net.minecraft.client.renderer.block.model.Variant;
+import net.minecraft.client.renderer.block.model.multipart.CombinedCondition;
+import net.minecraft.client.renderer.block.model.multipart.Condition;
 import net.minecraft.client.renderer.item.ClientItem;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.random.Weighted;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -28,8 +24,11 @@ import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.DoorHingeSide;
 import net.minecraft.world.level.block.state.properties.WoodType;
 
-import java.util.List;
+import java.util.Arrays;
 import java.util.Map;
+import java.util.stream.Stream;
+
+import static net.minecraft.client.data.models.BlockModelGenerators.*;
 
 /**
  * Author: MrCrayfish
@@ -37,7 +36,7 @@ import java.util.Map;
 @SuppressWarnings("UnstableApiUsage")
 public class CommonBlockStatesGenerator extends FrameworkGenerator
 {
-    public CommonBlockStatesGenerator(Map<Block, BlockStateGenerator> generators, Map<Item, ClientItem> items, Map<ResourceLocation, ModelInstance> models)
+    public CommonBlockStatesGenerator(Map<Block, BlockModelDefinitionGenerator> generators, Map<Item, ClientItem> items, Map<ResourceLocation, ModelInstance> models)
     {
         super(generators, items, models);
     }
@@ -551,9 +550,51 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         this.items.put(block.asItem(), this.createClientItem(ItemModelUtils.plainModel(location)));
     }
 
+    private void registerItemWithModelFromVariant(Block block, Variant variant)
+    {
+        ResourceLocation location = variant.modelLocation();
+        this.items.put(block.asItem(), this.createClientItem(ItemModelUtils.plainModel(location)));
+    }
+
+    private void registerItemWithModelFromMultiVariant(Block block, MultiVariant variant)
+    {
+        ResourceLocation location = variant.variants().unwrap().getFirst().value().modelLocation();
+        this.items.put(block.asItem(), this.createClientItem(ItemModelUtils.plainModel(location)));
+    }
+
     private void registerItemWithModel(Item item, ResourceLocation location)
     {
         this.items.put(item, this.createClientItem(ItemModelUtils.plainModel(location)));
+    }
+
+    private Variant plainModel(ResourceLocation location)
+    {
+        return new Variant(location);
+    }
+
+    private MultiVariant variant(Variant variant)
+    {
+        return new MultiVariant(WeightedList.of(variant));
+    }
+
+    private MultiVariant variants(Variant... variants)
+    {
+        return new MultiVariant(WeightedList.of(Arrays.stream(variants).map(variant -> new Weighted<>(variant, 1)).toList()));
+    }
+
+    private MultiVariant plainVariant(ResourceLocation location)
+    {
+        return this.variant(this.plainModel(location));
+    }
+
+    private ConditionBuilder condition()
+    {
+        return new ConditionBuilder();
+    }
+
+    private Condition or(ConditionBuilder... builders)
+    {
+        return new CombinedCondition(CombinedCondition.Operation.OR, Stream.of(builders).map(ConditionBuilder::build).toList());
     }
 
     private void table(TableBlock block)
@@ -561,42 +602,28 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.woodParticle(block.getWoodType()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation baseTableModel = ModelDefinitions.TABLE.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, baseTableModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.properties(TableBlock.NORTH, TableBlock.EAST, TableBlock.SOUTH, TableBlock.WEST)
-                .select(false, false, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, baseTableModel))
-                .select(true, false, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, ModelDefinitions.TABLE_NORTH.create(block, textures, this.models::put)))
-                .select(true, true, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, ModelDefinitions.TABLE_NORTH_EAST.create(block, textures, this.models::put)))
-                .select(true, true, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, ModelDefinitions.TABLE_NORTH_EAST_SOUTH.create(block, textures, this.models::put)))
-                .select(false, true, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, ModelDefinitions.TABLE_EAST.create(block, textures, this.models::put)))
-                .select(false, true, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, ModelDefinitions.TABLE_EAST_SOUTH.create(block, textures, this.models::put)))
-                .select(false, true, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ModelDefinitions.TABLE_EAST_SOUTH_WEST.create(block, textures, this.models::put)))
-                .select(false, false, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, ModelDefinitions.TABLE_SOUTH.create(block, textures, this.models::put)))
-                .select(false, false, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ModelDefinitions.TABLE_SOUTH_WEST.create(block, textures, this.models::put)))
-                .select(true, false, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ModelDefinitions.TABLE_SOUTH_WEST_NORTH.create(block, textures, this.models::put)))
-                .select(false, false, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ModelDefinitions.TABLE_WEST.create(block, textures, this.models::put)))
-                .select(true, false, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ModelDefinitions.TABLE_WEST_NORTH.create(block, textures, this.models::put)))
-                .select(true, true, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ModelDefinitions.TABLE_WEST_NORTH_EAST.create(block, textures, this.models::put)))
-                .select(true, false, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, ModelDefinitions.TABLE_NORTH_SOUTH.create(block, textures, this.models::put)))
-                .select(false, true, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ModelDefinitions.TABLE_EAST_WEST.create(block, textures, this.models::put)))
-                .select(true, true, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ModelDefinitions.TABLE_NORTH_EAST_SOUTH_WEST.create(block, textures, this.models::put)))));
+        MultiVariant baseTableVariant = this.plainVariant(ModelDefinitions.TABLE.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, baseTableVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(TableBlock.NORTH, TableBlock.EAST, TableBlock.SOUTH, TableBlock.WEST)
+                .select(false, false, false, false, baseTableVariant)
+                .select(true, false, false, false, this.plainVariant(ModelDefinitions.TABLE_NORTH.create(block, textures, this.models::put)))
+                .select(true, true, false, false, this.plainVariant(ModelDefinitions.TABLE_NORTH_EAST.create(block, textures, this.models::put)))
+                .select(true, true, true, false, this.plainVariant(ModelDefinitions.TABLE_NORTH_EAST_SOUTH.create(block, textures, this.models::put)))
+                .select(false, true, false, false, this.plainVariant(ModelDefinitions.TABLE_EAST.create(block, textures, this.models::put)))
+                .select(false, true, true, false, this.plainVariant(ModelDefinitions.TABLE_EAST_SOUTH.create(block, textures, this.models::put)))
+                .select(false, true, true, true, this.plainVariant(ModelDefinitions.TABLE_EAST_SOUTH_WEST.create(block, textures, this.models::put)))
+                .select(false, false, true, false, this.plainVariant(ModelDefinitions.TABLE_SOUTH.create(block, textures, this.models::put)))
+                .select(false, false, true, true, this.plainVariant(ModelDefinitions.TABLE_SOUTH_WEST.create(block, textures, this.models::put)))
+                .select(true, false, true, true, this.plainVariant(ModelDefinitions.TABLE_SOUTH_WEST_NORTH.create(block, textures, this.models::put)))
+                .select(false, false, false, true, this.plainVariant(ModelDefinitions.TABLE_WEST.create(block, textures, this.models::put)))
+                .select(true, false, false, true, this.plainVariant(ModelDefinitions.TABLE_WEST_NORTH.create(block, textures, this.models::put)))
+                .select(true, true, false, true, this.plainVariant(ModelDefinitions.TABLE_WEST_NORTH_EAST.create(block, textures, this.models::put)))
+                .select(true, false, true, false, this.plainVariant(ModelDefinitions.TABLE_NORTH_SOUTH.create(block, textures, this.models::put)))
+                .select(false, true, false, true, this.plainVariant(ModelDefinitions.TABLE_EAST_WEST.create(block, textures, this.models::put)))
+                .select(true, true, true, true, this.plainVariant(ModelDefinitions.TABLE_NORTH_EAST_SOUTH_WEST.create(block, textures, this.models::put)))
+            )
+        );
     }
 
     private void chair(ChairBlock block)
@@ -604,35 +631,19 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.woodParticle(block.getWoodType()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation baseChairModel = ModelDefinitions.CHAIR.create(block, textures, this.models::put);
-        ResourceLocation tuckedChairModel = ModelDefinitions.CHAIR_TUCKED.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, baseChairModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.properties(ChairBlock.DIRECTION, ChairBlock.TUCKED)
-                .select(Direction.NORTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, baseChairModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, baseChairModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, baseChairModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, baseChairModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, tuckedChairModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, tuckedChairModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, tuckedChairModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, tuckedChairModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant baseChairVariant = this.plainVariant(ModelDefinitions.CHAIR.create(block, textures, this.models::put));
+        MultiVariant tuckedChairVariant = this.plainVariant(ModelDefinitions.CHAIR_TUCKED.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, baseChairVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(ChairBlock.DIRECTION, ChairBlock.TUCKED)
+                .select(Direction.NORTH, false, baseChairVariant)
+                .select(Direction.EAST, false, baseChairVariant.with(X_ROT_90))
+                .select(Direction.SOUTH, false, baseChairVariant.with(X_ROT_180))
+                .select(Direction.WEST, false, baseChairVariant.with(X_ROT_270))
+                .select(Direction.NORTH, true, tuckedChairVariant)
+                .select(Direction.EAST, true, tuckedChairVariant.with(X_ROT_90))
+                .select(Direction.SOUTH, true, tuckedChairVariant.with(X_ROT_180))
+                .select(Direction.WEST, true, tuckedChairVariant.with(X_ROT_270))));
     }
 
     private void desk(DeskBlock block)
@@ -640,61 +651,29 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.woodParticle(block.getWoodType()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation baseDeskModel = ModelDefinitions.DESK.create(block, textures, this.models::put);
-        ResourceLocation deskLeftModel = ModelDefinitions.DESK_LEFT.create(block, textures, this.models::put);
-        ResourceLocation deskMiddleModel = ModelDefinitions.DESK_MIDDLE.create(block, textures, this.models::put);
-        ResourceLocation deskRightModel = ModelDefinitions.DESK_RIGHT.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, baseDeskModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.properties(DeskBlock.DIRECTION, DeskBlock.LEFT, DeskBlock.RIGHT)
-                .select(Direction.NORTH, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, baseDeskModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, baseDeskModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, baseDeskModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, baseDeskModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, deskLeftModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, deskLeftModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, deskLeftModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, deskLeftModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, deskRightModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, deskRightModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, deskRightModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, deskRightModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, deskMiddleModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, deskMiddleModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, deskMiddleModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, deskMiddleModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant baseDeskVariant = this.plainVariant(ModelDefinitions.DESK.create(block, textures, this.models::put));
+        MultiVariant deskLeftVariant = this.plainVariant(ModelDefinitions.DESK_LEFT.create(block, textures, this.models::put));
+        MultiVariant deskMiddleVariant = this.plainVariant(ModelDefinitions.DESK_MIDDLE.create(block, textures, this.models::put));
+        MultiVariant deskRightVariant = this.plainVariant(ModelDefinitions.DESK_RIGHT.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, baseDeskVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(DeskBlock.DIRECTION, DeskBlock.LEFT, DeskBlock.RIGHT)
+                .select(Direction.NORTH, false, false, baseDeskVariant)
+                .select(Direction.EAST, false, false, baseDeskVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, false, false, baseDeskVariant.with(Y_ROT_180))
+                .select(Direction.WEST, false, false, baseDeskVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, true, false, deskLeftVariant)
+                .select(Direction.EAST, true, false, deskLeftVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, true, false, deskLeftVariant.with(Y_ROT_180))
+                .select(Direction.WEST, true, false, deskLeftVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, false, true, deskRightVariant)
+                .select(Direction.EAST, false, true, deskRightVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, false, true, deskRightVariant.with(Y_ROT_180))
+                .select(Direction.WEST, false, true, deskRightVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, true, true, deskMiddleVariant)
+                .select(Direction.EAST, true, true, deskMiddleVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, true, true, deskMiddleVariant.with(Y_ROT_180))
+                .select(Direction.WEST, true, true, deskMiddleVariant.with(Y_ROT_270))));
     }
 
     private void drawer(DrawerBlock block)
@@ -702,113 +681,49 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.woodParticle(block.getWoodType()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation drawerClosedModel = ModelDefinitions.DRAWER_CLOSED.create(block, textures, this.models::put);
-        ResourceLocation drawerOpenModel = ModelDefinitions.DRAWER_OPEN.create(block, textures, this.models::put);
-        ResourceLocation drawerLeftClosedModel = ModelDefinitions.DRAWER_LEFT_CLOSED.create(block, textures, this.models::put);
-        ResourceLocation drawerLeftOpenModel = ModelDefinitions.DRAWER_LEFT_OPEN.create(block, textures, this.models::put);
-        ResourceLocation drawerRightClosedModel = ModelDefinitions.DRAWER_RIGHT_CLOSED.create(block, textures, this.models::put);
-        ResourceLocation drawerRightOpenModel = ModelDefinitions.DRAWER_RIGHT_OPEN.create(block, textures, this.models::put);
-        ResourceLocation drawerMiddleClosedModel = ModelDefinitions.DRAWER_MIDDLE_CLOSED.create(block, textures, this.models::put);
-        ResourceLocation drawerMiddleOpenModel = ModelDefinitions.DRAWER_MIDDLE_OPEN.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, drawerClosedModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.properties(DrawerBlock.DIRECTION, DrawerBlock.LEFT, DrawerBlock.RIGHT, DrawerBlock.OPEN)
-                .select(Direction.NORTH, false, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, false, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, false, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, true, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerLeftClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, true, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerLeftClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerLeftClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, true, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerLeftClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, false, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerRightClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, false, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerRightClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerRightClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, false, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerRightClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, true, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerMiddleClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, true, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerMiddleClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerMiddleClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, true, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerMiddleClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, false, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, false, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, false, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, true, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerLeftOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, true, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerLeftOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerLeftOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, true, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerLeftOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, false, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerRightOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, false, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerRightOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerRightOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, false, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerRightOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, true, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerMiddleOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, true, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerMiddleOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerMiddleOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, true, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerMiddleOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant drawerClosedVariant = this.plainVariant(ModelDefinitions.DRAWER_CLOSED.create(block, textures, this.models::put));
+        MultiVariant drawerOpenVariant = this.plainVariant(ModelDefinitions.DRAWER_OPEN.create(block, textures, this.models::put));
+        MultiVariant drawerLeftClosedVariant = this.plainVariant(ModelDefinitions.DRAWER_LEFT_CLOSED.create(block, textures, this.models::put));
+        MultiVariant drawerLeftOpenVariant = this.plainVariant(ModelDefinitions.DRAWER_LEFT_OPEN.create(block, textures, this.models::put));
+        MultiVariant drawerRightClosedVariant = this.plainVariant(ModelDefinitions.DRAWER_RIGHT_CLOSED.create(block, textures, this.models::put));
+        MultiVariant drawerRightOpenVariant = this.plainVariant(ModelDefinitions.DRAWER_RIGHT_OPEN.create(block, textures, this.models::put));
+        MultiVariant drawerMiddleClosedVariant = this.plainVariant(ModelDefinitions.DRAWER_MIDDLE_CLOSED.create(block, textures, this.models::put));
+        MultiVariant drawerMiddleOpenVariant = this.plainVariant(ModelDefinitions.DRAWER_MIDDLE_OPEN.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, drawerClosedVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(DrawerBlock.DIRECTION, DrawerBlock.LEFT, DrawerBlock.RIGHT, DrawerBlock.OPEN)
+                .select(Direction.NORTH, false, false, false, drawerClosedVariant)
+                .select(Direction.EAST, false, false, false, drawerClosedVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, false, false, false, drawerClosedVariant.with(Y_ROT_180))
+                .select(Direction.WEST, false, false, false, drawerClosedVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, true, false, false, drawerLeftClosedVariant)
+                .select(Direction.EAST, true, false, false, drawerLeftClosedVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, true, false, false, drawerLeftClosedVariant.with(Y_ROT_180))
+                .select(Direction.WEST, true, false, false, drawerLeftClosedVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, false, true, false, drawerRightClosedVariant)
+                .select(Direction.EAST, false, true, false, drawerRightClosedVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, false, true, false, drawerRightClosedVariant.with(Y_ROT_180))
+                .select(Direction.WEST, false, true, false, drawerRightClosedVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, true, true, false, drawerMiddleClosedVariant)
+                .select(Direction.EAST, true, true, false, drawerMiddleClosedVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, true, true, false, drawerMiddleClosedVariant.with(Y_ROT_180))
+                .select(Direction.WEST, true, true, false, drawerMiddleClosedVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, false, false, true, drawerOpenVariant)
+                .select(Direction.EAST, false, false, true, drawerOpenVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, false, false, true, drawerOpenVariant.with(Y_ROT_180))
+                .select(Direction.WEST, false, false, true, drawerOpenVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, true, false, true, drawerLeftOpenVariant)
+                .select(Direction.EAST, true, false, true, drawerLeftOpenVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, true, false, true, drawerLeftOpenVariant.with(Y_ROT_180))
+                .select(Direction.WEST, true, false, true, drawerLeftOpenVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, false, true, true, drawerRightOpenVariant)
+                .select(Direction.EAST, false, true, true, drawerRightOpenVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, false, true, true, drawerRightOpenVariant.with(Y_ROT_180))
+                .select(Direction.WEST, false, true, true, drawerRightOpenVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, true, true, true, drawerMiddleOpenVariant)
+                .select(Direction.EAST, true, true, true, drawerMiddleOpenVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, true, true, true, drawerMiddleOpenVariant.with(Y_ROT_180))
+                .select(Direction.WEST, true, true, true, drawerMiddleOpenVariant.with(Y_ROT_270))));
     }
 
     private void crate(CrateBlock block)
@@ -816,15 +731,13 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.woodParticle(block.getWoodType()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation closedCrateModel = ModelDefinitions.CRATE_CLOSED.create(block, textures, this.models::put);
-        ResourceLocation openCrateModel = ModelDefinitions.CRATE_OPEN.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, closedCrateModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.property(CrateBlock.OPEN)
-                .select(false, Variant.variant()
-                    .with(VariantProperties.MODEL, closedCrateModel))
-                .select(true, Variant.variant()
-                    .with(VariantProperties.MODEL, openCrateModel))));
+        MultiVariant closedCrateVariant = this.plainVariant(ModelDefinitions.CRATE_CLOSED.create(block, textures, this.models::put));
+        MultiVariant openCrateVariant = this.plainVariant(ModelDefinitions.CRATE_OPEN.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, closedCrateVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(CrateBlock.OPEN)
+                .select(false, closedCrateVariant)
+                .select(true, openCrateVariant)));
     }
 
     private void woodenKitchenCabinetry(WoodenKitchenCabinetryBlock block)
@@ -832,74 +745,34 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.woodParticle(block.getWoodType()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation defaultCabinetryModel = ModelDefinitions.KITCHEN_CABINETRY_DEFAULT.create(block, textures, this.models::put);
-        ResourceLocation cabinetryInsideCornerLeftModel = ModelDefinitions.KITCHEN_CABINETRY_INSIDE_CORNER_LEFT.create(block, textures, this.models::put);
-        ResourceLocation cabinetryInsideCornerRightModel = ModelDefinitions.KITCHEN_CABINETRY_INSIDE_CORNER_RIGHT.create(block, textures, this.models::put);
-        ResourceLocation cabinetryOutsideCornerLeftModel = ModelDefinitions.KITCHEN_CABINETRY_OUTSIDE_CORNER_LEFT.create(block, textures, this.models::put);
-        ResourceLocation cabinetryOutsideCornerRightModel = ModelDefinitions.KITCHEN_CABINETRY_OUTSIDE_CORNER_RIGHT.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, defaultCabinetryModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.properties(WoodenKitchenCabinetryBlock.DIRECTION, WoodenKitchenCabinetryBlock.SHAPE)
-                .select(Direction.NORTH, KitchenCabinetryBlock.Shape.DEFAULT, Variant.variant()
-                    .with(VariantProperties.MODEL, defaultCabinetryModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, KitchenCabinetryBlock.Shape.DEFAULT, Variant.variant()
-                    .with(VariantProperties.MODEL, defaultCabinetryModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, KitchenCabinetryBlock.Shape.DEFAULT, Variant.variant()
-                    .with(VariantProperties.MODEL, defaultCabinetryModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, KitchenCabinetryBlock.Shape.DEFAULT, Variant.variant()
-                    .with(VariantProperties.MODEL, defaultCabinetryModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, KitchenCabinetryBlock.Shape.INSIDE_CORNER_LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryInsideCornerLeftModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, KitchenCabinetryBlock.Shape.INSIDE_CORNER_LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryInsideCornerLeftModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, KitchenCabinetryBlock.Shape.INSIDE_CORNER_LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryInsideCornerLeftModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, KitchenCabinetryBlock.Shape.INSIDE_CORNER_LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryInsideCornerLeftModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, KitchenCabinetryBlock.Shape.INSIDE_CORNER_RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryInsideCornerRightModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, KitchenCabinetryBlock.Shape.INSIDE_CORNER_RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryInsideCornerRightModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, KitchenCabinetryBlock.Shape.INSIDE_CORNER_RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryInsideCornerRightModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, KitchenCabinetryBlock.Shape.INSIDE_CORNER_RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryInsideCornerRightModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryOutsideCornerLeftModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryOutsideCornerLeftModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryOutsideCornerLeftModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryOutsideCornerLeftModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryOutsideCornerRightModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryOutsideCornerRightModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryOutsideCornerRightModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryOutsideCornerRightModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant defaultCabinetryVariant = this.plainVariant(ModelDefinitions.KITCHEN_CABINETRY_DEFAULT.create(block, textures, this.models::put));
+        MultiVariant cabinetryInsideCornerLeftVariant = this.plainVariant(ModelDefinitions.KITCHEN_CABINETRY_INSIDE_CORNER_LEFT.create(block, textures, this.models::put));
+        MultiVariant cabinetryInsideCornerRightVariant = this.plainVariant(ModelDefinitions.KITCHEN_CABINETRY_INSIDE_CORNER_RIGHT.create(block, textures, this.models::put));
+        MultiVariant cabinetryOutsideCornerLeftVariant = this.plainVariant(ModelDefinitions.KITCHEN_CABINETRY_OUTSIDE_CORNER_LEFT.create(block, textures, this.models::put));
+        MultiVariant cabinetryOutsideCornerRightVariant = this.plainVariant(ModelDefinitions.KITCHEN_CABINETRY_OUTSIDE_CORNER_RIGHT.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, defaultCabinetryVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(WoodenKitchenCabinetryBlock.DIRECTION, WoodenKitchenCabinetryBlock.SHAPE)
+                .select(Direction.NORTH, KitchenCabinetryBlock.Shape.DEFAULT, defaultCabinetryVariant)
+                .select(Direction.EAST, KitchenCabinetryBlock.Shape.DEFAULT, defaultCabinetryVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, KitchenCabinetryBlock.Shape.DEFAULT, defaultCabinetryVariant.with(Y_ROT_180))
+                .select(Direction.WEST, KitchenCabinetryBlock.Shape.DEFAULT, defaultCabinetryVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, KitchenCabinetryBlock.Shape.INSIDE_CORNER_LEFT, cabinetryInsideCornerLeftVariant)
+                .select(Direction.EAST, KitchenCabinetryBlock.Shape.INSIDE_CORNER_LEFT, cabinetryInsideCornerLeftVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, KitchenCabinetryBlock.Shape.INSIDE_CORNER_LEFT, cabinetryInsideCornerLeftVariant.with(Y_ROT_180))
+                .select(Direction.WEST, KitchenCabinetryBlock.Shape.INSIDE_CORNER_LEFT, cabinetryInsideCornerLeftVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, KitchenCabinetryBlock.Shape.INSIDE_CORNER_RIGHT, cabinetryInsideCornerRightVariant)
+                .select(Direction.EAST, KitchenCabinetryBlock.Shape.INSIDE_CORNER_RIGHT, cabinetryInsideCornerRightVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, KitchenCabinetryBlock.Shape.INSIDE_CORNER_RIGHT, cabinetryInsideCornerRightVariant.with(Y_ROT_180))
+                .select(Direction.WEST, KitchenCabinetryBlock.Shape.INSIDE_CORNER_RIGHT, cabinetryInsideCornerRightVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_LEFT, cabinetryOutsideCornerLeftVariant)
+                .select(Direction.EAST, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_LEFT, cabinetryOutsideCornerLeftVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_LEFT, cabinetryOutsideCornerLeftVariant.with(Y_ROT_180))
+                .select(Direction.WEST, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_LEFT, cabinetryOutsideCornerLeftVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_RIGHT, cabinetryOutsideCornerRightVariant)
+                .select(Direction.EAST, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_RIGHT, cabinetryOutsideCornerRightVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_RIGHT, cabinetryOutsideCornerRightVariant.with(Y_ROT_180))
+                .select(Direction.WEST, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_RIGHT, cabinetryOutsideCornerRightVariant.with(Y_ROT_270))));
     }
 
     private void woodenKitchenDrawer(WoodenKitchenDrawerBlock block)
@@ -907,35 +780,19 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.woodParticle(block.getWoodType()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation drawerClosedModel = ModelDefinitions.KITCHEN_DRAWER_CLOSED.create(block, textures, this.models::put);
-        ResourceLocation drawerOpenModel = ModelDefinitions.KITCHEN_DRAWER_OPEN.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, drawerClosedModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.properties(DrawerBlock.DIRECTION, DrawerBlock.OPEN)
-                .select(Direction.NORTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant drawerClosedVariant = this.plainVariant(ModelDefinitions.KITCHEN_DRAWER_CLOSED.create(block, textures, this.models::put));
+        MultiVariant drawerOpenVariant = this.plainVariant(ModelDefinitions.KITCHEN_DRAWER_OPEN.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, drawerClosedVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(DrawerBlock.DIRECTION, DrawerBlock.OPEN)
+                .select(Direction.NORTH, false, drawerClosedVariant)
+                .select(Direction.EAST, false, drawerClosedVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, false, drawerClosedVariant.with(Y_ROT_180))
+                .select(Direction.WEST, false, drawerClosedVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, true, drawerOpenVariant)
+                .select(Direction.EAST, true, drawerOpenVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, true, drawerOpenVariant.with(Y_ROT_180))
+                .select(Direction.WEST, true, drawerOpenVariant.with(Y_ROT_270))));
     }
 
     private void woodenKitchenSink(WoodenKitchenSinkBlock block)
@@ -943,22 +800,14 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.woodParticle(block.getWoodType()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation baseKitchenSinkModel = ModelDefinitions.KITCHEN_SINK.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, baseKitchenSinkModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.property(WoodenKitchenSinkBlock.DIRECTION)
-                .select(Direction.NORTH, Variant.variant()
-                    .with(VariantProperties.MODEL, baseKitchenSinkModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, Variant.variant()
-                    .with(VariantProperties.MODEL, baseKitchenSinkModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, Variant.variant()
-                    .with(VariantProperties.MODEL, baseKitchenSinkModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, Variant.variant()
-                    .with(VariantProperties.MODEL, baseKitchenSinkModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant baseKitchenSinkVariant = this.plainVariant(ModelDefinitions.KITCHEN_SINK.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, baseKitchenSinkVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(WoodenKitchenSinkBlock.DIRECTION)
+                .select(Direction.NORTH, baseKitchenSinkVariant)
+                .select(Direction.EAST, baseKitchenSinkVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, baseKitchenSinkVariant.with(Y_ROT_180))
+                .select(Direction.WEST, baseKitchenSinkVariant.with(Y_ROT_270))));
     }
 
     private void colouredKitchenCabinetry(ColouredKitchenCabinetryBlock block)
@@ -966,74 +815,34 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.colourParticle(block.getDyeColor()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation defaultCabinetryModel = ModelDefinitions.KITCHEN_CABINETRY_DEFAULT.create(block, textures, this.models::put);
-        ResourceLocation cabinetryInsideCornerLeftModel = ModelDefinitions.KITCHEN_CABINETRY_INSIDE_CORNER_LEFT.create(block, textures, this.models::put);
-        ResourceLocation cabinetryInsideCornerRightModel = ModelDefinitions.KITCHEN_CABINETRY_INSIDE_CORNER_RIGHT.create(block, textures, this.models::put);
-        ResourceLocation cabinetryOutsideCornerLeftModel = ModelDefinitions.KITCHEN_CABINETRY_OUTSIDE_CORNER_LEFT.create(block, textures, this.models::put);
-        ResourceLocation cabinetryOutsideCornerRightModel = ModelDefinitions.KITCHEN_CABINETRY_OUTSIDE_CORNER_RIGHT.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, defaultCabinetryModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.properties(ColouredKitchenCabinetryBlock.DIRECTION, ColouredKitchenCabinetryBlock.SHAPE)
-                .select(Direction.NORTH, KitchenCabinetryBlock.Shape.DEFAULT, Variant.variant()
-                    .with(VariantProperties.MODEL, defaultCabinetryModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, KitchenCabinetryBlock.Shape.DEFAULT, Variant.variant()
-                    .with(VariantProperties.MODEL, defaultCabinetryModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, KitchenCabinetryBlock.Shape.DEFAULT, Variant.variant()
-                    .with(VariantProperties.MODEL, defaultCabinetryModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, KitchenCabinetryBlock.Shape.DEFAULT, Variant.variant()
-                    .with(VariantProperties.MODEL, defaultCabinetryModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, KitchenCabinetryBlock.Shape.INSIDE_CORNER_LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryInsideCornerLeftModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, KitchenCabinetryBlock.Shape.INSIDE_CORNER_LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryInsideCornerLeftModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, KitchenCabinetryBlock.Shape.INSIDE_CORNER_LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryInsideCornerLeftModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, KitchenCabinetryBlock.Shape.INSIDE_CORNER_LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryInsideCornerLeftModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, KitchenCabinetryBlock.Shape.INSIDE_CORNER_RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryInsideCornerRightModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, KitchenCabinetryBlock.Shape.INSIDE_CORNER_RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryInsideCornerRightModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, KitchenCabinetryBlock.Shape.INSIDE_CORNER_RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryInsideCornerRightModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, KitchenCabinetryBlock.Shape.INSIDE_CORNER_RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryInsideCornerRightModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryOutsideCornerLeftModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryOutsideCornerLeftModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryOutsideCornerLeftModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryOutsideCornerLeftModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryOutsideCornerRightModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryOutsideCornerRightModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryOutsideCornerRightModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, cabinetryOutsideCornerRightModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant defaultCabinetryVariant = this.plainVariant(ModelDefinitions.KITCHEN_CABINETRY_DEFAULT.create(block, textures, this.models::put));
+        MultiVariant cabinetryInsideCornerLeftVariant = this.plainVariant(ModelDefinitions.KITCHEN_CABINETRY_INSIDE_CORNER_LEFT.create(block, textures, this.models::put));
+        MultiVariant cabinetryInsideCornerRightVariant = this.plainVariant(ModelDefinitions.KITCHEN_CABINETRY_INSIDE_CORNER_RIGHT.create(block, textures, this.models::put));
+        MultiVariant cabinetryOutsideCornerLeftVariant = this.plainVariant(ModelDefinitions.KITCHEN_CABINETRY_OUTSIDE_CORNER_LEFT.create(block, textures, this.models::put));
+        MultiVariant cabinetryOutsideCornerRightVariant = this.plainVariant(ModelDefinitions.KITCHEN_CABINETRY_OUTSIDE_CORNER_RIGHT.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, defaultCabinetryVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(ColouredKitchenCabinetryBlock.DIRECTION, ColouredKitchenCabinetryBlock.SHAPE)
+                .select(Direction.NORTH, KitchenCabinetryBlock.Shape.DEFAULT, defaultCabinetryVariant)
+                .select(Direction.EAST, KitchenCabinetryBlock.Shape.DEFAULT, defaultCabinetryVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, KitchenCabinetryBlock.Shape.DEFAULT, defaultCabinetryVariant.with(Y_ROT_180))
+                .select(Direction.WEST, KitchenCabinetryBlock.Shape.DEFAULT, defaultCabinetryVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, KitchenCabinetryBlock.Shape.INSIDE_CORNER_LEFT, cabinetryInsideCornerLeftVariant)
+                .select(Direction.EAST, KitchenCabinetryBlock.Shape.INSIDE_CORNER_LEFT, cabinetryInsideCornerLeftVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, KitchenCabinetryBlock.Shape.INSIDE_CORNER_LEFT, cabinetryInsideCornerLeftVariant.with(Y_ROT_180))
+                .select(Direction.WEST, KitchenCabinetryBlock.Shape.INSIDE_CORNER_LEFT, cabinetryInsideCornerLeftVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, KitchenCabinetryBlock.Shape.INSIDE_CORNER_RIGHT, cabinetryInsideCornerRightVariant)
+                .select(Direction.EAST, KitchenCabinetryBlock.Shape.INSIDE_CORNER_RIGHT, cabinetryInsideCornerRightVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, KitchenCabinetryBlock.Shape.INSIDE_CORNER_RIGHT, cabinetryInsideCornerRightVariant.with(Y_ROT_180))
+                .select(Direction.WEST, KitchenCabinetryBlock.Shape.INSIDE_CORNER_RIGHT, cabinetryInsideCornerRightVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_LEFT, cabinetryOutsideCornerLeftVariant)
+                .select(Direction.EAST, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_LEFT, cabinetryOutsideCornerLeftVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_LEFT, cabinetryOutsideCornerLeftVariant.with(Y_ROT_180))
+                .select(Direction.WEST, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_LEFT, cabinetryOutsideCornerLeftVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_RIGHT, cabinetryOutsideCornerRightVariant)
+                .select(Direction.EAST, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_RIGHT, cabinetryOutsideCornerRightVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_RIGHT, cabinetryOutsideCornerRightVariant.with(Y_ROT_180))
+                .select(Direction.WEST, KitchenCabinetryBlock.Shape.OUTSIDE_CORNER_RIGHT, cabinetryOutsideCornerRightVariant.with(Y_ROT_270))));
     }
 
     private void colouredKitchenDrawer(ColouredKitchenDrawerBlock block)
@@ -1041,35 +850,19 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.colourParticle(block.getDyeColor()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation drawerClosedModel = ModelDefinitions.KITCHEN_DRAWER_CLOSED.create(block, textures, this.models::put);
-        ResourceLocation drawerOpenModel = ModelDefinitions.KITCHEN_DRAWER_OPEN.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, drawerClosedModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.properties(ColouredKitchenDrawerBlock.DIRECTION, ColouredKitchenDrawerBlock.OPEN)
-                .select(Direction.NORTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, drawerOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant drawerClosedVariant = this.plainVariant(ModelDefinitions.KITCHEN_DRAWER_CLOSED.create(block, textures, this.models::put));
+        MultiVariant drawerOpenVariant = this.plainVariant(ModelDefinitions.KITCHEN_DRAWER_OPEN.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, drawerClosedVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(ColouredKitchenDrawerBlock.DIRECTION, ColouredKitchenDrawerBlock.OPEN)
+                .select(Direction.NORTH, false, drawerClosedVariant)
+                .select(Direction.EAST, false, drawerClosedVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, false, drawerClosedVariant.with(Y_ROT_180))
+                .select(Direction.WEST, false, drawerClosedVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, true, drawerOpenVariant)
+                .select(Direction.EAST, true, drawerOpenVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, true, drawerOpenVariant.with(Y_ROT_180))
+                .select(Direction.WEST, true, drawerOpenVariant.with(Y_ROT_270))));
     }
 
     private void colouredKitchenSink(ColouredKitchenSinkBlock block)
@@ -1077,22 +870,14 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.colourParticle(block.getDyeColor()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation baseKitchenSinkModel = ModelDefinitions.KITCHEN_SINK.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, baseKitchenSinkModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.property(WoodenKitchenSinkBlock.DIRECTION)
-                .select(Direction.NORTH, Variant.variant()
-                    .with(VariantProperties.MODEL, baseKitchenSinkModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, Variant.variant()
-                    .with(VariantProperties.MODEL, baseKitchenSinkModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, Variant.variant()
-                    .with(VariantProperties.MODEL, baseKitchenSinkModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, Variant.variant()
-                    .with(VariantProperties.MODEL, baseKitchenSinkModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant baseKitchenSinkVariant = this.plainVariant(ModelDefinitions.KITCHEN_SINK.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, baseKitchenSinkVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(WoodenKitchenSinkBlock.DIRECTION)
+                .select(Direction.NORTH, baseKitchenSinkVariant)
+                .select(Direction.EAST, baseKitchenSinkVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, baseKitchenSinkVariant.with(Y_ROT_180))
+                .select(Direction.WEST, baseKitchenSinkVariant.with(Y_ROT_270))));
     }
 
     private void grill(GrillBlock block)
@@ -1100,22 +885,14 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.colourParticle(block.getDyeColor()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation grillModel = ModelDefinitions.GRILL.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, grillModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.property(GrillBlock.DIRECTION)
-                .select(Direction.NORTH, Variant.variant()
-                    .with(VariantProperties.MODEL, grillModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, Variant.variant()
-                    .with(VariantProperties.MODEL, grillModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, Variant.variant()
-                    .with(VariantProperties.MODEL, grillModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, Variant.variant()
-                    .with(VariantProperties.MODEL, grillModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant grillVariant = this.plainVariant(ModelDefinitions.GRILL.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, grillVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(GrillBlock.DIRECTION)
+                .select(Direction.NORTH, grillVariant)
+                .select(Direction.EAST, grillVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, grillVariant.with(Y_ROT_180))
+                .select(Direction.WEST, grillVariant.with(Y_ROT_270))));
     }
 
     private void cooler(CoolerBlock block)
@@ -1123,35 +900,19 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.colourParticle(block.getDyeColor()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation coolerClosedModel = ModelDefinitions.COOLER_CLOSED.create(block, textures, this.models::put);
-        ResourceLocation coolerOpenModel = ModelDefinitions.COOLER_OPEN.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, coolerClosedModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.properties(CoolerBlock.DIRECTION, CoolerBlock.OPEN)
-                .select(Direction.NORTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, coolerClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, coolerClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, coolerClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, coolerClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, coolerOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, coolerOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, coolerOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, coolerOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant coolerClosedVariant = this.plainVariant(ModelDefinitions.COOLER_CLOSED.create(block, textures, this.models::put));
+        MultiVariant coolerOpenVariant = this.plainVariant(ModelDefinitions.COOLER_OPEN.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, coolerClosedVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(CoolerBlock.DIRECTION, CoolerBlock.OPEN)
+                .select(Direction.NORTH, false, coolerClosedVariant)
+                .select(Direction.EAST, false, coolerClosedVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, false, coolerClosedVariant.with(Y_ROT_180))
+                .select(Direction.WEST, false, coolerClosedVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, true, coolerOpenVariant)
+                .select(Direction.EAST, true, coolerOpenVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, true, coolerOpenVariant.with(Y_ROT_180))
+                .select(Direction.WEST, true, coolerOpenVariant.with(Y_ROT_270))));
     }
 
     private void fridge(FridgeBlock fridgeBlock, FreezerBlock freezerBlock)
@@ -1160,63 +921,31 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
             .put(TextureSlot.PARTICLE, this.metalParticle(fridgeBlock.getMetalType()))
             .put(TextureSlot.TEXTURE, this.blockTexture(fridgeBlock));
 
-        ResourceLocation fridgeClosedModel = ModelDefinitions.FRIDGE_CLOSED.create(fridgeBlock, textures, this.models::put);
-        ResourceLocation fridgeOpenModel = ModelDefinitions.FRIDGE_OPEN.create(fridgeBlock, textures, this.models::put);
-        this.generators.put(fridgeBlock, MultiVariantGenerator.multiVariant(fridgeBlock)
-            .with(PropertyDispatch.properties(FridgeBlock.DIRECTION, FridgeBlock.OPEN)
-                .select(Direction.NORTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, fridgeClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, fridgeClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, fridgeClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, fridgeClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, fridgeOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, fridgeOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, fridgeOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, fridgeOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant fridgeClosedVariant = this.plainVariant(ModelDefinitions.FRIDGE_CLOSED.create(fridgeBlock, textures, this.models::put));
+        MultiVariant fridgeOpenVariant = this.plainVariant(ModelDefinitions.FRIDGE_OPEN.create(fridgeBlock, textures, this.models::put));
+        this.generators.put(fridgeBlock, MultiVariantGenerator.dispatch(fridgeBlock)
+            .with(PropertyDispatch.initial(FridgeBlock.DIRECTION, FridgeBlock.OPEN)
+                .select(Direction.NORTH, false, fridgeClosedVariant)
+                .select(Direction.EAST, false, fridgeClosedVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, false, fridgeClosedVariant.with(Y_ROT_180))
+                .select(Direction.WEST, false, fridgeClosedVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, true, fridgeOpenVariant)
+                .select(Direction.EAST, true, fridgeOpenVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, true, fridgeOpenVariant.with(Y_ROT_180))
+                .select(Direction.WEST, true, fridgeOpenVariant.with(Y_ROT_270))));
 
-        ResourceLocation freezerClosedModel = ModelDefinitions.FREEZER_CLOSED.create(freezerBlock, textures, this.models::put);
-        ResourceLocation freezerOpenModel = ModelDefinitions.FREEZER_OPEN.create(freezerBlock, textures, this.models::put);
-        this.generators.put(freezerBlock, MultiVariantGenerator.multiVariant(freezerBlock)
-            .with(PropertyDispatch.properties(FreezerBlock.DIRECTION, FreezerBlock.OPEN)
-                .select(Direction.NORTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, freezerClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, freezerClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, freezerClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, freezerClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, freezerOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, freezerOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, freezerOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, freezerOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant freezerClosedVariant = this.plainVariant(ModelDefinitions.FREEZER_CLOSED.create(freezerBlock, textures, this.models::put));
+        MultiVariant freezerOpenVariant = this.plainVariant(ModelDefinitions.FREEZER_OPEN.create(freezerBlock, textures, this.models::put));
+        this.generators.put(freezerBlock, MultiVariantGenerator.dispatch(freezerBlock)
+            .with(PropertyDispatch.initial(FreezerBlock.DIRECTION, FreezerBlock.OPEN)
+                .select(Direction.NORTH, false, freezerClosedVariant)
+                .select(Direction.EAST, false, freezerClosedVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, false, freezerClosedVariant.with(Y_ROT_180))
+                .select(Direction.WEST, false, freezerClosedVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, true, freezerOpenVariant)
+                .select(Direction.EAST, true, freezerOpenVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, true, freezerOpenVariant.with(Y_ROT_180))
+                .select(Direction.WEST, true, freezerOpenVariant.with(Y_ROT_270))));
     }
 
     private void toaster(ToasterBlock block)
@@ -1224,35 +953,19 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.metalParticle(block.getMetalType()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation toasterModel = ModelDefinitions.TOASTER.create(block, textures, this.models::put);
-        ResourceLocation toasterCookingModel = ModelDefinitions.TOASTER_COOKING.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, toasterModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.properties(ToasterBlock.DIRECTION, ToasterBlock.POWERED)
-                .select(Direction.NORTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, toasterModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, toasterModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, toasterModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, toasterModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, toasterCookingModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, toasterCookingModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, toasterCookingModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, toasterCookingModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant toasterVariant = this.plainVariant(ModelDefinitions.TOASTER.create(block, textures, this.models::put));
+        MultiVariant toasterCookingVariant = this.plainVariant(ModelDefinitions.TOASTER_COOKING.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, toasterVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(ToasterBlock.DIRECTION, ToasterBlock.POWERED)
+                .select(Direction.NORTH, false, toasterVariant)
+                .select(Direction.EAST, false, toasterVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, false, toasterVariant.with(Y_ROT_180))
+                .select(Direction.WEST, false, toasterVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, true, toasterCookingVariant)
+                .select(Direction.EAST, true, toasterCookingVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, true, toasterCookingVariant.with(Y_ROT_180))
+                .select(Direction.WEST, true, toasterCookingVariant.with(Y_ROT_270))));
     }
 
     private void microwave(MicrowaveBlock block)
@@ -1260,35 +973,19 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.metalParticle(block.getMetalType()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation microwaveClosedModel = ModelDefinitions.MICROWAVE_CLOSED.create(block, textures, this.models::put);
-        ResourceLocation microwaveOpenModel = ModelDefinitions.MICROWAVE_OPEN.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, microwaveClosedModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.properties(MicrowaveBlock.DIRECTION, MicrowaveBlock.OPEN)
-                .select(Direction.NORTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, microwaveClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, microwaveClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, microwaveClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, microwaveClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, microwaveOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, microwaveOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, microwaveOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, microwaveOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant microwaveClosedVariant = this.plainVariant(ModelDefinitions.MICROWAVE_CLOSED.create(block, textures, this.models::put));
+        MultiVariant microwaveOpenVariant = this.plainVariant(ModelDefinitions.MICROWAVE_OPEN.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, microwaveClosedVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(MicrowaveBlock.DIRECTION, MicrowaveBlock.OPEN)
+                .select(Direction.NORTH, false, microwaveClosedVariant)
+                .select(Direction.EAST, false, microwaveClosedVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, false, microwaveClosedVariant.with(Y_ROT_180))
+                .select(Direction.WEST, false, microwaveClosedVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, true, microwaveOpenVariant)
+                .select(Direction.EAST, true, microwaveOpenVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, true, microwaveOpenVariant.with(Y_ROT_180))
+                .select(Direction.WEST, true, microwaveOpenVariant.with(Y_ROT_270))));
     }
 
     private void stove(StoveBlock block)
@@ -1296,35 +993,19 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.metalParticle(block.getMetalType()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation stoveClosedModel = ModelDefinitions.STOVE_CLOSED.create(block, textures, this.models::put);
-        ResourceLocation stoveOpenModel = ModelDefinitions.STOVE_OPEN.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, stoveClosedModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.properties(StoveBlock.DIRECTION, StoveBlock.OPEN)
-                .select(Direction.NORTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, stoveClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, stoveClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, stoveClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, stoveClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, stoveOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, stoveOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, stoveOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, stoveOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant stoveClosedVariant = this.plainVariant(ModelDefinitions.STOVE_CLOSED.create(block, textures, this.models::put));
+        MultiVariant stoveOpenVariant = this.plainVariant(ModelDefinitions.STOVE_OPEN.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, stoveClosedVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(StoveBlock.DIRECTION, StoveBlock.OPEN)
+                .select(Direction.NORTH, false, stoveClosedVariant)
+                .select(Direction.EAST, false, stoveClosedVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, false, stoveClosedVariant.with(Y_ROT_180))
+                .select(Direction.WEST, false, stoveClosedVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, true, stoveOpenVariant)
+                .select(Direction.EAST, true, stoveOpenVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, true, stoveOpenVariant.with(Y_ROT_180))
+                .select(Direction.WEST, true, stoveOpenVariant.with(Y_ROT_270))));
     }
 
     private void rangeHood(RangeHoodBlock block)
@@ -1332,35 +1013,19 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.metalParticle(block.getMetalType()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation rangeHoodOffModel = ModelDefinitions.RANGE_HOOD_OFF.create(block, textures, this.models::put);
-        ResourceLocation rangeHoodOnModel = ModelDefinitions.RANGE_HOOD_ON.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, rangeHoodOffModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.properties(RangeHoodBlock.DIRECTION, RangeHoodBlock.POWERED)
-                .select(Direction.NORTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, rangeHoodOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, rangeHoodOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, rangeHoodOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, rangeHoodOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, rangeHoodOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, rangeHoodOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, rangeHoodOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, rangeHoodOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant rangeHoodOffVariant = this.plainVariant(ModelDefinitions.RANGE_HOOD_OFF.create(block, textures, this.models::put));
+        MultiVariant rangeHoodOnVariant = this.plainVariant(ModelDefinitions.RANGE_HOOD_ON.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, rangeHoodOffVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(RangeHoodBlock.DIRECTION, RangeHoodBlock.POWERED)
+                .select(Direction.NORTH, false, rangeHoodOffVariant)
+                .select(Direction.EAST, false, rangeHoodOffVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, false, rangeHoodOffVariant.with(Y_ROT_180))
+                .select(Direction.WEST, false, rangeHoodOffVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, true, rangeHoodOnVariant)
+                .select(Direction.EAST, true, rangeHoodOnVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, true, rangeHoodOnVariant.with(Y_ROT_180))
+                .select(Direction.WEST, true, rangeHoodOnVariant.with(Y_ROT_270))));
     }
 
     private void cuttingBoard(CuttingBoardBlock block)
@@ -1368,55 +1033,31 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.woodParticle(block.getWoodType()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation cuttingBoardModel = ModelDefinitions.CUTTING_BOARD.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, cuttingBoardModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.property(CuttingBoardBlock.DIRECTION)
-                .select(Direction.NORTH, Variant.variant()
-                    .with(VariantProperties.MODEL, cuttingBoardModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, Variant.variant()
-                    .with(VariantProperties.MODEL, cuttingBoardModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, Variant.variant()
-                    .with(VariantProperties.MODEL, cuttingBoardModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, Variant.variant()
-                    .with(VariantProperties.MODEL, cuttingBoardModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant cuttingBoardVariant = this.plainVariant(ModelDefinitions.CUTTING_BOARD.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, cuttingBoardVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(CuttingBoardBlock.DIRECTION)
+                .select(Direction.NORTH, cuttingBoardVariant)
+                .select(Direction.EAST, cuttingBoardVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, cuttingBoardVariant.with(Y_ROT_180))
+                .select(Direction.WEST, cuttingBoardVariant.with(Y_ROT_270))));
     }
 
     private void fryingPan(FryingPanBlock block)
     {
-        ResourceLocation fryingPanModel = ModelLocationUtils.getModelLocation(block);
-        ResourceLocation fryingPanHotModel = ModelLocationUtils.getModelLocation(block, "_hot");
-        this.registerItemWithModel(block, fryingPanModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.properties(FryingPanBlock.DIRECTION, FryingPanBlock.LIT)
-                .select(Direction.NORTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, fryingPanModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, fryingPanModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, fryingPanModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, fryingPanModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, fryingPanHotModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, fryingPanHotModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, fryingPanHotModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, fryingPanHotModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant fryingPanVariant = this.plainVariant(ModelLocationUtils.getModelLocation(block));
+        MultiVariant fryingPanHotVariant = this.plainVariant(ModelLocationUtils.getModelLocation(block, "_hot"));
+        this.registerItemWithModelFromMultiVariant(block, fryingPanVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(FryingPanBlock.DIRECTION, FryingPanBlock.LIT)
+                .select(Direction.NORTH, false, fryingPanVariant)
+                .select(Direction.EAST, false, fryingPanVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, false, fryingPanVariant.with(Y_ROT_180))
+                .select(Direction.WEST, false, fryingPanVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, true, fryingPanHotVariant)
+                .select(Direction.EAST, true, fryingPanHotVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, true, fryingPanHotVariant.with(Y_ROT_180))
+                .select(Direction.WEST, true, fryingPanHotVariant.with(Y_ROT_270))));
     }
 
     private void mailbox(MailboxBlock block)
@@ -1424,55 +1065,31 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.woodParticle(block.getWoodType()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation mailboxModel = ModelDefinitions.MAIL_BOX.create(block, textures, this.models::put);
-        ResourceLocation mailboxUncheckedModel = ModelDefinitions.MAIL_BOX_UNCHECKED.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, mailboxModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.properties(MailboxBlock.DIRECTION, MailboxBlock.ENABLED)
-                .select(Direction.NORTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, mailboxModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, mailboxModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, mailboxModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, mailboxModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, mailboxUncheckedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, mailboxUncheckedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, mailboxUncheckedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, mailboxUncheckedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant mailboxVariant = this.plainVariant(ModelDefinitions.MAIL_BOX.create(block, textures, this.models::put));
+        MultiVariant mailboxUncheckedVariant = this.plainVariant(ModelDefinitions.MAIL_BOX_UNCHECKED.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, mailboxVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(MailboxBlock.DIRECTION, MailboxBlock.ENABLED)
+                .select(Direction.NORTH, false, mailboxVariant)
+                .select(Direction.EAST, false, mailboxVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, false, mailboxVariant.with(Y_ROT_180))
+                .select(Direction.WEST, false, mailboxVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, true, mailboxUncheckedVariant)
+                .select(Direction.EAST, true, mailboxUncheckedVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, true, mailboxUncheckedVariant.with(Y_ROT_180))
+                .select(Direction.WEST, true, mailboxUncheckedVariant.with(Y_ROT_270))));
     }
 
     private void postBox(PostBoxBlock block)
     {
-        ResourceLocation postboxModel = ModelLocationUtils.getModelLocation(block);
-        this.registerItemWithModel(block, postboxModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.property(PostBoxBlock.DIRECTION)
-                .select(Direction.NORTH, Variant.variant()
-                    .with(VariantProperties.MODEL, postboxModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, Variant.variant()
-                    .with(VariantProperties.MODEL, postboxModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, Variant.variant()
-                    .with(VariantProperties.MODEL, postboxModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, Variant.variant()
-                    .with(VariantProperties.MODEL, postboxModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant postboxVariant = this.plainVariant(ModelLocationUtils.getModelLocation(block));
+        this.registerItemWithModelFromMultiVariant(block, postboxVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(PostBoxBlock.DIRECTION)
+                .select(Direction.NORTH, postboxVariant)
+                .select(Direction.EAST, postboxVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, postboxVariant.with(Y_ROT_180))
+                .select(Direction.WEST, postboxVariant.with(Y_ROT_270))));
     }
 
     private void sofa(SofaBlock block)
@@ -1480,120 +1097,56 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.colourParticle(block.getDyeColor()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation sofaModel = ModelDefinitions.SOFA.create(block, textures, this.models::put);
-        ResourceLocation sofaLeftModel = ModelDefinitions.SOFA_LEFT.create(block, textures, this.models::put);
-        ResourceLocation sofaRightModel = ModelDefinitions.SOFA_RIGHT.create(block, textures, this.models::put);
-        ResourceLocation sofaMiddleModel = ModelDefinitions.SOFA_MIDDLE.create(block, textures, this.models::put);
-        ResourceLocation sofaCornerLeftModel = ModelDefinitions.SOFA_CORNER_LEFT.create(block, textures, this.models::put);
-        ResourceLocation sofaCornerRightModel = ModelDefinitions.SOFA_CORNER_RIGHT.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, sofaModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.properties(SofaBlock.DIRECTION, SofaBlock.SHAPE)
-                .select(Direction.NORTH, SofaBlock.Shape.DEFAULT, Variant.variant()
-                    .with(VariantProperties.MODEL, sofaModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, SofaBlock.Shape.DEFAULT, Variant.variant()
-                    .with(VariantProperties.MODEL, sofaModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, SofaBlock.Shape.DEFAULT, Variant.variant()
-                    .with(VariantProperties.MODEL, sofaModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, SofaBlock.Shape.DEFAULT, Variant.variant()
-                    .with(VariantProperties.MODEL, sofaModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, SofaBlock.Shape.LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, sofaLeftModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, SofaBlock.Shape.LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, sofaLeftModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, SofaBlock.Shape.LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, sofaLeftModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, SofaBlock.Shape.LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, sofaLeftModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, SofaBlock.Shape.RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, sofaRightModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, SofaBlock.Shape.RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, sofaRightModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, SofaBlock.Shape.RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, sofaRightModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, SofaBlock.Shape.RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, sofaRightModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, SofaBlock.Shape.MIDDLE, Variant.variant()
-                    .with(VariantProperties.MODEL, sofaMiddleModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, SofaBlock.Shape.MIDDLE, Variant.variant()
-                    .with(VariantProperties.MODEL, sofaMiddleModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, SofaBlock.Shape.MIDDLE, Variant.variant()
-                    .with(VariantProperties.MODEL, sofaMiddleModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, SofaBlock.Shape.MIDDLE, Variant.variant()
-                    .with(VariantProperties.MODEL, sofaMiddleModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, SofaBlock.Shape.CORNER_LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, sofaCornerLeftModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, SofaBlock.Shape.CORNER_LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, sofaCornerLeftModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, SofaBlock.Shape.CORNER_LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, sofaCornerLeftModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, SofaBlock.Shape.CORNER_LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, sofaCornerLeftModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, SofaBlock.Shape.CORNER_RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, sofaCornerRightModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, SofaBlock.Shape.CORNER_RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, sofaCornerRightModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, SofaBlock.Shape.CORNER_RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, sofaCornerRightModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, SofaBlock.Shape.CORNER_RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, sofaCornerRightModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant sofaVariant = this.plainVariant(ModelDefinitions.SOFA.create(block, textures, this.models::put));
+        MultiVariant sofaLeftVariant = this.plainVariant(ModelDefinitions.SOFA_LEFT.create(block, textures, this.models::put));
+        MultiVariant sofaRightVariant = this.plainVariant(ModelDefinitions.SOFA_RIGHT.create(block, textures, this.models::put));
+        MultiVariant sofaMiddleVariant = this.plainVariant(ModelDefinitions.SOFA_MIDDLE.create(block, textures, this.models::put));
+        MultiVariant sofaCornerLeftVariant = this.plainVariant(ModelDefinitions.SOFA_CORNER_LEFT.create(block, textures, this.models::put));
+        MultiVariant sofaCornerRightVariant = this.plainVariant(ModelDefinitions.SOFA_CORNER_RIGHT.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, sofaVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(SofaBlock.DIRECTION, SofaBlock.SHAPE)
+                .select(Direction.NORTH, SofaBlock.Shape.DEFAULT, sofaVariant)
+                .select(Direction.EAST, SofaBlock.Shape.DEFAULT, sofaVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, SofaBlock.Shape.DEFAULT, sofaVariant.with(Y_ROT_180))
+                .select(Direction.WEST, SofaBlock.Shape.DEFAULT, sofaVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, SofaBlock.Shape.LEFT, sofaLeftVariant)
+                .select(Direction.EAST, SofaBlock.Shape.LEFT, sofaLeftVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, SofaBlock.Shape.LEFT, sofaLeftVariant.with(Y_ROT_180))
+                .select(Direction.WEST, SofaBlock.Shape.LEFT, sofaLeftVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, SofaBlock.Shape.RIGHT, sofaRightVariant)
+                .select(Direction.EAST, SofaBlock.Shape.RIGHT, sofaRightVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, SofaBlock.Shape.RIGHT, sofaRightVariant.with(Y_ROT_180))
+                .select(Direction.WEST, SofaBlock.Shape.RIGHT, sofaRightVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, SofaBlock.Shape.MIDDLE, sofaMiddleVariant)
+                .select(Direction.EAST, SofaBlock.Shape.MIDDLE, sofaMiddleVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, SofaBlock.Shape.MIDDLE, sofaMiddleVariant.with(Y_ROT_180))
+                .select(Direction.WEST, SofaBlock.Shape.MIDDLE, sofaMiddleVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, SofaBlock.Shape.CORNER_LEFT, sofaCornerLeftVariant)
+                .select(Direction.EAST, SofaBlock.Shape.CORNER_LEFT, sofaCornerLeftVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, SofaBlock.Shape.CORNER_LEFT, sofaCornerLeftVariant.with(Y_ROT_180))
+                .select(Direction.WEST, SofaBlock.Shape.CORNER_LEFT, sofaCornerLeftVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, SofaBlock.Shape.CORNER_RIGHT, sofaCornerRightVariant)
+                .select(Direction.EAST, SofaBlock.Shape.CORNER_RIGHT, sofaCornerRightVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, SofaBlock.Shape.CORNER_RIGHT, sofaCornerRightVariant.with(Y_ROT_180))
+                .select(Direction.WEST, SofaBlock.Shape.CORNER_RIGHT, sofaCornerRightVariant.with(Y_ROT_270))));
     }
 
     private void doorbell(DoorbellBlock block)
     {
-        ResourceLocation doorbellModel = ModelLocationUtils.getModelLocation(block);
-        ResourceLocation doorbellPressedModel = ModelLocationUtils.getModelLocation(block, "_pressed");
-        this.registerItemWithModel(block, doorbellModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.properties(DoorbellBlock.DIRECTION, DoorbellBlock.ENABLED)
-                .select(Direction.NORTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, doorbellModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, doorbellModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, doorbellModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, doorbellModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, doorbellPressedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, doorbellPressedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, doorbellPressedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, doorbellPressedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant doorbellVariant = this.plainVariant(ModelLocationUtils.getModelLocation(block));
+        MultiVariant doorbellPressedVariant = this.plainVariant(ModelLocationUtils.getModelLocation(block, "_pressed"));
+        this.registerItemWithModelFromMultiVariant(block, doorbellVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(DoorbellBlock.DIRECTION, DoorbellBlock.ENABLED)
+                .select(Direction.NORTH, false, doorbellVariant)
+                .select(Direction.EAST, false, doorbellVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, false, doorbellVariant.with(Y_ROT_180))
+                .select(Direction.WEST, false, doorbellVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, true, doorbellPressedVariant)
+                .select(Direction.EAST, true, doorbellPressedVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, true, doorbellPressedVariant.with(Y_ROT_180))
+                .select(Direction.WEST, true, doorbellPressedVariant.with(Y_ROT_270))));
 
     }
 
@@ -1602,187 +1155,59 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.metalParticle(block.getMetalType()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation lightswitchOffModel = ModelDefinitions.LIGHTSWITCH_OFF.create(block, textures, this.models::put);
-        ResourceLocation lightswitchOnModel = ModelDefinitions.LIGHTSWITCH_ON.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, lightswitchOffModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.properties(LightswitchBlock.FACING, LightswitchBlock.FACE, LightswitchBlock.ENABLED, LightswitchBlock.POWERED)
-                .select(Direction.NORTH, AttachFace.WALL, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.EAST, AttachFace.WALL, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.SOUTH, AttachFace.WALL, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.WEST, AttachFace.WALL, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.NORTH, AttachFace.FLOOR, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, AttachFace.FLOOR, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, AttachFace.FLOOR, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, AttachFace.FLOOR, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, AttachFace.CEILING, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, AttachFace.CEILING, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, AttachFace.CEILING, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, AttachFace.CEILING, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, AttachFace.WALL, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.EAST, AttachFace.WALL, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.SOUTH, AttachFace.WALL, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.WEST, AttachFace.WALL, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.NORTH, AttachFace.FLOOR, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, AttachFace.FLOOR, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, AttachFace.FLOOR, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, AttachFace.FLOOR, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, AttachFace.CEILING, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, AttachFace.CEILING, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, AttachFace.CEILING, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, AttachFace.CEILING, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, AttachFace.WALL, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.EAST, AttachFace.WALL, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.SOUTH, AttachFace.WALL, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.WEST, AttachFace.WALL, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.NORTH, AttachFace.FLOOR, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOnModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, AttachFace.FLOOR, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOnModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, AttachFace.FLOOR, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOnModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, AttachFace.FLOOR, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOnModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, AttachFace.CEILING, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOnModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, AttachFace.CEILING, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOnModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, AttachFace.CEILING, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOnModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, AttachFace.CEILING, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOnModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, AttachFace.WALL, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.EAST, AttachFace.WALL, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.SOUTH, AttachFace.WALL, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.WEST, AttachFace.WALL, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.NORTH, AttachFace.FLOOR, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOnModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, AttachFace.FLOOR, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOnModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, AttachFace.FLOOR, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOnModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, AttachFace.FLOOR, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOnModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, AttachFace.CEILING, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOnModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, AttachFace.CEILING, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOnModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, AttachFace.CEILING, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOnModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, AttachFace.CEILING, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, lightswitchOnModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant lightswitchOffVariant = this.plainVariant(ModelDefinitions.LIGHTSWITCH_OFF.create(block, textures, this.models::put));
+        MultiVariant lightswitchOnVariant = this.plainVariant(ModelDefinitions.LIGHTSWITCH_ON.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, lightswitchOffVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(LightswitchBlock.FACING, LightswitchBlock.FACE, LightswitchBlock.ENABLED, LightswitchBlock.POWERED)
+                .select(Direction.NORTH, AttachFace.WALL, false, false, lightswitchOffVariant.with(Y_ROT_180))
+                .select(Direction.EAST, AttachFace.WALL, false, false, lightswitchOffVariant.with(Y_ROT_270))
+                .select(Direction.SOUTH, AttachFace.WALL, false, false, lightswitchOffVariant)
+                .select(Direction.WEST, AttachFace.WALL, false, false, lightswitchOffVariant.with(Y_ROT_90))
+                .select(Direction.NORTH, AttachFace.FLOOR, false, false, lightswitchOffVariant.with(X_ROT_90))
+                .select(Direction.EAST, AttachFace.FLOOR, false, false, lightswitchOffVariant.with(X_ROT_90).with(Y_ROT_90))
+                .select(Direction.SOUTH, AttachFace.FLOOR, false, false, lightswitchOffVariant.with(X_ROT_90).with(Y_ROT_180))
+                .select(Direction.WEST, AttachFace.FLOOR, false, false, lightswitchOffVariant.with(X_ROT_90).with(Y_ROT_270))
+                .select(Direction.NORTH, AttachFace.CEILING, false, false, lightswitchOffVariant.with(X_ROT_270))
+                .select(Direction.EAST, AttachFace.CEILING, false, false, lightswitchOffVariant.with(X_ROT_270).with(Y_ROT_90))
+                .select(Direction.SOUTH, AttachFace.CEILING, false, false, lightswitchOffVariant.with(X_ROT_270).with(Y_ROT_180))
+                .select(Direction.WEST, AttachFace.CEILING, false, false, lightswitchOffVariant.with(X_ROT_270).with(Y_ROT_270))
+                .select(Direction.NORTH, AttachFace.WALL, false, true, lightswitchOffVariant.with(Y_ROT_180))
+                .select(Direction.EAST, AttachFace.WALL, false, true, lightswitchOffVariant.with(Y_ROT_270))
+                .select(Direction.SOUTH, AttachFace.WALL, false, true, lightswitchOffVariant)
+                .select(Direction.WEST, AttachFace.WALL, false, true, lightswitchOffVariant.with(Y_ROT_90))
+                .select(Direction.NORTH, AttachFace.FLOOR, false, true, lightswitchOffVariant.with(X_ROT_90))
+                .select(Direction.EAST, AttachFace.FLOOR, false, true, lightswitchOffVariant.with(X_ROT_90).with(Y_ROT_90))
+                .select(Direction.SOUTH, AttachFace.FLOOR, false, true, lightswitchOffVariant.with(X_ROT_90).with(Y_ROT_180))
+                .select(Direction.WEST, AttachFace.FLOOR, false, true, lightswitchOffVariant.with(X_ROT_90).with(Y_ROT_270))
+                .select(Direction.NORTH, AttachFace.CEILING, false, true, lightswitchOffVariant.with(X_ROT_270))
+                .select(Direction.EAST, AttachFace.CEILING, false, true, lightswitchOffVariant.with(X_ROT_270).with(Y_ROT_90))
+                .select(Direction.SOUTH, AttachFace.CEILING, false, true, lightswitchOffVariant.with(X_ROT_270).with(Y_ROT_180))
+                .select(Direction.WEST, AttachFace.CEILING, false, true, lightswitchOffVariant.with(X_ROT_270).with(Y_ROT_270))
+                .select(Direction.NORTH, AttachFace.WALL, true, false, lightswitchOnVariant.with(Y_ROT_180))
+                .select(Direction.EAST, AttachFace.WALL, true, false, lightswitchOnVariant.with(Y_ROT_270))
+                .select(Direction.SOUTH, AttachFace.WALL, true, false, lightswitchOnVariant)
+                .select(Direction.WEST, AttachFace.WALL, true, false, lightswitchOnVariant.with(Y_ROT_90))
+                .select(Direction.NORTH, AttachFace.FLOOR, true, false, lightswitchOnVariant.with(X_ROT_90))
+                .select(Direction.EAST, AttachFace.FLOOR, true, false, lightswitchOnVariant.with(X_ROT_90).with(Y_ROT_90))
+                .select(Direction.SOUTH, AttachFace.FLOOR, true, false, lightswitchOnVariant.with(X_ROT_90).with(Y_ROT_180))
+                .select(Direction.WEST, AttachFace.FLOOR, true, false, lightswitchOnVariant.with(X_ROT_90).with(Y_ROT_270))
+                .select(Direction.NORTH, AttachFace.CEILING, true, false, lightswitchOnVariant.with(X_ROT_270))
+                .select(Direction.EAST, AttachFace.CEILING, true, false, lightswitchOnVariant.with(X_ROT_270).with(Y_ROT_90))
+                .select(Direction.SOUTH, AttachFace.CEILING, true, false, lightswitchOnVariant.with(X_ROT_270).with(Y_ROT_180))
+                .select(Direction.WEST, AttachFace.CEILING, true, false, lightswitchOnVariant.with(X_ROT_270).with(Y_ROT_270))
+                .select(Direction.NORTH, AttachFace.WALL, true, true, lightswitchOnVariant.with(Y_ROT_180))
+                .select(Direction.EAST, AttachFace.WALL, true, true, lightswitchOnVariant.with(Y_ROT_270))
+                .select(Direction.SOUTH, AttachFace.WALL, true, true, lightswitchOnVariant)
+                .select(Direction.WEST, AttachFace.WALL, true, true, lightswitchOnVariant.with(Y_ROT_90))
+                .select(Direction.NORTH, AttachFace.FLOOR, true, true, lightswitchOnVariant.with(X_ROT_90))
+                .select(Direction.EAST, AttachFace.FLOOR, true, true, lightswitchOnVariant.with(X_ROT_90).with(Y_ROT_90))
+                .select(Direction.SOUTH, AttachFace.FLOOR, true, true, lightswitchOnVariant.with(X_ROT_90).with(Y_ROT_180))
+                .select(Direction.WEST, AttachFace.FLOOR, true, true, lightswitchOnVariant.with(X_ROT_90).with(Y_ROT_270))
+                .select(Direction.NORTH, AttachFace.CEILING, true, true, lightswitchOnVariant.with(X_ROT_270))
+                .select(Direction.EAST, AttachFace.CEILING, true, true, lightswitchOnVariant.with(X_ROT_270).with(Y_ROT_90))
+                .select(Direction.SOUTH, AttachFace.CEILING, true, true, lightswitchOnVariant.with(X_ROT_270).with(Y_ROT_180))
+                .select(Direction.WEST, AttachFace.CEILING, true, true, lightswitchOnVariant.with(X_ROT_270).with(Y_ROT_270))));
     }
 
     private void ceilingLight(CeilingLightBlock block)
@@ -1790,99 +1215,35 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.metalParticle(block.getMetalType()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation ceilingLightOnModel = ModelDefinitions.CEILING_LIGHT_ON.create(block, textures, this.models::put);
-        ResourceLocation ceilingLightOffModel = ModelDefinitions.CEILING_LIGHT_OFF.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, ceilingLightOffModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.properties(CeilingLightBlock.FACING, CeilingLightBlock.FACE, CeilingLightBlock.POWERED)
-                .select(Direction.NORTH, AttachFace.WALL, false, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingLightOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.EAST, AttachFace.WALL, false, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingLightOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.SOUTH, AttachFace.WALL, false, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingLightOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.WEST, AttachFace.WALL, false, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingLightOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.NORTH, AttachFace.FLOOR, false, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingLightOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, AttachFace.FLOOR, false, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingLightOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, AttachFace.FLOOR, false, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingLightOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, AttachFace.FLOOR, false, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingLightOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, AttachFace.CEILING, false, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingLightOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, AttachFace.CEILING, false, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingLightOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, AttachFace.CEILING, false, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingLightOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, AttachFace.CEILING, false, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingLightOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, AttachFace.WALL, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingLightOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.EAST, AttachFace.WALL, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingLightOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.SOUTH, AttachFace.WALL, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingLightOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.WEST, AttachFace.WALL, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingLightOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.NORTH, AttachFace.FLOOR, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingLightOnModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, AttachFace.FLOOR, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingLightOnModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, AttachFace.FLOOR, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingLightOnModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, AttachFace.FLOOR, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingLightOnModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, AttachFace.CEILING, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingLightOnModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, AttachFace.CEILING, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingLightOnModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, AttachFace.CEILING, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingLightOnModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, AttachFace.CEILING, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingLightOnModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant ceilingLightOnVariant = this.plainVariant(ModelDefinitions.CEILING_LIGHT_ON.create(block, textures, this.models::put));
+        MultiVariant ceilingLightOffVariant = this.plainVariant(ModelDefinitions.CEILING_LIGHT_OFF.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, ceilingLightOffVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(CeilingLightBlock.FACING, CeilingLightBlock.FACE, CeilingLightBlock.POWERED)
+                .select(Direction.NORTH, AttachFace.WALL, false, ceilingLightOffVariant.with(Y_ROT_180))
+                .select(Direction.EAST, AttachFace.WALL, false, ceilingLightOffVariant.with(Y_ROT_270))
+                .select(Direction.SOUTH, AttachFace.WALL, false, ceilingLightOffVariant)
+                .select(Direction.WEST, AttachFace.WALL, false, ceilingLightOffVariant.with(Y_ROT_90))
+                .select(Direction.NORTH, AttachFace.FLOOR, false, ceilingLightOffVariant.with(X_ROT_90))
+                .select(Direction.EAST, AttachFace.FLOOR, false, ceilingLightOffVariant.with(X_ROT_90).with(Y_ROT_90))
+                .select(Direction.SOUTH, AttachFace.FLOOR, false, ceilingLightOffVariant.with(X_ROT_90).with(Y_ROT_180))
+                .select(Direction.WEST, AttachFace.FLOOR, false, ceilingLightOffVariant.with(X_ROT_90).with(Y_ROT_270))
+                .select(Direction.NORTH, AttachFace.CEILING, false, ceilingLightOffVariant.with(X_ROT_270))
+                .select(Direction.EAST, AttachFace.CEILING, false, ceilingLightOffVariant.with(X_ROT_270).with(Y_ROT_90))
+                .select(Direction.SOUTH, AttachFace.CEILING, false, ceilingLightOffVariant.with(X_ROT_270).with(Y_ROT_180))
+                .select(Direction.WEST, AttachFace.CEILING, false, ceilingLightOffVariant.with(X_ROT_270).with(Y_ROT_270))
+                .select(Direction.NORTH, AttachFace.WALL, true, ceilingLightOnVariant.with(Y_ROT_180))
+                .select(Direction.EAST, AttachFace.WALL, true, ceilingLightOnVariant.with(Y_ROT_270))
+                .select(Direction.SOUTH, AttachFace.WALL, true, ceilingLightOnVariant)
+                .select(Direction.WEST, AttachFace.WALL, true, ceilingLightOnVariant.with(Y_ROT_90))
+                .select(Direction.NORTH, AttachFace.FLOOR, true, ceilingLightOnVariant.with(X_ROT_90))
+                .select(Direction.EAST, AttachFace.FLOOR, true, ceilingLightOnVariant.with(X_ROT_90).with(Y_ROT_90))
+                .select(Direction.SOUTH, AttachFace.FLOOR, true, ceilingLightOnVariant.with(X_ROT_90).with(Y_ROT_180))
+                .select(Direction.WEST, AttachFace.FLOOR, true, ceilingLightOnVariant.with(X_ROT_90).with(Y_ROT_270))
+                .select(Direction.NORTH, AttachFace.CEILING, true, ceilingLightOnVariant.with(X_ROT_270))
+                .select(Direction.EAST, AttachFace.CEILING, true, ceilingLightOnVariant.with(X_ROT_270).with(Y_ROT_90))
+                .select(Direction.SOUTH, AttachFace.CEILING, true, ceilingLightOnVariant.with(X_ROT_270).with(Y_ROT_180))
+                .select(Direction.WEST, AttachFace.CEILING, true, ceilingLightOnVariant.with(X_ROT_270).with(Y_ROT_270))));
     }
 
     private void electricityGenerator(ElectricityGeneratorBlock block)
@@ -1890,35 +1251,19 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.metalParticle(block.getMetalType()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation electricityGeneratorOffModel = ModelDefinitions.ELECTRICITY_GENERATOR_OFF.create(block, textures, this.models::put);
-        ResourceLocation electricityGeneratorOnModel = ModelDefinitions.ELECTRICITY_GENERATOR_ON.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, electricityGeneratorOffModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.properties(ElectricityGeneratorBlock.DIRECTION, ElectricityGeneratorBlock.POWERED)
-                .select(Direction.NORTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, electricityGeneratorOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, electricityGeneratorOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, electricityGeneratorOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, electricityGeneratorOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, electricityGeneratorOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, electricityGeneratorOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, electricityGeneratorOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, electricityGeneratorOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant electricityGeneratorOffVariant = this.plainVariant(ModelDefinitions.ELECTRICITY_GENERATOR_OFF.create(block, textures, this.models::put));
+        MultiVariant electricityGeneratorOnVariant = this.plainVariant(ModelDefinitions.ELECTRICITY_GENERATOR_ON.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, electricityGeneratorOffVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(ElectricityGeneratorBlock.DIRECTION, ElectricityGeneratorBlock.POWERED)
+                .select(Direction.NORTH, false, electricityGeneratorOffVariant)
+                .select(Direction.EAST, false, electricityGeneratorOffVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, false, electricityGeneratorOffVariant.with(Y_ROT_180))
+                .select(Direction.WEST, false, electricityGeneratorOffVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, true, electricityGeneratorOnVariant)
+                .select(Direction.EAST, true, electricityGeneratorOnVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, true, electricityGeneratorOnVariant.with(Y_ROT_180))
+                .select(Direction.WEST, true, electricityGeneratorOnVariant.with(Y_ROT_270))));
     }
 
     private void storageJar(StorageJarBlock block)
@@ -1926,55 +1271,31 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, ResourceLocation.withDefaultNamespace("block/glass"))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation storageJarModel = ModelDefinitions.STORAGE_JAR.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, storageJarModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.property(StorageJarBlock.DIRECTION)
-                .select(Direction.NORTH, Variant.variant()
-                    .with(VariantProperties.MODEL, storageJarModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, Variant.variant()
-                    .with(VariantProperties.MODEL, storageJarModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, Variant.variant()
-                    .with(VariantProperties.MODEL, storageJarModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, Variant.variant()
-                    .with(VariantProperties.MODEL, storageJarModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant storageJarVariant = this.plainVariant(ModelDefinitions.STORAGE_JAR.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, storageJarVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(StorageJarBlock.DIRECTION)
+                .select(Direction.NORTH, storageJarVariant)
+                .select(Direction.EAST, storageJarVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, storageJarVariant.with(Y_ROT_180))
+                .select(Direction.WEST, storageJarVariant.with(Y_ROT_270))));
     }
 
     private void recycleBin(RecycleBinBlock block)
     {
-        ResourceLocation recycleBinClosedModel = ModelLocationUtils.getModelLocation(block, "_closed");
-        ResourceLocation recycleBinOpenModel = ModelLocationUtils.getModelLocation(block, "_open");
-        this.registerItemWithModel(block, recycleBinClosedModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.properties(RecycleBinBlock.DIRECTION, RecycleBinBlock.OPEN)
-                .select(Direction.NORTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, recycleBinClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, recycleBinClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, recycleBinClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, recycleBinClosedModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, recycleBinOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, recycleBinOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, recycleBinOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, recycleBinOpenModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant recycleBinClosedVariant = this.plainVariant(ModelLocationUtils.getModelLocation(block, "_closed"));
+        MultiVariant recycleBinOpenVariant = this.plainVariant(ModelLocationUtils.getModelLocation(block, "_open"));
+        this.registerItemWithModelFromMultiVariant(block, recycleBinClosedVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(RecycleBinBlock.DIRECTION, RecycleBinBlock.OPEN)
+                .select(Direction.NORTH, false, recycleBinClosedVariant)
+                .select(Direction.EAST, false, recycleBinClosedVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, false, recycleBinClosedVariant.with(Y_ROT_180))
+                .select(Direction.WEST, false, recycleBinClosedVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, true, recycleBinOpenVariant)
+                .select(Direction.EAST, true, recycleBinOpenVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, true, recycleBinOpenVariant.with(Y_ROT_180))
+                .select(Direction.WEST, true, recycleBinOpenVariant.with(Y_ROT_270))));
     }
 
     private void lamp(LampBlock block)
@@ -1982,13 +1303,13 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.colourParticle(block.getDyeColor()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation lampOffModel = ModelDefinitions.LAMP_OFF.create(block, textures, this.models::put);
-        ResourceLocation lampOnModel = ModelDefinitions.LAMP_ON.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, lampOffModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.property(LampBlock.POWERED)
-                .select(false, Variant.variant().with(VariantProperties.MODEL, lampOffModel))
-                .select(true, Variant.variant().with(VariantProperties.MODEL, lampOnModel))));
+        MultiVariant lampOffVariant = this.plainVariant(ModelDefinitions.LAMP_OFF.create(block, textures, this.models::put));
+        MultiVariant lampOnVariant = this.plainVariant(ModelDefinitions.LAMP_ON.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, lampOffVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(LampBlock.POWERED)
+                .select(false, lampOffVariant)
+                .select(true, lampOnVariant)));
     }
 
     private void ceilingFan(CeilingFanBlock block)
@@ -1996,86 +1317,34 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.metalParticle(block.getMetalType()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation ceilingFanOffModel = ModelDefinitions.CEILING_FAN_BASE_OFF.create(block, textures, this.models::put);
-        ResourceLocation ceilingFanOnModel = ModelDefinitions.CEILING_FAN_BASE_ON.create(block, textures, this.models::put);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.properties(CeilingFanBlock.FACING, CeilingFanBlock.POWERED, CeilingFanBlock.LIT)
-                .select(Direction.NORTH, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingFanOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.EAST, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingFanOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingFanOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.WEST, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingFanOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.UP, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingFanOffModel))
-                .select(Direction.DOWN, false, false, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingFanOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.NORTH, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingFanOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.EAST, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingFanOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingFanOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.WEST, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingFanOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.UP, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingFanOffModel))
-                .select(Direction.DOWN, false, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingFanOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.NORTH, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingFanOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.EAST, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingFanOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingFanOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.WEST, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingFanOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.UP, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingFanOffModel))
-                .select(Direction.DOWN, true, false, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingFanOffModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.NORTH, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingFanOnModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.EAST, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingFanOnModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R90)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingFanOnModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.WEST, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingFanOnModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R270)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.UP, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingFanOnModel))
-                .select(Direction.DOWN, true, true, Variant.variant()
-                    .with(VariantProperties.MODEL, ceilingFanOnModel)
-                    .with(VariantProperties.X_ROT, VariantProperties.Rotation.R180))));
+        MultiVariant ceilingFanOffVariant = this.plainVariant(ModelDefinitions.CEILING_FAN_BASE_OFF.create(block, textures, this.models::put));
+        MultiVariant ceilingFanOnVariant = this.plainVariant(ModelDefinitions.CEILING_FAN_BASE_ON.create(block, textures, this.models::put));
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(CeilingFanBlock.FACING, CeilingFanBlock.POWERED, CeilingFanBlock.LIT)
+                .select(Direction.NORTH, false, false, ceilingFanOffVariant.with(X_ROT_90))
+                .select(Direction.EAST, false, false, ceilingFanOffVariant.with(X_ROT_90).with(Y_ROT_90))
+                .select(Direction.SOUTH, false, false, ceilingFanOffVariant.with(X_ROT_270))
+                .select(Direction.WEST, false, false, ceilingFanOffVariant.with(X_ROT_270).with(Y_ROT_90))
+                .select(Direction.UP, false, false, ceilingFanOffVariant)
+                .select(Direction.DOWN, false, false, ceilingFanOffVariant.with(X_ROT_180))
+                .select(Direction.NORTH, false, true, ceilingFanOffVariant.with(X_ROT_90))
+                .select(Direction.EAST, false, true, ceilingFanOffVariant.with(X_ROT_90).with(Y_ROT_90))
+                .select(Direction.SOUTH, false, true, ceilingFanOffVariant.with(X_ROT_270))
+                .select(Direction.WEST, false, true, ceilingFanOffVariant.with(X_ROT_270).with(Y_ROT_90))
+                .select(Direction.UP, false, true, ceilingFanOffVariant)
+                .select(Direction.DOWN, false, true, ceilingFanOffVariant.with(X_ROT_180))
+                .select(Direction.NORTH, true, false, ceilingFanOffVariant.with(X_ROT_90))
+                .select(Direction.EAST, true, false, ceilingFanOffVariant.with(X_ROT_90).with(Y_ROT_90))
+                .select(Direction.SOUTH, true, false, ceilingFanOffVariant.with(X_ROT_270))
+                .select(Direction.WEST, true, false, ceilingFanOffVariant.with(X_ROT_270).with(Y_ROT_90))
+                .select(Direction.UP, true, false, ceilingFanOffVariant)
+                .select(Direction.DOWN, true, false, ceilingFanOffVariant.with(X_ROT_180))
+                .select(Direction.NORTH, true, true, ceilingFanOnVariant.with(X_ROT_90))
+                .select(Direction.EAST, true, true, ceilingFanOnVariant.with(X_ROT_90).with(Y_ROT_90))
+                .select(Direction.SOUTH, true, true, ceilingFanOnVariant.with(X_ROT_270))
+                .select(Direction.WEST, true, true, ceilingFanOnVariant.with(X_ROT_270).with(Y_ROT_90))
+                .select(Direction.UP, true, true, ceilingFanOnVariant)
+                .select(Direction.DOWN, true, true, ceilingFanOnVariant.with(X_ROT_180))));
 
         // Custom item
         this.registerItemWithModel(block, ModelDefinitions.CEILING_FAN.create(block.asItem(), textures, this.models::put));
@@ -2097,56 +1366,24 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         ResourceLocation storageCabinetOpenLeft = ModelDefinitions.CABINET_OPEN_HINGE_LEFT.create(block, textures, this.models::put);
         ResourceLocation storageCabinetOpenRight = ModelDefinitions.CABINET_OPEN_HINGE_RIGHT.create(block, textures, this.models::put);
         this.registerItemWithModel(block, storageCabinetClosedLeft);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.properties(WoodenStorageCabinetBlock.DIRECTION, WoodenStorageCabinetBlock.OPEN, WoodenStorageCabinetBlock.HINGE)
-                .select(Direction.NORTH, false, DoorHingeSide.LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, storageCabinetClosedLeft)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, false, DoorHingeSide.LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, storageCabinetClosedLeft)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, DoorHingeSide.LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, storageCabinetClosedLeft)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, false, DoorHingeSide.LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, storageCabinetClosedLeft)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, true, DoorHingeSide.LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, storageCabinetOpenLeft)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, true, DoorHingeSide.LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, storageCabinetOpenLeft)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, DoorHingeSide.LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, storageCabinetOpenLeft)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, true, DoorHingeSide.LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, storageCabinetOpenLeft)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, false, DoorHingeSide.RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, storageCabinetClosedRight)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, false, DoorHingeSide.RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, storageCabinetClosedRight)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, DoorHingeSide.RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, storageCabinetClosedRight)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, false, DoorHingeSide.RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, storageCabinetClosedRight)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, true, DoorHingeSide.RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, storageCabinetOpenRight)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, true, DoorHingeSide.RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, storageCabinetOpenRight)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, DoorHingeSide.RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, storageCabinetOpenRight)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, true, DoorHingeSide.RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, storageCabinetOpenRight)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(WoodenStorageCabinetBlock.DIRECTION, WoodenStorageCabinetBlock.OPEN, WoodenStorageCabinetBlock.HINGE)
+                .select(Direction.NORTH, false, DoorHingeSide.LEFT, this.plainVariant(storageCabinetClosedLeft))
+                .select(Direction.EAST, false, DoorHingeSide.LEFT, this.plainVariant(storageCabinetClosedLeft).with(Y_ROT_90))
+                .select(Direction.SOUTH, false, DoorHingeSide.LEFT, this.plainVariant(storageCabinetClosedLeft).with(Y_ROT_180))
+                .select(Direction.WEST, false, DoorHingeSide.LEFT, this.plainVariant(storageCabinetClosedLeft).with(Y_ROT_270))
+                .select(Direction.NORTH, true, DoorHingeSide.LEFT, this.plainVariant(storageCabinetOpenLeft))
+                .select(Direction.EAST, true, DoorHingeSide.LEFT, this.plainVariant(storageCabinetOpenLeft).with(Y_ROT_90))
+                .select(Direction.SOUTH, true, DoorHingeSide.LEFT, this.plainVariant(storageCabinetOpenLeft).with(Y_ROT_180))
+                .select(Direction.WEST, true, DoorHingeSide.LEFT, this.plainVariant(storageCabinetOpenLeft).with(Y_ROT_270))
+                .select(Direction.NORTH, false, DoorHingeSide.RIGHT, this.plainVariant(storageCabinetClosedRight))
+                .select(Direction.EAST, false, DoorHingeSide.RIGHT, this.plainVariant(storageCabinetClosedRight).with(Y_ROT_90))
+                .select(Direction.SOUTH, false, DoorHingeSide.RIGHT, this.plainVariant(storageCabinetClosedRight).with(Y_ROT_180))
+                .select(Direction.WEST, false, DoorHingeSide.RIGHT, this.plainVariant(storageCabinetClosedRight).with(Y_ROT_270))
+                .select(Direction.NORTH, true, DoorHingeSide.RIGHT, this.plainVariant(storageCabinetOpenRight))
+                .select(Direction.EAST, true, DoorHingeSide.RIGHT, this.plainVariant(storageCabinetOpenRight).with(Y_ROT_90))
+                .select(Direction.SOUTH, true, DoorHingeSide.RIGHT, this.plainVariant(storageCabinetOpenRight).with(Y_ROT_180))
+                .select(Direction.WEST, true, DoorHingeSide.RIGHT, this.plainVariant(storageCabinetOpenRight).with(Y_ROT_270))));
 
     }
 
@@ -2160,56 +1397,24 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         ResourceLocation kitchenStorageCabinetOpenLeft = ModelDefinitions.KITCHEN_STORAGE_CABINET_OPEN_HINGE_LEFT.create(block, textures, this.models::put);
         ResourceLocation kitchenStorageCabinetOpenRight = ModelDefinitions.KITCHEN_STORAGE_CABINET_OPEN_HINGE_RIGHT.create(block, textures, this.models::put);
         this.registerItemWithModel(block, kitchenStorageCabinetClosedLeft);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.properties(WoodenKitchenStorageCabinetBlock.DIRECTION, WoodenKitchenStorageCabinetBlock.OPEN, WoodenKitchenStorageCabinetBlock.HINGE)
-                .select(Direction.NORTH, false, DoorHingeSide.LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetClosedLeft)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, false, DoorHingeSide.LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetClosedLeft)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, DoorHingeSide.LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetClosedLeft)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, false, DoorHingeSide.LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetClosedLeft)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, true, DoorHingeSide.LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetOpenLeft)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, true, DoorHingeSide.LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetOpenLeft)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, DoorHingeSide.LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetOpenLeft)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, true, DoorHingeSide.LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetOpenLeft)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, false, DoorHingeSide.RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetClosedRight)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, false, DoorHingeSide.RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetClosedRight)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, DoorHingeSide.RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetClosedRight)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, false, DoorHingeSide.RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetClosedRight)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, true, DoorHingeSide.RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetOpenRight)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, true, DoorHingeSide.RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetOpenRight)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, DoorHingeSide.RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetOpenRight)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, true, DoorHingeSide.RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetOpenRight)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(WoodenKitchenStorageCabinetBlock.DIRECTION, WoodenKitchenStorageCabinetBlock.OPEN, WoodenKitchenStorageCabinetBlock.HINGE)
+                .select(Direction.NORTH, false, DoorHingeSide.LEFT, this.plainVariant(kitchenStorageCabinetClosedLeft))
+                .select(Direction.EAST, false, DoorHingeSide.LEFT, this.plainVariant(kitchenStorageCabinetClosedLeft).with(Y_ROT_90))
+                .select(Direction.SOUTH, false, DoorHingeSide.LEFT, this.plainVariant(kitchenStorageCabinetClosedLeft).with(Y_ROT_180))
+                .select(Direction.WEST, false, DoorHingeSide.LEFT, this.plainVariant(kitchenStorageCabinetClosedLeft).with(Y_ROT_270))
+                .select(Direction.NORTH, true, DoorHingeSide.LEFT, this.plainVariant(kitchenStorageCabinetOpenLeft))
+                .select(Direction.EAST, true, DoorHingeSide.LEFT, this.plainVariant(kitchenStorageCabinetOpenLeft).with(Y_ROT_90))
+                .select(Direction.SOUTH, true, DoorHingeSide.LEFT, this.plainVariant(kitchenStorageCabinetOpenLeft).with(Y_ROT_180))
+                .select(Direction.WEST, true, DoorHingeSide.LEFT, this.plainVariant(kitchenStorageCabinetOpenLeft).with(Y_ROT_270))
+                .select(Direction.NORTH, false, DoorHingeSide.RIGHT, this.plainVariant(kitchenStorageCabinetClosedRight))
+                .select(Direction.EAST, false, DoorHingeSide.RIGHT, this.plainVariant(kitchenStorageCabinetClosedRight).with(Y_ROT_90))
+                .select(Direction.SOUTH, false, DoorHingeSide.RIGHT, this.plainVariant(kitchenStorageCabinetClosedRight).with(Y_ROT_180))
+                .select(Direction.WEST, false, DoorHingeSide.RIGHT, this.plainVariant(kitchenStorageCabinetClosedRight).with(Y_ROT_270))
+                .select(Direction.NORTH, true, DoorHingeSide.RIGHT, this.plainVariant(kitchenStorageCabinetOpenRight))
+                .select(Direction.EAST, true, DoorHingeSide.RIGHT, this.plainVariant(kitchenStorageCabinetOpenRight).with(Y_ROT_90))
+                .select(Direction.SOUTH, true, DoorHingeSide.RIGHT, this.plainVariant(kitchenStorageCabinetOpenRight).with(Y_ROT_180))
+                .select(Direction.WEST, true, DoorHingeSide.RIGHT, this.plainVariant(kitchenStorageCabinetOpenRight).with(Y_ROT_270))));
     }
 
     private void colouredKitchenCabinet(ColouredKitchenStorageCabinetBlock block)
@@ -2222,56 +1427,24 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         ResourceLocation kitchenStorageCabinetOpenLeft = ModelDefinitions.KITCHEN_STORAGE_CABINET_OPEN_HINGE_LEFT.create(block, textures, this.models::put);
         ResourceLocation kitchenStorageCabinetOpenRight = ModelDefinitions.KITCHEN_STORAGE_CABINET_OPEN_HINGE_RIGHT.create(block, textures, this.models::put);
         this.registerItemWithModel(block, kitchenStorageCabinetClosedLeft);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.properties(ColouredKitchenStorageCabinetBlock.DIRECTION, ColouredKitchenStorageCabinetBlock.OPEN, ColouredKitchenStorageCabinetBlock.HINGE)
-                .select(Direction.NORTH, false, DoorHingeSide.LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetClosedLeft)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, false, DoorHingeSide.LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetClosedLeft)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, DoorHingeSide.LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetClosedLeft)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, false, DoorHingeSide.LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetClosedLeft)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, true, DoorHingeSide.LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetOpenLeft)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, true, DoorHingeSide.LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetOpenLeft)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, DoorHingeSide.LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetOpenLeft)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, true, DoorHingeSide.LEFT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetOpenLeft)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, false, DoorHingeSide.RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetClosedRight)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, false, DoorHingeSide.RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetClosedRight)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, DoorHingeSide.RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetClosedRight)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, false, DoorHingeSide.RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetClosedRight)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, true, DoorHingeSide.RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetOpenRight)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, true, DoorHingeSide.RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetOpenRight)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, DoorHingeSide.RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetOpenRight)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, true, DoorHingeSide.RIGHT, Variant.variant()
-                    .with(VariantProperties.MODEL, kitchenStorageCabinetOpenRight)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(ColouredKitchenStorageCabinetBlock.DIRECTION, ColouredKitchenStorageCabinetBlock.OPEN, ColouredKitchenStorageCabinetBlock.HINGE)
+                .select(Direction.NORTH, false, DoorHingeSide.LEFT, this.plainVariant(kitchenStorageCabinetClosedLeft))
+                .select(Direction.EAST, false, DoorHingeSide.LEFT, this.plainVariant(kitchenStorageCabinetClosedLeft).with(Y_ROT_90))
+                .select(Direction.SOUTH, false, DoorHingeSide.LEFT, this.plainVariant(kitchenStorageCabinetClosedLeft).with(Y_ROT_180))
+                .select(Direction.WEST, false, DoorHingeSide.LEFT, this.plainVariant(kitchenStorageCabinetClosedLeft).with(Y_ROT_270))
+                .select(Direction.NORTH, true, DoorHingeSide.LEFT, this.plainVariant(kitchenStorageCabinetOpenLeft))
+                .select(Direction.EAST, true, DoorHingeSide.LEFT, this.plainVariant(kitchenStorageCabinetOpenLeft).with(Y_ROT_90))
+                .select(Direction.SOUTH, true, DoorHingeSide.LEFT, this.plainVariant(kitchenStorageCabinetOpenLeft).with(Y_ROT_180))
+                .select(Direction.WEST, true, DoorHingeSide.LEFT, this.plainVariant(kitchenStorageCabinetOpenLeft).with(Y_ROT_270))
+                .select(Direction.NORTH, false, DoorHingeSide.RIGHT, this.plainVariant(kitchenStorageCabinetClosedRight))
+                .select(Direction.EAST, false, DoorHingeSide.RIGHT, this.plainVariant(kitchenStorageCabinetClosedRight).with(Y_ROT_90))
+                .select(Direction.SOUTH, false, DoorHingeSide.RIGHT, this.plainVariant(kitchenStorageCabinetClosedRight).with(Y_ROT_180))
+                .select(Direction.WEST, false, DoorHingeSide.RIGHT, this.plainVariant(kitchenStorageCabinetClosedRight).with(Y_ROT_270))
+                .select(Direction.NORTH, true, DoorHingeSide.RIGHT, this.plainVariant(kitchenStorageCabinetOpenRight))
+                .select(Direction.EAST, true, DoorHingeSide.RIGHT, this.plainVariant(kitchenStorageCabinetOpenRight).with(Y_ROT_90))
+                .select(Direction.SOUTH, true, DoorHingeSide.RIGHT, this.plainVariant(kitchenStorageCabinetOpenRight).with(Y_ROT_180))
+                .select(Direction.WEST, true, DoorHingeSide.RIGHT, this.plainVariant(kitchenStorageCabinetOpenRight).with(Y_ROT_270))));
     }
 
     private void trampoline(TrampolineBlock block)
@@ -2279,161 +1452,114 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.colourParticle(block.getDyeColor()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation trampolineDefaultModel = ModelDefinitions.TRAMPOLINE_DEFAULT.create(block, textures, this.models::put);
-        ResourceLocation trampolineNorthModel = ModelDefinitions.TRAMPOLINE_NORTH.create(block, textures, this.models::put);
-        ResourceLocation trampolineEastModel = ModelDefinitions.TRAMPOLINE_EAST.create(block, textures, this.models::put);
-        ResourceLocation trampolineSouthModel = ModelDefinitions.TRAMPOLINE_SOUTH.create(block, textures, this.models::put);
-        ResourceLocation trampolineWestModel = ModelDefinitions.TRAMPOLINE_WEST.create(block, textures, this.models::put);
-        ResourceLocation trampolineNorthSouthModel = ModelDefinitions.TRAMPOLINE_NORTH_SOUTH.create(block, textures, this.models::put);
-        ResourceLocation trampolineEastWestModel = ModelDefinitions.TRAMPOLINE_EAST_WEST.create(block, textures, this.models::put);
-        ResourceLocation trampolineNorthEastModel = ModelDefinitions.TRAMPOLINE_NORTH_EAST.create(block, textures, this.models::put);
-        ResourceLocation trampolineEastSouthModel = ModelDefinitions.TRAMPOLINE_EAST_SOUTH.create(block, textures, this.models::put);
-        ResourceLocation trampolineSouthWestModel = ModelDefinitions.TRAMPOLINE_SOUTH_WEST.create(block, textures, this.models::put);
-        ResourceLocation trampolineWestNorthModel = ModelDefinitions.TRAMPOLINE_WEST_NORTH.create(block, textures, this.models::put);
-        ResourceLocation trampolineNorthEastWithLegModel = ModelDefinitions.TRAMPOLINE_NORTH_EAST_WITH_LEG.create(block, textures, this.models::put);
-        ResourceLocation trampolineEastSouthWithLegModel = ModelDefinitions.TRAMPOLINE_EAST_SOUTH_WITH_LEG.create(block, textures, this.models::put);
-        ResourceLocation trampolineSouthWestWithLegModel = ModelDefinitions.TRAMPOLINE_SOUTH_WEST_WITH_LEG.create(block, textures, this.models::put);
-        ResourceLocation trampolineWestNorthWithLegModel = ModelDefinitions.TRAMPOLINE_WEST_NORTH_WITH_LEG.create(block, textures, this.models::put);
-        ResourceLocation trampolineNorthEastSouthModel = ModelDefinitions.TRAMPOLINE_NORTH_EAST_SOUTH.create(block, textures, this.models::put);
-        ResourceLocation trampolineEastSouthWestModel = ModelDefinitions.TRAMPOLINE_EAST_SOUTH_WEST.create(block, textures, this.models::put);
-        ResourceLocation trampolineSouthWestNorthModel = ModelDefinitions.TRAMPOLINE_SOUTH_WEST_NORTH.create(block, textures, this.models::put);
-        ResourceLocation trampolineWestNorthEastModel = ModelDefinitions.TRAMPOLINE_WEST_NORTH_EAST.create(block, textures, this.models::put);
-        ResourceLocation trampolineNorthEastSouthWithLegNorthEastModel = ModelDefinitions.TRAMPOLINE_NORTH_EAST_SOUTH_WITH_LEG_NORTHEAST.create(block, textures, this.models::put);
-        ResourceLocation trampolineNorthEastSouthWithLegEastSouthModel = ModelDefinitions.TRAMPOLINE_NORTH_EAST_SOUTH_WITH_LEG_EASTSOUTH.create(block, textures, this.models::put);
-        ResourceLocation trampolineNorthEastSouthWithLegNorthEastEastSouthModel = ModelDefinitions.TRAMPOLINE_NORTH_EAST_SOUTH_WITH_LEG_NORTHEAST_EASTSOUTH.create(block, textures, this.models::put);
-        ResourceLocation trampolineEastSouthWestWithLegEastSouthModel = ModelDefinitions.TRAMPOLINE_EAST_SOUTH_WEST_WITH_LEG_EASTSOUTH.create(block, textures, this.models::put);
-        ResourceLocation trampolineEastSouthWestWithLegSouthWestModel = ModelDefinitions.TRAMPOLINE_EAST_SOUTH_WEST_WITH_LEG_SOUTHWEST.create(block, textures, this.models::put);
-        ResourceLocation trampolineEastSouthWestWithLegEastSouthSouthWestModel = ModelDefinitions.TRAMPOLINE_EAST_SOUTH_WEST_WITH_LEG_EASTSOUTH_SOUTHWEST.create(block, textures, this.models::put);
-        ResourceLocation trampolineSouthWestNorthWithLegWestNorthModel = ModelDefinitions.TRAMPOLINE_SOUTH_WEST_NORTH_WITH_LEG_WESTNORTH.create(block, textures, this.models::put);
-        ResourceLocation trampolineSouthWestNorthWithLegSouthWestModel = ModelDefinitions.TRAMPOLINE_SOUTH_WEST_NORTH_WITH_LEG_SOUTHWEST.create(block, textures, this.models::put);
-        ResourceLocation trampolineSouthWestNorthWithLegWestNorthSouthWestModel = ModelDefinitions.TRAMPOLINE_SOUTH_WEST_NORTH_WITH_LEG_WESTNORTH_SOUTHWEST.create(block, textures, this.models::put);
-        ResourceLocation trampolineWestNorthEastWithLegNorthEastModel = ModelDefinitions.TRAMPOLINE_WEST_NORTH_EAST_WITH_LEG_NORTHEAST.create(block, textures, this.models::put);
-        ResourceLocation trampolineWestNorthEastWithLegWestNorthModel = ModelDefinitions.TRAMPOLINE_WEST_NORTH_EAST_WITH_LEG_WESTNORTH.create(block, textures, this.models::put);
-        ResourceLocation trampolineWestNorthEastWithLegNorthEastWestNorthModel = ModelDefinitions.TRAMPOLINE_WEST_NORTH_EAST_WITH_LEG_NORTHEAST_WESTNORTH.create(block, textures, this.models::put);
-        ResourceLocation trampolineAllModel = ModelDefinitions.TRAMPOLINE_ALL.create(block, textures, this.models::put);
-        ResourceLocation trampolineAllWithLegAllModel = ModelDefinitions.TRAMPOLINE_ALL_WITH_LEG_ALL.create(block, textures, this.models::put);
-        ResourceLocation trampolineAllWithLegNorthEastModel = ModelDefinitions.TRAMPOLINE_ALL_WITH_LEG_NORTHEAST.create(block, textures, this.models::put);
-        ResourceLocation trampolineAllWithLegNorthEastEastSouthModel = ModelDefinitions.TRAMPOLINE_ALL_WITH_LEG_NORTHEAST_EASTSOUTH.create(block, textures, this.models::put);
-        ResourceLocation trampolineAllWithLegNorthEastEastSouthSouthWestModel = ModelDefinitions.TRAMPOLINE_ALL_WITH_LEG_NORTHEAST_EASTSOUTH_SOUTHWEST.create(block, textures, this.models::put);
-        ResourceLocation trampolineAllWithLegEastSouthModel = ModelDefinitions.TRAMPOLINE_ALL_WITH_LEG_EASTSOUTH.create(block, textures, this.models::put);
-        ResourceLocation trampolineAllWithLegEastSouthSouthWestModel = ModelDefinitions.TRAMPOLINE_ALL_WITH_LEG_EASTSOUTH_SOUTHWEST.create(block, textures, this.models::put);
-        ResourceLocation trampolineAllWithLegEastSouthSouthWestWestNorthModel = ModelDefinitions.TRAMPOLINE_ALL_WITH_LEG_EASTSOUTH_SOUTHWEST_WESTNORTH.create(block, textures, this.models::put);
-        ResourceLocation trampolineAllWithLegSouthWestModel = ModelDefinitions.TRAMPOLINE_ALL_WITH_LEG_SOUTHWEST.create(block, textures, this.models::put);
-        ResourceLocation trampolineAllWithLegSouthWestWestNorthModel = ModelDefinitions.TRAMPOLINE_ALL_WITH_LEG_SOUTHWEST_WESTNORTH.create(block, textures, this.models::put);
-        ResourceLocation trampolineAllWithLegSouthWestWestNorthNorthEastModel = ModelDefinitions.TRAMPOLINE_ALL_WITH_LEG_SOUTHWEST_WESTNORTH_NORTHEAST.create(block, textures, this.models::put);
-        ResourceLocation trampolineAllWithLegWestNorthModel = ModelDefinitions.TRAMPOLINE_ALL_WITH_LEG_WESTNORTH.create(block, textures, this.models::put);
-        ResourceLocation trampolineAllWithLegWestNorthNorthEastModel = ModelDefinitions.TRAMPOLINE_ALL_WITH_LEG_WESTNORTH_NORTHEAST.create(block, textures, this.models::put);
-        ResourceLocation trampolineAllWithLegWestNorthNorthEastEastSouthModel = ModelDefinitions.TRAMPOLINE_ALL_WITH_LEG_WESTNORTH_NORTHEAST_EASTSOUTH.create(block, textures, this.models::put);
-        ResourceLocation trampolineAllWithLegNorthEastSouthWestModel = ModelDefinitions.TRAMPOLINE_ALL_WITH_LEG_NORTHEAST_SOUTHWEST.create(block, textures, this.models::put);
-        ResourceLocation trampolineAllWithLegEastSouthWestNorthModel = ModelDefinitions.TRAMPOLINE_ALL_WITH_LEG_EASTSOUTH_WESTNORTH.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, trampolineDefaultModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.property(TrampolineBlock.SHAPE)
-                .select(TrampolineBlock.Shape.DEFAULT, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineDefaultModel))
-                .select(TrampolineBlock.Shape.NORTH, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineNorthModel))
-                .select(TrampolineBlock.Shape.EAST, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineEastModel))
-                .select(TrampolineBlock.Shape.SOUTH, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineSouthModel))
-                .select(TrampolineBlock.Shape.WEST, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineWestModel))
-                .select(TrampolineBlock.Shape.NORTH_SOUTH, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineNorthSouthModel))
-                .select(TrampolineBlock.Shape.EAST_WEST, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineEastWestModel))
-                .select(TrampolineBlock.Shape.NORTH_EAST, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineNorthEastModel))
-                .select(TrampolineBlock.Shape.EAST_SOUTH, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineEastSouthModel))
-                .select(TrampolineBlock.Shape.SOUTH_WEST, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineSouthWestModel))
-                .select(TrampolineBlock.Shape.WEST_NORTH, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineWestNorthModel))
-                .select(TrampolineBlock.Shape.NORTH_EAST_WITH_LEG, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineNorthEastWithLegModel))
-                .select(TrampolineBlock.Shape.EAST_SOUTH_WITH_LEG, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineEastSouthWithLegModel))
-                .select(TrampolineBlock.Shape.SOUTH_WEST_WITH_LEG, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineSouthWestWithLegModel))
-                .select(TrampolineBlock.Shape.WEST_NORTH_WITH_LEG, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineWestNorthWithLegModel))
-                .select(TrampolineBlock.Shape.NORTH_EAST_SOUTH, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineNorthEastSouthModel))
-                .select(TrampolineBlock.Shape.EAST_SOUTH_WEST, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineEastSouthWestModel))
-                .select(TrampolineBlock.Shape.SOUTH_WEST_NORTH, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineSouthWestNorthModel))
-                .select(TrampolineBlock.Shape.WEST_NORTH_EAST, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineWestNorthEastModel))
-                .select(TrampolineBlock.Shape.NORTH_EAST_SOUTH_WITH_LEG_NORTHEAST, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineNorthEastSouthWithLegNorthEastModel))
-                .select(TrampolineBlock.Shape.NORTH_EAST_SOUTH_WITH_LEG_EASTSOUTH, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineNorthEastSouthWithLegEastSouthModel))
-                .select(TrampolineBlock.Shape.NORTH_EAST_SOUTH_WITH_LEG_NORTHEAST_EASTSOUTH, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineNorthEastSouthWithLegNorthEastEastSouthModel))
-                .select(TrampolineBlock.Shape.EAST_SOUTH_WEST_WITH_LEG_EASTSOUTH, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineEastSouthWestWithLegEastSouthModel))
-                .select(TrampolineBlock.Shape.EAST_SOUTH_WEST_WITH_LEG_SOUTHWEST, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineEastSouthWestWithLegSouthWestModel))
-                .select(TrampolineBlock.Shape.EAST_SOUTH_WEST_WITH_LEG_EASTSOUTH_SOUTHWEST, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineEastSouthWestWithLegEastSouthSouthWestModel))
-                .select(TrampolineBlock.Shape.SOUTH_WEST_NORTH_WITH_LEG_WESTNORTH, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineSouthWestNorthWithLegWestNorthModel))
-                .select(TrampolineBlock.Shape.SOUTH_WEST_NORTH_WITH_LEG_SOUTHWEST, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineSouthWestNorthWithLegSouthWestModel))
-                .select(TrampolineBlock.Shape.SOUTH_WEST_NORTH_WITH_LEG_WESTNORTH_SOUTHWEST, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineSouthWestNorthWithLegWestNorthSouthWestModel))
-                .select(TrampolineBlock.Shape.WEST_NORTH_EAST_WITH_LEG_NORTHEAST, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineWestNorthEastWithLegNorthEastModel))
-                .select(TrampolineBlock.Shape.WEST_NORTH_EAST_WITH_LEG_WESTNORTH, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineWestNorthEastWithLegWestNorthModel))
-                .select(TrampolineBlock.Shape.WEST_NORTH_EAST_WITH_LEG_NORTHEAST_WESTNORTH, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineWestNorthEastWithLegNorthEastWestNorthModel))
-                .select(TrampolineBlock.Shape.ALL, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineAllModel))
-                .select(TrampolineBlock.Shape.ALL_WITH_LEG_ALL, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineAllWithLegAllModel))
-                .select(TrampolineBlock.Shape.ALL_WITH_LEG_NORTHEAST, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineAllWithLegNorthEastModel))
-                .select(TrampolineBlock.Shape.ALL_WITH_LEG_NORTHEAST_EASTSOUTH, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineAllWithLegNorthEastEastSouthModel))
-                .select(TrampolineBlock.Shape.ALL_WITH_LEG_NORTHEAST_EASTSOUTH_SOUTHWEST, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineAllWithLegNorthEastEastSouthSouthWestModel))
-                .select(TrampolineBlock.Shape.ALL_WITH_LEG_EASTSOUTH, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineAllWithLegEastSouthModel))
-                .select(TrampolineBlock.Shape.ALL_WITH_LEG_EASTSOUTH_SOUTHWEST, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineAllWithLegEastSouthSouthWestModel))
-                .select(TrampolineBlock.Shape.ALL_WITH_LEG_EASTSOUTH_SOUTHWEST_WESTNORTH, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineAllWithLegEastSouthSouthWestWestNorthModel))
-                .select(TrampolineBlock.Shape.ALL_WITH_LEG_SOUTHWEST, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineAllWithLegSouthWestModel))
-                .select(TrampolineBlock.Shape.ALL_WITH_LEG_SOUTHWEST_WESTNORTH, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineAllWithLegSouthWestWestNorthModel))
-                .select(TrampolineBlock.Shape.ALL_WITH_LEG_SOUTHWEST_WESTNORTH_NORTHEAST, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineAllWithLegSouthWestWestNorthNorthEastModel))
-                .select(TrampolineBlock.Shape.ALL_WITH_LEG_WESTNORTH, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineAllWithLegWestNorthModel))
-                .select(TrampolineBlock.Shape.ALL_WITH_LEG_WESTNORTH_NORTHEAST, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineAllWithLegWestNorthNorthEastModel))
-                .select(TrampolineBlock.Shape.ALL_WITH_LEG_WESTNORTH_NORTHEAST_EASTSOUTH, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineAllWithLegWestNorthNorthEastEastSouthModel))
-                .select(TrampolineBlock.Shape.ALL_WITH_LEG_NORTHEAST_SOUTHWEST, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineAllWithLegNorthEastSouthWestModel))
-                .select(TrampolineBlock.Shape.ALL_WITH_LEG_EASTSOUTH_WESTNORTH, Variant.variant()
-                    .with(VariantProperties.MODEL, trampolineAllWithLegEastSouthWestNorthModel))));
+        MultiVariant trampolineDefaultVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_DEFAULT.create(block, textures, this.models::put));
+        MultiVariant trampolineNorthVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_NORTH.create(block, textures, this.models::put));
+        MultiVariant trampolineEastVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_EAST.create(block, textures, this.models::put));
+        MultiVariant trampolineSouthVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_SOUTH.create(block, textures, this.models::put));
+        MultiVariant trampolineWestVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_WEST.create(block, textures, this.models::put));
+        MultiVariant trampolineNorthSouthVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_NORTH_SOUTH.create(block, textures, this.models::put));
+        MultiVariant trampolineEastWestVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_EAST_WEST.create(block, textures, this.models::put));
+        MultiVariant trampolineNorthEastVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_NORTH_EAST.create(block, textures, this.models::put));
+        MultiVariant trampolineEastSouthVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_EAST_SOUTH.create(block, textures, this.models::put));
+        MultiVariant trampolineSouthWestVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_SOUTH_WEST.create(block, textures, this.models::put));
+        MultiVariant trampolineWestNorthVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_WEST_NORTH.create(block, textures, this.models::put));
+        MultiVariant trampolineNorthEastWithLegVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_NORTH_EAST_WITH_LEG.create(block, textures, this.models::put));
+        MultiVariant trampolineEastSouthWithLegVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_EAST_SOUTH_WITH_LEG.create(block, textures, this.models::put));
+        MultiVariant trampolineSouthWestWithLegVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_SOUTH_WEST_WITH_LEG.create(block, textures, this.models::put));
+        MultiVariant trampolineWestNorthWithLegVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_WEST_NORTH_WITH_LEG.create(block, textures, this.models::put));
+        MultiVariant trampolineNorthEastSouthVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_NORTH_EAST_SOUTH.create(block, textures, this.models::put));
+        MultiVariant trampolineEastSouthWestVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_EAST_SOUTH_WEST.create(block, textures, this.models::put));
+        MultiVariant trampolineSouthWestNorthVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_SOUTH_WEST_NORTH.create(block, textures, this.models::put));
+        MultiVariant trampolineWestNorthEastVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_WEST_NORTH_EAST.create(block, textures, this.models::put));
+        MultiVariant trampolineNorthEastSouthWithLegNorthEastVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_NORTH_EAST_SOUTH_WITH_LEG_NORTHEAST.create(block, textures, this.models::put));
+        MultiVariant trampolineNorthEastSouthWithLegEastSouthVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_NORTH_EAST_SOUTH_WITH_LEG_EASTSOUTH.create(block, textures, this.models::put));
+        MultiVariant trampolineNorthEastSouthWithLegNorthEastEastSouthVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_NORTH_EAST_SOUTH_WITH_LEG_NORTHEAST_EASTSOUTH.create(block, textures, this.models::put));
+        MultiVariant trampolineEastSouthWestWithLegEastSouthVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_EAST_SOUTH_WEST_WITH_LEG_EASTSOUTH.create(block, textures, this.models::put));
+        MultiVariant trampolineEastSouthWestWithLegSouthWestVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_EAST_SOUTH_WEST_WITH_LEG_SOUTHWEST.create(block, textures, this.models::put));
+        MultiVariant trampolineEastSouthWestWithLegEastSouthSouthWestVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_EAST_SOUTH_WEST_WITH_LEG_EASTSOUTH_SOUTHWEST.create(block, textures, this.models::put));
+        MultiVariant trampolineSouthWestNorthWithLegWestNorthVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_SOUTH_WEST_NORTH_WITH_LEG_WESTNORTH.create(block, textures, this.models::put));
+        MultiVariant trampolineSouthWestNorthWithLegSouthWestVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_SOUTH_WEST_NORTH_WITH_LEG_SOUTHWEST.create(block, textures, this.models::put));
+        MultiVariant trampolineSouthWestNorthWithLegWestNorthSouthWestVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_SOUTH_WEST_NORTH_WITH_LEG_WESTNORTH_SOUTHWEST.create(block, textures, this.models::put));
+        MultiVariant trampolineWestNorthEastWithLegNorthEastVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_WEST_NORTH_EAST_WITH_LEG_NORTHEAST.create(block, textures, this.models::put));
+        MultiVariant trampolineWestNorthEastWithLegWestNorthVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_WEST_NORTH_EAST_WITH_LEG_WESTNORTH.create(block, textures, this.models::put));
+        MultiVariant trampolineWestNorthEastWithLegNorthEastWestNorthVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_WEST_NORTH_EAST_WITH_LEG_NORTHEAST_WESTNORTH.create(block, textures, this.models::put));
+        MultiVariant trampolineAllVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_ALL.create(block, textures, this.models::put));
+        MultiVariant trampolineAllWithLegAllVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_ALL_WITH_LEG_ALL.create(block, textures, this.models::put));
+        MultiVariant trampolineAllWithLegNorthEastVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_ALL_WITH_LEG_NORTHEAST.create(block, textures, this.models::put));
+        MultiVariant trampolineAllWithLegNorthEastEastSouthVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_ALL_WITH_LEG_NORTHEAST_EASTSOUTH.create(block, textures, this.models::put));
+        MultiVariant trampolineAllWithLegNorthEastEastSouthSouthWestVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_ALL_WITH_LEG_NORTHEAST_EASTSOUTH_SOUTHWEST.create(block, textures, this.models::put));
+        MultiVariant trampolineAllWithLegEastSouthVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_ALL_WITH_LEG_EASTSOUTH.create(block, textures, this.models::put));
+        MultiVariant trampolineAllWithLegEastSouthSouthWestVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_ALL_WITH_LEG_EASTSOUTH_SOUTHWEST.create(block, textures, this.models::put));
+        MultiVariant trampolineAllWithLegEastSouthSouthWestWestNorthVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_ALL_WITH_LEG_EASTSOUTH_SOUTHWEST_WESTNORTH.create(block, textures, this.models::put));
+        MultiVariant trampolineAllWithLegSouthWestVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_ALL_WITH_LEG_SOUTHWEST.create(block, textures, this.models::put));
+        MultiVariant trampolineAllWithLegSouthWestWestNorthVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_ALL_WITH_LEG_SOUTHWEST_WESTNORTH.create(block, textures, this.models::put));
+        MultiVariant trampolineAllWithLegSouthWestWestNorthNorthEastVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_ALL_WITH_LEG_SOUTHWEST_WESTNORTH_NORTHEAST.create(block, textures, this.models::put));
+        MultiVariant trampolineAllWithLegWestNorthVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_ALL_WITH_LEG_WESTNORTH.create(block, textures, this.models::put));
+        MultiVariant trampolineAllWithLegWestNorthNorthEastVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_ALL_WITH_LEG_WESTNORTH_NORTHEAST.create(block, textures, this.models::put));
+        MultiVariant trampolineAllWithLegWestNorthNorthEastEastSouthVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_ALL_WITH_LEG_WESTNORTH_NORTHEAST_EASTSOUTH.create(block, textures, this.models::put));
+        MultiVariant trampolineAllWithLegNorthEastSouthWestVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_ALL_WITH_LEG_NORTHEAST_SOUTHWEST.create(block, textures, this.models::put));
+        MultiVariant trampolineAllWithLegEastSouthWestNorthVariant = this.plainVariant(ModelDefinitions.TRAMPOLINE_ALL_WITH_LEG_EASTSOUTH_WESTNORTH.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, trampolineDefaultVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(TrampolineBlock.SHAPE)
+                .select(TrampolineBlock.Shape.DEFAULT, trampolineDefaultVariant)
+                .select(TrampolineBlock.Shape.NORTH, trampolineNorthVariant)
+                .select(TrampolineBlock.Shape.EAST, trampolineEastVariant)
+                .select(TrampolineBlock.Shape.SOUTH, trampolineSouthVariant)
+                .select(TrampolineBlock.Shape.WEST, trampolineWestVariant)
+                .select(TrampolineBlock.Shape.NORTH_SOUTH, trampolineNorthSouthVariant)
+                .select(TrampolineBlock.Shape.EAST_WEST, trampolineEastWestVariant)
+                .select(TrampolineBlock.Shape.NORTH_EAST, trampolineNorthEastVariant)
+                .select(TrampolineBlock.Shape.EAST_SOUTH, trampolineEastSouthVariant)
+                .select(TrampolineBlock.Shape.SOUTH_WEST, trampolineSouthWestVariant)
+                .select(TrampolineBlock.Shape.WEST_NORTH, trampolineWestNorthVariant)
+                .select(TrampolineBlock.Shape.NORTH_EAST_WITH_LEG, trampolineNorthEastWithLegVariant)
+                .select(TrampolineBlock.Shape.EAST_SOUTH_WITH_LEG, trampolineEastSouthWithLegVariant)
+                .select(TrampolineBlock.Shape.SOUTH_WEST_WITH_LEG, trampolineSouthWestWithLegVariant)
+                .select(TrampolineBlock.Shape.WEST_NORTH_WITH_LEG, trampolineWestNorthWithLegVariant)
+                .select(TrampolineBlock.Shape.NORTH_EAST_SOUTH, trampolineNorthEastSouthVariant)
+                .select(TrampolineBlock.Shape.EAST_SOUTH_WEST, trampolineEastSouthWestVariant)
+                .select(TrampolineBlock.Shape.SOUTH_WEST_NORTH, trampolineSouthWestNorthVariant)
+                .select(TrampolineBlock.Shape.WEST_NORTH_EAST, trampolineWestNorthEastVariant)
+                .select(TrampolineBlock.Shape.NORTH_EAST_SOUTH_WITH_LEG_NORTHEAST, trampolineNorthEastSouthWithLegNorthEastVariant)
+                .select(TrampolineBlock.Shape.NORTH_EAST_SOUTH_WITH_LEG_EASTSOUTH, trampolineNorthEastSouthWithLegEastSouthVariant)
+                .select(TrampolineBlock.Shape.NORTH_EAST_SOUTH_WITH_LEG_NORTHEAST_EASTSOUTH, trampolineNorthEastSouthWithLegNorthEastEastSouthVariant)
+                .select(TrampolineBlock.Shape.EAST_SOUTH_WEST_WITH_LEG_EASTSOUTH, trampolineEastSouthWestWithLegEastSouthVariant)
+                .select(TrampolineBlock.Shape.EAST_SOUTH_WEST_WITH_LEG_SOUTHWEST, trampolineEastSouthWestWithLegSouthWestVariant)
+                .select(TrampolineBlock.Shape.EAST_SOUTH_WEST_WITH_LEG_EASTSOUTH_SOUTHWEST, trampolineEastSouthWestWithLegEastSouthSouthWestVariant)
+                .select(TrampolineBlock.Shape.SOUTH_WEST_NORTH_WITH_LEG_WESTNORTH, trampolineSouthWestNorthWithLegWestNorthVariant)
+                .select(TrampolineBlock.Shape.SOUTH_WEST_NORTH_WITH_LEG_SOUTHWEST, trampolineSouthWestNorthWithLegSouthWestVariant)
+                .select(TrampolineBlock.Shape.SOUTH_WEST_NORTH_WITH_LEG_WESTNORTH_SOUTHWEST, trampolineSouthWestNorthWithLegWestNorthSouthWestVariant)
+                .select(TrampolineBlock.Shape.WEST_NORTH_EAST_WITH_LEG_NORTHEAST, trampolineWestNorthEastWithLegNorthEastVariant)
+                .select(TrampolineBlock.Shape.WEST_NORTH_EAST_WITH_LEG_WESTNORTH, trampolineWestNorthEastWithLegWestNorthVariant)
+                .select(TrampolineBlock.Shape.WEST_NORTH_EAST_WITH_LEG_NORTHEAST_WESTNORTH, trampolineWestNorthEastWithLegNorthEastWestNorthVariant)
+                .select(TrampolineBlock.Shape.ALL, trampolineAllVariant)
+                .select(TrampolineBlock.Shape.ALL_WITH_LEG_ALL, trampolineAllWithLegAllVariant)
+                .select(TrampolineBlock.Shape.ALL_WITH_LEG_NORTHEAST, trampolineAllWithLegNorthEastVariant)
+                .select(TrampolineBlock.Shape.ALL_WITH_LEG_NORTHEAST_EASTSOUTH, trampolineAllWithLegNorthEastEastSouthVariant)
+                .select(TrampolineBlock.Shape.ALL_WITH_LEG_NORTHEAST_EASTSOUTH_SOUTHWEST, trampolineAllWithLegNorthEastEastSouthSouthWestVariant)
+                .select(TrampolineBlock.Shape.ALL_WITH_LEG_EASTSOUTH, trampolineAllWithLegEastSouthVariant)
+                .select(TrampolineBlock.Shape.ALL_WITH_LEG_EASTSOUTH_SOUTHWEST, trampolineAllWithLegEastSouthSouthWestVariant)
+                .select(TrampolineBlock.Shape.ALL_WITH_LEG_EASTSOUTH_SOUTHWEST_WESTNORTH, trampolineAllWithLegEastSouthSouthWestWestNorthVariant)
+                .select(TrampolineBlock.Shape.ALL_WITH_LEG_SOUTHWEST, trampolineAllWithLegSouthWestVariant)
+                .select(TrampolineBlock.Shape.ALL_WITH_LEG_SOUTHWEST_WESTNORTH, trampolineAllWithLegSouthWestWestNorthVariant)
+                .select(TrampolineBlock.Shape.ALL_WITH_LEG_SOUTHWEST_WESTNORTH_NORTHEAST, trampolineAllWithLegSouthWestWestNorthNorthEastVariant)
+                .select(TrampolineBlock.Shape.ALL_WITH_LEG_WESTNORTH, trampolineAllWithLegWestNorthVariant)
+                .select(TrampolineBlock.Shape.ALL_WITH_LEG_WESTNORTH_NORTHEAST, trampolineAllWithLegWestNorthNorthEastVariant)
+                .select(TrampolineBlock.Shape.ALL_WITH_LEG_WESTNORTH_NORTHEAST_EASTSOUTH, trampolineAllWithLegWestNorthNorthEastEastSouthVariant)
+                .select(TrampolineBlock.Shape.ALL_WITH_LEG_NORTHEAST_SOUTHWEST, trampolineAllWithLegNorthEastSouthWestVariant)
+                .select(TrampolineBlock.Shape.ALL_WITH_LEG_EASTSOUTH_WESTNORTH, trampolineAllWithLegEastSouthWestNorthVariant)));
     }
 
     private void plate(PlateBlock block)
     {
         this.registerItemWithModel(block, Utils.resource("block/apricity_plate"));
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block,
-            Variant.variant().with(VariantProperties.MODEL, Utils.resource("block/apricity_plate")),
-            Variant.variant().with(VariantProperties.MODEL, Utils.resource("block/stardust_plate")),
-            Variant.variant().with(VariantProperties.MODEL, Utils.resource("block/cerulean_plate")),
-            Variant.variant().with(VariantProperties.MODEL, Utils.resource("block/tuscan_plate"))
-        ));
+        this.generators.put(block, MultiVariantGenerator.dispatch(block, this.variants(
+           this.plainModel(Utils.resource("block/apricity_plate")),
+           this.plainModel(Utils.resource("block/stardust_plate")),
+           this.plainModel(Utils.resource("block/cerulean_plate")),
+           this.plainModel(Utils.resource("block/tuscan_plate"))
+        )));
     }
 
     private void stool(StoolBlock block)
@@ -2441,10 +1567,9 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.colourParticle(block.getDyeColor()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation stoolModel =  ModelDefinitions.STOOL.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, stoolModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block,
-            Variant.variant().with(VariantProperties.MODEL, stoolModel)));
+        MultiVariant stoolVariant = this.plainVariant( ModelDefinitions.STOOL.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, stoolVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block, stoolVariant));
     }
 
     private void hedge(HedgeBlock block, int tint)
@@ -2453,44 +1578,43 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.leafTexture(type))
             .put(TextureSlot.TEXTURE, this.leafTexture(type));
-        ResourceLocation hedgeCenterSideModel = ModelDefinitions.HEDGE_CENTER_SIDE.create(block, textures, this.models::put);
-        ResourceLocation hedgeConnectionStyleOneModel = ModelDefinitions.HEDGE_CONNECTION_STYLE_1.create(block, textures, this.models::put);
-        ResourceLocation hedgeConnectionStyleTwoModel = ModelDefinitions.HEDGE_CONNECTION_STYLE_2.create(block, textures, this.models::put);
-        ResourceLocation hedgeConnectionStyleThreeModel = ModelDefinitions.HEDGE_CONNECTION_STYLE_3.create(block, textures, this.models::put);
+        MultiVariant hedgeCenterSideVariant = this.plainVariant(ModelDefinitions.HEDGE_CENTER_SIDE.create(block, textures, this.models::put));
+        Variant hedgeConnectionStyleOneVariant = this.plainModel(ModelDefinitions.HEDGE_CONNECTION_STYLE_1.create(block, textures, this.models::put));
+        Variant hedgeConnectionStyleTwoVariant = this.plainModel(ModelDefinitions.HEDGE_CONNECTION_STYLE_2.create(block, textures, this.models::put));
+        Variant hedgeConnectionStyleThreeVariant = this.plainModel(ModelDefinitions.HEDGE_CONNECTION_STYLE_3.create(block, textures, this.models::put));
+        Variant hedgeCenterStyleOneVariant = this.plainModel(ModelDefinitions.HEDGE_CENTER_STYLE_1.create(block, textures, this.models::put));
+        Variant hedgeCenterStyleTwoVariant = this.plainModel(ModelDefinitions.HEDGE_CENTER_STYLE_2.create(block, textures, this.models::put));
+        Variant hedgeCenterStyleThreeVariant = this.plainModel(ModelDefinitions.HEDGE_CENTER_STYLE_3.create(block, textures, this.models::put));
         this.generators.put(block, MultiPartGenerator.multiPart(block)
-            .with(List.of(
-                Variant.variant().with(VariantProperties.MODEL, ModelDefinitions.HEDGE_CENTER_STYLE_1.create(block, textures, this.models::put)),
-                Variant.variant().with(VariantProperties.MODEL, ModelDefinitions.HEDGE_CENTER_STYLE_2.create(block, textures, this.models::put)),
-                Variant.variant().with(VariantProperties.MODEL, ModelDefinitions.HEDGE_CENTER_STYLE_3.create(block, textures, this.models::put))
+            .with(this.variants(
+                hedgeCenterStyleOneVariant,
+                hedgeCenterStyleTwoVariant,
+                hedgeCenterStyleThreeVariant
             ))
-            .with(Condition.condition().term(HedgeBlock.NORTH, false),
-                Variant.variant().with(VariantProperties.MODEL, hedgeCenterSideModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-            .with(Condition.condition().term(HedgeBlock.EAST, false),
-                Variant.variant().with(VariantProperties.MODEL, hedgeCenterSideModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-            .with(Condition.condition().term(HedgeBlock.SOUTH, false),
-                Variant.variant().with(VariantProperties.MODEL, hedgeCenterSideModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-            .with(Condition.condition().term(HedgeBlock.WEST, false),
-                Variant.variant().with(VariantProperties.MODEL, hedgeCenterSideModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-            .with(Condition.condition().term(HedgeBlock.NORTH, true),
-                Variant.variant().with(VariantProperties.MODEL, hedgeConnectionStyleOneModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180),
-                Variant.variant().with(VariantProperties.MODEL, hedgeConnectionStyleTwoModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180),
-                Variant.variant().with(VariantProperties.MODEL, hedgeConnectionStyleThreeModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180)
-            )
-            .with(Condition.condition().term(HedgeBlock.EAST, true),
-                Variant.variant().with(VariantProperties.MODEL, hedgeConnectionStyleOneModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270),
-                Variant.variant().with(VariantProperties.MODEL, hedgeConnectionStyleTwoModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270),
-                Variant.variant().with(VariantProperties.MODEL, hedgeConnectionStyleThreeModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270)
-            )
-            .with(Condition.condition().term(HedgeBlock.SOUTH, true),
-                Variant.variant().with(VariantProperties.MODEL, hedgeConnectionStyleOneModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0),
-                Variant.variant().with(VariantProperties.MODEL, hedgeConnectionStyleTwoModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0),
-                Variant.variant().with(VariantProperties.MODEL, hedgeConnectionStyleThreeModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0)
-            )
-            .with(Condition.condition().term(HedgeBlock.WEST, true),
-                Variant.variant().with(VariantProperties.MODEL, hedgeConnectionStyleOneModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90),
-                Variant.variant().with(VariantProperties.MODEL, hedgeConnectionStyleTwoModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90),
-                Variant.variant().with(VariantProperties.MODEL, hedgeConnectionStyleThreeModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90)
-            )
+            .with(this.condition().term(HedgeBlock.NORTH, false), hedgeCenterSideVariant.with(Y_ROT_180))
+            .with(this.condition().term(HedgeBlock.EAST, false), hedgeCenterSideVariant.with(Y_ROT_270))
+            .with(this.condition().term(HedgeBlock.SOUTH, false), hedgeCenterSideVariant)
+            .with(this.condition().term(HedgeBlock.WEST, false), hedgeCenterSideVariant.with(Y_ROT_90))
+            .with(this.condition().term(HedgeBlock.NORTH, true), this.variants(
+                hedgeConnectionStyleOneVariant.with(Y_ROT_180),
+                hedgeConnectionStyleTwoVariant.with(Y_ROT_180),
+                hedgeConnectionStyleThreeVariant.with(Y_ROT_180)
+            ))
+            .with(this.condition().term(HedgeBlock.EAST, true), this.variants(
+                hedgeConnectionStyleOneVariant.with(Y_ROT_270),
+                hedgeConnectionStyleTwoVariant.with(Y_ROT_270),
+                hedgeConnectionStyleThreeVariant.with(Y_ROT_270)
+            ))
+            .with(this.condition().term(HedgeBlock.SOUTH, true), this.variants(
+                hedgeConnectionStyleOneVariant,
+                hedgeConnectionStyleTwoVariant,
+                hedgeConnectionStyleThreeVariant
+            ))
+            .with(this.condition().term(HedgeBlock.WEST, true), this.variants(
+                hedgeConnectionStyleOneVariant.with(Y_ROT_90),
+                hedgeConnectionStyleTwoVariant.with(Y_ROT_90),
+                hedgeConnectionStyleThreeVariant.with(Y_ROT_90)
+            ))
         );
 
         ResourceLocation hedgeItemModel = ModelDefinitions.HEDGE.create(block.asItem(), textures, this.models::put);
@@ -2509,36 +1633,36 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.stoneTexture(block.getStoneType()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation steppingStonesStyleOneModel = ModelDefinitions.STEPPING_STONES_STYLE_1.create(block, textures, this.models::put);
-        ResourceLocation steppingStonesStyleTwoModel = ModelDefinitions.STEPPING_STONES_STYLE_2.create(block, textures, this.models::put);
-        ResourceLocation steppingStonesStyleThreeModel = ModelDefinitions.STEPPING_STONES_STYLE_3.create(block, textures, this.models::put);
-        ResourceLocation steppingStonesStyleFourModel = ModelDefinitions.STEPPING_STONES_STYLE_4.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, steppingStonesStyleOneModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.property(SteppingStoneBlock.DIRECTION)
-                .select(Direction.NORTH, List.of(
-                    Variant.variant().with(VariantProperties.MODEL, steppingStonesStyleOneModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0),
-                    Variant.variant().with(VariantProperties.MODEL, steppingStonesStyleTwoModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0),
-                    Variant.variant().with(VariantProperties.MODEL, steppingStonesStyleThreeModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0),
-                    Variant.variant().with(VariantProperties.MODEL, steppingStonesStyleFourModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0)
+        Variant steppingStonesStyleOneVariant = this.plainModel(ModelDefinitions.STEPPING_STONES_STYLE_1.create(block, textures, this.models::put));
+        Variant steppingStonesStyleTwoVariant = this.plainModel(ModelDefinitions.STEPPING_STONES_STYLE_2.create(block, textures, this.models::put));
+        Variant steppingStonesStyleThreeVariant = this.plainModel(ModelDefinitions.STEPPING_STONES_STYLE_3.create(block, textures, this.models::put));
+        Variant steppingStonesStyleFourVariant = this.plainModel(ModelDefinitions.STEPPING_STONES_STYLE_4.create(block, textures, this.models::put));
+        this.registerItemWithModelFromVariant(block, steppingStonesStyleOneVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(SteppingStoneBlock.DIRECTION)
+                .select(Direction.NORTH, this.variants(
+                    steppingStonesStyleOneVariant,
+                    steppingStonesStyleTwoVariant,
+                    steppingStonesStyleThreeVariant,
+                    steppingStonesStyleFourVariant
                 ))
-                .select(Direction.EAST, List.of(
-                    Variant.variant().with(VariantProperties.MODEL, steppingStonesStyleOneModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90),
-                    Variant.variant().with(VariantProperties.MODEL, steppingStonesStyleTwoModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90),
-                    Variant.variant().with(VariantProperties.MODEL, steppingStonesStyleThreeModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90),
-                    Variant.variant().with(VariantProperties.MODEL, steppingStonesStyleFourModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90)
+                .select(Direction.EAST, this.variants(
+                    steppingStonesStyleOneVariant.with(Y_ROT_90),
+                    steppingStonesStyleTwoVariant.with(Y_ROT_90),
+                    steppingStonesStyleThreeVariant.with(Y_ROT_90),
+                    steppingStonesStyleFourVariant.with(Y_ROT_90)
                 ))
-                .select(Direction.SOUTH, List.of(
-                    Variant.variant().with(VariantProperties.MODEL, steppingStonesStyleOneModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180),
-                    Variant.variant().with(VariantProperties.MODEL, steppingStonesStyleTwoModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180),
-                    Variant.variant().with(VariantProperties.MODEL, steppingStonesStyleThreeModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180),
-                    Variant.variant().with(VariantProperties.MODEL, steppingStonesStyleFourModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180)
+                .select(Direction.SOUTH, this.variants(
+                    steppingStonesStyleOneVariant.with(Y_ROT_180),
+                    steppingStonesStyleTwoVariant.with(Y_ROT_180),
+                    steppingStonesStyleThreeVariant.with(Y_ROT_180),
+                    steppingStonesStyleFourVariant.with(Y_ROT_180)
                 ))
-                .select(Direction.WEST, List.of(
-                    Variant.variant().with(VariantProperties.MODEL, steppingStonesStyleOneModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270),
-                    Variant.variant().with(VariantProperties.MODEL, steppingStonesStyleTwoModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270),
-                    Variant.variant().with(VariantProperties.MODEL, steppingStonesStyleThreeModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270),
-                    Variant.variant().with(VariantProperties.MODEL, steppingStonesStyleFourModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270)
+                .select(Direction.WEST, this.variants(
+                    steppingStonesStyleOneVariant.with(Y_ROT_270),
+                    steppingStonesStyleTwoVariant.with(Y_ROT_270),
+                    steppingStonesStyleThreeVariant.with(Y_ROT_270),
+                    steppingStonesStyleFourVariant.with(Y_ROT_270)
                 ))
             )
         );
@@ -2549,22 +1673,14 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.woodParticle(block.getWoodType()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation toiletModel = ModelDefinitions.TOILET.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, toiletModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.property(ToiletBlock.DIRECTION)
-                .select(Direction.NORTH, Variant.variant()
-                    .with(VariantProperties.MODEL, toiletModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, Variant.variant()
-                    .with(VariantProperties.MODEL, toiletModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, Variant.variant()
-                    .with(VariantProperties.MODEL, toiletModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, Variant.variant()
-                    .with(VariantProperties.MODEL, toiletModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant toiletVariant = this.plainVariant(ModelDefinitions.TOILET.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, toiletVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(ToiletBlock.DIRECTION)
+                .select(Direction.NORTH, toiletVariant)
+                .select(Direction.EAST, toiletVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, toiletVariant.with(Y_ROT_180))
+                .select(Direction.WEST, toiletVariant.with(Y_ROT_270))));
     }
 
     private void colouredToilet(ColouredToiletBlock block)
@@ -2572,22 +1688,14 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.colourParticle(block.getDyeColor()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation toiletModel = ModelDefinitions.TOILET.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, toiletModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.property(ToiletBlock.DIRECTION)
-                .select(Direction.NORTH, Variant.variant()
-                    .with(VariantProperties.MODEL, toiletModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, Variant.variant()
-                    .with(VariantProperties.MODEL, toiletModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, Variant.variant()
-                    .with(VariantProperties.MODEL, toiletModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, Variant.variant()
-                    .with(VariantProperties.MODEL, toiletModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant toiletVariant = this.plainVariant(ModelDefinitions.TOILET.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, toiletVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(ToiletBlock.DIRECTION)
+                .select(Direction.NORTH, toiletVariant)
+                .select(Direction.EAST, toiletVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, toiletVariant.with(Y_ROT_180))
+                .select(Direction.WEST, toiletVariant.with(Y_ROT_270))));
     }
 
     private void woodenBasin(WoodenBasinBlock block)
@@ -2595,22 +1703,14 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.woodParticle(block.getWoodType()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation basinModel = ModelDefinitions.BASIN.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, basinModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.property(BasinBlock.DIRECTION)
-                .select(Direction.NORTH, Variant.variant()
-                    .with(VariantProperties.MODEL, basinModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, Variant.variant()
-                    .with(VariantProperties.MODEL, basinModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, Variant.variant()
-                    .with(VariantProperties.MODEL, basinModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, Variant.variant()
-                    .with(VariantProperties.MODEL, basinModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant basinVariant = this.plainVariant(ModelDefinitions.BASIN.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, basinVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(BasinBlock.DIRECTION)
+                .select(Direction.NORTH, basinVariant)
+                .select(Direction.EAST, basinVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, basinVariant.with(Y_ROT_180))
+                .select(Direction.WEST, basinVariant.with(Y_ROT_270))));
     }
 
     private void colouredBasin(ColouredBasinBlock block)
@@ -2618,22 +1718,14 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.colourParticle(block.getDyeColor()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation basinModel = ModelDefinitions.BASIN.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, basinModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.property(BasinBlock.DIRECTION)
-                .select(Direction.NORTH, Variant.variant()
-                    .with(VariantProperties.MODEL, basinModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, Variant.variant()
-                    .with(VariantProperties.MODEL, basinModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, Variant.variant()
-                    .with(VariantProperties.MODEL, basinModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, Variant.variant()
-                    .with(VariantProperties.MODEL, basinModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant basinVariant = this.plainVariant(ModelDefinitions.BASIN.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, basinVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(BasinBlock.DIRECTION)
+                .select(Direction.NORTH, basinVariant)
+                .select(Direction.EAST, basinVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, basinVariant.with(Y_ROT_180))
+                .select(Direction.WEST, basinVariant.with(Y_ROT_270))));
     }
 
     private void woodenBath(WoodenBathBlock block)
@@ -2641,34 +1733,18 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.woodParticle(block.getWoodType()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation bathHeadModel = ModelDefinitions.BATH_HEAD.create(block, textures, this.models::put);
-        ResourceLocation bathBottomModel = ModelDefinitions.BATH_BOTTOM.create(block, textures, this.models::put);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.properties(BathBlock.DIRECTION, BathBlock.TYPE)
-                .select(Direction.NORTH, BathBlock.Type.HEAD, Variant.variant()
-                    .with(VariantProperties.MODEL, bathHeadModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, BathBlock.Type.HEAD, Variant.variant()
-                    .with(VariantProperties.MODEL, bathHeadModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, BathBlock.Type.HEAD, Variant.variant()
-                    .with(VariantProperties.MODEL, bathHeadModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, BathBlock.Type.HEAD, Variant.variant()
-                    .with(VariantProperties.MODEL, bathHeadModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, BathBlock.Type.BOTTOM, Variant.variant()
-                    .with(VariantProperties.MODEL, bathBottomModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, BathBlock.Type.BOTTOM, Variant.variant()
-                    .with(VariantProperties.MODEL, bathBottomModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, BathBlock.Type.BOTTOM, Variant.variant()
-                    .with(VariantProperties.MODEL, bathBottomModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, BathBlock.Type.BOTTOM, Variant.variant()
-                    .with(VariantProperties.MODEL, bathBottomModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant bathHeadVariant = this.plainVariant(ModelDefinitions.BATH_HEAD.create(block, textures, this.models::put));
+        MultiVariant bathBottomVariant = this.plainVariant(ModelDefinitions.BATH_BOTTOM.create(block, textures, this.models::put));
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(BathBlock.DIRECTION, BathBlock.TYPE)
+                .select(Direction.NORTH, BathBlock.Type.HEAD, bathHeadVariant)
+                .select(Direction.EAST, BathBlock.Type.HEAD, bathHeadVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, BathBlock.Type.HEAD, bathHeadVariant.with(Y_ROT_180))
+                .select(Direction.WEST, BathBlock.Type.HEAD, bathHeadVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, BathBlock.Type.BOTTOM, bathBottomVariant)
+                .select(Direction.EAST, BathBlock.Type.BOTTOM, bathBottomVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, BathBlock.Type.BOTTOM, bathBottomVariant.with(Y_ROT_180))
+                .select(Direction.WEST, BathBlock.Type.BOTTOM, bathBottomVariant.with(Y_ROT_270))));
         this.registerItemWithModel(block, ModelDefinitions.BATH.create(block.asItem(), textures, this.models::put));
     }
 
@@ -2677,34 +1753,18 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.colourParticle(block.getDyeColor()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation bathHeadModel = ModelDefinitions.BATH_HEAD.create(block, textures, this.models::put);
-        ResourceLocation bathBottomModel = ModelDefinitions.BATH_BOTTOM.create(block, textures, this.models::put);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.properties(BathBlock.DIRECTION, BathBlock.TYPE)
-                .select(Direction.NORTH, BathBlock.Type.HEAD, Variant.variant()
-                    .with(VariantProperties.MODEL, bathHeadModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, BathBlock.Type.HEAD, Variant.variant()
-                    .with(VariantProperties.MODEL, bathHeadModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, BathBlock.Type.HEAD, Variant.variant()
-                    .with(VariantProperties.MODEL, bathHeadModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, BathBlock.Type.HEAD, Variant.variant()
-                    .with(VariantProperties.MODEL, bathHeadModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, BathBlock.Type.BOTTOM, Variant.variant()
-                    .with(VariantProperties.MODEL, bathBottomModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, BathBlock.Type.BOTTOM, Variant.variant()
-                    .with(VariantProperties.MODEL, bathBottomModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, BathBlock.Type.BOTTOM, Variant.variant()
-                    .with(VariantProperties.MODEL, bathBottomModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, BathBlock.Type.BOTTOM, Variant.variant()
-                    .with(VariantProperties.MODEL, bathBottomModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant bathHeadVariant = this.plainVariant(ModelDefinitions.BATH_HEAD.create(block, textures, this.models::put));
+        MultiVariant bathBottomVariant = this.plainVariant(ModelDefinitions.BATH_BOTTOM.create(block, textures, this.models::put));
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(BathBlock.DIRECTION, BathBlock.TYPE)
+                .select(Direction.NORTH, BathBlock.Type.HEAD, bathHeadVariant)
+                .select(Direction.EAST, BathBlock.Type.HEAD, bathHeadVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, BathBlock.Type.HEAD, bathHeadVariant.with(Y_ROT_180))
+                .select(Direction.WEST, BathBlock.Type.HEAD, bathHeadVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, BathBlock.Type.BOTTOM, bathBottomVariant)
+                .select(Direction.EAST, BathBlock.Type.BOTTOM, bathBottomVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, BathBlock.Type.BOTTOM, bathBottomVariant.with(Y_ROT_180))
+                .select(Direction.WEST, BathBlock.Type.BOTTOM, bathBottomVariant.with(Y_ROT_270))));
         this.registerItemWithModel(block, ModelDefinitions.BATH.create(block.asItem(), textures, this.models::put));
     }
 
@@ -2713,22 +1773,14 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.woodParticle(block.getWoodType()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation latticeFenceCenterModel = ModelDefinitions.LATTICE_FENCE_CENTER.create(block, textures, this.models::put);
-        ResourceLocation latticeFenceConnectionModel = ModelDefinitions.LATTICE_FENCE_CONNECTION.create(block, textures, this.models::put);
+        MultiVariant latticeFenceCenterVariant = this.plainVariant(ModelDefinitions.LATTICE_FENCE_CENTER.create(block, textures, this.models::put));
+        MultiVariant latticeFenceConnectionVariant = this.plainVariant(ModelDefinitions.LATTICE_FENCE_CONNECTION.create(block, textures, this.models::put));
         this.generators.put(block, MultiPartGenerator.multiPart(block)
-            .with(Variant.variant().with(VariantProperties.MODEL, latticeFenceCenterModel))
-            .with(Condition.condition().term(LatticeFenceBlock.NORTH, true), Variant.variant()
-                .with(VariantProperties.MODEL, latticeFenceConnectionModel)
-                .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-            .with(Condition.condition().term(LatticeFenceBlock.EAST, true), Variant.variant()
-                .with(VariantProperties.MODEL, latticeFenceConnectionModel)
-                .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-            .with(Condition.condition().term(LatticeFenceBlock.SOUTH, true), Variant.variant()
-                .with(VariantProperties.MODEL, latticeFenceConnectionModel)
-                .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-            .with(Condition.condition().term(LatticeFenceBlock.WEST, true), Variant.variant()
-                .with(VariantProperties.MODEL, latticeFenceConnectionModel)
-                .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90)));
+            .with(latticeFenceCenterVariant)
+            .with(this.condition().term(LatticeFenceBlock.NORTH, true), latticeFenceConnectionVariant.with(Y_ROT_180))
+            .with(this.condition().term(LatticeFenceBlock.EAST, true), latticeFenceConnectionVariant.with(Y_ROT_270))
+            .with(this.condition().term(LatticeFenceBlock.SOUTH, true), latticeFenceConnectionVariant)
+            .with(this.condition().term(LatticeFenceBlock.WEST, true), latticeFenceConnectionVariant.with(Y_ROT_90)));
         this.registerItemWithModel(block, ModelDefinitions.LATTICE_FENCE.create(block.asItem(), textures, this.models::put));
     }
 
@@ -2737,137 +1789,81 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.woodParticle(block.getWoodType()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation latticeFenceGateClosedModel = ModelDefinitions.LATTICE_FENCE_GATE_CLOSED.create(block, textures, this.models::put);
-        ResourceLocation latticeFenceGateOpenModel = ModelDefinitions.LATTICE_FENCE_GATE_OPEN.create(block, textures, this.models::put);
-        this.registerItemWithModel(block, latticeFenceGateClosedModel);
+        MultiVariant latticeFenceGateClosedVariant = this.plainVariant(ModelDefinitions.LATTICE_FENCE_GATE_CLOSED.create(block, textures, this.models::put));
+        MultiVariant latticeFenceGateOpenVariant = this.plainVariant(ModelDefinitions.LATTICE_FENCE_GATE_OPEN.create(block, textures, this.models::put));
+        this.registerItemWithModelFromMultiVariant(block, latticeFenceGateClosedVariant);
         this.generators.put(block, MultiPartGenerator.multiPart(block)
-            .with(Condition.condition().term(LatticeFenceGateBlock.FACING, Direction.NORTH).term(LatticeFenceGateBlock.OPEN, false), Variant.variant().with(VariantProperties.MODEL, latticeFenceGateClosedModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-            .with(Condition.condition().term(LatticeFenceGateBlock.FACING, Direction.EAST).term(LatticeFenceGateBlock.OPEN, false), Variant.variant().with(VariantProperties.MODEL, latticeFenceGateClosedModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-            .with(Condition.condition().term(LatticeFenceGateBlock.FACING, Direction.SOUTH).term(LatticeFenceGateBlock.OPEN, false), Variant.variant().with(VariantProperties.MODEL, latticeFenceGateClosedModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-            .with(Condition.condition().term(LatticeFenceGateBlock.FACING, Direction.WEST).term(LatticeFenceGateBlock.OPEN, false), Variant.variant().with(VariantProperties.MODEL, latticeFenceGateClosedModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-            .with(Condition.condition().term(LatticeFenceGateBlock.FACING, Direction.NORTH).term(LatticeFenceGateBlock.OPEN, true), Variant.variant().with(VariantProperties.MODEL, latticeFenceGateOpenModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-            .with(Condition.condition().term(LatticeFenceGateBlock.FACING, Direction.EAST).term(LatticeFenceGateBlock.OPEN, true), Variant.variant().with(VariantProperties.MODEL, latticeFenceGateOpenModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-            .with(Condition.condition().term(LatticeFenceGateBlock.FACING, Direction.SOUTH).term(LatticeFenceGateBlock.OPEN, true), Variant.variant().with(VariantProperties.MODEL, latticeFenceGateOpenModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-            .with(Condition.condition().term(LatticeFenceGateBlock.FACING, Direction.WEST).term(LatticeFenceGateBlock.OPEN, true), Variant.variant().with(VariantProperties.MODEL, latticeFenceGateOpenModel).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
+            .with(this.condition().term(LatticeFenceGateBlock.FACING, Direction.NORTH).term(LatticeFenceGateBlock.OPEN, false), latticeFenceGateClosedVariant)
+            .with(this.condition().term(LatticeFenceGateBlock.FACING, Direction.EAST).term(LatticeFenceGateBlock.OPEN, false), latticeFenceGateClosedVariant.with(Y_ROT_90))
+            .with(this.condition().term(LatticeFenceGateBlock.FACING, Direction.SOUTH).term(LatticeFenceGateBlock.OPEN, false), latticeFenceGateClosedVariant.with(Y_ROT_180))
+            .with(this.condition().term(LatticeFenceGateBlock.FACING, Direction.WEST).term(LatticeFenceGateBlock.OPEN, false), latticeFenceGateClosedVariant.with(Y_ROT_270))
+            .with(this.condition().term(LatticeFenceGateBlock.FACING, Direction.NORTH).term(LatticeFenceGateBlock.OPEN, true), latticeFenceGateOpenVariant)
+            .with(this.condition().term(LatticeFenceGateBlock.FACING, Direction.EAST).term(LatticeFenceGateBlock.OPEN, true), latticeFenceGateOpenVariant.with(Y_ROT_90))
+            .with(this.condition().term(LatticeFenceGateBlock.FACING, Direction.SOUTH).term(LatticeFenceGateBlock.OPEN, true), latticeFenceGateOpenVariant.with(Y_ROT_180))
+            .with(this.condition().term(LatticeFenceGateBlock.FACING, Direction.WEST).term(LatticeFenceGateBlock.OPEN, true), latticeFenceGateOpenVariant.with(Y_ROT_270))
         );
     }
 
     private void television(TelevisionBlock block)
     {
-        ResourceLocation televisionOffModel = Utils.resource("block/television_off");
-        ResourceLocation televisionOnModel = Utils.resource("block/television_on");
-        this.registerItemWithModel(block, televisionOffModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.properties(TelevisionBlock.DIRECTION, TelevisionBlock.POWERED)
-                .select(Direction.NORTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, televisionOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, televisionOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, televisionOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, televisionOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, televisionOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, televisionOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, televisionOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, televisionOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant televisionOffVariant = this.plainVariant(Utils.resource("block/television_off"));
+        MultiVariant televisionOnVariant = this.plainVariant(Utils.resource("block/television_on"));
+        this.registerItemWithModelFromMultiVariant(block, televisionOffVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(TelevisionBlock.DIRECTION, TelevisionBlock.POWERED)
+                .select(Direction.NORTH, false, televisionOffVariant)
+                .select(Direction.EAST, false, televisionOffVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, false, televisionOffVariant.with(Y_ROT_180))
+                .select(Direction.WEST, false, televisionOffVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, true, televisionOnVariant)
+                .select(Direction.EAST, true, televisionOnVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, true, televisionOnVariant.with(Y_ROT_180))
+                .select(Direction.WEST, true, televisionOnVariant.with(Y_ROT_270))));
     }
 
     private void computer(ComputerBlock block)
     {
-        ResourceLocation computerOffModel = Utils.resource("block/computer_off");
-        ResourceLocation computerOnModel = Utils.resource("block/computer_on");
-        this.registerItemWithModel(block, computerOffModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.properties(ComputerBlock.DIRECTION, ComputerBlock.POWERED)
-                .select(Direction.NORTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, computerOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, computerOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, computerOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, computerOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, computerOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, computerOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, computerOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, computerOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant computerOffVariant = this.plainVariant(Utils.resource("block/computer_off"));
+        MultiVariant computerOnVariant = this.plainVariant(Utils.resource("block/computer_on"));
+        this.registerItemWithModelFromMultiVariant(block, computerOffVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(ComputerBlock.DIRECTION, ComputerBlock.POWERED)
+                .select(Direction.NORTH, false, computerOffVariant)
+                .select(Direction.EAST, false, computerOffVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, false, computerOffVariant.with(Y_ROT_180))
+                .select(Direction.WEST, false, computerOffVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, true, computerOnVariant)
+                .select(Direction.EAST, true, computerOnVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, true, computerOnVariant.with(Y_ROT_180))
+                .select(Direction.WEST, true, computerOnVariant.with(Y_ROT_270))));
     }
 
     private void doorMat(DoorMatBlock block)
     {
-        ResourceLocation doorMatModel = Utils.resource("block/door_mat");
-        this.registerItemWithModel(block, doorMatModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.property(DoorMatBlock.DIRECTION)
-                .select(Direction.NORTH, Variant.variant()
-                    .with(VariantProperties.MODEL, doorMatModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, Variant.variant()
-                    .with(VariantProperties.MODEL, doorMatModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, Variant.variant()
-                    .with(VariantProperties.MODEL, doorMatModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, Variant.variant()
-                    .with(VariantProperties.MODEL, doorMatModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant doorMatVariant = this.plainVariant(Utils.resource("block/door_mat"));
+        this.registerItemWithModelFromMultiVariant(block, doorMatVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(DoorMatBlock.DIRECTION)
+                .select(Direction.NORTH, doorMatVariant)
+                .select(Direction.EAST, doorMatVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, doorMatVariant.with(Y_ROT_180))
+                .select(Direction.WEST, doorMatVariant.with(Y_ROT_270))));
     }
 
     private void workbench(WorkbenchBlock block)
     {
-        ResourceLocation workbenchOffModel = Utils.resource("block/workbench_off");
-        ResourceLocation workbenchOnModel = Utils.resource("block/workbench_on");
-        this.registerItemWithModel(block, workbenchOnModel);
-        this.generators.put(block, MultiVariantGenerator.multiVariant(block)
-            .with(PropertyDispatch.properties(WorkbenchBlock.DIRECTION, WorkbenchBlock.POWERED)
-                .select(Direction.NORTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, workbenchOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, workbenchOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, false, Variant.variant()
-                    .with(VariantProperties.MODEL, workbenchOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, false, Variant.variant()
-                    .with(VariantProperties.MODEL, workbenchOffModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))
-                .select(Direction.NORTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, workbenchOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R0))
-                .select(Direction.EAST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, workbenchOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
-                .select(Direction.SOUTH, true, Variant.variant()
-                    .with(VariantProperties.MODEL, workbenchOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
-                .select(Direction.WEST, true, Variant.variant()
-                    .with(VariantProperties.MODEL, workbenchOnModel)
-                    .with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+        MultiVariant workbenchOffVariant = this.plainVariant(Utils.resource("block/workbench_off"));
+        MultiVariant workbenchOnVariant = this.plainVariant(Utils.resource("block/workbench_on"));
+        this.registerItemWithModelFromMultiVariant(block, workbenchOnVariant);
+        this.generators.put(block, MultiVariantGenerator.dispatch(block)
+            .with(PropertyDispatch.initial(WorkbenchBlock.DIRECTION, WorkbenchBlock.POWERED)
+                .select(Direction.NORTH, false, workbenchOffVariant)
+                .select(Direction.EAST, false, workbenchOffVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, false, workbenchOffVariant.with(Y_ROT_180))
+                .select(Direction.WEST, false, workbenchOffVariant.with(Y_ROT_270))
+                .select(Direction.NORTH, true, workbenchOnVariant)
+                .select(Direction.EAST, true, workbenchOnVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, true, workbenchOnVariant.with(Y_ROT_180))
+                .select(Direction.WEST, true, workbenchOnVariant.with(Y_ROT_270))));
     }
 }

@@ -86,7 +86,7 @@ public class TextureCache
         public Entry(PaletteImage image)
         {
             this.id = image.getId();
-            DynamicTexture texture = new DynamicTexture(convertToNativeImage(image));
+            DynamicTexture texture = new DynamicTexture(() -> "PaletteImage " + this.id, convertToNativeImage(image));
             Minecraft.getInstance().getTextureManager().register(image.getId(), texture);
             this.lastDrawTime = Util.getMillis();
         }

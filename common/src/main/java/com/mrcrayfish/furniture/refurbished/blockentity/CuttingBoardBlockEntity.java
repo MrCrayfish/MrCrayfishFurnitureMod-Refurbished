@@ -483,13 +483,7 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
     public void loadAdditional(CompoundTag compound, HolderLookup.Provider provider)
     {
         super.loadAdditional(compound, provider);
-        if(compound.contains("CanExtract", Tag.TAG_BYTE))
-        {
-            this.canExtract = compound.getBoolean("CanExtract");
-        }
-        if(compound.contains("PlacedByPlayer", Tag.TAG_BYTE))
-        {
-            this.placedByPlayer = compound.getBoolean("PlacedByPlayer");
-        }
+        compound.getBoolean("CanExtract").ifPresent(value -> this.canExtract = value);
+        compound.getBoolean("PlacedByPlayer").ifPresent(value -> this.placedByPlayer = value);
     }
 }

@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Author: MrCrayfish
@@ -18,7 +19,7 @@ public class ComputerBlockEntityRenderer implements BlockEntityRenderer<Computer
     public ComputerBlockEntityRenderer(BlockEntityRendererProvider.Context context) {}
 
     @Override
-    public void render(ComputerBlockEntity computer, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay)
+    public void render(ComputerBlockEntity computer, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay, Vec3 camera)
     {
         if(computer.isNodePowered())
         {

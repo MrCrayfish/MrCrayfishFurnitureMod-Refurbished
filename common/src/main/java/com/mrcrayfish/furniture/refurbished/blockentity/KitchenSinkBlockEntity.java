@@ -144,7 +144,7 @@ public class KitchenSinkBlockEntity extends BlockEntity implements IFluidContain
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
         super.loadAdditional(tag, provider);
-        this.tank.load(tag.getCompound("FluidTank"), provider);
+        this.tank.load(tag.getCompoundOrEmpty("FluidTank"), provider);
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -24,6 +25,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.Nullable;
 import java.util.BitSet;
+import java.util.Optional;
 
 /**
  * Author: MrCrayfish
@@ -112,10 +114,10 @@ public class DoorMatBlockEntity extends BlockEntity implements MenuProvider, IPa
     }
 
     @Override
-    protected void applyImplicitComponents(DataComponentInput input)
+    protected void applyImplicitComponents(DataComponentGetter getter)
     {
-        super.applyImplicitComponents(input);
-        PaletteImage image = input.get(ModDataComponents.PALETTE_IMAGE.get());
+        super.applyImplicitComponents(getter);
+        PaletteImage image = getter.get(ModDataComponents.PALETTE_IMAGE.get());
         if(image != null)
         {
             this.setImage(image);
@@ -144,19 +146,13 @@ public class DoorMatBlockEntity extends BlockEntity implements MenuProvider, IPa
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
         super.loadAdditional(tag, provider);
-        if(tag.contains("Image", Tag.TAG_LONG_ARRAY))
-        {
-            long[] data = tag.getLongArray("Image");
-            BitSet bits = BitSet.valueOf(data);
-            if(bits.size() >= IMAGE_WIDTH * IMAGE_HEIGHT)
-            {
+        tag.getLongArray("Image").ifPresent(value -> {
+            BitSet bits = BitSet.valueOf(value);
+            if(bits.size() >= IMAGE_WIDTH * IMAGE_HEIGHT) {
                 this.image = new PaletteImage(IMAGE_WIDTH, IMAGE_HEIGHT, () -> bits);
             }
-        }
-        if(tag.contains("Finalised", Tag.TAG_BYTE))
-        {
-            this.finalised = tag.getBoolean("Finalised");
-        }
+        });
+        tag.getBoolean("Finalised").ifPresent(value -> this.finalised = value);
     }
 
     @Override
