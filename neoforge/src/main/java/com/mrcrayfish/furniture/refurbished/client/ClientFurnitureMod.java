@@ -98,12 +98,6 @@ public class ClientFurnitureMod
         event.addListener(DeferredElectricRenderer.ID, DeferredElectricRenderer.get());
     }
 
-    @SubscribeEvent
-    private static void onRegisterRenderPipelines(RegisterRenderPipelinesEvent event)
-    {
-        event.registerPipeline(ModRenderPipelines.ELECTRICITY);
-    }
-
     /*@SubscribeEvent
     private static void onRegisterRecipeCategories(RegisterRecipeBookCategoriesEvent event)
     {
