@@ -1,6 +1,5 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
-import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
@@ -13,7 +12,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -30,8 +28,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Author: MrCrayfish
@@ -50,7 +46,6 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
     protected int processingTime;
     protected boolean enabled;
     protected int recycled;
-    protected @Nullable Component name;
 
     protected final ContainerData data = new BuildableContainerData(builder -> {
         builder.add(DATA_ENABLED, () -> enabled ? 1 : 0, value -> {});
@@ -301,6 +296,7 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
         tag.putBoolean("Powered", this.powered);
         tag.putBoolean("Enabled", this.enabled);
         tag.putBoolean("Processing", this.processing);
+        BlockEntityHelper.saveCustomName(tag, this.getCustomName(), provider);
         return tag;
     }
 
@@ -365,24 +361,6 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
         {
             return this.getCustomName();
         }
-        return Components.SMART_DEVICE_RECYCLE_BIN;
-    }
-
-    @Override
-    public Component getDisplayName()
-    {
-        return this.name != null ? this.name : this.getName();
-    }
-
-    @Nullable
-    @Override
-    public Component getCustomName()
-    {
-        return this.name;
-    }
-
-    public void setCustomName(@Nullable Component name)
-    {
-        this.name = name;
+        return this.getDefaultName();
     }
 }
