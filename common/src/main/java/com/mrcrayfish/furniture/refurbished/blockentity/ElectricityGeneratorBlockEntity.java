@@ -225,7 +225,7 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
         ItemStack stack = this.getItem(0);
         if(!stack.isEmpty())
         {
-            int energy = this.level.fuelValues().burnDuration(stack) * Config.SERVER.electricity.fuelToPowerRatio.get();
+            int energy = Services.PLATFORM.getBurnTime(null, this.level.fuelValues(), stack)* Config.SERVER.electricity.fuelToPowerRatio.get();
             if(energy > 0)
             {
                 if(!simulate)
