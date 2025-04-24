@@ -16,7 +16,7 @@ import java.util.function.Function;
 public class FabricRenderType
 {
     private static final Function<ResourceLocation, RenderType> TELEVISION_SCREEN = Util.memoize((id) -> {
-        return RenderType.create(Constants.MOD_ID + "_television_screen", 0x200000, true, false, ModRenderPipelines.TELEVISION, RenderType.CompositeState.builder()
+        return RenderType.create(Constants.MOD_ID + "_television_screen", 0x200000, false, false, ModRenderPipelines.TELEVISION, RenderType.CompositeState.builder()
                 .setLightmapState(RenderType.LIGHTMAP)
                 .setTextureState(new RenderStateShard.TextureStateShard(id, TriState.FALSE, false))
                 .createCompositeState(true));
