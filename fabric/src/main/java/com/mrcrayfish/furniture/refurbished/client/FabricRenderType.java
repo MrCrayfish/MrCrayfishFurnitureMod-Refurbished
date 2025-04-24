@@ -17,7 +17,7 @@ import java.util.function.Function;
 public class FabricRenderType extends RenderType
 {
     private static final Function<ResourceLocation, RenderType> TELEVISION_SCREEN = Util.memoize((id) -> {
-        return RenderType.create(Constants.MOD_ID + "_television_screen", DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS, 0x200000, true, false, RenderType.CompositeState.builder()
+        return RenderType.create(Constants.MOD_ID + "_television_screen", DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS, 0x200000, false, false, RenderType.CompositeState.builder()
                 .setLightmapState(LIGHTMAP)
                 .setShaderState(RENDERTYPE_SOLID_SHADER)
                 .setTextureState(new RenderStateShard.TextureStateShard(id, TriState.FALSE, false))
