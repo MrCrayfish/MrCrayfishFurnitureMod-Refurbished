@@ -1,8 +1,12 @@
 package com.mrcrayfish.furniture.refurbished.platform;
 
 import com.mrcrayfish.furniture.refurbished.platform.services.IPlatformHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.entity.FuelValues;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLLoader;
+import org.jetbrains.annotations.Nullable;
 
 public class NeoForgePlatformHelper implements IPlatformHelper
 {
@@ -22,5 +26,11 @@ public class NeoForgePlatformHelper implements IPlatformHelper
     public boolean isDevelopmentEnvironment()
     {
         return !FMLLoader.isProduction();
+    }
+
+    @Override
+    public int getBurnTime(@Nullable RecipeType<?> type, FuelValues values, ItemStack stack)
+    {
+        return stack.getBurnTime(type, values);
     }
 }
