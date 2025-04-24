@@ -637,13 +637,13 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         this.generators.put(block, MultiVariantGenerator.dispatch(block)
             .with(PropertyDispatch.initial(ChairBlock.DIRECTION, ChairBlock.TUCKED)
                 .select(Direction.NORTH, false, baseChairVariant)
-                .select(Direction.EAST, false, baseChairVariant.with(X_ROT_90))
-                .select(Direction.SOUTH, false, baseChairVariant.with(X_ROT_180))
-                .select(Direction.WEST, false, baseChairVariant.with(X_ROT_270))
+                .select(Direction.EAST, false, baseChairVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, false, baseChairVariant.with(Y_ROT_180))
+                .select(Direction.WEST, false, baseChairVariant.with(Y_ROT_270))
                 .select(Direction.NORTH, true, tuckedChairVariant)
-                .select(Direction.EAST, true, tuckedChairVariant.with(X_ROT_90))
-                .select(Direction.SOUTH, true, tuckedChairVariant.with(X_ROT_180))
-                .select(Direction.WEST, true, tuckedChairVariant.with(X_ROT_270))));
+                .select(Direction.EAST, true, tuckedChairVariant.with(Y_ROT_90))
+                .select(Direction.SOUTH, true, tuckedChairVariant.with(Y_ROT_180))
+                .select(Direction.WEST, true, tuckedChairVariant.with(Y_ROT_270))));
     }
 
     private void desk(DeskBlock block)
