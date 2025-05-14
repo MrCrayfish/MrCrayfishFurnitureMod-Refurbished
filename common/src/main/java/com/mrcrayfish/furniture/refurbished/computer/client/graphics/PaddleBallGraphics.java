@@ -342,14 +342,14 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
             stack.pushPose();
             float smoothHostPos = Mth.lerp(partialTick, this.game.lastPlayerPos, this.game.playerPos);
             stack.translate(4, smoothHostPos, 0);
-            graphics.blit(RenderType::guiTextured, TEXTURE, 0, 0, 0, 0, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT);
+            graphics.blit(RenderType::guiTextured, TEXTURE, 0, 0, 0, 0, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT, 256, 256);
             stack.popPose();
 
             // Draw opponent paddle
             stack.pushPose();
             float smoothOpponentPos = Mth.lerp(partialTick, this.game.lastOpponentPos, this.game.opponentPos);
             stack.translate((PaddleBall.BOARD_WIDTH) - 8, smoothOpponentPos, 0);
-            graphics.blit(RenderType::guiTextured, TEXTURE, -2, 0, 6, 0, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT);
+            graphics.blit(RenderType::guiTextured, TEXTURE, -2, 0, 6, 0, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT, 256, 256);
             stack.popPose();
 
             // Draw ball
@@ -358,7 +358,7 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
             float smoothBallY = Mth.lerp(partialTick, this.game.lastBallY, this.game.ballY);
             smoothBallX = this.game.leftPaddle ? smoothBallX : PaddleBall.BOARD_WIDTH - smoothBallX;
             stack.translate(smoothBallX, smoothBallY, 0);
-            graphics.blit(RenderType::guiTextured, TEXTURE, 0, 0, 12, 0, 4, 4, 4, 4);
+            graphics.blit(RenderType::guiTextured, TEXTURE, 0, 0, 12, 0, 4, 4, 4, 4, 256, 256);
             stack.popPose();
 
             if(this.game.scoreAnimation > 0 && (this.game.scoreAnimation / 5) % 2 == 0)
