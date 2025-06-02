@@ -44,7 +44,7 @@ public class ModTags
         public static final TagKey<Item> DISPLAY_AS_BLOCK = tag("display_as_block");
 
         public static final TagKey<Item> COMMON_ENCHANTABLES = common("enchantables");
-        public static final TagKey<Item> COMMON_TOOLS_KNIVES = common("tools/knives");
+        public static final TagKey<Item> COMMON_TOOLS_KNIVES = common("tools/knife");
         public static final TagKey<Item> COMMON_TOOLS_WRENCH = common("tools/wrench");
         public static final TagKey<Item> COMMON_FOODS = common("foods");
         public static final TagKey<Item> COMMON_FOODS_BREAD = common("foods/bread");
