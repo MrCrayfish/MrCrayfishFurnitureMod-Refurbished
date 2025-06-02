@@ -1,6 +1,5 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
-import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.block.MicrowaveBlock;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
@@ -35,8 +34,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
-import org.jetbrains.annotations.Nullable;
-
 /**
  * Author: MrCrayfish
  */
@@ -52,7 +49,6 @@ public class MicrowaveBlockEntity extends ElectricityModuleProcessingLootBlockEn
 
     protected final Vec3 audioPosition;
     protected boolean enabled;
-    protected @Nullable Component name;
     protected boolean processing;
 
     protected final ContainerData data = new BuildableContainerData(builder -> {
@@ -174,6 +170,7 @@ public class MicrowaveBlockEntity extends ElectricityModuleProcessingLootBlockEn
         CompoundTag tag = super.getUpdateTag(provider);
         tag.putBoolean("Enabled", this.enabled);
         tag.putBoolean("Processing", this.processing);
+        BlockEntityHelper.saveCustomName(tag, this.getCustomName(), provider);
         return tag;
     }
 
@@ -212,25 +209,7 @@ public class MicrowaveBlockEntity extends ElectricityModuleProcessingLootBlockEn
         {
             return this.getCustomName();
         }
-        return Components.SMART_DEVICE_MICROWAVE;
-    }
-
-    @Override
-    public Component getDisplayName()
-    {
-        return this.name != null ? this.name : this.getName();
-    }
-
-    @Nullable
-    @Override
-    public Component getCustomName()
-    {
-        return this.name;
-    }
-
-    public void setCustomName(@Nullable Component name)
-    {
-        this.name = name;
+        return this.getDefaultName();
     }
 
     @Override

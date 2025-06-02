@@ -1,17 +1,19 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
-import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.block.LightswitchBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
+import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -87,6 +89,11 @@ public class LightswitchBlockEntity extends ElectricityModuleBlockEntity impleme
         }
     }
 
+    private Component getDefaultName()
+    {
+        return Utils.translation("container", "lightswitch");
+    }
+
     @Override
     public Component getDeviceName()
     {
@@ -94,7 +101,7 @@ public class LightswitchBlockEntity extends ElectricityModuleBlockEntity impleme
         {
             return this.getCustomName();
         }
-        return Components.SMART_DEVICE_LIGHTSWITCH;
+        return this.getDefaultName();
     }
 
     @Override
@@ -116,18 +123,13 @@ public class LightswitchBlockEntity extends ElectricityModuleBlockEntity impleme
         return this.name;
     }
 
-    public void setCustomName(@Nullable Component name)
-    {
-        this.name = name;
-    }
-
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
         super.loadAdditional(tag, provider);
         if(tag.contains("CustomName", Tag.TAG_STRING))
         {
-            this.name = Component.Serializer.fromJson(tag.getString("CustomName"), provider);
+            this.name = parseCustomNameSafe(tag.getString("CustomName"), provider);
         }
     }
 
@@ -135,9 +137,29 @@ public class LightswitchBlockEntity extends ElectricityModuleBlockEntity impleme
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
     {
         super.saveAdditional(tag, provider);
+        BlockEntityHelper.saveCustomName(tag, this.name, provider);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider provider)
+    {
+        return super.getUpdateTag(provider);
+    }
+
+    @Override
+    protected void applyImplicitComponents(DataComponentInput getter)
+    {
+        super.applyImplicitComponents(getter);
+        this.name = getter.get(DataComponents.CUSTOM_NAME);
+    }
+
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder builder)
+    {
+        super.collectImplicitComponents(builder);
         if(this.name != null)
         {
-            tag.putString("CustomName", Component.Serializer.toJson(this.name, provider));
+            builder.set(DataComponents.CUSTOM_NAME, this.name);
         }
     }
 }
