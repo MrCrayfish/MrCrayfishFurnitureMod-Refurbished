@@ -52,7 +52,6 @@ import java.util.Optional;
 public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity implements IWorkbench
 {
     public static final int DATA_POWERED = 0;
-    public static final int RESULT_SLOT = 12;
 
     protected @Nullable Player currentUser;
     protected int updateTimer;
@@ -71,7 +70,7 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
 
     public WorkbenchBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
     {
-        super(type, pos, state, 13);
+        super(type, pos, state, 12);
         this.selectedRecipe.set(-1);
         this.searchNeighbours.set(1);
     }
@@ -132,18 +131,6 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     {
         super.stopOpen(player);
         this.setUser(null);
-    }
-
-    @Override
-    public boolean canTakeItem(Container container, int slotIndex, ItemStack stack)
-    {
-        return slotIndex != RESULT_SLOT;
-    }
-
-    @Override
-    public boolean canPlaceItem(int slotIndex, ItemStack stack)
-    {
-        return slotIndex != RESULT_SLOT;
     }
 
     public boolean isOccupied()
