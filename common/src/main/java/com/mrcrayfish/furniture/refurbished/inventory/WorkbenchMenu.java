@@ -16,11 +16,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.DataSlot;
-import net.minecraft.world.inventory.SimpleContainerData;
-import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -45,6 +41,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
     private final DataSlot searchNeighbours;
     private final List<WorkbenchContructingRecipe> recipes;
     private final Map<ResourceLocation, Boolean> recipeToCraftable = new HashMap<>();
+    private final ResultContainer result = new ResultContainer();
     private final Slot resultSlot;
     private Map<Integer, Integer> counts = new Int2IntOpenHashMap();
     private long lastSoundTime;
@@ -52,7 +49,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
 
     public WorkbenchMenu(int windowId, Inventory playerInventory, FriendlyByteBuf data)
     {
-        this(windowId, playerInventory, new ClientWorkbench(new SimpleContainer(13)), new SimpleContainerData(1));
+        this(windowId, playerInventory, new ClientWorkbench(new SimpleContainer(12)), new SimpleContainerData(1));
         this.selectedRecipe.set(data.readVarInt());
         this.searchNeighbours.set(data.readVarInt());
         this.data.set(WorkbenchBlockEntity.DATA_POWERED, data.readVarInt());
@@ -61,7 +58,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
     public WorkbenchMenu(int windowId, Inventory playerInventory, IWorkbench workbench, ContainerData data)
     {
         super(ModMenuTypes.WORKBENCH.get(), windowId, workbench.getWorkbenchContainer());
-        checkContainerSize(workbench.getWorkbenchContainer(), 13);
+        checkContainerSize(workbench.getWorkbenchContainer(), 12);
         checkContainerDataCount(data, 1);
         workbench.getWorkbenchContainer().startOpen(playerInventory.player);
         this.workbench = workbench;
@@ -72,7 +69,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
         this.searchNeighbours = workbench.searchNeighboursDataSlot();
         this.recipes = this.setupRecipes(this.level);
         this.addContainerSlots(8, 18, 2, 6, 0);
-        this.resultSlot = this.addSlot(new WorkbenchResultSlot(this.container, WorkbenchBlockEntity.RESULT_SLOT, 188, 21));
+        this.resultSlot = this.addSlot(new WorkbenchResultSlot(this.result, 0, 188, 21));
         this.addPlayerInventorySlots(28, 147, playerInventory);
         this.addDataSlot(this.selectedRecipe);
         this.addDataSlot(this.searchNeighbours);
@@ -112,7 +109,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
                 WorkbenchContructingRecipe recipe = this.recipes.get(selectedRecipeIndex);
                 if(this.workbench.canCraft(recipe))
                 {
-                    ItemStack result = this.getSlot(WorkbenchBlockEntity.RESULT_SLOT).getItem();
+                    ItemStack result = this.result.getItem(0);
                     ItemStack output = recipe.getResultItem(this.level.registryAccess());
                     if(!ItemStack.matches(result, output))
                     {
