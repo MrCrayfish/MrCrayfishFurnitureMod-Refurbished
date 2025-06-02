@@ -5,7 +5,6 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.MapCodec;
 import com.mrcrayfish.framework.api.FrameworkAPI;
 import com.mrcrayfish.furniture.refurbished.blockentity.ComputerBlockEntity;
-import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
 import net.minecraft.core.BlockPos;
@@ -13,20 +12,18 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
-
 import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -66,7 +63,7 @@ public class ComputerBlock extends FurnitureHorizontalEntityBlock implements Blo
         {
             if(!level.isClientSide() && level.getBlockEntity(pos) instanceof ComputerBlockEntity computer && computer.isNodePowered() && !computer.isBeingUsed())
             {
-                if(FrameworkAPI.openMenuWithData((ServerPlayer) player, computer, new ComputerMenu.CustomData(pos)).isPresent())
+                if(FrameworkAPI.openMenuWithData((ServerPlayer) player, computer.createMenuProvider(), new ComputerMenu.CustomData(pos)).isPresent())
                 {
                     computer.syncStateToPlayer(player);
                 }
@@ -75,6 +72,14 @@ public class ComputerBlock extends FurnitureHorizontalEntityBlock implements Blo
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
+    }
+
+    @Override
+    @Nullable
+    protected MenuProvider getMenuProvider(BlockState state, Level level, BlockPos pos)
+    {
+        // Basically disables spectator from opening computer
+        return null;
     }
 
     @Override

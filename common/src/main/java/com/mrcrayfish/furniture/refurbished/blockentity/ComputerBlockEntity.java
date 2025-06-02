@@ -3,28 +3,24 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 import com.mrcrayfish.furniture.refurbished.computer.Computer;
 import com.mrcrayfish.furniture.refurbished.computer.Program;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
-import com.mrcrayfish.furniture.refurbished.electricity.IModuleNode;
 import com.mrcrayfish.furniture.refurbished.inventory.BuildableContainerData;
 import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageComputerState;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-
 import org.jetbrains.annotations.Nullable;
 
 // TODO create amazon like app to buy items and send to mailboxes
@@ -35,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class ComputerBlockEntity extends ElectricityModuleBlockEntity implements MenuProvider, IComputer
+public class ComputerBlockEntity extends ElectricityModuleBlockEntity implements IComputer
 {
     public static final int DATA_POWERED = 0;
     public static final int DATA_SYSTEM = 1;
@@ -136,17 +132,11 @@ public class ComputerBlockEntity extends ElectricityModuleBlockEntity implements
         }
     }
 
-    @Override
-    public Component getDisplayName()
+    public MenuProvider createMenuProvider()
     {
-        return Utils.translation("container", "computer");
-    }
-
-    @Nullable
-    @Override
-    public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player)
-    {
-        return new ComputerMenu(windowId, playerInventory, this.data, this);
+        return new SimpleMenuProvider((windowId, playerInventory, player1) -> {
+            return new ComputerMenu(windowId, playerInventory, this.data, this);
+        }, Utils.translation("container", "computer"));
     }
 
     public boolean isBeingUsed()
