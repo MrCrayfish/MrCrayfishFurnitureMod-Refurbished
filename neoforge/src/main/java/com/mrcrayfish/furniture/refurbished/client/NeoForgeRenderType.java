@@ -15,7 +15,7 @@ import java.util.function.Function;
 public class NeoForgeRenderType extends RenderType
 {
     private static final Function<ResourceLocation, RenderType> TELEVISION_SCREEN = Util.memoize((id) -> {
-        return RenderType.create(Constants.MOD_ID + "_television_screen", DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS, 0x200000, true, false, CompositeState.builder()
+        return RenderType.create(Constants.MOD_ID + "_television_screen", DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS, 0x200000, false, false, CompositeState.builder()
                 .setLightmapState(LIGHTMAP)
                 .setShaderState(RENDERTYPE_SOLID_SHADER)
                 .setTextureState(new TextureStateShard(id, false, false))
