@@ -33,15 +33,6 @@ public class ModRenderPipelines
             .withVertexFormat(DefaultVertexFormat.POSITION, VertexFormat.Mode.QUADS)
             .build();
 
-    public static final RenderPipeline TELEVISION = RenderPipeline.builder(ClientServices.PLATFORM.getMatricesColorSnippet())
-            .withLocation(Utils.resource("pipeline/television"))
-            .withVertexShader("core/position_color_tex_lightmap")
-            .withFragmentShader("core/position_color_tex_lightmap")
-            .withCull(false)
-            .withSampler("Sampler0")
-            .withVertexFormat(DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS)
-            .build();
-
     public static final RenderPipeline POWERABLE_AREA = RenderPipeline.builder(ClientServices.PLATFORM.getMatricesColorSnippet())
             .withLocation(Utils.resource("pipeline/powerable_area"))
             .withVertexShader("core/rendertype_world_border")

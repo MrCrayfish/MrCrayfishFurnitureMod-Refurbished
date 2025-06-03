@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
@@ -45,23 +46,29 @@ public class TelevisionBlockEntityRenderer implements BlockEntityRenderer<Televi
             Material channelMaterial = CustomSheets.getTelevisionChannelMaterial(television.getCurrentChannel().id());
             VertexConsumer consumer = channelMaterial.buffer(source, ClientServices.PLATFORM::getTelevisionScreenRenderType);
 
+            Vec3i normal = direction.getUnitVec3i();
+
             // No method chaining due to bug in SpriteCoordinateExpander
             consumer.addVertex(matrix, 0.75F + offset, 0.625F + offset, 0);
             consumer.setColor(255, 255, 255, 255);
             consumer.setUv(0, 0);
             consumer.setLight(0xF000F0);
+            consumer.setNormal(normal.getX(), normal.getY(), normal.getZ());
             consumer.addVertex(matrix, 0.75F + offset, 0.1875F - offset, 0);
             consumer.setColor(255, 255, 255, 255);
             consumer.setUv(0, 1);
             consumer.setLight(0xF000F0);
+            consumer.setNormal(normal.getX(), normal.getY(), normal.getZ());
             consumer.addVertex(matrix, 0.25F - offset, 0.1875F - offset, 0);
             consumer.setColor(255, 255, 255, 255);
             consumer.setUv(1, 1);
             consumer.setLight(0xF000F0);
+            consumer.setNormal(normal.getX(), normal.getY(), normal.getZ());
             consumer.addVertex(matrix, 0.25F - offset, 0.625F + offset, 0);
             consumer.setColor(255, 255, 255, 255);
             consumer.setUv(1, 0);
             consumer.setLight(0xF000F0);
+            consumer.setNormal(normal.getX(), normal.getY(), normal.getZ());
 
             poseStack.popPose();
         }
