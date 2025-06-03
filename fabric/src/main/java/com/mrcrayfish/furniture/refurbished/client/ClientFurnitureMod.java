@@ -91,7 +91,10 @@ public class ClientFurnitureMod implements ClientModInitializer
         });
 
         WorldRenderEvents.END.register(context -> {
-            DeferredElectricRenderer.get().blitToScreen();
+            DeferredElectricRenderer renderer = DeferredElectricRenderer.get();
+            if(!renderer.isIrisShadersEnabled()) {
+                DeferredElectricRenderer.get().blitToScreen(context.projectionMatrix(), context.camera());
+            }
         });
 
         ClientPreAttackCallback.EVENT.register((client, player, clickCount) -> {

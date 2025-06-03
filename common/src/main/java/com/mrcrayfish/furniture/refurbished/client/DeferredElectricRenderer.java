@@ -14,6 +14,7 @@ import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.GpuTexture;
 import com.mojang.blaze3d.vertex.*;
+import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.core.ModRenderPipelines;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Camera;
@@ -28,10 +29,8 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
+import java.lang.reflect.Method;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 /**
@@ -58,11 +57,58 @@ public class DeferredElectricRenderer implements ResourceManagerReloadListener
     private final ResourceLocation nodeTexture = Utils.resource("textures/misc/electricity_nodes.png");
     private final List<BiConsumer<PoseStack, VertexConsumer>> deferredDrawCalls = new LinkedList<>();
     private final RenderSystem.AutoStorageIndexBuffer indices = RenderSystem.getSequentialBuffer(VertexFormat.Mode.QUADS);
+    private @Nullable Class<?> irisClass;
+    private Method shaderPack;
+    private Boolean shaderEnabled;
     private TextureTarget electricityTarget;
     private ResourceHandle<TextureTarget> handle;
-    private boolean down;
 
-    private DeferredElectricRenderer() {}
+    private DeferredElectricRenderer()
+    {
+        this.setupIrisSupport();
+    }
+
+    /**
+     * Try and detect if Iris is loaded at runtime, and gather the required method
+     * to determine if a shader pack is enabled.
+     */
+    private void setupIrisSupport()
+    {
+        try
+        {
+            this.irisClass = Class.forName("net.irisshaders.iris.Iris");
+            this.shaderPack = this.irisClass.getDeclaredMethod("getCurrentPack");
+            this.shaderPack.setAccessible(true);
+            Constants.LOG.info("Iris detected! Will use modified rendering for electricity when shaders are enabled");
+        }
+        catch(NoSuchMethodException e)
+        {
+            // If Iris is loaded but the method is missing, we have a problem
+            throw new RuntimeException("Failed to locate Iris shader pack getter", e);
+        }
+        catch(ClassNotFoundException ignored) {}
+    }
+
+    /**
+     * @return True if Iris is installed and a shader pack is currently enabled
+     */
+    public boolean isIrisShadersEnabled()
+    {
+        if(this.irisClass != null && this.shaderPack != null && this.shaderEnabled == null)
+        {
+            try
+            {
+                Optional<?> optional = (Optional<?>) this.shaderPack.invoke(null);
+                this.shaderEnabled = optional.isPresent();
+                return this.shaderEnabled;
+            }
+            catch(Exception e)
+            {
+                throw new RuntimeException("Failed to invoke shader pack getter", e);
+            }
+        }
+        return this.shaderEnabled != null && this.shaderEnabled;
+    }
 
     /**
      * Called when the resource managed is reloaded. Sets up a custom texture target specifically for electricity nodes
@@ -113,6 +159,9 @@ public class DeferredElectricRenderer implements ResourceManagerReloadListener
     @SuppressWarnings("DataFlowIssue")
     public void setupFramePass(FrameGraphBuilder builder, Camera camera)
     {
+        // Reset shader enabled cache for this frame
+        this.shaderEnabled = null;
+
         if(this.electricityTarget != null && LinkHandler.isHoldingWrench())
         {
             ResourceHandle<TextureTarget> handle = builder.importExternal(PASS_NAME, this.electricityTarget);
@@ -125,10 +174,13 @@ public class DeferredElectricRenderer implements ResourceManagerReloadListener
                 RenderSystem.getDevice().createCommandEncoder().clearColorAndDepthTextures(colorTexture, 0, depthTexture, 1);
 
                 // Draw all the deferred render calls
-                PoseStack stack = new PoseStack();
-                Vec3 view = camera.getPosition();
-                stack.translate(-view.x(), -view.y(), -view.z());
-                this.drawDeferredCalls(stack);
+                if(!this.isIrisShadersEnabled())
+                {
+                    PoseStack stack = new PoseStack();
+                    Vec3 view = camera.getPosition();
+                    stack.translate(-view.x(), -view.y(), -view.z());
+                    this.drawDeferredCalls(stack);
+                }
             });
         }
         else
@@ -189,8 +241,18 @@ public class DeferredElectricRenderer implements ResourceManagerReloadListener
      * Draws the electricity texture onto the screen. This is drawn after the world, but before the player hand and HUD.
      * This will result in the electricity nodes and links drawn in front of everything, effectively removing the depth.
      */
-    public void blitToScreen()
+    public void blitToScreen(Matrix4f projMatrix, Camera camera)
     {
+        // When Iris is enabled, we have to do a late call to draw
+        if(this.isIrisShadersEnabled())
+        {
+            PoseStack stack = new PoseStack();
+            Vec3 view = camera.getPosition();
+            stack.mulPose(projMatrix);
+            stack.translate(-view.x(), -view.y(), -view.z());
+            this.drawDeferredCalls(stack);
+        }
+
         GpuTexture mainColor = Minecraft.getInstance().getMainRenderTarget().getColorTexture();
         GpuTexture electricityColor = this.electricityTarget.getColorTexture();
         if(this.handle != null && electricityColor != null && mainColor != null)

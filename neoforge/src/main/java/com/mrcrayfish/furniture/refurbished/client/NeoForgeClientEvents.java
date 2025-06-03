@@ -87,7 +87,11 @@ public class NeoForgeClientEvents
     {
         if(event.getStage() == RenderLevelStageEvent.Stage.AFTER_LEVEL)
         {
-            DeferredElectricRenderer.get().blitToScreen();
+            DeferredElectricRenderer renderer = DeferredElectricRenderer.get();
+            if(!renderer.isIrisShadersEnabled())
+            {
+                DeferredElectricRenderer.get().blitToScreen(event.getModelViewMatrix(), event.getCamera());
+            }
         }
     }
 }
