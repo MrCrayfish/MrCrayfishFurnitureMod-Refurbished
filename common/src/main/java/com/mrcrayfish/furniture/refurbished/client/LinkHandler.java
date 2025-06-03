@@ -26,6 +26,7 @@ import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.Util;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -586,7 +587,8 @@ public class LinkHandler
         areaAlpha = 1.0F - (float) Math.pow(1.0F - areaAlpha, 5);
 
         // Draw the powerable zone border
-        RenderPipeline pipeline = ModRenderPipelines.POWERABLE_AREA;
+        boolean shaders = DeferredElectricRenderer.get().isIrisShadersEnabled();
+        RenderPipeline pipeline = shaders ? RenderPipelines.WORLD_BORDER : ModRenderPipelines.POWERABLE_AREA;
         try(ByteBufferBuilder quadBuilder = new ByteBufferBuilder(pipeline.getVertexFormat().getVertexSize() * 4))
         {
             BufferBuilder vertexBuilder = new BufferBuilder(quadBuilder, pipeline.getVertexFormatMode(), pipeline.getVertexFormat());
@@ -667,10 +669,10 @@ public class LinkHandler
         if(width > 0.01)
         {
             // Up
-            consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).setUv(0, width + offset);
-            consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).setUv(height, width + offset);
-            consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).setUv(height, offset);
-            consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).setUv(0, offset);
+            consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).setUv(height, width + offset);
+            consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).setUv(height, offset);
+            consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).setUv(0, offset);
+            consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).setUv(0, width + offset);
             // Down
             consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).setUv(0, height + offset);
             consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).setUv(width, height + offset);
