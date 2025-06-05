@@ -2,8 +2,10 @@ package com.mrcrayfish.furniture.refurbished.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.Constants;
+import com.mrcrayfish.furniture.refurbished.compat.jei.SyncedRecipes;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
+import com.mrcrayfish.furniture.refurbished.platform.Services;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
@@ -11,10 +13,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.FrameGraphSetupEvent;
-import net.neoforged.neoforge.client.event.InputEvent;
-import net.neoforged.neoforge.client.event.RenderHighlightEvent;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.neoforged.neoforge.client.event.*;
 
 /**
  * Author: MrCrayfish
@@ -93,5 +92,20 @@ public class NeoForgeClientEvents
                 DeferredElectricRenderer.get().blitToScreen(event.getModelViewMatrix(), event.getCamera());
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void onRecipesSynced(RecipesReceivedEvent event)
+    {
+        if(Services.PLATFORM.isModLoaded("jei")) // Only store if JEI is loaded
+        {
+            SyncedRecipes.setMap(event.getRecipeMap());
+        }
+    }
+
+    @SubscribeEvent
+    public static void onClientLogout(ClientPlayerNetworkEvent.LoggingOut event)
+    {
+        SyncedRecipes.reset();
     }
 }

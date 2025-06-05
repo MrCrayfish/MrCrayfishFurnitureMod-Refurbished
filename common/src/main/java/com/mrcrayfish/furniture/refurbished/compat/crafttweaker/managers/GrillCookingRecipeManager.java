@@ -21,7 +21,7 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenRegister
 @Document("mods/RefurbishedFurniture/Grill/Cooking")
 @ZenCodeType.Name("mods.refurbished_furniture.GrillCooking")
-public class GrillCookingRecipeManager implements IRecipeManager<GrillCookingRecipe>
+public class GrillCookingRecipeManager implements IRecipeManager<ProcessingRecipe.Item>
 {
     @ZenCodeType.Method
     public void addRecipe(String name, String category, IIngredient ingredient, IItemStack result, @ZenCodeType.OptionalInt(200) int time)
@@ -31,7 +31,7 @@ public class GrillCookingRecipeManager implements IRecipeManager<GrillCookingRec
     }
 
     @Override
-    public RecipeType<GrillCookingRecipe> getRecipeType()
+    public RecipeType<ProcessingRecipe.Item> getRecipeType()
     {
         return ModRecipeTypes.GRILL_COOKING.get();
     }

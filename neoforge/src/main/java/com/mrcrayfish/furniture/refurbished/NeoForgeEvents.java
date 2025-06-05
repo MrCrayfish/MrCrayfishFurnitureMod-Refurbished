@@ -3,11 +3,14 @@ package com.mrcrayfish.furniture.refurbished;
 import com.mrcrayfish.furniture.refurbished.blockentity.CuttingBoardBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.StorageJarBlockEntity;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
+import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
+import com.mrcrayfish.furniture.refurbished.platform.Services;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 /**
@@ -51,6 +54,25 @@ public class NeoForgeEvents
             {
                 cuttingBoard.removeItem();
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onDatapackSync(OnDatapackSyncEvent event)
+    {
+        if(Services.PLATFORM.isModLoaded("jei")) // Only send if JEI is enabled
+        {
+            event.sendRecipes(
+                ModRecipeTypes.WORKBENCH_CONSTRUCTING.get(),
+                ModRecipeTypes.GRILL_COOKING.get(),
+                ModRecipeTypes.FREEZER_SOLIDIFYING.get(),
+                ModRecipeTypes.TOASTER_HEATING.get(),
+                ModRecipeTypes.CUTTING_BOARD_SLICING.get(),
+                ModRecipeTypes.CUTTING_BOARD_COMBINING.get(),
+                ModRecipeTypes.MICROWAVE_HEATING.get(),
+                ModRecipeTypes.FRYING_PAN_COOKING.get(),
+                ModRecipeTypes.OVEN_BAKING.get()
+            );
         }
     }
 }

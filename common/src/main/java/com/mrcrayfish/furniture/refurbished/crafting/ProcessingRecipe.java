@@ -180,9 +180,9 @@ public abstract class ProcessingRecipe implements Recipe<SingleRecipeInput>
             super(type, category, ingredient, result, time);
         }
 
-        public static ProcessingRecipe fromCookingRecipe(AbstractCookingRecipe recipe, RegistryAccess access)
+        public static ProcessingRecipe.Item fromCookingRecipe(AbstractCookingRecipe recipe, RegistryAccess access)
         {
-            return new ProcessingRecipe(recipe.getType(), Category.FOOD, recipe.input(), recipe.assemble(new SingleRecipeInput(ItemStack.EMPTY), access), recipe.cookingTime())
+            return new ProcessingRecipe.Item(recipe.getType(), Category.FOOD, recipe.input(), recipe.assemble(new SingleRecipeInput(ItemStack.EMPTY), access), recipe.cookingTime())
             {
                 @Override
                 public RecipeSerializer<? extends Recipe<SingleRecipeInput>> getSerializer()

@@ -26,7 +26,7 @@ import java.util.function.Supplier;
 public class ModRecipeTypes
 {
     public static final RegistryEntry<RecipeType<WorkbenchContructingRecipe>> WORKBENCH_CONSTRUCTING = RegistryEntry.recipeType(Utils.resource("workbench_constructing"));
-    public static final RegistryEntry<RecipeType<GrillCookingRecipe>> GRILL_COOKING = RegistryEntry.recipeType(Utils.resource("grill_cooking"));
+    public static final RegistryEntry<RecipeType<ProcessingRecipe.Item>> GRILL_COOKING = RegistryEntry.recipeType(Utils.resource("grill_cooking"));
     public static final RegistryEntry<RecipeType<FreezerSolidifyingRecipe>> FREEZER_SOLIDIFYING = RegistryEntry.recipeType(Utils.resource("freezer_solidifying"));
     public static final RegistryEntry<RecipeType<ToasterHeatingRecipe>> TOASTER_HEATING = RegistryEntry.recipeType(Utils.resource("toaster_heating"));
     public static final RegistryEntry<RecipeType<CuttingBoardSlicingRecipe>> CUTTING_BOARD_SLICING = RegistryEntry.recipeType(Utils.resource("cutting_board_slicing"));

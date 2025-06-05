@@ -153,8 +153,8 @@ public class CuttingBoardCombiningRecipe implements Recipe<ContainerInput>
             ItemStack.STREAM_CODEC.encode(buf, recipe.result);
         }, buf -> {
             int ingredientCount = buf.readInt();
-            NonNullList<Ingredient> ingredients = NonNullList.withSize(ingredientCount, Ingredient.of());
-            IntStream.range(0, ingredientCount).forEach(i -> ingredients.set(i, Ingredient.CONTENTS_STREAM_CODEC.decode(buf)));
+            NonNullList<Ingredient> ingredients = NonNullList.create();
+            IntStream.range(0, ingredientCount).forEach(i -> ingredients.add(i, Ingredient.CONTENTS_STREAM_CODEC.decode(buf)));
             ItemStack result = ItemStack.STREAM_CODEC.decode(buf);
             return new CuttingBoardCombiningRecipe(ingredients, result);
         });

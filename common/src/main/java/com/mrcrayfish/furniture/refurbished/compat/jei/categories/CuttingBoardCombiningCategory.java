@@ -1,70 +1,47 @@
 package com.mrcrayfish.furniture.refurbished.compat.jei.categories;
 
-import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.compat.jei.Plugin;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
+import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardCombiningRecipe;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
-import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.recipe.category.IRecipeCategory;
+import mezz.jei.api.recipe.types.IRecipeHolderType;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
+
+import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish
  */
-public class CuttingBoardCombiningCategory implements IRecipeCategory<CuttingBoardCombiningRecipe>
+public class CuttingBoardCombiningCategory extends FurnitureRecipeCategory<CuttingBoardCombiningRecipe>
 {
-    public static final RecipeType<CuttingBoardCombiningRecipe> TYPE = RecipeType.create(Constants.MOD_ID, "cutting_board_combining", CuttingBoardCombiningRecipe.class);
-
-    private final IDrawable background;
-    private final IDrawable icon;
+    public static final Supplier<IRecipeHolderType<CuttingBoardCombiningRecipe>> TYPE = IRecipeHolderType.createDeferred(ModRecipeTypes.CUTTING_BOARD_COMBINING::get);
 
     public CuttingBoardCombiningCategory(IGuiHelper helper)
     {
-        this.background = helper.createDrawable(Plugin.TEXTURES, 157, 156, 99, 100);
-        this.icon = helper.createDrawableItemStack(new ItemStack(ModBlocks.CUTTING_BOARD_OAK.get()));
+        super(TYPE,
+            Utils.translation("jei_category", "cutting_board_combining"),
+            helper.createDrawable(Plugin.TEXTURES, 157, 156, 99, 100),
+            helper.createDrawableItemStack(new ItemStack(ModBlocks.CUTTING_BOARD_OAK.get()))
+        );
     }
 
     @Override
-    public RecipeType<CuttingBoardCombiningRecipe> getRecipeType()
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<CuttingBoardCombiningRecipe> holder, IFocusGroup focuses)
     {
-        return TYPE;
-    }
-
-    @Override
-    public Component getTitle()
-    {
-        return Utils.translation("jei_category", "cutting_board_combining");
-    }
-
-    @Override
-    public IDrawable getBackground()
-    {
-        return this.background;
-    }
-
-    @Override
-    public IDrawable getIcon()
-    {
-        return this.icon;
-    }
-
-    @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, CuttingBoardCombiningRecipe recipe, IFocusGroup focuses)
-    {
+        CuttingBoardCombiningRecipe recipe = holder.value();
         NonNullList<Ingredient> ingredients = recipe.getIngredients();
         for(int i = 0; i < ingredients.size(); i++)
         {
-            builder.addSlot(RecipeIngredientRole.INPUT, 25, 69 - i * 16).addIngredients(ingredients.get(i));
+            builder.addSlot(RecipeIngredientRole.INPUT, 25, 69 - i * 16).add(ingredients.get(i));
         }
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 77, 69).addItemStack(recipe.getResult());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 77, 69).add(recipe.getResult());
     }
 }

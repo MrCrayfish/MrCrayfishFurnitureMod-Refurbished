@@ -1,10 +1,10 @@
 package com.mrcrayfish.furniture.refurbished.compat.jei.categories;
 
-import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import com.mrcrayfish.furniture.refurbished.compat.jei.Plugin;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
+import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -15,70 +15,50 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.types.IRecipeHolderType;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
-import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish
  */
-public class GrillCookingCategory extends FurnitureRecipeCategory<ProcessingRecipe>
+public class GrillCookingCategory extends FurnitureRecipeCategory<ProcessingRecipe.Item>
 {
-    public static final RecipeType<ProcessingRecipe> TYPE = RecipeType.create(Constants.MOD_ID, "grill_cooking", ProcessingRecipe.class);
+    public static final Supplier<IRecipeHolderType<ProcessingRecipe.Item>> TYPE = IRecipeHolderType.createDeferred(ModRecipeTypes.GRILL_COOKING::get);
 
     private final ItemStack campfireStack = new ItemStack(Items.CAMPFIRE);
     private final IGuiHelper helper;
-    private final IDrawable background;
-    private final IDrawable icon;
     private IDrawable arrow;
 
     public GrillCookingCategory(IGuiHelper helper)
     {
+        super(TYPE,
+            Utils.translation("jei_category", "grill_cooking"),
+            helper.createDrawable(Plugin.TEXTURES, 135, 57, 121, 79),
+            helper.createDrawableItemStack(new ItemStack(ModBlocks.GRILL_RED.get()))
+        );
         this.helper = helper;
-        this.background = helper.createDrawable(Plugin.TEXTURES, 135, 57, 121, 79);
-        this.icon = helper.createDrawableItemStack(new ItemStack(ModBlocks.GRILL_RED.get()));
     }
 
     @Override
-    public RecipeType<ProcessingRecipe> getRecipeType()
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<ProcessingRecipe.Item> holder, IFocusGroup focuses)
     {
-        return TYPE;
-    }
-
-    @Override
-    public Component getTitle()
-    {
-        return Utils.translation("jei_category", "grill_cooking");
-    }
-
-    @Override
-    public IDrawable getBackground()
-    {
-        return this.background;
-    }
-
-    @Override
-    public IDrawable getIcon()
-    {
-        return this.icon;
-    }
-
-    @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, ProcessingRecipe recipe, IFocusGroup focuses)
-    {
-        builder.addSlot(RecipeIngredientRole.INPUT, 26, 6).addIngredients(recipe.getIngredient());
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 99, 31).addItemStack(recipe.getResult());
-        builder.addSlot(RecipeIngredientRole.RENDER_ONLY, 71, 3).addItemStack(new ItemStack(ModItems.SPATULA.get()));
+        ProcessingRecipe.Item recipe = holder.value();
+        builder.addSlot(RecipeIngredientRole.INPUT, 26, 6).add(recipe.getIngredient());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 99, 31).add(recipe.getResult());
+        builder.addSlot(RecipeIngredientRole.RENDER_ONLY, 71, 3).add(new ItemStack(ModItems.SPATULA.get()));
         this.arrow = this.helper.createAnimatedDrawable(this.helper.createDrawable(Plugin.TEXTURES, 133, 136, 24, 17), recipe.getTime(), IDrawableAnimated.StartDirection.LEFT, false);
     }
 
     @Override
-    public void draw(ProcessingRecipe recipe, IRecipeSlotsView view, GuiGraphics graphics, double mouseX, double mouseY)
+    public void draw(RecipeHolder<ProcessingRecipe.Item> holder, IRecipeSlotsView view, GuiGraphics graphics, double mouseX, double mouseY)
     {
+        super.draw(holder, view, graphics, mouseX, mouseY);
+        ProcessingRecipe.Item recipe = holder.value();
         this.arrow.draw(graphics, 68, 31);
         this.drawSeconds(graphics, 80, 50, recipe.getTime());
         if(recipe.getType() == net.minecraft.world.item.crafting.RecipeType.CAMPFIRE_COOKING)
@@ -89,7 +69,7 @@ public class GrillCookingCategory extends FurnitureRecipeCategory<ProcessingReci
     }
 
     @Override
-    public void getTooltip(ITooltipBuilder tooltip, ProcessingRecipe recipe, IRecipeSlotsView view, double mouseX, double mouseY)
+    public void getTooltip(ITooltipBuilder tooltip, RecipeHolder<ProcessingRecipe.Item> holder, IRecipeSlotsView view, double mouseX, double mouseY)
     {
         if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, 5, 15, 57, 61) && !ScreenHelper.isMouseWithinBounds(mouseX, mouseY, 26, 6, 16, 16))
         {

@@ -15,6 +15,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
+import it.unimi.dsi.fastutil.Pair;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
@@ -30,23 +31,21 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeAccess;
-import net.minecraft.world.item.crafting.RecipeInput;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.StreamSupport;
@@ -55,15 +54,15 @@ import java.util.stream.StreamSupport;
  * Author: MrCrayfish
  */
 /*
- * TODO add back JEI support
- * Disabled until JEI is updated
+ * TODO add back JEI support for Fabric
+ * Recipes need to be synced on 1.21.5+, Fabric doesn't seem to have the option yet
  *
  * Remember to add back fabric entrypoint
  * "jei_mod_plugin": [
  *     "com.mrcrayfish.furniture.refurbished.compat.jei.Plugin"
  * ]
  */
-//@JeiPlugin
+@JeiPlugin
 public class Plugin implements IModPlugin
 {
     public static final ResourceLocation TEXTURES = Utils.resource("textures/gui/jei.png");
@@ -94,15 +93,15 @@ public class Plugin implements IModPlugin
     @Override
     public void registerRecipes(IRecipeRegistration registration)
     {
-        registration.addRecipes(FreezerSolidifyingCategory.TYPE, this.getRecipes(ModRecipeTypes.FREEZER_SOLIDIFYING.get()));
-        registration.addRecipes(CuttingBoardSlicingCategory.TYPE, this.getRecipes(ModRecipeTypes.CUTTING_BOARD_SLICING.get()));
-        registration.addRecipes(FryingPanCookingCategory.TYPE, this.getFryingPanRecipes());
-        registration.addRecipes(MicrowaveHeatingCategory.TYPE, this.getRecipes(ModRecipeTypes.MICROWAVE_HEATING.get()));
-        registration.addRecipes(ToasterToastingCategory.TYPE, this.getRecipes(ModRecipeTypes.TOASTER_HEATING.get()));
-        registration.addRecipes(GrillCookingCategory.TYPE, this.getGrillRecipes());
-        registration.addRecipes(CuttingBoardCombiningCategory.TYPE, this.getRecipes(ModRecipeTypes.CUTTING_BOARD_COMBINING.get()));
-        registration.addRecipes(WorkbenchConstructingCategory.TYPE, this.getRecipes(ModRecipeTypes.WORKBENCH_CONSTRUCTING.get()));
-        registration.addRecipes(OvenBakingCategory.TYPE, this.getRecipes(ModRecipeTypes.OVEN_BAKING.get()));
+        registration.addRecipes(FreezerSolidifyingCategory.TYPE.get(), this.getRecipes(ModRecipeTypes.FREEZER_SOLIDIFYING.get()));
+        registration.addRecipes(CuttingBoardSlicingCategory.TYPE.get(), this.getRecipes(ModRecipeTypes.CUTTING_BOARD_SLICING.get()));
+        registration.addRecipes(FryingPanCookingCategory.TYPE.get(), this.getFryingPanRecipes());
+        registration.addRecipes(MicrowaveHeatingCategory.TYPE.get(), this.getRecipes(ModRecipeTypes.MICROWAVE_HEATING.get()));
+        registration.addRecipes(ToasterToastingCategory.TYPE.get(), this.getRecipes(ModRecipeTypes.TOASTER_HEATING.get()));
+        registration.addRecipes(GrillCookingCategory.TYPE.get(), this.getGrillRecipes());
+        registration.addRecipes(CuttingBoardCombiningCategory.TYPE.get(), this.getRecipes(ModRecipeTypes.CUTTING_BOARD_COMBINING.get()));
+        registration.addRecipes(WorkbenchConstructingCategory.TYPE.get(), this.getRecipes(ModRecipeTypes.WORKBENCH_CONSTRUCTING.get()));
+        registration.addRecipes(OvenBakingCategory.TYPE.get(), this.getRecipes(ModRecipeTypes.OVEN_BAKING.get()));
 
         // TODO ingredient info
         //registration.addIngredientInfo(new ItemStack(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get()), VanillaTypes.ITEM_STACK, Utils.translation("jei_ingredient_info", "electricity_generator"));
@@ -111,10 +110,10 @@ public class Plugin implements IModPlugin
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration)
     {
-        registration.addRecipeCatalyst(new ItemStack(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get()), RecipeTypes.FUELING);
-        registration.addRecipeCatalyst(new ItemStack(ModBlocks.ELECTRICITY_GENERATOR_DARK.get()), RecipeTypes.FUELING);
-        registration.addRecipeCatalyst(new ItemStack(ModBlocks.FRYING_PAN.get()), RecipeTypes.CAMPFIRE_COOKING);
-        registration.addRecipeCatalyst(new ItemStack(ModBlocks.GRILL_RED.get()), RecipeTypes.CAMPFIRE_COOKING);
+        registration.addCraftingStation(RecipeTypes.SMELTING_FUEL, new ItemStack(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get()));
+        registration.addCraftingStation(RecipeTypes.SMELTING_FUEL, new ItemStack(ModBlocks.ELECTRICITY_GENERATOR_DARK.get()));
+        registration.addCraftingStation(RecipeTypes.CAMPFIRE_COOKING, new ItemStack(ModBlocks.FRYING_PAN.get()));
+        registration.addCraftingStation(RecipeTypes.CAMPFIRE_COOKING, new ItemStack(ModBlocks.GRILL_RED.get()));
     }
 
     @Override
@@ -130,42 +129,37 @@ public class Plugin implements IModPlugin
         });
     }
 
-    private <C extends RecipeInput, T extends Recipe<C>> List<T> getRecipes(RecipeType<T> type)
+    private <C extends RecipeInput, T extends Recipe<C>> List<RecipeHolder<T>> getRecipes(RecipeType<T> type)
     {
-        return Collections.emptyList(); // TODO 1.21.3 recipes no longer synced
-        //return getRecipeManager().propertySet(type).stream().map(RecipeHolder::value).toList();
+        return List.copyOf(SyncedRecipes.getMap().byType(type));
     }
 
-    private List<ProcessingRecipe> getFryingPanRecipes()
+    private List<RecipeHolder<ProcessingRecipe.Item>> getFryingPanRecipes()
     {
-        List<ProcessingRecipe> recipes = new ArrayList<>();
-        recipes.addAll(this.getRecipes(ModRecipeTypes.FRYING_PAN_COOKING.get()));
+        List<RecipeHolder<ProcessingRecipe.Item>> holders = new ArrayList<>();
+        holders.addAll(this.getRecipes(ModRecipeTypes.FRYING_PAN_COOKING.get()));
+        return this.mergeWithCampfireRecipeHolders(holders);
+    }
+
+    private List<RecipeHolder<ProcessingRecipe.Item>> getGrillRecipes()
+    {
+        List<RecipeHolder<ProcessingRecipe.Item>> holders = new ArrayList<>();
+        holders.addAll(this.getRecipes(ModRecipeTypes.GRILL_COOKING.get()));
+        return this.mergeWithCampfireRecipeHolders(holders);
+    }
+
+    private List<RecipeHolder<ProcessingRecipe.Item>> mergeWithCampfireRecipeHolders(List<RecipeHolder<ProcessingRecipe.Item>> holders)
+    {
         if(Config.SERVER.recipes.inheritCampfireRecipes.get())
         {
-            recipes.addAll(this.getRecipes(RecipeType.CAMPFIRE_COOKING).stream().map(recipe -> {
-                return ProcessingRecipe.Item.fromCookingRecipe(recipe, getRegistryAccess());
+            holders.addAll(this.getRecipes(RecipeType.CAMPFIRE_COOKING).stream().map(holder -> {
+                return Pair.of(holder.id(), ProcessingRecipe.Item.fromCookingRecipe(holder.value(), getRegistryAccess()));
+            }).map(pair -> {
+                ResourceKey<Recipe<?>> key = ResourceKey.create(Registries.RECIPE, pair.left().location());
+                return new RecipeHolder<>(key, pair.right());
             }).toList());
         }
-        return recipes;
-    }
-
-    private List<ProcessingRecipe> getGrillRecipes()
-    {
-        List<ProcessingRecipe> recipes = new ArrayList<>();
-        recipes.addAll(this.getRecipes(ModRecipeTypes.GRILL_COOKING.get()));
-        if(Config.SERVER.recipes.inheritCampfireRecipes.get())
-        {
-            recipes.addAll(this.getRecipes(RecipeType.CAMPFIRE_COOKING).stream().map(recipe -> {
-                return ProcessingRecipe.Item.fromCookingRecipe(recipe, getRegistryAccess());
-            }).toList());
-        }
-        return recipes;
-    }
-
-    public static RecipeAccess getRecipeManager()
-    {
-        ClientPacketListener listener = Objects.requireNonNull(Minecraft.getInstance().getConnection());
-        return listener.recipes();
+        return holders;
     }
 
     public static Font getFont()
