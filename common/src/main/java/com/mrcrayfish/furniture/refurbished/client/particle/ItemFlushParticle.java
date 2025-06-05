@@ -37,17 +37,22 @@ public class ItemFlushParticle extends Particle
     @Override
     public void render(VertexConsumer consumer, Camera camera, float partialTick)
     {
+
+    }
+
+    @Override
+    public void renderCustom(PoseStack poseStack, MultiBufferSource source, Camera camera, float partialTick)
+    {
         float progress = (this.age + partialTick) / (float) ANIMATION_LENGTH;
         float rotation = progress * progress * 1080F;
-        MultiBufferSource.BufferSource source = this.buffers.bufferSource();
         int light = this.dispatcher.getPackedLightCoords(this.entity, partialTick);
         Vec3 pos = new Vec3(this.x, this.y - 0.35 * progress - 0.1, this.z).subtract(camera.getPosition());
-        PoseStack stack = new PoseStack();
-        stack.translate(pos.x, pos.y, pos.z);
-        stack.mulPose(Axis.YP.rotationDegrees(rotation));
-        stack.translate(-pos.x, -pos.y, -pos.z);
-        this.dispatcher.render(this.entity, pos.x, pos.y, pos.z, this.entity.getYRot(), stack, source, light);
-        source.endBatch();
+        poseStack.pushPose();
+        poseStack.translate(pos.x, pos.y, pos.z);
+        poseStack.mulPose(Axis.YP.rotationDegrees(rotation));
+        poseStack.translate(-pos.x, -pos.y, -pos.z);
+        this.dispatcher.render(this.entity, pos.x, pos.y, pos.z, this.entity.getYRot(), poseStack, source, light);
+        poseStack.popPose();
     }
 
     @Override
