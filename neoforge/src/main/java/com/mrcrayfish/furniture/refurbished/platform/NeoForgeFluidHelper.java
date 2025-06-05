@@ -39,6 +39,13 @@ public class NeoForgeFluidHelper implements IFluidHelper
     }
 
     @Override
+    public long getBottleCapacity()
+    {
+        // Not ideal, but NeoForge's bucket capacity is not divisible by 3.
+        return FluidType.BUCKET_VOLUME;
+    }
+
+    @Override
     public SoundEvent getBucketEmptySound(Fluid fluid)
     {
         return fluid.getFluidType().getSound(SoundActions.BUCKET_EMPTY);
@@ -53,13 +60,13 @@ public class NeoForgeFluidHelper implements IFluidHelper
     @Override
     public InteractionResult performInteractionWithBlock(Player player, InteractionHand hand, Level level, BlockPos pos, Direction face)
     {
-        return FluidUtil.interactWithFluidHandler(player, hand, level, pos, face) ? InteractionResult.SUCCESS : InteractionResult.TRY_WITH_EMPTY_HAND;
+        return FluidUtil.interactWithFluidHandler(player, hand, level, pos, face) ? InteractionResult.SUCCESS : InteractionResult.PASS;
     }
 
     @Override
     public boolean isFluidContainerItem(ItemStack stack)
     {
-        return !stack.isEmpty() && stack.getCapability(Capabilities.ItemHandler.ITEM) != null;
+        return !stack.isEmpty() && stack.getCapability(Capabilities.FluidHandler.ITEM) != null;
     }
 
     @Override
