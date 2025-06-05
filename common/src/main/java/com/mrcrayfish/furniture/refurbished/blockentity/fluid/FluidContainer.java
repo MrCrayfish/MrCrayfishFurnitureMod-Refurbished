@@ -26,6 +26,7 @@ import java.util.function.Consumer;
 public abstract class FluidContainer
 {
     public static final long BUCKET_CAPACITY = Services.FLUID.getBucketCapacity();
+    public static final long BOTTLE_CAPACITY = Services.FLUID.getBottleCapacity();
 
     protected FluidContainer() {}
 

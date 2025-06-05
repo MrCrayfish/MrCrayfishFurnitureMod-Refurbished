@@ -59,14 +59,11 @@ public abstract class KitchenSinkBlock extends FurnitureHorizontalEntityBlock im
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
     {
-        if(!level.isClientSide())
+        if(level.getBlockEntity(pos) instanceof KitchenSinkBlockEntity sink)
         {
-            if(level.getBlockEntity(pos) instanceof KitchenSinkBlockEntity sink)
-            {
-                return sink.interact(player, hand, result);
-            }
+            return sink.interact(player, hand, result);
         }
-        return InteractionResult.SUCCESS;
+        return InteractionResult.PASS;
     }
 
     @Nullable
