@@ -37,11 +37,6 @@ public class Components
     public static final Component GUI_SLICEABLE = Utils.translation("gui", "sliceable");
     public static final Component GUI_PLACEABLE = Utils.translation("gui", "placeable");
     public static final Component GUI_WITHDRAW_EXPERIENCE = Utils.translation("gui", "withdraw_experience");
-    public static final Component SMART_DEVICE_FREEZER = Utils.translation("smart_device", "freezer");
-    public static final Component SMART_DEVICE_LIGHTSWITCH = Utils.translation("smart_device", "lightswitch");
-    public static final Component SMART_DEVICE_MICROWAVE = Utils.translation("smart_device", "microwave");
-    public static final Component SMART_DEVICE_RECYCLE_BIN = Utils.translation("smart_device", "recycle_bin");
-    public static final Component SMART_DEVICE_STOVE = Utils.translation("smart_device", "stove");
 
     public static final ResourceLocation ICON_FONT = Utils.resource("icons");
 
