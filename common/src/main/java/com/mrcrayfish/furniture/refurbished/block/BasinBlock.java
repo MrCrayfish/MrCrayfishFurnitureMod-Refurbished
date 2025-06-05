@@ -52,12 +52,9 @@ public abstract class BasinBlock extends FurnitureHorizontalEntityBlock implemen
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
     {
-        if(!level.isClientSide())
+        if(level.getBlockEntity(pos) instanceof BasinBlockEntity basin)
         {
-            if(level.getBlockEntity(pos) instanceof BasinBlockEntity basin)
-            {
-                return basin.interact(player, hand, result);
-            }
+            return basin.interact(player, hand, result);
         }
         return InteractionResult.SUCCESS;
     }

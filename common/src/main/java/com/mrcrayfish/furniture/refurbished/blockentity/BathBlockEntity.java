@@ -109,67 +109,24 @@ public class BathBlockEntity extends BlockEntity implements IFluidContainerBlock
     {
         FluidContainer tank = this.getFluidContainer();
         if(tank == null)
-        {
-            return InteractionResult.PASS;
-        }
+            return InteractionResult.CONSUME;
 
-        ItemStack heldItem = player.getItemInHand(hand);
-        if(Config.SERVER.bath.dispenseWater.get() && heldItem.isEmpty())
-        {
-            // Fills the sink with water
-            if(tank.isEmpty() || tank.getStoredFluid().isSame(Fluids.WATER))
-            {
-                long filled = tank.push(Fluids.WATER, FluidContainer.BUCKET_CAPACITY, false);
-                if(filled > 0)
-                {
-                    this.sendTapWaterAnimation();
-                    Objects.requireNonNull(this.level).playSound(null, this.worldPosition, ModSounds.BLOCK_KITCHEN_SINK_FILL.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
-                    return InteractionResult.SUCCESS;
-                }
-            }
-
-            // If lava is in the basin, filling it with water will consume the lava and turn it into obsidian
-            if(tank.getStoredAmount() >= FluidContainer.BUCKET_CAPACITY && tank.getStoredFluid().isSame(Fluids.LAVA))
-            {
-                Pair<Fluid, Long> drained = tank.pull(FluidContainer.BUCKET_CAPACITY, true);
-                if(drained.right() == FluidContainer.BUCKET_CAPACITY)
-                {
-                    tank.pull(FluidContainer.BUCKET_CAPACITY, false);
-                    Vec3 pos = Vec3.atBottomCenterOf(this.worldPosition).add(0, 1, 0);
-                    Level level = Objects.requireNonNull(this.level);
-                    ItemEntity entity = new ItemEntity(level, pos.x, pos.y, pos.z, new ItemStack(Blocks.OBSIDIAN));
-                    entity.setDefaultPickUpDelay();
-                    level.addFreshEntity(entity);
-                    level.playSound(null, this.worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 1.0F, 1.0F);
-                    level.levelEvent(LevelEvent.LAVA_FIZZ, this.worldPosition, 0);
-                    this.sendTapWaterAnimation();
-                    return InteractionResult.SUCCESS;
-                }
-            }
-        }
-
-        Item item = heldItem.getItem();
-        if(item == Items.GLASS_BOTTLE && !this.tank.isEmpty() && this.tank.getStoredFluid().isSame(Fluids.WATER))
-        {
-            this.tank.pull(FluidContainer.BUCKET_CAPACITY, false);
-            player.setItemInHand(hand, ItemUtils.createFilledResult(heldItem, player, PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.WATER)));
-            player.awardStat(Stats.ITEM_USED.get(item));
-            player.level.playSound(null, this.worldPosition, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
-            player.level.gameEvent(null, GameEvent.FLUID_PICKUP, this.worldPosition);
+        if(this.interactWithBottle(player, hand, this.worldPosition).consumesAction())
             return InteractionResult.SUCCESS;
-        }
 
-        return Services.FLUID.performInteractionWithBlock(player, hand, this.getLevel(), this.getBlockPos(), result.getDirection());
-    }
+        if(this.performPlatformInteraction(player, hand, this.worldPosition, result.getDirection()).consumesAction())
+            return InteractionResult.SUCCESS;
 
-    private void sendTapWaterAnimation()
-    {
-        BlockState state = this.getBlockState();
-        if(state.hasProperty(BathBlock.DIRECTION))
+        if(Config.SERVER.bath.dispenseWater.get() && result.getDirection() != Direction.DOWN)
         {
-            BlockPos tapPos = this.isHead() ? this.worldPosition : this.worldPosition.relative(state.getValue(BathBlock.DIRECTION));
-            Network.getPlay().sendToTrackingBlockEntity(() -> this, new MessageWaterTapAnimation(tapPos));
+            if(this.tryAndFillWithFluid(this.level, this.worldPosition, Fluids.WATER, Vec3.atCenterOf(this.worldPosition)).consumesAction())
+                return InteractionResult.SUCCESS;
+
+            if(this.tryAndCreateObsidian(this.level, this.worldPosition, Fluids.WATER, Vec3.atBottomCenterOf(this.worldPosition).add(0, 1, 0)).consumesAction())
+                return InteractionResult.SUCCESS;
         }
+
+        return InteractionResult.CONSUME;
     }
 
     @Override
@@ -178,6 +135,18 @@ public class BathBlockEntity extends BlockEntity implements IFluidContainerBlock
         if(this.isHead())
         {
             this.animationTime = 4;
+        }
+        else
+        {
+            BlockState state = this.getBlockState();
+            if(state.hasProperty(BathBlock.DIRECTION))
+            {
+                BlockPos headPos = this.worldPosition.relative(state.getValue(BathBlock.DIRECTION));
+                if(this.level != null && this.level.getBlockEntity(headPos) instanceof BathBlockEntity bath && bath.isHead())
+                {
+                    bath.playWaterAnimation();
+                }
+            }
         }
     }
 
