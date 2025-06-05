@@ -80,40 +80,22 @@ public class BasinBlockEntity extends BlockEntity implements IFluidContainerBloc
 
     public InteractionResult interact(Player player, InteractionHand hand, BlockHitResult result)
     {
-        if(Config.SERVER.basin.dispenseWater.get() && player.getItemInHand(hand).isEmpty() && result.getDirection() != Direction.DOWN)
-        {
-            // Fills the sink with water
-            if(this.tank.isEmpty() || this.tank.getStoredFluid().isSame(Fluids.WATER))
-            {
-                long filled = this.tank.push(Fluids.WATER, FluidContainer.BUCKET_CAPACITY, false);
-                if(filled > 0)
-                {
-                    Network.getPlay().sendToTrackingBlockEntity(() -> this, new MessageWaterTapAnimation(this.worldPosition));
-                    Objects.requireNonNull(this.level).playSound(null, this.worldPosition, ModSounds.BLOCK_KITCHEN_SINK_FILL.get(), SoundSource.BLOCKS);
-                    return InteractionResult.SUCCESS;
-                }
-            }
+        if(this.interactWithBottle(player, hand, this.worldPosition).consumesAction())
+            return InteractionResult.SUCCESS;
 
-            // If lava is in the basin, filling it with water will consume the lava and turn it into obsidian
-            if(this.tank.getStoredAmount() >= FluidContainer.BUCKET_CAPACITY && this.tank.getStoredFluid().isSame(Fluids.LAVA))
-            {
-                Pair<Fluid, Long> drained = this.tank.pull(FluidContainer.BUCKET_CAPACITY, true);
-                if(drained.right() == FluidContainer.BUCKET_CAPACITY)
-                {
-                    this.tank.pull(FluidContainer.BUCKET_CAPACITY, false);
-                    Vec3 pos = Vec3.atBottomCenterOf(this.worldPosition).add(0, 1, 0);
-                    Level level = Objects.requireNonNull(this.level);
-                    ItemEntity entity = new ItemEntity(level, pos.x, pos.y, pos.z, new ItemStack(Blocks.OBSIDIAN));
-                    entity.setDefaultPickUpDelay();
-                    level.addFreshEntity(entity);
-                    level.playSound(null, this.worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS);
-                    level.levelEvent(LevelEvent.LAVA_FIZZ, this.worldPosition, 0);
-                    Network.getPlay().sendToTrackingBlockEntity(() -> this, new MessageWaterTapAnimation(this.worldPosition));
-                    return InteractionResult.SUCCESS;
-                }
-            }
+        if(this.performPlatformInteraction(player, hand, this.worldPosition, result.getDirection()).consumesAction())
+            return InteractionResult.SUCCESS;
+
+        if(Config.SERVER.basin.dispenseWater.get() && result.getDirection() != Direction.DOWN)
+        {
+            if(this.tryAndFillWithFluid(this.level, this.worldPosition, Fluids.WATER, Vec3.atCenterOf(this.worldPosition)).consumesAction())
+                return InteractionResult.SUCCESS;
+
+            if(this.tryAndCreateObsidian(this.level, this.worldPosition, Fluids.WATER, Vec3.atBottomCenterOf(this.worldPosition).add(0, 1, 0)).consumesAction())
+                return InteractionResult.SUCCESS;
         }
-        return Services.FLUID.performInteractionWithBlock(player, hand, this.getLevel(), this.getBlockPos(), result.getDirection());
+
+        return InteractionResult.CONSUME;
     }
 
     @Override

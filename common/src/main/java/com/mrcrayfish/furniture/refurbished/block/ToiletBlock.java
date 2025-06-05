@@ -62,22 +62,19 @@ public abstract class ToiletBlock extends FurnitureHorizontalEntityBlock
     @Override
     public InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
     {
+        if(level.getBlockEntity(pos) instanceof ToiletBlockEntity toilet)
+        {
+            return toilet.interact(player, hand, result);
+        }
         if(!level.isClientSide())
         {
-            if(level.getBlockEntity(pos) instanceof ToiletBlockEntity toilet)
-            {
-                if(toilet.interact(player, hand, result) != InteractionResult.PASS)
-                {
-                    return InteractionResult.CONSUME;
-                }
-            }
             Vec3 hit = result.getLocation().subtract(Vec3.atLowerCornerOf(pos));
             if(hit.y() <= 0.625 && Seat.sit(player, pos, Utils.pixels(10), state.getValue(DIRECTION).getOpposite()))
             {
-                return InteractionResult.CONSUME;
+                return InteractionResult.SUCCESS;
             }
         }
-        return InteractionResult.SUCCESS;
+        return InteractionResult.PASS;
     }
 
     @Override
