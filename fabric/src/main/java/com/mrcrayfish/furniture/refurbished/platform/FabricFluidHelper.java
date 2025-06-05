@@ -40,6 +40,12 @@ public class FabricFluidHelper implements IFluidHelper
     }
 
     @Override
+    public long getBottleCapacity()
+    {
+        return FluidConstants.BOTTLE;
+    }
+
+    @Override
     public SoundEvent getBucketEmptySound(Fluid fluid)
     {
         return FluidVariantAttributes.getEmptySound(FluidVariant.of(fluid));

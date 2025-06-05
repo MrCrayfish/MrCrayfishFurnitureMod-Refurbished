@@ -22,6 +22,8 @@ public interface IFluidHelper
 {
     long getBucketCapacity();
 
+    long getBottleCapacity();
+
     SoundEvent getBucketEmptySound(Fluid fluid);
 
     FluidContainer createFluidContainer(long capacity, @Nullable Consumer<FluidContainer> onChange);

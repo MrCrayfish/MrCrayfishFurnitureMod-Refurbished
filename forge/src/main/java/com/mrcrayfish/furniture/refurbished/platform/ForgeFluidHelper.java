@@ -39,6 +39,12 @@ public class ForgeFluidHelper implements IFluidHelper
     }
 
     @Override
+    public long getBottleCapacity()
+    {
+        return FluidType.BUCKET_VOLUME;
+    }
+
+    @Override
     public SoundEvent getBucketEmptySound(Fluid fluid)
     {
         return fluid.getFluidType().getSound(SoundActions.BUCKET_EMPTY);

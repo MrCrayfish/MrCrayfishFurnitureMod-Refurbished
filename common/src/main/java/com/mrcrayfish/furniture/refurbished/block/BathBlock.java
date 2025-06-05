@@ -127,12 +127,9 @@ public abstract class BathBlock extends FurnitureHorizontalEntityBlock implement
     @Override
     public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
     {
-        if(!level.isClientSide())
+        if(level.getBlockEntity(pos) instanceof BathBlockEntity bath)
         {
-            if(level.getBlockEntity(pos) instanceof BathBlockEntity bath)
-            {
-                return bath.interact(player, hand, result);
-            }
+            return bath.interact(player, hand, result);
         }
         return ItemInteractionResult.SUCCESS;
     }

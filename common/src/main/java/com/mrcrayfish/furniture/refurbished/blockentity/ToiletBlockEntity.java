@@ -9,6 +9,7 @@ import com.mrcrayfish.furniture.refurbished.network.message.MessageFlushItem;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -19,6 +20,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -75,85 +77,48 @@ public class ToiletBlockEntity extends BlockEntity implements IFluidContainerBlo
         return this.tank;
     }
 
-    public InteractionResult interact(Player player, InteractionHand hand, BlockHitResult result)
+    public ItemInteractionResult interact(Player player, InteractionHand hand, BlockHitResult result)
     {
-        Level level = Objects.requireNonNull(this.level);
-        ItemStack heldItem = player.getItemInHand(hand);
-        if(!Services.FLUID.isFluidContainerItem(heldItem))
+        Vec3 hit = result.getLocation().subtract(Vec3.atLowerCornerOf(this.worldPosition));
+        if(hit.y() > 0.625) // Player hit the top half of the toilet
         {
-            Vec3 hit = result.getLocation().subtract(Vec3.atLowerCornerOf(this.worldPosition));
-            if(hit.y() > 0.625)
+            if(!this.tank.isEmpty() && this.flushItems(player.level()).consumesAction())
             {
-                if(!this.tank.isEmpty())
-                {
-                    if(this.flushItems(level) != InteractionResult.PASS)
-                    {
-                        return InteractionResult.SUCCESS;
-                    }
-                }
-                if(Config.SERVER.toilet.dispenseWater.get())
-                {
-                    if(this.fillWithWater(level) != InteractionResult.PASS)
-                    {
-                        return InteractionResult.SUCCESS;
-                    }
-                }
-            }
-            return InteractionResult.PASS;
-        }
-        Services.FLUID.performInteractionWithBlock(player, hand, this.getLevel(), this.getBlockPos(), result.getDirection());
-        return InteractionResult.SUCCESS;
-    }
-
-    private InteractionResult fillWithWater(Level level)
-    {
-        if((this.tank.isEmpty() || this.tank.getStoredFluid().isSame(Fluids.WATER)))
-        {
-            if(this.tank.getStoredAmount() < this.tank.getCapacity())
-            {
-                this.tank.push(Fluids.WATER, FluidContainer.BUCKET_CAPACITY, false);
-            }
-            SoundEvent event = Services.FLUID.getBucketEmptySound(Fluids.WATER);
-            if(event != null)
-            {
-                Vec3 splashPos = Vec3.atCenterOf(this.worldPosition);
-                ((ServerLevel) level).sendParticles(ParticleTypes.SPLASH, splashPos.x, splashPos.y, splashPos.z, 10, 0, 0, 0, 0);
-                level.playSound(null, this.worldPosition, event, SoundSource.BLOCKS);
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
         }
 
-        if(this.tank.getStoredFluid().isSame(Fluids.LAVA))
-        {
-            if(this.tank.getStoredAmount() >= FluidContainer.BUCKET_CAPACITY && this.tank.getStoredFluid().isSame(Fluids.LAVA))
-            {
-                Pair<Fluid, Long> drained = this.tank.pull(FluidContainer.BUCKET_CAPACITY, true);
-                if(drained.right() != FluidContainer.BUCKET_CAPACITY)
-                    return InteractionResult.PASS;
+        if(this.interactWithBottle(player, hand, this.worldPosition).consumesAction())
+            return ItemInteractionResult.SUCCESS;
 
-                this.tank.pull(FluidContainer.BUCKET_CAPACITY, false);
-                Vec3 pos = Vec3.atCenterOf(this.worldPosition);
-                ItemEntity entity = new ItemEntity(level, pos.x, pos.y, pos.z, new ItemStack(Blocks.OBSIDIAN));
-                entity.setDefaultPickUpDelay();
-                level.addFreshEntity(entity);
-                level.playSound(null, this.worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS);
-                level.levelEvent(LevelEvent.LAVA_FIZZ, this.worldPosition, 0);
-                return InteractionResult.SUCCESS;
-            }
+        if(this.performPlatformInteraction(player, hand, this.worldPosition, result.getDirection()).consumesAction())
+            return ItemInteractionResult.SUCCESS;
+
+        if(Config.SERVER.toilet.dispenseWater.get() && result.getDirection() != Direction.DOWN)
+        {
+            if(this.tryAndFillWithFluid(this.level, this.worldPosition, Fluids.WATER, Vec3.atCenterOf(this.worldPosition)).consumesAction())
+                return ItemInteractionResult.SUCCESS;
+
+            if(this.tryAndCreateObsidian(this.level, this.worldPosition, Fluids.WATER, Vec3.atBottomCenterOf(this.worldPosition).add(0, 1, 0)).consumesAction())
+                return ItemInteractionResult.SUCCESS;
         }
-        return InteractionResult.PASS;
+
+        return ItemInteractionResult.CONSUME;
     }
 
     private InteractionResult flushItems(Level level)
     {
         List<ItemEntity> entities = level.getEntitiesOfClass(ItemEntity.class, new AABB(this.worldPosition));
-        entities.forEach(entity -> {
-            Network.getPlay().sendToTrackingBlockEntity(() -> this, new MessageFlushItem(entity.getId(), this.worldPosition));
-            entity.discard();
-        });
         if(!entities.isEmpty())
         {
-            level.scheduleTick(this.worldPosition, this.getBlockState().getBlock(), 40);
+            if(!level.isClientSide())
+            {
+                entities.forEach(entity -> {
+                    Network.getPlay().sendToTrackingBlockEntity(() -> this, new MessageFlushItem(entity.getId(), this.worldPosition));
+                    entity.discard();
+                });
+                level.scheduleTick(this.worldPosition, this.getBlockState().getBlock(), 40);
+            }
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
