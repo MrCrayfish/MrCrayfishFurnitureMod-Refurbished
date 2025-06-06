@@ -82,6 +82,12 @@ public class FabricClientHelper implements IClientHelper
     }
 
     @Override
+    public RenderType createPaletteImageRenderType(ResourceLocation id)
+    {
+        return FabricRenderType.createPaletteImage(id);
+    }
+
+    @Override
     public void renderTooltip(Screen screen, PoseStack poseStack, List<ClientTooltipComponent> components, int mouseX, int mouseY)
     {
         screen.renderTooltipInternal(poseStack, components, mouseX, mouseY);

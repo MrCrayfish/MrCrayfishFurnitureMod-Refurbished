@@ -86,6 +86,12 @@ public class ForgeClientHelper implements IClientHelper
     }
 
     @Override
+    public RenderType createPaletteImageRenderType(ResourceLocation id)
+    {
+        return ForgeRenderType.createPaletteImage(id);
+    }
+
+    @Override
     public void renderTooltip(Screen screen, PoseStack poseStack, List<ClientTooltipComponent> components, int mouseX, int mouseY)
     {
         screen.renderTooltipInternal(poseStack, components, mouseX, mouseY);
