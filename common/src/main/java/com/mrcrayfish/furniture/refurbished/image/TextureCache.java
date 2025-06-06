@@ -130,26 +130,9 @@ public class TextureCache
         {
             for(int x = 0; x < image.width; x++)
             {
-                int colour = PaletteImage.COLOURS[image.get(x, y)];
-                colour = convertARGBToABGR(colour);
-                nativeImage.setPixel(x, y, colour);
+                nativeImage.setPixel(x, y, PaletteImage.COLOURS[image.get(x, y)]);
             }
         }
         return nativeImage;
-    }
-
-    /**
-     * Converts an ARGB format int to an ABGR format int
-     *
-     * @param value an argb integer
-     * @return the argb integer in abgr format
-     */
-    private static int convertARGBToABGR(int value)
-    {
-        int alpha = ARGB.alpha(value);
-        int red = ARGB.red(value);
-        int green = ARGB.green(value);
-        int blue = ARGB.blue(value);
-        return ARGB.color(alpha, blue, green, red);
     }
 }
