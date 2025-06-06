@@ -1,8 +1,9 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
-import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.block.LightswitchBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
+import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -10,8 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Author: MrCrayfish
@@ -86,6 +86,11 @@ public class LightswitchBlockEntity extends ElectricityModuleBlockEntity impleme
         }
     }
 
+    private Component getDefaultName()
+    {
+        return Utils.translation("container", "lightswitch");
+    }
+
     @Override
     public Component getDeviceName()
     {
@@ -93,7 +98,7 @@ public class LightswitchBlockEntity extends ElectricityModuleBlockEntity impleme
         {
             return this.getCustomName();
         }
-        return Components.SMART_DEVICE_LIGHTSWITCH;
+        return this.getDefaultName();
     }
 
     @Override
@@ -134,9 +139,6 @@ public class LightswitchBlockEntity extends ElectricityModuleBlockEntity impleme
     protected void saveAdditional(CompoundTag tag)
     {
         super.saveAdditional(tag);
-        if(this.name != null)
-        {
-            tag.putString("CustomName", Component.Serializer.toJson(this.name));
-        }
+        BlockEntityHelper.saveCustomName(tag, this.name);
     }
 }

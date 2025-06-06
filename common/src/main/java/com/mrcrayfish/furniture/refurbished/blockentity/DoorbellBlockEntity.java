@@ -13,7 +13,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 
-import javax.annotation.Nullable;
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 /**
@@ -69,9 +70,9 @@ public class DoorbellBlockEntity extends ElectricityModuleBlockEntity implements
         if(!this.owner.equals(player.getUUID()))
             return;
 
-        if(!name.isBlank() && name.length() <= MAX_NAME_LENGTH)
+        if(!name.isBlank())
         {
-            this.customName = name;
+            this.customName = StringUtils.truncate(name, MAX_NAME_LENGTH);
             this.setChanged();
         }
     }

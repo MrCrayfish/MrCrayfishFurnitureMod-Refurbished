@@ -47,7 +47,6 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implemen
     private float bladeSpeed;
     private float bladeRotation;
     private float lastBladeRotation;
-    protected @Nullable Component name;
 
     public CeilingFanBlockEntity(BlockPos pos, BlockState state)
     {

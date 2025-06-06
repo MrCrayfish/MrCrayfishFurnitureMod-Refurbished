@@ -1,7 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.google.common.collect.ImmutableList;
-import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.block.StoveBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
@@ -9,7 +8,6 @@ import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import com.mrcrayfish.furniture.refurbished.inventory.BuildableContainerData;
 import com.mrcrayfish.furniture.refurbished.inventory.IContainerHolder;
-import com.mrcrayfish.furniture.refurbished.inventory.StoveMenu;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
@@ -43,7 +41,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
 import java.util.Optional;
@@ -74,7 +72,6 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     protected WeakReference<ICookingBlock> cookingBlockRef;
     protected boolean sync;
     protected @Nullable StoveContainer container;
-    protected @Nullable Component name;
 
     protected final ContainerData data = new BuildableContainerData(builder -> {
         builder.add(DATA_POWERED, () -> this.isNodePowered() ? 1 : 0, value -> {});
@@ -488,25 +485,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
         {
             return this.getCustomName();
         }
-        return Components.SMART_DEVICE_STOVE;
-    }
-
-    @Override
-    public Component getDisplayName()
-    {
-        return this.name != null ? this.name : this.getName();
-    }
-
-    @Nullable
-    @Override
-    public Component getCustomName()
-    {
-        return this.name;
-    }
-
-    public void setCustomName(@Nullable Component name)
-    {
-        this.name = name;
+        return this.getDefaultName();
     }
 
     /**
