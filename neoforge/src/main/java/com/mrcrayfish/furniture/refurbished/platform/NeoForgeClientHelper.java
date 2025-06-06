@@ -97,6 +97,12 @@ public class NeoForgeClientHelper implements IClientHelper
     }
 
     @Override
+    public RenderType createPaletteImageRenderType(ResourceLocation id)
+    {
+        return NeoForgeRenderType.createPaletteImage(id);
+    }
+
+    @Override
     public void renderTooltip(GuiGraphics graphics, Font font, List<ClientTooltipComponent> components, int mouseX, int mouseY, ClientTooltipPositioner position)
     {
         graphics.renderTooltipInternal(font, components, mouseX, mouseY, position, null);
