@@ -2,9 +2,13 @@ package com.mrcrayfish.furniture.refurbished.image;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mrcrayfish.furniture.refurbished.blockentity.IPaintable;
+import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 
@@ -45,7 +49,7 @@ public class TextureCache
         this.entries.entrySet().removeIf(e -> {
             TextureCache.Entry entry = e.getValue();
             if(entry.isExpired()) {
-                Minecraft.getInstance().getTextureManager().release(entry.getId());
+                entry.release();
                 return true;
             }
             return false;
@@ -67,8 +71,12 @@ public class TextureCache
         if(image != null)
         {
             Entry entry = this.entries.get(image.getId());
-            if(entry == null)
+            if(entry == null || entry.isExpired())
             {
+                if(entry != null)
+                {
+                    entry.release();
+                }
                 entry = new Entry(image);
                 this.entries.put(image.getId(), entry);
             }
@@ -78,17 +86,60 @@ public class TextureCache
         return null;
     }
 
+    /**
+     * Gets the RenderType used for drawing the provided paintable to a buffer. The render
+     * type automatically has the texture applied, just simply call {@link net.minecraft.client.renderer.MultiBufferSource#getBuffer(RenderType)}
+     * to get the vertex consumer. This method will also register the paintable
+     * if it doesn't exist in the texture cache. If the paintable doesn't have an
+     * image, this method will simply return null.
+     *
+     * @param paintable a paintable instance with an image
+     * @return the render type for the paintable or null if paintable is missing image
+     */
+    @Nullable
+    public RenderType getRenderType(IPaintable paintable)
+    {
+        ResourceLocation id = this.getOrCacheImage(paintable);
+        Entry entry = this.entries.get(id);
+        if(entry != null && !entry.isExpired())
+        {
+            return entry.getRenderType();
+        }
+        return null;
+    }
+
+    /**
+     * Gets the abstract texture for an image in the cache with the given id.
+     *
+     * @param id the id of the entry
+     * @return the abstract texture of the cached entry or missing texture if not found
+     */
+    public AbstractTexture getTexture(ResourceLocation id)
+    {
+        Entry entry = this.entries.get(id);
+        if(entry != null && !entry.isExpired())
+        {
+            return entry.texture;
+        }
+        // Otherwise return missing texture
+        return Minecraft.getInstance().getTextureManager().getTexture(MissingTextureAtlasSprite.getLocation());
+    }
+
     private static class Entry
     {
         private final ResourceLocation id;
+        private final DynamicTexture texture;
+        private final RenderType renderType;
         private long lastDrawTime;
+        private boolean expired;
 
         public Entry(PaletteImage image)
         {
             this.id = image.getId();
-            DynamicTexture texture = new DynamicTexture(convertToNativeImage(image));
-            Minecraft.getInstance().getTextureManager().register(image.getId(), texture);
+            this.texture = new DynamicTexture(convertToNativeImage(image));
+            Minecraft.getInstance().getTextureManager().register(image.getId(), this.texture);
             this.lastDrawTime = Util.getMillis();
+            this.renderType = ClientServices.PLATFORM.createPaletteImageRenderType(this.id);
         }
 
         /**
@@ -97,6 +148,14 @@ public class TextureCache
         public ResourceLocation getId()
         {
             return this.id;
+        }
+
+        /**
+         * @return The render type to use to draw this image to a buffer
+         */
+        public RenderType getRenderType()
+        {
+            return this.renderType;
         }
 
         /**
@@ -112,7 +171,16 @@ public class TextureCache
          */
         public boolean isExpired()
         {
-            return Util.getMillis() - this.lastDrawTime > EXPIRE_TIME;
+            return this.expired || Util.getMillis() - this.lastDrawTime > EXPIRE_TIME;
+        }
+
+        public void release()
+        {
+            if(!this.expired)
+            {
+                Minecraft.getInstance().getTextureManager().release(this.id);
+                this.expired = true;
+            }
         }
     }
 

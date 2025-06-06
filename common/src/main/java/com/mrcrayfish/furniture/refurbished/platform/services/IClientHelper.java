@@ -49,6 +49,8 @@ public interface IClientHelper
 
     RenderType getTelevisionScreenRenderType(ResourceLocation id);
 
+    RenderType createPaletteImageRenderType(ResourceLocation id);
+
     void renderTooltip(GuiGraphics graphics, Font font, List<ClientTooltipComponent> components, int mouseX, int mouseY, ClientTooltipPositioner position);
 
     @SuppressWarnings("rawtypes")
