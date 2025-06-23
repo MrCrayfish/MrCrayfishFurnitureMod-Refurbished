@@ -102,7 +102,7 @@ public class ToiletBlockEntity extends BlockEntity implements IFluidContainerBlo
                 return InteractionResult.SUCCESS;
         }
 
-        return InteractionResult.CONSUME;
+        return InteractionResult.PASS;
     }
 
     private InteractionResult flushItems(Level level)
