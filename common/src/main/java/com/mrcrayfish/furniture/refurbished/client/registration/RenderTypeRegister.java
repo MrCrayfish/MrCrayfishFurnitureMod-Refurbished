@@ -1,6 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.client.registration;
 
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.world.level.block.Block;
 
 /**
@@ -9,5 +9,5 @@ import net.minecraft.world.level.block.Block;
 @FunctionalInterface
 public interface RenderTypeRegister
 {
-    void apply(Block block, RenderType type);
+    void apply(Block block, ChunkSectionLayer layer);
 }

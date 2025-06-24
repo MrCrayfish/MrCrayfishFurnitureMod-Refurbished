@@ -9,6 +9,7 @@ import com.mrcrayfish.furniture.refurbished.network.message.MessageComputerOpenP
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -84,7 +85,7 @@ public class Desktop
         graphics.drawString(font, timeLabel, this.displayStart + this.displayWidth - width - 5, this.displayTop + this.displayHeight - 11, 0xFFFFFFFF, false);
 
         // Draw logo
-        graphics.blit(RenderType::guiTextured, ComputerScreen.TEXTURE, this.displayStart, this.displayTop + this.displayHeight - 24, 32, 36, 0, 150, 16, 18, 256, 256);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, ComputerScreen.TEXTURE, this.displayStart, this.displayTop + this.displayHeight - 24, 32, 36, 0, 150, 16, 18, 256, 256);
     }
 
     private Component getProgramName(ResourceLocation id)

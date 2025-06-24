@@ -6,10 +6,12 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 
 /**
@@ -45,16 +47,12 @@ public class IconButton extends Button
     {
         super.renderWidget(graphics, mouseX, mouseY, partialTicks);
         Minecraft minecraft = Minecraft.getInstance();
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
         int contentWidth = 10 + minecraft.font.width(this.label) + (!this.label.getString().isEmpty() ? 4 : 0);
         int iconX = this.getX() + (this.width - contentWidth) / 2;
         int iconY = this.getY() + (this.height - 10) / 2;
-        float brightness = this.active ? 1.0F : 0.5F;
-        RenderSystem.setShaderColor(brightness, brightness, brightness, this.alpha);
-        graphics.blit(RenderType::guiTextured, ICON_TEXTURES, iconX, iconY, this.u, this.v, 10, 10, 64, 64);
-        RenderSystem.setShaderColor(brightness, brightness, brightness, this.alpha);
-        int textColor = this.active ? 16777215 : 10526880;
+        int brightness = ARGB.scaleRGB(0xFFFFFFFF, this.active ? 1.0F : 0.5F);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, ICON_TEXTURES, iconX, iconY, this.u, this.v, 10, 10, 64, 64, brightness);
+        int textColor = (this.active ? 16777215 : 10526880) | 0xFF000000;
         renderScrollingString(graphics, minecraft.font, this.label, iconX + 14, this.getY(), iconX + contentWidth, this.getY() + this.getHeight(), textColor);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     }
 }

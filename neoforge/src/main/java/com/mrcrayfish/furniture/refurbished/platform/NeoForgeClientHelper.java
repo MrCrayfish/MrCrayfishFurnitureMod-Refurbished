@@ -11,13 +11,9 @@ import com.mrcrayfish.furniture.refurbished.inventory.MicrowaveMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.StoveMenu;
 import com.mrcrayfish.furniture.refurbished.platform.services.IClientHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -92,12 +88,6 @@ public class NeoForgeClientHelper implements IClientHelper
     }
 
     @Override
-    public void renderTooltip(GuiGraphics graphics, Font font, List<ClientTooltipComponent> components, int mouseX, int mouseY, ClientTooltipPositioner position)
-    {
-        graphics.renderTooltipInternal(font, components, mouseX, mouseY, position, null);
-    }
-
-    @Override
     @SuppressWarnings("rawtypes")
     public AbstractContainerScreen createFreezerScreen(AbstractContainerMenu menu, Inventory playerInventory, Component title)
     {
@@ -119,9 +109,9 @@ public class NeoForgeClientHelper implements IClientHelper
     }
 
     @Override
-    public RenderPipeline.Snippet getMatricesColorSnippet()
+    public RenderPipeline.Snippet getMatricesProjectionSnippet()
     {
-        return RenderPipelines.MATRICES_COLOR_SNIPPET;
+        return RenderPipelines.MATRICES_PROJECTION_SNIPPET;
     }
 
     private Function<ResourceLocation, TextureAtlasSprite> getBlockTextures()

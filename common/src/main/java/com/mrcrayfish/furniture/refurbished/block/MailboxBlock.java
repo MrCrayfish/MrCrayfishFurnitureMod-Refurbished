@@ -84,21 +84,25 @@ public class MailboxBlock extends FurnitureHorizontalEntityBlock implements Bloc
     {
         if(entity instanceof ServerPlayer player)
         {
-            if(level.getBlockEntity(pos) instanceof MailboxBlockEntity mailbox)
+            if(level.getBlockEntity(pos) instanceof MailboxBlockEntity blockEntity)
             {
-                mailbox.getMailbox().owner().setValue(player.getUUID());
                 DeliveryService.get(((ServerLevel) level).getServer()).ifPresent(service -> {
-                    service.markMailboxAsPendingName(player, level, pos);
+                    Optional<Mailbox> mailboxOptional = blockEntity.getMailbox();
+                    mailboxOptional.ifPresent(mailbox -> {
+                        mailbox.setOwner(player.getUUID());
+                        service.markMailboxAsPendingName(player, level, pos);
+                    });
                 });
+                Network.getPlay().sendToPlayer(() -> player, new MessageNameMailbox(pos));
             }
-            Network.getPlay().sendToPlayer(() -> player, new MessageNameMailbox(pos));
+
         }
     }
 
     @Override
     public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult result)
     {
-        if(!level.isClientSide() && level.getBlockEntity(pos) instanceof MailboxBlockEntity blockEntity)
+        if(level instanceof ServerLevel serverLevel && serverLevel.getBlockEntity(pos) instanceof MailboxBlockEntity blockEntity)
         {
             if(!DeliveryService.isDeliverableDimension(level))
             {
@@ -113,11 +117,12 @@ public class MailboxBlock extends FurnitureHorizontalEntityBlock implements Bloc
             }
 
             // Claim the mailbox if the mailbox is not owned.
-            Mailbox mailbox = blockEntity.getMailbox();
-            if(mailbox != null && !mailbox.hasOwner())
-            {
-                mailbox.setOwner(player.getUUID());
-            }
+            Optional<Mailbox> optionalMailbox = blockEntity.getMailbox();
+            optionalMailbox.ifPresent(mailbox -> {
+                if(!mailbox.hasOwner()) {
+                    mailbox.setOwner(player.getUUID());
+                }
+            });
 
             player.openMenu(blockEntity);
             return InteractionResult.CONSUME;

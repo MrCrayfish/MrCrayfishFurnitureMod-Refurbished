@@ -30,7 +30,7 @@ public abstract class EntityMixin
     private float refurbishedFurniture$fallPower;
 
     @Shadow
-    protected abstract BlockPos getBlockPosBelowThatAffectsMyMovement();
+    public abstract BlockPos getBlockPosBelowThatAffectsMyMovement();
 
     @Inject(method = "getBlockJumpFactor", at = @At(value = "RETURN"), cancellable = true)
     private void refurbishedFurnitureJumpFactor(CallbackInfoReturnable<Float> cir)

@@ -11,6 +11,7 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -130,7 +131,7 @@ public class NodeIndicatorOverlay implements IHudOverlay
         graphics.fill(contentStart + contentWidth - 1, contentTop + 1, contentStart + contentWidth, contentTop + contentHeight - 1, 0x77000000);
 
         // Draw icon
-        graphics.blit(RenderType::guiTextured, IconButton.ICON_TEXTURES, contentStart + padding, contentTop + padding, iconU, iconV, iconSize, iconSize, 64, 64);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, IconButton.ICON_TEXTURES, contentStart + padding, contentTop + padding, iconU, iconV, iconSize, iconSize, 64, 64);
 
         // Draw message
         graphics.drawString(mc.font, label, contentStart + padding + iconSize + padding, contentTop + padding + 1, 0xFFFFFFFF);

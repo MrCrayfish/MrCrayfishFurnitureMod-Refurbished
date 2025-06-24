@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.serialization.Codec;
 import com.mrcrayfish.furniture.refurbished.block.StoveBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
@@ -16,7 +17,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
@@ -39,6 +39,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -385,25 +387,25 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    public void loadAdditional(ValueInput input)
     {
-        super.loadAdditional(tag, provider);
-        tag.getBoolean("Processing").ifPresent(value -> this.processing = value);
-        tag.getInt("ProcessingTime").ifPresent(value -> this.processingTime = value);
-        tag.getInt("TotalProcessingTime").ifPresent(value -> this.totalProcessingTime = value);
-        tag.getBoolean("Enabled").ifPresent(value -> this.enabled = value);
-        this.readCookingSpaces(tag);
+        super.loadAdditional(input);
+        input.read("Processing", Codec.BOOL).ifPresent(value -> this.processing = value);
+        input.getInt("ProcessingTime").ifPresent(value -> this.processingTime = value);
+        input.getInt("TotalProcessingTime").ifPresent(value -> this.totalProcessingTime = value);
+        input.read("Enabled", Codec.BOOL).ifPresent(value -> this.enabled = value);
+        this.readCookingSpaces(input);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    protected void saveAdditional(ValueOutput output)
     {
-        super.saveAdditional(tag, provider);
-        tag.putBoolean("Processing", this.processing);
-        tag.putInt("TotalProcessingTime", this.totalProcessingTime);
-        tag.putInt("ProcessingTime", this.processingTime);
-        tag.putBoolean("Enabled", this.enabled);
-        this.writeCookingSpaces(tag);
+        super.saveAdditional(output);
+        output.store("Processing", Codec.BOOL, this.processing);
+        output.putInt("TotalProcessingTime", this.totalProcessingTime);
+        output.putInt("ProcessingTime", this.processingTime);
+        output.store("Enabled", Codec.BOOL, this.enabled);
+        this.writeCookingSpaces(output);
     }
 
     @Override
@@ -476,48 +478,42 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     }
 
     /**
-     * Writes the Cooking Spaces to NBT.
+     * Writes the Cooking Spaces to a ValueOutput.
      *
-     * @param compound the compound tag to save the data to
-     * @return the compound tag the data saved to
+     * @param output the value output to save the data to
      */
-    private CompoundTag writeCookingSpaces(CompoundTag compound)
+    private void writeCookingSpaces(ValueOutput output)
     {
-        ListTag list = new ListTag();
+        ValueOutput.ValueOutputList list = output.childrenList("CookingSpaces");
         for(int i = 0; i < this.spaces.size(); i++)
         {
-            CompoundTag tag = new CompoundTag();
-            this.spaces.get(i).writeToTag(tag);
-            tag.putInt("Position", i);
-            list.add(tag);
+            ValueOutput spaceOutput = list.addChild();
+            spaceOutput.putInt("Position", i);
+            this.spaces.get(i).writeToOutput(spaceOutput);
         }
-        compound.put("CookingSpaces", list);
-        return compound;
+        if(list.isEmpty())
+        {
+            output.discard("CookingSpaces");
+        }
     }
 
     /**
-     * Reads the Cooking Spaces from NBT. This method has been designed to accept partial data.
+     * Reads the Cooking Spaces from a ValueInput. This method has been designed to accept partial data.
      * This means it can read the data from one cooking space and not reset/affect the other spaces.
      * This use case is used for reading sync data, while still being a general method to read all
      * the cooking spaces.
      *
-     * @param compound the compound tag to read from
+     * @param input the value input to read data from
      */
-    private void readCookingSpaces(CompoundTag compound)
+    private void readCookingSpaces(ValueInput input)
     {
-        if(!compound.contains("CookingSpaces"))
-            return;
-
-        ListTag list = compound.getListOrEmpty("CookingSpaces");
-        list.forEach(nbt -> {
-            if(nbt instanceof CompoundTag tag) {
-                if(tag.contains("Position")) {
-                    int position = tag.getIntOr("Position", -1);
-                    if(position >= 0 && position < this.spaces.size()) {
-                        this.spaces.get(position).readFromTag(tag);
-                    }
+        input.childrenList("CookingSpaces").ifPresent(list -> {
+            list.forEach(spaceInput -> {
+                int position = spaceInput.getIntOr("Position", -1);
+                if(position >= 0 && position < this.spaces.size()) {
+                    this.spaces.get(position).readFromInput(spaceInput);
                 }
-            }
+            });
         });
     }
 
@@ -681,16 +677,16 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
             return Optional.empty();
         }
 
-        public void writeToTag(CompoundTag tag)
+        public void writeToOutput(ValueOutput output)
         {
-            tag.putInt("CookingTime", this.bakingTime);
-            tag.putInt("TotalCookingTime", this.totalBakingTime);
+            output.putInt("CookingTime", this.bakingTime);
+            output.putInt("TotalCookingTime", this.totalBakingTime);
         }
 
-        public void readFromTag(CompoundTag tag)
+        public void readFromInput(ValueInput input)
         {
-            tag.getInt("CookingTime").ifPresent(value -> this.bakingTime = value);
-            tag.getInt("TotalCookingTime").ifPresent(value -> this.totalBakingTime = value);
+            input.getInt("CookingTime").ifPresent(value -> this.bakingTime = value);
+            input.getInt("TotalCookingTime").ifPresent(value -> this.totalBakingTime = value);
         }
     }
 }

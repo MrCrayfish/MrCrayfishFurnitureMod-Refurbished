@@ -1,33 +1,78 @@
 package com.mrcrayfish.furniture.refurbished.mail;
 
 import com.mojang.authlib.GameProfile;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.blockentity.MailboxBlockEntity;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.players.GameProfileCache;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.commons.lang3.mutable.MutableObject;
 
-import java.util.ArrayDeque;
-import java.util.Optional;
-import java.util.Queue;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Author: MrCrayfish
  */
-public record Mailbox(UUID id, ResourceKey<Level> levelKey, BlockPos pos, MutableObject<UUID> owner, MutableObject<String> customName, Queue<ItemStack> queue, MutableBoolean removed, DeliveryService service) implements IMailbox
+public final class Mailbox implements IMailbox
 {
     public static final int MAX_NAME_LENGTH = 32;
+
+    private static final Codec<Queue<ItemStack>> ITEMSTACK_QUEUE_CODEC = ItemStack.CODEC.listOf()
+            .flatXmap(list -> DataResult.success(new ArrayDeque<>(list)), queue -> DataResult.success(new ArrayList<>(queue)));
+
+    public static final Codec<Mailbox> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            UUIDUtil.CODEC.fieldOf("UUID").forGetter(Mailbox::id),
+            ResourceKey.codec(Registries.DIMENSION).fieldOf("Level").forGetter(Mailbox::levelKey),
+            BlockPos.CODEC.fieldOf("BlockPosition").forGetter(Mailbox::pos),
+            ITEMSTACK_QUEUE_CODEC.fieldOf("Queue").forGetter(Mailbox::queue),
+            UUIDUtil.CODEC.optionalFieldOf("Owner").forGetter(Mailbox::owner),
+            Codec.string(0, MAX_NAME_LENGTH).optionalFieldOf("CustomName").orElse(Optional.of("Mailbox")).forGetter(Mailbox::customName)
+    ).apply(instance, Mailbox::new));
+
+    private final UUID id;
+    private final ResourceKey<Level> levelKey;
+    private final BlockPos pos;
+    private final Queue<ItemStack> queue;
+    private Optional<UUID> owner;
+    private Optional<String> customName;
+    private DeliveryService service;
+    private boolean removed;
+
+    public Mailbox(UUID id, ResourceKey<Level> levelKey, BlockPos pos, Queue<ItemStack> queue, Optional<UUID> owner, Optional<String> customName)
+    {
+        this.id = id;
+        this.levelKey = levelKey;
+        this.pos = pos;
+        this.queue = queue;
+        this.owner = owner;
+        this.customName = customName;
+    }
+
+    public Mailbox(UUID id, ResourceKey<Level> levelKey, BlockPos pos)
+    {
+        this(id, levelKey, pos, new ArrayDeque<>(), Optional.empty(), Optional.empty());
+    }
+
+    public void setService(DeliveryService service)
+    {
+        if(this.service == null)
+        {
+            this.service = service;
+        }
+    }
 
     /**
      * Renames the mailbox with the given custom name. If the name is blank or the length is greater
@@ -40,7 +85,7 @@ public record Mailbox(UUID id, ResourceKey<Level> levelKey, BlockPos pos, Mutabl
     {
         if(!customName.isBlank() && customName.length() <= MAX_NAME_LENGTH)
         {
-            this.customName.setValue(customName);
+            this.customName = Optional.of(customName);
             this.service.setDirty();
             return true;
         }
@@ -52,7 +97,7 @@ public record Mailbox(UUID id, ResourceKey<Level> levelKey, BlockPos pos, Mutabl
      */
     public boolean hasOwner()
     {
-        return this.owner.getValue() != null;
+        return this.owner.isPresent();
     }
 
     /**
@@ -62,25 +107,31 @@ public record Mailbox(UUID id, ResourceKey<Level> levelKey, BlockPos pos, Mutabl
      */
     public void setOwner(UUID uuid)
     {
-        this.owner.setValue(uuid);
+        this.owner = Optional.of(uuid);
         this.service.setDirty();
     }
 
-    void tick()
+    public boolean removed()
     {
-        if(this.removed.booleanValue())
+        return this.removed;
+    }
+
+    void tick(DeliveryService service)
+    {
+        if(this.removed)
             return;
 
-        MinecraftServer server = this.service.getServer();
+        MinecraftServer server = service.getServer();
         ServerLevel level = server.getLevel(this.levelKey);
         if(level == null || !level.isLoaded(this.pos))
             return;
 
         if(level.getBlockEntity(this.pos) instanceof MailboxBlockEntity blockEntity)
         {
-            if(blockEntity.getMailbox() != this)
+            if(blockEntity.getMailbox().stream().noneMatch(mailbox -> mailbox == this))
             {
-                this.remove();
+                service.removeMailbox(this);
+                this.removed = true;
                 return;
             }
 
@@ -91,74 +142,57 @@ public record Mailbox(UUID id, ResourceKey<Level> levelKey, BlockPos pos, Mutabl
             if(blockEntity.deliverItem(stack))
             {
                 this.queue.remove();
-                this.service.setDirty();
+                service.setDirty();
             }
         }
         else
         {
-            this.remove();
+            service.removeMailbox(this);
+            this.removed = true;
         }
-    }
-
-    /**
-     * Marks the mailbox as removed. The next tick of {@link DeliveryService} will unregister
-     * this mailbox.
-     */
-    public void remove()
-    {
-        this.service.removeMailbox(this);
-        this.removed.setValue(true);
     }
 
     /**
      * Writes the queue to the given compound tag.
      *
-     * @param compound the compound tag to save the data into
-     * @param provider
+     * @param output the value output to save the data into
      */
-    public void writeQueue(CompoundTag compound, HolderLookup.Provider provider)
+    public void writeQueue(ValueOutput output)
     {
-        ListTag list = new ListTag();
+        ValueOutput.TypedOutputList<ItemStack> list = output.list("Queue", ItemStack.CODEC);
         this.queue.forEach(stack -> {
             if(!stack.isEmpty()) {
-                list.add(stack.save(provider));
+                list.add(stack);
             }
         });
-        compound.put("Queue", list);
     }
 
     /**
      * Creates a Queue from the given compound tag containing ItemStack to be delivered
      *
-     * @param compound the compound tag to read the data from
+     * @param input the value input to read the data from
      * @return a new ItemStack Queue
      */
-    public static Queue<ItemStack> readQueueListTag(CompoundTag compound, HolderLookup.Provider provider)
+    public static Queue<ItemStack> readQueueListTag(ValueInput input)
     {
-        if(compound.contains("Queue"))
-        {
-            Queue<ItemStack> queue = new ArrayDeque<>();
-            ListTag list = compound.getListOrEmpty("Queue");
-            list.forEach(nbt -> {
-                if(nbt instanceof CompoundTag tag) {
-                    ItemStack stack = ItemStack.parse(provider, tag).orElse(ItemStack.EMPTY);
-                    if(!stack.isEmpty()) {
-                        queue.offer(stack);
-                    }
+        Queue<ItemStack> queue = new ArrayDeque<>();
+        input.list("Queue", ItemStack.CODEC).ifPresent(items -> {
+            items.forEach(stack -> {
+                if(!stack.isEmpty()) {
+                    queue.offer(stack);
                 }
             });
-            return queue;
-        }
-        return new ArrayDeque<>();
+        });
+        return queue;
     }
 
     /**
      * Spawns all the ItemStacks in the queue into the level. This is called when the mailbox
      * is destroyed to prevent lost items.
      */
-    void spawnQueueIntoLevel()
+    void spawnQueueIntoLevel(DeliveryService service)
     {
-        ServerLevel level = this.service.getServer().getLevel(this.levelKey);
+        ServerLevel level = service.getServer().getLevel(this.levelKey);
         if(level != null)
         {
             Queue<ItemStack> queue = this.queue;
@@ -194,7 +228,7 @@ public record Mailbox(UUID id, ResourceKey<Level> levelKey, BlockPos pos, Mutabl
     @Override
     public Optional<GameProfile> getOwner()
     {
-        UUID ownerId = this.owner.getValue();
+        UUID ownerId = this.owner.orElse(null);
         if(ownerId != null)
         {
             GameProfileCache cache = this.service.getServer().getProfileCache();
@@ -209,6 +243,36 @@ public record Mailbox(UUID id, ResourceKey<Level> levelKey, BlockPos pos, Mutabl
     @Override
     public Optional<String> getCustomName()
     {
-        return Optional.ofNullable(this.customName.getValue());
+        return this.customName;
+    }
+
+    public UUID id()
+    {
+        return id;
+    }
+
+    public ResourceKey<Level> levelKey()
+    {
+        return levelKey;
+    }
+
+    public BlockPos pos()
+    {
+        return pos;
+    }
+
+    public Optional<UUID> owner()
+    {
+        return owner;
+    }
+
+    public Optional<String> customName()
+    {
+        return customName;
+    }
+
+    public Queue<ItemStack> queue()
+    {
+        return queue;
     }
 }

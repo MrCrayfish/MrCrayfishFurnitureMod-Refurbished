@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.mojang.serialization.Codec;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.block.RangeHoodBlock;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
@@ -40,6 +41,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
@@ -457,21 +460,21 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    public void loadAdditional(ValueInput input)
     {
-        super.loadAdditional(tag, provider);
-        tag.getBoolean("NeedsFlipping").ifPresent(value -> this.needsFlipping = value);
-        tag.getBoolean("Flipped").ifPresent(value -> this.flipped = value);
-        tag.getInt("Rotation").ifPresent(value -> this.rotation = value);
+        super.loadAdditional(input);
+        input.read("NeedsFlipping", Codec.BOOL).ifPresent(value -> this.needsFlipping = value);
+        input.read("Flipped", Codec.BOOL).ifPresent(value -> this.flipped = value);
+        input.getInt("Rotation").ifPresent(value -> this.rotation = value);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    protected void saveAdditional(ValueOutput output)
     {
-        super.saveAdditional(tag, provider);
-        tag.putBoolean("NeedsFlipping", this.needsFlipping);
-        tag.putBoolean("Flipped", this.flipped);
-        tag.putInt("Rotation", this.rotation);
+        super.saveAdditional(output);
+        output.store("NeedsFlipping", Codec.BOOL, this.needsFlipping);
+        output.store("Flipped", Codec.BOOL, this.flipped);
+        output.putInt("Rotation", this.rotation);
     }
 
     @Nullable

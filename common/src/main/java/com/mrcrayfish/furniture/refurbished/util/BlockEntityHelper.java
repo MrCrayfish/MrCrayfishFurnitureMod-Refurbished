@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.util;
 
+import com.mrcrayfish.furniture.refurbished.Constants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
@@ -12,62 +13,85 @@ import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.Container;
+import net.minecraft.world.ItemStackWithSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 /**
  * Author: MrCrayfish
  */
 public class BlockEntityHelper
 {
-    public static void sendCustomUpdate(BlockEntity entity, BiFunction<BlockEntity, RegistryAccess, CompoundTag> update)
+    public static void sendCustomUpdate(BlockEntity entity, Consumer<ValueOutput> consumer)
     {
         Level level = entity.getLevel();
         if(level != null && level.getChunkSource() instanceof ServerChunkCache cache)
         {
             BlockPos pos = entity.getBlockPos();
-            ClientboundBlockEntityDataPacket packet = ClientboundBlockEntityDataPacket.create(entity, update);
+            ClientboundBlockEntityDataPacket packet = ClientboundBlockEntityDataPacket.create(entity, (blockEntity, registryAccess) -> {
+                try(ProblemReporter.ScopedCollector collector = new ProblemReporter.ScopedCollector(entity.problemPath(), Constants.LOG)) {
+                    TagValueOutput output = TagValueOutput.createWithContext(collector, registryAccess);
+                    consumer.accept(output);
+                    return output.buildResult();
+                }
+            });
             List<ServerPlayer> players = cache.chunkMap.getPlayers(new ChunkPos(pos), false);
             players.forEach(player -> player.connection.send(packet));
         }
     }
 
-    public static void saveItems(String key, CompoundTag tag, NonNullList<ItemStack> items, HolderLookup.Provider provider)
+    public static void sendCustomUpdate(BlockEntity entity, BiFunction<BlockEntity, RegistryAccess, CompoundTag> consumer)
     {
-        ListTag list = new ListTag();
-        for(int i = 0; i < items.size(); i++)
+        Level level = entity.getLevel();
+        if(level != null && level.getChunkSource() instanceof ServerChunkCache cache)
         {
-            ItemStack stack = items.get(i);
-            if(!stack.isEmpty())
-            {
-                CompoundTag slot = new CompoundTag();
-                slot.putByte("Slot", (byte) i);
-                list.add(stack.save(provider, slot));
-            }
+            BlockPos pos = entity.getBlockPos();
+            ClientboundBlockEntityDataPacket packet = ClientboundBlockEntityDataPacket.create(entity, consumer);
+            List<ServerPlayer> players = cache.chunkMap.getPlayers(new ChunkPos(pos), false);
+            players.forEach(player -> player.connection.send(packet));
         }
-        tag.put(key, list);
     }
 
-    public static void loadItems(String key, HolderLookup.Provider provider, CompoundTag tag, NonNullList<ItemStack> items)
+    public static void saveItems(String key, ValueOutput output, NonNullList<ItemStack> items)
     {
-        items.clear();
-        tag.getList(key).ifPresent(list -> {
-            list.forEach(nbt -> {
-                if(nbt instanceof CompoundTag slot) {
-                    slot.getByte("Slot").ifPresent(index -> {
-                        if(index >= 0 && index < items.size()) {
-                            items.set(index, ItemStack.parse(provider, slot).orElse(ItemStack.EMPTY));
-                        }
-                    });
+        ValueOutput.TypedOutputList<ItemStackWithSlot> list = output.list(key, ItemStackWithSlot.CODEC);
+        for(int slot = 0; slot < items.size(); slot++)
+        {
+            ItemStack stack = items.get(slot);
+            if(!stack.isEmpty())
+            {
+                list.add(new ItemStackWithSlot(slot, stack));
+            }
+        }
+        if(list.isEmpty())
+        {
+            output.discard(key);
+        }
+    }
+
+    @SuppressWarnings("ConstantValue")
+    public static void loadItems(String key, ValueInput input, NonNullList<ItemStack> items)
+    {
+        input.list(key, ItemStackWithSlot.CODEC).ifPresent(slots -> {
+            items.clear();
+            for(ItemStackWithSlot withSlot : slots) {
+                if(withSlot.isValidInContainer(items.size())) {
+                    items.set(withSlot.slot(), withSlot.stack());
                 }
-            });
+            }
         });
     }
 
@@ -82,11 +106,16 @@ public class BlockEntityHelper
         return items;
     }
 
-    public static void saveCustomName(CompoundTag tag, @Nullable Component component, HolderLookup.Provider provider)
+    public static Optional<Component> readCustomName(ValueInput input)
+    {
+       return input.read("CustomName", ComponentSerialization.CODEC);
+    }
+
+    public static void saveCustomName(ValueOutput output, @Nullable Component component)
     {
         if(component != null)
         {
-            tag.put("CustomName", ComponentSerialization.CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), component).getOrThrow());
+            output.store("CustomName", ComponentSerialization.CODEC, component);
         }
     }
 }

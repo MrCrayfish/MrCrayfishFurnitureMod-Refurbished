@@ -26,6 +26,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -259,10 +261,10 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    protected void loadAdditional(ValueInput input)
     {
-        super.loadAdditional(tag, provider);
-        tag.read("CurrentChannel", ResourceLocation.CODEC).ifPresent(value -> {
+        super.loadAdditional(input);
+        input.read("CurrentChannel", ResourceLocation.CODEC).ifPresent(value -> {
             if(!value.equals(WHITE_NOISE.id) && ID_TO_CHANNEL.containsKey(value)) {
                 this.currentChannel = ID_TO_CHANNEL.get(value);
             }
@@ -270,12 +272,12 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    protected void saveAdditional(ValueOutput output)
     {
-        super.saveAdditional(tag, provider);
+        super.saveAdditional(output);
         if(this.currentChannel != null && this.currentChannel != WHITE_NOISE)
         {
-            tag.store("CurrentChannel", ResourceLocation.CODEC, this.currentChannel.id);
+            output.store("CurrentChannel", ResourceLocation.CODEC, this.currentChannel.id);
         }
     }
 

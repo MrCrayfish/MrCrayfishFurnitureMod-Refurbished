@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.mojang.serialization.Codec;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModDataComponents;
 import com.mrcrayfish.furniture.refurbished.image.PaletteImage;
@@ -23,6 +24,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 import java.util.BitSet;
 import java.util.Optional;
@@ -136,35 +139,39 @@ public class DoorMatBlockEntity extends BlockEntity implements MenuProvider, IPa
     }
 
     @Override
-    public void removeComponentsFromTag(CompoundTag tag)
+    public void removeComponentsFromTag(ValueOutput output)
     {
-        tag.remove("Image");
-        tag.remove("Finalised");
+        output.discard("Image");
+        output.discard("Finalised");
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    public void loadAdditional(ValueInput input)
     {
-        super.loadAdditional(tag, provider);
-        tag.getLongArray("Image").ifPresent(value -> {
-            BitSet bits = BitSet.valueOf(value);
+        super.loadAdditional(input);
+        input.list("Image", Codec.LONG).ifPresent(data -> {
+            long[] longs = data.stream().mapToLong(value1 -> value1).toArray();
+            BitSet bits = BitSet.valueOf(longs);
             if(bits.size() >= IMAGE_WIDTH * IMAGE_HEIGHT) {
                 this.image = new PaletteImage(IMAGE_WIDTH, IMAGE_HEIGHT, () -> bits);
             }
         });
-        tag.getBoolean("Finalised").ifPresent(value -> this.finalised = value);
+        input.read("Finalised", Codec.BOOL).ifPresent(value -> this.finalised = value);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    protected void saveAdditional(ValueOutput output)
     {
-        super.saveAdditional(tag, provider);
+        super.saveAdditional(output);
         if(this.image != null)
         {
-            long[] data = this.image.getData().toLongArray();
-            tag.putLongArray("Image", data);
+            ValueOutput.TypedOutputList<Long> list = output.list("Image", Codec.LONG);
+            for(long l : this.image.getData().toLongArray())
+            {
+                list.add(l);
+            }
         }
-        tag.putBoolean("Finalised", this.finalised);
+        output.store("Finalised", Codec.BOOL, this.finalised);
     }
 
     @Nullable

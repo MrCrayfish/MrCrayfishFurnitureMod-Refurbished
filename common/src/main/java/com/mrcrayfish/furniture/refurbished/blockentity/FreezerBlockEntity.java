@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.mojang.serialization.Codec;
 import com.mrcrayfish.furniture.refurbished.block.FreezerBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
@@ -28,6 +29,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -151,17 +154,17 @@ public class FreezerBlockEntity extends ElectricityModuleProcessingLootBlockEnti
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    public void loadAdditional(ValueInput input)
     {
-        super.loadAdditional(tag, provider);
-        tag.getBoolean("Enabled").ifPresent(value -> this.enabled = value);
+        super.loadAdditional(input);
+        input.read("Enabled", Codec.BOOL).ifPresent(value -> this.enabled = value);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    protected void saveAdditional(ValueOutput output)
     {
-        super.saveAdditional(tag, provider);
-        tag.putBoolean("Enabled", this.enabled);
+        super.saveAdditional(output);
+        output.store("Enabled", Codec.BOOL, this.enabled);
     }
 
     @Override

@@ -1,12 +1,8 @@
 package com.mrcrayfish.furniture.refurbished.platform.services;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
@@ -42,8 +38,6 @@ public interface IClientHelper
 
     RenderType createPaletteImageRenderType(ResourceLocation id);
 
-    void renderTooltip(GuiGraphics graphics, Font font, List<ClientTooltipComponent> components, int mouseX, int mouseY, ClientTooltipPositioner position);
-
     @SuppressWarnings("rawtypes")
     AbstractContainerScreen createFreezerScreen(AbstractContainerMenu menu, Inventory playerInventory, Component title);
 
@@ -53,5 +47,5 @@ public interface IClientHelper
     @SuppressWarnings("rawtypes")
     AbstractContainerScreen createStoveScreen(AbstractContainerMenu menu, Inventory playerInventory, Component title);
 
-    RenderPipeline.Snippet getMatricesColorSnippet();
+    RenderPipeline.Snippet getMatricesProjectionSnippet();
 }

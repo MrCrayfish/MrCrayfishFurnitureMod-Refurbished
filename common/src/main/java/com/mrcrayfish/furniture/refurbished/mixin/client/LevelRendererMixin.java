@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.mixin.client;
 
+import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
 import com.mrcrayfish.furniture.refurbished.client.DeferredElectricRenderer;
 import net.minecraft.client.Camera;
@@ -7,6 +8,7 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
 import org.joml.Matrix4f;
+import org.joml.Vector4f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -20,7 +22,7 @@ public class LevelRendererMixin
      * after the Iris rendering pipeline finishes, which just happens slightly before the return.
      */
     @Inject(method = "renderLevel", at = @At(value = "RETURN"))
-    private void refurbishedFurnitureRenderLevel(GraphicsResourceAllocator allocator, DeltaTracker deltaTracker, boolean bl, Camera camera, GameRenderer gameRenderer, Matrix4f projMatrix, Matrix4f matrix4f2, CallbackInfo ci)
+    private void refurbishedFurnitureRenderLevel(GraphicsResourceAllocator allocator, DeltaTracker deltaTracker, boolean bl, Camera camera, Matrix4f projMatrix, Matrix4f matrix4f2, GpuBufferSlice slice, Vector4f p_425544_, boolean p_426302_, CallbackInfo ci)
     {
         DeferredElectricRenderer renderer = DeferredElectricRenderer.get();
         if(renderer.isIrisShadersEnabled())

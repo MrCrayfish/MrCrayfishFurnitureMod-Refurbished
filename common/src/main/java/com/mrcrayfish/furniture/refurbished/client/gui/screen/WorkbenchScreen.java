@@ -25,6 +25,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.CommonComponents;
@@ -165,7 +166,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
     {
-        graphics.blit(RenderType::guiTextured, WORKBENCH_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, WORKBENCH_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
         this.renderScrollbar(graphics, mouseY);
         this.renderRecipes(graphics, partialTick, mouseX, mouseY);
         this.renderOverlay(graphics);
@@ -173,14 +174,14 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
 
         if(this.isHovering(199, 5, 10, 10, mouseX, mouseY))
         {
-            this.setTooltipForNextRenderPass(ScreenHelper.createMultilineTooltip(List.of(Utils.translation("gui", "how_to").withStyle(ChatFormatting.GOLD), Utils.translation("gui", "workbench_info"))).toCharSequence(this.minecraft));
+            graphics.setTooltipForNextFrame(ScreenHelper.createMultilineTooltip(List.of(Utils.translation("gui", "how_to").withStyle(ChatFormatting.GOLD), Utils.translation("gui", "workbench_info"))).toCharSequence(this.minecraft), mouseX, mouseY);
         }
     }
 
     private void renderScrollbar(GuiGraphics graphics, int mouseY)
     {
         int textureU = this.getMaxScroll() > 0 ? 216 : 228;
-        graphics.blit(RenderType::guiTextured, WORKBENCH_TEXTURE, this.leftPos + 169, this.topPos + 18 + this.getScrollbarPosition(mouseY), textureU, 40, 12, SCROLLBAR_HEIGHT, 256, 256);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, WORKBENCH_TEXTURE, this.leftPos + 169, this.topPos + 18 + this.getScrollbarPosition(mouseY), textureU, 40, 12, SCROLLBAR_HEIGHT, 256, 256);
     }
 
     private void renderRecipes(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
@@ -202,7 +203,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
             int buttonY = this.topPos + 18 + (i / RECIPES_PER_ROW) * BUTTON_SIZE - (int) scroll;
             int textureU = 216 + (!canCraft ? BUTTON_SIZE : 0);
             int textureV = selected ? BUTTON_SIZE : 0;
-            graphics.blit(RenderType::guiTextured, WORKBENCH_TEXTURE, buttonX, buttonY, textureU, textureV, BUTTON_SIZE, BUTTON_SIZE, 256, 256);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, WORKBENCH_TEXTURE, buttonX, buttonY, textureU, textureV, BUTTON_SIZE, BUTTON_SIZE, 256, 256);
             graphics.renderFakeItem(recipe.value().getResult(), buttonX + 2, buttonY + 2);
             if(mouseInWindow && ScreenHelper.isMouseWithinBounds(mouseX, mouseY, buttonX, buttonY, BUTTON_SIZE, BUTTON_SIZE))
             {
@@ -216,11 +217,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     {
         if(!this.menu.isPowered())
         {
-            PoseStack pose = graphics.pose();
-            pose.pushPose();
-            pose.translate(0, 0, 200);
             graphics.fill(this.leftPos + 46, this.topPos + 18, this.leftPos + 46 + WINDOW_WIDTH, this.topPos + 18 + WINDOW_HEIGHT, 0xAA000000);
-            pose.popPose();
         }
     }
 
@@ -239,7 +236,8 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
             Map<Integer, Integer> counted = new HashMap<>();
             holder.value().getMaterials().forEach(material -> components.add(new ClientWorkbenchRecipeIngredientTooltip(this.menu, material, counted)));
         }
-        ClientServices.PLATFORM.renderTooltip(graphics, this.font, components, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE);
+        // TODO 1.21.6
+        graphics.renderTooltip(this.font, components, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
     }
 
     @Override
@@ -488,8 +486,8 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
         {
             int textureV = this.isHovered ? 87 : this.category.enabled ? 71 : 55;
-            graphics.blit(RenderType::guiTextured, WORKBENCH_TEXTURE, this.getX(), this.getY(), 216, textureV, 20, 16, 256, 256);
-            graphics.blit(RenderType::guiTextured, WORKBENCH_TEXTURE, this.getX() + 3, this.getY() + 1, this.iconU, this.iconV, 14, 14, 256, 256);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, WORKBENCH_TEXTURE, this.getX(), this.getY(), 216, textureV, 20, 16, 256, 256);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, WORKBENCH_TEXTURE, this.getX() + 3, this.getY() + 1, this.iconU, this.iconV, 14, 14, 256, 256);
         }
     }
 }

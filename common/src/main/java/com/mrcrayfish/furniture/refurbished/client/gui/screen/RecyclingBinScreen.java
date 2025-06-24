@@ -15,9 +15,11 @@ import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import org.joml.Matrix4f;
@@ -67,25 +69,26 @@ public class RecyclingBinScreen extends ElectricityContainerScreen<RecycleBinMen
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
     {
         super.renderBg(graphics, partialTick, mouseX, mouseY);
-        graphics.blit(RenderType::guiTextured, RECYCLING_BIN_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, RECYCLING_BIN_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
         if(this.menu.getProcessTime() >= 0)
         {
             int maxProcessTime = Config.SERVER.recycleBin.processingTime.get();
             int width = (int) Math.ceil(25 * (this.menu.getProcessTime() / (float) maxProcessTime));
-            graphics.blit(RenderType::guiTextured, RECYCLING_BIN_TEXTURE, this.leftPos + 85, this.topPos + 28, 176, 0, width, 17, 256, 256);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, RECYCLING_BIN_TEXTURE, this.leftPos + 85, this.topPos + 28, 176, 0, width, 17, 256, 256);
         }
         int maxLevel = Config.SERVER.recycleBin.maximumExperienceLevels.get();
         double currentLevel = Mth.clamp(this.getExperienceLevel(), 0, maxLevel);
         Component levelLabel = Utils.translation("gui", "experience_level", FORMAT.format(currentLevel), maxLevel);
         int labelWidth = this.minecraft.font.width(levelLabel) / 2;
-        Matrix4f matrix = graphics.pose().last().pose();
+        Matrix4f matrix = new Matrix4f();
+        matrix.mul(graphics.pose());
         MultiBufferSource.BufferSource source = this.minecraft.renderBuffers().bufferSource();
         this.minecraft.font.drawInBatch8xOutline(levelLabel.getVisualOrderText(), this.leftPos + 68 - labelWidth, this.topPos + 60, 0xFFC8FF8F, 0xFF2D2102, matrix, source, 0xF000F0);
         this.drawExperienceFluid(graphics, (float) (currentLevel / maxLevel));
 
         if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, this.leftPos + 118, this.topPos + 22, 32, 48))
         {
-            this.setTooltipForNextRenderPass(Utils.translation("gui", "experience_points", (int) this.getExperiencePoints()));
+            graphics.setTooltipForNextFrame(Utils.translation("gui", "experience_points", (int) this.getExperiencePoints()), mouseX, mouseY);
         }
     }
 
@@ -122,20 +125,7 @@ public class RecyclingBinScreen extends ElectricityContainerScreen<RecycleBinMen
 
     private void drawBlitWithAlpha(GuiGraphics graphics, int x, int y, int u, int v, int width, int height, float alpha)
     {
-        float scale = (float) 1 / 256;
-        RenderType type = RenderType.guiTextured(RECYCLING_BIN_TEXTURE);
-        Matrix4f matrix = graphics.pose().last().pose();
-        BufferBuilder builder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-        builder.addVertex(matrix, x, y, 0).setUv(u * scale, v * scale).setColor(1.0F, 1.0F, 1.0F, alpha);
-        builder.addVertex(matrix, x, y + height, 0).setUv(u * scale, (v + height) * scale).setColor(1.0F, 1.0F, 1.0F, alpha);
-        builder.addVertex(matrix, x + width, y + height, 0).setUv((u + width) * scale, (v + height) * scale).setColor(1.0F, 1.0F, 1.0F, alpha);
-        builder.addVertex(matrix, x + width, y, 0).setUv((u + width) * scale, v * scale).setColor(1.0F, 1.0F, 1.0F, alpha);
-        try(MeshData data = builder.build())
-        {
-            if(data != null)
-            {
-                type.draw(data);
-            }
-        }
+        int color = ARGB.colorFromFloat(1.0F, 1.0F, 1.0F, alpha);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, RECYCLING_BIN_TEXTURE, x, y, width, height, u, v, width, height, 256, 256, color);
     }
 }

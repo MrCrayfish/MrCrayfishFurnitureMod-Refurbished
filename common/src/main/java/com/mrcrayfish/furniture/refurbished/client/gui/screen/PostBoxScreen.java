@@ -20,6 +20,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.CommonComponents;
@@ -107,16 +108,16 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
             this.searchEditBox.setValue(this.query);
         }
 
-        this.addRenderableWidget(this.messageEditBox = new MultiLineEditBox(this.font, this.leftPos + 118, this.topPos + 13, 116, 54, Utils.translation("gui", "enter_message"), Utils.translation("gui", "package_message")) {
-            @Override
-            protected void renderBorder(GuiGraphics graphics, int x, int y, int width, int height) {}
+        // TODO 1.21.6
+        this.messageEditBox = MultiLineEditBox.builder()
+                .setShowBackground(false)
+                .setShowDecorations(false)
+                .setPlaceholder(Utils.translation("gui", "enter_message"))
+                .setX(this.leftPos + 118)
+                .setY(this.topPos + 13)
+                .build(this.font, 116, 54, Utils.translation("gui", "package_message"));
+        this.addRenderableWidget(this.messageEditBox);
 
-            @Override
-            protected boolean scrollbarVisible()
-            {
-                return false;
-            }
-        });
         this.messageEditBox.setValueListener(s -> this.message = s);
         if(!this.message.isBlank())
         {
@@ -164,7 +165,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
     {
-        graphics.blit(RenderType::guiTextured, POST_BOX_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth + 25, this.imageHeight, 512, 256);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, POST_BOX_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth + 25, this.imageHeight, 512, 256);
 
         // Draw mailboxes list
         graphics.enableScissor(this.leftPos + CONTAINER_LEFT, this.topPos + CONTAINER_TOP, this.leftPos + CONTAINER_LEFT + CONTAINER_WIDTH, this.topPos + CONTAINER_TOP + CONTAINER_HEIGHT);
@@ -180,7 +181,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
             boolean selected = this.selected == mailbox;
 
             // Draw the background of the mailbox entry
-            graphics.blit(RenderType::guiTextured, POST_BOX_TEXTURE, entryX, entryY, 0, selected ? 172 : 186, MAILBOX_ENTRY_WIDTH, MAILBOX_ENTRY_HEIGHT, 512, 256);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, POST_BOX_TEXTURE, entryX, entryY, 0, selected ? 172 : 186, MAILBOX_ENTRY_WIDTH, MAILBOX_ENTRY_HEIGHT, 512, 256);
 
             // Draw the face of the player's skin
             Optional<GameProfile> optional = mailbox.getOwner();
@@ -204,13 +205,13 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
                     .map(GameProfile::getName)
                     .map(Component::literal)
                     .orElse(UNKNOWN_MAILBOX_OWNER);
-                this.setTooltipForNextRenderPass(ownerName);
+                graphics.setTooltipForNextFrame(ownerName, mouseX, mouseY);
             }
         }
         graphics.disableScissor();
 
         // Draw scroll bar
-        graphics.blitSprite(RenderType::guiTextured, this.canScroll() ? SCROLLER_SPRITE : SCROLLER_DISABLED_SPRITE, this.leftPos + CONTAINER_LEFT + CONTAINER_WIDTH + 1, this.topPos + CONTAINER_TOP + this.getScrollBarOffset(mouseY), SCROLL_BAR_WIDTH, SCROLL_BAR_HEIGHT);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.canScroll() ? SCROLLER_SPRITE : SCROLLER_DISABLED_SPRITE, this.leftPos + CONTAINER_LEFT + CONTAINER_WIDTH + 1, this.topPos + CONTAINER_TOP + this.getScrollBarOffset(mouseY), SCROLL_BAR_WIDTH, SCROLL_BAR_HEIGHT);
 
         // Draw icons in item slots
         for(int j = 0; j < 3; j++)
@@ -219,7 +220,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
             {
                 if(this.menu.getContainer().getItem(j * 2 + i).isEmpty())
                 {
-                    graphics.blit(RenderType::guiTextured, POST_BOX_TEXTURE, this.leftPos + 235 + i * 18, this.topPos + 14 + j * 18, 85, 172, 16, 16, 512, 256);
+                    graphics.blit(RenderPipelines.GUI_TEXTURED, POST_BOX_TEXTURE, this.leftPos + 235 + i * 18, this.topPos + 14 + j * 18, 85, 172, 16, 16, 512, 256);
                 }
             }
         }
@@ -233,31 +234,33 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
             int responseToastLeft = this.leftPos + this.imageWidth / 2 - responseToastWidth / 2;
             int responseToastTop = this.topPos - 22;
             graphics.enableScissor(responseToastLeft, this.topPos - 22, responseToastLeft + responseToastWidth, this.topPos);
-            PoseStack poseStack = graphics.pose();
-            poseStack.pushPose();
+            graphics.pose().pushMatrix();
             if(this.responseTimer < 5)
             {
                 float frameTime = this.minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false);
-                poseStack.translate(0, (5 - (this.responseTimer + frameTime)) * 5, 0);
+                graphics.pose().translate(0, (5 - (this.responseTimer + frameTime)) * 5);
             }
             else if(MAX_RESPONSE_DISPLAY_TIME - this.responseTimer < 5)
             {
                 float frameTime = this.minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false);
                 float offset = 5 - (MAX_RESPONSE_DISPLAY_TIME - (this.responseTimer + frameTime));
-                poseStack.translate(0, offset * 5, 0);
+                graphics.pose().translate(0, offset * 5);
             }
             int toastU = this.responseSuccess ? 8 : 0;
-            graphics.blit(RenderType::guiTextured, POST_BOX_TEXTURE, responseToastLeft, responseToastTop, toastU, 200, 4, 18, 512, 256);
-            graphics.blit(RenderType::guiTextured, POST_BOX_TEXTURE, responseToastLeft + 4, responseToastTop, toastU + 4, 200, contentWidth, 18, 1, 18, 512, 256);
-            graphics.blit(RenderType::guiTextured, POST_BOX_TEXTURE, responseToastLeft + 4 + contentWidth, responseToastTop, toastU + 5, 200, 3, 18, 512, 256);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, POST_BOX_TEXTURE, responseToastLeft, responseToastTop, toastU, 200, 4, 18, 512, 256);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, POST_BOX_TEXTURE, responseToastLeft + 4, responseToastTop, toastU + 4, 200, contentWidth, 18, 1, 18, 512, 256);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, POST_BOX_TEXTURE, responseToastLeft + 4 + contentWidth, responseToastTop, toastU + 5, 200, 3, 18, 512, 256);
             graphics.drawString(this.font, responseMessage, responseToastLeft + 6, responseToastTop + 5, 0xFFFFFFFF);
-            poseStack.popPose();
+            graphics.pose().popMatrix();
             graphics.disableScissor();
         }
 
         if(this.isHovering(91, 5, 10, 10, mouseX, mouseY))
         {
-            this.setTooltipForNextRenderPass(ScreenHelper.createMultilineTooltip(List.of(Utils.translation("gui", "how_to").withStyle(ChatFormatting.GOLD), Utils.translation("gui", "post_box_info"))).toCharSequence(this.minecraft));
+            graphics.setTooltipForNextFrame(ScreenHelper.createMultilineTooltip(List.of(
+                Utils.translation("gui", "how_to").withStyle(ChatFormatting.GOLD),
+                Utils.translation("gui", "post_box_info"))
+            ).toCharSequence(this.minecraft), mouseX, mouseY);
         }
     }
 

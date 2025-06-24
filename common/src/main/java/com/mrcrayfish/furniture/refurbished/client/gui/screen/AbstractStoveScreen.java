@@ -10,6 +10,7 @@ import com.mrcrayfish.furniture.refurbished.network.message.MessageTogglePower;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -63,10 +64,10 @@ public class AbstractStoveScreen<T extends AbstractContainerMenu & IElectricityM
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
     {
         super.renderBg(graphics, partialTick, mouseX, mouseY);
-        graphics.blit(RenderType::guiTextured, TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
 
         int offset = this.menu.isPowered() && this.menu.isEnabled() ? (int) (Util.getMillis() / 100) % 3 : 0;
-        graphics.blit(RenderType::guiTextured, TEXTURE, this.leftPos + 32, this.topPos + 23, 176, 16 + offset * 40, 40, 40, 256, 256);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos + 32, this.topPos + 23, 176, 16 + offset * 40, 40, 40, 256, 256);
 
         for(int i = 0; i < 3; i++)
         {
@@ -75,7 +76,7 @@ public class AbstractStoveScreen<T extends AbstractContainerMenu & IElectricityM
             if(totalProgress == 0)
                 continue;
             int height = (int) Math.ceil(16 * (progress / (float) totalProgress));
-            graphics.blit(RenderType::guiTextured, TEXTURE, this.leftPos + 84 + i * 18, this.topPos + 36, 190, 0, 17, height, 256, 256);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos + 84 + i * 18, this.topPos + 36, 190, 0, 17, height, 256, 256);
         }
     }
 }

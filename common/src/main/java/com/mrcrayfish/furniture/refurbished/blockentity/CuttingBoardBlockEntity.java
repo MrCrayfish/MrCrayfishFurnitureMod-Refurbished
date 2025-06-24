@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.google.common.base.Preconditions;
+import com.mojang.serialization.Codec;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
@@ -35,6 +36,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -472,18 +475,20 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    protected void saveAdditional(ValueOutput output)
     {
-        super.saveAdditional(tag, provider);
-        tag.putBoolean("CanExtract", this.canExtract);
-        tag.putBoolean("PlacedByPlayer", this.placedByPlayer);
+        super.saveAdditional(output);
+        // There is no optional boolean, so use codec
+        output.store("CanExtract", Codec.BOOL, this.canExtract);
+        output.store("PlacedByPlayer", Codec.BOOL, this.placedByPlayer);
     }
 
     @Override
-    public void loadAdditional(CompoundTag compound, HolderLookup.Provider provider)
+    public void loadAdditional(ValueInput input)
     {
-        super.loadAdditional(compound, provider);
-        compound.getBoolean("CanExtract").ifPresent(value -> this.canExtract = value);
-        compound.getBoolean("PlacedByPlayer").ifPresent(value -> this.placedByPlayer = value);
+        super.loadAdditional(input);
+        // There is no optional boolean, so use codec
+        input.read("CanExtract", Codec.BOOL).ifPresent(value -> this.canExtract = value);
+        input.read("PlacedByPlayer", Codec.BOOL).ifPresent(value -> this.placedByPlayer = value);
     }
 }

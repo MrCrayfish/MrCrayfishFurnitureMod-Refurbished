@@ -6,6 +6,7 @@ import com.mrcrayfish.furniture.refurbished.computer.client.Icon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 
@@ -43,20 +44,19 @@ public class ProgramShortcutButton extends ComputerButton
         graphics.fill(this.getX() + 1, this.getY() + 1, this.getX() + this.getWidth() - 1, this.getY() + this.getHeight() - 1, this.getBackgroundColour());
 
         // Draw program icon
-        graphics.blit(RenderType::guiTextured, this.icon.texture(), this.getX() + (this.width - 16) / 2, this.getY() + 4, this.icon.u(), this.icon.v(), 16, 16, 128, 128);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, this.icon.texture(), this.getX() + (this.width - 16) / 2, this.getY() + 4, this.icon.u(), this.icon.v(), 16, 16, 128, 128);
 
         // Draw program name in unicode font
-        PoseStack pose = graphics.pose();
-        pose.pushPose();
+        graphics.pose().pushMatrix();
         Font font = Minecraft.getInstance().font;
         float scale = 0.666F;
         int labelWidth = font.width(this.getMessage());
         int labelX = (int) (this.getX() + (this.width - labelWidth * scale) / 2) + 1;
         int labelY = this.getY() + this.height - font.lineHeight;
-        pose.translate(labelX, labelY, 0);
-        pose.scale(scale, scale, scale);
+        graphics.pose().translate(labelX, labelY);
+        graphics.pose().scale(scale, scale);
         graphics.drawString(Minecraft.getInstance().font, this.getMessage(), 0, 0, this.getTextColour(), false);
-        pose.popPose();
+        graphics.pose().popMatrix();
     }
 
     @Override

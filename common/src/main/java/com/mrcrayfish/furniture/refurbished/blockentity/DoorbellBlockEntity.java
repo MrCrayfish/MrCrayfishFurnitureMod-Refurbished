@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.mojang.serialization.Codec;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageDoorbellNotification;
@@ -15,6 +16,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
@@ -99,23 +102,23 @@ public class DoorbellBlockEntity extends ElectricityModuleBlockEntity implements
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    protected void loadAdditional(ValueInput input)
     {
-        super.loadAdditional(tag, provider);
-        tag.read("Owner", UUIDUtil.CODEC).ifPresent(value -> this.owner = value);
-        tag.getBoolean("Powered").ifPresent(value -> this.powered = value);
-        this.customName = tag.getStringOr("CustomName", "");
+        super.loadAdditional(input);
+        input.read("Owner", UUIDUtil.CODEC).ifPresent(value -> this.owner = value);
+        input.read("Powered", Codec.BOOL).ifPresent(value -> this.powered = value);
+        this.customName = input.getStringOr("CustomName", "");
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    protected void saveAdditional(ValueOutput output)
     {
-        super.saveAdditional(tag, provider);
+        super.saveAdditional(output);
         if(this.owner != null)
         {
-            tag.store("Owner", UUIDUtil.CODEC, this.owner);
+            output.store("Owner", UUIDUtil.CODEC, this.owner);
         }
-        tag.putBoolean("Powered", this.powered);
-        tag.putString("CustomName", this.customName);
+        output.store("Powered", Codec.BOOL, this.powered);
+        output.putString("CustomName", this.customName);
     }
 }

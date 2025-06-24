@@ -15,6 +15,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.types.IRecipeHolderType;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -55,7 +56,7 @@ public class OvenBakingCategory extends FurnitureRecipeCategory<OvenBakingRecipe
     {
         super.draw(holder, view, graphics, mouseX, mouseY);
         int offset = (int) (Util.getMillis() / 100) % 3;
-        graphics.blit(RenderType::guiTextured, Plugin.TEXTURES_2, 5, 10, 120, offset * 40, 40, 40, 40, 40, 256, 256);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, Plugin.TEXTURES_2, 5, 10, 120, offset * 40, 40, 40, 40, 40, 256, 256);
         this.arrow.draw(graphics, 57, 23);
         this.drawSeconds(graphics, 14, 53, holder.value().getTime());
     }

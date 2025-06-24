@@ -4,6 +4,7 @@ import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -25,9 +26,9 @@ public class MailboxItem extends BlockItem
     @Override
     protected boolean canPlace(BlockPlaceContext context, BlockState state)
     {
-        if(context.getPlayer() instanceof ServerPlayer player)
+        if(context.getLevel() instanceof ServerLevel level && context.getPlayer() instanceof ServerPlayer player)
         {
-            DeliveryService service = DeliveryService.get(player.server).orElse(null);
+            DeliveryService service = DeliveryService.get(level.getServer()).orElse(null);
             if(service != null)
             {
                 if(!service.canCreateMailbox(player))

@@ -33,6 +33,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
@@ -122,18 +124,16 @@ public class KitchenSinkBlockEntity extends BlockEntity implements IFluidContain
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    protected void loadAdditional(ValueInput input)
     {
-        super.loadAdditional(tag, provider);
-        this.tank.load(tag.getCompoundOrEmpty("FluidTank"), provider);
+        super.loadAdditional(input);
+        this.tank.load(input.childOrEmpty("FluidTank"));
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    protected void saveAdditional(ValueOutput output)
     {
-        super.saveAdditional(tag, provider);
-        CompoundTag tankTag = new CompoundTag();
-        this.tank.save(tankTag, provider);
-        tag.put("FluidTank", tankTag);
+        super.saveAdditional(output);
+        this.tank.save(output.child("FluidTank"));
     }
 }

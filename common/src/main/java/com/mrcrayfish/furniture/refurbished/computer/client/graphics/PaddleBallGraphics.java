@@ -15,6 +15,7 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -205,7 +206,7 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
         @Override
         public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
         {
-            graphics.blit(RenderType::guiTextured, TEXTURE, (this.game.width - 128) / 2, 10, 16, 0, 128, 24, 256, 256);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, (this.game.width - 128) / 2, 10, 16, 0, 128, 24, 256, 256);
         }
 
         private static class MenuButton extends ComputerButton
@@ -221,8 +222,8 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
                 super.renderWidget(graphics, mouseX, mouseY, partialTick);
                 if(this.isActive() && this.isHoveredOrFocused())
                 {
-                    graphics.blit(RenderType::guiTextured, TEXTURE, this.getX() - 6, this.getY() + 6, 12, 0, 4, 4, 256, 256);
-                    graphics.blit(RenderType::guiTextured, TEXTURE, this.getX() + this.getWidth() + 2, this.getY() + 6, 12, 0, 4, 4, 256, 256);
+                    graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.getX() - 6, this.getY() + 6, 12, 0, 4, 4, 256, 256);
+                    graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.getX() + this.getWidth() + 2, this.getY() + 6, 12, 0, 4, 4, 256, 256);
                 }
             }
         }
@@ -252,7 +253,7 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
         @Override
         public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
         {
-            graphics.blit(RenderType::guiTextured, TEXTURE, (this.game.width - 128) / 2, 10, 16, 0, 128, 24, 256, 256);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, (this.game.width - 128) / 2, 10, 16, 0, 128, 24, 256, 256);
 
             String loading = switch((int) (Util.getMillis() / 300L % 4L)) {
                 default -> "O o o";
@@ -304,34 +305,33 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
             this.backButton.visible = this.game.wonGame != null;
 
             Minecraft mc = Minecraft.getInstance();
-            PoseStack stack = graphics.pose();
 
-            stack.pushPose();
-            stack.translate(PaddleBall.BOARD_WIDTH / 2, 4, 0);
+            graphics.pose().pushMatrix();
+            graphics.pose().translate(PaddleBall.BOARD_WIDTH / 2, 4);
 
             // Draw player score
-            stack.pushPose();
+            graphics.pose().pushMatrix();
             String label = Integer.toString(this.game.playerScore);
             int width = mc.font.width(label) * 2;
-            stack.translate(-width - 7, 0, 0);
-            stack.scale(2, 2, 2);
+            graphics.pose().translate(-width - 7, 0);
+            graphics.pose().scale(2, 2);
             graphics.drawString(mc.font, label, 0, 0, 0xFF2F2F33, false);
-            stack.popPose();
+            graphics.pose().popMatrix();
 
-            stack.pushPose();
-            stack.scale(2, 2, 2);
+            graphics.pose().pushMatrix();
+            graphics.pose().scale(2, 2);
             int breakWidth = mc.font.width(label) / 2;
             graphics.drawString(mc.font, "-", -breakWidth, 0, 0xFF2F2F33, false);
-            stack.popPose();
+            graphics.pose().popMatrix();
 
             // Draw opponent score
-            stack.pushPose();
-            stack.translate(7, 0, 0);
-            stack.scale(2, 2, 2);
+            graphics.pose().pushMatrix();
+            graphics.pose().translate(7, 0);
+            graphics.pose().scale(2, 2);
             graphics.drawString(mc.font, Integer.toString(this.game.opponentScore), 0, 0, 0xFF2F2F33, false);
-            stack.popPose();
+            graphics.pose().popMatrix();
 
-            stack.popPose();
+            graphics.pose().popMatrix();
 
             // Draw name tags
             graphics.drawString(mc.font, this.game.translation("you"), 5, 5, 0xFF2F2F33, false);
@@ -339,34 +339,34 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
             graphics.drawString(mc.font, opponentName, PaddleBall.BOARD_WIDTH - 5 - mc.font.width(opponentName), 5, 0xFF2F2F33, false);
 
             // Draw host paddle
-            stack.pushPose();
+            graphics.pose().pushMatrix();
             float smoothHostPos = Mth.lerp(partialTick, this.game.lastPlayerPos, this.game.playerPos);
-            stack.translate(4, smoothHostPos, 0);
-            graphics.blit(RenderType::guiTextured, TEXTURE, 0, 0, 0, 0, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT, 256, 256);
-            stack.popPose();
+            graphics.pose().translate(4, smoothHostPos);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, 0, 0, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT, 256, 256);
+            graphics.pose().popMatrix();
 
             // Draw opponent paddle
-            stack.pushPose();
+            graphics.pose().pushMatrix();
             float smoothOpponentPos = Mth.lerp(partialTick, this.game.lastOpponentPos, this.game.opponentPos);
-            stack.translate((PaddleBall.BOARD_WIDTH) - 8, smoothOpponentPos, 0);
-            graphics.blit(RenderType::guiTextured, TEXTURE, -2, 0, 6, 0, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT, 256, 256);
-            stack.popPose();
+            graphics.pose().translate((PaddleBall.BOARD_WIDTH) - 8, smoothOpponentPos);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, -2, 0, 6, 0, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT, 256, 256);
+            graphics.pose().popMatrix();
 
             // Draw ball
-            stack.pushPose();
+            graphics.pose().pushMatrix();
             float smoothBallX = Mth.lerp(partialTick, this.game.lastBallX, this.game.ballX);
             float smoothBallY = Mth.lerp(partialTick, this.game.lastBallY, this.game.ballY);
             smoothBallX = this.game.leftPaddle ? smoothBallX : PaddleBall.BOARD_WIDTH - smoothBallX;
-            stack.translate(smoothBallX, smoothBallY, 0);
-            graphics.blit(RenderType::guiTextured, TEXTURE, 0, 0, 12, 0, 4, 4, 4, 4, 256, 256);
-            stack.popPose();
+            graphics.pose().translate(smoothBallX, smoothBallY);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, 12, 0, 4, 4, 4, 4, 256, 256);
+            graphics.pose().popMatrix();
 
             if(this.game.scoreAnimation > 0 && (this.game.scoreAnimation / 5) % 2 == 0)
             {
-                stack.pushPose();
-                stack.translate((PaddleBall.BOARD_WIDTH - PaddleBall.PADDLE_WIDTH) * this.game.scoreSide, 0, 0);
+                graphics.pose().pushMatrix();
+                graphics.pose().translate((PaddleBall.BOARD_WIDTH - PaddleBall.PADDLE_WIDTH) * this.game.scoreSide, 0);
                 graphics.fill(0, 0, PaddleBall.PADDLE_WIDTH, PaddleBall.BOARD_HEIGHT, 0xFF653938);
-                stack.popPose();
+                graphics.pose().popMatrix();
             }
 
             if(this.game.wonGame != null && this.game.displayLabel != null)

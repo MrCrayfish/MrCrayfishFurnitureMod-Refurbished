@@ -4,6 +4,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastManager;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -31,7 +32,7 @@ public class ItemToast implements Toast
     @Override
     public void render(GuiGraphics graphics, Font font, long time)
     {
-        graphics.blitSprite(RenderType::guiTextured, TOAST_SPRITE, 0, 0, this.width(), this.height());
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, TOAST_SPRITE, 0, 0, this.width(), this.height());
         graphics.drawString(font, this.title, 30, 7, 0xFF500050, false);
         graphics.drawString(font, this.description, 30, 18, 0xFF000000, false);
         graphics.renderFakeItem(this.icon, 8, 8);

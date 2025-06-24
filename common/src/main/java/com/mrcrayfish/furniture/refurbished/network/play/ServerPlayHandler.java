@@ -68,7 +68,7 @@ public class ServerPlayHandler
                 }
             }
 
-            DeliveryService.get(serverPlayer.server).ifPresent(service -> {
+            DeliveryService.get(serverPlayer.level().getServer()).ifPresent(service -> {
                 ItemStack stack = PackageItem.create(container, message.message(), serverPlayer.getGameProfile().getName());
                 DeliveryResult result = service.sendMail(message.mailboxId(), stack);
                 if(result.success()) {

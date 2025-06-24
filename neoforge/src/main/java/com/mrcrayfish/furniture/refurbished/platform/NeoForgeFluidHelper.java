@@ -15,6 +15,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.SoundActions;
@@ -135,17 +137,15 @@ public class NeoForgeFluidHelper implements IFluidHelper
         }
 
         @Override
-        public void load(CompoundTag tag, HolderLookup.Provider provider)
+        public void load(ValueInput input)
         {
-            this.tank.readFromNBT(provider, tag.getCompoundOrEmpty("FluidTank"));
+            this.tank.deserialize(input);
         }
 
         @Override
-        public void save(CompoundTag tag, HolderLookup.Provider provider)
+        public void save(ValueOutput output)
         {
-            CompoundTag tankTag = new CompoundTag();
-            this.tank.writeToNBT(provider, tankTag);
-            tag.put("FluidTank", tankTag);
+            this.tank.serialize(output);
         }
 
         public FluidTank getTank()

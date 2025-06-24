@@ -18,6 +18,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.Optional;
@@ -53,7 +55,7 @@ public class MailboxBlockEntity extends RowedStorageBlockEntity implements IName
         if(player == null)
             return;
 
-        DeliveryService.get(player.server).ifPresent(service -> {
+        DeliveryService.get(player.level().getServer()).ifPresent(service -> {
             if(!service.renameMailbox(player, player.level(), this.worldPosition, name)) {
                 player.sendSystemMessage(Utils.translation("gui", "rename_mailbox_failed"));
             }
@@ -91,30 +93,38 @@ public class MailboxBlockEntity extends RowedStorageBlockEntity implements IName
         this.level.setBlock(this.worldPosition, this.getBlockState().setValue(MailboxBlock.ENABLED, true), Block.UPDATE_ALL);
     }
 
-    public Mailbox getMailbox()
+    /**
+     * Gets the mailbox for this block entity
+     *
+     * @return an optional containing the mailbox or empty
+     */
+    public Optional<Mailbox> getMailbox()
     {
-        if(this.mailboxRef != null)
-        {
-            Mailbox mailbox = this.mailboxRef.get();
-            if(mailbox != null && !mailbox.removed().booleanValue())
-            {
-                return mailbox;
-            }
-            this.mailboxRef = null;
-        }
-
         if(this.level instanceof ServerLevel serverLevel)
         {
             Optional<DeliveryService> optional = DeliveryService.get(serverLevel.getServer());
             if(optional.isPresent())
             {
+                if(this.mailboxRef != null)
+                {
+                    Mailbox mailbox = this.mailboxRef.get();
+                    if(mailbox != null && !mailbox.removed())
+                    {
+                        return Optional.of(mailbox);
+                    }
+                    this.mailboxRef = null;
+                }
+
                 DeliveryService service = optional.get();
                 Mailbox mailbox = service.getOrCreateMailBox(this);
-                this.mailboxRef = new WeakReference<>(mailbox);
-                return mailbox;
+                if(mailbox != null)
+                {
+                    this.mailboxRef = new WeakReference<>(mailbox);
+                    return Optional.of(mailbox);
+                }
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override
@@ -126,39 +136,47 @@ public class MailboxBlockEntity extends RowedStorageBlockEntity implements IName
     @Override
     public Component getDisplayName()
     {
-        Mailbox mailbox = this.getMailbox();
-        if(mailbox != null)
+        Optional<Mailbox> mailboxOptional = this.getMailbox();
+        if(mailboxOptional.isPresent())
         {
-            String customName = mailbox.customName().getValue();
-            if(customName != null && !customName.isBlank())
+            Optional<String> customNameOptional = mailboxOptional.get().customName();
+            if(customNameOptional.isPresent())
             {
-                return Component.literal(customName);
+                String customName = customNameOptional.get();
+                if(!customName.isBlank())
+                {
+                    return Component.literal(customName);
+                }
             }
         }
         return super.getDisplayName();
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    public void loadAdditional(ValueInput input)
     {
-        super.loadAdditional(tag, provider);
-        if(tag.contains("UUID"))
-        {
-            this.uuid = tag.read("UUID", UUIDUtil.CODEC).orElse(UUID.randomUUID());
-        }
+        super.loadAdditional(input);
+        input.read("UUID", UUIDUtil.CODEC).ifPresentOrElse(uuid -> {
+            this.uuid = uuid;
+        }, () -> this.uuid = UUID.randomUUID());
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    protected void saveAdditional(ValueOutput output)
     {
-        super.saveAdditional(tag, provider);
-        tag.store("UUID", UUIDUtil.CODEC, this.uuid);
+        super.saveAdditional(output);
+        output.store("UUID", UUIDUtil.CODEC, this.uuid);
     }
 
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state)
     {
         super.preRemoveSideEffects(pos, state);
-        Optional.ofNullable(this.getMailbox()).ifPresent(Mailbox::remove);
+        if(this.level instanceof ServerLevel serverLevel)
+        {
+            Optional<DeliveryService> optional = DeliveryService.get(serverLevel.getServer());
+            optional.ifPresent(service -> service.removeMailbox(this.uuid));
+            this.mailboxRef = null;
+        }
     }
 }

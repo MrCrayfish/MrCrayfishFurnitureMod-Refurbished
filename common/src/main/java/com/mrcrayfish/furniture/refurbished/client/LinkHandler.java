@@ -1,14 +1,12 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
 import com.google.common.collect.Sets;
-import com.mojang.blaze3d.buffers.BufferType;
-import com.mojang.blaze3d.buffers.BufferUsage;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.GpuTexture;
+import com.mojang.blaze3d.textures.GpuTextureView;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import com.mrcrayfish.framework.api.config.event.FrameworkConfigEvents;
@@ -598,27 +596,28 @@ public class LinkHandler
                 if(data != null)
                 {
                     RenderTarget mainTarget = Minecraft.getInstance().getMainRenderTarget();
-                    GpuTexture mainColor = mainTarget.getColorTexture();
-                    GpuTexture mainDepth = mainTarget.getDepthTexture();
+                    GpuTextureView mainColor = mainTarget.getColorTextureView();
+                    GpuTextureView mainDepth = mainTarget.getDepthTextureView();
 
                     AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(this.linkInsideArea ? POWERABLE_AREA : UNPOWERABLE_AREA);
                     RenderSystem.AutoStorageIndexBuffer autoIndexBuffer = RenderSystem.getSequentialBuffer(pipeline.getVertexFormatMode());
                     VertexFormat.IndexType indexType = autoIndexBuffer.type();
                     GpuBuffer indexBuffer = autoIndexBuffer.getBuffer(data.drawState().indexCount());
-                    GpuBuffer vertexBuffer = RenderSystem.getDevice().createBuffer(() -> "Powerable Area", BufferType.VERTICES, BufferUsage.DYNAMIC_WRITE, data.vertexBuffer().remaining());
-                    RenderSystem.getDevice().createCommandEncoder().writeToBuffer(vertexBuffer, data.vertexBuffer(), 0);
-                    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 0.6F * areaAlpha);
+                    GpuBuffer vertexBuffer = RenderSystem.getDevice().createBuffer(() -> "Powerable Area", GpuBuffer.USAGE_VERTEX, data.vertexBuffer().remaining());
+                    RenderSystem.getDevice().createCommandEncoder().writeToBuffer(vertexBuffer.slice(), data.vertexBuffer());
 
-                    try(RenderPass pass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(mainColor, OptionalInt.empty(), mainDepth, OptionalDouble.empty()))
+                    //RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 0.6F * areaAlpha);
+
+                    try(RenderPass pass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "SUM SUM", mainColor, OptionalInt.empty(), mainDepth, OptionalDouble.empty()))
                     {
                         pass.setPipeline(pipeline);
                         pass.setVertexBuffer(0, vertexBuffer);
                         pass.setIndexBuffer(indexBuffer, indexType);
-                        pass.bindSampler("Sampler0", texture.getTexture());
-                        pass.drawIndexed(0, data.drawState().indexCount());
+                        pass.bindSampler("Sampler0", texture.getTextureView());
+                        pass.draw(0, data.drawState().indexCount());  // TODO 1.21.6
                     }
 
-                    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+                    //RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
                 }
             }
         }

@@ -4,24 +4,21 @@ import com.mrcrayfish.furniture.refurbished.ConventionalTags;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.core.ModTags;
-import com.mrcrayfish.furniture.refurbished.data.tag.TagBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.ItemTagsProvider;
-import net.minecraft.world.item.Item;
+import net.minecraft.data.tags.VanillaItemTagsProvider;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Block;
 
 import java.util.concurrent.CompletableFuture;
 
 /**
  * Author: MrCrayfish
  */
-public class CommonItemTagsProvider extends ItemTagsProvider
+public class CommonItemTagsProvider extends VanillaItemTagsProvider
 {
-    public CommonItemTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagLookup<Block>> tagLookup)
+    public CommonItemTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider)
     {
-        super(output, lookupProvider, tagLookup);
+        super(output, lookupProvider);
     }
 
     @Override

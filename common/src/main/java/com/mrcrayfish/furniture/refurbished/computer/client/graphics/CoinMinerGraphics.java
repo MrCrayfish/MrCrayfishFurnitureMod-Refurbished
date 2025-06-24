@@ -7,6 +7,7 @@ import com.mrcrayfish.furniture.refurbished.computer.client.Icon;
 import com.mrcrayfish.furniture.refurbished.computer.client.Scene;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 
 /**
@@ -38,7 +39,7 @@ public class CoinMinerGraphics extends DisplayableProgram<CoinMiner>
             Icon icon = Display.get().getIcon(this.program.getProgram().getId());
             if(icon != null)
             {
-                graphics.blit(RenderType::guiTextured, icon.texture(), (this.program.getWidth() - 16) / 2, 10, icon.u(), icon.v(), 16, 16, 128, 128);
+                graphics.blit(RenderPipelines.GUI_TEXTURED, icon.texture(), (this.program.getWidth() - 16) / 2, 10, icon.u(), icon.v(), 16, 16, 128, 128);
             }
             graphics.drawCenteredString(Minecraft.getInstance().font, "Coming Soon!", MAX_CONTENT_WIDTH / 4, 35, 0xFFFFFFFF);
         }

@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.electricity;
 
+import com.mojang.serialization.Codec;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import net.minecraft.core.BlockPos;
@@ -7,10 +8,14 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 
 import java.util.*;
@@ -153,15 +158,16 @@ public interface IElectricityNode
     /**
      * Reads the node data from the given tag. Data is only read if the tag contains the specific keys.
      *
-     * @param tag a compound tag containing data for this node
+     * @param input the ValueInput for reading node data
      */
-    default void readNodeNbt(CompoundTag tag)
+    default void readNodeNbt(ValueInput input)
     {
-        if(tag.contains("Connections"))
+        ValueInput.TypedInputList<Long> nodes = input.listOrEmpty("Connections", Codec.LONG);
+        if(!nodes.isEmpty())
         {
             // Hack to offset connections when using clone command. Does not support rotation
             BlockPos offset = BlockPos.ZERO;
-            Optional<Long> nodePos = tag.getLong("NodePos");
+            Optional<Long> nodePos = input.getLong("NodePos");
             if(nodePos.isPresent())
             {
                 BlockPos current = this.getNodePosition();
@@ -174,7 +180,6 @@ public interface IElectricityNode
             BlockPos pos = this.getNodePosition();
             Set<Connection> connections = this.getNodeConnections();
             connections.clear();
-            long[] nodes = tag.getLongArray("Connections").orElse(new long[0]);
             for(long node : nodes)
             {
                 connections.add(Connection.of(pos, BlockPos.of(node).offset(offset)));
@@ -185,13 +190,14 @@ public interface IElectricityNode
     /**
      * Writes the data of this node to the given compound tag
      *
-     * @param tag a compound tag to append the data to
+     * @param output a ValueOutput to append the data to
      */
-    default void writeNodeNbt(CompoundTag tag)
+    default void writeNodeNbt(ValueOutput output)
     {
         Set<Connection> connections = this.getNodeConnections();
-        tag.putLongArray("Connections", connections.stream().map(Connection::getPosB).map(BlockPos::asLong).mapToLong(Long::longValue).toArray());
-        tag.putLong("NodePos", this.getNodePosition().asLong());
+        ValueOutput.TypedOutputList<Long> nodes = output.list("Connections", Codec.LONG);
+        connections.stream().map(Connection::getPosB).map(BlockPos::asLong).mapToLong(Long::longValue).forEach(nodes::add);
+        output.putLong("NodePos", this.getNodePosition().asLong());
     }
 
     /**
@@ -202,13 +208,15 @@ public interface IElectricityNode
      */
     default void saveNodeNbtToItem(ItemStack stack, HolderLookup.Provider provider)
     {
+        ProblemReporter reporter = new ProblemReporter.Collector();
+        TagValueOutput output = TagValueOutput.createWithContext(reporter, provider);
         BlockEntity entity = this.getNodeOwner();
-        CompoundTag tag = entity.saveWithoutMetadata(provider);
-        tag.remove("Connections"); // Don't include connections as this breaks node limits
-        tag.remove("NodePos"); // Don't include fix for connections since none are present anyway
-        tag.remove("Powered"); // Remove the powered property
-        tag.remove("Overloaded"); // Remove the overloaded property
-        BlockItem.setBlockEntityData(stack, entity.getType(), tag);
+        entity.saveWithoutMetadata(output);
+        output.discard("Connections"); // Don't include connections as this breaks node limits
+        output.discard("NodePos"); // Don't include fix for connections since none are present anyway
+        output.discard("Powered"); // Remove the powered property
+        output.discard("Overloaded"); // Remove the overloaded property
+        BlockItem.setBlockEntityData(stack, entity.getType(), output);
     }
 
     /**

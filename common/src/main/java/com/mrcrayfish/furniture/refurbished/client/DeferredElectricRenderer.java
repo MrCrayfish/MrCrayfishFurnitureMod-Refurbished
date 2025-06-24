@@ -1,7 +1,5 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
-import com.mojang.blaze3d.buffers.BufferType;
-import com.mojang.blaze3d.buffers.BufferUsage;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
 import com.mojang.blaze3d.framegraph.FramePass;
@@ -13,6 +11,7 @@ import com.mojang.blaze3d.resource.ResourceHandle;
 import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.GpuTexture;
+import com.mojang.blaze3d.textures.GpuTextureView;
 import com.mojang.blaze3d.vertex.*;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.core.ModRenderPipelines;
@@ -219,21 +218,25 @@ public class DeferredElectricRenderer implements ResourceManagerReloadListener
         if(data == null)
             return;
 
+        // TODO 1.21.6 all
+
         RenderTarget target = this.electricityTarget;
         RenderPipeline pipeline = ModRenderPipelines.ELECTRICITY;
         AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(this.nodeTexture);
+
         RenderSystem.AutoStorageIndexBuffer autoIndexBuffer = RenderSystem.getSequentialBuffer(pipeline.getVertexFormatMode());
-        VertexFormat.IndexType indexType = autoIndexBuffer.type();
         GpuBuffer indexBuffer = autoIndexBuffer.getBuffer(data.drawState().indexCount());
-        GpuBuffer vertexBuffer = RenderSystem.getDevice().createBuffer(() -> "Deferred Electricity Renderer", BufferType.VERTICES, BufferUsage.DYNAMIC_WRITE, data.vertexBuffer().remaining());
-        RenderSystem.getDevice().createCommandEncoder().writeToBuffer(vertexBuffer, data.vertexBuffer(), 0);
-        try(RenderPass pass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(target.getColorTexture(), OptionalInt.empty(), target.getDepthTexture(), OptionalDouble.empty()))
+
+        GpuBuffer vertexBuffer = RenderSystem.getDevice().createBuffer(() -> "Deferred Electricity Renderer", GpuBuffer.USAGE_VERTEX, data.vertexBuffer().remaining());
+        RenderSystem.getDevice().createCommandEncoder().writeToBuffer(vertexBuffer.slice(), data.vertexBuffer());
+
+        try(RenderPass pass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Deferred Electricity Renderer", target.getColorTextureView(), OptionalInt.empty(), target.getDepthTextureView(), OptionalDouble.empty()))
         {
             pass.setPipeline(pipeline);
             pass.setVertexBuffer(0, vertexBuffer);
-            pass.setIndexBuffer(indexBuffer, indexType);
-            pass.bindSampler("Sampler0", texture.getTexture());
-            pass.drawIndexed(0, data.drawState().indexCount());
+            pass.setIndexBuffer(indexBuffer, autoIndexBuffer.type());
+            pass.bindSampler("Sampler0", texture.getTextureView());
+            pass.draw(0, data.drawState().indexCount()); // TODO 1.21.6
         }
     }
 
@@ -253,20 +256,21 @@ public class DeferredElectricRenderer implements ResourceManagerReloadListener
             this.drawDeferredCalls(stack);
         }
 
-        GpuTexture mainColor = Minecraft.getInstance().getMainRenderTarget().getColorTexture();
-        GpuTexture electricityColor = this.electricityTarget.getColorTexture();
-        if(this.handle != null && electricityColor != null && mainColor != null)
+        // TODO 1.21.6
+        GpuTextureView mainColor = Minecraft.getInstance().getMainRenderTarget().getColorTextureView();
+        GpuTextureView electricityColorView = this.electricityTarget.getColorTextureView();
+        if(this.handle != null && electricityColorView != null && mainColor != null)
         {
             RenderSystem.AutoStorageIndexBuffer autoIndexBuffer = RenderSystem.getSequentialBuffer(VertexFormat.Mode.QUADS);
             GpuBuffer indexBuffer = autoIndexBuffer.getBuffer(6);
             GpuBuffer vertexBuffer = RenderSystem.getQuadVertexBuffer();
-            try(RenderPass pass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(mainColor, OptionalInt.empty()))
+            try(RenderPass pass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Blit", mainColor, OptionalInt.empty()))
             {
                 pass.setPipeline(ModRenderPipelines.ELECTRICITY_BLIT);
                 pass.setVertexBuffer(0, vertexBuffer);
                 pass.setIndexBuffer(indexBuffer, autoIndexBuffer.type());
-                pass.bindSampler("InSampler", electricityColor);
-                pass.drawIndexed(0, 6);
+                pass.bindSampler("InSampler", electricityColorView);
+                pass.drawIndexed(0, 0, 6, 1);
             }
         }
 

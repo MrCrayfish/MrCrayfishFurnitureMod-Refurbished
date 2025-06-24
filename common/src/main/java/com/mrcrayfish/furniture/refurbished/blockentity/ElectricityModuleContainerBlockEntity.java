@@ -13,6 +13,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 
 import org.jetbrains.annotations.Nullable;
@@ -76,17 +78,17 @@ public abstract class ElectricityModuleContainerBlockEntity extends Randomizable
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    protected void loadAdditional(ValueInput input)
     {
-        super.loadAdditional(tag, provider);
-        this.readNodeNbt(tag);
+        super.loadAdditional(input);
+        this.readNodeNbt(input);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    protected void saveAdditional(ValueOutput output)
     {
-        super.saveAdditional(tag, provider);
-        this.writeNodeNbt(tag);
+        super.saveAdditional(output);
+        this.writeNodeNbt(output);
     }
 
     @Nullable
@@ -116,11 +118,11 @@ public abstract class ElectricityModuleContainerBlockEntity extends Randomizable
     }
 
     @Override
-    public void removeComponentsFromTag(CompoundTag tag)
+    public void removeComponentsFromTag(ValueOutput output)
     {
-        tag.remove("Connections"); // Don't include connections as this breaks node limits
-        tag.remove("NodePos"); // Don't include fix for connections since none are present anyway
-        tag.remove("Powered"); // Remove the powered property
-        tag.remove("Overloaded"); // Remove the overloaded property
+        output.discard("Connections"); // Don't include connections as this breaks node limits
+        output.discard("NodePos"); // Don't include fix for connections since none are present anyway
+        output.discard("Powered"); // Remove the powered property
+        output.discard("Overloaded"); // Remove the overloaded property
     }
 }

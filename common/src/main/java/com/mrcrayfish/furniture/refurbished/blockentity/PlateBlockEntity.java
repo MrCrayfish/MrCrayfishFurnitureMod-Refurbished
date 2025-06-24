@@ -21,6 +21,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -148,17 +150,17 @@ public class PlateBlockEntity extends BasicLootBlockEntity
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    public void loadAdditional(ValueInput input)
     {
-        super.loadAdditional(tag, provider);
-        tag.getInt("Rotation").ifPresent(value -> this.rotation = value);
+        super.loadAdditional(input);
+        input.getInt("Rotation").ifPresent(value -> this.rotation = value);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    protected void saveAdditional(ValueOutput output)
     {
-        super.saveAdditional(tag, provider);
-        tag.putInt("Rotation", this.rotation);
+        super.saveAdditional(output);
+        output.putInt("Rotation", this.rotation);
     }
 
     @Nullable

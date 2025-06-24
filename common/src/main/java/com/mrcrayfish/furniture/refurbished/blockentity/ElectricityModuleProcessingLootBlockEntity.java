@@ -1,6 +1,8 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.mojang.serialization.Codec;
 import com.mrcrayfish.furniture.refurbished.Config;
+import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import com.mrcrayfish.furniture.refurbished.electricity.Connection;
 import com.mrcrayfish.furniture.refurbished.electricity.IModuleNode;
@@ -11,12 +13,17 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 
 import org.jetbrains.annotations.Nullable;
@@ -110,19 +117,19 @@ public abstract class ElectricityModuleProcessingLootBlockEntity extends Process
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    public void loadAdditional(ValueInput input)
     {
-        super.loadAdditional(tag, provider);
-        this.readNodeNbt(tag);
-        tag.getBoolean("Powered").ifPresent(value -> this.powered = value);
+        super.loadAdditional(input);
+        this.readNodeNbt(input);
+        input.read("Powered", Codec.BOOL).ifPresent(value -> this.powered = value);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    protected void saveAdditional(ValueOutput output)
     {
-        super.saveAdditional(tag, provider);
-        this.writeNodeNbt(tag);
-        tag.putBoolean("Powered", this.powered);
+        super.saveAdditional(output);
+        this.writeNodeNbt(output);
+        output.store("Powered", Codec.BOOL, this.powered);
     }
 
     @Override
@@ -142,10 +149,14 @@ public abstract class ElectricityModuleProcessingLootBlockEntity extends Process
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider provider)
     {
-        CompoundTag tag = new CompoundTag();
-        this.writeNodeNbt(tag);
-        tag.putBoolean("Powered", powered);
-        return tag;
+        // TODO create a util for this
+        try(ProblemReporter.ScopedCollector collector = new ProblemReporter.ScopedCollector(this.problemPath(), Constants.LOG))
+        {
+            TagValueOutput output = TagValueOutput.createWithContext(collector, provider);
+            this.writeNodeNbt(output);
+            output.store("Powered", Codec.BOOL, this.powered);
+            return output.buildResult();
+        }
     }
 
     // @Override From IForgeBlockEntity
@@ -162,11 +173,11 @@ public abstract class ElectricityModuleProcessingLootBlockEntity extends Process
     }
 
     @Override
-    public void removeComponentsFromTag(CompoundTag tag)
+    public void removeComponentsFromTag(ValueOutput output)
     {
-        tag.remove("Connections"); // Don't include connections as this breaks node limits
-        tag.remove("NodePos"); // Don't include fix for connections since none are present anyway
-        tag.remove("Powered"); // Remove the powered property
-        tag.remove("Overloaded"); // Remove the overloaded property
+        output.discard("Connections"); // Don't include connections as this breaks node limits
+        output.discard("NodePos"); // Don't include fix for connections since none are present anyway
+        output.discard("Powered"); // Remove the powered property
+        output.discard("Overloaded"); // Remove the overloaded property
     }
 }

@@ -4,6 +4,8 @@ import com.mrcrayfish.furniture.refurbished.Config;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 
 import java.util.Collections;
@@ -85,17 +87,17 @@ public interface ISourceNode extends IElectricityNode
     }
 
     @Override
-    default void readNodeNbt(CompoundTag tag)
+    default void readNodeNbt(ValueInput input)
     {
-        IElectricityNode.super.readNodeNbt(tag);
-        this.setNodeOverloaded(tag.getBooleanOr("Overloaded", false));
+        IElectricityNode.super.readNodeNbt(input);
+        this.setNodeOverloaded(input.getBooleanOr("Overloaded", false));
     }
 
     @Override
-    default void writeNodeNbt(CompoundTag tag)
+    default void writeNodeNbt(ValueOutput output)
     {
-        IElectricityNode.super.writeNodeNbt(tag);
-        tag.putBoolean("Overloaded", this.isNodeOverloaded());
+        IElectricityNode.super.writeNodeNbt(output);
+        output.putBoolean("Overloaded", this.isNodeOverloaded());
     }
 
     /**

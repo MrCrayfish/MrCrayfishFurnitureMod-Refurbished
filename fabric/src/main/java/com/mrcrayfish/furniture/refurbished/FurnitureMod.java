@@ -204,7 +204,7 @@ public class FurnitureMod implements ModInitializer, DataGeneratorEntrypoint
         });
 
         ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) -> {
-            List<RecipeHolder<WorkbenchContructingRecipe>> recipes = List.copyOf(player.server.getRecipeManager().recipes
+            List<RecipeHolder<WorkbenchContructingRecipe>> recipes = List.copyOf(player.getServer().getRecipeManager().recipes
                 .byType(ModRecipeTypes.WORKBENCH_CONSTRUCTING.get()));
             Network.getPlay().sendToPlayer(() -> player, new MessageWorkbench.SyncRecipes(recipes));
         });
@@ -215,8 +215,8 @@ public class FurnitureMod implements ModInitializer, DataGeneratorEntrypoint
     public void onInitializeDataGenerator(FabricDataGenerator generator)
     {
         FabricDataGenerator.Pack pack = generator.createPack();
-        CommonBlockTagsProvider provider = pack.addProvider(CommonBlockTagsProvider::new);
-        pack.addProvider((output, lookupProvider) -> new CommonItemTagsProvider(output, lookupProvider, provider.contentsGetter()));
+        pack.addProvider(CommonBlockTagsProvider::new);
+        pack.addProvider(CommonItemTagsProvider::new);
         pack.addProvider(CommonLootTableProvider::new);
         pack.addProvider(CommonRecipeProvider.Runner::new);
         pack.addProvider(FurnitureRegistryProvider::new);

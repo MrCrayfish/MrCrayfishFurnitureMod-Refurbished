@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.serialization.Codec;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.block.RangeHoodBlock;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
@@ -11,7 +12,6 @@ import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageFlipAnimation;
-import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.BlockEntityHelper;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -21,7 +21,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
@@ -47,6 +46,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
@@ -253,11 +254,7 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
             space.update(0, 0F, 0);
 
             // Sends the items to tracking clients
-            BlockEntityHelper.sendCustomUpdate(this, (entity1, access) -> {
-                CompoundTag compound = new CompoundTag();
-                this.writeCookingItems(compound, access);
-                return compound;
-            });
+            BlockEntityHelper.sendCustomUpdate(this, this::writeCookingItems);
 
             // Mark as changed
             this.setChanged();
@@ -279,11 +276,9 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
                     grill.setChanged();
 
                     /* Send updates to client */
-                    BlockEntityHelper.sendCustomUpdate(grill, (entity, access) -> {
-                        CompoundTag compound = new CompoundTag();
-                        grill.writeFuel(compound, access);
-                        grill.writeRemainingFuel(compound);
-                        return compound;
+                    BlockEntityHelper.sendCustomUpdate(grill, output -> {
+                        grill.writeFuel(output);
+                        grill.writeRemainingFuel(output);
                     });
                     break;
                 }
@@ -298,11 +293,7 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
             if(grill.remainingFuel == 0)
             {
                 /* Send updates to client */
-                BlockEntityHelper.sendCustomUpdate(grill, (entity, access) -> {
-                    CompoundTag compound = new CompoundTag();
-                    grill.writeRemainingFuel(compound);
-                    return compound;
-                });
+                BlockEntityHelper.sendCustomUpdate(grill, grill::writeRemainingFuel);
             }
         }
     }
@@ -366,11 +357,7 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
         if(changed)
         {
             // Update items on clients
-            BlockEntityHelper.sendCustomUpdate(this, (entity, access) -> {
-                CompoundTag compound = new CompoundTag();
-                this.writeCookingItems(compound, access);
-                return compound;
-            });
+            BlockEntityHelper.sendCustomUpdate(this, this::writeCookingItems);
 
             // Mark as changed to ensure it's saved
             this.setChanged();
@@ -576,11 +563,9 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
             }
 
             /* Send updates to client */
-            BlockEntityHelper.sendCustomUpdate(this, (entity, access) -> {
-                CompoundTag compound = new CompoundTag();
-                this.writeCookingItems(compound, access);
-                this.writeFuel(compound, access);
-                return compound;
+            BlockEntityHelper.sendCustomUpdate(this, output -> {
+                this.writeCookingItems(output);
+                this.writeFuel(output);
             });
 
             return result;
@@ -631,11 +616,9 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
         }
 
         /* Send updates to client */
-        BlockEntityHelper.sendCustomUpdate(this, (entity, access) -> {
-            CompoundTag compound = new CompoundTag();
-            this.writeCookingItems(compound, access);
-            this.writeFuel(compound, access);
-            return compound;
+        BlockEntityHelper.sendCustomUpdate(this, output -> {
+            this.writeCookingItems(output);
+            this.writeFuel(output);
         });
 
         /* Mark as changed to ensure block is saved */
@@ -656,81 +639,67 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    public void loadAdditional(ValueInput input)
     {
-        super.loadAdditional(tag, provider);
-        tag.getList("Grill").ifPresent(value -> {
-            this.cooking.clear();
-            BlockEntityHelper.loadItems("Grill", provider, tag, this.cooking);
-        });
-        tag.getList("Fuel").ifPresent(value -> {
-            this.fuel.clear();
-            BlockEntityHelper.loadItems("Fuel", provider, tag, this.fuel);
-        });
-        tag.getInt("RemainingFuel").ifPresent(value -> this.remainingFuel = value);
-        tag.getFloat("StoredExperience").ifPresent(value -> this.storedExperience = value);
-        this.readCookingSpaces(tag);
+        super.loadAdditional(input);
+        BlockEntityHelper.loadItems("Grill", input, this.cooking);
+        BlockEntityHelper.loadItems("Fuel", input, this.fuel);
+        input.getInt("RemainingFuel").ifPresent(value -> this.remainingFuel = value);
+        input.read("StoredExperience", Codec.FLOAT).ifPresent(value -> this.storedExperience = value);
+        this.readCookingSpaces(input);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    protected void saveAdditional(ValueOutput output)
     {
-        super.saveAdditional(tag, provider);
-        this.writeCookingItems(tag, provider);
-        this.writeFuel(tag, provider);
-        this.writeRemainingFuel(tag);
-        this.writeCookingSpaces(tag);
-        tag.putFloat("StoredExperience", this.storedExperience);
+        super.saveAdditional(output);
+        this.writeCookingItems(output);
+        this.writeFuel(output);
+        this.writeRemainingFuel(output);
+        this.writeCookingSpaces(output);
+        output.store("StoredExperience", Codec.FLOAT, this.storedExperience);
     }
 
     /**
      * Writes the cooking inventory to NBT. This method is used for saving and sending sync data to clients.
      *
-     * @param compound the compound tag to save the data to
-     * @return the compound tag the data saved to
+     * @param output the value output to store data
      */
-    private CompoundTag writeCookingItems(CompoundTag compound, HolderLookup.Provider provider)
+    private void writeCookingItems(ValueOutput output)
     {
-        BlockEntityHelper.saveItems("Grill", compound, this.cooking, provider);
-        return compound;
+        BlockEntityHelper.saveItems("Grill", output, this.cooking);
     }
 
     /**
      * Writes the fuel inventory to NBT. This method is used for saving and sending sync data to clients.
      *
-     * @param compound the compound tag to save the data to
-     * @return the compound tag the data saved to
+     * @param output the value output to store data
      */
-    private CompoundTag writeFuel(CompoundTag compound, HolderLookup.Provider provider)
+    private void writeFuel(ValueOutput output)
     {
-        BlockEntityHelper.saveItems("Fuel", compound, this.fuel, provider);
-        return compound;
+        BlockEntityHelper.saveItems("Fuel", output, this.fuel);
     }
 
     /**
      * Writes the remaining fuel to NBT. This method is used for saving and sending sync data to
      * clients.
      *
-     * @param compound the compound tag to save the data to
-     * @return the compound tag the data saved to
+     * @param output the value output to store data
      */
-    private CompoundTag writeRemainingFuel(CompoundTag compound)
+    private void writeRemainingFuel(ValueOutput output)
     {
-        compound.putInt("RemainingFuel", this.remainingFuel);
-        return compound;
+        output.putInt("RemainingFuel", this.remainingFuel);
     }
 
     /**
      * Helper method to save all Cooking Spaces to NBT.
-     * See {@link #writeCookingSpaces(CompoundTag, int)} for more info
+     * See {@link #writeCookingSpaces(ValueOutput, int)} for more info
      *
-     * @param compound the compound tag to save the data to
-     * @return the compound tag the data saved to
+     * @param output the value output to store data
      */
-    private CompoundTag writeCookingSpaces(CompoundTag compound)
+    private void writeCookingSpaces(ValueOutput output)
     {
-        this.writeCookingSpaces(compound, -1);
-        return compound;
+        this.writeCookingSpaces(output, -1);
     }
 
     /**
@@ -738,32 +707,31 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
      * to save and is only used for syncing data to the client. To save all items, the position
      * should be -1.
      *
-     * @param compound the compound tag to save the data to
+     * @param output the compound tag to save the data to
      * @param position if syncing, the position to sync otherwise -1
-     * @return the compound tag the data saved to
      */
-    private CompoundTag writeCookingSpaces(CompoundTag compound, int position)
+    private void writeCookingSpaces(ValueOutput output, int position)
     {
-        ListTag list = new ListTag();
+        ValueOutput.ValueOutputList list = output.childrenList("CookingSpaces");
         if(position >= 0 && position < this.spaces.size())
         {
-            CompoundTag tag = new CompoundTag();
-            this.spaces.get(position).writeToTag(tag);
-            tag.putInt("Position", position);
-            list.add(tag);
+            ValueOutput spaceOutput = list.addChild();
+            spaceOutput.putInt("Position", position);
+            this.spaces.get(position).writeToTag(spaceOutput);
         }
         else if(position == -1)
         {
             for(int i = 0; i < this.spaces.size(); i++)
             {
-                CompoundTag tag = new CompoundTag();
-                this.spaces.get(i).writeToTag(tag);
-                tag.putInt("Position", i);
-                list.add(tag);
+                ValueOutput spaceOutput = list.addChild();
+                spaceOutput.putInt("Position", i);
+                this.spaces.get(i).writeToTag(spaceOutput);
             }
         }
-        compound.put("CookingSpaces", list);
-        return compound;
+        if(list.isEmpty())
+        {
+            output.discard("CookingSpaces");
+        }
     }
 
     /**
@@ -772,21 +740,17 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
      * This use case is used for reading sync data, while still being a general method to read all
      * the cooking spaces.
      *
-     * @param compound the compound tag to read from
+     * @param input the cooking space value input to read from
      */
-    private void readCookingSpaces(CompoundTag compound)
+    private void readCookingSpaces(ValueInput input)
     {
-        if(!compound.contains("CookingSpaces"))
-            return;
-
-        ListTag list = compound.getListOrEmpty("CookingSpaces");
-        list.forEach(nbt -> {
-            if(nbt instanceof CompoundTag tag) {
-                int position = tag.getIntOr("Position", -1);
+        input.childrenList("CookingSpaces").ifPresent(list -> {
+            list.forEach(spaceInput -> {
+                int position = spaceInput.getIntOr("Position", -1);
                 if(position >= 0 && position < this.spaces.size()) {
-                    this.spaces.get(position).readFromTag(tag);
+                    this.spaces.get(position).readFromInput(spaceInput);
                 }
-            }
+            });
         });
     }
 
@@ -864,11 +828,9 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
      */
     private void syncCookingSpace(int position)
     {
-        BlockEntityHelper.sendCustomUpdate(this, (entity, access) -> {
-            CompoundTag compound = new CompoundTag();
-            this.writeCookingItems(compound, access);
-            this.writeCookingSpaces(compound, position);
-            return compound;
+        BlockEntityHelper.sendCustomUpdate(this, output -> {
+            this.writeCookingItems(output);
+            this.writeCookingSpaces(output, position);
         });
     }
 
@@ -877,11 +839,7 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
      */
     private void syncFuel()
     {
-        BlockEntityHelper.sendCustomUpdate(this, (entity, access) -> {
-            CompoundTag compound = new CompoundTag();
-            this.writeFuel(compound, access);
-            return compound;
-        });
+        BlockEntityHelper.sendCustomUpdate(this, this::writeFuel);
     }
 
     /**
@@ -1028,22 +986,22 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
             return new Vec3(x, y, z);
         }
 
-        public void writeToTag(CompoundTag tag)
+        public void writeToTag(ValueOutput output)
         {
-            tag.putInt("CookingTime", this.cookingTime);
-            tag.putInt("TotalCookingTime", this.totalCookingTime);
-            tag.putBoolean("Flipped", this.flipped);
-            tag.putFloat("Experience", this.experience);
-            tag.putInt("Rotation", this.rotation);
+            output.putInt("CookingTime", this.cookingTime);
+            output.putInt("TotalCookingTime", this.totalCookingTime);
+            output.store("Flipped", Codec.BOOL, this.flipped);
+            output.store("Experience", Codec.FLOAT, this.experience);
+            output.putInt("Rotation", this.rotation);
         }
 
-        public void readFromTag(CompoundTag tag)
+        public void readFromInput(ValueInput input)
         {
-            tag.getInt("CookingTime").ifPresent(value -> this.cookingTime = value);
-            tag.getInt("TotalCookingTime").ifPresent(value -> this.totalCookingTime = value);
-            tag.getBoolean("Flipped").ifPresent(value -> this.flipped = value);
-            tag.getFloat("Experience").ifPresent(value -> this.experience = value);
-            tag.getInt("Rotation").ifPresent(value -> this.rotation = value);
+            input.getInt("CookingTime").ifPresent(value -> this.cookingTime = value);
+            input.getInt("TotalCookingTime").ifPresent(value -> this.totalCookingTime = value);
+            input.read("Flipped", Codec.BOOL).ifPresent(value -> this.flipped = value);
+            input.read("Experience", Codec.FLOAT).ifPresent(value -> this.experience = value);
+            input.getInt("Rotation").ifPresent(value -> this.rotation = value);
         }
 
         public FlipAnimation getAnimation()

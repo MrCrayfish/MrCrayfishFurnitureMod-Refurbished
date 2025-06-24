@@ -18,6 +18,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -492,20 +494,20 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    public void loadAdditional(ValueInput input)
     {
-        super.loadAdditional(tag, provider);
-        tag.getInt("MaxProcessTime").ifPresent(value -> this.totalProcessingTime = value);
-        tag.getInt("ProcessTime").ifPresent(value -> this.processingTime = value);
-        tag.getInt("Energy").ifPresent(value -> this.energy = value);
+        super.loadAdditional(input);
+        input.getInt("MaxProcessTime").ifPresent(value -> this.totalProcessingTime = value);
+        input.getInt("ProcessTime").ifPresent(value -> this.processingTime = value);
+        input.getInt("Energy").ifPresent(value -> this.energy = value);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    protected void saveAdditional(ValueOutput output)
     {
-        super.saveAdditional(tag, provider);
-        tag.putInt("MaxProcessTime", this.totalProcessingTime);
-        tag.putInt("ProcessTime", this.processingTime);
-        tag.putInt("Energy", this.energy);
+        super.saveAdditional(output);
+        output.putInt("MaxProcessTime", this.totalProcessingTime);
+        output.putInt("ProcessTime", this.processingTime);
+        output.putInt("Energy", this.energy);
     }
 }

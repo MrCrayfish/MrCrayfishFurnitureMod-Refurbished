@@ -1,6 +1,8 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.mojang.serialization.Codec;
 import com.mrcrayfish.furniture.refurbished.Config;
+import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
@@ -17,6 +19,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.player.Inventory;
@@ -27,6 +30,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -268,36 +274,39 @@ public class RecycleBinBlockEntity extends ElectricityModuleLootBlockEntity impl
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    public void loadAdditional(ValueInput input)
     {
-        super.loadAdditional(tag, provider);
-        tag.getBoolean("Powered").ifPresent(value -> this.powered = value);
-        tag.getBoolean("Enabled").ifPresent(value -> this.enabled = value);
-        tag.getInt("ProcessTime").ifPresent(value -> this.processingTime = value);
-        tag.getBoolean("Processing").ifPresent(value -> this.processing = value);
-        tag.getInt("Recycled").ifPresent(value -> this.recycled = Math.max(value, 0));
+        super.loadAdditional(input);
+        input.read("Powered", Codec.BOOL).ifPresent(value -> this.powered = value);
+        input.read("Enabled", Codec.BOOL).ifPresent(value -> this.enabled = value);
+        input.getInt("ProcessTime").ifPresent(value -> this.processingTime = value);
+        input.read("Processing", Codec.BOOL).ifPresent(value -> this.processing = value);
+        input.getInt("Recycled").ifPresent(value -> this.recycled = Math.max(value, 0));
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    protected void saveAdditional(ValueOutput output)
     {
-        super.saveAdditional(tag, provider);
-        tag.putBoolean("Powered", this.powered);
-        tag.putBoolean("Enabled", this.enabled);
-        tag.putInt("ProcessTime", this.processingTime);
-        tag.putInt("Recycled", this.recycled);
+        super.saveAdditional(output);
+        output.store("Powered", Codec.BOOL, this.powered);
+        output.store("Enabled", Codec.BOOL, this.enabled);
+        output.putInt("ProcessTime", this.processingTime);
+        output.putInt("Recycled", this.recycled);
     }
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider provider)
     {
-        CompoundTag tag = new CompoundTag();
-        this.writeNodeNbt(tag);
-        tag.putBoolean("Powered", this.powered);
-        tag.putBoolean("Enabled", this.enabled);
-        tag.putBoolean("Processing", this.processing);
-        BlockEntityHelper.saveCustomName(tag, this.getCustomName(), provider);
-        return tag;
+        try(ProblemReporter.ScopedCollector collector = new ProblemReporter.ScopedCollector(this.problemPath(), Constants.LOG))
+        {
+            TagValueOutput output = TagValueOutput.createWithContext(collector, provider);
+            this.writeNodeNbt(output);
+            output.store("Powered", Codec.BOOL, this.powered);
+            output.store("Enabled", Codec.BOOL, this.enabled);
+            output.store("Processing", Codec.BOOL, this.processing);
+            BlockEntityHelper.saveCustomName(output, this.getCustomName());
+            return output.buildResult();
+        }
     }
 
     private void sync()

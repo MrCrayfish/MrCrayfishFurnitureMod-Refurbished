@@ -1,11 +1,10 @@
 package com.mrcrayfish.furniture.refurbished.mail;
 
-import com.google.common.collect.ImmutableList;
-import com.mojang.authlib.GameProfile;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.Config;
-import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.blockentity.MailboxBlockEntity;
-import com.mrcrayfish.furniture.refurbished.client.ClientMailbox;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -13,28 +12,23 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
-import org.apache.commons.lang3.mutable.MutableBoolean;
-import org.apache.commons.lang3.mutable.MutableObject;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.apache.commons.lang3.tuple.Pair;
-
 import org.jetbrains.annotations.Nullable;
-import java.util.ArrayDeque;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 // TODO require ender pearl to send items
 
@@ -43,21 +37,18 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DeliveryService extends SavedData
 {
+    private static final Function<MinecraftServer, Codec<DeliveryService>> CODEC = server -> RecordCodecBuilder.create((instance) -> instance.group(
+        Mailbox.CODEC.listOf().fieldOf("Mailboxes").forGetter(service -> List.copyOf(service.mailboxes.values()))
+    ).apply(instance, mailboxes -> {
+        DeliveryService service = new DeliveryService(server);
+        mailboxes.forEach(service::addMailbox);
+        return service;
+    }));
+
     @SuppressWarnings("DataFlowIssue")
     private static final SavedDataType<DeliveryService> TYPE = new SavedDataType<>("refurbished_furniture_delivery_service", context -> {
         return new DeliveryService(context.levelOrThrow().getServer());
-    }, context -> {
-        return CompoundTag.CODEC.xmap(tag -> {
-            ServerLevel level = context.levelOrThrow();
-            MinecraftServer server = level.getServer();
-            RegistryAccess access = level.registryAccess();
-            return new DeliveryService(server, tag, access);
-        }, service -> {
-            ServerLevel level = context.levelOrThrow();
-            RegistryAccess access = level.registryAccess();
-            return service.save(access);
-        });
-    }, null);
+    }, context -> CODEC.apply(context.levelOrThrow().getServer()), null);
 
     public static Optional<DeliveryService> get(MinecraftServer server)
     {
@@ -80,12 +71,6 @@ public class DeliveryService extends SavedData
         this.server = server;
     }
 
-    public DeliveryService(MinecraftServer server, CompoundTag compound, HolderLookup.Provider provider)
-    {
-        this.server = server;
-        this.load(compound, provider);
-    }
-
     /**
      * @return The instance of the current minecraft server
      */
@@ -103,14 +88,14 @@ public class DeliveryService extends SavedData
         while(!this.removal.isEmpty())
         {
             Mailbox mailbox = this.removal.poll();
-            mailbox.spawnQueueIntoLevel();
+            mailbox.spawnQueueIntoLevel(this);
             this.mailboxes.remove(mailbox.id());
             this.locator.remove(Pair.of(mailbox.levelKey().location(), mailbox.pos()));
             this.setDirty();
         }
 
         // Try to deliver mail from queues to the block entity in the level
-        this.mailboxes.forEach((uuid, mailbox) -> mailbox.tick());
+        this.mailboxes.forEach((uuid, mailbox) -> mailbox.tick(this));
     }
 
     /**
@@ -122,6 +107,9 @@ public class DeliveryService extends SavedData
      */
     public DeliveryResult sendMail(UUID id, ItemStack stack)
     {
+        if(stack.isEmpty())
+            return DeliveryResult.createFail("delivery_service.invalid_item");
+
         Mailbox mailbox = this.mailboxes.get(id);
 
         // Check if the mailbox exists
@@ -149,9 +137,23 @@ public class DeliveryService extends SavedData
      *
      * @param mailbox the mailbox to remove
      */
-    void removeMailbox(Mailbox mailbox)
+    public void removeMailbox(Mailbox mailbox)
     {
         this.removal.offer(mailbox);
+    }
+
+    /**
+     * Marks the given mailbox for removal
+     *
+     * @param mailboxId the id of the mailbox to remove
+     */
+    public void removeMailbox(UUID mailboxId)
+    {
+        Mailbox mailbox = this.mailboxes.get(mailboxId);
+        if(mailbox != null)
+        {
+            this.removal.offer(mailbox);
+        }
     }
 
     /**
@@ -163,9 +165,9 @@ public class DeliveryService extends SavedData
      */
     public boolean canCreateMailbox(Player player)
     {
-        long count = this.mailboxes.values().stream()
-                .filter(box -> player.getUUID().equals(box.owner().getValue()))
-                .count();
+        long count = this.mailboxes.values().stream().filter(box -> {
+            return box.owner().stream().anyMatch(uuid -> uuid.equals(player.getUUID()));
+        }).count();
         return Config.SERVER.mailing.maxMailboxesPerPlayer.get() > count;
     }
 
@@ -175,20 +177,33 @@ public class DeliveryService extends SavedData
      * placing a new mailbox block. The mailbox is initially unclaimed but is immediately claimed
      * by the placing player.
      *
-     * @param blockEntity the mailbox block entity
-     * @return A non-null {@link Mailbox} instance
+     * @param entity the mailbox block entity
+     * @return A {@link Mailbox} instance or null if block entity is invalid (aka removed)
      */
-    public Mailbox getOrCreateMailBox(MailboxBlockEntity blockEntity)
+    @Nullable
+    public Mailbox getOrCreateMailBox(MailboxBlockEntity entity)
     {
-        this.duplicateIdCheck(blockEntity);
-        return this.mailboxes.computeIfAbsent(blockEntity.getId(), uuid -> {
-            ResourceKey<Level> levelKey = blockEntity.getLevel().dimension();
-            BlockPos pos = blockEntity.getBlockPos();
-            Mailbox mailbox = new Mailbox(uuid, levelKey, pos, new MutableObject<>(), new MutableObject<>(""), new ArrayDeque<>(), new MutableBoolean(), this);
-            this.locator.put(Pair.of(levelKey.location(), pos), mailbox);
-            this.setDirty();
-            return mailbox;
-        });
+        if(entity.isRemoved())
+            return null;
+
+        this.duplicateIdCheck(entity);
+
+        Mailbox mailbox = this.mailboxes.get(entity.getId());
+        if(mailbox != null)
+            return this.removal.contains(mailbox) ? null : mailbox;
+
+        ResourceKey<Level> levelKey = entity.getLevel().dimension();
+        BlockPos pos = entity.getBlockPos();
+        return this.addMailbox(new Mailbox(entity.getId(), levelKey, pos));
+    }
+
+    private Mailbox addMailbox(Mailbox mailbox)
+    {
+        this.mailboxes.put(mailbox.id(), mailbox);
+        this.locator.put(Pair.of(mailbox.levelKey().location(), mailbox.pos()), mailbox);
+        mailbox.setService(this);
+        this.setDirty();
+        return mailbox;
     }
 
     /**
@@ -253,7 +268,7 @@ public class DeliveryService extends SavedData
     {
         Pair<ResourceLocation, BlockPos> pendingLocation = this.pendingNames.remove(player.getUUID());
         return this.getMailboxAtPosition(level, pos).map(mailbox -> {
-            if(!Objects.equals(mailbox.owner().getValue(), player.getUUID()))
+            if(!Objects.equals(mailbox.owner().orElse(null), player.getUUID()))
                 return false;
             Pair<ResourceLocation, BlockPos> location = Pair.of(level.dimension().location(), pos);
             return Objects.equals(location, pendingLocation) && mailbox.rename(customName);
@@ -265,98 +280,16 @@ public class DeliveryService extends SavedData
         return Collections.unmodifiableCollection(this.mailboxes.values());
     }
 
-    /**
-     * Encodes the mailboxes to a FriendlyByteBuf
-     */
-    public void encodeMailboxes(FriendlyByteBuf buf)
+    private void load(ValueInput input)
     {
-        buf.writeCollection(this.mailboxes.values(), (buf1, mailbox) -> {
-            buf1.writeUUID(mailbox.getId());
-            buf1.writeOptional(mailbox.getOwner(), (buf2, profile) -> {
-                buf2.writeUUID(profile.getId());
-                buf2.writeOptional(Optional.ofNullable(profile.getName()), FriendlyByteBuf::writeUtf);
-            });
-            buf1.writeOptional(mailbox.getCustomName(), FriendlyByteBuf::writeUtf);
-        });
+        ValueInput.TypedInputList<Mailbox> list = input.listOrEmpty("Mailboxes", Mailbox.CODEC);
+        list.forEach(this::addMailbox);
     }
 
-    /**
-     * Decodes the mailboxes from a FriendlyByteBuf. The list returned is immutable and the mailboxes
-     * are simply a read only view of the mailboxes from the server.
-     *
-     * @param buf the FriendlyByteBuf to read from
-     * @return an immutable list of mailboxes
-     */
-    public static List<IMailbox> decodeMailboxes(FriendlyByteBuf buf)
+    public void save(ValueOutput output)
     {
-        List<IMailbox> list = buf.readList(buf1 -> {
-            UUID mailboxId = buf1.readUUID();
-            Optional<GameProfile> profile = buf1.readOptional(buf2 -> {
-                UUID playerId = buf2.readUUID();
-                Optional<String> name = buf2.readOptional(FriendlyByteBuf::readUtf);
-                return new GameProfile(playerId, name.orElse("Unknown"));
-            });
-            Optional<String> mailboxName = buf1.readOptional(FriendlyByteBuf::readUtf);
-            return new ClientMailbox(mailboxId, profile, mailboxName);
-        });
-        return ImmutableList.copyOf(list);
-    }
-
-    private void load(CompoundTag compound, HolderLookup.Provider provider)
-    {
-        if(compound.contains("Mailboxes"))
-        {
-            ListTag list = compound.getListOrEmpty("Mailboxes");
-            list.forEach(tag ->
-            {
-                if(!(tag instanceof CompoundTag mailboxTag))
-                    return;
-
-                try
-                {
-                    ResourceKey<Level> levelKey = createLevelKey(mailboxTag.getString("Level").orElseThrow());
-                    UUID id = mailboxTag.read("UUID", UUIDUtil.CODEC).orElseThrow();
-                    BlockPos pos = BlockPos.of(mailboxTag.getLong("BlockPosition").orElseThrow());
-                    MutableObject<UUID> owner = new MutableObject<>();
-                    if(mailboxTag.contains("Owner"))
-                    {
-                        mailboxTag.read("Owner", UUIDUtil.CODEC).ifPresent(owner::setValue);
-                    }
-                    String customName = mailboxTag.getString("CustomName").orElse("Mailbox");
-                    customName = customName.substring(0, Math.min(customName.length(), 32));
-                    Queue<ItemStack> queue = Mailbox.readQueueListTag(mailboxTag, provider);
-                    Mailbox mailbox = new Mailbox(id, levelKey, pos, owner, new MutableObject<>(customName), queue, new MutableBoolean(), this);
-                    this.mailboxes.putIfAbsent(id, mailbox);
-                    this.locator.put(Pair.of(levelKey.location(), pos), mailbox);
-                }
-                catch(Exception e)
-                {
-                    Constants.LOG.error("Failed to load a mailbox due to invalid data");
-                }
-            });
-        }
-    }
-
-    public CompoundTag save(HolderLookup.Provider provider)
-    {
-        CompoundTag tag = new CompoundTag();
-        ListTag list = new ListTag();
-        this.mailboxes.forEach((uuid, mailbox) ->
-        {
-            if(!mailbox.removed().booleanValue())
-            {
-                CompoundTag mailboxTag = new CompoundTag();
-                mailboxTag.store("UUID", UUIDUtil.CODEC, uuid);
-                mailboxTag.putString("Level", mailbox.levelKey().location().toString());
-                mailboxTag.putLong("BlockPosition", mailbox.pos().asLong());
-                Optional.ofNullable(mailbox.owner().getValue()).ifPresent(id -> mailboxTag.store("Owner", UUIDUtil.CODEC, id));
-                Optional.ofNullable(mailbox.customName().getValue()).ifPresent(name -> mailboxTag.putString("CustomName", name));
-                mailbox.writeQueue(mailboxTag, provider);
-                list.add(mailboxTag);
-            }
-        });
-        tag.put("Mailboxes", list);
-        return tag;
+        ValueOutput.TypedOutputList<Mailbox> list = output.list("Mailboxes", Mailbox.CODEC);
+        this.mailboxes.forEach((id, mailbox) -> list.add(mailbox));
     }
 
     /**

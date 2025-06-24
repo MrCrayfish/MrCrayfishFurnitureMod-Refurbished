@@ -15,7 +15,11 @@ import net.minecraft.world.Nameable;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
+
+import java.awt.*;
 
 /**
  * Author: MrCrayfish
@@ -125,20 +129,17 @@ public class LightswitchBlockEntity extends ElectricityModuleBlockEntity impleme
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    protected void loadAdditional(ValueInput input)
     {
-        super.loadAdditional(tag, provider);
-        if(tag.contains("CustomName"))
-        {
-            this.name = parseCustomNameSafe(tag.get("CustomName"), provider);
-        }
+        super.loadAdditional(input);
+        BlockEntityHelper.readCustomName(input).ifPresent(name -> this.name = name);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    protected void saveAdditional(ValueOutput output)
     {
-        super.saveAdditional(tag, provider);
-        BlockEntityHelper.saveCustomName(tag, this.name, provider);
+        super.saveAdditional(output);
+        BlockEntityHelper.saveCustomName(output, this.name);
     }
 
     @Override

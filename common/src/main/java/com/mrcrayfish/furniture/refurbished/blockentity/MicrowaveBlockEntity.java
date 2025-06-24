@@ -1,5 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.mojang.serialization.Codec;
+import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.block.MicrowaveBlock;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
@@ -18,6 +20,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.StackedItemContents;
@@ -31,6 +34,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -142,29 +148,34 @@ public class MicrowaveBlockEntity extends ElectricityModuleProcessingLootBlockEn
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    public void loadAdditional(ValueInput input)
     {
-        super.loadAdditional(tag, provider);
-        tag.getBoolean("Enabled").ifPresent(value -> this.enabled = value);
-        tag.getBoolean("Processing").ifPresent(value -> this.processing = value);
+        super.loadAdditional(input);
+        input.read("Enabled", Codec.BOOL).ifPresent(value -> this.enabled = value);
+        input.read("Processing", Codec.BOOL).ifPresent(value -> this.processing = value);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    protected void saveAdditional(ValueOutput output)
     {
-        super.saveAdditional(tag, provider);
-        tag.putBoolean("Enabled", this.enabled);
-        tag.putBoolean("Processing", this.processing);
+        super.saveAdditional(output);
+        output.store("Enabled", Codec.BOOL, this.enabled);
+        output.store("Processing", Codec.BOOL, this.processing);
     }
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider provider)
     {
-        CompoundTag tag = super.getUpdateTag(provider);
-        tag.putBoolean("Enabled", this.enabled);
-        tag.putBoolean("Processing", this.processing);
-        BlockEntityHelper.saveCustomName(tag, this.getCustomName(), provider);
-        return tag;
+        try(ProblemReporter.ScopedCollector collector = new ProblemReporter.ScopedCollector(this.problemPath(), Constants.LOG))
+        {
+            TagValueOutput output = TagValueOutput.createWithContext(collector, provider);
+            this.writeNodeNbt(output);
+            output.store("Powered", Codec.BOOL, this.powered);
+            output.store("Enabled", Codec.BOOL, this.enabled);
+            output.store("Processing", Codec.BOOL, this.processing);
+            BlockEntityHelper.saveCustomName(output, this.getCustomName());
+            return output.buildResult();
+        }
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.mojang.serialization.Codec;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.block.ElectricityGeneratorBlock;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
@@ -27,6 +28,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -300,21 +303,21 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    public void loadAdditional(ValueInput input)
     {
-        super.loadAdditional(tag, provider);
-        tag.getBoolean("Enabled").ifPresent(value -> this.enabled = value);
-        tag.getInt("Energy").ifPresent(value -> this.energy = value);
-        tag.getInt("TotalEnergy").ifPresent(value -> this.totalEnergy = value);
+        super.loadAdditional(input);
+        input.read("Enabled", Codec.BOOL).ifPresent(value -> this.enabled = value);
+        input.getInt("Energy").ifPresent(value -> this.energy = value);
+        input.getInt("TotalEnergy").ifPresent(value -> this.totalEnergy = value);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    protected void saveAdditional(ValueOutput output)
     {
-        super.saveAdditional(tag, provider);
-        tag.putBoolean("Enabled", this.enabled);
-        tag.putInt("Energy", this.energy);
-        tag.putInt("TotalEnergy", this.totalEnergy);
+        super.saveAdditional(output);
+        output.store("Enabled", Codec.BOOL, this.enabled);
+        output.putInt("Energy", this.energy);
+        output.putInt("TotalEnergy", this.totalEnergy);
     }
 
     @Override

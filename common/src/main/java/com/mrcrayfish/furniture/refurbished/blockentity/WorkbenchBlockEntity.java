@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.mojang.serialization.Codec;
 import com.mrcrayfish.furniture.refurbished.block.WorkbenchBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.crafting.StackedIngredient;
@@ -39,6 +40,8 @@ import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
@@ -357,18 +360,18 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    public void loadAdditional(ValueInput input)
     {
-        super.loadAdditional(tag, provider);
-        tag.getInt("SelectedRecipe").ifPresent(this.selectedRecipe::set);
-        tag.getBoolean("IncludeNeighbours").ifPresent(value -> this.searchNeighbours.set(value ? 1 : 0));
+        super.loadAdditional(input);
+        input.getInt("SelectedRecipe").ifPresent(this.selectedRecipe::set);
+        input.read("IncludeNeighbours", Codec.BOOL).ifPresent(value -> this.searchNeighbours.set(value ? 1 : 0));
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    protected void saveAdditional(ValueOutput output)
     {
-        super.saveAdditional(tag, provider);
-        tag.putInt("SelectedRecipe", this.selectedRecipe.get());
-        tag.putBoolean("IncludeNeighbours", this.searchNeighbours.get() != 0);
+        super.saveAdditional(output);
+        output.putInt("SelectedRecipe", this.selectedRecipe.get());
+        output.store("IncludeNeighbours", Codec.BOOL, this.searchNeighbours.get() != 0);
     }
 }

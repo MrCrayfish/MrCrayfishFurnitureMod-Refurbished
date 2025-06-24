@@ -14,6 +14,8 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import java.util.List;
 import java.util.Objects;
@@ -94,14 +96,14 @@ public abstract class FluidContainer
      *
      * @param tag the compound tag to read from
      */
-    public abstract void load(CompoundTag tag, HolderLookup.Provider provider);
+    public abstract void load(ValueInput input);
 
     /**
      * Saves the fluid container to the given compound tag.
      *
      * @param tag the compound tag to append the data to
      */
-    public abstract void save(CompoundTag tag, HolderLookup.Provider provider);
+    public abstract void save(ValueOutput output);
 
     /**
      * Syncs

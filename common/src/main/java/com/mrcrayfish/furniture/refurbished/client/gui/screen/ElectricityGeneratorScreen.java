@@ -12,6 +12,7 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -51,20 +52,20 @@ public class ElectricityGeneratorScreen extends AbstractContainerScreen<Electric
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
     {
-        graphics.blit(RenderType::guiTextured, TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
         if(this.menu.getEnergy() > 0 && this.menu.getTotalEnergy() > 0)
         {
             float normalEnergy = this.menu.getEnergy() / (float) this.menu.getTotalEnergy();
             int v = (int) Math.ceil(14 * normalEnergy);
-            graphics.blit(RenderType::guiTextured, TEXTURE, this.leftPos + 26, this.topPos + 25 + 14 - v, 176, 14 - v, 14, v, 256, 256);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos + 26, this.topPos + 25 + 14 - v, 176, 14 - v, 14, v, 256, 256);
         }
         Status status = this.getStatus();
-        graphics.blit(RenderType::guiTextured, IconButton.ICON_TEXTURES, this.leftPos + 66, this.topPos + 29, status.iconU, status.iconV, 10, 10, 64, 64);
-        graphics.blit(RenderType::guiTextured, IconButton.ICON_TEXTURES, this.leftPos + 66, this.topPos + 46, 0, 10, 10, 10, 64, 64);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, IconButton.ICON_TEXTURES, this.leftPos + 66, this.topPos + 29, status.iconU, status.iconV, 10, 10, 64, 64);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, IconButton.ICON_TEXTURES, this.leftPos + 66, this.topPos + 46, 0, 10, 10, 10, 64, 64);
 
         if(this.menu.getEnergy() > 0 && this.menu.getTotalEnergy() > 0 && ScreenHelper.isMouseWithinBounds(mouseX, mouseY, this.leftPos + 26, this.topPos + 25, 14, 14))
         {
-            this.setTooltipForNextRenderPass(Utils.translation("gui", "progress", this.menu.getEnergy(), Components.GUI_SLASH, this.menu.getTotalEnergy()));
+            graphics.setTooltipForNextFrame(Utils.translation("gui", "progress", this.menu.getEnergy(), Components.GUI_SLASH, this.menu.getTotalEnergy()), mouseX, mouseY);
         }
     }
 

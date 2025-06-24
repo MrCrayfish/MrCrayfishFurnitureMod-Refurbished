@@ -22,7 +22,7 @@ public class NeoForgeRenderType
     private static final Function<ResourceLocation, RenderType> TELEVISION_SCREEN = Util.memoize((id) -> {
         return RenderType.create(Constants.MOD_ID + "_television_screen", 0x200000, false, false, RenderPipelines.SOLID, RenderType.CompositeState.builder()
                 .setLightmapState(RenderType.LIGHTMAP)
-                .setTextureState(new RenderStateShard.TextureStateShard(id, TriState.FALSE, false))
+                .setTextureState(new RenderStateShard.TextureStateShard(id, false))
                 .createCompositeState(true));
     });
 
@@ -51,8 +51,8 @@ public class NeoForgeRenderType
         {
             super(() -> {
                 AbstractTexture texture = TextureCache.get().getTexture(id);
-                texture.setFilter(TriState.FALSE, false);
-                RenderSystem.setShaderTexture(0, texture.getTexture());
+                texture.setFilter(false, false);
+                RenderSystem.setShaderTexture(0, texture.getTextureView());
             }, () -> {});
             this.texture = Optional.of(id);
         }

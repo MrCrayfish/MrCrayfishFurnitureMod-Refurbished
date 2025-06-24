@@ -152,7 +152,7 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNod
     }
 
     @Override
-    public boolean shouldRenderOffScreen(T node)
+    public boolean shouldRenderOffScreen()
     {
         return true;
     }

@@ -64,8 +64,8 @@ public class FurnitureMod
         DataGenerator generator = event.getGenerator();
         PackOutput output = generator.getPackOutput();
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
-        CommonBlockTagsProvider blockTagsProvider = event.createProvider(CommonBlockTagsProvider::new);
-        event.addProvider(new CommonItemTagsProvider(output, lookupProvider, blockTagsProvider.contentsGetter()));
+        event.createProvider(CommonBlockTagsProvider::new);
+        event.addProvider(new CommonItemTagsProvider(output, lookupProvider));
         event.addProvider(new DatapackBuiltinEntriesProvider(output, lookupProvider, RegistriesProvider.BUILDER, Set.of(Constants.MOD_ID)));
         event.addProvider(new FrameworkModelProvider(output, CommonBlockStatesGenerator::new, CommonItemModelsGenerator::new));
         event.createProvider(CommonLootTableProvider::new);

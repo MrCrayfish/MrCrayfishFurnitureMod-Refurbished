@@ -9,6 +9,7 @@ import net.minecraft.Util;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.MutableComponent;
@@ -60,12 +61,9 @@ public class ClientWorkbenchRecipeIngredientTooltip implements ClientTooltipComp
         graphics.drawString(font, name, start + 18 + 5, top + 4, 0xFFFFFFFF);
 
         // Draw check or cross depending on if we have the materials
-        PoseStack pose = graphics.pose();
-        pose.pushPose();
-        pose.translate(0, 0, 200);
+        // TODO 1.21.6 maybe next stratum?
         boolean checked = this.menu.hasMaterials(this.material, this.counted);
-        graphics.blit(RenderType::guiTextured, WorkbenchScreen.WORKBENCH_TEXTURE, start, top, checked ? 246 : 240, 40, 6, 5, 256, 256);
-        pose.popPose();
+        graphics.blit(RenderPipelines.GUI_TEXTURED, WorkbenchScreen.WORKBENCH_TEXTURE, start, top, checked ? 246 : 240, 40, 6, 5, 256, 256);
     }
 
     private ItemStack getStack()

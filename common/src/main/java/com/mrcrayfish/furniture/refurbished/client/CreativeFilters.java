@@ -19,6 +19,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -252,7 +253,7 @@ public class CreativeFilters
             if(tab != null && tab.visible && tab.isHovered())
             {
                 Minecraft mc = Minecraft.getInstance();
-                graphics.renderTooltip(mc.font, tab.cachedTooltip.toCharSequence(mc), mouseX, mouseY);
+                graphics.setTooltipForNextFrame(tab.cachedTooltip.toCharSequence(mc), mouseX, mouseY);
                 return;
             }
         }
@@ -396,7 +397,7 @@ public class CreativeFilters
         @Override
         public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
         {
-            graphics.blitSprite(RenderType::guiTextured, this.category.isEnabled() ? SELECTED_FILTER_TAB : UNSELECTED_FILTER_TAB, this.getX(), this.getY(), 32, 26);
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.category.isEnabled() ? SELECTED_FILTER_TAB : UNSELECTED_FILTER_TAB, this.getX(), this.getY(), 32, 26);
             graphics.renderItem(this.category.getIcon(), this.getX() + 8, this.getY() + 5);
         }
     }

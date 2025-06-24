@@ -33,6 +33,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
@@ -162,24 +164,22 @@ public class BathBlockEntity extends BlockEntity implements IFluidContainerBlock
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    public void loadAdditional(ValueInput input)
     {
-        super.loadAdditional(tag, provider);
+        super.loadAdditional(input);
         if(this.tank != null)
         {
-            this.tank.load(tag.getCompoundOrEmpty("FluidTank"), provider);
+            this.tank.load(input.childOrEmpty("FluidTank"));
         }
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider)
+    protected void saveAdditional(ValueOutput output)
     {
-        super.saveAdditional(tag, provider);
+        super.saveAdditional(output);
         if(this.tank != null)
         {
-            CompoundTag tankTag = new CompoundTag();
-            this.tank.save(tankTag, provider);
-            tag.put("FluidTank", tankTag);
+            this.tank.save(output.child("FluidTank"));
         }
     }
 

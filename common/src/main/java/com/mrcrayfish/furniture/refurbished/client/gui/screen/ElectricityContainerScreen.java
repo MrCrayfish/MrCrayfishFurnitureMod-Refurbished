@@ -11,6 +11,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -36,10 +37,6 @@ public abstract class ElectricityContainerScreen<T extends AbstractContainerMenu
     {
         if(!this.menu.isPowered())
         {
-            PoseStack pose = graphics.pose();
-            pose.pushPose();
-            pose.translate(0, 0, 250);
-
             int iconSize = 10;
             int padding = 5;
             int messageWidth = this.minecraft.font.width(Components.GUI_NO_POWER);
@@ -49,12 +46,12 @@ public abstract class ElectricityContainerScreen<T extends AbstractContainerMenu
             int bannerTop = this.getBannerTop();
 
             // Draw background
-            graphics.blit(RenderType::guiTextured, TEXTURE, bannerStart, bannerTop, 0, 46, 4, 18, 64, 64);
-            graphics.blit(RenderType::guiTextured, TEXTURE, bannerStart + 4, bannerTop, 4, 46, bannerWidth - 7, 18, 1, 18, 64, 64);
-            graphics.blit(RenderType::guiTextured, TEXTURE, bannerStart + 4 + bannerWidth - 7, bannerTop, 5, 46, 3, 18, 64, 64);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, bannerStart, bannerTop, 0, 46, 4, 18, 64, 64);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, bannerStart + 4, bannerTop, 4, 46, bannerWidth - 7, 18, 1, 18, 64, 64);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, bannerStart + 4 + bannerWidth - 7, bannerTop, 5, 46, 3, 18, 64, 64);
 
             // Draw icon
-            graphics.blit(RenderType::guiTextured, IconButton.ICON_TEXTURES, bannerStart + padding, bannerTop + 4, 20, 20, 10, 10, 64, 64);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, IconButton.ICON_TEXTURES, bannerStart + padding, bannerTop + 4, 20, 20, 10, 10, 64, 64);
 
             // Draw message
             graphics.drawString(this.minecraft.font, Components.GUI_NO_POWER, bannerStart + padding + iconSize + 3, bannerTop + 5, 0xFFFFFFFF);
@@ -66,10 +63,8 @@ public abstract class ElectricityContainerScreen<T extends AbstractContainerMenu
                     Components.GUI_NO_POWER.plainCopy().withStyle(ChatFormatting.RED),
                     Components.GUI_CONNECT_TO_POWER
                 ));
-                this.setTooltipForNextRenderPass(tooltip, DefaultTooltipPositioner.INSTANCE, false);this.setTooltipForNextRenderPass(tooltip, DefaultTooltipPositioner.INSTANCE, false);
+                graphics.setTooltipForNextFrame(tooltip.toCharSequence(this.minecraft), mouseX, mouseY);
             }
-
-            pose.popPose();
         }
     }
 

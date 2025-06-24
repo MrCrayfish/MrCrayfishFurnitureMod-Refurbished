@@ -61,10 +61,10 @@ public abstract class DisplayableProgram<T extends Program>
         if(this.scene != null)
         {
             // Render scene
-            graphics.pose().pushPose();
-            graphics.pose().translate(this.contentStart, this.contentTop, 0);
+            graphics.pose().pushMatrix();
+            graphics.pose().translate(this.contentStart, this.contentTop);
             this.scene.render(graphics, mouseX, mouseY, partialTick);
-            graphics.pose().popPose();
+            graphics.pose().popMatrix();
 
             // Render widgets
             this.scene.getRenderables().forEach(widget -> widget.render(graphics, mouseX, mouseY, partialTick));
