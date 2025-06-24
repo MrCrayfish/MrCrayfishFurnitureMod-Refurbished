@@ -162,28 +162,25 @@ public interface IElectricityNode
      */
     default void readNodeNbt(ValueInput input)
     {
-        ValueInput.TypedInputList<Long> nodes = input.listOrEmpty("Connections", Codec.LONG);
-        if(!nodes.isEmpty())
+        // Hack to offset connections when using clone command. Does not support rotation
+        BlockPos offset = BlockPos.ZERO;
+        Optional<Long> nodePos = input.getLong("NodePos");
+        if(nodePos.isPresent())
         {
-            // Hack to offset connections when using clone command. Does not support rotation
-            BlockPos offset = BlockPos.ZERO;
-            Optional<Long> nodePos = input.getLong("NodePos");
-            if(nodePos.isPresent())
+            BlockPos current = this.getNodePosition();
+            BlockPos previous = BlockPos.of(nodePos.get());
+            if(!current.equals(previous))
             {
-                BlockPos current = this.getNodePosition();
-                BlockPos previous = BlockPos.of(nodePos.get());
-                if(!current.equals(previous))
-                {
-                    offset = current.subtract(previous);
-                }
+                offset = current.subtract(previous);
             }
-            BlockPos pos = this.getNodePosition();
-            Set<Connection> connections = this.getNodeConnections();
-            connections.clear();
-            for(long node : nodes)
-            {
-                connections.add(Connection.of(pos, BlockPos.of(node).offset(offset)));
-            }
+        }
+
+        BlockPos pos = this.getNodePosition();
+        Set<Connection> connections = this.getNodeConnections();
+        connections.clear();
+        for(long node : input.listOrEmpty("Connections", Codec.LONG))
+        {
+            connections.add(Connection.of(pos, BlockPos.of(node).offset(offset)));
         }
     }
 

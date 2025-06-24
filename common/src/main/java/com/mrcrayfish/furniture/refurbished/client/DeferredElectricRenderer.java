@@ -58,7 +58,6 @@ public class DeferredElectricRenderer implements ResourceManagerReloadListener
 
     private final ResourceLocation nodeTexture = Utils.resource("textures/misc/electricity_nodes.png");
     private final List<BiConsumer<PoseStack, VertexConsumer>> deferredDrawCalls = new LinkedList<>();
-    private final RenderSystem.AutoStorageIndexBuffer indices = RenderSystem.getSequentialBuffer(VertexFormat.Mode.QUADS);
     private @Nullable Class<?> irisClass;
     private Method shaderPack;
     private Boolean shaderEnabled;
@@ -260,7 +259,6 @@ public class DeferredElectricRenderer implements ResourceManagerReloadListener
             this.drawDeferredCalls(stack);
         }
 
-        // TODO 1.21.6
         GpuTextureView mainColor = Minecraft.getInstance().getMainRenderTarget().getColorTextureView();
         GpuTextureView electricityColorView = this.electricityTarget.getColorTextureView();
         if(this.handle != null && electricityColorView != null && mainColor != null)
