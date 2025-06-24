@@ -18,7 +18,7 @@ public record MessageSendPackage(UUID mailboxId, String message)
 {
     public static final StreamCodec<RegistryFriendlyByteBuf, MessageSendPackage> STREAM_CODEC = StreamCodec.of((buf, message) -> {
         buf.writeUUID(message.mailboxId);
-        buf.writeUtf(message.message);
+        buf.writeUtf(message.message, 256);
     }, buf -> {
         return new MessageSendPackage(buf.readUUID(), buf.readUtf());
     });
