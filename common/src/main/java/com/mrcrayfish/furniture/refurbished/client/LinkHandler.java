@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.client;
 
 import com.google.common.collect.Sets;
 import com.mojang.blaze3d.buffers.GpuBuffer;
+import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderPass;
@@ -39,10 +40,9 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Intersectiond;
-import org.joml.Matrix4f;
-import org.joml.Vector3d;
+import org.joml.*;
 
+import java.lang.Math;
 import java.util.*;
 
 /**
@@ -599,22 +599,25 @@ public class LinkHandler
                     GpuTextureView mainColor = mainTarget.getColorTextureView();
                     GpuTextureView mainDepth = mainTarget.getDepthTextureView();
 
-                    AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(this.linkInsideArea ? POWERABLE_AREA : UNPOWERABLE_AREA);
+                    GpuBufferSlice slice = RenderSystem.getDynamicUniforms().writeTransform(RenderSystem.getModelViewMatrix(), new Vector4f(1.0F, 1.0F, 1.0F, 0.6F * areaAlpha), new Vector3f(), new Matrix4f(), 0.0F);
                     RenderSystem.AutoStorageIndexBuffer autoIndexBuffer = RenderSystem.getSequentialBuffer(pipeline.getVertexFormatMode());
                     VertexFormat.IndexType indexType = autoIndexBuffer.type();
                     GpuBuffer indexBuffer = autoIndexBuffer.getBuffer(data.drawState().indexCount());
-                    GpuBuffer vertexBuffer = RenderSystem.getDevice().createBuffer(() -> "Powerable Area", GpuBuffer.USAGE_VERTEX, data.vertexBuffer().remaining());
+
+                    GpuBuffer vertexBuffer = RenderSystem.getDevice().createBuffer(() -> "Powerable Area", GpuBuffer.USAGE_VERTEX | GpuBuffer.USAGE_COPY_DST, data.vertexBuffer().remaining());
                     RenderSystem.getDevice().createCommandEncoder().writeToBuffer(vertexBuffer.slice(), data.vertexBuffer());
 
-                    //RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 0.6F * areaAlpha);
+                    AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(this.linkInsideArea ? POWERABLE_AREA : UNPOWERABLE_AREA);
 
                     try(RenderPass pass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "SUM SUM", mainColor, OptionalInt.empty(), mainDepth, OptionalDouble.empty()))
                     {
+                        RenderSystem.bindDefaultUniforms(pass);
                         pass.setPipeline(pipeline);
                         pass.setVertexBuffer(0, vertexBuffer);
+                        pass.setUniform("DynamicTransforms", slice);
                         pass.setIndexBuffer(indexBuffer, indexType);
                         pass.bindSampler("Sampler0", texture.getTextureView());
-                        pass.draw(0, data.drawState().indexCount());  // TODO 1.21.6
+                        pass.drawIndexed(0, 0, data.drawState().indexCount(), 1);
                     }
 
                     //RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);

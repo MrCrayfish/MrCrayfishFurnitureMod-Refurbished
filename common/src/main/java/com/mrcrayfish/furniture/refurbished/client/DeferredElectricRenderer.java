@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
 import com.mojang.blaze3d.buffers.GpuBuffer;
+import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
 import com.mojang.blaze3d.framegraph.FramePass;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
@@ -27,6 +28,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -218,25 +221,26 @@ public class DeferredElectricRenderer implements ResourceManagerReloadListener
         if(data == null)
             return;
 
-        // TODO 1.21.6 all
-
         RenderTarget target = this.electricityTarget;
         RenderPipeline pipeline = ModRenderPipelines.ELECTRICITY;
         AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(this.nodeTexture);
 
+        GpuBufferSlice slice = RenderSystem.getDynamicUniforms().writeTransform(RenderSystem.getModelViewMatrix(), new Vector4f(1.0F, 1.0F, 1.0F, 1.0F), new Vector3f(), new Matrix4f(), 0.0F);
         RenderSystem.AutoStorageIndexBuffer autoIndexBuffer = RenderSystem.getSequentialBuffer(pipeline.getVertexFormatMode());
         GpuBuffer indexBuffer = autoIndexBuffer.getBuffer(data.drawState().indexCount());
 
-        GpuBuffer vertexBuffer = RenderSystem.getDevice().createBuffer(() -> "Deferred Electricity Renderer", GpuBuffer.USAGE_VERTEX, data.vertexBuffer().remaining());
+        GpuBuffer vertexBuffer = RenderSystem.getDevice().createBuffer(() -> "Deferred Electricity Renderer", GpuBuffer.USAGE_VERTEX | GpuBuffer.USAGE_COPY_DST, data.vertexBuffer().remaining());
         RenderSystem.getDevice().createCommandEncoder().writeToBuffer(vertexBuffer.slice(), data.vertexBuffer());
 
         try(RenderPass pass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Deferred Electricity Renderer", target.getColorTextureView(), OptionalInt.empty(), target.getDepthTextureView(), OptionalDouble.empty()))
         {
             pass.setPipeline(pipeline);
+            RenderSystem.bindDefaultUniforms(pass);
             pass.setVertexBuffer(0, vertexBuffer);
+            pass.setUniform("DynamicTransforms", slice);
             pass.setIndexBuffer(indexBuffer, autoIndexBuffer.type());
             pass.bindSampler("Sampler0", texture.getTextureView());
-            pass.draw(0, data.drawState().indexCount()); // TODO 1.21.6
+            pass.drawIndexed(0, 0, data.drawState().indexCount(), 1);
         }
     }
 
