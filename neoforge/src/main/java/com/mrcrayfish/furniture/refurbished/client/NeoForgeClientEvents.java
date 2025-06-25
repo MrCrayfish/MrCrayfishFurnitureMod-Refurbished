@@ -38,11 +38,8 @@ public class NeoForgeClientEvents
     }
 
     @SubscribeEvent
-    private static void onRenderLevelStage(RenderLevelStageEvent event)
+    private static void onRenderLevelStage(RenderLevelStageEvent.AfterBlockEntities event)
     {
-        if(event.getStage() != RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES)
-            return;
-
         Minecraft mc = Minecraft.getInstance();
         if(mc.player == null || mc.level == null)
             return;
@@ -82,15 +79,12 @@ public class NeoForgeClientEvents
     }
 
     @SubscribeEvent
-    public static void afterRenderLevel(RenderLevelStageEvent event)
+    public static void afterRenderLevel(RenderLevelStageEvent.AfterLevel event)
     {
-        if(event.getStage() == RenderLevelStageEvent.Stage.AFTER_LEVEL)
+        DeferredElectricRenderer renderer = DeferredElectricRenderer.get();
+        if(!renderer.isIrisShadersEnabled())
         {
-            DeferredElectricRenderer renderer = DeferredElectricRenderer.get();
-            if(!renderer.isIrisShadersEnabled())
-            {
-                DeferredElectricRenderer.get().blitToScreen(event.getModelViewMatrix(), event.getCamera());
-            }
+            DeferredElectricRenderer.get().blitToScreen(event.getModelViewMatrix(), event.getCamera());
         }
     }
 
