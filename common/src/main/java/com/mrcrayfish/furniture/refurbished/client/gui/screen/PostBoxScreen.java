@@ -108,7 +108,6 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
             this.searchEditBox.setValue(this.query);
         }
 
-        // TODO 1.21.6
         this.messageEditBox = MultiLineEditBox.builder()
                 .setShowBackground(false)
                 .setShowDecorations(false)
@@ -152,7 +151,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
         this.sendButton.active = this.selected != null && !this.menu.getContainer().isEmpty();
-        this.searchEditBox.setTextColor(this.searchEditBox.getValue().isEmpty() && !this.searchEditBox.isFocused() ? 0x707070 : 0xE0E0E0);
+        this.searchEditBox.setTextColor(this.searchEditBox.getValue().isEmpty() && !this.searchEditBox.isFocused() ? 0xFF707070 : 0xFFE0E0E0);
         super.render(graphics, mouseX, mouseY, partialTick);
         this.renderTooltip(graphics, mouseX, mouseY);
     }

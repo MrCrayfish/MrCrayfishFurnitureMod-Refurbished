@@ -65,7 +65,6 @@ public class ClientWorkbenchRecipeTooltip implements ClientTooltipComponent
             graphics.renderItemDecorations(font, copy, start + i * 18, top);
 
             // Draw check or cross depending on if we have the materials
-            // TODO 1.21.6 maybe next stratum?
             boolean checked = this.menu.hasMaterials(material, counted);
             graphics.blit(RenderPipelines.GUI_TEXTURED, WorkbenchScreen.WORKBENCH_TEXTURE, start + i * 18, top, checked ? 246 : 240, 40, 6, 5, 256, 256);
         }

@@ -87,8 +87,7 @@ public class RecyclingBinScreen extends ElectricityContainerScreen<RecycleBinMen
         matrix.mul(graphics.pose());
         MultiBufferSource.BufferSource source = this.minecraft.renderBuffers().bufferSource();
         this.minecraft.font.drawInBatch8xOutline(levelLabel.getVisualOrderText(), this.leftPos + 68 - labelWidth, this.topPos + 60, 0xFFC8FF8F, 0xFF2D2102, matrix, source, 0xF000F0);*/
-
-        graphics.submitSignRenderState();
+        
         graphics.drawString(this.font, levelLabel, this.leftPos + 68 - labelWidth, this.topPos + 59, 0xFFC8FF8F, true);
 
         this.drawExperienceFluid(graphics, (float) (currentLevel / maxLevel));

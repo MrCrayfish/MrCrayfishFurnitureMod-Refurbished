@@ -236,7 +236,6 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
             Map<Integer, Integer> counted = new HashMap<>();
             holder.value().getMaterials().forEach(material -> components.add(new ClientWorkbenchRecipeIngredientTooltip(this.menu, material, counted)));
         }
-        // TODO 1.21.6
         graphics.renderTooltip(this.font, components, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
     }
 

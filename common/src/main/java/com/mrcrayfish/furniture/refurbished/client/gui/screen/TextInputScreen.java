@@ -73,7 +73,7 @@ public class TextInputScreen extends Screen
     private void updateAcceptButton(String input)
     {
         boolean valid = this.validator.apply(input);
-        this.editBox.setTextColor(valid ? 0xFFFFFF : 0xFF0000);
+        this.editBox.setTextColor(valid ? 0xFFFFFFFF : 0xFFFF0000);
         this.acceptButton.active = valid;
         this.input = input;
     }
@@ -93,6 +93,6 @@ public class TextInputScreen extends Screen
         super.render(graphics, mouseX, mouseY, partialTick);
         int startX = (this.width - WINDOW_WIDTH) / 2;
         int startY = (this.height - WINDOW_HEIGHT) / 2;
-        graphics.drawString(this.minecraft.font, this.title, startX + 6, startY + 7, 0x404040, false);
+        graphics.drawString(this.minecraft.font, this.title, startX + 6, startY + 7, 0xFF404040, false);
     }
 }

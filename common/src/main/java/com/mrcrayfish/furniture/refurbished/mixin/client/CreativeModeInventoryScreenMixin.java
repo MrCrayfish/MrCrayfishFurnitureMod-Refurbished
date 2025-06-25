@@ -35,7 +35,6 @@ public class CreativeModeInventoryScreenMixin
     @Inject(method = "renderLabels", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)V"))
     private void furnitureRefurbishedBeforeRenderLabels(GuiGraphics graphics, int mouseX, int mouseY, CallbackInfo ci)
     {
-        // TODO 1.21.6
         if(selectedTab == ModCreativeTabs.MAIN.get())
         {
             int contentStart = 8;
