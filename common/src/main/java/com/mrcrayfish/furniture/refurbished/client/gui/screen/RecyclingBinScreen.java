@@ -80,10 +80,17 @@ public class RecyclingBinScreen extends ElectricityContainerScreen<RecycleBinMen
         double currentLevel = Mth.clamp(this.getExperienceLevel(), 0, maxLevel);
         Component levelLabel = Utils.translation("gui", "experience_level", FORMAT.format(currentLevel), maxLevel);
         int labelWidth = this.minecraft.font.width(levelLabel) / 2;
-        Matrix4f matrix = new Matrix4f();
+
+        // No longer easily possible to render the outlined text
+        /*Matrix4f matrix = new Matrix4f();
+        matrix.identity();
         matrix.mul(graphics.pose());
         MultiBufferSource.BufferSource source = this.minecraft.renderBuffers().bufferSource();
-        this.minecraft.font.drawInBatch8xOutline(levelLabel.getVisualOrderText(), this.leftPos + 68 - labelWidth, this.topPos + 60, 0xFFC8FF8F, 0xFF2D2102, matrix, source, 0xF000F0);
+        this.minecraft.font.drawInBatch8xOutline(levelLabel.getVisualOrderText(), this.leftPos + 68 - labelWidth, this.topPos + 60, 0xFFC8FF8F, 0xFF2D2102, matrix, source, 0xF000F0);*/
+
+        graphics.submitSignRenderState();
+        graphics.drawString(this.font, levelLabel, this.leftPos + 68 - labelWidth, this.topPos + 59, 0xFFC8FF8F, true);
+
         this.drawExperienceFluid(graphics, (float) (currentLevel / maxLevel));
 
         if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, this.leftPos + 118, this.topPos + 22, 32, 48))
@@ -125,7 +132,7 @@ public class RecyclingBinScreen extends ElectricityContainerScreen<RecycleBinMen
 
     private void drawBlitWithAlpha(GuiGraphics graphics, int x, int y, int u, int v, int width, int height, float alpha)
     {
-        int color = ARGB.colorFromFloat(1.0F, 1.0F, 1.0F, alpha);
-        graphics.blit(RenderPipelines.GUI_TEXTURED, RECYCLING_BIN_TEXTURE, x, y, width, height, u, v, width, height, 256, 256, color);
+        int color = ARGB.colorFromFloat(Mth.clamp(alpha + 0.2F, 0, 1), 1.0F, 1.0F, 1.0F);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, RECYCLING_BIN_TEXTURE, x, y, u, v, width, height, 256, 256, color);
     }
 }
