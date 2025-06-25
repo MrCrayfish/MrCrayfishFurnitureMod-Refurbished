@@ -254,6 +254,7 @@ public class CreativeFilters
             {
                 Minecraft mc = Minecraft.getInstance();
                 graphics.setTooltipForNextFrame(tab.cachedTooltip.toCharSequence(mc), mouseX, mouseY);
+                graphics.renderDeferredTooltip();
                 return;
             }
         }
