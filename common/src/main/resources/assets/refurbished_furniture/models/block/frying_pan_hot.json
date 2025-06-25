@@ -1,6 +1,7 @@
 {
 	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
 	"loader": "framework:open_model",
+	"fabric:type": "framework:open_model",
 	"textures": {
 		"texture": "refurbished_furniture:block/frying_pan",
 		"particle": "refurbished_furniture:block/light_particle"
