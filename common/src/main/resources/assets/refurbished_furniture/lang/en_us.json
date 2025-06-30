@@ -191,6 +191,8 @@
     "block.refurbished_furniture.black_cooler": "Black Cooler",
     "block.refurbished_furniture.light_fridge": "Light Fridge",
     "block.refurbished_furniture.dark_fridge": "Dark Fridge",
+    "item.refurbished_furniture.light_freezer": "Light Freezer",
+    "item.refurbished_furniture.dark_freezer": "Dark Freezer",
     "block.refurbished_furniture.light_toaster": "Light Toaster",
     "block.refurbished_furniture.dark_toaster": "Dark Toaster",
     "block.refurbished_furniture.light_microwave": "Light Microwave",
