@@ -543,7 +543,7 @@
     "gui.refurbished_furniture.jei_campfire_info": "继承自篝火烹饪",
     "gui.refurbished_furniture.progress": "%s %s %s",
     "gui.refurbished_furniture.hold_for_details": "按住 %s 获取更多细节",
-    "gui.refurbished_furniture.shift": "上档",
+    "gui.refurbished_furniture.shift": "Shift",
     "gui.refurbished_furniture.show_all_categories": "显示所有",
     "gui.refurbished_furniture.mail_box_limit": "您已达到邮箱限制",
     "gui.refurbished_furniture.booting": "启动中...",
