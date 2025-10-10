@@ -4,6 +4,7 @@ import com.google.common.base.Objects;
 import com.google.common.collect.Sets;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -262,18 +263,23 @@ public class Connection
 
             if(level.isLoaded(this.pos))
             {
-                if(level.getBlockEntity(this.pos) instanceof IElectricityNode found)
+                LevelChunk chunk = level.getChunkAt(this.pos);
+                // Get BE from chunk BE map since LevelChunk#getBlockEntity runs logic we don't want to execute
+                //noinspection ConstantValue
+                if(chunk != null && chunk.getBlockEntities().get(this.pos) instanceof IElectricityNode found && found.isNodeValid())
                 {
                     this.ref = new WeakReference<>(found);
                     this.status = Status.ACTIVE;
                 }
                 else
                 {
+                    this.ref.clear();
                     this.status = Status.INVALID;
                 }
             }
             else
             {
+                this.ref.clear();
                 this.status = Status.UNDETERMINED;
             }
         }
