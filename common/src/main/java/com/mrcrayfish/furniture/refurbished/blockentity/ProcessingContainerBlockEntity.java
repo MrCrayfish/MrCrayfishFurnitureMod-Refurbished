@@ -5,6 +5,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.Container;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -14,6 +16,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -285,7 +288,16 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
                     }
                     if(remainingItem != null)
                     {
-                        this.setItem(slot, new ItemStack(remainingItem));
+                        if(stack.isEmpty())
+                        {
+                            this.setItem(slot, new ItemStack(remainingItem));
+                        }
+                        else
+                        {
+                            // Fallback and drop the item into the world
+                            Vec3 pos = this.getBlockPos().getCenter().add(0, 0.5, 0);
+                            Containers.dropItemStack(this.level, pos.x, pos.y, pos.z, new ItemStack(remainingItem));
+                        }
                     }
                 }
                 if(!this.shouldProcessAll())
