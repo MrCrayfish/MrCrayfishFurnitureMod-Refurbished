@@ -239,7 +239,7 @@ public interface IElectricityNode
         Set<Connection> connections = this.getNodeConnections();
         connections.forEach(c -> {
             IElectricityNode node = c.getOtherNode(this);
-            if(node != null) {
+            if(node != null && node.isNodeValid()) {
                 node.removeNodeConnection(c);
                 node.syncDataToTrackingClients();
             }
