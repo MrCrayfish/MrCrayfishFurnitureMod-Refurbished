@@ -255,7 +255,7 @@ public interface IElectricityNode
         Level level = this.getNodeLevel();
         this.getNodeConnections().removeIf(c -> {
             if(!c.isConnected(level)) {
-                IElectricityNode node = c.getNodeB(level);
+                IElectricityNode node = c.getOtherNode(this);
                 if(node != null) {
                     node.removeNodeConnection(c);
                 }
