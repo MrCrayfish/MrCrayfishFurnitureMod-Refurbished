@@ -9,6 +9,7 @@ import com.mrcrayfish.framework.api.config.IntProperty;
 import com.mrcrayfish.framework.api.config.ListProperty;
 import com.mrcrayfish.framework.api.config.LongProperty;
 import com.mrcrayfish.framework.api.config.validate.Validator;
+import com.mrcrayfish.furniture.refurbished.blockentity.CeilingFanBlockEntity;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -41,6 +42,10 @@ public class Config
             If enabled, shows an overlay on the HUD to help with cutting board slicing and combining recipes.
             Note: This is an experimental feature.""")
         public final BoolProperty showCuttingBoardHelper = BoolProperty.create(false);
+
+        @ConfigProperty(name = "ceilingFanMaxSpeed", comment = """
+            The maximum speed the ceiling fan will spin when powered. This is visual only and does not affect damage.""")
+        public final DoubleProperty ceilingFanMaxSpeed = DoubleProperty.create(CeilingFanBlockEntity.MAX_SPEED, 1, CeilingFanBlockEntity.MAX_SPEED);
 
         public static class Experimental
         {
