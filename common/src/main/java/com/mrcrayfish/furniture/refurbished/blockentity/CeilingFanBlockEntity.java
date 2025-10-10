@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
+import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.block.CeilingFanBlock;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
@@ -29,7 +30,7 @@ import java.util.List;
  */
 public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implements ILevelAudio
 {
-    private static final float MAX_SPEED = 50F;
+    public static final float MAX_SPEED = 50F;
     private static final float ACCELERATION = 1.25F;
     private static final float RESISTANCE = 0.98F;
     private static final AABB[] DAMAGE_BOXES = Util.make(() -> {
@@ -79,7 +80,7 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implemen
         this.lastBladeRotation = this.bladeRotation;
         if(this.isNodePowered())
         {
-            this.bladeSpeed = Math.min(this.bladeSpeed + ACCELERATION, MAX_SPEED);
+            this.bladeSpeed = Math.min(this.bladeSpeed + ACCELERATION, this.getMaxSpeed());
         }
         this.bladeSpeed *= RESISTANCE;
         this.bladeRotation += this.bladeSpeed;
@@ -223,7 +224,12 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implemen
         // Sets the initial speed on load
         if(level.isClientSide() && this.isNodePowered())
         {
-            this.bladeSpeed = MAX_SPEED;
+            this.bladeSpeed = this.getMaxSpeed();
         }
+    }
+
+    private float getMaxSpeed()
+    {
+        return Config.CLIENT.ceilingFanMaxSpeed.get().floatValue();
     }
 }
