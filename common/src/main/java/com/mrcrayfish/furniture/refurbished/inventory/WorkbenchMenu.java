@@ -201,14 +201,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
                     return ItemStack.EMPTY;
                 }
             }
-            else if(slotIndex < this.container.getContainerSize() + 27)
-            {
-                if(!this.moveItemStackTo(slotStack, this.container.getContainerSize() + 27, this.slots.size(), false))
-                {
-                    return ItemStack.EMPTY;
-                }
-            }
-            else if(!this.moveItemStackTo(slotStack, this.container.getContainerSize(), this.slots.size() - 9, false))
+            else if(!this.moveItemStackTo(slotStack, 0, this.container.getContainerSize(), false))
             {
                 return ItemStack.EMPTY;
             }
