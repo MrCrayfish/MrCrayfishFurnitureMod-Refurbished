@@ -22,6 +22,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
+import net.minecraft.world.Containers;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -631,7 +632,16 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
                     }
                     if(!remainingItem.isEmpty())
                     {
-                        StoveBlockEntity.this.setItem(this.inputIndex, remainingItem.copy());
+                        if(stack.isEmpty())
+                        {
+                            StoveBlockEntity.this.setItem(this.inputIndex, remainingItem.copy());
+                        }
+                        else
+                        {
+                            // Fallback and drop the item into the world
+                            Vec3 pos = StoveBlockEntity.this.getBlockPos().getCenter().add(0, 0.5, 0);
+                            Containers.dropItemStack(StoveBlockEntity.this.level, pos.x, pos.y, pos.z, remainingItem.copy());
+                        }
                     }
                 }
             }

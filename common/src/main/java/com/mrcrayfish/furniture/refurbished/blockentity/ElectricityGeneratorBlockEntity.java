@@ -18,6 +18,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.Containers;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
@@ -233,14 +234,20 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
             {
                 if(!simulate)
                 {
+                    stack.shrink(1);
                     ItemStack remainingStack = stack.getItem().getCraftingRemainder();
-                    if(stack.getMaxStackSize() == 1 && !remainingStack.isEmpty())
+                    if(!remainingStack.isEmpty())
                     {
-                        this.setItem(0, remainingStack.copy());
-                    }
-                    else
-                    {
-                        stack.shrink(1);
+                        if(stack.isEmpty())
+                        {
+                            this.setItem(0, remainingStack.copy());
+                        }
+                        else
+                        {
+                            // Fallback and drop the item into the world
+                            Vec3 pos = this.getBlockPos().getCenter().add(0, 0.5, 0);
+                            Containers.dropItemStack(this.level, pos.x, pos.y, pos.z, remainingStack.copy());
+                        }
                     }
                     if(this.totalEnergy != energy)
                     {
