@@ -61,7 +61,11 @@ public abstract class ToiletBlock extends FurnitureHorizontalEntityBlock
     {
         if(level.getBlockEntity(pos) instanceof ToiletBlockEntity toilet)
         {
-            return toilet.interact(player, hand, result);
+            InteractionResult interact = toilet.interact(player, hand, result);
+            if(interact.consumesAction())
+            {
+                return interact;
+            }
         }
         if(!level.isClientSide())
         {
