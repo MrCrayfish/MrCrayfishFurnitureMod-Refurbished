@@ -37,6 +37,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -133,8 +134,15 @@ public class LinkHandler
     {
         if(this.lastNodePos == null)
             return null;
-        if(level.getBlockEntity(this.lastNodePos) instanceof IElectricityNode node)
+
+        LevelChunk chunk = level.getChunkAt(this.lastNodePos);
+        //noinspection ConstantValue
+        if(chunk == null)
+            return null;
+
+        if(chunk.getBlockEntities().get(this.lastNodePos) instanceof IElectricityNode node && node.isNodeValid())
             return node;
+
         return null;
     }
 

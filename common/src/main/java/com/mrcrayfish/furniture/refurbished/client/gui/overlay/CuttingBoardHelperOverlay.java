@@ -17,6 +17,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.BlockHitResult;
 
 import java.util.Comparator;
@@ -47,8 +48,12 @@ public class CuttingBoardHelperOverlay implements IHudOverlay
         if(!(mc.hitResult instanceof BlockHitResult result))
             return;
 
-        BlockEntity entity = mc.level.getBlockEntity(result.getBlockPos());
-        if(!(entity instanceof CuttingBoardBlockEntity cuttingBoard))
+        LevelChunk chunk = mc.level.getChunkAt(result.getBlockPos());
+        if(chunk == null)
+            return;
+
+        BlockEntity entity = chunk.getBlockEntity(result.getBlockPos());
+        if(!(entity instanceof CuttingBoardBlockEntity cuttingBoard) || entity.isRemoved())
             return;
 
         int placeIndex = cuttingBoard.getPlaceIndex();
