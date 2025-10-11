@@ -88,6 +88,9 @@ public class Config
         @ConfigProperty(name = "recipes", comment = "Recipe related properties")
         public final Recipes recipes = new Recipes();
 
+        @ConfigProperty(name = "television", comment = "Television related properties")
+        public final Television television = new Television();
+
         public static class Mailing
         {
             @ConfigProperty(name = "maxMailboxesPerPlayer", comment = """
@@ -246,6 +249,15 @@ public class Config
                 If enabled, the Frying Pan and Grill will inherit all the cooking recipes from the
                 vanilla Campfire.""")
             public final BoolProperty inheritCampfireRecipes = BoolProperty.create(true);
+        }
+
+        public static class Television
+        {
+            @ConfigProperty(name = "looseSignalDuringThunderstorm", comment = """
+                If enabled, when the weather is thunder, the television will strangely loose signal.
+                There should be no reason this should happen, none at all. It might be a good idea
+                to turn your television off until it clears up.""")
+            public final BoolProperty looseSignalDuringThunderstorm = BoolProperty.create(true);
         }
     }
 }
