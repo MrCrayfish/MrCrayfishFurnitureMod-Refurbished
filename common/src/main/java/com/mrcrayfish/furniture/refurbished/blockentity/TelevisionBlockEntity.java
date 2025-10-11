@@ -1,6 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.google.common.base.Preconditions;
+import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.block.TelevisionBlock;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
@@ -225,7 +226,7 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
         Preconditions.checkNotNull(this.level);
         if(this.isNodePowered())
         {
-            if(this.level.isThundering())
+            if(this.level.isThundering() && Config.SERVER.television.looseSignalDuringThunderstorm.get())
             {
                 if(this.originalChannel != null)
                 {
