@@ -115,10 +115,9 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
                 .setX(this.leftPos + 118)
                 .setY(this.topPos + 13)
                 .build(this.font, 116, 54, Utils.translation("gui", "package_message"));
-        this.messageEditBox.setCharacterLimit(256);
+        this.messageEditBox.setCharacterLimit(1024);
         this.messageEditBox.setLineLimit(5);
         this.addRenderableWidget(this.messageEditBox);
-
         this.messageEditBox.setValueListener(s -> this.message = s);
         if(!this.message.isBlank())
         {
