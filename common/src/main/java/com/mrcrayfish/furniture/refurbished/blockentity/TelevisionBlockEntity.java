@@ -5,7 +5,6 @@ import com.mrcrayfish.furniture.refurbished.block.TelevisionBlock;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
-import com.mrcrayfish.furniture.refurbished.electricity.IModuleNode;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageTelevisionChannel;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
@@ -19,6 +18,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
@@ -29,6 +29,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +70,8 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
     protected Channel lastChannel;
     protected boolean transitioning;
     protected int timer;
+    protected @Nullable Channel originalChannel;
+    protected boolean lockChannel;
 
     public TelevisionBlockEntity(BlockPos pos, BlockState state)
     {
@@ -164,7 +167,7 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
 
     public void interact()
     {
-        if(!this.transitioning && this.isNodePowered())
+        if(!this.transitioning && this.isNodePowered() && !this.lockChannel)
         {
             Preconditions.checkState(this.level instanceof ServerLevel);
             int transitionTime = this.level.random.nextInt(5, 20);
@@ -179,7 +182,7 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
     {
         Preconditions.checkState(this.level instanceof ServerLevel);
 
-        if(this.level.dimension() == Level.OVERWORLD && this.worldPosition.getY() <= 0)
+        if(this.level.isThundering())
         {
             this.setChannel(COLOUR_TEST);
             this.transitioning = false;
@@ -223,25 +226,43 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
     private void specialTick()
     {
         Preconditions.checkNotNull(this.level);
-        if(this.isNodePowered() && this.level.dimension() == Level.OVERWORLD && this.worldPosition.getY() <= 0)
+        if(this.isNodePowered())
         {
-            if(this.currentChannel == COLOUR_TEST)
+            if(this.level.isThundering())
             {
-                if(this.timer++ >= 200)
+                if(this.originalChannel != null)
                 {
-                    this.setChannel(HEROBRINE);
-                    this.timer = 0;
+                    if(this.currentChannel == COLOUR_TEST)
+                    {
+                        if(this.timer++ >= 1200)
+                        {
+                            this.setChannel(HEROBRINE);
+                            this.timer = 0;
+                        }
+                    }
+                    else if(this.currentChannel == HEROBRINE)
+                    {
+                        if(this.timer++ == 100)
+                        {
+                            this.setChannel(BLACK_NOISE);
+                            this.timer = 0;
+                            this.lockChannel = true;
+                        }
+                    }
                 }
+                else if(!this.transitioning && this.currentChannel != WHITE_NOISE)
+                {
+                    this.originalChannel = this.currentChannel;
+                    this.setChannel(COLOUR_TEST);
+                }
+                return;
             }
-            else if(this.currentChannel == HEROBRINE)
+            else if(this.originalChannel != null)
             {
-                if(this.timer++ == 100)
-                {
-                    this.setChannel(BLACK_NOISE);
-                    this.timer = 0;
-                }
+                this.setChannel(this.originalChannel);
+                this.originalChannel = null;
+                this.lockChannel = false;
             }
-            return;
         }
         this.timer = 0;
     }
@@ -269,6 +290,12 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
                 this.currentChannel = ID_TO_CHANNEL.get(value);
             }
         });
+        input.read("OriginalChannel", ResourceLocation.CODEC).ifPresent(value -> {
+            if(!value.equals(WHITE_NOISE.id) && ID_TO_CHANNEL.containsKey(value)) {
+                this.currentChannel = ID_TO_CHANNEL.get(value);
+                this.lockChannel = input.getBooleanOr("LockChannel", false);
+            }
+        });
     }
 
     @Override
@@ -278,6 +305,11 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
         if(this.currentChannel != null && this.currentChannel != WHITE_NOISE)
         {
             output.store("CurrentChannel", ResourceLocation.CODEC, this.currentChannel.id);
+        }
+        if(this.originalChannel != null && this.originalChannel != WHITE_NOISE)
+        {
+            output.store("OriginalChannel", ResourceLocation.CODEC, this.originalChannel.id);
+            output.putBoolean("LockChannel", this.lockChannel);
         }
     }
 
