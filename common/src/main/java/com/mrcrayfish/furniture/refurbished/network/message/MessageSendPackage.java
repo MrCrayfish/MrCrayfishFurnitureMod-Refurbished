@@ -7,6 +7,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
@@ -17,7 +18,7 @@ public record MessageSendPackage(UUID mailboxId, String message)
 {
     public static final StreamCodec<RegistryFriendlyByteBuf, MessageSendPackage> STREAM_CODEC = StreamCodec.of((buf, message) -> {
         buf.writeUUID(message.mailboxId);
-        buf.writeUtf(message.message);
+        buf.writeUtf(StringUtils.truncate(message.message, 1024));
     }, buf -> {
         return new MessageSendPackage(buf.readUUID(), buf.readUtf());
     });

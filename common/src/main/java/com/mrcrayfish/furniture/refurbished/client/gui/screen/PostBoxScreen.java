@@ -116,6 +116,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
                 return false;
             }
         });
+        this.messageEditBox.setCharacterLimit(1024);
         this.messageEditBox.setValueListener(s -> this.message = s);
         if(!this.message.isBlank())
         {
