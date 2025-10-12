@@ -151,7 +151,7 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implemen
     public void moduleTick(Level level)
     {
         super.moduleTick(level);
-        if(!level.isClientSide)
+        if(!level.isClientSide())
         {
             this.performDamage(level);
         }

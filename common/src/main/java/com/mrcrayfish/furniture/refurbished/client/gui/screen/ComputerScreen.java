@@ -11,6 +11,8 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
@@ -152,30 +154,30 @@ public class ComputerScreen extends ElectricityContainerScreen<ComputerMenu>
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button)
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick)
     {
         if(this.loading > 0)
             return false;
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(event, doubleClick);
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY)
+    public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY)
     {
-        return this.getFocused() != null && this.isDragging() && button == GLFW.GLFW_MOUSE_BUTTON_LEFT && this.getFocused().mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+        return this.getFocused() != null && this.isDragging() && event.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT && this.getFocused().mouseDragged(event, dragX, dragY);
     }
 
     @Override
-    public boolean keyPressed(int key, int scanCode, int modifiers)
+    public boolean keyPressed(KeyEvent event)
     {
         if(this.window != null && this.window.getDisplayable().blocksNavigation())
         {
-            if(key == GLFW.GLFW_KEY_UP || key == GLFW.GLFW_KEY_DOWN || key == GLFW.GLFW_KEY_LEFT || key == GLFW.GLFW_KEY_RIGHT)
+            if(event.key() == GLFW.GLFW_KEY_UP || event.key() == GLFW.GLFW_KEY_DOWN || event.key() == GLFW.GLFW_KEY_LEFT || event.key() == GLFW.GLFW_KEY_RIGHT)
             {
                 return true;
             }
         }
-        return super.keyPressed(key, scanCode, modifiers);
+        return super.keyPressed(event);
     }
 
     public void addWidgets(IWidgetGroup group)

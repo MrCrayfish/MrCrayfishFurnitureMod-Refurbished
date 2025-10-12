@@ -5,6 +5,7 @@ import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.util.Mth;
 import org.lwjgl.glfw.GLFW;
 
@@ -104,7 +105,8 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
     @Override
     public int getRowTop(int index)
     {
-        return this.getY() + OUTLINE_SIZE + this.contentPadding - (int) this.scrollAmount() + index * this.itemHeight + index * this.itemSpacing;
+        // TODO 1.21.10 rows may now have different heights, so this will eventually need updating
+        return this.getY() + OUTLINE_SIZE + this.contentPadding - (int) this.scrollAmount() + index * this.defaultEntryHeight + index * this.itemSpacing;
     }
 
     @Override
@@ -150,7 +152,8 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
     @Override
     protected int scrollerHeight()
     {
-        return this.getItemCount() * (this.itemHeight + this.itemSpacing) - this.itemSpacing;
+        // TODO 1.21.10 will need updating since rows can be different heights,
+        return this.getItemCount() * (this.defaultEntryHeight + this.itemSpacing) - this.itemSpacing;
     }
 
     @Override
@@ -187,8 +190,11 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
     {
         int rowLeft = this.getRowLeft();
         int rowWidth = this.getRowWidth();
-        int rowHeight = this.itemHeight;
+        int rowHeight = this.defaultEntryHeight;
         int rowCount = this.getItemCount();
+
+        /* TODO 1.21.10 needs to be updated. see super. items heights are dynamic, rewrite and optimise.
+           Mojangs impl seems to iterate all items, while it can break earlier */
 
         // For efficiency, find the index to start drawing based on scroll amount
         int startIndex = Math.max(0, (int) ((this.scrollAmount() - this.contentPadding) / (rowHeight + this.itemSpacing)));
@@ -197,45 +203,43 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
             int rowTop = this.getRowTop(i);
             if(rowTop <= this.getY() + this.getHeight())
             {
-                this.renderItem(graphics, mouseX, mouseY, partialTick, i, rowLeft, rowTop, rowWidth, rowHeight);
+                // TODO 1.21.10 test
+                this.renderItem(graphics, mouseX, mouseY, partialTick, this.children().get(i));
                 continue;
             }
             // Break if the item is below the content area. Also stops drawing subsequent items.
             break;
         }
-
     }
 
     @Override
-    protected void renderSelection(GuiGraphics graphics, int top, int rowWidth, int itemHeight, int outlineColour, int innerColour)
+    protected void renderSelection(GuiGraphics graphics, E entry, int outlineColour)
     {
-        int start = this.getRowLeft();
-        int end = this.getRowRight();
-        graphics.fill(start - 1, top - 1, end + 1, top + itemHeight + 1, outlineColour);
-        //graphics.fill(start + 1, top - 1, end - 1, top + itemHeight + 1, innerColour);
+        graphics.fill(entry.getX() - 1, entry.getY() - 1, entry.getX() + entry.getWidth() + 1, entry.getY() + entry.getHeight() + 1, outlineColour);
     }
 
     @Override
-    public boolean updateScrolling(double mouseX, double mouseY, int button)
+    public boolean updateScrolling(MouseButtonEvent event)
     {
-        this.scrolling = button == GLFW.GLFW_MOUSE_BUTTON_LEFT
-            && ScreenHelper.isMouseWithinBounds(mouseX, mouseY, this.scrollBarX(), this.getScrollAreaTop(), 6, this.getScrollAreaHeight());
-        return super.updateScrolling(mouseX, mouseY, button);
+        // TODO 1.21.10 test
+        this.scrolling = event.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT
+                && ScreenHelper.isMouseWithinBounds(event.x(), event.y(), this.scrollBarX(), this.getScrollAreaTop(), 6, this.getScrollAreaHeight());
+        return super.updateScrolling(event);
     }
 
     @Override
-    public boolean mouseDragged(double $$0, double $$1, int button, double deltaX, double deltaY)
+    public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY)
     {
-        if(button == GLFW.GLFW_MOUSE_BUTTON_LEFT)
+        if(event.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT)
         {
-            if(this.getFocused() != null && this.isDragging() && this.getFocused().mouseDragged($$0, $$1, button, deltaX, deltaY))
+            if(this.getFocused() != null && this.isDragging() && this.getFocused().mouseDragged(event, dragX, dragY))
             {
                 return true;
             }
             if(this.scrolling)
             {
                 double unitsPerScroll = (double) this.maxScrollAmount() / (this.getScrollAreaHeight() - this.getScrollbarHeight());
-                this.setScrollAmount(this.scrollAmount() + deltaY * unitsPerScroll);
+                this.setScrollAmount(this.scrollAmount() + dragY * unitsPerScroll);
                 return true;
             }
         }
@@ -249,7 +253,7 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
         {
             int rowLeft = this.getRowLeft();
             int rowWidth = this.getRowWidth();
-            int rowHeight = this.itemHeight;
+            int rowHeight = this.defaultEntryHeight; // TODO 1.21.10 might need to be changed due to dynamic item heights
             int rowCount = this.getItemCount();
             int startIndex = Math.max(0, (int) ((this.scrollAmount() - this.contentPadding) / (rowHeight + this.itemSpacing)));
             for(int i = startIndex; i < rowCount; i++)
@@ -259,7 +263,8 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
                 {
                     if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, rowLeft, rowTop, rowWidth, rowHeight))
                     {
-                        return this.getEntry(i);
+                        // TODO 1.21.10 test
+                        return this.children().get(i);
                     }
                     continue;
                 }

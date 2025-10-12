@@ -25,13 +25,13 @@ public class ModRenderPipelines
 
     public static final RenderPipeline ELECTRICITY_BLIT = RenderPipeline.builder()
             .withLocation(Utils.resource("pipeline/electricity_blit"))
-            .withVertexShader("core/blit_screen")
+            .withVertexShader("core/screenquad")
             .withFragmentShader("core/blit_screen")
             .withSampler("InSampler")
             .withBlend(BlendFunction.TRANSLUCENT)
             .withDepthWrite(false)
             .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
-            .withVertexFormat(DefaultVertexFormat.POSITION, VertexFormat.Mode.QUADS)
+            .withVertexFormat(DefaultVertexFormat.EMPTY, VertexFormat.Mode.TRIANGLES)
             .build();
 
     public static final RenderPipeline POWERABLE_AREA = RenderPipeline.builder(ClientServices.PLATFORM.getMatricesProjectionSnippet())

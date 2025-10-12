@@ -130,7 +130,8 @@ public class CreativeFilters
         this.categories.forEach(category -> {
             FilterTab tab = new FilterTab(this.guiLeft - 28, this.guiTop, category, btn -> {
                 // Holding ctrl down will allow multiple categories to be enabled
-                if(Screen.hasControlDown() || Screen.hasShiftDown()) {
+                Minecraft mc = Minecraft.getInstance();
+                if(mc.hasControlDown() || mc.hasShiftDown()) {
                     category.setEnabled(!category.isEnabled());
                 } else {
                     this.categories.forEach(c -> c.setEnabled(false));
@@ -254,7 +255,7 @@ public class CreativeFilters
             {
                 Minecraft mc = Minecraft.getInstance();
                 graphics.setTooltipForNextFrame(tab.cachedTooltip.toCharSequence(mc), mouseX, mouseY);
-                graphics.renderDeferredTooltip();
+                //graphics.renderDeferredTooltip(); // TODO 1.21.10 do I need this?
                 return;
             }
         }

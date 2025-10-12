@@ -2,41 +2,56 @@ package com.mrcrayfish.furniture.refurbished.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.block.BasinBlock;
+import com.mrcrayfish.furniture.refurbished.block.KitchenSinkBlock;
+import com.mrcrayfish.furniture.refurbished.block.ToiletBlock;
 import com.mrcrayfish.furniture.refurbished.blockentity.ToiletBlockEntity;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
+import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.state.FluidEntityRenderState;
 import com.mrcrayfish.furniture.refurbished.client.util.SimpleFluidRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
 /**
  * Author: MrCrayfish
  */
-public class ToiletBlockEntityRenderer implements BlockEntityRenderer<ToiletBlockEntity>
+public class ToiletBlockEntityRenderer implements BlockEntityRenderer<ToiletBlockEntity, FluidEntityRenderState>
 {
     public ToiletBlockEntityRenderer(BlockEntityRendererProvider.Context context) {}
 
     @Override
-    public void render(ToiletBlockEntity toilet, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay, Vec3 camera)
+    public FluidEntityRenderState createRenderState()
     {
-        FluidContainer container = toilet.getFluidContainer();
-        if(container == null || container.isEmpty())
-            return;
+        return new FluidEntityRenderState();
+    }
 
-        BlockState state = toilet.getBlockState();
-        if(!state.hasProperty(BasinBlock.DIRECTION))
-            return;
+    @Override
+    public void extractRenderState(ToiletBlockEntity entity, FluidEntityRenderState renderState, float partialTick, Vec3 camera, @Nullable ModelFeatureRenderer.CrumblingOverlay overlay)
+    {
+        BlockEntityRenderer.super.extractRenderState(entity, renderState, partialTick, camera, overlay);
+        FluidEntityRenderState.extract(renderState, entity, entity.getLevel(), entity.getBlockPos());
+        BlockState blockState = entity.getBlockState();
+        if(blockState.hasProperty(ToiletBlock.DIRECTION))
+        {
+            Direction direction = blockState.getValue(ToiletBlock.DIRECTION);
+            renderState.box = SimpleFluidRenderer.createRotatedBox(direction, 3, 5, 5, 11, 8, 11);
+        }
+    }
 
-        Direction direction = state.getValue(BasinBlock.DIRECTION);
-        Level level = Objects.requireNonNull(toilet.getLevel());
-        AABB box = SimpleFluidRenderer.createRotatedBox(direction, 3, 5, 5, 11, 8, 11);
-        SimpleFluidRenderer.drawContainer(level, toilet.getBlockPos(), container, box, poseStack, source, light);
+    @Override
+    public void submit(FluidEntityRenderState renderState, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState cameraState)
+    {
+        SimpleFluidRenderer.submit(renderState, poseStack, collector);
     }
 }

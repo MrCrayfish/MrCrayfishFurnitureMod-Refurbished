@@ -72,7 +72,7 @@ public class DoorbellBlock extends FurnitureHorizontalEntityBlock implements Blo
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos)
+    public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction)
     {
         return state.getValue(ENABLED) ? 16 : 0;
     }

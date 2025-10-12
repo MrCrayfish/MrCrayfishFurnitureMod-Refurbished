@@ -262,7 +262,7 @@ public class MicrowaveBlockEntity extends ElectricityModuleProcessingLootBlockEn
     public void moduleTick(Level level)
     {
         super.moduleTick(level);
-        if(!level.isClientSide)
+        if(!level.isClientSide())
         {
             boolean processing = this.processTick();
             if(this.processing != processing)

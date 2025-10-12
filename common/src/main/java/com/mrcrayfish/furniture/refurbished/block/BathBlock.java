@@ -174,7 +174,7 @@ public abstract class BathBlock extends FurnitureHorizontalEntityBlock implement
     }
 
     @Override
-    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier applier)
+    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier applier, boolean p_451772_)
     {
         if(level.getBlockEntity(pos) instanceof BathBlockEntity bath)
         {

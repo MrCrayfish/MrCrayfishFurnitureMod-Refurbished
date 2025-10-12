@@ -11,15 +11,11 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.players.GameProfileCache;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.apache.commons.lang3.mutable.MutableBoolean;
-import org.apache.commons.lang3.mutable.MutableObject;
 
 import java.util.*;
 
@@ -231,11 +227,8 @@ public final class Mailbox implements IMailbox
         UUID ownerId = this.owner.orElse(null);
         if(ownerId != null)
         {
-            GameProfileCache cache = this.service.getServer().getProfileCache();
-            if(cache != null)
-            {
-                return cache.get(ownerId);
-            }
+            // TODO 1.21.10 test
+            return this.service.getServer().services().profileResolver().fetchById(ownerId);
         }
         return Optional.empty();
     }

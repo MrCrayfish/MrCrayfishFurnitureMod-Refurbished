@@ -63,13 +63,13 @@ public class Bootstrap
             Computer.get().getServices().forEach(IService::tick);
         });
         FrameworkTickEvents.END_PLAYER.register(player -> {
-            MinecraftServer server = player.getServer();
+            MinecraftServer server = player.level().getServer();
             if(server != null) {
                 LinkManager.get(server).ifPresent(manager -> manager.onPlayerTick(player));
             }
         });
         FrameworkPlayerEvents.LOGGED_OUT.register(player -> {
-            MinecraftServer server = player.getServer();
+            MinecraftServer server = player.level().getServer();
             if(server != null) {
                 LinkManager.get(server).ifPresent(manager -> manager.onPlayerLoggedOut(player));
             }

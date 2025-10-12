@@ -23,6 +23,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.ContainerUser;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -127,17 +128,23 @@ public class WorkbenchBlockEntity extends ElectricityModuleLootBlockEntity imple
     }
 
     @Override
-    public void startOpen(Player player)
+    public void startOpen(ContainerUser user)
     {
-        super.startOpen(player);
-        this.setUser(player);
+        super.startOpen(user);
+        if(user.getLivingEntity() instanceof Player player && !player.isSpectator())
+        {
+            this.setUser(player);
+        }
     }
 
     @Override
-    public void stopOpen(Player player)
+    public void stopOpen(ContainerUser user)
     {
-        super.stopOpen(player);
-        this.setUser(null);
+        super.stopOpen(user);
+        if(this.currentUser != null && user.getLivingEntity().equals(this.currentUser))
+        {
+            this.setUser(null);
+        }
     }
 
     public boolean isOccupied()

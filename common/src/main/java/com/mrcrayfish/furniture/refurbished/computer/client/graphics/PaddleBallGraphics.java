@@ -380,8 +380,8 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
         private void sendInputToServer()
         {
             // TODO controllable support
-            boolean up = InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_UP);
-            boolean down = InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_DOWN);
+            boolean up = InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), GLFW.GLFW_KEY_UP);
+            boolean down = InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), GLFW.GLFW_KEY_DOWN);
             byte input = (byte) (up && down ? 0 : up ? 1 : down ? 2 : 0);
             Network.getPlay().sendToServer(new MessagePaddleBall.Action(PaddleBall.Action.INPUT, input));
         }

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleRenderType;
@@ -20,21 +21,23 @@ public class ItemFlushParticle extends Particle
 {
     private static final int ANIMATION_LENGTH = 40;
 
-    private final EntityRenderDispatcher dispatcher;
+   /* private final EntityRenderDispatcher dispatcher;
     private final RenderBuffers buffers;
-    private final ItemEntity entity;
+    private final ItemEntity entity;*/
 
     public ItemFlushParticle(EntityRenderDispatcher dispatcher, RenderBuffers buffers, ClientLevel level, ItemEntity entity, Vec3 pos)
     {
         super(level, pos.x, pos.y, pos.z);
-        this.dispatcher = dispatcher;
+        /*this.dispatcher = dispatcher;
         this.buffers = buffers;
         this.entity = entity.copy();
+        this.model = Minecraft.getInstance().getItemModelResolver()
         this.lifetime = ANIMATION_LENGTH;
-        this.gravity = 0F;
+        this.gravity = 0F;*/
     }
 
-    @Override
+
+    /*@Override
     public void render(VertexConsumer consumer, Camera camera, float partialTick)
     {
 
@@ -53,11 +56,11 @@ public class ItemFlushParticle extends Particle
         poseStack.translate(-pos.x, -pos.y, -pos.z);
         this.dispatcher.render(this.entity, pos.x, pos.y, pos.z, this.entity.getYRot(), poseStack, source, light);
         poseStack.popPose();
-    }
+    }*/
 
     @Override
-    public ParticleRenderType getRenderType()
+    public ParticleRenderType getGroup()
     {
-        return ParticleRenderType.CUSTOM;
+        return ParticleRenderType.SINGLE_QUADS;
     }
 }

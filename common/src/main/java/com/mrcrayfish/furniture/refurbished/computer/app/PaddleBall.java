@@ -264,7 +264,7 @@ public class PaddleBall extends Program
         @Override
         protected String getName()
         {
-            return Optional.ofNullable(this.player.getGameProfile().getName()).orElse("Player");
+            return Optional.ofNullable(this.player.getGameProfile().name()).orElse("Player");
         }
 
         @Override

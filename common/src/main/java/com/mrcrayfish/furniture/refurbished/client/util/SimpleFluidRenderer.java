@@ -2,17 +2,14 @@ package com.mrcrayfish.furniture.refurbished.client.util;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
-import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
+import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.state.FluidEntityRenderState;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.ARGB;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import org.joml.Matrix4f;
@@ -23,44 +20,49 @@ import org.joml.Matrix4f;
 public class SimpleFluidRenderer
 {
     /**
+     * Submits a FluidEntityRenderState to be drawn. This is
+     *
+     * @param state
+     * @param stack
+     * @param collector
+     */
+    public static void submit(FluidEntityRenderState state, PoseStack stack, SubmitNodeCollector collector)
+    {
+        if(!state.valid())
+            return;
+        collector.submitCustomGeometry(stack, RenderType.translucentMovingBlock(), (pose, consumer) -> {
+            drawContainer(state, pose, consumer);
+        });
+    }
+
+    /**
      * Draws a fluid container. This will only draw the up face of a fluid and will use its "still"
      * state texture. The texture coordinates will be adjusted based on the given box.
      *
-     * @param level     the level the fluid is being drawn into
-     * @param pos       the block position of the fluid container
-     * @param container the fluid container
-     * @param box       the box which the fluid occupies
-     * @param poseStack the current posestack instance
-     * @param source    a buffer source
-     * @param light     the light at the position of the fluid container
+     * @param state    a FluidEntityRenderState instance
+     * @param pose     the current pose
+     * @param consumer the vertex consumer to submit quads
      */
-    public static void drawContainer(Level level, BlockPos pos, FluidContainer container, AABB box, PoseStack poseStack, MultiBufferSource source, int light)
+    private static void drawContainer(FluidEntityRenderState state, PoseStack.Pose pose, VertexConsumer consumer)
     {
-        if(!container.isEmpty())
-        {
-            Fluid fluid = container.getStoredFluid();
-            TextureAtlasSprite[] sprites = ClientServices.PLATFORM.getFluidSprites(fluid, level, pos, fluid.defaultFluidState());
-            TextureAtlasSprite still = sprites[0];
-            int colour = fluid.isSame(Fluids.WATER) ? BiomeColors.getAverageWaterColor(level, pos) : 0xFFFFFF;
-            float red = ARGB.red(colour) / 255F;
-            float green = ARGB.green(colour) / 255F;
-            float blue = ARGB.blue(colour) / 255F;
-            float fullness = (float) container.getStoredAmount() / container.getCapacity();
-            float offset = (float) (box.minY + (box.maxY - box.minY) * fullness);
-            float uScale = still.getU1() - still.getU0();
-            float vScale = still.getV1() - still.getV0();
-            float u0 = still.getU0() + uScale * (float) box.minX;
-            float u1 = still.getU0() + uScale * (float) box.maxX;
-            float v0 = still.getV0() + vScale * (float) box.minZ;
-            float v1 = still.getV0() + vScale * (float) box.maxZ;
-            RenderType type = RenderType.translucentMovingBlock(); // Hack to fix fluid not rendering with fabulous graphics
-            VertexConsumer consumer = source.getBuffer(type);
-            Matrix4f matrix = poseStack.last().pose();
-            consumer.addVertex(matrix, (float) box.minX, offset, (float) box.minZ).setColor(red, green, blue, 1).setUv(u0, v0).setLight(light).setNormal(0, 1, 0);
-            consumer.addVertex(matrix, (float) box.minX, offset, (float) box.maxZ).setColor(red, green, blue, 1).setUv(u0, v1).setLight(light).setNormal(0, 1, 0);
-            consumer.addVertex(matrix, (float) box.maxX, offset, (float) box.maxZ).setColor(red, green, blue, 1).setUv(u1, v1).setLight(light).setNormal(0, 1, 0);
-            consumer.addVertex(matrix, (float) box.maxX, offset, (float) box.minZ).setColor(red, green, blue, 1).setUv(u1, v0).setLight(light).setNormal(0, 1, 0);
-        }
+        AABB box = state.box;
+        TextureAtlasSprite still = state.fluidSprites.still();
+        int colour = state.waterTintAtPos;
+        float red = ARGB.red(colour) / 255F;
+        float green = ARGB.green(colour) / 255F;
+        float blue = ARGB.blue(colour) / 255F;
+        float fullness = (float) state.fluidAmount / state.fluidCapacity;
+        float offset = (float) (box.minY + (box.maxY - box.minY) * fullness);
+        float uScale = still.getU1() - still.getU0();
+        float vScale = still.getV1() - still.getV0();
+        float u0 = still.getU0() + uScale * (float) box.minX;
+        float u1 = still.getU0() + uScale * (float) box.maxX;
+        float v0 = still.getV0() + vScale * (float) box.minZ;
+        float v1 = still.getV0() + vScale * (float) box.maxZ;
+        consumer.addVertex(pose, (float) box.minX, offset, (float) box.minZ).setColor(red, green, blue, 1).setUv(u0, v0).setLight(state.lightCoords).setNormal(0, 1, 0);
+        consumer.addVertex(pose, (float) box.minX, offset, (float) box.maxZ).setColor(red, green, blue, 1).setUv(u0, v1).setLight(state.lightCoords).setNormal(0, 1, 0);
+        consumer.addVertex(pose, (float) box.maxX, offset, (float) box.maxZ).setColor(red, green, blue, 1).setUv(u1, v1).setLight(state.lightCoords).setNormal(0, 1, 0);
+        consumer.addVertex(pose, (float) box.maxX, offset, (float) box.minZ).setColor(red, green, blue, 1).setUv(u1, v0).setLight(state.lightCoords).setNormal(0, 1, 0);
     }
 
     /**

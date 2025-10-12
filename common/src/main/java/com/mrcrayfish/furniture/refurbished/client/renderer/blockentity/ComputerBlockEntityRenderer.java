@@ -2,48 +2,47 @@ package com.mrcrayfish.furniture.refurbished.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import com.mrcrayfish.furniture.refurbished.block.ComputerBlock;
 import com.mrcrayfish.furniture.refurbished.block.CuttingBoardBlock;
 import com.mrcrayfish.furniture.refurbished.blockentity.ComputerBlockEntity;
+import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.state.ComputerRenderState;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Author: MrCrayfish
  */
-public class ComputerBlockEntityRenderer implements BlockEntityRenderer<ComputerBlockEntity>
+public class ComputerBlockEntityRenderer implements BlockEntityRenderer<ComputerBlockEntity, ComputerRenderState>
 {
     public ComputerBlockEntityRenderer(BlockEntityRendererProvider.Context context) {}
 
     @Override
-    public void render(ComputerBlockEntity computer, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay, Vec3 camera)
+    public ComputerRenderState createRenderState()
     {
-        if(computer.isNodePowered())
-        {
-            poseStack.pushPose();
+        return new ComputerRenderState();
+    }
 
-            // Setup rotations
-            Direction direction = computer.getBlockState().getValue(CuttingBoardBlock.DIRECTION);
-            poseStack.translate(0.5, 0, 0.5);
-            poseStack.mulPose(Axis.YN.rotation(Mth.HALF_PI * direction.get2DDataValue()));
-            poseStack.translate(-0.5, 0, -0.345);
+    @Override
+    public void extractRenderState(ComputerBlockEntity entity, ComputerRenderState renderState, float partialTick, Vec3 camera, @Nullable ModelFeatureRenderer.CrumblingOverlay overlay)
+    {
+        BlockEntityRenderer.super.extractRenderState(entity, renderState, partialTick, camera, overlay);
+        renderState.powered = entity.isNodePowered();
+        renderState.direction = entity.getBlockState().getValueOrElse(ComputerBlock.DIRECTION, Direction.NORTH);
+    }
 
-            // Draw tv screen quad with current channel
-            /*Material channelMaterial = CustomSheets.getTelevisionChannelMaterial(computer.getCurrentChannel().id());
-            Matrix4f matrix = poseStack.last().pose();
-            VertexConsumer consumer = channelMaterial.buffer(source, ClientServices.PLATFORM::getTelevisionScreenRenderType);
-            float offset = 0.003125F;
-            consumer.vertex(matrix, 0.75F + offset, 0.625F + offset, 0).color(255, 255, 255, 255).uv(0, 0).uv2(0xF000F0).normal(0, 1, 0).endVertex();
-            consumer.vertex(matrix, 0.75F + offset, 0.1875F - offset, 0).color(255, 255, 255, 255).uv(0, 1).uv2(0xF000F0).normal(0, 1, 0).endVertex();
-            consumer.vertex(matrix, 0.25F - offset, 0.1875F - offset, 0).color(255, 255, 255, 255).uv(1, 1).uv2(0xF000F0).normal(0, 1, 0).endVertex();
-            consumer.vertex(matrix, 0.25F - offset, 0.625F + offset, 0).color(255, 255, 255, 255).uv(1, 0).uv2(0xF000F0).normal(0, 1, 0).endVertex();
-            */
-            poseStack.popPose();
-        }
-
-        ElectricBlockEntityRenderer.drawNodeAndConnections(computer);
+    @Override
+    public void submit(ComputerRenderState renderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState)
+    {
+        // TODO 1.21.10 restore
+        //ElectricBlockEntityRenderer.drawNodeAndConnections(computer);
     }
 }

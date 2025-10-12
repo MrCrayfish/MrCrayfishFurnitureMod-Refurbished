@@ -5,16 +5,18 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.particle.WaterDropParticle;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.RandomSource;
 
 /**
  * Author: MrCrayfish
  */
 public class TapWaterParticle extends WaterDropParticle
 {
-    protected TapWaterParticle(ClientLevel level, double x, double y, double z)
+    protected TapWaterParticle(ClientLevel level, double x, double y, double z, TextureAtlasSprite sprite)
     {
-        super(level, x, y, z);
+        super(level, x, y, z, sprite);
         this.xd *= 3;
         this.yd = -0.1;
         this.zd *= 3;
@@ -30,11 +32,10 @@ public class TapWaterParticle extends WaterDropParticle
         }
 
         @Override
-        public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xd, double yd, double zd)
+        public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xd, double yd, double zd, RandomSource source)
         {
-            TapWaterParticle particle = new TapWaterParticle(level, x, y, z);
-            particle.pickSprite(this.sprites);
-            return particle;
+            // TODO 1.21.10 test
+            return new TapWaterParticle(level, x, y, z, this.sprites.get(source));
         }
     }
 }

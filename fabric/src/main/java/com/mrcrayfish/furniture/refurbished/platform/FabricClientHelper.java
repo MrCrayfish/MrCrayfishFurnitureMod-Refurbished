@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.platform;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mrcrayfish.furniture.refurbished.client.FabricRenderType;
+import com.mrcrayfish.furniture.refurbished.client.FluidSprites;
 import com.mrcrayfish.furniture.refurbished.client.screen.FabricFreezerScreen;
 import com.mrcrayfish.furniture.refurbished.client.screen.FabricMicrowaveScreen;
 import com.mrcrayfish.furniture.refurbished.client.screen.FabricStoveScreen;
@@ -10,6 +11,7 @@ import com.mrcrayfish.furniture.refurbished.inventory.FabricFreezerMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.FabricMicrowaveMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.FabricStoveMenu;
 import com.mrcrayfish.furniture.refurbished.platform.services.IClientHelper;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -63,9 +65,16 @@ public class FabricClientHelper implements IClientHelper
     }
 
     @Override
-    public TextureAtlasSprite[] getFluidSprites(Fluid fluid, @Nullable BlockAndTintGetter getter, @Nullable BlockPos pos, FluidState state)
+    @Nullable
+    public FluidSprites getFluidSprites(Fluid fluid, BlockAndTintGetter getter, BlockPos pos, FluidState state)
     {
-        return FluidRenderHandlerRegistry.INSTANCE.get(fluid).getFluidSprites(getter, pos, state);
+        FluidRenderHandler handler = FluidRenderHandlerRegistry.INSTANCE.get(fluid);
+        if(handler != null)
+        {
+            TextureAtlasSprite[] sprites = handler.getFluidSprites(getter, pos, state);
+            return new FluidSprites(sprites[0], sprites[1]);
+        }
+        return null;
     }
 
     @Override

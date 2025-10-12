@@ -1,10 +1,10 @@
 package com.mrcrayfish.furniture.refurbished.platform.services;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mrcrayfish.furniture.refurbished.client.FluidSprites;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -32,7 +32,8 @@ public interface IClientHelper
 
     void setTooltipCache(Tooltip tooltip, List<FormattedCharSequence> lines);
 
-    TextureAtlasSprite[] getFluidSprites(Fluid fluid, @Nullable BlockAndTintGetter getter, @Nullable BlockPos pos, FluidState state);
+    @Nullable
+    FluidSprites getFluidSprites(Fluid fluid, BlockAndTintGetter getter, BlockPos pos, FluidState state);
 
     RenderType getTelevisionScreenRenderType(ResourceLocation id);
 

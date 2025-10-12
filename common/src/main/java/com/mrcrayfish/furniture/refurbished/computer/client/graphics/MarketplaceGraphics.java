@@ -11,6 +11,7 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.CommonComponents;
@@ -117,18 +118,17 @@ public class MarketplaceGraphics extends DisplayableProgram<Marketplace>
             }
 
             @Override
-            public void render(GuiGraphics graphics, int index, int top, int left, int rowWidth, int rowHeight, int mouseX, int mouseY, boolean hovered, float partialTick)
+            public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float partialTick)
             {
-                //graphics.drawString(Minecraft.getInstance().font, "Hello", 0, top, 0xFFFFFFFF);
-                graphics.fill(left, top, left + rowWidth, top + rowHeight, 0xFFFFFFFF);
-                this.buyButton.setPosition(left + rowWidth - this.buyButton.getWidth(), top);
+                graphics.fill(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), 0xFFFFFFFF);
+                this.buyButton.setPosition(this.getX() + this.getWidth() - this.buyButton.getWidth(), this.getY());
                 this.buyButton.render(graphics, mouseX, mouseY, partialTick);
             }
 
             @Override
-            public boolean mouseClicked(double mouseX, double mouseY, int button)
+            public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick)
             {
-                this.buyButton.mouseClicked(mouseX, mouseY, button);
+                this.buyButton.mouseClicked(event, doubleClick);
                 return true;
             }
         }

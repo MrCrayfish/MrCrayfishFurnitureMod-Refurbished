@@ -13,6 +13,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.CommonComponents;
@@ -129,26 +130,26 @@ public class DoorMatScreen extends AbstractContainerScreen<DoorMatMenu>
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button)
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick)
     {
-        if(button == GLFW.GLFW_MOUSE_BUTTON_LEFT)
+        if(event.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT)
         {
-            if(this.activateTool(mouseX, mouseY, false))
+            if(this.activateTool(event.x(), event.y(), false))
             {
                 return true;
             }
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(event, doubleClick);
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button)
+    public boolean mouseReleased(MouseButtonEvent event)
     {
-        if(this.activeTool != null && button == GLFW.GLFW_MOUSE_BUTTON_LEFT)
+        if(this.activeTool != null && event.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT)
         {
             this.activeTool = null;
         }
-        return super.mouseReleased(mouseX, mouseY, button);
+        return super.mouseReleased(event);
     }
 
     private class ToolButton extends IconButton

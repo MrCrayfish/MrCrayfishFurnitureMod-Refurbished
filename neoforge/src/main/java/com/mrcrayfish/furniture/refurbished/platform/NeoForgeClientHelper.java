@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.platform;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mrcrayfish.furniture.refurbished.client.FluidSprites;
 import com.mrcrayfish.furniture.refurbished.client.NeoForgeRenderType;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.FreezerScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.MicrowaveScreen;
@@ -19,6 +20,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -66,13 +68,13 @@ public class NeoForgeClientHelper implements IClientHelper
     }
 
     @Override
-    public TextureAtlasSprite[] getFluidSprites(Fluid fluid, @Nullable BlockAndTintGetter getter, @Nullable BlockPos pos, FluidState state)
+    public FluidSprites getFluidSprites(Fluid fluid, BlockAndTintGetter getter, BlockPos pos, FluidState state)
     {
         IClientFluidTypeExtensions extensions = IClientFluidTypeExtensions.of(fluid);
-        return new TextureAtlasSprite[] {
+        return new FluidSprites(
             this.getBlockTextures().apply(extensions.getStillTexture(state, getter, pos)),
             this.getBlockTextures().apply(extensions.getFlowingTexture(state, getter, pos))
-        };
+        );
     }
 
     @Override
@@ -116,6 +118,6 @@ public class NeoForgeClientHelper implements IClientHelper
 
     private Function<ResourceLocation, TextureAtlasSprite> getBlockTextures()
     {
-        return Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS);
+        return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS)::getSprite;
     }
 }

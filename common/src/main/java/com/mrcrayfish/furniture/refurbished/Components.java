@@ -5,6 +5,7 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FontDescription;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 
@@ -38,7 +39,7 @@ public class Components
     public static final Component GUI_PLACEABLE = Utils.translation("gui", "placeable");
     public static final Component GUI_WITHDRAW_EXPERIENCE = Utils.translation("gui", "withdraw_experience");
 
-    public static final ResourceLocation ICON_FONT = Utils.resource("icons");
+    public static final FontDescription ICON_FONT = new FontDescription.Resource(Utils.resource("icons"));
 
     public static MutableComponent getIcon(FontIcons icon)
     {

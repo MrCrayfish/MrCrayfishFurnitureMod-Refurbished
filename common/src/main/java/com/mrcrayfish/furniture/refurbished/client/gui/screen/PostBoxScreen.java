@@ -18,6 +18,8 @@ import net.minecraft.client.gui.components.MultiLineEditBox;
 import net.minecraft.client.gui.components.PlayerFaceRenderer;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -202,7 +204,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
             if(this.isHovering((entryX - this.leftPos) + 3, (entryY - this.topPos) + 3, 8, 8, mouseX, mouseY))
             {
                 Component ownerName = mailbox.getOwner()
-                    .map(GameProfile::getName)
+                    .map(GameProfile::name)
                     .map(Component::literal)
                     .orElse(UNKNOWN_MAILBOX_OWNER);
                 graphics.setTooltipForNextFrame(ownerName, mouseX, mouseY);
@@ -265,14 +267,14 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button)
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick)
     {
-        if(button == GLFW.GLFW_MOUSE_BUTTON_1)
+        if(event.button() == GLFW.GLFW_MOUSE_BUTTON_1)
         {
             this.setFocused(null);
-            if(this.isHovering(CONTAINER_LEFT, CONTAINER_TOP, CONTAINER_WIDTH, CONTAINER_HEIGHT, mouseX, mouseY))
+            if(this.isHovering(CONTAINER_LEFT, CONTAINER_TOP, CONTAINER_WIDTH, CONTAINER_HEIGHT, event.x(), event.y()))
             {
-                int relativeMouseY = (int) (mouseY - this.topPos - CONTAINER_TOP);
+                int relativeMouseY = (int) (event.y() - this.topPos - CONTAINER_TOP);
                 int clickedIndex = (this.scroll + relativeMouseY) / MAILBOX_ENTRY_HEIGHT;
                 if(clickedIndex >= 0 && clickedIndex < this.mailboxes.size())
                 {
@@ -284,41 +286,42 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
                 }
             }
             // Record the mouse position when clicking on the scroll bar
-            if(this.isHovering(CONTAINER_LEFT + CONTAINER_WIDTH + 1, CONTAINER_TOP + this.getScrollBarOffset((int) mouseY), SCROLL_BAR_WIDTH, SCROLL_BAR_HEIGHT, mouseX, mouseY))
+            if(this.isHovering(CONTAINER_LEFT + CONTAINER_WIDTH + 1, CONTAINER_TOP + this.getScrollBarOffset((int) event.y()), SCROLL_BAR_WIDTH, SCROLL_BAR_HEIGHT, event.x(), event.y()))
             {
-                this.clickedY = (int) mouseY;
+                this.clickedY = (int) event.y();
                 return true;
             }
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(event, doubleClick);
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button)
+    public boolean mouseReleased(MouseButtonEvent event)
     {
-        if(button == GLFW.GLFW_MOUSE_BUTTON_1)
+        if(event.button() == GLFW.GLFW_MOUSE_BUTTON_1)
         {
             if(this.clickedY >= 0)
             {
-                this.scroll(this.getDeltaScroll((int) mouseY));
+                this.scroll(this.getDeltaScroll((int) event.y()));
                 this.clickedY = -1;
+                // TODO 1.21.10 does this need to return true?
             }
         }
-        return super.mouseReleased(mouseX, mouseY, button);
+        return super.mouseReleased(event);
     }
 
     @Override
-    public boolean keyPressed(int key, int scanCode, int modifiers)
+    public boolean keyPressed(KeyEvent event)
     {
         if(this.searchEditBox.isFocused())
         {
-            return this.searchEditBox.keyPressed(key, scanCode, modifiers);
+            return this.searchEditBox.keyPressed(event);
         }
         if(this.messageEditBox.isFocused())
         {
-            return this.messageEditBox.keyPressed(key, scanCode, modifiers);
+            return this.messageEditBox.keyPressed(event);
         }
-        return super.keyPressed(key, scanCode, modifiers);
+        return super.keyPressed(event);
     }
 
     @Override
@@ -408,13 +411,13 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
     {
         List<IMailbox> filteredMailboxes = this.menu.getMailboxes().stream().filter(mailbox -> {
             if(this.query.startsWith("@")) {
-                String ownerName = mailbox.getOwner().map(GameProfile::getName).orElse("Unknown");
+                String ownerName = mailbox.getOwner().map(GameProfile::name).orElse("Unknown");
                 return StringUtils.containsIgnoreCase(ownerName, this.query.substring(1));
             }
             String mailboxName = mailbox.getCustomName().orElse("Mailbox");
             return StringUtils.containsIgnoreCase(mailboxName, this.query);
         }).sorted(Comparator.comparing((IMailbox mailbox) -> {
-            return mailbox.getOwner().map(GameProfile::getName).orElse("Unknown");
+            return mailbox.getOwner().map(GameProfile::name).orElse("Unknown");
         }).thenComparing(mailbox -> {
             return mailbox.getCustomName().orElse("Mailbox");
         })).toList();
@@ -438,14 +441,14 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
             ClientPacketListener listener = this.minecraft.getConnection();
             if(listener != null)
             {
-                PlayerInfo info = listener.getPlayerInfo(profile.getId());
+                PlayerInfo info = listener.getPlayerInfo(profile.id());
                 if(info != null)
                 {
                     return info;
                 }
             }
         }
-        return PLAYER_INFO_CACHE.computeIfAbsent(profile.getId(), uuid -> new PlayerInfo(profile, false));
+        return PLAYER_INFO_CACHE.computeIfAbsent(profile.id(), uuid -> new PlayerInfo(profile, false));
     }
 
     /**

@@ -11,6 +11,7 @@ import com.mrcrayfish.furniture.refurbished.network.message.MessageHomeControl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 
@@ -128,25 +129,20 @@ public class HomeControlGraphics extends DisplayableProgram<HomeControl>
         }
 
         @Override
-        public void renderBack(GuiGraphics $$0, int $$1, int $$2, int $$3, int $$4, int $$5, int $$6, int $$7, boolean $$8, float $$9)
+        public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float partialTick)
         {
-            super.renderBack($$0, $$1, $$2, $$3, $$4, $$5, $$6, $$7, $$8, $$9);
-        }
-
-        @Override
-        public void render(GuiGraphics graphics, int index, int top, int left, int rowWidth, int rowHeight, int mouseX, int mouseY, boolean hovered, float partialTick)
-        {
+            // TODO 1.21.10 test
             this.updateButtonLabel();
-            graphics.fill(left, top, left + rowWidth, top + rowHeight, 0xFF47403E);
-            graphics.drawString(Minecraft.getInstance().font, this.device.getDeviceName(), left + 5, top + 4, 0xFF222225, false);
-            this.button.setPosition(left + rowWidth - this.button.getWidth() - 1, top + 1);
+            graphics.fill(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), 0xFF47403E);
+            graphics.drawString(Minecraft.getInstance().font, this.device.getDeviceName(), this.getX() + 5, this.getY() + 4, 0xFF222225, false);
+            this.button.setPosition(this.getX() + this.getWidth() - this.button.getWidth() - 1, this.getY() + 1);
             this.button.render(graphics, mouseX, mouseY, partialTick);
         }
 
         @Override
-        public boolean mouseClicked(double mouseX, double mouseY, int button)
+        public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick)
         {
-            this.button.mouseClicked(mouseX, mouseY, button);
+            this.button.mouseClicked(event, doubleClick);
             return true;
         }
 

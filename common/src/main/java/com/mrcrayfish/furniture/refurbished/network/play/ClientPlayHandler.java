@@ -23,6 +23,7 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -182,7 +183,9 @@ public class ClientPlayHandler
             EntityRenderDispatcher dispatcher = mc.getEntityRenderDispatcher();
             RenderBuffers buffers = mc.renderBuffers();
             Vec3 pos = Vec3.atCenterOf(message.pos());
-            mc.particleEngine.add(new ItemFlushParticle(dispatcher, buffers, mc.level, entity, pos));
+            // TODO 1.21.10 can't reimplement at this time
+            //EntityRenderState entityRenderState = mc.getEntityRenderDispatcher().extractEntity(entity, 1.0F);
+            //mc.particleEngine.add(new ItemFlushParticle(dispatcher, buffers, mc.level, entity, pos));
             mc.level.removeEntity(message.entityId(), Entity.RemovalReason.DISCARDED);
         }
     }

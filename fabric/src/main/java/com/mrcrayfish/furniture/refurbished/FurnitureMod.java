@@ -204,7 +204,7 @@ public class FurnitureMod implements ModInitializer, DataGeneratorEntrypoint
         });
 
         ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) -> {
-            List<RecipeHolder<WorkbenchContructingRecipe>> recipes = List.copyOf(player.getServer().getRecipeManager().recipes
+            List<RecipeHolder<WorkbenchContructingRecipe>> recipes = List.copyOf(player.level().getServer().getRecipeManager().recipes
                 .byType(ModRecipeTypes.WORKBENCH_CONSTRUCTING.get()));
             Network.getPlay().sendToPlayer(() -> player, new MessageWorkbench.SyncRecipes(recipes));
         });

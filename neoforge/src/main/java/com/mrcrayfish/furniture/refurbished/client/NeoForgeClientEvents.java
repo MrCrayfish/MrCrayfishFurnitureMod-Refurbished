@@ -38,28 +38,29 @@ public class NeoForgeClientEvents
     }
 
     @SubscribeEvent
-    private static void onRenderLevelStage(RenderLevelStageEvent.AfterBlockEntities event)
+    private static void onRenderLevelStage(RenderLevelStageEvent.AfterLevel event) // TODO 1.21.10 needs further investigation
     {
         Minecraft mc = Minecraft.getInstance();
         if(mc.player == null || mc.level == null)
             return;
 
         // Draw active link
-        PoseStack stack = event.getPoseStack();
+        // TODO 1.21.10 restore
+        /*PoseStack stack = event.getPoseStack();
         stack.pushPose();
         Vec3 view = event.getCamera().getPosition();
         stack.translate(-view.x(), -view.y(), -view.z());
         float deltaTick = event.getPartialTick().getGameTimeDeltaPartialTick(true);
         LinkHandler.get().render(mc.player, stack, event.getPartialTick());
         ToolAnimationRenderer.get().render(mc.level, stack, mc.renderBuffers().bufferSource(), deltaTick);
-        stack.popPose();
+        stack.popPose();*/
 
         // End render types
         mc.renderBuffers().bufferSource().endBatch(ClientServices.PLATFORM.getTelevisionScreenRenderType(CustomSheets.TV_CHANNELS_SHEET));
     }
 
     @SubscribeEvent
-    private static void onDrawHighlight(RenderHighlightEvent.Block event)
+    private static void onDrawHighlight(ExtractBlockOutlineRenderStateEvent event)
     {
         Minecraft mc = Minecraft.getInstance();
         if(mc.player != null)
@@ -84,7 +85,8 @@ public class NeoForgeClientEvents
         DeferredElectricRenderer renderer = DeferredElectricRenderer.get();
         if(!renderer.isIrisShadersEnabled())
         {
-            DeferredElectricRenderer.get().blitToScreen(event.getModelViewMatrix(), event.getCamera());
+            // TODO 1.21.10 restore
+            //DeferredElectricRenderer.get().blitToScreen(event.getModelViewMatrix(), event.getCamera());
         }
     }
 

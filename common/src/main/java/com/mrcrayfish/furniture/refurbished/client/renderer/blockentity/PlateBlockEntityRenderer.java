@@ -2,38 +2,65 @@ package com.mrcrayfish.furniture.refurbished.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.blockentity.PlateBlockEntity;
+import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.state.PlateRenderState;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Author: MrCrayfish
  */
-public class PlateBlockEntityRenderer implements BlockEntityRenderer<PlateBlockEntity>
+public class PlateBlockEntityRenderer implements BlockEntityRenderer<PlateBlockEntity, PlateRenderState>
 {
-    private final ItemRenderer renderer;
+    private final ItemModelResolver itemModelResolver;
 
     public PlateBlockEntityRenderer(BlockEntityRendererProvider.Context context)
     {
-        this.renderer = context.getItemRenderer();
+        this.itemModelResolver = context.itemModelResolver();
     }
 
     @Override
-    public void render(PlateBlockEntity plate, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay, Vec3 camera)
+    public PlateRenderState createRenderState()
     {
-        ItemStack stack = plate.getItem(0);
+        return new PlateRenderState();
+    }
+
+    @Override
+    public void extractRenderState(PlateBlockEntity entity, PlateRenderState renderState, float partialTick, Vec3 camera, @Nullable ModelFeatureRenderer.CrumblingOverlay overlay)
+    {
+        BlockEntityRenderer.super.extractRenderState(entity, renderState, partialTick, camera, overlay);
+
+        ItemStack stack = entity.getItem(0);
         if(stack.isEmpty())
             return;
 
-        poseStack.pushPose();
-        poseStack.translate(0.5, 0.03125 + 0.015625, 0.5);
-        poseStack.mulPose(plate.getPlacedDirection().getRotation());
-        poseStack.scale(0.499F, 0.499F, 0.499F);
-        this.renderer.renderStatic(stack, ItemDisplayContext.FIXED, light, overlay, poseStack, source, plate.getLevel(), 0);
-        poseStack.popPose();
+        ItemStackRenderState itemState = new ItemStackRenderState();
+        this.itemModelResolver.updateForTopItem(itemState, stack, ItemDisplayContext.FIXED, entity.getLevel(), null, 0);
+        renderState.item = itemState;
+        renderState.direction = entity.getPlacedDirection();
+    }
+
+    @Override
+    public void submit(PlateRenderState renderState, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState cameraState)
+    {
+        if(renderState.item != null)
+        {
+            poseStack.pushPose();
+            poseStack.translate(0.5, 0.03125 + 0.015625, 0.5);
+            poseStack.mulPose(renderState.direction.getRotation());
+            poseStack.scale(0.499F, 0.499F, 0.499F);
+            renderState.item.submit(poseStack, collector, renderState.lightCoords, OverlayTexture.NO_OVERLAY, 0);
+            poseStack.popPose();
+        }
     }
 }

@@ -25,6 +25,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -226,7 +227,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         RecipeHolder<WorkbenchContructingRecipe> holder = this.menu.getRecipes().get(recipeIndex);
         List<ClientTooltipComponent> components = new ArrayList<>();
         components.add(new ClientTextTooltip(holder.value().getResult().getHoverName().getVisualOrderText()));
-        if(!Screen.hasShiftDown())
+        if(!this.minecraft.hasShiftDown())
         {
             components.add(new ClientWorkbenchRecipeTooltip(this.menu, holder.value()));
             components.add(new ClientTextTooltip(Components.GUI_HOLD_SHIFT_DETAILS.getVisualOrderText()));
@@ -240,9 +241,9 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button)
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick)
     {
-        if(button == GLFW.GLFW_MOUSE_BUTTON_LEFT)
+        if(event.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT)
         {
             if(this.menu.isPowered() && this.hoveredIndex != -1)
             {
@@ -254,24 +255,25 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
                 }
             }
 
-            if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, this.leftPos + 169, this.topPos + 18 + this.getScrollbarPosition((int) mouseY), 12, SCROLLBAR_HEIGHT))
+            if(ScreenHelper.isMouseWithinBounds(event.x(), event.y(), this.leftPos + 169, this.topPos + 18 + this.getScrollbarPosition((int) event.y()), 12, SCROLLBAR_HEIGHT))
             {
-                this.clickedY = (int) mouseY;
+                this.clickedY = (int) event.y();
                 return true;
             }
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(event, doubleClick);
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button)
+    public boolean mouseReleased(MouseButtonEvent event)
     {
-        if(button == GLFW.GLFW_MOUSE_BUTTON_LEFT && this.clickedY != -1)
+        if(event.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT && this.clickedY != -1)
         {
-            this.scroll = this.getScrollAmount((int) mouseY);
+            this.scroll = this.getScrollAmount((int) event.y());
             this.clickedY = -1;
+            // TODO 1.21.10 does this need to return true
         }
-        return super.mouseReleased(mouseX, mouseY, button);
+        return super.mouseReleased(event);
     }
 
     @Override
@@ -342,7 +344,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         }
 
         @Override
-        public void onClick(double mouseX, double mouseY)
+        public void onClick(MouseButtonEvent event, boolean doubleClick)
         {
             this.isStateTriggered = !this.isStateTriggered;
             WorkbenchScreen.craftableOnly = this.isStateTriggered;
@@ -368,7 +370,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         }
 
         @Override
-        public void onClick(double mouseX, double mouseY)
+        public void onClick(MouseButtonEvent event, boolean doubleClick)
         {
             Network.getPlay().sendToServer(new MessageWorkbench.SearchNeighbours());
         }

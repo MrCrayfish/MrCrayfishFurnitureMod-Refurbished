@@ -21,7 +21,7 @@
         "client.CreativeModeInventoryScreenMixin",
         "client.GameRendererMixin",
         "client.LevelRendererMixin",
-        "client.ModelManagerMixin",
+        "client.AtlasManagerMixin",
         "client.ScreenAccessor"
     ],
     "injectors": {

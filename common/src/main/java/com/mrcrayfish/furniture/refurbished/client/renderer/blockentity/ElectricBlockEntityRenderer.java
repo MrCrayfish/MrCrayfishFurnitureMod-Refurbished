@@ -14,9 +14,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
@@ -31,7 +34,7 @@ import java.util.Set;
 /**
  * Author: MrCrayfish
  */
-public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNode> implements BlockEntityRenderer<T>
+public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNode> implements BlockEntityRenderer<T, BlockEntityRenderState>
 {
     private static final Set<Connection> DRAWN_CONNECTIONS = new HashSet<>();
     private static final int DEFAULT_COLOUR = 0xFFFFFFFF;
@@ -42,9 +45,16 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNod
     public ElectricBlockEntityRenderer(BlockEntityRendererProvider.Context context) {}
 
     @Override
-    public void render(T node, float partialTick, PoseStack poseStack, MultiBufferSource source, int light, int overlay, Vec3 camera)
+    public BlockEntityRenderState createRenderState()
     {
-        drawNodeAndConnections(node);
+        return new BlockEntityRenderState();
+    }
+
+    @Override
+    public void submit(BlockEntityRenderState renderState, PoseStack stack, SubmitNodeCollector collector, CameraRenderState cameraState)
+    {
+        // TODO 1.21.10 restore
+        //drawNodeAndConnections(node);
     }
 
     public static void drawNodeAndConnections(IElectricityNode node)

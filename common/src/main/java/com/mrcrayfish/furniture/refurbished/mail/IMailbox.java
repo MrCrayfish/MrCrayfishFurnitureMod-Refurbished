@@ -21,7 +21,7 @@ public interface IMailbox
      * The game profile of the player that owns the mailbox or empty optional
      * @return an optional game profile
      */
-    Optional<GameProfile> getOwner();
+    Optional<GameProfile> getOwner(); // TODO 1.21.10 change to NameAndId
 
     /**
      * The name of the mailbox or empty optional

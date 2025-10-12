@@ -62,7 +62,7 @@ public interface IModuleNode extends IElectricityNode
 
     default void moduleTick(Level level)
     {
-        if(!level.isClientSide)
+        if(!level.isClientSide())
         {
             this.updateNodePoweredState();
             this.setNodeReceivingPower(false);

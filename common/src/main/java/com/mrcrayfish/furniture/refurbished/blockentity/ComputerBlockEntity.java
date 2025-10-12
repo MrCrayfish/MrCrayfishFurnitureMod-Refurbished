@@ -196,7 +196,7 @@ public class ComputerBlockEntity extends ElectricityModuleBlockEntity implements
     public void moduleTick(Level level)
     {
         super.moduleTick(level);
-        if(!level.isClientSide)
+        if(!level.isClientSide())
         {
             this.tickProgram();
         }

@@ -5,27 +5,24 @@ import com.mrcrayfish.furniture.refurbished.platform.services.IFluidHelper;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.FluidUtil;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.fluid.FluidStacksResourceHandler;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 import java.util.function.Consumer;
 
@@ -62,13 +59,8 @@ public class NeoForgeFluidHelper implements IFluidHelper
     @Override
     public InteractionResult performInteractionWithBlock(Player player, InteractionHand hand, Level level, BlockPos pos, Direction face)
     {
+        // TODO 1.21.10 find replacement
         return FluidUtil.interactWithFluidHandler(player, hand, level, pos, face) ? InteractionResult.SUCCESS : InteractionResult.PASS;
-    }
-
-    @Override
-    public boolean isFluidContainerItem(ItemStack stack)
-    {
-        return !stack.isEmpty() && stack.getCapability(Capabilities.FluidHandler.ITEM) != null;
     }
 
     @Override
@@ -79,61 +71,83 @@ public class NeoForgeFluidHelper implements IFluidHelper
 
     public static class NeoForgeFluidContainer extends FluidContainer
     {
-        protected final FluidTank tank;
+        protected final FluidStacksResourceHandler tank;
+        private final int capacity;
 
         protected NeoForgeFluidContainer(long capacity, @Nullable Consumer<FluidContainer> onChange)
         {
-            this.tank = new FluidTank((int) capacity) {
+            this.tank = new FluidStacksResourceHandler(1, (int) capacity) {
                 @Override
-                protected void onContentsChanged() {
+                protected void onContentsChanged(int index, FluidStack previousContents) {
                     if(onChange != null) {
                         onChange.accept(NeoForgeFluidContainer.this);
                     }
                 }
             };
+            this.capacity = (int) capacity;
         }
 
         @Override
         public long getCapacity()
         {
-            return this.tank.getCapacity();
+            return this.capacity;
         }
 
         @Override
         public boolean isEmpty()
         {
-            return this.tank.isEmpty();
+            return this.tank.getResource(0).isEmpty();
         }
 
         @Override
         public Fluid getStoredFluid()
         {
-            return this.tank.getFluid().getFluid();
+            return this.tank.getResource(0).getFluid();
         }
 
         @Override
         public long getStoredAmount()
         {
-            return this.tank.getFluidAmount();
+            return this.tank.getAmountAsLong(0);
         }
 
         @Override
         protected void setStored(Fluid fluid, long amount)
         {
-            this.tank.setFluid(new FluidStack(fluid, (int) amount));
+            this.tank.set(0, FluidResource.of(fluid), (int) amount);
         }
 
         @Override
         public long push(Fluid fluid, long amount, boolean simulate)
         {
-            return this.tank.fill(new FluidStack(fluid, (int) amount), simulate ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE);
+            try(Transaction tx = Transaction.open(null))
+            {
+                int inserted = this.tank.insert(FluidResource.of(fluid), (int) amount, tx);
+                if(!simulate)
+                {
+                    tx.commit();
+                }
+                return inserted;
+            }
         }
 
         @Override
         public Pair<Fluid, Long> pull(long amount, boolean simulate)
         {
-            FluidStack stack = this.tank.drain((int) amount, simulate ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE);
-            return Pair.of(stack.getFluid(), (long) stack.getAmount());
+            try(Transaction tx = Transaction.open(null))
+            {
+                FluidResource resource = this.tank.getResource(0);
+                if(resource.isEmpty())
+                {
+                    return Pair.of(Fluids.EMPTY, 0L);
+                }
+                int extracted = this.tank.extract(resource, (int) amount, tx);
+                if(!simulate)
+                {
+                    tx.commit();
+                }
+                return Pair.of(resource.getFluid(), (long) extracted);
+            }
         }
 
         @Override
@@ -148,7 +162,7 @@ public class NeoForgeFluidHelper implements IFluidHelper
             this.tank.serialize(output);
         }
 
-        public FluidTank getTank()
+        public FluidStacksResourceHandler getTank()
         {
             return this.tank;
         }

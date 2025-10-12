@@ -22,7 +22,7 @@ public class LevelRendererMixin
      * after the Iris rendering pipeline finishes, which just happens slightly before the return.
      */
     @Inject(method = "renderLevel", at = @At(value = "RETURN"))
-    private void refurbishedFurnitureRenderLevel(GraphicsResourceAllocator allocator, DeltaTracker deltaTracker, boolean bl, Camera camera, Matrix4f projMatrix, Matrix4f matrix4f2, GpuBufferSlice slice, Vector4f p_425544_, boolean p_426302_, CallbackInfo ci)
+    private void refurbishedFurnitureRenderLevel(GraphicsResourceAllocator p_361796_, DeltaTracker p_348530_, boolean p_109603_, Camera camera, Matrix4f projMatrix, Matrix4f p_323920_, Matrix4f p_449678_, GpuBufferSlice p_425977_, Vector4f p_425544_, boolean p_426302_, CallbackInfo ci)
     {
         DeferredElectricRenderer renderer = DeferredElectricRenderer.get();
         if(renderer.isIrisShadersEnabled())

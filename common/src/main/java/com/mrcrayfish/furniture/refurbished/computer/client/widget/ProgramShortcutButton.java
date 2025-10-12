@@ -6,6 +6,7 @@ import com.mrcrayfish.furniture.refurbished.computer.client.Icon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
@@ -60,7 +61,7 @@ public class ProgramShortcutButton extends ComputerButton
     }
 
     @Override
-    protected boolean isValidClickButton(int button)
+    protected boolean isValidClickButton(MouseButtonInfo info)
     {
         // Prevent clicks if a window is open
         return this.screen.getOrCreateWindow() == null;

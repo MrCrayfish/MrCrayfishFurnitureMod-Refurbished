@@ -141,6 +141,11 @@ public class DeferredElectricRenderer implements ResourceManagerReloadListener
         }
     }
 
+    public TextureTarget getElectricityTarget()
+    {
+        return this.electricityTarget;
+    }
+
     /**
      * Pushes a draw call to be handled at a later point
      *
@@ -263,16 +268,13 @@ public class DeferredElectricRenderer implements ResourceManagerReloadListener
         GpuTextureView electricityColorView = this.electricityTarget.getColorTextureView();
         if(this.handle != null && electricityColorView != null && mainColor != null)
         {
-            RenderSystem.AutoStorageIndexBuffer autoIndexBuffer = RenderSystem.getSequentialBuffer(VertexFormat.Mode.QUADS);
-            GpuBuffer indexBuffer = autoIndexBuffer.getBuffer(6);
-            GpuBuffer vertexBuffer = RenderSystem.getQuadVertexBuffer();
+            // TODO 1.21.10 test
             try(RenderPass pass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Blit", mainColor, OptionalInt.empty()))
             {
                 pass.setPipeline(ModRenderPipelines.ELECTRICITY_BLIT);
-                pass.setVertexBuffer(0, vertexBuffer);
-                pass.setIndexBuffer(indexBuffer, autoIndexBuffer.type());
+                RenderSystem.bindDefaultUniforms(pass);
                 pass.bindSampler("InSampler", electricityColorView);
-                pass.drawIndexed(0, 0, 6, 1);
+                pass.draw(0, 3);
             }
         }
 

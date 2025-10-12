@@ -8,6 +8,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.ContainerUser;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
@@ -120,20 +121,20 @@ public abstract class BasicLootBlockEntity extends RandomizableContainerBlockEnt
     }
 
     @Override
-    public void startOpen(Player player)
+    public void startOpen(ContainerUser user)
     {
-        if(!this.remove && !player.isSpectator())
+        if(!this.remove && !user.getLivingEntity().isSpectator())
         {
-            this.tracker.incrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
+            this.tracker.incrementOpeners(user.getLivingEntity(), this.getLevel(), this.getBlockPos(), this.getBlockState(), user.getContainerInteractionRange());
         }
     }
 
     @Override
-    public void stopOpen(Player player)
+    public void stopOpen(ContainerUser user)
     {
-        if(!this.remove && !player.isSpectator())
+        if(!this.remove && !user.getLivingEntity().isSpectator())
         {
-            this.tracker.decrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
+            this.tracker.decrementOpeners(user.getLivingEntity(), this.getLevel(), this.getBlockPos(), this.getBlockState());
         }
     }
 

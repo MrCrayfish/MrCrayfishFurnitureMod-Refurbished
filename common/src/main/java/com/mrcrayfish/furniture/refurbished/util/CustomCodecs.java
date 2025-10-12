@@ -13,9 +13,10 @@ import java.util.UUID;
  */
 public class CustomCodecs
 {
+    // TODO 1.21.10 migrate to NameAndId
     public static final StreamCodec<FriendlyByteBuf, GameProfile> GAME_PROFILE_NO_PROPERTIES = StreamCodec.of((buf, profile) -> {
-        UUIDUtil.STREAM_CODEC.encode(buf, profile.getId());
-        Utf8String.write(buf, profile.getName(), 16);
+        UUIDUtil.STREAM_CODEC.encode(buf, profile.id());
+        Utf8String.write(buf, profile.name(), 16);
     }, buf -> {
         UUID id = UUIDUtil.STREAM_CODEC.decode(buf);
         String name = Utf8String.read(buf, 16);

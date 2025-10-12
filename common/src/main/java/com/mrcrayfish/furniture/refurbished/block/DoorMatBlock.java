@@ -86,7 +86,7 @@ public class DoorMatBlock extends FurnitureHorizontalEntityBlock implements Bloc
         if(entity instanceof ServerPlayer player)
         {
             CustomData data = stack.get(DataComponents.CUSTOM_DATA); // If block entity data on item, don't open menu
-            if((data == null || !data.getUnsafe().getBooleanOr("Finalised", false)) && level.getBlockEntity(pos) instanceof DoorMatBlockEntity doorMat)
+            if((data == null || !data.copyTag().getBooleanOr("Finalised", false)) && level.getBlockEntity(pos) instanceof DoorMatBlockEntity doorMat)
             {
                 player.openMenu(doorMat);
             }

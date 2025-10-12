@@ -37,6 +37,8 @@ import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.fluids.capability.templates.EmptyFluidHandler;
 import net.neoforged.neoforge.items.wrapper.InvWrapper;
 import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
+import net.neoforged.neoforge.transfer.item.VanillaContainerWrapper;
+import net.neoforged.neoforge.transfer.item.WorldlyContainerWrapper;
 
 import java.util.List;
 import java.util.Set;
@@ -74,16 +76,16 @@ public class FurnitureMod
 
     private void onRegisterCapabilities(RegisterCapabilitiesEvent event)
     {
-        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlockEntities.FREEZER.get(), (entity, context) -> {
-            return context == Direction.DOWN ? new SidedInvWrapper(entity, Direction.DOWN) : new InvWrapper(entity);
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.FREEZER.get(), (entity, context) -> {
+            return context == Direction.DOWN ? new WorldlyContainerWrapper(entity, Direction.DOWN) : VanillaContainerWrapper.of(entity);
         });
 
-        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlockEntities.STOVE.get(), (entity, context) -> {
-            return context == Direction.DOWN ? new SidedInvWrapper(entity.getContainer(), Direction.DOWN) : new InvWrapper(entity);
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.STOVE.get(), (entity, context) -> {
+            return context == Direction.DOWN ? new WorldlyContainerWrapper(entity.getContainer(), Direction.DOWN) : VanillaContainerWrapper.of(entity);
         });
 
-        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlockEntities.RECYCLE_BIN.get(), (entity, context) -> {
-            return context == Direction.DOWN ? new SidedInvWrapper(entity, Direction.DOWN) : new SidedInvWrapper(entity, Direction.UP);
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.RECYCLE_BIN.get(), (entity, context) -> {
+            return context == Direction.DOWN ? new WorldlyContainerWrapper(entity, Direction.DOWN) : new WorldlyContainerWrapper(entity, Direction.UP);
         });
 
         this.registerFluidHandler(event, ModBlockEntities.BATH.get());
@@ -94,9 +96,9 @@ public class FurnitureMod
 
     private <T extends BlockEntity & IFluidContainerBlock> void registerFluidHandler(RegisterCapabilitiesEvent event, BlockEntityType<T> type)
     {
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, type, (entity, context) -> {
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, type, (entity, direction) -> {
             FluidContainer container = entity.getFluidContainer();
-            return container != null ? ((NeoForgeFluidHelper.NeoForgeFluidContainer) container).getTank() : EmptyFluidHandler.INSTANCE;
+            return container != null ? ((NeoForgeFluidHelper.NeoForgeFluidContainer) container).getTank() : null;
         });
     }
 

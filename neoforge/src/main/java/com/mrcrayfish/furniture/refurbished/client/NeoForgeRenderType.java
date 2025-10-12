@@ -1,9 +1,12 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
+import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.furniture.refurbished.Constants;
+import com.mrcrayfish.furniture.refurbished.core.ModRenderPipelines;
 import com.mrcrayfish.furniture.refurbished.image.TextureCache;
 import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
@@ -19,6 +22,18 @@ import java.util.function.Function;
  */
 public class NeoForgeRenderType
 {
+    public static final RenderStateShard.OutputStateShard ELECTRICITY_TARGET = new RenderStateShard.OutputStateShard(Constants.MOD_ID + "_electricity_target", () -> {
+        return DeferredElectricRenderer.get().getElectricityTarget();
+    });
+
+    private static final Function<ResourceLocation, RenderType> ELECTRICITY = Util.memoize((id) -> {
+        return RenderType.create(Constants.MOD_ID + "_electricity", 0x200000, false, true, ModRenderPipelines.ELECTRICITY, RenderType.CompositeState.builder()
+                .setLightmapState(RenderType.LIGHTMAP)
+                .setOutputState(ELECTRICITY_TARGET)
+                .setTextureState(new RenderStateShard.TextureStateShard(id, false))
+                .createCompositeState(RenderType.OutlineProperty.NONE));
+    });
+
     private static final Function<ResourceLocation, RenderType> TELEVISION_SCREEN = Util.memoize((id) -> {
         return RenderType.create(Constants.MOD_ID + "_television_screen", 0x200000, false, false, RenderPipelines.SOLID, RenderType.CompositeState.builder()
                 .setLightmapState(RenderType.LIGHTMAP)

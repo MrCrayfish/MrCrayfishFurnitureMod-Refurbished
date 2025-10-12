@@ -15,6 +15,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.*;
 import net.fabricmc.fabric.api.event.client.player.ClientPreAttackCallback;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
@@ -66,7 +67,8 @@ public class ClientFurnitureMod implements ClientModInitializer
             }
         });
 
-        WorldRenderEvents.LAST.register(context -> {
+        // TODO 1.21.10 restore
+        /*WorldRenderEvents.LAST.register(context -> {
             Minecraft mc = Minecraft.getInstance();
             if(mc.player == null || mc.level == null)
                 return;
@@ -83,14 +85,15 @@ public class ClientFurnitureMod implements ClientModInitializer
 
             // End render types
             mc.renderBuffers().bufferSource().endBatch(ClientServices.PLATFORM.getTelevisionScreenRenderType(CustomSheets.TV_CHANNELS_SHEET));
-        });
+        });*/
 
-        WorldRenderEvents.END.register(context -> {
+        // TODO 1.21.10 restore
+        /*WorldRenderEvents.END.register(context -> {
             DeferredElectricRenderer renderer = DeferredElectricRenderer.get();
             if(!renderer.isIrisShadersEnabled()) {
                 DeferredElectricRenderer.get().blitToScreen(context.projectionMatrix(), context.camera());
             }
-        });
+        });*/
 
         ClientPreAttackCallback.EVENT.register((client, player, clickCount) -> {
             Minecraft mc = Minecraft.getInstance();
@@ -102,27 +105,18 @@ public class ClientFurnitureMod implements ClientModInitializer
             return false;
         });
 
-        WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((context, hitResult) -> {
+        // TODO 1.21.10 restore
+        /*WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((context, hitResult) -> {
             Minecraft mc = Minecraft.getInstance();
             if(mc.player != null) {
                 ItemStack stack = mc.player.getItemInHand(InteractionHand.MAIN_HAND);
                 return !stack.is(ModItems.WRENCH.get());
             }
             return true;
-        });
+        });*/
 
         BlockRenderLayerMap.putFluid(FurnitureMod.MILK, ChunkSectionLayer.SOLID);
         FluidRenderHandlerRegistry.INSTANCE.register(FurnitureMod.MILK, new SimpleFluidRenderHandler(Utils.resource("block/milk_still"), Utils.resource("block/milk_still")));
-
-        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new IdentifiableResourceReloadListener() {
-            @Override
-            public ResourceLocation getFabricId() {
-                return DeferredElectricRenderer.ID;
-            }
-            @Override
-            public CompletableFuture<Void> reload(PreparationBarrier barrier, ResourceManager manager, Executor executor, Executor executor2) {
-                return DeferredElectricRenderer.get().reload(barrier, manager, executor, executor2);
-            }
-        });
+        ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloader(DeferredElectricRenderer.ID, DeferredElectricRenderer.get());
     }
 }
