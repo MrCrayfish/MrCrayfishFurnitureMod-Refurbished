@@ -11,6 +11,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.players.NameAndId;
 import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -149,40 +150,6 @@ public final class Mailbox implements IMailbox
     }
 
     /**
-     * Writes the queue to the given compound tag.
-     *
-     * @param output the value output to save the data into
-     */
-    public void writeQueue(ValueOutput output)
-    {
-        ValueOutput.TypedOutputList<ItemStack> list = output.list("Queue", ItemStack.CODEC);
-        this.queue.forEach(stack -> {
-            if(!stack.isEmpty()) {
-                list.add(stack);
-            }
-        });
-    }
-
-    /**
-     * Creates a Queue from the given compound tag containing ItemStack to be delivered
-     *
-     * @param input the value input to read the data from
-     * @return a new ItemStack Queue
-     */
-    public static Queue<ItemStack> readQueueListTag(ValueInput input)
-    {
-        Queue<ItemStack> queue = new ArrayDeque<>();
-        input.list("Queue", ItemStack.CODEC).ifPresent(items -> {
-            items.forEach(stack -> {
-                if(!stack.isEmpty()) {
-                    queue.offer(stack);
-                }
-            });
-        });
-        return queue;
-    }
-
-    /**
      * Spawns all the ItemStacks in the queue into the level. This is called when the mailbox
      * is destroyed to prevent lost items.
      */
@@ -222,13 +189,12 @@ public final class Mailbox implements IMailbox
     }
 
     @Override
-    public Optional<GameProfile> getOwner()
+    public Optional<NameAndId> getOwner()
     {
         UUID ownerId = this.owner.orElse(null);
         if(ownerId != null)
         {
-            // TODO 1.21.10 test
-            return this.service.getServer().services().profileResolver().fetchById(ownerId);
+            return this.service.getServer().services().nameToIdCache().get(ownerId);
         }
         return Optional.empty();
     }

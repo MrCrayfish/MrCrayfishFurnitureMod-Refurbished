@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.mail;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.players.NameAndId;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -21,7 +22,7 @@ public interface IMailbox
      * The game profile of the player that owns the mailbox or empty optional
      * @return an optional game profile
      */
-    Optional<GameProfile> getOwner(); // TODO 1.21.10 change to NameAndId
+    Optional<NameAndId> getOwner();
 
     /**
      * The name of the mailbox or empty optional

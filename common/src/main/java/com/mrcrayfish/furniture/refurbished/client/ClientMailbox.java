@@ -1,13 +1,12 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
-import com.mojang.authlib.GameProfile;
 import com.mrcrayfish.furniture.refurbished.mail.IMailbox;
 import com.mrcrayfish.furniture.refurbished.util.CustomCodecs;
 import net.minecraft.core.UUIDUtil;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.players.NameAndId;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -15,12 +14,12 @@ import java.util.UUID;
 /**
  * Author: MrCrayfish
  */
-public record ClientMailbox(UUID mailboxId, Optional<GameProfile> owner, Optional<String> customName) implements IMailbox
+public record ClientMailbox(UUID mailboxId, Optional<NameAndId> owner, Optional<String> customName) implements IMailbox
 {
     public static final StreamCodec<RegistryFriendlyByteBuf, IMailbox> STREAM_CODEC = StreamCodec.composite(
         UUIDUtil.STREAM_CODEC,
         IMailbox::getId,
-        ByteBufCodecs.optional(CustomCodecs.GAME_PROFILE_NO_PROPERTIES),
+        ByteBufCodecs.optional(CustomCodecs.NAME_AND_ID),
         IMailbox::getOwner,
         ByteBufCodecs.optional(ByteBufCodecs.stringUtf8(256)),
         IMailbox::getCustomName,
@@ -34,7 +33,7 @@ public record ClientMailbox(UUID mailboxId, Optional<GameProfile> owner, Optiona
     }
 
     @Override
-    public Optional<GameProfile> getOwner()
+    public Optional<NameAndId> getOwner()
     {
         return this.owner;
     }

@@ -29,6 +29,7 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.players.NameAndId;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
@@ -186,7 +187,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
             graphics.blit(RenderPipelines.GUI_TEXTURED, POST_BOX_TEXTURE, entryX, entryY, 0, selected ? 172 : 186, MAILBOX_ENTRY_WIDTH, MAILBOX_ENTRY_HEIGHT, 512, 256);
 
             // Draw the face of the player's skin
-            Optional<GameProfile> optional = mailbox.getOwner();
+            Optional<NameAndId> optional = mailbox.getOwner();
             if(optional.isPresent())
             {
                 PlayerInfo info = this.getPlayerInfo(optional.get());
@@ -204,7 +205,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
             if(this.isHovering((entryX - this.leftPos) + 3, (entryY - this.topPos) + 3, 8, 8, mouseX, mouseY))
             {
                 Component ownerName = mailbox.getOwner()
-                    .map(GameProfile::name)
+                    .map(NameAndId::name)
                     .map(Component::literal)
                     .orElse(UNKNOWN_MAILBOX_OWNER);
                 graphics.setTooltipForNextFrame(ownerName, mouseX, mouseY);
@@ -411,13 +412,13 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
     {
         List<IMailbox> filteredMailboxes = this.menu.getMailboxes().stream().filter(mailbox -> {
             if(this.query.startsWith("@")) {
-                String ownerName = mailbox.getOwner().map(GameProfile::name).orElse("Unknown");
+                String ownerName = mailbox.getOwner().map(NameAndId::name).orElse("Unknown");
                 return StringUtils.containsIgnoreCase(ownerName, this.query.substring(1));
             }
             String mailboxName = mailbox.getCustomName().orElse("Mailbox");
             return StringUtils.containsIgnoreCase(mailboxName, this.query);
         }).sorted(Comparator.comparing((IMailbox mailbox) -> {
-            return mailbox.getOwner().map(GameProfile::name).orElse("Unknown");
+            return mailbox.getOwner().map(NameAndId::name).orElse("Unknown");
         }).thenComparing(mailbox -> {
             return mailbox.getCustomName().orElse("Mailbox");
         })).toList();
@@ -431,24 +432,24 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
      * is offline, a new player info is created and moved into a special cache. The connection cache
      * is prioritised first.
      *
-     * @param profile the game profile of the player
+     * @param nameAndId the game profile of the player
      * @return a non-null player info
      */
-    private PlayerInfo getPlayerInfo(GameProfile profile)
+    private PlayerInfo getPlayerInfo(NameAndId nameAndId)
     {
         if(this.minecraft != null)
         {
             ClientPacketListener listener = this.minecraft.getConnection();
             if(listener != null)
             {
-                PlayerInfo info = listener.getPlayerInfo(profile.id());
+                PlayerInfo info = listener.getPlayerInfo(nameAndId.id());
                 if(info != null)
                 {
                     return info;
                 }
             }
         }
-        return PLAYER_INFO_CACHE.computeIfAbsent(profile.id(), uuid -> new PlayerInfo(profile, false));
+        return PLAYER_INFO_CACHE.computeIfAbsent(nameAndId.id(), uuid -> new PlayerInfo(new GameProfile(nameAndId.id(), nameAndId.name()), false));
     }
 
     /**

@@ -1,10 +1,8 @@
 package com.mrcrayfish.furniture.refurbished.util;
 
-import com.mojang.authlib.GameProfile;
-import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.Utf8String;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.players.NameAndId;
 
 import java.util.UUID;
 
@@ -13,13 +11,12 @@ import java.util.UUID;
  */
 public class CustomCodecs
 {
-    // TODO 1.21.10 migrate to NameAndId
-    public static final StreamCodec<FriendlyByteBuf, GameProfile> GAME_PROFILE_NO_PROPERTIES = StreamCodec.of((buf, profile) -> {
-        UUIDUtil.STREAM_CODEC.encode(buf, profile.id());
-        Utf8String.write(buf, profile.name(), 16);
+    public static final StreamCodec<FriendlyByteBuf, NameAndId> NAME_AND_ID = StreamCodec.of((buf, nameAndId) -> {
+        buf.writeUUID(nameAndId.id());
+        buf.writeUtf(nameAndId.name());
     }, buf -> {
-        UUID id = UUIDUtil.STREAM_CODEC.decode(buf);
-        String name = Utf8String.read(buf, 16);
-        return new GameProfile(id, name);
+        UUID id = buf.readUUID();
+        String name = buf.readUtf();
+        return new NameAndId(id, name);
     });
 }
