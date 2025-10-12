@@ -1,24 +1,17 @@
 package com.mrcrayfish.furniture.refurbished.item;
 
-import com.mrcrayfish.framework.api.Environment;
-import com.mrcrayfish.framework.api.util.TaskRunner;
 import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.client.FontIcons;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.block.Block;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
@@ -40,17 +33,6 @@ public class PoweredItem extends BlockItem
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> lines, TooltipFlag flag)
     {
-        TaskRunner.runIf(Environment.CLIENT, () -> () -> {
-            Minecraft.getInstance().font.getSplitter().splitLines(POWER_TOOLTIP, 150, Style.EMPTY).forEach(text -> {
-                // Dumb but works
-                MutableComponent line = Component.empty();
-                text.visit((style, s) -> {
-                    line.append(Component.literal(s).withStyle(style));
-                    return Optional.empty();
-                }, Style.EMPTY);
-                lines.accept(line);
-            });
-        });
-        super.appendHoverText(stack, context, display, lines, flag);
+        lines.accept(POWER_TOOLTIP);
     }
 }
