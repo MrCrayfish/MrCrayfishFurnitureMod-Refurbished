@@ -90,7 +90,7 @@ public class BasinBlockEntity extends BlockEntity implements IFluidContainerBloc
 
         if(Config.SERVER.basin.dispenseWater.get() && result.getDirection() != Direction.DOWN)
         {
-            if(this.tryAndFillWithFluid(this.level, this.worldPosition, Fluids.WATER, Vec3.atCenterOf(this.worldPosition)).consumesAction())
+            if(this.tryAndFillWithFluid(this.level, this.worldPosition, Fluids.WATER, null).consumesAction())
                 return InteractionResult.SUCCESS;
 
             if(this.tryAndCreateObsidian(this.level, this.worldPosition, Fluids.WATER, Vec3.atBottomCenterOf(this.worldPosition).add(0, 1, 0)).consumesAction())

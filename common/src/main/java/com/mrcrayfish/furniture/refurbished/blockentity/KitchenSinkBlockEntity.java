@@ -91,7 +91,7 @@ public class KitchenSinkBlockEntity extends BlockEntity implements IFluidContain
 
         if(Config.SERVER.kitchenSink.dispenseWater.get() && result.getDirection() != Direction.DOWN)
         {
-            if(this.tryAndFillWithFluid(this.level, this.worldPosition, Fluids.WATER, Vec3.atCenterOf(this.worldPosition)).consumesAction())
+            if(this.tryAndFillWithFluid(this.level, this.worldPosition, Fluids.WATER, null).consumesAction())
                 return InteractionResult.SUCCESS;
 
             if(this.tryAndCreateObsidian(this.level, this.worldPosition, Fluids.WATER, Vec3.atBottomCenterOf(this.worldPosition).add(0, 1, 0)).consumesAction())

@@ -34,7 +34,6 @@ public class TapWaterParticle extends WaterDropParticle
         @Override
         public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xd, double yd, double zd, RandomSource source)
         {
-            // TODO 1.21.10 test
             return new TapWaterParticle(level, x, y, z, this.sprites.get(source));
         }
     }
