@@ -99,7 +99,7 @@ public class CreativeFilters
         });
 
         /* Handles sending an event when the current creative mode tab is changed */
-        FrameworkScreenEvents.AFTER_DRAW.register((screen, graphics, mouseX, mouseY, partialTick) -> {
+        FrameworkScreenEvents.BEFORE_DRAW.register((screen, graphics, mouseX, mouseY, partialTick) -> {
             if(screen instanceof CreativeModeInventoryScreen creativeScreen) {
                 CreativeModeTab tab = ClientServices.PLATFORM.getSelectedCreativeModeTab();
                 if(this.lastTab != tab) {
@@ -255,7 +255,6 @@ public class CreativeFilters
             {
                 Minecraft mc = Minecraft.getInstance();
                 graphics.setTooltipForNextFrame(tab.cachedTooltip.toCharSequence(mc), mouseX, mouseY);
-                //graphics.renderDeferredTooltip(); // TODO 1.21.10 do I need this?
                 return;
             }
         }
