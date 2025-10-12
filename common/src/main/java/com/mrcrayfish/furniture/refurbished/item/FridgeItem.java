@@ -49,17 +49,6 @@ public class FridgeItem extends BlockItem
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> lines, TooltipFlag flag)
     {
-        TaskRunner.runIf(Environment.CLIENT, () -> () -> {
-            Minecraft.getInstance().font.getSplitter().splitLines(PoweredItem.POWER_TOOLTIP, 150, Style.EMPTY).forEach(text -> {
-                // Dumb but works
-                MutableComponent line = Component.empty();
-                text.visit((style, s) -> {
-                    line.append(Component.literal(s).withStyle(style));
-                    return Optional.empty();
-                }, Style.EMPTY);
-                lines.accept(line);
-            });
-        });
-        super.appendHoverText(stack, context, display, lines, flag);
+        lines.accept(PoweredItem.POWER_TOOLTIP);
     }
 }
