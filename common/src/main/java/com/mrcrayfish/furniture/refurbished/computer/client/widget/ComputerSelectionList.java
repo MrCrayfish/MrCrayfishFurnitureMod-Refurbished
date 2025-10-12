@@ -231,19 +231,16 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
     {
         if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, this.getX(), this.getY(), this.getWidth(), this.getHeight()))
         {
-            int rowLeft = this.getRowLeft();
-            int rowWidth = this.getRowWidth();
-            int rowHeight = this.defaultEntryHeight; // TODO 1.21.10 might need to be changed due to dynamic item heights
+            int rowHeight = this.defaultEntryHeight; // TODO might need to be changed due to dynamic item heights
             int rowCount = this.getItemCount();
             int startIndex = Math.max(0, (int) ((this.scrollAmount() - this.contentPadding) / (rowHeight + this.itemSpacing)));
             for(int i = startIndex; i < rowCount; i++)
             {
-                int rowTop = this.getRowTop(i);
-                if(rowTop <= this.getY() + this.getHeight())
+                E entry = this.children().get(i);
+                if(entry.getY() <= this.getY() + this.getHeight())
                 {
-                    if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, rowLeft, rowTop, rowWidth, rowHeight))
+                    if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, entry.getX(), entry.getY(), entry.getWidth(), entry.getHeight()))
                     {
-                        // TODO 1.21.10 test
                         return this.children().get(i);
                     }
                     continue;
