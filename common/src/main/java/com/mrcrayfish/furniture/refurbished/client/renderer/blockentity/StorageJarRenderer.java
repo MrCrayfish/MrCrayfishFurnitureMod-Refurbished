@@ -6,6 +6,7 @@ import com.mrcrayfish.furniture.refurbished.block.CuttingBoardBlock;
 import com.mrcrayfish.furniture.refurbished.block.StorageJarBlock;
 import com.mrcrayfish.furniture.refurbished.blockentity.StorageJarBlockEntity;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.state.StorageJarRenderState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -36,10 +37,12 @@ import org.jetbrains.annotations.Nullable;
 public class StorageJarRenderer implements BlockEntityRenderer<StorageJarBlockEntity, StorageJarRenderState>
 {
     private final ItemModelResolver itemModelResolver;
+    private final EntityRenderDispatcher entityRenderDispatcher;
 
     public StorageJarRenderer(BlockEntityRendererProvider.Context context)
     {
         this.itemModelResolver = context.itemModelResolver();
+        this.entityRenderDispatcher = context.entityRenderer();
     }
 
     @Override
@@ -68,6 +71,11 @@ public class StorageJarRenderer implements BlockEntityRenderer<StorageJarBlockEn
                 renderState.items[i] = itemState;
             }
         }
+        if(Minecraft.getInstance().hitResult instanceof BlockHitResult result)
+        {
+            renderState.showLabel = result.getBlockPos().equals(entity.getBlockPos());
+        }
+        renderState.distanceToCamera = camera.distanceToSqr(entity.getBlockPos().getCenter());
     }
 
     @Override
@@ -98,10 +106,9 @@ public class StorageJarRenderer implements BlockEntityRenderer<StorageJarBlockEn
         }
         stack.popPose();
 
-        if(renderState.label != null)
+        if(renderState.showLabel && renderState.label != null)
         {
-            // TODO 1.21.10 figure this out
-            collector.submitNameTag(stack, new Vec3(0, 0, 0), 0, renderState.label, false, 0, 0, cameraState);
+            collector.submitNameTag(stack, new Vec3(0.5, 0.5, 0.5), 0, renderState.label, true, renderState.lightCoords, renderState.distanceToCamera, cameraState);
         }
     }
 }

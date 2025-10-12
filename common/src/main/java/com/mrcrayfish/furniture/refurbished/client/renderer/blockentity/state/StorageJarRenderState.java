@@ -10,4 +10,6 @@ public class StorageJarRenderState extends BlockEntityRenderState
     public ItemStackRenderState[] items;
     public Direction direction;
     public Component label;
+    public boolean showLabel;
+    public double distanceToCamera;
 }
