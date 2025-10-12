@@ -1,10 +1,11 @@
 package com.mrcrayfish.furniture.refurbished.mixin.client;
 
-import com.mrcrayfish.furniture.refurbished.client.gui.IOverrideGetEntry;
+import com.mrcrayfish.furniture.refurbished.client.gui.ICustomSelectionList;
 import net.minecraft.client.gui.components.AbstractSelectionList;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
@@ -17,9 +18,30 @@ public class AbstractSelectionListMixin
     private void refurbishedFurnitureGetEntry(double mouseX, double mouseY, CallbackInfoReturnable<Object> cir)
     {
         AbstractSelectionList<?> list = (AbstractSelectionList<?>) (Object) this;
-        if(list instanceof IOverrideGetEntry<?> getter)
+        if(list instanceof ICustomSelectionList<?> custom)
         {
-            cir.setReturnValue(getter.getEntry(mouseX, mouseY));
+            cir.setReturnValue(custom.getEntry(mouseX, mouseY));
+        }
+    }
+
+    @Inject(method = "getFirstEntryY", at = @At(value = "HEAD"), cancellable = true)
+    private void refurbishedFurnitureGetFirstY(CallbackInfoReturnable<Integer> cir)
+    {
+        AbstractSelectionList<?> list = (AbstractSelectionList<?>) (Object) this;
+        if(list instanceof ICustomSelectionList<?> custom)
+        {
+            cir.setReturnValue(custom.getStartEntryY());
+        }
+    }
+
+    @Inject(method = "repositionEntries", at = @At(value = "HEAD"), cancellable = true)
+    private void refurbishedFurnitureGetFirstY(CallbackInfo ci)
+    {
+        AbstractSelectionList<?> list = (AbstractSelectionList<?>) (Object) this;
+        if(list instanceof ICustomSelectionList<?> custom)
+        {
+            custom.arrangeEntries();
+            ci.cancel();
         }
     }
 }

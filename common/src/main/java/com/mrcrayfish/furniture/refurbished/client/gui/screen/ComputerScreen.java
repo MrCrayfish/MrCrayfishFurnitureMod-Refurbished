@@ -168,6 +168,14 @@ public class ComputerScreen extends ElectricityContainerScreen<ComputerMenu>
     }
 
     @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY)
+    {
+        if(this.getChildAt(mouseX, mouseY).filter((listener) -> listener.mouseScrolled(mouseX, mouseY, deltaX, deltaY)).isPresent())
+            return true;
+        return super.mouseScrolled(mouseX, mouseY, deltaX, deltaY);
+    }
+
+    @Override
     public boolean keyPressed(KeyEvent event)
     {
         if(this.window != null && this.window.getDisplayable().blocksNavigation())

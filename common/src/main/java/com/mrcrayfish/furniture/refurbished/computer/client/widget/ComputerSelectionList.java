@@ -1,6 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.computer.client.widget;
 
-import com.mrcrayfish.furniture.refurbished.client.gui.IOverrideGetEntry;
+import com.mrcrayfish.furniture.refurbished.client.gui.ICustomSelectionList;
 import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -12,7 +12,7 @@ import org.lwjgl.glfw.GLFW;
 /**
  * Author: MrCrayfish
  */
-public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> extends ObjectSelectionList<E> implements IOverrideGetEntry<E>
+public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> extends ObjectSelectionList<E> implements ICustomSelectionList<E>
 {
     private static final int OUTLINE_SIZE = 1;
 
@@ -103,13 +103,6 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
     }
 
     @Override
-    public int getRowTop(int index)
-    {
-        // TODO 1.21.10 rows may now have different heights, so this will eventually need updating
-        return this.getY() + OUTLINE_SIZE + this.contentPadding - (int) this.scrollAmount() + index * this.defaultEntryHeight + index * this.itemSpacing;
-    }
-
-    @Override
     protected int scrollBarX()
     {
         return this.getX() + this.getWidth() - this.scrollBarWidth - this.contentPadding - OUTLINE_SIZE;
@@ -120,11 +113,6 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
         int scrollAreaHeight = this.getScrollAreaHeight();
         int scrollBarHeight = (int) (Mth.square(scrollAreaHeight) / (float) this.contentHeight());
         return Mth.clamp(scrollBarHeight, 32, scrollAreaHeight);
-    }
-
-    public int getScrollBottom()
-    {
-        return (int) this.scrollAmount() - this.height;
     }
 
     public int getScrollAreaHeight()
@@ -142,12 +130,6 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
     {
         return Math.max(0, this.scrollerHeight() - this.height + this.contentPadding * 2 + OUTLINE_SIZE * 2);
     }
-
-    /*@Override
-    protected int scrollerHeight()
-    {
-        return super.scrollerHeight();
-    }*/
 
     @Override
     protected int scrollerHeight()
@@ -188,8 +170,6 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
     @Override
     protected void renderListItems(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
-        int rowLeft = this.getRowLeft();
-        int rowWidth = this.getRowWidth();
         int rowHeight = this.defaultEntryHeight;
         int rowCount = this.getItemCount();
 
@@ -200,8 +180,8 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
         int startIndex = Math.max(0, (int) ((this.scrollAmount() - this.contentPadding) / (rowHeight + this.itemSpacing)));
         for(int i = startIndex; i < rowCount; i++)
         {
-            int rowTop = this.getRowTop(i);
-            if(rowTop <= this.getY() + this.getHeight())
+            E entry = this.children().get(i);
+            if(entry.getY() <= this.getY() + this.getHeight())
             {
                 // TODO 1.21.10 test
                 this.renderItem(graphics, mouseX, mouseY, partialTick, this.children().get(i));
@@ -272,5 +252,24 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
             }
         }
         return null;
+    }
+
+    @Override
+    public int getStartEntryY()
+    {
+        return this.getY() + OUTLINE_SIZE + this.contentPadding;
+    }
+
+    @Override
+    public void arrangeEntries()
+    {
+        int nextY = this.getStartEntryY() - (int) this.scrollAmount();
+        for(E e : this.children())
+        {
+            e.setY(nextY);
+            e.setX(this.getRowLeft());
+            e.setWidth(this.getRowWidth());
+            nextY += e.getHeight() + this.itemSpacing;
+        }
     }
 }

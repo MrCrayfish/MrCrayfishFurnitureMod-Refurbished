@@ -38,10 +38,7 @@ public class HomeControlGraphics extends DisplayableProgram<HomeControl>
         {
             this.graphics = graphics;
             this.devices = this.addWidget(new ComputerSelectionList<>(graphics.getWidth() - 10, graphics.getHeight() - 30, 25, 100, 16));
-            //this.devices.setRenderSelection(false); // TODO wat happen to dis
-            graphics.getProgram().findDevices().forEach(device -> {
-                this.devices.children().add(new DeviceItem(device));
-            });
+            this.devices.replaceEntries(graphics.getProgram().findDevices().stream().map(DeviceItem::new).toList());
             this.turnOnAllButton = this.addWidget(new ComputerButton(60, 14, graphics.translation("turn_on_all"), btn -> {
                 Network.getPlay().sendToServer(new MessageHomeControl.UpdateAll(true));
             }));
@@ -64,7 +61,7 @@ public class HomeControlGraphics extends DisplayableProgram<HomeControl>
         @Override
         public void updateWidgets(int contentStart, int contentTop)
         {
-            this.devices.setPosition(contentStart + 5, contentTop + 25);
+            this.devices.updateSizeAndPosition(this.devices.getWidth(), this.devices.getHeight(), contentStart + 5, contentTop + 25);
             this.turnOnAllButton.setPosition(contentStart + 5, contentTop + 3);
             this.turnOffAllButton.setPosition(contentStart + 5 + this.turnOnAllButton.getWidth() + 2, contentTop + 3);
             this.infoButton.setPosition(contentStart + this.graphics.getWidth() - 5 - this.infoButton.getWidth(), contentTop + 3);
