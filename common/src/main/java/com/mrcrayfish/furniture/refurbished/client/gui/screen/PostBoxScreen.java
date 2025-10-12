@@ -304,7 +304,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
             {
                 this.scroll(this.getDeltaScroll((int) event.y()));
                 this.clickedY = -1;
-                // TODO 1.21.10 does this need to return true?
+                return true;
             }
         }
         return super.mouseReleased(event);

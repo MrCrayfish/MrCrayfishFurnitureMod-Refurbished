@@ -271,7 +271,7 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
         {
             this.scroll = this.getScrollAmount((int) event.y());
             this.clickedY = -1;
-            // TODO 1.21.10 does this need to return true
+            return true;
         }
         return super.mouseReleased(event);
     }
