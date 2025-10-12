@@ -18,10 +18,9 @@ import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.FluidUtil;
-
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.fluid.FluidStacksResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidUtil;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 import java.util.function.Consumer;
@@ -59,7 +58,6 @@ public class NeoForgeFluidHelper implements IFluidHelper
     @Override
     public InteractionResult performInteractionWithBlock(Player player, InteractionHand hand, Level level, BlockPos pos, Direction face)
     {
-        // TODO 1.21.10 find replacement
         return FluidUtil.interactWithFluidHandler(player, hand, level, pos, face) ? InteractionResult.SUCCESS : InteractionResult.PASS;
     }
 
