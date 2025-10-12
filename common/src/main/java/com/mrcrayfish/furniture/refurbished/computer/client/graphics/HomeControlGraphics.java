@@ -128,7 +128,6 @@ public class HomeControlGraphics extends DisplayableProgram<HomeControl>
         @Override
         public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float partialTick)
         {
-            // TODO 1.21.10 test
             this.updateButtonLabel();
             graphics.fill(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), 0xFF47403E);
             graphics.drawString(Minecraft.getInstance().font, this.device.getDeviceName(), this.getX() + 5, this.getY() + 4, 0xFF222225, false);

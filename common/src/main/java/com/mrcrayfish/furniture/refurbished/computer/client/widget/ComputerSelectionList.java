@@ -183,7 +183,6 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
             E entry = this.children().get(i);
             if(entry.getY() <= this.getY() + this.getHeight())
             {
-                // TODO 1.21.10 test
                 this.renderItem(graphics, mouseX, mouseY, partialTick, this.children().get(i));
                 continue;
             }
@@ -201,7 +200,6 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
     @Override
     public boolean updateScrolling(MouseButtonEvent event)
     {
-        // TODO 1.21.10 test
         this.scrolling = event.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT
                 && ScreenHelper.isMouseWithinBounds(event.x(), event.y(), this.scrollBarX(), this.getScrollAreaTop(), 6, this.getScrollAreaHeight());
         return super.updateScrolling(event);

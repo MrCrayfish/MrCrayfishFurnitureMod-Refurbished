@@ -54,7 +54,6 @@ public class CeilingFanBlockEntityRenderer implements BlockEntityRenderer<Ceilin
     @Override
     public void extractRenderState(CeilingFanBlockEntity entity, CeilingFanRenderState renderState, float partialTick, Vec3 camera, @Nullable ModelFeatureRenderer.CrumblingOverlay overlay)
     {
-        // TODO 1.21.10 test
         BlockEntityRenderer.super.extractRenderState(entity, renderState, partialTick, camera, overlay);
         renderState.direction = entity.getDirection();
         renderState.rotation = entity.getRotation(partialTick);

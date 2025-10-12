@@ -30,13 +30,11 @@ import java.util.ArrayList;
  */
 public class CuttingBoardBlockEntityRenderer implements BlockEntityRenderer<CuttingBoardBlockEntity, CuttingBoardRenderState>
 {
-    private final ItemRenderer renderer;
     private final ItemModelResolver itemModelResolver;
     private final RandomSource random = RandomSource.create();
 
     public CuttingBoardBlockEntityRenderer(BlockEntityRendererProvider.Context context)
     {
-        this.renderer = context.itemRenderer();
         this.itemModelResolver = context.itemModelResolver();
     }
 
@@ -68,7 +66,6 @@ public class CuttingBoardBlockEntityRenderer implements BlockEntityRenderer<Cutt
     @Override
     public void submit(CuttingBoardRenderState renderState, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState cameraState)
     {
-        // TODO 1.21.10 test
         poseStack.pushPose();
         poseStack.translate(0.5, 0.0625 + 0.015625, 0.5);
         poseStack.mulPose(renderState.direction.getRotation());

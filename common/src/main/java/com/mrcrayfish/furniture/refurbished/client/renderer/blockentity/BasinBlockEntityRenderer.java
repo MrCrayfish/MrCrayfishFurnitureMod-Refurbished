@@ -42,9 +42,8 @@ public class BasinBlockEntityRenderer implements BlockEntityRenderer<BasinBlockE
     @Override
     public void extractRenderState(BasinBlockEntity entity, FluidEntityRenderState state, float partialTick, Vec3 camera, @Nullable ModelFeatureRenderer.CrumblingOverlay overlay)
     {
-        // TODO 1.21.10 test
         BlockEntityRenderer.super.extractRenderState(entity, state, partialTick, camera, overlay);
-        FluidEntityRenderState.extract(state, entity, entity.getLevel(), entity.getBlockPos()); // TODO might be reusing the state, test 1.21.10
+        FluidEntityRenderState.extract(state, entity, entity.getLevel(), entity.getBlockPos());
         BlockState blockState = entity.getBlockState();
         if(blockState.hasProperty(BasinBlock.DIRECTION))
         {
