@@ -53,9 +53,6 @@ public class ClientBootstrap
             ToolAnimationRenderer.get().tick();
             AudioManager.get().update();
         });
-        FrameworkClientTickEvents.START_RENDER.register(tracker -> {
-            LinkHandler.get().beforeRender(tracker.getGameTimeDeltaPartialTick(true));
-        });
         FrameworkClientConnectionEvents.LOGGING_OUT.register(connection -> {
             AudioManager.get().resetSounds();
         });
