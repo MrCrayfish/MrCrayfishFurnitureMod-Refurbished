@@ -97,7 +97,7 @@ public class Connection
         {
             return a.isNodePowered() && a.isSourceNode() || b.isNodePowered() && b.isSourceNode();
         }
-        return a.isNodePowered() || b.isNodePowered();
+        return a.isNodePowered() && b.isNodePowered();
     }
 
     /**
