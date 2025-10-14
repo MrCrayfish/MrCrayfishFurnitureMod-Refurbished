@@ -91,7 +91,13 @@ public class Connection
     {
         IElectricityNode a = this.a.getElectricNode(level);
         IElectricityNode b = this.b.getElectricNode(level);
-        return a != null && a.isNodePowered() && b != null && b.isNodePowered();
+        if(a == null || b == null)
+            return false;
+        if(!a.canPowerTraverseNode() && !b.canPowerTraverseNode())
+        {
+            return a.isNodePowered() && a.isSourceNode() || b.isNodePowered() && b.isSourceNode();
+        }
+        return a.isNodePowered() || b.isNodePowered();
     }
 
     /**
