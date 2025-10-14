@@ -1,7 +1,8 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
 import com.mrcrayfish.furniture.refurbished.Constants;
-import com.mrcrayfish.furniture.refurbished.client.renderer.electricity.ElectricityRenderer;
+import com.mrcrayfish.furniture.refurbished.client.electricity.ElectricityRenderer;
+import com.mrcrayfish.furniture.refurbished.client.electricity.LinkHandler;
 import com.mrcrayfish.furniture.refurbished.compat.jei.SyncedRecipes;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;

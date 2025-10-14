@@ -6,6 +6,7 @@ import com.mrcrayfish.framework.api.event.client.FrameworkClientConnectionEvents
 import com.mrcrayfish.framework.api.event.client.FrameworkClientTickEvents;
 import com.mrcrayfish.furniture.refurbished.block.StoveBlock;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
+import com.mrcrayfish.furniture.refurbished.client.electricity.LinkHandler;
 import com.mrcrayfish.furniture.refurbished.client.gui.overlay.CuttingBoardHelperOverlay;
 import com.mrcrayfish.furniture.refurbished.client.gui.overlay.NodeIndicatorOverlay;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.*;
@@ -31,7 +32,6 @@ import com.mrcrayfish.furniture.refurbished.image.TextureCache;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.renderer.BiomeColors;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.crafting.RecipeBookCategory;

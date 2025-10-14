@@ -1,9 +1,10 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
 import com.mrcrayfish.furniture.refurbished.FurnitureMod;
+import com.mrcrayfish.furniture.refurbished.client.electricity.LinkHandler;
 import com.mrcrayfish.furniture.refurbished.client.registration.ParticleProviderRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
-import com.mrcrayfish.furniture.refurbished.client.renderer.electricity.ElectricityRenderer;
+import com.mrcrayfish.furniture.refurbished.client.electricity.ElectricityRenderer;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.fabricmc.api.ClientModInitializer;

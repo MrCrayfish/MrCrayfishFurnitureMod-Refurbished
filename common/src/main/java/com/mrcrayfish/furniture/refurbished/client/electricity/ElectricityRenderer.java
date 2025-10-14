@@ -1,4 +1,4 @@
-package com.mrcrayfish.furniture.refurbished.client.renderer.electricity;
+package com.mrcrayfish.furniture.refurbished.client.electricity;
 
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
@@ -16,8 +16,7 @@ import com.mojang.blaze3d.textures.GpuTextureView;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import com.mrcrayfish.furniture.refurbished.Constants;
-import com.mrcrayfish.furniture.refurbished.client.renderer.electricity.state.*;
-import com.mrcrayfish.furniture.refurbished.client.LinkHandler;
+import com.mrcrayfish.furniture.refurbished.client.electricity.state.*;
 import com.mrcrayfish.furniture.refurbished.core.ModRenderPipelines;
 import com.mrcrayfish.furniture.refurbished.electricity.Connection;
 import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;

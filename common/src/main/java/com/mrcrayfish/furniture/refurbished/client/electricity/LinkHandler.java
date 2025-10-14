@@ -1,20 +1,17 @@
-package com.mrcrayfish.furniture.refurbished.client;
+package com.mrcrayfish.furniture.refurbished.client.electricity;
 
-import com.google.common.collect.Sets;
 import com.mrcrayfish.framework.api.config.event.FrameworkConfigEvents;
 import com.mrcrayfish.furniture.refurbished.Config;
-import com.mrcrayfish.furniture.refurbished.client.renderer.electricity.ElectricityRenderer;
-import com.mrcrayfish.furniture.refurbished.client.renderer.electricity.state.ConnectionRenderState;
-import com.mrcrayfish.furniture.refurbished.client.renderer.electricity.state.ElectricityRenderState;
-import com.mrcrayfish.furniture.refurbished.client.renderer.electricity.state.LinkingConnectionRenderState;
-import com.mrcrayfish.furniture.refurbished.client.renderer.electricity.state.PowerableAreaRenderState;
+import com.mrcrayfish.furniture.refurbished.client.electricity.state.ConnectionRenderState;
+import com.mrcrayfish.furniture.refurbished.client.electricity.state.ElectricityRenderState;
+import com.mrcrayfish.furniture.refurbished.client.electricity.state.LinkingConnectionRenderState;
+import com.mrcrayfish.furniture.refurbished.client.electricity.state.PowerableAreaRenderState;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.electricity.*;
 import com.mrcrayfish.furniture.refurbished.item.WrenchItem;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageDeleteLink;
-import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
@@ -22,19 +19,12 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.BooleanOp;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Intersectiond;
 import org.joml.Vector3d;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Author: MrCrayfish
@@ -57,22 +47,18 @@ public class LinkHandler
         return instance;
     }
 
-    @Nullable
-    private BlockPos lastNodePos;
+    private final PowerableArea powerableArea = new PowerableArea();
+    private @Nullable BlockPos lastNodePos;
     private HitResult result;
     private double linkLength;
     private boolean linkInsideArea;
-    private final Set<BlockPos> sourcePositions = new HashSet<>();
-    private final Set<BlockPos> lastSourcePositions = new HashSet<>();
-    private VoxelShape cachedPowerableAreaShape;
 
     private LinkHandler()
     {
         // On changes to server the config, clear zone shape cache
         FrameworkConfigEvents.RELOAD.register(object -> {
             if(object == Config.SERVER) {
-                this.lastSourcePositions.clear();
-                this.cachedPowerableAreaShape = null;
+                this.powerableArea.invalidate();
             }
         });
     }
@@ -156,7 +142,6 @@ public class LinkHandler
             this.lastNodePos = null;
         }
         this.updateHitResult(partialTick);
-        this.updatePowerSources();
         this.updateLinkState(partialTick);
     }
 
@@ -211,57 +196,6 @@ public class LinkHandler
     }
 
     /**
-     * Finds and updates the source nodes that are connected to either the node we are linking or
-     * node we are currently looking at.
-     */
-    private void updatePowerSources()
-    {
-        this.sourcePositions.clear();
-
-        Minecraft mc = Minecraft.getInstance();
-        if(mc.level == null)
-            return;
-
-        // Find source node block positions from the linking node
-        IElectricityNode linking = this.getLinkingNode(mc.level);
-        this.addSourceNodePositions(this.sourcePositions, this.getLinkingNode(mc.level));
-
-        // Find all sources starting from the target node
-        IElectricityNode target = this.getTargetNode();
-        if(linking != null && !linking.isSourceNode())
-        {
-            // When target is a source node, we only use that source's powerable zone
-            if(target != null && target.isSourceNode())
-            {
-                this.sourcePositions.clear();
-            }
-            if(this.sourcePositions.isEmpty())
-            {
-                this.addSourceNodePositions(this.sourcePositions, target);
-            }
-        }
-
-        // Finally try to find sources from target link if it only crosses the powerable zone
-        if(linking == null && target == null)
-        {
-            Connection connection = this.getTargetConnection();
-            if(connection != null && connection.isCrossingPowerableZone(mc.level))
-            {
-                IElectricityNode a = connection.getNodeA(mc.level);
-                IElectricityNode b = connection.getNodeB(mc.level);
-                if(a != null && b != null)
-                {
-                    Set<BlockPos> delta = Sets.symmetricDifference(a.getPowerSources(), b.getPowerSources());
-                    if(!delta.isEmpty())
-                    {
-                        this.sourcePositions.add(List.copyOf(delta).get(0));
-                    }
-                }
-            }
-        }
-    }
-
-    /**
      * Updates the state of the link currently being created. Performs a check to test if the link
      * is crossing the border of the powerable zone.
      *
@@ -275,6 +209,8 @@ public class LinkHandler
         if(mc.player == null || mc.level == null)
             return;
 
+        this.powerableArea.updatePowerSources(mc.level, this.createWrenchContext(mc.level));
+
         if(this.lastNodePos != null)
         {
             Vec3 start = Vec3.atCenterOf(this.lastNodePos);
@@ -282,16 +218,15 @@ public class LinkHandler
             this.linkLength = end.subtract(start).length();
         }
 
-        if(this.sourcePositions.isEmpty())
+        if(!this.powerableArea.exists())
         {
             this.linkInsideArea = true;
         }
         else if(this.lastNodePos != null)
         {
-            this.linkInsideArea = this.sourcePositions.stream().anyMatch(pos -> {
-                AABB box = ISourceNode.createPowerableZone(mc.level, pos);
-                return box.contains(this.lastNodePos.getCenter()) && box.contains(this.getLinkEnd(mc.player, partialTick));
-            });
+            Vec3 start = this.lastNodePos.getCenter();
+            Vec3 end = this.getLinkEnd(mc.player, partialTick);
+            this.linkInsideArea = this.powerableArea.containsLine(mc.level, start, end);
         }
         else if(this.result instanceof ConnectionHitResult hitResult)
         {
@@ -300,40 +235,17 @@ public class LinkHandler
             {
                 Vec3 start = connection.getPosA().getCenter();
                 Vec3 end = connection.getPosB().getCenter();
-                this.linkInsideArea = this.sourcePositions.stream().anyMatch(pos -> {
-                    AABB box = ISourceNode.createPowerableZone(mc.level, pos);
-                    return box.contains(start) && box.contains(end);
-                });
+                this.linkInsideArea = this.powerableArea.containsLine(mc.level, start, end);
             }
         }
     }
 
-    /**
-     * Searches the electricity network starting from the provided start node and finds all the
-     * source nodes that can provide power to the given start node. The block position of the source
-     * node is then added to the given positions set. A null start node can be provided, it will just
-     * simply not run anything.
-     *
-     * @param positions the set of currently found source node block positions
-     * @param start     the node to start the search or null
-     */
-    private void addSourceNodePositions(Set<BlockPos> positions, @Nullable IElectricityNode start)
+    private WrenchContext createWrenchContext(Level level)
     {
-        if(start == null)
-            return;
-
-        // If source node, add to positions and return. Sources don't need to search network
-        if(start.isSourceNode())
-        {
-            positions.add(start.getNodePosition());
-            return;
-        }
-
-        // Search network for all possible source nodes that can provide power to the start node
-        int searchLimit = Config.SERVER.electricity.maximumNodesInNetwork.get();
-        IElectricityNode.searchNodes(start, searchLimit, true, node -> !node.isSourceNode(), IElectricityNode::isSourceNode).forEach(node -> {
-            positions.add(node.getNodePosition());
-        });
+        IElectricityNode linkingNode = this.getLinkingNode(level);
+        IElectricityNode targetNode = this.getTargetNode();
+        Connection targetConnection = this.getTargetConnection();
+        return new WrenchContext(linkingNode, targetNode, targetConnection);
     }
 
     /**
@@ -388,11 +300,11 @@ public class LinkHandler
      */
     public void extractPowerableArea(PowerableAreaRenderState renderState, Vec3 camera)
     {
-        VoxelShape powerableAreaShape = this.getPowerableAreaShape();
-        if(powerableAreaShape == null)
+        VoxelShape areaShape = this.powerableArea.getPowerableAreaShape();
+        if(areaShape == null)
             return;
 
-        renderState.shape = powerableAreaShape;
+        renderState.shape = areaShape;
         renderState.alpha = 1.0F;
         renderState.invalid = !this.linkInsideArea;
 
@@ -541,43 +453,6 @@ public class LinkHandler
             }
         }
         return false;
-    }
-
-    /**
-     * @return The powerable area shape (or cached version), otherwise null if no powerable area.
-     */
-    @Nullable
-    private VoxelShape getPowerableAreaShape()
-    {
-        Minecraft mc = Minecraft.getInstance();
-        if(this.sourcePositions.isEmpty() || mc.level == null)
-            return null;
-
-        // Return cached shape if same as last positions
-        if(this.lastSourcePositions.equals(this.sourcePositions))
-            return this.cachedPowerableAreaShape;
-
-        // Creates the powerable area shape
-        this.sourcePositions.stream().map(pos -> {
-            return ISourceNode.createPowerableZone(mc.level, pos);
-        }).map(aabb -> {
-            VoxelShape shape1 = Shapes.create(aabb);
-            VoxelShape shape2 = Shapes.create(aabb.inflate(0.001));
-            return Pair.of(shape1, shape2);
-        }).reduce((p1, p2) -> {
-            VoxelShape shape1 = Shapes.joinUnoptimized(p1.first(), p2.first(), BooleanOp.OR);
-            VoxelShape shape2 = Shapes.joinUnoptimized(p1.second(), p2.second(), BooleanOp.OR);
-            return Pair.of(shape1, shape2);
-        }).map(pair -> {
-            return Shapes.joinUnoptimized(pair.first(), pair.second(), BooleanOp.ONLY_SECOND);
-        }).ifPresent(shape -> {
-            this.cachedPowerableAreaShape = shape;
-        });
-
-        // Finally remember the positions and return the shape
-        this.lastSourcePositions.clear();
-        this.lastSourcePositions.addAll(this.sourcePositions);
-        return this.cachedPowerableAreaShape;
     }
 
     /**

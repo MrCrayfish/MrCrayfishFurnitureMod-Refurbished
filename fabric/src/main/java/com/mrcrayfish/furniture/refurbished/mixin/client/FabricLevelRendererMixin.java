@@ -5,7 +5,7 @@ import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
 import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
 import com.mojang.blaze3d.resource.ResourceHandle;
-import com.mrcrayfish.furniture.refurbished.client.renderer.electricity.ElectricityRenderer;
+import com.mrcrayfish.furniture.refurbished.client.electricity.ElectricityRenderer;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.renderer.LevelRenderer;

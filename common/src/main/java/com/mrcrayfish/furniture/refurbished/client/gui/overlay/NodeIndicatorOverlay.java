@@ -2,7 +2,7 @@ package com.mrcrayfish.furniture.refurbished.client.gui.overlay;
 
 import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.Config;
-import com.mrcrayfish.furniture.refurbished.client.LinkHandler;
+import com.mrcrayfish.furniture.refurbished.client.electricity.LinkHandler;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.IconButton;
 import com.mrcrayfish.furniture.refurbished.electricity.Connection;
 import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;

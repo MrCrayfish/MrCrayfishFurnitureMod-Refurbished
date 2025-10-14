@@ -2,7 +2,7 @@ package com.mrcrayfish.furniture.refurbished.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.furniture.refurbished.Constants;
-import com.mrcrayfish.furniture.refurbished.client.renderer.electricity.ElectricityRenderer;
+import com.mrcrayfish.furniture.refurbished.client.electricity.ElectricityRenderer;
 import com.mrcrayfish.furniture.refurbished.core.ModRenderPipelines;
 import com.mrcrayfish.furniture.refurbished.image.TextureCache;
 import com.mrcrayfish.furniture.refurbished.util.Utils;

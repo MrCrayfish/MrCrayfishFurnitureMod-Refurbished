@@ -1,4 +1,4 @@
-package com.mrcrayfish.furniture.refurbished.client.renderer.electricity.state;
+package com.mrcrayfish.furniture.refurbished.client.electricity.state;
 
 import net.minecraft.world.phys.AABB;
 
