@@ -35,6 +35,8 @@ public interface IClientHelper
     @Nullable
     FluidSprites getFluidSprites(Fluid fluid, BlockAndTintGetter getter, BlockPos pos, FluidState state);
 
+    RenderType getElectricityRenderType();
+
     RenderType getTelevisionScreenRenderType(ResourceLocation id);
 
     RenderType createPaletteImageRenderType(ResourceLocation id);

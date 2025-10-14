@@ -20,7 +20,6 @@
         "client.ClientRecipeBookMixin",
         "client.CreativeModeInventoryScreenMixin",
         "client.GameRendererMixin",
-        "client.LevelRendererMixin",
         "client.AtlasManagerMixin",
         "client.ScreenAccessor"
     ],

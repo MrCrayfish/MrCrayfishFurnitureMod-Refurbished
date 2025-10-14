@@ -72,9 +72,6 @@ public class CeilingFanBlockEntityRenderer implements BlockEntityRenderer<Ceilin
         StandaloneModelRenderer.submitDraw(collector, model, poseStack, 1, 1, 1, renderState.lightCoords, OverlayTexture.NO_OVERLAY);
         poseStack.popPose();
 
-        // TODO 1.21.10 restore
-        //ElectricBlockEntityRenderer.drawNodeAndConnections(ceilingFan);
-
         // Draws the damage box when entity hitboxes are enabled
         if(Minecraft.getInstance().debugEntries.isCurrentlyEnabled(DebugScreenEntries.ENTITY_HITBOXES))
         {

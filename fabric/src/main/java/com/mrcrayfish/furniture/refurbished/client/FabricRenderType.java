@@ -2,15 +2,16 @@ package com.mrcrayfish.furniture.refurbished.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.furniture.refurbished.Constants;
+import com.mrcrayfish.furniture.refurbished.client.renderer.electricity.ElectricityRenderer;
 import com.mrcrayfish.furniture.refurbished.core.ModRenderPipelines;
 import com.mrcrayfish.furniture.refurbished.image.TextureCache;
+import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.TriState;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -20,6 +21,16 @@ import java.util.function.Function;
  */
 public class FabricRenderType
 {
+    public static final RenderStateShard.OutputStateShard ELECTRICITY_TARGET = new RenderStateShard.OutputStateShard(Constants.MOD_ID + "_electricity_target", () -> {
+        return ElectricityRenderer.get().getTextureTarget();
+    });
+
+    public static final RenderType ELECTRICITY = RenderType.create(Constants.MOD_ID + "_electricity", 0x200000, false, true, ModRenderPipelines.ELECTRICITY, RenderType.CompositeState.builder()
+            .setLightmapState(RenderType.LIGHTMAP)
+            .setOutputState(ELECTRICITY_TARGET)
+            .setTextureState(new RenderStateShard.TextureStateShard(Utils.resource("textures/misc/electricity_nodes.png"), false))
+            .createCompositeState(RenderType.OutlineProperty.NONE));
+
     private static final Function<ResourceLocation, RenderType> TELEVISION_SCREEN = Util.memoize((id) -> {
         return RenderType.create(Constants.MOD_ID + "_television_screen", 0x200000, false, false, RenderPipelines.SOLID, RenderType.CompositeState.builder()
                 .setLightmapState(RenderType.LIGHTMAP)

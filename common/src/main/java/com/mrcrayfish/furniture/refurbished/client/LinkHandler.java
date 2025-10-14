@@ -1,34 +1,22 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
 import com.google.common.collect.Sets;
-import com.mojang.blaze3d.buffers.GpuBuffer;
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.pipeline.RenderTarget;
-import com.mojang.blaze3d.systems.RenderPass;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.GpuTextureView;
-import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Axis;
 import com.mrcrayfish.framework.api.config.event.FrameworkConfigEvents;
 import com.mrcrayfish.furniture.refurbished.Config;
-import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.ElectricBlockEntityRenderer;
+import com.mrcrayfish.furniture.refurbished.client.renderer.electricity.ElectricityRenderer;
+import com.mrcrayfish.furniture.refurbished.client.renderer.electricity.state.ConnectionRenderState;
+import com.mrcrayfish.furniture.refurbished.client.renderer.electricity.state.ElectricityRenderState;
+import com.mrcrayfish.furniture.refurbished.client.renderer.electricity.state.LinkingConnectionRenderState;
+import com.mrcrayfish.furniture.refurbished.client.renderer.electricity.state.PowerableAreaRenderState;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
-import com.mrcrayfish.furniture.refurbished.core.ModRenderPipelines;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.electricity.*;
 import com.mrcrayfish.furniture.refurbished.item.WrenchItem;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageDeleteLink;
-import com.mrcrayfish.furniture.refurbished.util.Utils;
 import it.unimi.dsi.fastutil.Pair;
-import net.minecraft.Util;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
@@ -41,18 +29,18 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
-import org.joml.*;
+import org.joml.Intersectiond;
+import org.joml.Vector3d;
 
-import java.lang.Math;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Author: MrCrayfish
  */
 public class LinkHandler
 {
-    private static final ResourceLocation POWERABLE_AREA = Utils.resource("textures/misc/powerable_area.png");
-    private static final ResourceLocation UNPOWERABLE_AREA = Utils.resource("textures/misc/unpowerable_area.png");
     private static final int DEFAULT_LINK_COLOUR = 0xFFFFFFFF;
     private static final int SUCCESS_LINK_COLOUR = 0xFFB5FF4C;
     private static final int ERROR_LINK_COLOUR = 0xFFC33636;
@@ -117,11 +105,20 @@ public class LinkHandler
         return this.lastNodePos != null;
     }
 
-    public boolean isLinkInsidePowerableArea()
+    /**
+     *
+     * @return
+     */
+    public boolean isLinkOutsidePowerableArea()
     {
-        return this.linkInsideArea;
+        return !this.linkInsideArea;
     }
 
+    /**
+     *
+     * @param level
+     * @return
+     */
     @Nullable
     public IElectricityNode getLinkingNode(Level level)
     {
@@ -154,6 +151,10 @@ public class LinkHandler
      */
     public void beforeRender(float partialTick)
     {
+        if(!isHoldingWrench())
+        {
+            this.lastNodePos = null;
+        }
         this.updateHitResult(partialTick);
         this.updatePowerSources();
         this.updateLinkState(partialTick);
@@ -171,12 +172,11 @@ public class LinkHandler
         Minecraft mc = Minecraft.getInstance();
         if(mc.player != null && mc.level != null && mc.gameMode != null)
         {
-            // Only perform raycast when holding wrench
+            // Only perform ray cast when holding wrench
             if(mc.player.getMainHandItem().is(ModItems.WRENCH.get()))
             {
                 double range = mc.player.blockInteractionRange();
                 HitResult newResult = WrenchItem.performNodeRaycast(mc.level, mc.player, range, partialTick);
-                // If missed, try to raycast for links
                 if(newResult.getType() == HitResult.Type.MISS)
                 {
                     newResult = this.performLinkRaycast(mc.player, partialTick, range);
@@ -190,12 +190,20 @@ public class LinkHandler
         }
     }
 
+    /**
+     *
+     * @param oldResult
+     * @param newResult
+     * @param player
+     * @param level
+     */
     private void playHoverSound(@Nullable HitResult oldResult, @Nullable HitResult newResult, Player player, Level level)
     {
-        if((oldResult == null || !oldResult.equals(newResult)) && newResult instanceof LinkHitResult)
+        if(this.lastNodePos != null)
+            return;
+
+        if((oldResult == null || !oldResult.equals(newResult)) && newResult instanceof ConnectionHitResult)
         {
-            if(this.lastNodePos != null)
-                return;
             Vec3 pos = newResult.getLocation();
             float pitch = 1.0F + 0.05F * level.random.nextFloat();
             level.playSound(player, pos.x, pos.y, pos.z, ModSounds.ITEM_WRENCH_HOVER_LINK.get(), SoundSource.BLOCKS, 1.0F, pitch);
@@ -267,6 +275,13 @@ public class LinkHandler
         if(mc.player == null || mc.level == null)
             return;
 
+        if(this.lastNodePos != null)
+        {
+            Vec3 start = Vec3.atCenterOf(this.lastNodePos);
+            Vec3 end = this.getLinkEnd(mc.player, partialTick);
+            this.linkLength = end.subtract(start).length();
+        }
+
         if(this.sourcePositions.isEmpty())
         {
             this.linkInsideArea = true;
@@ -278,15 +293,18 @@ public class LinkHandler
                 return box.contains(this.lastNodePos.getCenter()) && box.contains(this.getLinkEnd(mc.player, partialTick));
             });
         }
-        else if(this.result instanceof LinkHitResult hitResult)
+        else if(this.result instanceof ConnectionHitResult hitResult)
         {
             Connection connection = hitResult.getConnection();
-            Vec3 start = connection.getPosA().getCenter();
-            Vec3 end = connection.getPosB().getCenter();
-            this.linkInsideArea = this.sourcePositions.stream().anyMatch(pos -> {
-                AABB box = ISourceNode.createPowerableZone(mc.level, pos);
-                return box.contains(start) && box.contains(end);
-            });
+            if(connection != null)
+            {
+                Vec3 start = connection.getPosA().getCenter();
+                Vec3 end = connection.getPosB().getCenter();
+                this.linkInsideArea = this.sourcePositions.stream().anyMatch(pos -> {
+                    AABB box = ISourceNode.createPowerableZone(mc.level, pos);
+                    return box.contains(start) && box.contains(end);
+                });
+            }
         }
     }
 
@@ -344,61 +362,49 @@ public class LinkHandler
     @Nullable
     public Connection getTargetConnection()
     {
-        return this.result instanceof LinkHitResult linkResult ? linkResult.getConnection() : null;
+        return this.result instanceof ConnectionHitResult linkResult ? linkResult.getConnection() : null;
     }
 
     /**
-     * Draws the current link. A link is created when a player is using the wrench and has only
-     * partially created a connection, in other words, has selected the first node only. A line will
-     * be drawn from the first selected node to a target position. After the connection is made, the
-     * link will not be drawn.
      *
-     * @param player      the player rendering the link
-     * @param poseStack   the current pose stack
+     * @param renderState
      */
-    public void render(Player player, PoseStack poseStack, DeltaTracker tracker)
+    public void extractLinkingConnection(ElectricityRenderState renderState)
     {
-        if(!player.isAlive() || !isHoldingWrench())
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.player != null && mc.player.getMainHandItem().is(ModItems.WRENCH.get()) && this.lastNodePos != null)
         {
-            this.lastNodePos = null;
-        }
-
-        this.renderPowerableArea(poseStack, player, tracker.getGameTimeDeltaPartialTick(true));
-
-        if(this.lastNodePos != null)
-        {
-            this.renderUnfinishedLink(player, tracker);
+            LinkingConnectionRenderState state = new LinkingConnectionRenderState();
+            state.start = Vec3.atCenterOf(this.lastNodePos);
+            state.end = this.getLinkEnd(mc.player, mc.getDeltaTracker().getGameTimeDeltaPartialTick(false));
+            state.colour = this.getLinkColour(mc.player.level());
+            renderState.link = state;
         }
     }
 
     /**
-     * Draws an electricity link from the selected nodes to where the player is currently looking at.
      *
-     * @param player the player that is connecting the link
-     * @param tracker the delta tracker instance
+     * @param renderState
      */
-    private void renderUnfinishedLink(Player player, DeltaTracker tracker)
+    public void extractPowerableArea(PowerableAreaRenderState renderState, Vec3 camera)
     {
-        DeferredElectricRenderer renderer = DeferredElectricRenderer.get();
-        renderer.deferDraw((pose, consumer) -> {
-            if(this.lastNodePos == null)
-                return;
-            Vec3 start = Vec3.atCenterOf(this.lastNodePos);
-            Vec3 end = this.getLinkEnd(player, tracker.getGameTimeDeltaPartialTick(true));
-            Vec3 delta = end.subtract(start);
-            this.linkLength = delta.length();
-            double yaw = Math.atan2(-delta.z, delta.x) + Math.PI;
-            double pitch = Math.atan2(delta.horizontalDistance(), delta.y) + Mth.HALF_PI;
-            pose.pushPose();
-            pose.translate(start.x, start.y, start.z);
-            pose.mulPose(Axis.YP.rotation((float) yaw));
-            pose.mulPose(Axis.ZP.rotation((float) pitch));
-            int color = this.getLinkColour(player.level());
-            Matrix4f matrix = pose.last().pose();
-            renderer.drawColouredBox(matrix, consumer, new AABB(0, -0.03125, -0.03125, delta.length(), 0.03125, 0.03125), color, 0.8F);
-            renderer.drawColouredBox(matrix, consumer, new AABB(0, -0.03125, -0.03125, delta.length(), 0.03125, 0.03125).inflate(0.03125), color, 0.6F);
-            pose.popPose();
-        });
+        VoxelShape powerableAreaShape = this.getPowerableAreaShape();
+        if(powerableAreaShape == null)
+            return;
+
+        renderState.shape = powerableAreaShape;
+        renderState.alpha = 1.0F;
+        renderState.invalid = !this.linkInsideArea;
+
+        if(this.linkInsideArea)
+        {
+            double nearDistanceSqr = NEAR_DISTANCE * NEAR_DISTANCE;
+            renderState.alpha = renderState.shape.closestPointTo(camera)
+                .map(vec -> vec.distanceToSqr(camera))
+                .map(val -> 1.0F - (float) Mth.clamp(val / nearDistanceSqr, 0, 1))
+                .orElse(0F);
+            renderState.alpha = 1.0F - (float) Math.pow(1.0F - renderState.alpha, 5);
+        }
     }
 
     /**
@@ -487,26 +493,32 @@ public class LinkHandler
     private HitResult performLinkRaycast(Player player, float partialTick, double range)
     {
         double closestDistance = Double.POSITIVE_INFINITY;
-        Connection closestConnection = null;
+        ConnectionRenderState closestConnection = null;
         Vec3 hit = Vec3.ZERO;
-        Set<Connection> connections = ElectricBlockEntityRenderer.getDrawnConnections();
-        for(Connection connection : connections)
+
+        // Hacky but we can just use the current render states
+        ElectricityRenderState renderState = ElectricityRenderer.get().getRenderState();
+        for(ConnectionRenderState connectionRenderState : renderState.connections)
         {
             Vec3 rayStart = player.getEyePosition(partialTick);
             Vec3 rayEnd = rayStart.add(player.getViewVector(partialTick).normalize().scale(range));
-            Vec3 linkStart = connection.getPosA().getCenter();
-            Vec3 linkEnd = connection.getPosB().getCenter();
+            Vec3 linkStart = connectionRenderState.a().getCenter();
+            Vec3 linkEnd = connectionRenderState.b().getCenter();
             Vector3d result =  new Vector3d();
             double squareDistance = Intersectiond.findClosestPointsLineSegments(rayStart.x, rayStart.y, rayStart.z, rayEnd.x, rayEnd.y, rayEnd.z, linkStart.x, linkStart.y, linkStart.z, linkEnd.x, linkEnd.y, linkEnd.z, new Vector3d(), result);
             double distance = Math.sqrt(squareDistance);
             if(distance < 0.1 && distance < closestDistance)
             {
                 closestDistance = distance;
-                closestConnection = connection;
+                closestConnection = connectionRenderState;
                 hit = new Vec3(result.x, result.y, result.z);
             }
         }
-        return new LinkHitResult(hit, closestConnection);
+        if(closestConnection != null)
+        {
+            return new ConnectionHitResult(hit, Connection.of(closestConnection.a(), closestConnection.b()));
+        }
+        return new ConnectionHitResult(hit, null);
     }
 
     /**
@@ -517,7 +529,7 @@ public class LinkHandler
      */
     public boolean onWrenchLeftClick(Level level)
     {
-        if(!this.isLinking() && this.result instanceof LinkHitResult linkResult)
+        if(!this.isLinking() && this.result instanceof ConnectionHitResult linkResult)
         {
             Connection connection = linkResult.getConnection();
             if(connection != null)
@@ -569,134 +581,11 @@ public class LinkHandler
     }
 
     /**
-     * Draws the current powerable area into the level
-     */
-    private void renderPowerableArea(PoseStack poseStack, Player player, float partialTick)
-    {
-        VoxelShape areaShape = this.getPowerableAreaShape();
-        if(areaShape == null)
-            return;
-
-        // Calculate the alpha colour of the powerable zone border
-        Vec3 eyePos = player.getEyePosition(partialTick);
-        double nearDistanceSqr = NEAR_DISTANCE * NEAR_DISTANCE;
-        float areaAlpha = !this.linkInsideArea ? 1.0F : areaShape.closestPointTo(eyePos)
-            .map(vec -> vec.distanceToSqr(eyePos))
-            .map(val -> 1.0F - (float) Mth.clamp(val / nearDistanceSqr, 0, 1))
-            .orElse(0F);
-
-        // Don't render powerable area if alpha is zero
-        if(areaAlpha <= 0)
-            return;
-
-        // Apply an easing function to make it appear quicker at the start
-        areaAlpha = 1.0F - (float) Math.pow(1.0F - areaAlpha, 5);
-
-        // Draw the powerable zone border
-        boolean shaders = DeferredElectricRenderer.get().isIrisShadersEnabled();
-        RenderPipeline pipeline = shaders ? RenderPipelines.WORLD_BORDER : ModRenderPipelines.POWERABLE_AREA;
-        try(ByteBufferBuilder quadBuilder = new ByteBufferBuilder(pipeline.getVertexFormat().getVertexSize() * 4))
-        {
-            BufferBuilder vertexBuilder = new BufferBuilder(quadBuilder, pipeline.getVertexFormatMode(), pipeline.getVertexFormat());
-            areaShape.toAabbs().forEach(box -> this.drawTexturedBox(poseStack, vertexBuilder, box));
-            try(MeshData data = vertexBuilder.build())
-            {
-                if(data != null)
-                {
-                    RenderTarget mainTarget = Minecraft.getInstance().getMainRenderTarget();
-                    GpuTextureView mainColor = mainTarget.getColorTextureView();
-                    GpuTextureView mainDepth = mainTarget.getDepthTextureView();
-
-                    GpuBufferSlice slice = RenderSystem.getDynamicUniforms().writeTransform(RenderSystem.getModelViewMatrix(), new Vector4f(1.0F, 1.0F, 1.0F, 0.6F * areaAlpha), new Vector3f(), new Matrix4f(), 0.0F);
-                    RenderSystem.AutoStorageIndexBuffer autoIndexBuffer = RenderSystem.getSequentialBuffer(pipeline.getVertexFormatMode());
-                    VertexFormat.IndexType indexType = autoIndexBuffer.type();
-                    GpuBuffer indexBuffer = autoIndexBuffer.getBuffer(data.drawState().indexCount());
-
-                    GpuBuffer vertexBuffer = RenderSystem.getDevice().createBuffer(() -> "Powerable Area", GpuBuffer.USAGE_VERTEX | GpuBuffer.USAGE_COPY_DST, data.vertexBuffer().remaining());
-                    RenderSystem.getDevice().createCommandEncoder().writeToBuffer(vertexBuffer.slice(), data.vertexBuffer());
-
-                    AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(this.linkInsideArea ? POWERABLE_AREA : UNPOWERABLE_AREA);
-
-                    try(RenderPass pass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "SUM SUM", mainColor, OptionalInt.empty(), mainDepth, OptionalDouble.empty()))
-                    {
-                        RenderSystem.bindDefaultUniforms(pass);
-                        pass.setPipeline(pipeline);
-                        pass.setVertexBuffer(0, vertexBuffer);
-                        pass.setUniform("DynamicTransforms", slice);
-                        pass.setIndexBuffer(indexBuffer, indexType);
-                        pass.bindSampler("Sampler0", texture.getTextureView());
-                        pass.drawIndexed(0, 0, data.drawState().indexCount(), 1);
-                    }
-
-                    //RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-                }
-            }
-        }
-    }
-
-    /**
-     * Draws a texture box from an AABB. The position of the box is determined by the AABB.
-     *
-     * @param poseStack the current pose stack
-     * @param consumer  the vertex consumer to accept the data. Must be VERTEX and UV only
-     * @param box       the AABB box to draw
-     */
-    private void drawTexturedBox(PoseStack poseStack, VertexConsumer consumer, AABB box)
-    {
-        Matrix4f matrix = poseStack.last().pose();
-        float offset = Util.getMillis() * 0.001F;
-        float width = (float) (box.maxX - box.minX);
-        float height = (float) (box.maxY - box.minY);
-        if(width > 0.01)
-        {
-            // North
-            consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).setUv(0, height + offset);
-            consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).setUv(width, height + offset);
-            consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).setUv(width, offset);
-            consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).setUv(0, offset);
-            // South
-            consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).setUv(0, height + offset);
-            consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).setUv(width, height + offset);
-            consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).setUv(width, offset);
-            consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).setUv(0, offset);
-        }
-        width = (float) (box.maxZ - box.minZ);
-        if(width > 0.01)
-        {
-            // West
-            consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).setUv(0, height + offset);
-            consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).setUv(width, height + offset);
-            consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).setUv(width, offset);
-            consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).setUv(0, offset);
-            // East
-            consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).setUv(0, height + offset);
-            consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).setUv(width, height + offset);
-            consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).setUv(width, offset);
-            consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).setUv(0, offset);
-        }
-        width = (float) (box.maxX - box.minX);
-        height = (float) (box.maxZ - box.minZ);
-        if(width > 0.01)
-        {
-            // Up
-            consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).setUv(height, width + offset);
-            consumer.addVertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).setUv(height, offset);
-            consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).setUv(0, offset);
-            consumer.addVertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).setUv(0, width + offset);
-            // Down
-            consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).setUv(0, height + offset);
-            consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).setUv(width, height + offset);
-            consumer.addVertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).setUv(width, offset);
-            consumer.addVertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).setUv(0, offset);
-        }
-    }
-
-    /**
      * @return True if the player is currently holding the Wrench item. Client only
      */
     public static boolean isHoldingWrench()
     {
         Minecraft mc = Minecraft.getInstance();
-        return mc.player != null && mc.player.getMainHandItem().is(ModItems.WRENCH.get());
+        return mc.player != null && mc.player.isAlive() && mc.player.getMainHandItem().is(ModItems.WRENCH.get());
     }
 }

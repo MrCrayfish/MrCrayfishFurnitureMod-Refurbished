@@ -12,10 +12,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Class to handle creating links between electric nodes
@@ -51,6 +48,9 @@ public class LinkManager
      */
     public void onNodeInteract(Level level, Player player, IElectricityNode node)
     {
+        if(!node.isNodeValid())
+            return;
+
         // Prevent interaction if reached connection limit
         if(node.isNodeConnectionLimitReached())
             return;

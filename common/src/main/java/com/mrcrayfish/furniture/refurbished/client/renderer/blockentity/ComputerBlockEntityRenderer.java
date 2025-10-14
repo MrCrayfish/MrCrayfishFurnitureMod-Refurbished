@@ -42,7 +42,6 @@ public class ComputerBlockEntityRenderer implements BlockEntityRenderer<Computer
     @Override
     public void submit(ComputerRenderState renderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState)
     {
-        // TODO 1.21.10 restore
-        //ElectricBlockEntityRenderer.drawNodeAndConnections(computer);
+
     }
 }

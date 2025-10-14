@@ -12,7 +12,6 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
@@ -67,7 +66,7 @@ public class NodeIndicatorOverlay implements IHudOverlay
 
                 if(handler.canLinkToNode(mc.level, target))
                 {
-                    if(!handler.isLinkInsidePowerableArea())
+                    if(handler.isLinkOutsidePowerableArea())
                     {
                         this.drawLabel(mc, graphics, Components.GUI_LINK_UNPOWERABLE, 30, 0);
                         return;
@@ -79,7 +78,7 @@ public class NodeIndicatorOverlay implements IHudOverlay
                 }
             }
 
-            if(!handler.isLinkInsidePowerableArea())
+            if(handler.isLinkOutsidePowerableArea())
             {
                 this.drawLabel(mc, graphics, Components.GUI_LINK_OUTSIDE_AREA, 40, 0);
                 return;

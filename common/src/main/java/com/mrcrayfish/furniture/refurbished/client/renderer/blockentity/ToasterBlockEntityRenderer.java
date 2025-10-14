@@ -65,9 +65,6 @@ public class ToasterBlockEntityRenderer implements BlockEntityRenderer<ToasterBl
         this.drawItem(renderState.items[0], renderState, 1, stack, collector);
         this.drawItem(renderState.items[1], renderState, -1, stack, collector);
         stack.popPose();
-
-        // TODO 1.21.10 restore
-        //ElectricBlockEntityRenderer.drawNodeAndConnections(toaster);
     }
 
     private void drawItem(@Nullable ItemStackRenderState itemState, ToasterRenderState renderState, int offset, PoseStack poseStack, SubmitNodeCollector collector)

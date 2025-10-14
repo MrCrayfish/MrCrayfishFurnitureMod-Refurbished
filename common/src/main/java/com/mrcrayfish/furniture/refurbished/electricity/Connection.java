@@ -1,15 +1,15 @@
 package com.mrcrayfish.furniture.refurbished.electricity;
 
-import com.google.common.base.Objects;
 import com.google.common.collect.Sets;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-
 import org.jetbrains.annotations.Nullable;
+
 import java.lang.ref.WeakReference;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -17,15 +17,20 @@ import java.util.Set;
  */
 public class Connection
 {
-    // TODO Migrate to a relative system instead of absolute
+    private static final int DEFAULT_COLOUR = 0xFFFFFFFF;
+    private static final int POWERED_COLOUR = 0xFFFFDA4C;
+    private static final int CROSSING_ZONE_COLOUR = 0xFFC33636;
+
     private final Node a;
     private final Node b;
-    private Integer hash;
 
+    // TODO Migrate to a relative system instead of absolute
     private Connection(BlockPos a, BlockPos b)
     {
-        this.a = new Node(a);
-        this.b = new Node(b);
+        // Ensures connections equal even if the params are switched
+        int c = a.compareTo(b);
+        this.a = new Node(c > 0 ? a : b);
+        this.b = new Node(c > 0 ? b : a);
     }
 
     /**
@@ -153,54 +158,48 @@ public class Connection
         return null;
     }
 
-    @Override
-    public boolean equals(Object o)
+    @Nullable
+    public BlockPos getOtherPos(BlockPos pos)
     {
-        if(this == o) return true;
-        if(o == null || getClass() != o.getClass()) return false;
-        Connection other = (Connection) o;
-        if(this.getMinPos().equals(other.getMinPos()))
+        if(this.a.pos.equals(pos))
         {
-            return this.getMaxPos().equals(other.getMaxPos());
+            return this.b.pos;
         }
-        return false;
+        else if(this.b.pos.equals(pos))
+        {
+            return this.a.pos;
+        }
+        return null;
+    }
+
+    public int getColour(Level level)
+    {
+        if(this.isCrossingPowerableZone(level))
+        {
+            return CROSSING_ZONE_COLOUR;
+        }
+        if(this.isPowered(level))
+        {
+            return POWERED_COLOUR;
+        }
+        return DEFAULT_COLOUR;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if(this == obj) return true;
+        if(obj == null || this.getClass() != obj.getClass()) return false;
+        Connection other = (Connection) obj;
+        return this.a.equals(other.a) && this.b.equals(other.b);
     }
 
     @Override
     public int hashCode()
     {
-        this.calculateHash();
-        return this.hash;
-    }
-
-    /**
-     * Calculates the hash for this connection. The calculated hash will be exactly the same even if
-     * the connection nodes are switched.
-     */
-    private void calculateHash()
-    {
-        if(this.hash == null)
-        {
-            this.hash = Objects.hashCode(this.getMinPos(), this.getMaxPos());
-        }
-    }
-
-    /**
-     * @return The minimum block position in the connection
-     */
-    private BlockPos getMinPos()
-    {
-        int c = this.a.pos.compareTo(this.b.pos);
-        return c > 0 ? this.a.pos : this.b.pos;
-    }
-
-    /**
-     * @return The maximum block position in the connection
-     */
-    private BlockPos getMaxPos()
-    {
-        int c = this.a.pos.compareTo(this.b.pos);
-        return c > 0 ? this.b.pos : this.a.pos;
+        int result = this.a.hashCode();
+        result = 31 * result + this.b.hashCode();
+        return result;
     }
 
     /**
@@ -234,7 +233,7 @@ public class Connection
          * @param level the level where the connection exists
          * @return True if the connection node status is active or undetermined
          */
-        public boolean isValid(Level level)
+        private boolean isValid(Level level)
         {
             this.updateStatus(level);
             return this.status.valid;
@@ -247,7 +246,7 @@ public class Connection
          * @return An electricity node instance or null if invalid/undetermined status
          */
         @Nullable
-        public IElectricityNode getElectricNode(Level level)
+        private IElectricityNode getElectricNode(Level level)
         {
             this.updateStatus(level);
             return this.ref.get();
@@ -288,6 +287,20 @@ public class Connection
                 this.ref.clear();
                 this.status = Status.UNDETERMINED;
             }
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if(obj == null || this.getClass() != obj.getClass()) return false;
+            Node other = (Node) obj;
+            return this.pos.equals(other.pos);
+        }
+
+        @Override
+        public int hashCode()
+        {
+            return this.pos.hashCode();
         }
 
         public enum Status

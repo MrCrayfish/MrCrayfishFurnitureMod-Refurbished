@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.client;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.client.registration.ParticleProviderRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
+import com.mrcrayfish.furniture.refurbished.client.renderer.electricity.ElectricityRenderer;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -80,7 +81,7 @@ public class ClientFurnitureMod
     @SubscribeEvent
     private static void onRegisterListeners(AddClientReloadListenersEvent event)
     {
-        event.addListener(DeferredElectricRenderer.ID, DeferredElectricRenderer.get());
+        event.addListener(ElectricityRenderer.ID, ElectricityRenderer.get());
     }
 
     /*@SubscribeEvent

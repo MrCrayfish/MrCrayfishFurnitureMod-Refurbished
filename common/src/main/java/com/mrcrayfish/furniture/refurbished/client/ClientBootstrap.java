@@ -55,7 +55,6 @@ public class ClientBootstrap
         });
         FrameworkClientTickEvents.START_RENDER.register(tracker -> {
             LinkHandler.get().beforeRender(tracker.getGameTimeDeltaPartialTick(true));
-            ElectricBlockEntityRenderer.clearDrawn();
         });
         FrameworkClientConnectionEvents.LOGGING_OUT.register(connection -> {
             AudioManager.get().resetSounds();

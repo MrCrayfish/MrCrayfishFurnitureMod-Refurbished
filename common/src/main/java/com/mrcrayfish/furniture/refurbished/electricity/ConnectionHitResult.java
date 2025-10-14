@@ -9,11 +9,11 @@ import java.util.Objects;
 /**
  * Author: MrCrayfish
  */
-public class LinkHitResult extends HitResult
+public class ConnectionHitResult extends HitResult
 {
     private final Connection connection;
 
-    public LinkHitResult(Vec3 hit, @Nullable Connection connection)
+    public ConnectionHitResult(Vec3 hit, @Nullable Connection connection)
     {
         super(hit);
         this.connection = connection;
@@ -22,6 +22,7 @@ public class LinkHitResult extends HitResult
     /**
      * @return The connection (link) that was hit or null is missed
      */
+    @Nullable
     public Connection getConnection()
     {
         return this.connection;
@@ -38,7 +39,7 @@ public class LinkHitResult extends HitResult
     {
         if(this == o) return true;
         if(o == null || getClass() != o.getClass()) return false;
-        LinkHitResult that = (LinkHitResult) o;
+        ConnectionHitResult that = (ConnectionHitResult) o;
         return Objects.equals(this.connection, that.connection);
     }
 

@@ -79,8 +79,5 @@ public class TelevisionBlockEntityRenderer implements BlockEntityRenderer<Televi
             });
             stack.popPose();
         }
-
-        // TODO 1.21.10 restore
-        //ElectricBlockEntityRenderer.drawNodeAndConnections(television);
     }
 }

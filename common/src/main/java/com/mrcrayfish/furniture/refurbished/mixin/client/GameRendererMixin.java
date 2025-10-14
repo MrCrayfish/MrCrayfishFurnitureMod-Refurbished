@@ -1,6 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.mixin.client;
 
-import com.mrcrayfish.furniture.refurbished.client.DeferredElectricRenderer;
+import com.mrcrayfish.furniture.refurbished.client.renderer.electricity.ElectricityRenderer;
 import net.minecraft.client.renderer.GameRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,6 +13,6 @@ public class GameRendererMixin
     @Inject(method = "resize", at = @At(value = "TAIL"))
     private void refurbishedFurnitureOnResize(int width, int height, CallbackInfo ci)
     {
-        DeferredElectricRenderer.get().resize(width, height);
+        ElectricityRenderer.get().resize(width, height);
     }
 }

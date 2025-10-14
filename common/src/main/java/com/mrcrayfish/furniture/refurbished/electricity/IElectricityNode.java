@@ -193,7 +193,12 @@ public interface IElectricityNode
     {
         Set<Connection> connections = this.getNodeConnections();
         ValueOutput.TypedOutputList<Long> nodes = output.list("Connections", Codec.LONG);
-        connections.stream().map(Connection::getPosB).map(BlockPos::asLong).mapToLong(Long::longValue).forEach(nodes::add);
+        connections.stream()
+            .map(c -> c.getOtherPos(this.getNodePosition()))
+            .filter(Objects::nonNull)
+            .map(BlockPos::asLong)
+            .mapToLong(Long::longValue)
+            .forEach(nodes::add);
         output.putLong("NodePos", this.getNodePosition().asLong());
     }
 
@@ -383,7 +388,7 @@ public interface IElectricityNode
             IElectricityNode node = queue.poll();
             for(Connection connection : node.getNodeConnections())
             {
-                IElectricityNode other = connection.getNodeB(node.getNodeLevel());
+                IElectricityNode other = connection.getOtherNode(node);
                 if(other == null || found.contains(other))
                     continue;
 

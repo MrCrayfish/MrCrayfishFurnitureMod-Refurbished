@@ -40,6 +40,7 @@ public class ModRenderPipelines
             .withFragmentShader("core/rendertype_world_border")
             .withSampler("Sampler0")
             .withBlend(BlendFunction.OVERLAY)
+            .withCull(false)
             .withVertexFormat(DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS)
             .withDepthBias(-3.0F, -3.0F)
             .build();
