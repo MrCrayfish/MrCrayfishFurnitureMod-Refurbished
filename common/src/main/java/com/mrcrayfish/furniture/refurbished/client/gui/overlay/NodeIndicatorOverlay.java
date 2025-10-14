@@ -2,7 +2,7 @@ package com.mrcrayfish.furniture.refurbished.client.gui.overlay;
 
 import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.Config;
-import com.mrcrayfish.furniture.refurbished.client.electricity.LinkHandler;
+import com.mrcrayfish.furniture.refurbished.client.electricity.WrenchHandler;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.IconButton;
 import com.mrcrayfish.furniture.refurbished.electricity.Connection;
 import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
@@ -31,7 +31,7 @@ public class NodeIndicatorOverlay implements IHudOverlay
         if(mc.player == null)
             return;
 
-        LinkHandler handler = LinkHandler.get();
+        WrenchHandler handler = WrenchHandler.get();
         IElectricityNode target = handler.getTargetNode();
         if(handler.isLinking())
         {
@@ -101,7 +101,7 @@ public class NodeIndicatorOverlay implements IHudOverlay
             }
         }
 
-        if(!LinkHandler.isHoldingWrench() && mc.hitResult instanceof BlockHitResult result)
+        if(!WrenchHandler.isHoldingWrench() && mc.hitResult instanceof BlockHitResult result)
         {
             BlockEntity entity = mc.level.getBlockEntity(result.getBlockPos());
             if(entity instanceof IElectricityNode node1 && !node1.isNodeInPowerableNetwork())

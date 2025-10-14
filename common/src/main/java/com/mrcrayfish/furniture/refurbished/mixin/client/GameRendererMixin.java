@@ -1,7 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.mixin.client;
 
 import com.mrcrayfish.furniture.refurbished.client.electricity.ElectricityRenderer;
-import com.mrcrayfish.furniture.refurbished.client.electricity.LinkHandler;
+import com.mrcrayfish.furniture.refurbished.client.electricity.WrenchHandler;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.renderer.GameRenderer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,7 +15,7 @@ public class GameRendererMixin
     @Inject(method = "renderLevel", at = @At(value = "HEAD"))
     private void refurbishedFurnitureRenderLevelHead(DeltaTracker deltaTracker, CallbackInfo ci)
     {
-        LinkHandler.get().beforeRender(deltaTracker.getGameTimeDeltaPartialTick(true));
+        WrenchHandler.get().beforeRender(deltaTracker.getGameTimeDeltaPartialTick(true));
     }
 
     @Inject(method = "resize", at = @At(value = "TAIL"))

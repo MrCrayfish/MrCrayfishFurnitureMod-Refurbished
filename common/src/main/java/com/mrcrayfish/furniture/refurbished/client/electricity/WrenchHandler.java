@@ -29,20 +29,20 @@ import org.joml.Vector3d;
 /**
  * Author: MrCrayfish
  */
-public class LinkHandler
+public class WrenchHandler
 {
     private static final int DEFAULT_LINK_COLOUR = 0xFFFFFFFF;
     private static final int SUCCESS_LINK_COLOUR = 0xFFB5FF4C;
     private static final int ERROR_LINK_COLOUR = 0xFFC33636;
     private static final double NEAR_DISTANCE = 10.0;
 
-    private static LinkHandler instance;
+    private static WrenchHandler instance;
 
-    public static LinkHandler get()
+    public static WrenchHandler get()
     {
         if(instance == null)
         {
-            instance = new LinkHandler();
+            instance = new WrenchHandler();
         }
         return instance;
     }
@@ -53,7 +53,7 @@ public class LinkHandler
     private double linkLength;
     private boolean linkInsideArea;
 
-    private LinkHandler()
+    private WrenchHandler()
     {
         // On changes to server the config, clear zone shape cache
         FrameworkConfigEvents.RELOAD.register(object -> {

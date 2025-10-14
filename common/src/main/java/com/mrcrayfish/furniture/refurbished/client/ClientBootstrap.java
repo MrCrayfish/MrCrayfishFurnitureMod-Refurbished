@@ -6,7 +6,6 @@ import com.mrcrayfish.framework.api.event.client.FrameworkClientConnectionEvents
 import com.mrcrayfish.framework.api.event.client.FrameworkClientTickEvents;
 import com.mrcrayfish.furniture.refurbished.block.StoveBlock;
 import com.mrcrayfish.furniture.refurbished.client.audio.AudioManager;
-import com.mrcrayfish.furniture.refurbished.client.electricity.LinkHandler;
 import com.mrcrayfish.furniture.refurbished.client.gui.overlay.CuttingBoardHelperOverlay;
 import com.mrcrayfish.furniture.refurbished.client.gui.overlay.NodeIndicatorOverlay;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.*;

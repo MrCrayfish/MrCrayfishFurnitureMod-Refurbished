@@ -183,9 +183,9 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
     {
         this.renderState.reset();
 
-        if(LinkHandler.isHoldingWrench())
+        if(WrenchHandler.isHoldingWrench())
         {
-            LinkHandler handler = LinkHandler.get();
+            WrenchHandler handler = WrenchHandler.get();
             handler.extractLinkingConnection(this.renderState);
 
             this.forEachVisibleElectricityNode(node -> {
@@ -367,7 +367,7 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
     public void renderPowerableArea(Vec3 camera)
     {
         PowerableAreaRenderState renderState = new PowerableAreaRenderState();
-        LinkHandler handler = LinkHandler.get();
+        WrenchHandler handler = WrenchHandler.get();
         handler.extractPowerableArea(renderState, camera);
         if(renderState.shape == null || renderState.alpha <= 0)
             return;

@@ -9,7 +9,7 @@ import com.mrcrayfish.furniture.refurbished.blockentity.fluid.FluidContainer;
 import com.mrcrayfish.furniture.refurbished.blockentity.fluid.IFluidContainerBlock;
 import com.mrcrayfish.furniture.refurbished.client.ClientComputer;
 import com.mrcrayfish.furniture.refurbished.client.FurnitureScreens;
-import com.mrcrayfish.furniture.refurbished.client.electricity.LinkHandler;
+import com.mrcrayfish.furniture.refurbished.client.electricity.WrenchHandler;
 import com.mrcrayfish.furniture.refurbished.client.ToolAnimationRenderer;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.PostBoxScreen;
 import com.mrcrayfish.furniture.refurbished.client.gui.toast.ItemToast;
@@ -90,7 +90,7 @@ public class ClientPlayHandler
 
     public static void handleMessageSyncLink(MessageSyncLink message)
     {
-        LinkHandler.get().setLinkingNode(message.pos());
+        WrenchHandler.get().setLinkingNode(message.pos());
     }
 
     public static void handleMessageTelevisionChannel(MessageTelevisionChannel message)

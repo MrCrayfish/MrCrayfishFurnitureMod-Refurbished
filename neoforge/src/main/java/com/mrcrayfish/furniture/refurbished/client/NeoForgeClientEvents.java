@@ -2,7 +2,7 @@ package com.mrcrayfish.furniture.refurbished.client;
 
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.client.electricity.ElectricityRenderer;
-import com.mrcrayfish.furniture.refurbished.client.electricity.LinkHandler;
+import com.mrcrayfish.furniture.refurbished.client.electricity.WrenchHandler;
 import com.mrcrayfish.furniture.refurbished.compat.jei.SyncedRecipes;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
@@ -29,7 +29,7 @@ public class NeoForgeClientEvents
         {
             if(mc.player.getMainHandItem().is(ModItems.WRENCH.get()))
             {
-                if(LinkHandler.get().onWrenchLeftClick(mc.level))
+                if(WrenchHandler.get().onWrenchLeftClick(mc.level))
                 {
                     event.setCanceled(true);
                 }

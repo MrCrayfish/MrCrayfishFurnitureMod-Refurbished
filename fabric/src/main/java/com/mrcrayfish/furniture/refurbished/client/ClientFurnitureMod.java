@@ -1,7 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
 import com.mrcrayfish.furniture.refurbished.FurnitureMod;
-import com.mrcrayfish.furniture.refurbished.client.electricity.LinkHandler;
+import com.mrcrayfish.furniture.refurbished.client.electricity.WrenchHandler;
 import com.mrcrayfish.furniture.refurbished.client.registration.ParticleProviderRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
 import com.mrcrayfish.furniture.refurbished.client.electricity.ElectricityRenderer;
@@ -78,7 +78,7 @@ public class ClientFurnitureMod implements ClientModInitializer
             Minecraft mc = Minecraft.getInstance();
             if(mc.player != null && mc.level != null) {
                 if(mc.player.getMainHandItem().is(ModItems.WRENCH.get())) {
-                    return LinkHandler.get().onWrenchLeftClick(mc.level);
+                    return WrenchHandler.get().onWrenchLeftClick(mc.level);
                 }
             }
             return false;

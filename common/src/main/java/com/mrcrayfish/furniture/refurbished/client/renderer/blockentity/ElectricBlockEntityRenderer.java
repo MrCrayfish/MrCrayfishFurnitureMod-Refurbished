@@ -2,7 +2,7 @@ package com.mrcrayfish.furniture.refurbished.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.Config;
-import com.mrcrayfish.furniture.refurbished.client.electricity.LinkHandler;
+import com.mrcrayfish.furniture.refurbished.client.electricity.WrenchHandler;
 import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -32,7 +32,7 @@ public class ElectricBlockEntityRenderer<T extends BlockEntity & IElectricityNod
     @Override
     public boolean shouldRender(T entity, Vec3 camera)
     {
-        return LinkHandler.isHoldingWrench() && BlockEntityRenderer.super.shouldRender(entity, camera);
+        return WrenchHandler.isHoldingWrench() && BlockEntityRenderer.super.shouldRender(entity, camera);
     }
 
     @Override
