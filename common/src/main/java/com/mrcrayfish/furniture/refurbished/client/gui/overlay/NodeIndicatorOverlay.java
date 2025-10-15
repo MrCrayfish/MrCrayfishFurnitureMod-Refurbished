@@ -42,7 +42,7 @@ public class NodeIndicatorOverlay implements IHudOverlay
                 return;
             }
 
-            IElectricityNode linking = handler.getSelectedNode(mc.level);
+            IElectricityNode linking = handler.getSelectedNode();
             if(target != null && linking != null && target != linking)
             {
                 if(target.isSourceNode() && linking.isSourceNode())
@@ -64,7 +64,7 @@ public class NodeIndicatorOverlay implements IHudOverlay
                     return;
                 }
 
-                if(handler.canLinkToNode(mc.level, target))
+                if(handler.canLinkToNode(target))
                 {
                     if(handler.isLinkOutsidePowerableArea())
                     {

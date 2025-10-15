@@ -192,12 +192,12 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
                 // Collect node state
                 boolean nodeCanBeSelected = handler.isTargetNode(node) && !handler.isCreatingLink() && !node.isNodeConnectionLimitReached();
                 boolean nodeIsBeingLinked = handler.isSelectedNode(node);
-                boolean nodeIsJoinable = handler.canLinkToNode(node.getNodeLevel(), node) && handler.isTargetNode(node);
+                boolean nodeIsJoinable = handler.canLinkToNode(node) && handler.isTargetNode(node);
                 boolean nodeHighlighted = nodeCanBeSelected || nodeIsBeingLinked || nodeIsJoinable;
                 NodeRenderState nodeState = new NodeRenderState();
                 nodeState.box = node.getNodeInteractBox().move(node.getNodePosition());
                 nodeState.highlighted = nodeHighlighted;
-                nodeState.highlightColour = handler.getLinkColour(node.getNodeLevel());
+                nodeState.highlightColour = handler.getLinkColour();
                 this.renderState.nodes.add(nodeState);
 
                 // Collect connection states

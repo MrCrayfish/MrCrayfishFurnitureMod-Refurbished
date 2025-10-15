@@ -15,7 +15,7 @@ public class GameRendererMixin
     @Inject(method = "renderLevel", at = @At(value = "HEAD"))
     private void refurbishedFurnitureRenderLevelHead(DeltaTracker deltaTracker, CallbackInfo ci)
     {
-        WrenchHandler.get().beforeRender(deltaTracker.getGameTimeDeltaPartialTick(true));
+        WrenchHandler.get().startRenderLevel(deltaTracker.getGameTimeDeltaPartialTick(true));
     }
 
     @Inject(method = "resize", at = @At(value = "TAIL"))
