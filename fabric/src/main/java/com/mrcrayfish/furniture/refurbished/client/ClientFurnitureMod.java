@@ -57,24 +57,6 @@ public class ClientFurnitureMod implements ClientModInitializer
             }
         });
 
-        // TODO 1.21.10 restore
-        /*WorldRenderEvents.LAST.register(context -> {
-            Minecraft mc = Minecraft.getInstance();
-            if(mc.player == null || mc.level == null)
-                return;
-
-            PoseStack pose = context.matrixStack();
-            pose.pushPose();
-            Vec3 view = context.camera().getPosition();
-            pose.translate(-view.x(), -view.y(), -view.z());
-            float deltaTick = context.tickCounter().getGameTimeDeltaPartialTick(true);
-            ToolAnimationRenderer.get().render(mc.level, pose, mc.renderBuffers().bufferSource(), deltaTick);
-            pose.popPose();
-
-            // End render types
-            mc.renderBuffers().bufferSource().endBatch(ClientServices.PLATFORM.getTelevisionScreenRenderType(CustomSheets.TV_CHANNELS_SHEET));
-        });*/
-
         ClientPreAttackCallback.EVENT.register((client, player, clickCount) -> {
             Minecraft mc = Minecraft.getInstance();
             if(mc.player != null && mc.level != null) {
@@ -84,16 +66,6 @@ public class ClientFurnitureMod implements ClientModInitializer
             }
             return false;
         });
-
-        // TODO 1.21.10 restore
-        /*WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((context, hitResult) -> {
-            Minecraft mc = Minecraft.getInstance();
-            if(mc.player != null) {
-                ItemStack stack = mc.player.getItemInHand(InteractionHand.MAIN_HAND);
-                return !stack.is(ModItems.WRENCH.get());
-            }
-            return true;
-        });*/
 
         BlockRenderLayerMap.putFluid(FurnitureMod.MILK, ChunkSectionLayer.SOLID);
         FluidRenderHandlerRegistry.INSTANCE.register(FurnitureMod.MILK, new SimpleFluidRenderHandler(Utils.resource("block/milk_still"), Utils.resource("block/milk_still")));

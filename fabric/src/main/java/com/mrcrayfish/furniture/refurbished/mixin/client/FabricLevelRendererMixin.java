@@ -5,13 +5,20 @@ import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
 import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
 import com.mojang.blaze3d.resource.ResourceHandle;
+import com.mrcrayfish.furniture.refurbished.client.CustomSheets;
+import com.mrcrayfish.furniture.refurbished.client.ToolAnimationRenderer;
 import com.mrcrayfish.furniture.refurbished.client.electricity.ElectricityRenderer;
+import com.mrcrayfish.furniture.refurbished.core.ModItems;
+import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.state.LevelRenderState;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 import org.spongepowered.asm.mixin.Mixin;
@@ -45,5 +52,20 @@ public class FabricLevelRendererMixin
     private void refurbishedFurnitureRenderPowerableArea(GpuBufferSlice slice, LevelRenderState renderState, ProfilerFiller profilerFiller, Matrix4f projMatrix, ResourceHandle resourcehandle2, ResourceHandle resourcehandle3, boolean p_363964_, Frustum p_366590_, ResourceHandle resourcehandle1, ResourceHandle resourcehandle, CallbackInfo ci)
     {
         ElectricityRenderer.get().renderPowerableArea(renderState.cameraRenderState.pos);
+    }
+
+    // Prevents the block outline from rendering while the player is holding a wrench
+    @Inject(method = "extractBlockOutline", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getShape(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/phys/shapes/CollisionContext;)Lnet/minecraft/world/phys/shapes/VoxelShape;"), cancellable = true)
+    private void refurbishedFurniture$BeforeBlockOutline(Camera camera, LevelRenderState levelRenderState, CallbackInfo ci)
+    {
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.player != null)
+        {
+            ItemStack stack = mc.player.getItemInHand(InteractionHand.MAIN_HAND);
+            if(stack.is(ModItems.WRENCH.get()))
+            {
+                ci.cancel();
+            }
+        }
     }
 }
