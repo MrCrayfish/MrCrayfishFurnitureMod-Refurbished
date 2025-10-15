@@ -90,14 +90,22 @@ public class GrillBlockEntityRenderer implements BlockEntityRenderer<GrillBlockE
         {
             for(int i = 0; i < renderState.foods.length; i++)
             {
-                this.drawCookingSpace(renderState.foods[i], stack, i, renderState.lightCoords, collector);
+                CookingItemStackRenderState cookingItemState = renderState.foods[i];
+                if(cookingItemState != null)
+                {
+                    this.drawCookingSpace(cookingItemState, stack, i, renderState.lightCoords, collector);
+                }
             }
         }
         if(renderState.fuels != null)
         {
             for(int i = 0; i < renderState.fuels.length; i++)
             {
-                this.drawFuel(renderState.fuels[i], stack, i, renderState.lightCoords, collector);
+                ItemStackRenderState itemState = renderState.fuels[i];
+                if(itemState != null)
+                {
+                    this.drawFuel(itemState, stack, i, renderState.lightCoords, collector);
+                }
             }
         }
     }
