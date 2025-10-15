@@ -138,8 +138,20 @@ public class FurnitureMod implements ModInitializer, DataGeneratorEntrypoint
         Bootstrap.init();
 
         FluidStorage.SIDED.registerForBlockEntity((sink, direction) -> {
-            return direction != Direction.UP ? ((FabricFluidHelper.FabricFluidContainer) sink.getFluidContainer()).getTank() : null;
+            return direction != Direction.DOWN ? ((FabricFluidHelper.FabricFluidContainer) sink.getFluidContainer()).getTank() : null;
         }, ModBlockEntities.KITCHEN_SINK.get());
+
+        FluidStorage.SIDED.registerForBlockEntity((sink, direction) -> {
+            return direction != Direction.DOWN ? ((FabricFluidHelper.FabricFluidContainer) sink.getFluidContainer()).getTank() : null;
+        }, ModBlockEntities.BASIN.get());
+
+        FluidStorage.SIDED.registerForBlockEntity((sink, direction) -> {
+            return direction != Direction.DOWN ? ((FabricFluidHelper.FabricFluidContainer) sink.getFluidContainer()).getTank() : null;
+        }, ModBlockEntities.BATH.get());
+
+        FluidStorage.SIDED.registerForBlockEntity((sink, direction) -> {
+            return direction != Direction.DOWN ? ((FabricFluidHelper.FabricFluidContainer) sink.getFluidContainer()).getTank() : null;
+        }, ModBlockEntities.TOILET.get());
 
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
             ItemStack heldItem = player.getItemInHand(hand);
