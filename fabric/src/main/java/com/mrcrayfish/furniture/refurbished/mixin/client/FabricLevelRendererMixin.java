@@ -52,6 +52,7 @@ public class FabricLevelRendererMixin
     private void refurbishedFurnitureRenderPowerableArea(GpuBufferSlice slice, LevelRenderState renderState, ProfilerFiller profilerFiller, Matrix4f projMatrix, ResourceHandle resourcehandle2, ResourceHandle resourcehandle3, boolean p_363964_, Frustum p_366590_, ResourceHandle resourcehandle1, ResourceHandle resourcehandle, CallbackInfo ci)
     {
         ElectricityRenderer.get().renderPowerableArea(renderState.cameraRenderState.pos);
+        Minecraft.getInstance().renderBuffers().bufferSource().endBatch(ClientServices.PLATFORM.getTelevisionScreenRenderType(CustomSheets.TV_CHANNELS_SHEET));
     }
 
     // Prevents the block outline from rendering while the player is holding a wrench
