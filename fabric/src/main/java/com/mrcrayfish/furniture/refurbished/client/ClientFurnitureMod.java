@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.client;
 
 import com.mrcrayfish.furniture.refurbished.FurnitureMod;
 import com.mrcrayfish.furniture.refurbished.client.electricity.WrenchHandler;
+import com.mrcrayfish.furniture.refurbished.client.registration.EntityRendererRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ParticleProviderRegister;
 import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
 import com.mrcrayfish.furniture.refurbished.client.electricity.ElectricityRenderer;
@@ -12,6 +13,7 @@ import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.fabricmc.fabric.api.client.rendering.v1.*;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.event.client.player.ClientPreAttackCallback;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.minecraft.client.Minecraft;
@@ -20,11 +22,15 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.state.BlockOutlineRenderState;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
@@ -46,10 +52,10 @@ public class ClientFurnitureMod implements ClientModInitializer
             }
         });
         ClientBootstrap.registerBlockEntityRenderers(BlockEntityRenderers::register);
-        ClientBootstrap.registerEntityRenderers(EntityRendererRegistry::register);
+        ClientBootstrap.registerEntityRenderers(EntityRenderers::register);
         ClientBootstrap.registerRenderTypes(BlockRenderLayerMap::putBlock);
         ClientBootstrap.registerBlockColors(ColorProviderRegistry.BLOCK::register);
-        ClientBootstrap.registerHudOverlays((id, overlay) -> HudRenderCallback.EVENT.register(overlay::draw));
+        ClientBootstrap.registerHudOverlays((id, overlay) -> HudElementRegistry.addLast(id, overlay::draw));
         ClientBootstrap.registerParticleProviders(new ParticleProviderRegister() {
             @Override
             public <T extends ParticleOptions> void apply(ParticleType<T> type, SpriteProvider<T> provider) {
