@@ -15,6 +15,7 @@ import com.mojang.blaze3d.textures.GpuTexture;
 import com.mojang.blaze3d.textures.GpuTextureView;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
+import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.client.electricity.state.*;
 import com.mrcrayfish.furniture.refurbished.core.ModRenderPipelines;
@@ -24,6 +25,7 @@ import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.Util;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -35,6 +37,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -179,16 +182,17 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
         return this.renderState;
     }
 
-    public void extract()
+    public void extract(Camera camera)
     {
         this.renderState.reset();
 
-        if(WrenchHandler.isHoldingWrench())
+        Level level = Minecraft.getInstance().level;
+        if(level != null && WrenchHandler.isHoldingWrench())
         {
             WrenchHandler handler = WrenchHandler.get();
             handler.extractLinkingConnection(this.renderState);
 
-            this.forEachVisibleElectricityNode(node -> {
+            this.forEachVisibleElectricityNode(camera, node -> {
                 // Collect node state
                 boolean nodeCanBeSelected = handler.isTargetNode(node) && !handler.isCreatingLink() && !node.isNodeConnectionLimitReached();
                 boolean nodeIsBeingLinked = handler.isSelectedNode(node);
@@ -449,11 +453,20 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
      *
      * @param consumer
      */
-    @SuppressWarnings("DataFlowIssue")
-    private void forEachVisibleElectricityNode(Consumer<IElectricityNode> consumer)
+    private void forEachVisibleElectricityNode(Camera camera, Consumer<IElectricityNode> consumer)
     {
         Minecraft mc = Minecraft.getInstance();
-        mc.levelRenderer.getVisibleSections().forEach(section -> {
+        if(mc.level == null)
+            return;
+        ((CachedElectricityNodes) mc.level).refurbishedFurniture$ElectricityNodes().forEach(node -> {
+            double maxDistance = Config.CLIENT.electricityViewDistance.get();
+            double distance = node.getNodePosition().distToCenterSqr(camera.getPosition());
+            if(distance <= maxDistance * maxDistance) {
+                consumer.accept(node);
+            }
+        });
+
+        /*mc.levelRenderer.getVisibleSections().forEach(section -> {
             section.getSectionMesh().getRenderableBlockEntities().forEach(blockEntity -> {
                 if(blockEntity instanceof IElectricityNode node) {
                     consumer.accept(node);
@@ -464,7 +477,7 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
             if(blockEntity instanceof IElectricityNode node) {
                 consumer.accept(node);
             }
-        });
+        });*/
     }
 
     private static class SubmitStorage

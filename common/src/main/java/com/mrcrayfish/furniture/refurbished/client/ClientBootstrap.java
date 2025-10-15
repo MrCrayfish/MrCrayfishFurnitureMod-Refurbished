@@ -111,16 +111,8 @@ public class ClientBootstrap
         register.apply(ModBlockEntities.TOASTER.get(), ToasterBlockEntityRenderer::new);
         register.apply(ModBlockEntities.CUTTING_BOARD.get(), CuttingBoardBlockEntityRenderer::new);
         register.apply(ModBlockEntities.FRYING_PAN.get(), FryingPanBlockEntityRenderer::new);
-        register.apply(ModBlockEntities.LIGHTSWITCH.get(), ElectricBlockEntityRenderer::new);
-        register.apply(ModBlockEntities.LIGHTING.get(), ElectricBlockEntityRenderer::new);
-        register.apply(ModBlockEntities.ELECTRICITY_GENERATOR.get(), ElectricBlockEntityRenderer::new);
-        register.apply(ModBlockEntities.DOORBELL.get(), ElectricBlockEntityRenderer::new);
-        register.apply(ModBlockEntities.FREEZER.get(), ElectricBlockEntityRenderer::new);
-        register.apply(ModBlockEntities.MICROWAVE.get(), ElectricBlockEntityRenderer::new);
         register.apply(ModBlockEntities.STORAGE_JAR.get(), StorageJarRenderer::new);
-        register.apply(ModBlockEntities.RECYCLE_BIN.get(), ElectricBlockEntityRenderer::new);
         register.apply(ModBlockEntities.CEILING_FAN.get(), CeilingFanBlockEntityRenderer::new);
-        register.apply(ModBlockEntities.RANGE_HOOD.get(), ElectricBlockEntityRenderer::new);
         register.apply(ModBlockEntities.PLATE.get(), PlateBlockEntityRenderer::new);
         register.apply(ModBlockEntities.BASIN.get(), BasinBlockEntityRenderer::new);
         register.apply(ModBlockEntities.TOILET.get(), ToiletBlockEntityRenderer::new);
@@ -128,8 +120,6 @@ public class ClientBootstrap
         register.apply(ModBlockEntities.TELEVISION.get(), TelevisionBlockEntityRenderer::new);
         register.apply(ModBlockEntities.COMPUTER.get(), ComputerBlockEntityRenderer::new);
         register.apply(ModBlockEntities.DOOR_MAT.get(), DoorMatBlockEntityRenderer::new);
-        register.apply(ModBlockEntities.STOVE.get(), ElectricBlockEntityRenderer::new);
-        register.apply(ModBlockEntities.WORKBENCH.get(), ElectricBlockEntityRenderer::new);
     }
 
     public static void registerEntityRenderers(EntityRendererRegister register)

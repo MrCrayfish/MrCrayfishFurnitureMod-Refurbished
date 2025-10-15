@@ -75,7 +75,7 @@ public class NeoForgeClientEvents
     @SubscribeEvent
     private static void onExtractLevelRenderState(ExtractLevelRenderStateEvent event)
     {
-        ElectricityRenderer.get().extract();
+        ElectricityRenderer.get().extract(event.getCamera());
     }
 
     @SubscribeEvent

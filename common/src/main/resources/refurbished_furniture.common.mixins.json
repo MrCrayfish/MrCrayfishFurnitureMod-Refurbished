@@ -16,11 +16,13 @@
     ],
     "client": [
         "client.AbstractSelectionListMixin",
+        "client.AtlasManagerMixin",
+        "client.ClientLevelMixin",
         "client.ClientPacketListenerMixin",
         "client.ClientRecipeBookMixin",
         "client.CreativeModeInventoryScreenMixin",
         "client.GameRendererMixin",
-        "client.AtlasManagerMixin",
+        "client.LevelRendererMixin",
         "client.ScreenAccessor"
     ],
     "injectors": {

@@ -26,7 +26,7 @@ public class FabricLevelRendererMixin
     private void refurbishedFurnitureExtract(GraphicsResourceAllocator graphicsResourceAllocator, DeltaTracker deltaTracker, boolean bl, Camera camera, Matrix4f matrix4f, Matrix4f matrix4f2, Matrix4f matrix4f3, GpuBufferSlice gpuBufferSlice, Vector4f vector4f, boolean bl2, CallbackInfo ci, @Local(ordinal = 0) ProfilerFiller profiler)
     {
         profiler.popPush("refurbished_furniture_electricity");
-        ElectricityRenderer.get().extract();
+        ElectricityRenderer.get().extract(camera);
     }
 
     @Inject(method = "renderLevel", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/framegraph/FrameGraphBuilder;addPass(Ljava/lang/String;)Lcom/mojang/blaze3d/framegraph/FramePass;", ordinal = 0))
