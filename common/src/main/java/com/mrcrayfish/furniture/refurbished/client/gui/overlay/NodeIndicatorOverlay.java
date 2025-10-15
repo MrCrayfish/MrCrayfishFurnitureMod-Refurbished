@@ -33,7 +33,7 @@ public class NodeIndicatorOverlay implements IHudOverlay
 
         WrenchHandler handler = WrenchHandler.get();
         IElectricityNode target = handler.getTargetNode();
-        if(handler.isLinking())
+        if(handler.isCreatingLink())
         {
             double linkLength = handler.getLinkLength();
             if(linkLength > LinkManager.MAX_LINK_LENGTH)
@@ -42,7 +42,7 @@ public class NodeIndicatorOverlay implements IHudOverlay
                 return;
             }
 
-            IElectricityNode linking = handler.getLinkingNode(mc.level);
+            IElectricityNode linking = handler.getSelectedNode(mc.level);
             if(target != null && linking != null && target != linking)
             {
                 if(target.isSourceNode() && linking.isSourceNode())

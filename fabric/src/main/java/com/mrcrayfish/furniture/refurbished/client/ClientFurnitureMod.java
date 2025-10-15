@@ -20,6 +20,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.state.BlockOutlineRenderState;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.chat.Component;
@@ -78,7 +79,7 @@ public class ClientFurnitureMod implements ClientModInitializer
             Minecraft mc = Minecraft.getInstance();
             if(mc.player != null && mc.level != null) {
                 if(mc.player.getMainHandItem().is(ModItems.WRENCH.get())) {
-                    return WrenchHandler.get().onWrenchLeftClick(mc.level);
+                    return WrenchHandler.get().onPerformAttack(mc.level);
                 }
             }
             return false;

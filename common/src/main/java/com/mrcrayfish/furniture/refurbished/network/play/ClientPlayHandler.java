@@ -90,7 +90,7 @@ public class ClientPlayHandler
 
     public static void handleMessageSyncLink(MessageSyncLink message)
     {
-        WrenchHandler.get().setLinkingNode(message.pos());
+        WrenchHandler.get().setSelectedNodePos(message.pos());
     }
 
     public static void handleMessageTelevisionChannel(MessageTelevisionChannel message)

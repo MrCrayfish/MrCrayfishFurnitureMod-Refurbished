@@ -46,7 +46,7 @@ public class WrenchItem extends Item
     public InteractionResult use(Level level, Player player, InteractionHand hand)
     {
         float range = player.isCreative() ? 5.0F : 4.5F;
-        NodeHitResult result = performNodeRaycast(level, player, range, 1F);
+        NodeHitResult result = pickElectricityNode(level, player, range, 1F);
         if(result.getType() != HitResult.Type.MISS)
         {
             if(level instanceof ServerLevel serverLevel)
@@ -59,7 +59,7 @@ public class WrenchItem extends Item
         return InteractionResult.SUCCESS;
     }
 
-    public static NodeHitResult performNodeRaycast(Level level, Player player, double range, float partialTick)
+    public static NodeHitResult pickElectricityNode(Level level, Player player, double range, float partialTick)
     {
         Vec3 start = player.getEyePosition(partialTick);
         Vec3 look = player.getViewVector(partialTick);

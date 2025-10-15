@@ -29,7 +29,7 @@ public class NeoForgeClientEvents
         {
             if(mc.player.getMainHandItem().is(ModItems.WRENCH.get()))
             {
-                if(WrenchHandler.get().onWrenchLeftClick(mc.level))
+                if(WrenchHandler.get().onPerformAttack(mc.level))
                 {
                     event.setCanceled(true);
                 }

@@ -48,7 +48,7 @@ public class WrenchHandler
     }
 
     private final PowerableArea powerableArea = new PowerableArea();
-    private @Nullable BlockPos lastNodePos;
+    private @Nullable BlockPos selectedNodePos;
     private HitResult result;
     private double linkLength;
     private boolean linkInsideArea;
@@ -68,32 +68,32 @@ public class WrenchHandler
      *
      * @param pos the block position of the electric node
      */
-    public void setLinkingNode(BlockPos pos)
+    public void setSelectedNodePos(@Nullable BlockPos pos)
     {
-        this.lastNodePos = pos;
+        this.selectedNodePos = pos;
     }
 
     /**
+     * Tests if the given IElectricityNode is the same node as selected by the wrench.
      *
-     * @param node
-     * @return
+     * @param node the electricity node to test
+     * @return True if same as the selected.
      */
-    public boolean isLinkingNode(IElectricityNode node)
+    public boolean isSelectedNode(IElectricityNode node)
     {
-        return this.lastNodePos != null && this.lastNodePos.equals(node.getNodePosition());
+        return this.selectedNodePos != null && this.selectedNodePos.equals(node.getNodePosition());
     }
 
     /**
-     * @return True if currently creating a link
+     * @return True if the wrench is currently creating a link
      */
-    public boolean isLinking()
+    public boolean isCreatingLink()
     {
-        return this.lastNodePos != null;
+        return this.selectedNodePos != null;
     }
 
     /**
-     *
-     * @return
+     * @return True if the link currently being created by the wrench is outside the powerable area
      */
     public boolean isLinkOutsidePowerableArea()
     {
@@ -101,33 +101,65 @@ public class WrenchHandler
     }
 
     /**
+     * @return The current length of the link currently being created, otherwise zero
+     */
+    public double getLinkLength()
+    {
+        return this.selectedNodePos != null ? this.linkLength : 0;
+    }
+
+    /**
+     * Tests if the given IElectricityNode is currently being looked at by the player holding the wrench
      *
-     * @param level
-     * @return
+     * @param node the electricity node to test
+     * @return True if looking at the node
+     */
+    public boolean isTargetNode(IElectricityNode node)
+    {
+        return this.result instanceof NodeHitResult nodeResult && nodeResult.getNode() == node;
+    }
+
+    /**
+     * @return The IElectricityNode that is being looked at by the player holding the wrench or null
+     * if the player is not holding a wrench or player is not looking at an electricity node.
      */
     @Nullable
-    public IElectricityNode getLinkingNode(Level level)
+    public IElectricityNode getTargetNode()
     {
-        if(this.lastNodePos == null)
+        return this.result instanceof NodeHitResult nodeResult ? nodeResult.getNode() : null;
+    }
+
+    /**
+     * @return The Connection that is being looked at by the player holding the wrench
+     */
+    @Nullable
+    public Connection getTargetConnection()
+    {
+        return this.result instanceof ConnectionHitResult linkResult ? linkResult.getConnection() : null;
+    }
+
+    /**
+     * Gets the selected IElectricityNode that a link is being created from by the wrench. If no
+     * link is being created or the electricity node does not exist at the block position,
+     *
+     * @param level the level the electricity node is in
+     * @return An IElectricityNode or null if it doesn't exist
+     */
+    @Nullable
+    public IElectricityNode getSelectedNode(Level level)
+    {
+        if(this.selectedNodePos == null)
             return null;
 
-        LevelChunk chunk = level.getChunkAt(this.lastNodePos);
+        LevelChunk chunk = level.getChunkAt(this.selectedNodePos);
         //noinspection ConstantValue
         if(chunk == null)
             return null;
 
-        if(chunk.getBlockEntities().get(this.lastNodePos) instanceof IElectricityNode node && node.isNodeValid())
+        if(chunk.getBlockEntities().get(this.selectedNodePos) instanceof IElectricityNode node && node.isNodeValid())
             return node;
 
         return null;
-    }
-
-    /**
-     * @return The current length of the link being created
-     */
-    public double getLinkLength()
-    {
-        return this.lastNodePos != null ? this.linkLength : 0;
     }
 
     /**
@@ -139,7 +171,7 @@ public class WrenchHandler
     {
         if(!isHoldingWrench())
         {
-            this.lastNodePos = null;
+            this.selectedNodePos = null;
         }
         this.updateHitResult(partialTick);
         this.updateLinkState(partialTick);
@@ -154,6 +186,7 @@ public class WrenchHandler
     {
         HitResult last = this.result;
         this.result = null;
+
         Minecraft mc = Minecraft.getInstance();
         if(mc.player != null && mc.level != null && mc.gameMode != null)
         {
@@ -161,10 +194,10 @@ public class WrenchHandler
             if(mc.player.getMainHandItem().is(ModItems.WRENCH.get()))
             {
                 double range = mc.player.blockInteractionRange();
-                HitResult newResult = WrenchItem.performNodeRaycast(mc.level, mc.player, range, partialTick);
+                HitResult newResult = WrenchItem.pickElectricityNode(mc.level, mc.player, range, partialTick);
                 if(newResult.getType() == HitResult.Type.MISS)
                 {
-                    newResult = this.performLinkRaycast(mc.player, partialTick, range);
+                    newResult = this.pickConnection(mc.player, partialTick, range);
                 }
                 if(newResult.getType() != HitResult.Type.MISS)
                 {
@@ -176,15 +209,16 @@ public class WrenchHandler
     }
 
     /**
+     * Plays a sound when initially hovering over a connection.
      *
-     * @param oldResult
-     * @param newResult
-     * @param player
-     * @param level
+     * @param oldResult the previous hit result
+     * @param newResult the current hit result
+     * @param player the player holding the wrench
+     * @param level the level to player the sound in
      */
     private void playHoverSound(@Nullable HitResult oldResult, @Nullable HitResult newResult, Player player, Level level)
     {
-        if(this.lastNodePos != null)
+        if(this.selectedNodePos != null)
             return;
 
         if((oldResult == null || !oldResult.equals(newResult)) && newResult instanceof ConnectionHitResult)
@@ -211,9 +245,9 @@ public class WrenchHandler
 
         this.powerableArea.updatePowerSources(mc.level, this.createWrenchContext(mc.level));
 
-        if(this.lastNodePos != null)
+        if(this.selectedNodePos != null)
         {
-            Vec3 start = Vec3.atCenterOf(this.lastNodePos);
+            Vec3 start = Vec3.atCenterOf(this.selectedNodePos);
             Vec3 end = this.getLinkEnd(mc.player, partialTick);
             this.linkLength = end.subtract(start).length();
         }
@@ -222,9 +256,9 @@ public class WrenchHandler
         {
             this.linkInsideArea = true;
         }
-        else if(this.lastNodePos != null)
+        else if(this.selectedNodePos != null)
         {
-            Vec3 start = this.lastNodePos.getCenter();
+            Vec3 start = this.selectedNodePos.getCenter();
             Vec3 end = this.getLinkEnd(mc.player, partialTick);
             this.linkInsideArea = this.powerableArea.containsLine(mc.level, start, end);
         }
@@ -240,54 +274,33 @@ public class WrenchHandler
         }
     }
 
+    /**
+     * Creates a context containing the current information of the wrench, like the selected node,
+     * the targeting electricity node, and the targeting connection.
+     *
+     * @param level the level of the player holding the wrench
+     * @return a WrenchContext
+     */
     private WrenchContext createWrenchContext(Level level)
     {
-        IElectricityNode linkingNode = this.getLinkingNode(level);
+        IElectricityNode linkingNode = this.getSelectedNode(level);
         IElectricityNode targetNode = this.getTargetNode();
         Connection targetConnection = this.getTargetConnection();
         return new WrenchContext(linkingNode, targetNode, targetConnection);
     }
 
     /**
-     * Tests if the given electric node is currently being looked at by the player
+     * Extracts a render state of the link currently being created by the wrench
      *
-     * @param node the node to test
-     * @return True if looking at the node
-     */
-    public boolean isTargetNode(IElectricityNode node)
-    {
-        return this.result instanceof NodeHitResult nodeResult && nodeResult.getNode() == node;
-    }
-
-    /**
-     * @return The electricity node the local player is currently looking at or null
-     */
-    @Nullable
-    public IElectricityNode getTargetNode()
-    {
-        return this.result instanceof NodeHitResult nodeResult ? nodeResult.getNode() : null;
-    }
-
-    /**
-     * @return The connection link the local player is currently looking at or null
-     */
-    @Nullable
-    public Connection getTargetConnection()
-    {
-        return this.result instanceof ConnectionHitResult linkResult ? linkResult.getConnection() : null;
-    }
-
-    /**
-     *
-     * @param renderState
+     * @param renderState the electricity render state to update
      */
     public void extractLinkingConnection(ElectricityRenderState renderState)
     {
         Minecraft mc = Minecraft.getInstance();
-        if(mc.player != null && mc.player.getMainHandItem().is(ModItems.WRENCH.get()) && this.lastNodePos != null)
+        if(mc.player != null && mc.player.getMainHandItem().is(ModItems.WRENCH.get()) && this.selectedNodePos != null)
         {
             LinkingConnectionRenderState state = new LinkingConnectionRenderState();
-            state.start = Vec3.atCenterOf(this.lastNodePos);
+            state.start = Vec3.atCenterOf(this.selectedNodePos);
             state.end = this.getLinkEnd(mc.player, mc.getDeltaTracker().getGameTimeDeltaPartialTick(false));
             state.colour = this.getLinkColour(mc.player.level());
             renderState.link = state;
@@ -295,8 +308,10 @@ public class WrenchHandler
     }
 
     /**
+     * Extracts the powerable area into a render state.
      *
-     * @param renderState
+     * @param renderState the powerable area render state to update
+     * @param camera the current position of the camera
      */
     public void extractPowerableArea(PowerableAreaRenderState renderState, Vec3 camera)
     {
@@ -330,7 +345,7 @@ public class WrenchHandler
     private Vec3 getLinkEnd(Player player, float partialTick)
     {
         IElectricityNode node = this.getTargetNode();
-        if(node != null && !this.isLinkingNode(node) && this.canLinkToNode(player.level(), node))
+        if(node != null && !this.isSelectedNode(node) && this.canLinkToNode(player.level(), node))
         {
             return node.getNodePosition().getCenter();
         }
@@ -345,7 +360,7 @@ public class WrenchHandler
      */
     public int getLinkColour(Level level)
     {
-        IElectricityNode linking = this.getLinkingNode(level);
+        IElectricityNode linking = this.getSelectedNode(level);
         if(linking == null)
             return DEFAULT_LINK_COLOUR;
 
@@ -353,7 +368,7 @@ public class WrenchHandler
             return ERROR_LINK_COLOUR;
 
         IElectricityNode target = this.getTargetNode();
-        if(target != null && !this.isLinkingNode(target))
+        if(target != null && !this.isSelectedNode(target))
         {
             if(this.canLinkToNode(level, target))
             {
@@ -378,9 +393,9 @@ public class WrenchHandler
      */
     public boolean canLinkToNode(Level level, IElectricityNode target)
     {
-        if(this.lastNodePos != null)
+        if(this.selectedNodePos != null)
         {
-            IElectricityNode lastNode = this.getLinkingNode(level);
+            IElectricityNode lastNode = this.getSelectedNode(level);
             if(lastNode != null && target != null && lastNode != target)
             {
                 if(target.isSourceNode() && lastNode.isSourceNode())
@@ -402,7 +417,7 @@ public class WrenchHandler
      * @param range       the reach of the player
      * @return a hit result with a link or miss if no link was found
      */
-    private HitResult performLinkRaycast(Player player, float partialTick, double range)
+    private HitResult pickConnection(Player player, float partialTick, double range)
     {
         double closestDistance = Double.POSITIVE_INFINITY;
         ConnectionRenderState closestConnection = null;
@@ -437,16 +452,16 @@ public class WrenchHandler
      * Called when a player left clicks while holding a wrench. Since Item doesn't have a method to
      * handle this, this event is captured with modloader specific event/injections.
      *
-     * @return True if an action was performed
+     * @return True if an action was performed and further handling should be cancelled
      */
-    public boolean onWrenchLeftClick(Level level)
+    public boolean onPerformAttack(Level level)
     {
-        if(!this.isLinking() && this.result instanceof ConnectionHitResult linkResult)
+        if(!this.isCreatingLink() && this.result instanceof ConnectionHitResult connectionHitResult)
         {
-            Connection connection = linkResult.getConnection();
+            Connection connection = connectionHitResult.getConnection();
             if(connection != null)
             {
-                Vec3 hit = linkResult.getLocation();
+                Vec3 hit = connectionHitResult.getLocation();
                 level.playLocalSound(hit.x, hit.y, hit.z, ModSounds.ITEM_WRENCH_REMOVE_LINK.get(), SoundSource.BLOCKS, 1.0F, 1.0F, false);
                 Network.getPlay().sendToServer(new MessageDeleteLink(connection.getPosA(), connection.getPosB()));
                 return true;

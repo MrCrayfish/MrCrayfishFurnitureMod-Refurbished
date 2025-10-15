@@ -190,8 +190,8 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
 
             this.forEachVisibleElectricityNode(node -> {
                 // Collect node state
-                boolean nodeCanBeSelected = handler.isTargetNode(node) && !handler.isLinking() && !node.isNodeConnectionLimitReached();
-                boolean nodeIsBeingLinked = handler.isLinkingNode(node);
+                boolean nodeCanBeSelected = handler.isTargetNode(node) && !handler.isCreatingLink() && !node.isNodeConnectionLimitReached();
+                boolean nodeIsBeingLinked = handler.isSelectedNode(node);
                 boolean nodeIsJoinable = handler.canLinkToNode(node.getNodeLevel(), node) && handler.isTargetNode(node);
                 boolean nodeHighlighted = nodeCanBeSelected || nodeIsBeingLinked || nodeIsJoinable;
                 NodeRenderState nodeState = new NodeRenderState();
@@ -205,7 +205,7 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
                 {
                     BlockPos start = connection.getPosA();
                     BlockPos end = connection.getPosB();
-                    boolean hovered = !handler.isLinking() && connection.equals(handler.getTargetConnection());
+                    boolean hovered = !handler.isCreatingLink() && connection.equals(handler.getTargetConnection());
                     int colour = connection.getColour(node.getNodeLevel());
                     this.renderState.connections.add(new ConnectionRenderState(start, end, hovered, colour));
                 }
