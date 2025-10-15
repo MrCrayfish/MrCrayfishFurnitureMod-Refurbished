@@ -44,17 +44,6 @@ public class NeoForgeClientEvents
         if(mc.player == null || mc.level == null)
             return;
 
-        // TODO 1.21.10 restore
-        /*PoseStack stack = event.getPoseStack();
-        stack.pushPose();
-        Vec3 view = event.getCamera().getPosition();
-        stack.translate(-view.x(), -view.y(), -view.z());
-        float deltaTick = event.getPartialTick().getGameTimeDeltaPartialTick(true);
-        ToolAnimationRenderer.get().render(mc.level, stack, mc.renderBuffers().bufferSource(), deltaTick);
-        stack.popPose();*/
-
-        // End render types
-        // TODO move
         mc.renderBuffers().bufferSource().endBatch(ClientServices.PLATFORM.getTelevisionScreenRenderType(CustomSheets.TV_CHANNELS_SHEET));
     }
 
@@ -94,6 +83,7 @@ public class NeoForgeClientEvents
     private static void afterRenderLevel(RenderLevelStageEvent.AfterLevel event)
     {
         ElectricityRenderer.get().blitToScreen();
+        Minecraft.getInstance().renderBuffers().bufferSource().endBatch(ClientServices.PLATFORM.getTelevisionScreenRenderType(CustomSheets.TV_CHANNELS_SHEET));
     }
 
     @SubscribeEvent

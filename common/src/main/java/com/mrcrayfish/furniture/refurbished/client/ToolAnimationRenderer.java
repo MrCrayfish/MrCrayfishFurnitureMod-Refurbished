@@ -5,7 +5,10 @@ import com.mojang.math.Axis;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.SubmitNodeStorage;
+import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -13,6 +16,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,15 +58,17 @@ public class ToolAnimationRenderer
      * Renders all active animations in the level
      *
      * @param level the current level
-     * @param poseStack the posestack for drawing into the level
-     * @param source a buffer source
      * @param partialTick the current partial tick
      */
-    public void render(Level level, PoseStack poseStack, MultiBufferSource.BufferSource source, float partialTick)
+    public void submit(Level level, Vec3 camera, float partialTick)
     {
+        PoseStack poseStack = new PoseStack();
+        poseStack.translate(-camera.x, -camera.y, -camera.z);
+        FeatureRenderDispatcher renderDispatcher = Minecraft.getInstance().gameRenderer.getFeatureRenderDispatcher();
+        SubmitNodeStorage storage = renderDispatcher.getSubmitNodeStorage();
         this.animationMap.forEach((pos, animation) -> {
             int light = LevelRenderer.getLightColor(level, animation.pos);
-            animation.render(level, poseStack, source, light, partialTick);
+            animation.submit(poseStack, storage, light, partialTick);
         });
     }
 
@@ -90,7 +96,7 @@ public class ToolAnimationRenderer
 
     private static class Animation
     {
-        private final ItemStack stack;
+        private final ItemStackRenderState state;
         private final Tool tool;
         private final BlockPos pos;
         private final Direction direction;
@@ -98,7 +104,10 @@ public class ToolAnimationRenderer
 
         public Animation(Tool tool, BlockPos pos, Direction direction)
         {
-            this.stack = tool.stack.get();
+            Minecraft mc = Minecraft.getInstance();
+            ItemStackRenderState state = new ItemStackRenderState();
+            mc.getItemModelResolver().updateForTopItem(state, tool.stack.get(), ItemDisplayContext.NONE, mc.level, null, 0);
+            this.state = state;
             this.tool = tool;
             this.pos = pos;
             this.direction = direction;
@@ -126,20 +135,17 @@ public class ToolAnimationRenderer
         /**
          * Renders the tool animation in the level
          *
-         * @param level the level the animation is playing in
          * @param poseStack the current pose stack
-         * @param source a buffer source
          * @param light the light level to apply to models
          * @param partialTick the current partial tick
          */
-        public void render(Level level, PoseStack poseStack, MultiBufferSource.BufferSource source, int light, float partialTick)
+        public void submit(PoseStack poseStack, SubmitNodeCollector collector, int light, float partialTick)
         {
             poseStack.pushPose();
             poseStack.translate(this.pos.getX() + 0.5, this.pos.getY(), this.pos.getZ() + 0.5);
             poseStack.mulPose(Axis.YP.rotation(-Mth.HALF_PI * this.direction.get2DDataValue()));
             this.tool.transform.accept(poseStack, this.time + partialTick);
-            // TODO 1.21.10 restore this
-            //Minecraft.getInstance().getItemRenderer().renderStatic(this.stack, ItemDisplayContext.NONE, light, OverlayTexture.NO_OVERLAY, poseStack, source, level, 0);
+            this.state.submit(poseStack, collector, light, OverlayTexture.NO_OVERLAY, 0);
             poseStack.popPose();
         }
     }
