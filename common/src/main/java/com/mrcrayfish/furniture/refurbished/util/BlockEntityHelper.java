@@ -76,10 +76,6 @@ public class BlockEntityHelper
                 list.add(new ItemStackWithSlot(slot, stack));
             }
         }
-        if(list.isEmpty())
-        {
-            output.discard(key);
-        }
     }
 
     @SuppressWarnings("ConstantValue")
