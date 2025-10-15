@@ -186,8 +186,7 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
     {
         this.renderState.reset();
 
-        Level level = Minecraft.getInstance().level;
-        if(level != null && WrenchHandler.isHoldingWrench())
+        if(WrenchHandler.isHoldingWrench())
         {
             WrenchHandler handler = WrenchHandler.get();
             handler.extractLinkingConnection(this.renderState);
