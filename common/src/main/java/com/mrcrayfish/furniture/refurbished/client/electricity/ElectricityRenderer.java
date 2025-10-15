@@ -450,8 +450,11 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
     }
 
     /**
+     * A helper method to iterate over visible electricity nodes in the level. Visible nodes are
+     * ones that are within or equal to the electricity view distance, which is controlled in the
+     * config. Only visible electricity nodes will be accepted into the consumer.
      *
-     * @param consumer
+     * @param consumer a consumer that will accept an electricity node
      */
     private void forEachVisibleElectricityNode(Camera camera, Consumer<IElectricityNode> consumer)
     {
@@ -465,19 +468,6 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
                 consumer.accept(node);
             }
         });
-
-        /*mc.levelRenderer.getVisibleSections().forEach(section -> {
-            section.getSectionMesh().getRenderableBlockEntities().forEach(blockEntity -> {
-                if(blockEntity instanceof IElectricityNode node) {
-                    consumer.accept(node);
-                }
-            });
-        });
-        mc.level.getGloballyRenderedBlockEntities().forEach(blockEntity -> {
-            if(blockEntity instanceof IElectricityNode node) {
-                consumer.accept(node);
-            }
-        });*/
     }
 
     private static class SubmitStorage
