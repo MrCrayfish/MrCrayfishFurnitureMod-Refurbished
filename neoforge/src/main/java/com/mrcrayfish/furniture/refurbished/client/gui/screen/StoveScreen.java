@@ -48,7 +48,7 @@ public class StoveScreen extends AbstractStoveScreen<StoveMenu> implements Recip
         this.addRenderableWidget(new ImageButton(this.leftPos + 7, this.height / 2 - 49, 20, 18, RecipeBookComponent.RECIPE_BUTTON_SPRITES, (button) -> {
             this.recipeBookComponent.toggleVisibility();
             this.leftPos = this.recipeBookComponent.updateScreenPosition(this.width, this.imageWidth);
-            button.setPosition(this.leftPos + 14, this.height / 2 - 49);
+            button.setPosition(this.leftPos + 7, this.height / 2 - 49);
             this.slider.setPosition(this.leftPos + this.imageWidth - 22 - 6, this.topPos + 5);
         }));
         this.addWidget(this.recipeBookComponent);
