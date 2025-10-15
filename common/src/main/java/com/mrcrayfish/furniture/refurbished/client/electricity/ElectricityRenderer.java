@@ -66,7 +66,7 @@ import java.util.function.Consumer;
 public final class ElectricityRenderer implements ResourceManagerReloadListener
 {
     public static final String PASS_NAME = "refurbished_furniture_electricity";
-    public static final ResourceLocation ID = Utils.resource("deferred_electric_renderer");
+    public static final ResourceLocation ID = Utils.resource("electricity_renderer");
     private static final ResourceLocation POWERABLE_AREA = Utils.resource("textures/misc/powerable_area.png");
     private static final ResourceLocation UNPOWERABLE_AREA = Utils.resource("textures/misc/unpowerable_area.png");
 
