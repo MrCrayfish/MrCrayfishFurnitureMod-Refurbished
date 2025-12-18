@@ -1,6 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.data.tag;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 
 /**
@@ -10,11 +10,11 @@ public interface TagBuilder<T>
 {
     TagBuilder<T> add(T t);
 
-    void add(ResourceLocation id);
+    void add(Identifier id);
 
     void add(TagKey<T> key);
 
-    void addOptional(ResourceLocation id);
+    void addOptional(Identifier id);
 
     void addOptional(TagKey<T> key);
 }

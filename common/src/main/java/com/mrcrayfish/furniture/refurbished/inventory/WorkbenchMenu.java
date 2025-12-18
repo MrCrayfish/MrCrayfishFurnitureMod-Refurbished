@@ -5,20 +5,19 @@ import com.mrcrayfish.framework.api.menu.IMenuData;
 import com.mrcrayfish.framework.api.util.TaskRunner;
 import com.mrcrayfish.furniture.refurbished.blockentity.IWorkbench;
 import com.mrcrayfish.furniture.refurbished.blockentity.WorkbenchBlockEntity;
-import com.mrcrayfish.furniture.refurbished.client.ClientWorkbench;
 import com.mrcrayfish.furniture.refurbished.client.ClientRecipes;
+import com.mrcrayfish.furniture.refurbished.client.ClientWorkbench;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.crafting.StackedIngredient;
 import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchContructingRecipe;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
@@ -30,17 +29,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
-
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Author: MrCrayfish
@@ -54,7 +46,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
     private final DataSlot selectedRecipe;
     private final DataSlot searchNeighbours;
     private final List<RecipeHolder<WorkbenchContructingRecipe>> recipes;
-    private final Map<ResourceLocation, Boolean> recipeToCraftable = new HashMap<>();
+    private final Map<Identifier, Boolean> recipeToCraftable = new HashMap<>();
     private final ResultContainer result = new ResultContainer();
     private final Slot resultSlot;
     private Map<Integer, Integer> counts = new Int2IntOpenHashMap();
@@ -271,7 +263,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
 
     public boolean canCraft(RecipeHolder<WorkbenchContructingRecipe> recipe)
     {
-        return this.isPowered() && this.recipeToCraftable.computeIfAbsent(recipe.id().location(), id -> {
+        return this.isPowered() && this.recipeToCraftable.computeIfAbsent(recipe.id().identifier(), id -> {
             Map<Integer, Integer> found = new HashMap<>();
             for(StackedIngredient material : recipe.value().getMaterials()) {
                 if(!this.hasMaterials(material, found)) {

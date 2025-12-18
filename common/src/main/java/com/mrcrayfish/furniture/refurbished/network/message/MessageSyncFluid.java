@@ -4,12 +4,9 @@ import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.furniture.refurbished.network.play.ClientPlayHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
 
 /**
  * Author: MrCrayfish
@@ -18,11 +15,11 @@ public record MessageSyncFluid(BlockPos pos, Fluid fluid, long amount)
 {
     public static final StreamCodec<RegistryFriendlyByteBuf, MessageSyncFluid> STREAM_CODEC = StreamCodec.of((buf, message) -> {
         buf.writeBlockPos(message.pos);
-        buf.writeResourceLocation(BuiltInRegistries.FLUID.getKey(message.fluid));
+        buf.writeIdentifier(BuiltInRegistries.FLUID.getKey(message.fluid));
         buf.writeLong(message.amount);
     }, buf -> {
         BlockPos pos = buf.readBlockPos();
-        Fluid fluid = BuiltInRegistries.FLUID.getValue(buf.readResourceLocation());
+        Fluid fluid = BuiltInRegistries.FLUID.getValue(buf.readIdentifier());
         long amount = buf.readLong();
         return new MessageSyncFluid(pos, fluid, amount);
     });

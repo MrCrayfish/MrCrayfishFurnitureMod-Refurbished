@@ -6,8 +6,6 @@ import com.mrcrayfish.furniture.refurbished.network.message.MessageSyncFluid;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.ChunkPos;
@@ -18,7 +16,6 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 /**

@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.mixin;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import com.mrcrayfish.furniture.refurbished.block.TrampolineBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -44,8 +45,8 @@ public abstract class EntityMixin
     }
 
     @SuppressWarnings({"DataFlowIssue", "deprecation"})
-    @Inject(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getOnPosLegacy()Lnet/minecraft/core/BlockPos;", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void refurbishedFurnitureTrampolinePhysics(MoverType type, Vec3 motion, CallbackInfo info, ProfilerFiller profiler, Vec3 moved)
+    @Inject(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getOnPosLegacy()Lnet/minecraft/core/BlockPos;", ordinal = 0))
+    private void refurbishedFurnitureTrampolinePhysics(MoverType type, Vec3 motion, CallbackInfo info, @Local(ordinal = 1) Vec3 moved)
     {
         Entity entity = (Entity) (Object) this;
         if(entity.onGround())

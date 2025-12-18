@@ -12,6 +12,7 @@ import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
@@ -82,7 +83,7 @@ public class CommonLootTableProvider extends LootTableProvider
                 .withPool(this.applyExplosionCondition(block, LootPool.lootPool()
                     .setRolls(ConstantValue.exactly(1.0F))
                     .add(LootItem.lootTableItem(block)
-                        .apply(CopyNameFunction.copyName(new CopyNameFunction.Source(LootContextParams.BLOCK_ENTITY))))));
+                        .apply(CopyNameFunction.copyName(LootContext.BlockEntityTarget.BLOCK_ENTITY))))); // TODO test 1.21.11
         }
     }
 }

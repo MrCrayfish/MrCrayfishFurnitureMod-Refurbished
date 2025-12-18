@@ -1,6 +1,5 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 
-import com.mojang.blaze3d.vertex.*;
 import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.IconButton;
@@ -11,18 +10,15 @@ import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageTogglePower;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageWithdrawExperience;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
-import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Inventory;
-import org.joml.Matrix4f;
 
 import java.text.DecimalFormat;
 
@@ -32,7 +28,7 @@ import java.text.DecimalFormat;
 public class RecyclingBinScreen extends ElectricityContainerScreen<RecycleBinMenu>
 {
     private static final DecimalFormat FORMAT = new DecimalFormat("0.###");
-    private static final ResourceLocation RECYCLING_BIN_TEXTURE = Utils.resource("textures/gui/container/recycle_bin.png");
+    private static final Identifier RECYCLING_BIN_TEXTURE = Utils.resource("textures/gui/container/recycle_bin.png");
 
     private OnOffSlider slider;
     private Button withdrawButton;

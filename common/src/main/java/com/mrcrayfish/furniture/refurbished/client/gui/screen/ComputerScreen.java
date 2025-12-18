@@ -14,13 +14,12 @@ import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 /**
@@ -28,7 +27,7 @@ import java.util.List;
  */
 public class ComputerScreen extends ElectricityContainerScreen<ComputerMenu>
 {
-    public static final ResourceLocation TEXTURE = Utils.resource("textures/gui/container/computer.png");
+    public static final Identifier TEXTURE = Utils.resource("textures/gui/container/computer.png");
     private static final int DISPLAY_LEFT = 15;
     private static final int DISPLAY_TOP = 15;
     public static final int DISPLAY_WIDTH = 226;

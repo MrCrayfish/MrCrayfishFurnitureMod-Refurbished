@@ -1,6 +1,5 @@
 package com.mrcrayfish.furniture.refurbished.inventory;
 
-import com.mrcrayfish.framework.api.FrameworkAPI;
 import com.mrcrayfish.framework.api.menu.IMenuData;
 import com.mrcrayfish.furniture.refurbished.blockentity.PostBoxBlockEntity;
 import com.mrcrayfish.furniture.refurbished.client.ClientMailbox;
@@ -11,8 +10,6 @@ import com.mrcrayfish.furniture.refurbished.mail.IMailbox;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;

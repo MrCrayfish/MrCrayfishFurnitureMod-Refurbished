@@ -17,15 +17,13 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.CreativeModeTab;
@@ -41,8 +39,8 @@ import java.util.function.Consumer;
  */
 public class CreativeFilters
 {
-    private static final ResourceLocation SELECTED_FILTER_TAB = Utils.resource("filter_tab_selected");
-    private static final ResourceLocation UNSELECTED_FILTER_TAB = Utils.resource("filter_tab_unselected");
+    private static final Identifier SELECTED_FILTER_TAB = Utils.resource("filter_tab_selected");
+    private static final Identifier UNSELECTED_FILTER_TAB = Utils.resource("filter_tab_unselected");
 
     private static CreativeFilters instance;
 
@@ -389,14 +387,14 @@ public class CreativeFilters
             super(x, y, 32, 26, CommonComponents.EMPTY, onPress, DEFAULT_NARRATION);
             this.category = category;
             category.setFilterTab(this);
-            ResourceLocation tagId = category.getTag().location();
+            Identifier tagId = category.getTag().location();
             String tooltipTitle = String.format("filterCategory.%s.%s", tagId.getNamespace(), tagId.getPath().replace("/", "."));
             String tooltipDesc = tooltipTitle + ".desc";
             this.cachedTooltip = ScreenHelper.createMultilineTooltip(List.of(Component.translatable(tooltipTitle), Component.translatable(tooltipDesc).withStyle(ChatFormatting.GRAY)));
         }
 
         @Override
-        public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
+        public void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
         {
             graphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.category.isEnabled() ? SELECTED_FILTER_TAB : UNSELECTED_FILTER_TAB, this.getX(), this.getY(), 32, 26);
             graphics.renderItem(this.category.getIcon(), this.getX() + 8, this.getY() + 5);

@@ -4,7 +4,6 @@ import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.furniture.refurbished.network.play.ClientPlayHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 

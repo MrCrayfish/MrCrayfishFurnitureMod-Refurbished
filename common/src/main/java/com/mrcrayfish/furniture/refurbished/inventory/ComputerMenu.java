@@ -6,7 +6,6 @@ import com.mrcrayfish.furniture.refurbished.blockentity.IComputer;
 import com.mrcrayfish.furniture.refurbished.client.ClientComputer;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.SimpleContainer;

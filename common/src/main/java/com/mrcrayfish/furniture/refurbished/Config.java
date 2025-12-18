@@ -1,18 +1,11 @@
 package com.mrcrayfish.furniture.refurbished;
 
-import com.mrcrayfish.framework.api.config.BoolProperty;
-import com.mrcrayfish.framework.api.config.ConfigProperty;
-import com.mrcrayfish.framework.api.config.ConfigType;
-import com.mrcrayfish.framework.api.config.DoubleProperty;
-import com.mrcrayfish.framework.api.config.FrameworkConfig;
-import com.mrcrayfish.framework.api.config.IntProperty;
-import com.mrcrayfish.framework.api.config.ListProperty;
-import com.mrcrayfish.framework.api.config.LongProperty;
+import com.mrcrayfish.framework.api.config.*;
 import com.mrcrayfish.framework.api.config.validate.Validator;
 import com.mrcrayfish.furniture.refurbished.blockentity.CeilingFanBlockEntity;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * Author: MrCrayfish
@@ -139,11 +132,11 @@ public class Config
             public final ListProperty<String> allowedDimensions = ListProperty.create(ListProperty.STRING, new Validator<>() {
                 @Override
                 public boolean test(String value) {
-                    return ResourceLocation.tryParse(value) != null;
+                    return Identifier.tryParse(value) != null;
                 }
                 @Override
                 public Component getHint() {
-                    return Component.literal("Must a valid ResourceLocation, e.g. \"namespace:path\"");
+                    return Component.literal("Must a valid Identifier, e.g. \"namespace:path\"");
                 }
             });
         }

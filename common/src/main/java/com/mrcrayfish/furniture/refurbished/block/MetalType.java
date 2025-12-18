@@ -1,8 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.block;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.ChatFormatting;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.StringRepresentable;
 
 import java.util.stream.Stream;

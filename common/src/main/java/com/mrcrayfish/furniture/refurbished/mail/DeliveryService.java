@@ -1,19 +1,14 @@
 package com.mrcrayfish.furniture.refurbished.mail;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.blockentity.MailboxBlockEntity;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
@@ -37,18 +32,16 @@ import java.util.function.Function;
  */
 public class DeliveryService extends SavedData
 {
-    private static final Function<MinecraftServer, Codec<DeliveryService>> CODEC = server -> RecordCodecBuilder.create((instance) -> instance.group(
+    private static final Codec<DeliveryService> CODEC = RecordCodecBuilder.create((instance) -> instance.group(
         Mailbox.CODEC.listOf().fieldOf("Mailboxes").forGetter(service -> List.copyOf(service.mailboxes.values()))
     ).apply(instance, mailboxes -> {
-        DeliveryService service = new DeliveryService(server);
+        DeliveryService service = new DeliveryService();
         mailboxes.forEach(service::addMailbox);
         return service;
     }));
 
     @SuppressWarnings("DataFlowIssue")
-    private static final SavedDataType<DeliveryService> TYPE = new SavedDataType<>("refurbished_furniture_delivery_service", context -> {
-        return new DeliveryService(context.levelOrThrow().getServer());
-    }, context -> CODEC.apply(context.levelOrThrow().getServer()), null);
+    private static final SavedDataType<DeliveryService> TYPE = new SavedDataType<>("refurbished_furniture_delivery_service", DeliveryService::new, CODEC, null);
 
     public static Optional<DeliveryService> get(MinecraftServer server)
     {
@@ -60,42 +53,28 @@ public class DeliveryService extends SavedData
         return Optional.empty();
     }
 
-    private final MinecraftServer server;
-    private final Map<Pair<ResourceLocation, BlockPos>, Mailbox> locator = new HashMap<>();
+    private final Map<Pair<Identifier, BlockPos>, Mailbox> locator = new HashMap<>();
     private final Map<UUID, Mailbox> mailboxes = new ConcurrentHashMap<>();
     private final Queue<Mailbox> removal = new ArrayDeque<>();
-    private final Map<UUID, Pair<ResourceLocation, BlockPos>> pendingNames = new HashMap<>();
-
-    public DeliveryService(MinecraftServer server)
-    {
-        this.server = server;
-    }
-
-    /**
-     * @return The instance of the current minecraft server
-     */
-    public MinecraftServer getServer()
-    {
-        return this.server;
-    }
+    private final Map<UUID, Pair<Identifier, BlockPos>> pendingNames = new HashMap<>();
 
     /**
      * Called every tick on the logical server
      */
-    public void serverTick()
+    public void serverTick(MinecraftServer server)
     {
         // Checks for mailboxes that need to be removed and spawn their queue into the level
         while(!this.removal.isEmpty())
         {
             Mailbox mailbox = this.removal.poll();
-            mailbox.spawnQueueIntoLevel(this);
+            mailbox.spawnQueueIntoLevel(server);
             this.mailboxes.remove(mailbox.id());
-            this.locator.remove(Pair.of(mailbox.levelKey().location(), mailbox.pos()));
+            this.locator.remove(Pair.of(mailbox.levelKey().identifier(), mailbox.pos()));
             this.setDirty();
         }
 
         // Try to deliver mail from queues to the block entity in the level
-        this.mailboxes.forEach((uuid, mailbox) -> mailbox.tick(this));
+        this.mailboxes.forEach((uuid, mailbox) -> mailbox.tick(this, server));
     }
 
     /**
@@ -200,7 +179,7 @@ public class DeliveryService extends SavedData
     private Mailbox addMailbox(Mailbox mailbox)
     {
         this.mailboxes.put(mailbox.id(), mailbox);
-        this.locator.put(Pair.of(mailbox.levelKey().location(), mailbox.pos()), mailbox);
+        this.locator.put(Pair.of(mailbox.levelKey().identifier(), mailbox.pos()), mailbox);
         mailbox.setService(this);
         this.setDirty();
         return mailbox;
@@ -233,7 +212,7 @@ public class DeliveryService extends SavedData
      */
     public Optional<Mailbox> getMailboxAtPosition(Level level, BlockPos pos)
     {
-        return Optional.ofNullable(this.locator.get(Pair.of(level.dimension().location(), pos)));
+        return Optional.ofNullable(this.locator.get(Pair.of(level.dimension().identifier(), pos)));
     }
 
     /**
@@ -248,7 +227,7 @@ public class DeliveryService extends SavedData
      */
     public void markMailboxAsPendingName(Player player, Level level, BlockPos pos)
     {
-        this.pendingNames.put(player.getUUID(), Pair.of(level.dimension().location(), pos));
+        this.pendingNames.put(player.getUUID(), Pair.of(level.dimension().identifier(), pos));
     }
 
     /**
@@ -266,11 +245,11 @@ public class DeliveryService extends SavedData
      */
     public boolean renameMailbox(Player player, Level level, BlockPos pos, String customName)
     {
-        Pair<ResourceLocation, BlockPos> pendingLocation = this.pendingNames.remove(player.getUUID());
+        Pair<Identifier, BlockPos> pendingLocation = this.pendingNames.remove(player.getUUID());
         return this.getMailboxAtPosition(level, pos).map(mailbox -> {
             if(!Objects.equals(mailbox.owner().orElse(null), player.getUUID()))
                 return false;
-            Pair<ResourceLocation, BlockPos> location = Pair.of(level.dimension().location(), pos);
+            Pair<Identifier, BlockPos> location = Pair.of(level.dimension().identifier(), pos);
             return Objects.equals(location, pendingLocation) && mailbox.rename(customName);
         }).orElse(false);
     }
@@ -307,7 +286,7 @@ public class DeliveryService extends SavedData
             case "minecraft:overworld" -> Level.OVERWORLD;
             case "minecraft:the_nether" -> Level.NETHER;
             case "minecraft:the_end" -> Level.END;
-            default -> ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(levelKey));
+            default -> ResourceKey.create(Registries.DIMENSION, Identifier.parse(levelKey));
         };
     }
 
@@ -359,7 +338,7 @@ public class DeliveryService extends SavedData
         List<String> validDimensions = Config.SERVER.mailing.allowedDimensions.get();
         if(!validDimensions.isEmpty())
         {
-            return validDimensions.contains(key.location().toString());
+            return validDimensions.contains(key.identifier().toString());
         }
         return true;
     }

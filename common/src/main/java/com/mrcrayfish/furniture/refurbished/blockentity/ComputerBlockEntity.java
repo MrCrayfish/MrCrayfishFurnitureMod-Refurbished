@@ -9,7 +9,7 @@ import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageComputerState;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
@@ -145,7 +145,7 @@ public class ComputerBlockEntity extends ElectricityModuleBlockEntity implements
     }
 
     @Override
-    public void launchProgram(@Nullable ResourceLocation id)
+    public void launchProgram(@Nullable Identifier id)
     {
         // If the id is null, it means to close the program
         if(id == null)
@@ -180,7 +180,7 @@ public class ComputerBlockEntity extends ElectricityModuleBlockEntity implements
 
     public void syncStateToPlayer(Player player)
     {
-        ResourceLocation programId = this.currentProgram != null ? this.currentProgram.getId() : null;
+        Identifier programId = this.currentProgram != null ? this.currentProgram.getId() : null;
         Network.getPlay().sendToPlayer(() -> (ServerPlayer) player, new MessageComputerState(this.worldPosition, programId));
     }
 

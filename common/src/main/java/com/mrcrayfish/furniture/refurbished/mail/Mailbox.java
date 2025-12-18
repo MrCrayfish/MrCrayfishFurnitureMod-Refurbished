@@ -1,6 +1,5 @@
 package com.mrcrayfish.furniture.refurbished.mail;
 
-import com.mojang.authlib.GameProfile;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -15,8 +14,7 @@ import net.minecraft.server.players.NameAndId;
 import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -113,12 +111,11 @@ public final class Mailbox implements IMailbox
         return this.removed;
     }
 
-    void tick(DeliveryService service)
+    void tick(DeliveryService service, MinecraftServer server)
     {
         if(this.removed)
             return;
 
-        MinecraftServer server = service.getServer();
         ServerLevel level = server.getLevel(this.levelKey);
         if(level == null || !level.isLoaded(this.pos))
             return;
@@ -153,9 +150,9 @@ public final class Mailbox implements IMailbox
      * Spawns all the ItemStacks in the queue into the level. This is called when the mailbox
      * is destroyed to prevent lost items.
      */
-    void spawnQueueIntoLevel(DeliveryService service)
+    void spawnQueueIntoLevel(MinecraftServer server)
     {
-        ServerLevel level = service.getServer().getLevel(this.levelKey);
+        ServerLevel level = server.getLevel(this.levelKey);
         if(level != null)
         {
             Queue<ItemStack> queue = this.queue;
@@ -189,12 +186,12 @@ public final class Mailbox implements IMailbox
     }
 
     @Override
-    public Optional<NameAndId> getOwner()
+    public Optional<NameAndId> getOwner(@Nullable MinecraftServer server)
     {
         UUID ownerId = this.owner.orElse(null);
-        if(ownerId != null)
+        if(ownerId != null && server != null)
         {
-            return this.service.getServer().services().nameToIdCache().get(ownerId);
+            return server.services().nameToIdCache().get(ownerId);
         }
         return Optional.empty();
     }

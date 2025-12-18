@@ -3,13 +3,11 @@ package com.mrcrayfish.furniture.refurbished.core;
 import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.DepthTestFunction;
-import com.mojang.blaze3d.shaders.UniformType;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mrcrayfish.framework.api.registry.RegistryContainer;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
-import net.minecraft.client.renderer.RenderPipelines;
 
 @RegistryContainer(clientOnly = true)
 public class ModRenderPipelines

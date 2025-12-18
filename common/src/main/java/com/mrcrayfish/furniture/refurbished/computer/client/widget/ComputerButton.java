@@ -32,7 +32,7 @@ public class ComputerButton extends Button
     }
 
     @Override
-    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    protected void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
         Minecraft mc = Minecraft.getInstance();
         graphics.fill(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), this.getOutlineColour());

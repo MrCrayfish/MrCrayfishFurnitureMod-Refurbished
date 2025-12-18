@@ -3,7 +3,7 @@ package com.mrcrayfish.furniture.refurbished.data.model;
 import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Optional;
 
@@ -13,12 +13,12 @@ import java.util.Optional;
 public abstract class ParentModel<T extends ParentModel<T>>
 {
     protected final String name;
-    protected final ResourceLocation model;
+    protected final Identifier model;
     protected final TextureSlot[] slots;
     protected TextureMapping textures = new TextureMapping();
     protected boolean isChild = false;
 
-    public ParentModel(String name, ResourceLocation model, TextureSlot[] slots)
+    public ParentModel(String name, Identifier model, TextureSlot[] slots)
     {
         this.name = name;
         this.model = model;
@@ -32,7 +32,7 @@ public abstract class ParentModel<T extends ParentModel<T>>
         return this.name;
     }
 
-    public ResourceLocation getModel()
+    public Identifier getModel()
     {
         return this.model;
     }
@@ -42,7 +42,7 @@ public abstract class ParentModel<T extends ParentModel<T>>
         return this.slots;
     }
 
-    public T setTexture(TextureSlot slot, ResourceLocation texture)
+    public T setTexture(TextureSlot slot, Identifier texture)
     {
         this.textures.put(slot, texture);
         return this.self();

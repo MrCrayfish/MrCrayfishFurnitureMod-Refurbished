@@ -5,7 +5,6 @@ import com.mojang.math.Axis;
 import com.mrcrayfish.furniture.refurbished.blockentity.FlipAnimation;
 import com.mrcrayfish.furniture.refurbished.blockentity.FryingPanBlockEntity;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.state.FryingPanRenderState;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;

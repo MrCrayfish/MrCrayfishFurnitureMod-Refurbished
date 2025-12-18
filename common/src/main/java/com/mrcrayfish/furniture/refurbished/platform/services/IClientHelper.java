@@ -4,10 +4,10 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mrcrayfish.furniture.refurbished.client.FluidSprites;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -37,9 +37,9 @@ public interface IClientHelper
 
     RenderType getElectricityRenderType();
 
-    RenderType getTelevisionScreenRenderType(ResourceLocation id);
+    RenderType getTelevisionScreenRenderType(Identifier id);
 
-    RenderType createPaletteImageRenderType(ResourceLocation id);
+    RenderType createPaletteImageRenderType(Identifier id);
 
     @SuppressWarnings("rawtypes")
     AbstractContainerScreen createFreezerScreen(AbstractContainerMenu menu, Inventory playerInventory, Component title);

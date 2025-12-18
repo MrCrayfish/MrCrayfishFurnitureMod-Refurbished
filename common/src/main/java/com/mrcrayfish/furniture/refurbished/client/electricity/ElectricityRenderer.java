@@ -11,6 +11,7 @@ import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.resource.ResourceHandle;
 import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.textures.FilterMode;
 import com.mojang.blaze3d.textures.GpuTexture;
 import com.mojang.blaze3d.textures.GpuTextureView;
 import com.mojang.blaze3d.vertex.*;
@@ -24,21 +25,20 @@ import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
-import net.minecraft.Util;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.Level;
+import net.minecraft.util.Util;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -66,9 +66,9 @@ import java.util.function.Consumer;
 public final class ElectricityRenderer implements ResourceManagerReloadListener
 {
     public static final String PASS_NAME = "refurbished_furniture_electricity";
-    public static final ResourceLocation ID = Utils.resource("electricity_renderer");
-    private static final ResourceLocation POWERABLE_AREA = Utils.resource("textures/misc/powerable_area.png");
-    private static final ResourceLocation UNPOWERABLE_AREA = Utils.resource("textures/misc/unpowerable_area.png");
+    public static final Identifier ID = Utils.resource("electricity_renderer");
+    private static final Identifier POWERABLE_AREA = Utils.resource("textures/misc/powerable_area.png");
+    private static final Identifier UNPOWERABLE_AREA = Utils.resource("textures/misc/unpowerable_area.png");
 
     private static ElectricityRenderer instance;
 
@@ -301,7 +301,7 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
                 {
                     pass.setPipeline(ModRenderPipelines.ELECTRICITY_BLIT);
                     RenderSystem.bindDefaultUniforms(pass);
-                    pass.bindSampler("InSampler", electricityTexture);
+                    pass.bindTexture("InSampler", electricityTexture, RenderSystem.getSamplerCache().getClampToEdge(FilterMode.LINEAR));
                     pass.draw(0, 3);
                 }
             }
@@ -400,7 +400,7 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
                         //mainDepth = weatherTarget.getDepthTextureView();
                     }
 
-                    GpuBufferSlice slice = RenderSystem.getDynamicUniforms().writeTransform(RenderSystem.getModelViewMatrix(), new Vector4f(1.0F, 1.0F, 1.0F, 0.6F * renderState.alpha), new Vector3f(), new Matrix4f(), 0.0F);
+                    GpuBufferSlice slice = RenderSystem.getDynamicUniforms().writeTransform(RenderSystem.getModelViewMatrix(), new Vector4f(1.0F, 1.0F, 1.0F, 0.6F * renderState.alpha), new Vector3f(), new Matrix4f());
                     RenderSystem.AutoStorageIndexBuffer autoIndexBuffer = RenderSystem.getSequentialBuffer(pipeline.getVertexFormatMode());
                     VertexFormat.IndexType indexType = autoIndexBuffer.type();
                     GpuBuffer indexBuffer = autoIndexBuffer.getBuffer(data.drawState().indexCount());
@@ -409,7 +409,6 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
                     RenderSystem.getDevice().createCommandEncoder().writeToBuffer(vertexBuffer.slice(), data.vertexBuffer());
 
                     AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(renderState.invalid ? UNPOWERABLE_AREA : POWERABLE_AREA);
-                    texture.setUseMipmaps(false);
 
                     try(RenderPass pass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Powerable Area", mainColor, OptionalInt.empty(), mainDepth, OptionalDouble.empty()))
                     {
@@ -417,7 +416,7 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
                         RenderSystem.bindDefaultUniforms(pass);
                         pass.setUniform("DynamicTransforms", slice);
                         pass.setIndexBuffer(indexBuffer, indexType);
-                        pass.bindSampler("Sampler0", texture.getTextureView());
+                        pass.bindTexture("Sampler0", texture.getTextureView(), RenderSystem.getSamplerCache().getClampToEdge(FilterMode.LINEAR));
                         pass.setVertexBuffer(0, vertexBuffer);
                         pass.drawIndexed(0, 0, data.drawState().indexCount(), 1);
                     }
@@ -463,7 +462,7 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
             return;
         ((CachedElectricityNodes) mc.level).refurbishedFurniture$ElectricityNodes().forEach(node -> {
             double maxDistance = Config.CLIENT.electricityViewDistance.get();
-            double distance = node.getNodePosition().distToCenterSqr(camera.getPosition());
+            double distance = node.getNodePosition().distToCenterSqr(camera.position());
             if(distance <= maxDistance * maxDistance) {
                 consumer.accept(node);
             }

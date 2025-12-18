@@ -1,6 +1,5 @@
 package com.mrcrayfish.furniture.refurbished.computer.client.widget;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.ComputerScreen;
 import com.mrcrayfish.furniture.refurbished.computer.client.Icon;
 import net.minecraft.client.Minecraft;
@@ -8,7 +7,6 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 
 /**
@@ -35,7 +33,7 @@ public class ProgramShortcutButton extends ComputerButton
     }
 
     @Override
-    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    protected void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
         this.active = this.screen.getOrCreateWindow() == null;
 

@@ -1,33 +1,11 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.overlay;
 
-import com.mrcrayfish.furniture.refurbished.Components;
-import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.blockentity.CuttingBoardBlockEntity;
-import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
-import com.mrcrayfish.furniture.refurbished.core.ModItems;
-import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
-import com.mrcrayfish.furniture.refurbished.crafting.ContainerInput;
-import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardCombiningRecipe;
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.Container;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.SingleRecipeInput;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.phys.BlockHitResult;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 /**
  * Author: MrCrayfish

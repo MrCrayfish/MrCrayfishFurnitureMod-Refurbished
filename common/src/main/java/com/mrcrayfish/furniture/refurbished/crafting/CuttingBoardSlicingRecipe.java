@@ -3,15 +3,8 @@ package com.mrcrayfish.furniture.refurbished.crafting;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookCategories;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeSerializers;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeBookCategory;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SingleItemRecipe;
-import net.minecraft.world.item.crafting.SingleRecipeInput;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.item.crafting.*;
 
 /**
  * Author: MrCrayfish

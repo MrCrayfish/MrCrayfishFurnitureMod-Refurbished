@@ -1,7 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.client.registration;
 
 import com.mrcrayfish.furniture.refurbished.client.gui.overlay.IHudOverlay;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * Author: MrCrayfish
@@ -9,5 +9,5 @@ import net.minecraft.resources.ResourceLocation;
 @FunctionalInterface
 public interface HudOverlayRegister
 {
-    void apply(ResourceLocation id, IHudOverlay overlay);
+    void apply(Identifier id, IHudOverlay overlay);
 }

@@ -8,7 +8,6 @@ import com.mrcrayfish.furniture.refurbished.computer.client.Scene;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 
 /**
  * Author: MrCrayfish

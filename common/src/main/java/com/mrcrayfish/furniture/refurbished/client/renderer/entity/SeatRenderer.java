@@ -4,7 +4,6 @@ import com.mrcrayfish.furniture.refurbished.entity.Seat;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.resources.ResourceLocation;
 
 /**
  * Author: MrCrayfish

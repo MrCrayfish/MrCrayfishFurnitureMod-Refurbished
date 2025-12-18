@@ -9,7 +9,6 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
-import java.util.Objects;
 import java.util.Set;
 
 /**

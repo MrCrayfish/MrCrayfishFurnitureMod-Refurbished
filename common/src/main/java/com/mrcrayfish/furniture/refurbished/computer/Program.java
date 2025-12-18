@@ -2,25 +2,25 @@ package com.mrcrayfish.furniture.refurbished.computer;
 
 import com.mrcrayfish.furniture.refurbished.blockentity.IComputer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * Author: MrCrayfish
  */
 public abstract class Program
 {
-    protected final ResourceLocation id;
+    protected final Identifier id;
     protected final Component title;
     protected final IComputer computer;
 
-    public Program(ResourceLocation id, IComputer computer)
+    public Program(Identifier id, IComputer computer)
     {
         this.id = id;
         this.title = Component.translatable(String.format("computer_program.%s.%s", id.getNamespace(), id.getPath()));
         this.computer = computer;
     }
 
-    public final ResourceLocation getId()
+    public final Identifier getId()
     {
         return this.id;
     }

@@ -3,11 +3,9 @@ package com.mrcrayfish.furniture.refurbished;
 import com.mrcrayfish.furniture.refurbished.client.FontIcons;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FontDescription;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Function;
 

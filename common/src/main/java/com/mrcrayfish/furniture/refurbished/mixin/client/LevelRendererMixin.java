@@ -35,7 +35,7 @@ public class LevelRendererMixin
             ((CachedElectricityNodes) this.level).refurbishedFurniture$RemoveInvalidElectricityNodes();
 
             // Submits tool renders to the storage
-            ToolAnimationRenderer.get().submit(this.level, camera.getPosition(), tracker.getGameTimeDeltaPartialTick(false));
+            ToolAnimationRenderer.get().submit(this.level, camera.position(), tracker.getGameTimeDeltaPartialTick(false));
         }
     }
 }

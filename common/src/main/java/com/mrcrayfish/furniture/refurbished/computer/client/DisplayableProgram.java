@@ -5,8 +5,7 @@ import com.mrcrayfish.furniture.refurbished.client.gui.screen.ComputerScreen;
 import com.mrcrayfish.furniture.refurbished.computer.Program;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -148,7 +147,7 @@ public abstract class DisplayableProgram<T extends Program>
 
     public final Component translation(String key)
     {
-        ResourceLocation id = this.getProgram().getId();
+        Identifier id = this.getProgram().getId();
         return Component.translatable(String.format("computer_program.%s.%s.%s", id.getNamespace(), id.getPath(), key));
     }
 

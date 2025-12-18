@@ -1,8 +1,8 @@
 package com.mrcrayfish.furniture.refurbished.core;
 
 import com.mrcrayfish.furniture.refurbished.Constants;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipePropertySet;
 
 /**
@@ -17,6 +17,6 @@ public class ModRecipePropertySets
 
     private static ResourceKey<RecipePropertySet> register(String name)
     {
-        return ResourceKey.create(RecipePropertySet.TYPE_KEY, ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, name));
+        return ResourceKey.create(RecipePropertySet.TYPE_KEY, Identifier.fromNamespaceAndPath(Constants.MOD_ID, name));
     }
 }

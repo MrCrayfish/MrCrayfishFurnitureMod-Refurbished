@@ -1,7 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.image;
 
 import com.mrcrayfish.furniture.refurbished.blockentity.DoorMatBlockEntity;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 
 /**
  * Preset images for door mats

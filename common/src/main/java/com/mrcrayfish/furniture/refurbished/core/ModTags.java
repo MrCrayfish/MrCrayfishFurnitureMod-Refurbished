@@ -2,7 +2,7 @@ package com.mrcrayfish.furniture.refurbished.core;
 
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -56,7 +56,7 @@ public class ModTags
 
         public static TagKey<Item> common(String name)
         {
-            return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", name));
+            return TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", name));
         }
     }
 
@@ -71,7 +71,7 @@ public class ModTags
 
         private static TagKey<Block> common(String name)
         {
-            return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", name));
+            return TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("c", name));
         }
     }
 }

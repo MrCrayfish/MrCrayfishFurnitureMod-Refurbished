@@ -10,19 +10,17 @@ import com.mrcrayfish.furniture.refurbished.core.ModExtraModels;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.debug.DebugScreenEntries;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ShapeRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -75,7 +73,8 @@ public class CeilingFanBlockEntityRenderer implements BlockEntityRenderer<Ceilin
         // Draws the damage box when entity hitboxes are enabled
         if(Minecraft.getInstance().debugEntries.isCurrentlyEnabled(DebugScreenEntries.ENTITY_HITBOXES))
         {
-            collector.submitCustomGeometry(poseStack, RenderType.lines(), (pose, consumer) -> ShapeRenderer.renderLineBox(pose, consumer, renderState.damageBox, 1, 1, 1, 1));
+            // TODO 1.21.11
+            //collector.submitCustomGeometry(poseStack, RenderTypes.lines(), (pose, consumer) -> ShapeRenderer.renderShape(pose, consumer, renderState.damageBox, 1, 1, 1, 1));
         }
     }
 

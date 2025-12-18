@@ -3,7 +3,7 @@ package com.mrcrayfish.furniture.refurbished.data.model;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.client.data.models.model.TextureSlot;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 
 import java.util.function.Supplier;
@@ -38,12 +38,12 @@ public class PreparedItem
 
     public static class Model extends ParentModel<Model> implements Supplier<JsonElement>
     {
-        private Model(String name, ResourceLocation model, TextureSlot[] slots)
+        private Model(String name, Identifier model, TextureSlot[] slots)
         {
             super(name, model, slots);
         }
 
-        public static Model create(String name, ResourceLocation model, TextureSlot[] slots)
+        public static Model create(String name, Identifier model, TextureSlot[] slots)
         {
             return new Model(name, model, slots);
         }

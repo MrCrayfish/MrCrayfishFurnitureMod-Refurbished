@@ -5,9 +5,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastManager;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -15,7 +14,7 @@ import net.minecraft.world.item.ItemStack;
  */
 public class ItemToast implements Toast
 {
-    public static final ResourceLocation TOAST_SPRITE = ResourceLocation.withDefaultNamespace("toast/advancement");
+    public static final Identifier TOAST_SPRITE = Identifier.withDefaultNamespace("toast/advancement");
 
     private final Component title;
     private final Component description;

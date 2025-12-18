@@ -11,9 +11,8 @@ import com.mrcrayfish.furniture.refurbished.network.message.MessageTogglePower;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
@@ -22,7 +21,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
  */
 public abstract class AbstractMicrowaveScreen<T extends AbstractContainerMenu & IElectricityMenu & IPowerSwitchMenu & IProcessingMenu> extends ElectricityContainerScreen<T>
 {
-    private static final ResourceLocation TEXTURE = Utils.resource("textures/gui/container/microwave.png");
+    private static final Identifier TEXTURE = Utils.resource("textures/gui/container/microwave.png");
 
     protected OnOffSlider slider;
 

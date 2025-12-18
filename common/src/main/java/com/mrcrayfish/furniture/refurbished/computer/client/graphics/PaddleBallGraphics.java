@@ -1,7 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.computer.client.graphics;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.client.util.AudioHelper;
 import com.mrcrayfish.furniture.refurbished.computer.app.PaddleBall;
 import com.mrcrayfish.furniture.refurbished.computer.client.DisplayableProgram;
@@ -11,25 +10,23 @@ import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessagePaddleBall;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import org.lwjgl.glfw.GLFW;
-
+import net.minecraft.util.Util;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 /**
  * Author: MrCrayfish
  */
 public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
 {
-    private static final ResourceLocation TEXTURE = Utils.resource("textures/gui/program/paddle_ball.png");
+    private static final Identifier TEXTURE = Utils.resource("textures/gui/program/paddle_ball.png");
 
     private float ballX;
     private float lastBallX;
@@ -217,9 +214,9 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
             }
 
             @Override
-            protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+            protected void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
             {
-                super.renderWidget(graphics, mouseX, mouseY, partialTick);
+                super.renderContents(graphics, mouseX, mouseY, partialTick);
                 if(this.isActive() && this.isHoveredOrFocused())
                 {
                     graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.getX() - 6, this.getY() + 6, 12, 0, 4, 4, 256, 256);

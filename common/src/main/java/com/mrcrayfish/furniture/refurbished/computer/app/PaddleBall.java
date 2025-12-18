@@ -6,21 +6,17 @@ import com.mrcrayfish.furniture.refurbished.computer.IService;
 import com.mrcrayfish.furniture.refurbished.computer.Program;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessagePaddleBall;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Intersectionf;
 import org.joml.Math;
 import org.joml.Vector2f;
 
-import org.jetbrains.annotations.Nullable;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * Author: MrCrayfish
@@ -50,7 +46,7 @@ public class PaddleBall extends Program
     private @Nullable Game activeGame;
     private @Nullable PlayerController controller;
 
-    public PaddleBall(ResourceLocation id, IComputer computer)
+    public PaddleBall(Identifier id, IComputer computer)
     {
         super(id, computer);
         this.state = State.MAIN_MENU;

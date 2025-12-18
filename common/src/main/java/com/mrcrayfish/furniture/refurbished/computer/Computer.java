@@ -2,14 +2,9 @@ package com.mrcrayfish.furniture.refurbished.computer;
 
 import com.mrcrayfish.furniture.refurbished.blockentity.IComputer;
 import com.mrcrayfish.furniture.refurbished.computer.app.PaddleBall;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiFunction;
 
 /**
@@ -28,7 +23,7 @@ public class Computer
         return instance;
     }
 
-    private final Map<ResourceLocation, BiFunction<ResourceLocation, IComputer, Program>> programs = new LinkedHashMap<>();
+    private final Map<Identifier, BiFunction<Identifier, IComputer, Program>> programs = new LinkedHashMap<>();
     private final List<IService> services = new ArrayList<>();
 
     /**
@@ -37,7 +32,7 @@ public class Computer
      * @param id the id of the program
      * @param program a function to create the program instance
      */
-    public void installProgram(ResourceLocation id, BiFunction<ResourceLocation, IComputer, Program> program)
+    public void installProgram(Identifier id, BiFunction<Identifier, IComputer, Program> program)
     {
         this.programs.putIfAbsent(id, program);
     }
@@ -60,7 +55,7 @@ public class Computer
      * @param computer the computer opening the program
      * @return an optional of the program or empty if no matching program for the id
      */
-    public Optional<Program> createProgramInstance(ResourceLocation id, IComputer computer)
+    public Optional<Program> createProgramInstance(Identifier id, IComputer computer)
     {
         return Optional.ofNullable(this.programs.get(id)).map(function -> function.apply(id, computer));
     }
@@ -68,7 +63,7 @@ public class Computer
     /**
      * @return A set of all the ids of registered programs
      */
-    public Set<ResourceLocation> getPrograms()
+    public Set<Identifier> getPrograms()
     {
         return this.programs.keySet();
     }

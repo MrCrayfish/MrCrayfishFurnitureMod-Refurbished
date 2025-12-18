@@ -2,7 +2,6 @@ package com.mrcrayfish.furniture.refurbished.electricity;
 
 import com.mrcrayfish.furniture.refurbished.Config;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;

@@ -1,14 +1,11 @@
 package com.mrcrayfish.furniture.refurbished.core;
 
-import com.mojang.serialization.Codec;
 import com.mrcrayfish.framework.api.registry.RegistryContainer;
 import com.mrcrayfish.framework.api.registry.RegistryEntry;
 import com.mrcrayfish.furniture.refurbished.image.PaletteImage;
 import com.mrcrayfish.furniture.refurbished.mail.PackageInfo;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.util.Unit;
 
 /**
  * Author: MrCrayfish

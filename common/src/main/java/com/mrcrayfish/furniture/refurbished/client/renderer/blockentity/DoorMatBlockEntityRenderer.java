@@ -1,27 +1,20 @@
 package com.mrcrayfish.furniture.refurbished.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.mrcrayfish.furniture.refurbished.block.DoorMatBlock;
 import com.mrcrayfish.furniture.refurbished.blockentity.DoorMatBlockEntity;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.state.DoorMatRenderState;
 import com.mrcrayfish.furniture.refurbished.image.TextureCache;
-import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
 
 /**
  * Author: MrCrayfish

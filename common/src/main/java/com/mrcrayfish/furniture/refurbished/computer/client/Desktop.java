@@ -10,9 +10,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
@@ -40,7 +39,7 @@ public class Desktop
     {
         int index = 0;
         List<ProgramShortcutButton> shortcuts = new ArrayList<>();
-        for(ResourceLocation id : Computer.get().getPrograms())
+        for(Identifier id : Computer.get().getPrograms())
         {
             Icon icon = Display.get().getIcon(id);
             if(icon != null)
@@ -88,7 +87,7 @@ public class Desktop
         graphics.blit(RenderPipelines.GUI_TEXTURED, ComputerScreen.TEXTURE, this.displayStart, this.displayTop + this.displayHeight - 24, 32, 36, 0, 150, 16, 18, 256, 256);
     }
 
-    private Component getProgramName(ResourceLocation id)
+    private Component getProgramName(Identifier id)
     {
         return Component.translatable(String.format("computer_program.%s.%s", id.getNamespace(), id.getPath()));
     }

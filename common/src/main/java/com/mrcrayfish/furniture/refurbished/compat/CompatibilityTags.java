@@ -1,9 +1,8 @@
 package com.mrcrayfish.furniture.refurbished.compat;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
 /**
@@ -18,7 +17,7 @@ public class CompatibilityTags
 
         private static TagKey<Block> tag(String modId, String name)
         {
-            return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(modId, name));
+            return TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(modId, name));
         }
     }
 }

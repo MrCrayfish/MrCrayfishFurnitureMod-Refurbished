@@ -1,6 +1,5 @@
 package com.mrcrayfish.furniture.refurbished.util;
 
-import com.google.gson.JsonObject;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
@@ -8,17 +7,14 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.material.Fluid;
-
 import org.jetbrains.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -32,14 +28,14 @@ import java.util.stream.Stream;
 public class Utils
 {
     /**
-     * Utility to create a ResourceLocation specific to this mod
+     * Utility to create a Identifier specific to this mod
      *
      * @param name the name of the resource. can be a path
      * @return a resource location instance
      */
-    public static ResourceLocation resource(String name)
+    public static Identifier resource(String name)
     {
-        return ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, name);
+        return Identifier.fromNamespaceAndPath(Constants.MOD_ID, name);
     }
 
     /**

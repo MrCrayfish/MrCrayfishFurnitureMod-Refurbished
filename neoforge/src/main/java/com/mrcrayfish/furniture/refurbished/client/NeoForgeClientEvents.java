@@ -70,7 +70,7 @@ public class NeoForgeClientEvents
     @SubscribeEvent
     private static void onSetupFrameGraph(FrameGraphSetupEvent event)
     {
-        ElectricityRenderer.get().setupFramePass(event.getFrameGrapBuilder(), event.getCamera().getPosition());
+        ElectricityRenderer.get().setupFramePass(event.getFrameGrapBuilder(), event.getCamera().position());
     }
 
     @SubscribeEvent

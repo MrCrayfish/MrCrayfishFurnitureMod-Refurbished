@@ -2,8 +2,6 @@ package com.mrcrayfish.furniture.refurbished.client.gui.recipe;
 
 import com.google.common.base.Suppliers;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookCategories;
-import com.mrcrayfish.furniture.refurbished.crafting.OvenBakingRecipe;
-import com.mrcrayfish.furniture.refurbished.crafting.display.FreezerRecipeDisplay;
 import com.mrcrayfish.furniture.refurbished.crafting.display.OvenRecipeDisplay;
 import com.mrcrayfish.furniture.refurbished.inventory.StoveMenu;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
@@ -13,14 +11,11 @@ import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeCollection;
 import net.minecraft.client.gui.screens.recipebook.SearchRecipeBookCategory;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
 
 import java.util.List;
@@ -40,10 +35,10 @@ public class OvenRecipeBookComponent extends RecipeBookComponent<StoveMenu>
         new RecipeBookComponent.TabInfo(Items.LAVA_BUCKET, Items.FERN, ModRecipeBookCategories.OVEN_MISC.get())
     ));
     private static final WidgetSprites FILTER_SPRITES = new WidgetSprites(
-        ResourceLocation.withDefaultNamespace("recipe_book/filter_enabled"),
-        ResourceLocation.withDefaultNamespace("recipe_book/filter_disabled"),
-        ResourceLocation.withDefaultNamespace("recipe_book/filter_enabled_highlighted"),
-        ResourceLocation.withDefaultNamespace("recipe_book/filter_disabled_highlighted")
+        Identifier.withDefaultNamespace("recipe_book/filter_enabled"),
+        Identifier.withDefaultNamespace("recipe_book/filter_disabled"),
+        Identifier.withDefaultNamespace("recipe_book/filter_enabled_highlighted"),
+        Identifier.withDefaultNamespace("recipe_book/filter_disabled_highlighted")
     );
 
     public OvenRecipeBookComponent(StoveMenu menu)
@@ -52,9 +47,9 @@ public class OvenRecipeBookComponent extends RecipeBookComponent<StoveMenu>
     }
 
     @Override
-    protected void initFilterButtonTextures()
+    protected WidgetSprites getFilterButtonTextures()
     {
-        this.filterButton.initTextureValues(FILTER_SPRITES);
+        return FILTER_SPRITES;
     }
 
     @Override

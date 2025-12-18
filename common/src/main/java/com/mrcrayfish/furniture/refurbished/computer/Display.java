@@ -2,9 +2,9 @@ package com.mrcrayfish.furniture.refurbished.computer;
 
 import com.mrcrayfish.furniture.refurbished.computer.client.DisplayableProgram;
 import com.mrcrayfish.furniture.refurbished.computer.client.Icon;
-import net.minecraft.resources.ResourceLocation;
-
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -26,7 +26,7 @@ public class Display
     }
 
     private final Map<Class<? extends Program>, Function<Program, DisplayableProgram<? extends Program>>> programs = new HashMap<>();
-    private Map<ResourceLocation, Icon> icons;
+    private Map<Identifier, Icon> icons;
 
     @SuppressWarnings("unchecked")
     public <T extends Program, D extends DisplayableProgram<T>> void bind(Class<T> programClass, Function<T, D> displayableProvider)
@@ -41,7 +41,7 @@ public class Display
     }
 
     @Nullable
-    public Icon getIcon(ResourceLocation programId)
+    public Icon getIcon(Identifier programId)
     {
         if(this.icons == null)
         {
@@ -50,14 +50,14 @@ public class Display
         return this.icons.get(programId);
     }
 
-    private Map<ResourceLocation, Icon> computeIconMap()
+    private Map<Identifier, Icon> computeIconMap()
     {
-        Map<ResourceLocation, Icon> icons = new HashMap<>();
-        Map<String, ResourceLocation> textures = new HashMap<>();
+        Map<Identifier, Icon> icons = new HashMap<>();
+        Map<String, Identifier> textures = new HashMap<>();
         Map<String, Integer> indexTracker = new HashMap<>();
         Computer.get().getPrograms().forEach(id -> {
             String namespace = id.getNamespace();
-            textures.putIfAbsent(namespace, ResourceLocation.fromNamespaceAndPath(namespace, "textures/gui/program_icons.png"));
+            textures.putIfAbsent(namespace, Identifier.fromNamespaceAndPath(namespace, "textures/gui/program_icons.png"));
             int nextIndex = indexTracker.getOrDefault(namespace, -1) + 1;
             indexTracker.put(namespace, nextIndex);
             icons.put(id, new Icon(textures.get(namespace), (nextIndex % 8) * 16, (nextIndex / 8) * 16));

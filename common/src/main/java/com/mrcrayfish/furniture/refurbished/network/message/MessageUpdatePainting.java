@@ -1,6 +1,5 @@
 package com.mrcrayfish.furniture.refurbished.network.message;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.framework.api.network.PlayMessageContext;
 import com.mrcrayfish.furniture.refurbished.image.PaletteImage;
 import com.mrcrayfish.furniture.refurbished.network.play.ServerPlayHandler;

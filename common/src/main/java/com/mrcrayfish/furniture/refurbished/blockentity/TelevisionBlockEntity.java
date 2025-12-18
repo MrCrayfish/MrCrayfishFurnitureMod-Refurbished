@@ -9,19 +9,15 @@ import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageTelevisionChannel;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Util;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -63,7 +59,7 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
         channels.add(HEROBRINE);
         channels.addAll(VIEWABLE_CHANNELS);
     });
-    public static final Map<ResourceLocation, Channel> ID_TO_CHANNEL = ALL_CHANNELS.stream().collect(Collectors.toMap(c -> c.id, Function.identity()));
+    public static final Map<Identifier, Channel> ID_TO_CHANNEL = ALL_CHANNELS.stream().collect(Collectors.toMap(c -> c.id, Function.identity()));
     public static final double MAX_AUDIO_DISTANCE = Mth.square(16);
 
     protected final Vec3 audioPosition;
@@ -215,7 +211,7 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
         }
     }
 
-    public void setChannelFromId(ResourceLocation id)
+    public void setChannelFromId(Identifier id)
     {
         Channel channel = ID_TO_CHANNEL.get(id);
         if(channel != null)
@@ -286,12 +282,12 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
     protected void loadAdditional(ValueInput input)
     {
         super.loadAdditional(input);
-        input.read("CurrentChannel", ResourceLocation.CODEC).ifPresent(value -> {
+        input.read("CurrentChannel", Identifier.CODEC).ifPresent(value -> {
             if(!value.equals(WHITE_NOISE.id) && ID_TO_CHANNEL.containsKey(value)) {
                 this.currentChannel = ID_TO_CHANNEL.get(value);
             }
         });
-        input.read("OriginalChannel", ResourceLocation.CODEC).ifPresent(value -> {
+        input.read("OriginalChannel", Identifier.CODEC).ifPresent(value -> {
             if(!value.equals(WHITE_NOISE.id) && ID_TO_CHANNEL.containsKey(value)) {
                 this.currentChannel = ID_TO_CHANNEL.get(value);
                 this.lockChannel = input.getBooleanOr("LockChannel", false);
@@ -305,14 +301,14 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
         super.saveAdditional(output);
         if(this.currentChannel != null && this.currentChannel != WHITE_NOISE)
         {
-            output.store("CurrentChannel", ResourceLocation.CODEC, this.currentChannel.id);
+            output.store("CurrentChannel", Identifier.CODEC, this.currentChannel.id);
         }
         if(this.originalChannel != null && this.originalChannel != WHITE_NOISE)
         {
-            output.store("OriginalChannel", ResourceLocation.CODEC, this.originalChannel.id);
+            output.store("OriginalChannel", Identifier.CODEC, this.originalChannel.id);
             output.putBoolean("LockChannel", this.lockChannel);
         }
     }
 
-    public record Channel(ResourceLocation id, Supplier<SoundEvent> sound, int weight) {}
+    public record Channel(Identifier id, Supplier<SoundEvent> sound, int weight) {}
 }

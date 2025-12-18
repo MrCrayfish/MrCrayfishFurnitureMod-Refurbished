@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.block.model.multipart.Condition;
 import net.minecraft.client.renderer.item.ClientItem;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.random.Weighted;
 import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.item.DyeColor;
@@ -36,7 +36,7 @@ import static net.minecraft.client.data.models.BlockModelGenerators.*;
 @SuppressWarnings("UnstableApiUsage")
 public class CommonBlockStatesGenerator extends FrameworkGenerator
 {
-    public CommonBlockStatesGenerator(Map<Block, BlockModelDefinitionGenerator> generators, Map<Item, ClientItem> items, Map<ResourceLocation, ModelInstance> models)
+    public CommonBlockStatesGenerator(Map<Block, BlockModelDefinitionGenerator> generators, Map<Item, ClientItem> items, Map<Identifier, ModelInstance> models)
     {
         super(generators, items, models);
     }
@@ -514,60 +514,60 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         this.workbench(ModBlocks.WORKBENCH.get());
     }
 
-    private ResourceLocation blockTexture(Block block)
+    private Identifier blockTexture(Block block)
     {
-        ResourceLocation name = BuiltInRegistries.BLOCK.getKey(block);
-        return ResourceLocation.fromNamespaceAndPath(name.getNamespace(), "block/" + name.getPath());
+        Identifier name = BuiltInRegistries.BLOCK.getKey(block);
+        return Identifier.fromNamespaceAndPath(name.getNamespace(), "block/" + name.getPath());
     }
 
-    private ResourceLocation woodParticle(WoodType type)
+    private Identifier woodParticle(WoodType type)
     {
         return Utils.resource("block/" + type.name() + "_particle");
     }
 
-    private ResourceLocation colourParticle(DyeColor color)
+    private Identifier colourParticle(DyeColor color)
     {
         return Utils.resource("block/" + color.getName() + "_particle");
     }
 
-    private ResourceLocation metalParticle(MetalType type)
+    private Identifier metalParticle(MetalType type)
     {
         return Utils.resource("block/" + type.getName() + "_particle");
     }
 
-    private ResourceLocation leafTexture(LeafType type)
+    private Identifier leafTexture(LeafType type)
     {
-        return ResourceLocation.withDefaultNamespace("block/" + type.getName() + "_leaves");
+        return Identifier.withDefaultNamespace("block/" + type.getName() + "_leaves");
     }
 
-    private ResourceLocation stoneTexture(StoneType type)
+    private Identifier stoneTexture(StoneType type)
     {
-        return ResourceLocation.withDefaultNamespace("block/" + type.getName());
+        return Identifier.withDefaultNamespace("block/" + type.getName());
     }
 
-    private void registerItemWithModel(Block block, ResourceLocation location)
+    private void registerItemWithModel(Block block, Identifier location)
     {
         this.items.put(block.asItem(), this.createClientItem(ItemModelUtils.plainModel(location)));
     }
 
     private void registerItemWithModelFromVariant(Block block, Variant variant)
     {
-        ResourceLocation location = variant.modelLocation();
+        Identifier location = variant.modelLocation();
         this.items.put(block.asItem(), this.createClientItem(ItemModelUtils.plainModel(location)));
     }
 
     private void registerItemWithModelFromMultiVariant(Block block, MultiVariant variant)
     {
-        ResourceLocation location = variant.variants().unwrap().getFirst().value().modelLocation();
+        Identifier location = variant.variants().unwrap().getFirst().value().modelLocation();
         this.items.put(block.asItem(), this.createClientItem(ItemModelUtils.plainModel(location)));
     }
 
-    private void registerItemWithModel(Item item, ResourceLocation location)
+    private void registerItemWithModel(Item item, Identifier location)
     {
         this.items.put(item, this.createClientItem(ItemModelUtils.plainModel(location)));
     }
 
-    private Variant plainModel(ResourceLocation location)
+    private Variant plainModel(Identifier location)
     {
         return new Variant(location);
     }
@@ -582,7 +582,7 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         return new MultiVariant(WeightedList.of(Arrays.stream(variants).map(variant -> new Weighted<>(variant, 1)).toList()));
     }
 
-    private MultiVariant plainVariant(ResourceLocation location)
+    private MultiVariant plainVariant(Identifier location)
     {
         return this.variant(this.plainModel(location));
     }
@@ -1269,7 +1269,7 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
     private void storageJar(StorageJarBlock block)
     {
         TextureMapping textures = new TextureMapping()
-            .put(TextureSlot.PARTICLE, ResourceLocation.withDefaultNamespace("block/glass"))
+            .put(TextureSlot.PARTICLE, Identifier.withDefaultNamespace("block/glass"))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
         MultiVariant storageJarVariant = this.plainVariant(ModelDefinitions.STORAGE_JAR.create(block, textures, this.models::put));
         this.registerItemWithModelFromMultiVariant(block, storageJarVariant);
@@ -1361,10 +1361,10 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.woodParticle(block.getWoodType()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation storageCabinetClosedLeft = ModelDefinitions.CABINET_CLOSED_HINGE_LEFT.create(block, textures, this.models::put);
-        ResourceLocation storageCabinetClosedRight = ModelDefinitions.CABINET_CLOSED_HINGE_RIGHT.create(block, textures, this.models::put);
-        ResourceLocation storageCabinetOpenLeft = ModelDefinitions.CABINET_OPEN_HINGE_LEFT.create(block, textures, this.models::put);
-        ResourceLocation storageCabinetOpenRight = ModelDefinitions.CABINET_OPEN_HINGE_RIGHT.create(block, textures, this.models::put);
+        Identifier storageCabinetClosedLeft = ModelDefinitions.CABINET_CLOSED_HINGE_LEFT.create(block, textures, this.models::put);
+        Identifier storageCabinetClosedRight = ModelDefinitions.CABINET_CLOSED_HINGE_RIGHT.create(block, textures, this.models::put);
+        Identifier storageCabinetOpenLeft = ModelDefinitions.CABINET_OPEN_HINGE_LEFT.create(block, textures, this.models::put);
+        Identifier storageCabinetOpenRight = ModelDefinitions.CABINET_OPEN_HINGE_RIGHT.create(block, textures, this.models::put);
         this.registerItemWithModel(block, storageCabinetClosedLeft);
         this.generators.put(block, MultiVariantGenerator.dispatch(block)
             .with(PropertyDispatch.initial(WoodenStorageCabinetBlock.DIRECTION, WoodenStorageCabinetBlock.OPEN, WoodenStorageCabinetBlock.HINGE)
@@ -1392,10 +1392,10 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.woodParticle(block.getWoodType()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation kitchenStorageCabinetClosedLeft = ModelDefinitions.KITCHEN_STORAGE_CABINET_CLOSED_HINGE_LEFT.create(block, textures, this.models::put);
-        ResourceLocation kitchenStorageCabinetClosedRight = ModelDefinitions.KITCHEN_STORAGE_CABINET_CLOSED_HINGE_RIGHT.create(block, textures, this.models::put);
-        ResourceLocation kitchenStorageCabinetOpenLeft = ModelDefinitions.KITCHEN_STORAGE_CABINET_OPEN_HINGE_LEFT.create(block, textures, this.models::put);
-        ResourceLocation kitchenStorageCabinetOpenRight = ModelDefinitions.KITCHEN_STORAGE_CABINET_OPEN_HINGE_RIGHT.create(block, textures, this.models::put);
+        Identifier kitchenStorageCabinetClosedLeft = ModelDefinitions.KITCHEN_STORAGE_CABINET_CLOSED_HINGE_LEFT.create(block, textures, this.models::put);
+        Identifier kitchenStorageCabinetClosedRight = ModelDefinitions.KITCHEN_STORAGE_CABINET_CLOSED_HINGE_RIGHT.create(block, textures, this.models::put);
+        Identifier kitchenStorageCabinetOpenLeft = ModelDefinitions.KITCHEN_STORAGE_CABINET_OPEN_HINGE_LEFT.create(block, textures, this.models::put);
+        Identifier kitchenStorageCabinetOpenRight = ModelDefinitions.KITCHEN_STORAGE_CABINET_OPEN_HINGE_RIGHT.create(block, textures, this.models::put);
         this.registerItemWithModel(block, kitchenStorageCabinetClosedLeft);
         this.generators.put(block, MultiVariantGenerator.dispatch(block)
             .with(PropertyDispatch.initial(WoodenKitchenStorageCabinetBlock.DIRECTION, WoodenKitchenStorageCabinetBlock.OPEN, WoodenKitchenStorageCabinetBlock.HINGE)
@@ -1422,10 +1422,10 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping textures = new TextureMapping()
             .put(TextureSlot.PARTICLE, this.colourParticle(block.getDyeColor()))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
-        ResourceLocation kitchenStorageCabinetClosedLeft = ModelDefinitions.KITCHEN_STORAGE_CABINET_CLOSED_HINGE_LEFT.create(block, textures, this.models::put);
-        ResourceLocation kitchenStorageCabinetClosedRight = ModelDefinitions.KITCHEN_STORAGE_CABINET_CLOSED_HINGE_RIGHT.create(block, textures, this.models::put);
-        ResourceLocation kitchenStorageCabinetOpenLeft = ModelDefinitions.KITCHEN_STORAGE_CABINET_OPEN_HINGE_LEFT.create(block, textures, this.models::put);
-        ResourceLocation kitchenStorageCabinetOpenRight = ModelDefinitions.KITCHEN_STORAGE_CABINET_OPEN_HINGE_RIGHT.create(block, textures, this.models::put);
+        Identifier kitchenStorageCabinetClosedLeft = ModelDefinitions.KITCHEN_STORAGE_CABINET_CLOSED_HINGE_LEFT.create(block, textures, this.models::put);
+        Identifier kitchenStorageCabinetClosedRight = ModelDefinitions.KITCHEN_STORAGE_CABINET_CLOSED_HINGE_RIGHT.create(block, textures, this.models::put);
+        Identifier kitchenStorageCabinetOpenLeft = ModelDefinitions.KITCHEN_STORAGE_CABINET_OPEN_HINGE_LEFT.create(block, textures, this.models::put);
+        Identifier kitchenStorageCabinetOpenRight = ModelDefinitions.KITCHEN_STORAGE_CABINET_OPEN_HINGE_RIGHT.create(block, textures, this.models::put);
         this.registerItemWithModel(block, kitchenStorageCabinetClosedLeft);
         this.generators.put(block, MultiVariantGenerator.dispatch(block)
             .with(PropertyDispatch.initial(ColouredKitchenStorageCabinetBlock.DIRECTION, ColouredKitchenStorageCabinetBlock.OPEN, ColouredKitchenStorageCabinetBlock.HINGE)
@@ -1617,7 +1617,7 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
             ))
         );
 
-        ResourceLocation hedgeItemModel = ModelDefinitions.HEDGE.create(block.asItem(), textures, this.models::put);
+        Identifier hedgeItemModel = ModelDefinitions.HEDGE.create(block.asItem(), textures, this.models::put);
         if(tint != -1)
         {
             this.items.put(block.asItem(), this.createClientItem(ItemModelUtils.tintedModel(hedgeItemModel, ItemModelUtils.constantTint(tint))));

@@ -39,7 +39,7 @@ public class FabricLevelRendererMixin
     @Inject(method = "renderLevel", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/framegraph/FrameGraphBuilder;addPass(Ljava/lang/String;)Lcom/mojang/blaze3d/framegraph/FramePass;", ordinal = 0))
     private void refurbishedFurnitureSetupFrameGraph(GraphicsResourceAllocator graphicsResourceAllocator, DeltaTracker deltaTracker, boolean bl, Camera camera, Matrix4f matrix4f, Matrix4f matrix4f2, Matrix4f matrix4f3, GpuBufferSlice gpuBufferSlice, Vector4f vector4f, boolean bl2, CallbackInfo ci, @Local(ordinal = 0) FrameGraphBuilder builder)
     {
-        ElectricityRenderer.get().setupFramePass(builder, camera.getPosition());
+        ElectricityRenderer.get().setupFramePass(builder, camera.position());
     }
 
     @Inject(method = "renderLevel", at = @At(value = "RETURN"))
@@ -49,9 +49,9 @@ public class FabricLevelRendererMixin
     }
 
     @Inject(method = "method_62214", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;checkPoseStack(Lcom/mojang/blaze3d/vertex/PoseStack;)V", ordinal = 0))
-    private void refurbishedFurnitureRenderPowerableArea(GpuBufferSlice slice, LevelRenderState renderState, ProfilerFiller profilerFiller, Matrix4f projMatrix, ResourceHandle resourcehandle2, ResourceHandle resourcehandle3, boolean p_363964_, Frustum p_366590_, ResourceHandle resourcehandle1, ResourceHandle resourcehandle, CallbackInfo ci)
+    private void refurbishedFurnitureRenderPowerableArea(GpuBufferSlice gpuBufferSlice, LevelRenderState levelRenderState, ProfilerFiller profilerFiller, Matrix4f matrix4f, ResourceHandle resourceHandle, ResourceHandle resourceHandle2, boolean bl, ResourceHandle resourceHandle3, ResourceHandle resourceHandle4, CallbackInfo ci)
     {
-        ElectricityRenderer.get().renderPowerableArea(renderState.cameraRenderState.pos);
+        ElectricityRenderer.get().renderPowerableArea(levelRenderState.cameraRenderState.pos);
         Minecraft.getInstance().renderBuffers().bufferSource().endBatch(ClientServices.PLATFORM.getTelevisionScreenRenderType(CustomSheets.TV_CHANNELS_SHEET));
     }
 

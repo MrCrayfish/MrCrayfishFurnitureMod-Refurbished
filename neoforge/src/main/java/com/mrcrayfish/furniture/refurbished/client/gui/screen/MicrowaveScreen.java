@@ -66,9 +66,9 @@ public class MicrowaveScreen extends AbstractMicrowaveScreen<MicrowaveMenu> impl
     }
 
     @Override
-    protected void renderSlots(GuiGraphics graphics)
+    protected void renderSlots(GuiGraphics graphics, int mouseX, int mouseY)
     {
-        super.renderSlots(graphics);
+        super.renderSlots(graphics, mouseX, mouseY);
         this.recipeBookComponent.renderGhostRecipe(graphics, true);
     }
 

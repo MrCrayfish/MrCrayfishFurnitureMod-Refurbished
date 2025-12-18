@@ -2,7 +2,6 @@ package com.mrcrayfish.furniture.refurbished.mail;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import org.apache.commons.lang3.StringUtils;

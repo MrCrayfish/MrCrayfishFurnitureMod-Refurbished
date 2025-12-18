@@ -67,9 +67,9 @@ public class FreezerScreen extends AbstractFreezerScreen<FreezerMenu> implements
     }
 
     @Override
-    protected void renderSlots(GuiGraphics graphics)
+    protected void renderSlots(GuiGraphics graphics, int mouseX, int mouseY)
     {
-        super.renderSlots(graphics);
+        super.renderSlots(graphics, mouseX, mouseY);
         this.recipeBookComponent.renderGhostRecipe(graphics, true);
     }
 

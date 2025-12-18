@@ -1,10 +1,10 @@
 package com.mrcrayfish.furniture.refurbished.computer.client;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * Author: MrCrayfish
  */
-public record Icon(ResourceLocation texture, int u, int v)
+public record Icon(Identifier texture, int u, int v)
 {
 }

@@ -1,6 +1,5 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.IconButton;
 import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
@@ -10,11 +9,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
@@ -25,7 +22,7 @@ import java.util.List;
  */
 public abstract class ElectricityContainerScreen<T extends AbstractContainerMenu & IElectricityMenu> extends AbstractContainerScreen<T>
 {
-    private static final ResourceLocation TEXTURE = Utils.resource("textures/gui/widgets.png");
+    private static final Identifier TEXTURE = Utils.resource("textures/gui/widgets.png");
 
     protected ElectricityContainerScreen(T menu, Inventory playerInventory, Component title)
     {

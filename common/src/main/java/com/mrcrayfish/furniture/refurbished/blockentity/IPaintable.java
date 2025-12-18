@@ -2,7 +2,6 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import com.mrcrayfish.furniture.refurbished.image.PaletteImage;
 import net.minecraft.world.entity.player.Player;
-
 import org.jetbrains.annotations.Nullable;
 
 /**

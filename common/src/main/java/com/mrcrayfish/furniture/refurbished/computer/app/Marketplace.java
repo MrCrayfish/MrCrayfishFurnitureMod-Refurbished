@@ -2,14 +2,14 @@ package com.mrcrayfish.furniture.refurbished.computer.app;
 
 import com.mrcrayfish.furniture.refurbished.blockentity.IComputer;
 import com.mrcrayfish.furniture.refurbished.computer.Program;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * Author: MrCrayfish
  */
 public class Marketplace extends Program
 {
-    public Marketplace(ResourceLocation id, IComputer computer)
+    public Marketplace(Identifier id, IComputer computer)
     {
         super(id, computer);
     }

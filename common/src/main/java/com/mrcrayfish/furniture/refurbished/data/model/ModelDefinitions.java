@@ -3,7 +3,7 @@ package com.mrcrayfish.furniture.refurbished.data.model;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.TextureSlot;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -14,7 +14,7 @@ import java.util.Set;
  */
 public class ModelDefinitions
 {
-    private static final Set<ResourceLocation> MODELS = new HashSet<>();
+    private static final Set<Identifier> MODELS = new HashSet<>();
     public static final ModelTemplate TABLE = block("table", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate TABLE_NORTH = block("table_north", "_north", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
     public static final ModelTemplate TABLE_NORTH_EAST = block("table_north_east", "_north_east", TextureSlot.PARTICLE, TextureSlot.TEXTURE);
@@ -189,7 +189,7 @@ public class ModelDefinitions
         return new ModelTemplate(Optional.of(Utils.resource("item/" + name)), Optional.empty(), textures);
     }
 
-    public static Set<ResourceLocation> all()
+    public static Set<Identifier> all()
     {
         return Set.copyOf(MODELS);
     }

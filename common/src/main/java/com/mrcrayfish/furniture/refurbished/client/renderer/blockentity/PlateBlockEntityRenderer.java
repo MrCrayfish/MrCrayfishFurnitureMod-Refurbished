@@ -3,7 +3,6 @@ package com.mrcrayfish.furniture.refurbished.client.renderer.blockentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.blockentity.PlateBlockEntity;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.state.PlateRenderState;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;

@@ -4,7 +4,6 @@ import com.mrcrayfish.furniture.refurbished.blockentity.ElectricityGeneratorBloc
 import com.mrcrayfish.furniture.refurbished.blockentity.IPowerSwitch;
 import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.inventory.slot.FuelSlot;
-import com.mrcrayfish.furniture.refurbished.platform.Services;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;

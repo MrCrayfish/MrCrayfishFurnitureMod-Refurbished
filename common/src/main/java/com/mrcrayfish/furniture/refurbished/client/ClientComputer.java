@@ -8,9 +8,8 @@ import com.mrcrayfish.furniture.refurbished.computer.Program;
 import com.mrcrayfish.furniture.refurbished.computer.client.DisplayableProgram;
 import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
-
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -72,7 +71,7 @@ public class ClientComputer implements IComputer
     }
 
     @Override
-    public void launchProgram(@Nullable ResourceLocation id)
+    public void launchProgram(@Nullable Identifier id)
     {
         if(id == null)
         {

@@ -1,7 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 
 import com.mojang.authlib.GameProfile;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.IconButton;
 import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import com.mrcrayfish.furniture.refurbished.inventory.PostBoxMenu;
@@ -12,23 +11,18 @@ import com.mrcrayfish.furniture.refurbished.network.message.MessageSendPackage;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.MultiLineEditBox;
-import net.minecraft.client.gui.components.PlayerFaceRenderer;
-import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.players.NameAndId;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -37,14 +31,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Author: MrCrayfish
@@ -54,9 +41,9 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
     private static final Component MAILBOXES_LABEL = Utils.translation("gui", "mailboxes");
     private static final MutableComponent DEFAULT_MAILBOX_NAME = Utils.translation("gui", "default_mailbox_name");
     private static final MutableComponent UNKNOWN_MAILBOX_OWNER = Utils.translation("gui", "unknown_mailbox_owner");
-    private static final ResourceLocation POST_BOX_TEXTURE = Utils.resource("textures/gui/container/post_box.png");
-    private static final ResourceLocation SCROLLER_SPRITE = ResourceLocation.withDefaultNamespace("container/villager/scroller");
-    private static final ResourceLocation SCROLLER_DISABLED_SPRITE = ResourceLocation.withDefaultNamespace("container/villager/scroller_disabled");
+    private static final Identifier POST_BOX_TEXTURE = Utils.resource("textures/gui/container/post_box.png");
+    private static final Identifier SCROLLER_SPRITE = Identifier.withDefaultNamespace("container/villager/scroller");
+    private static final Identifier SCROLLER_DISABLED_SPRITE = Identifier.withDefaultNamespace("container/villager/scroller_disabled");
     private static final Map<UUID, PlayerInfo> PLAYER_INFO_CACHE = new HashMap<>();
 
     private static final int SCROLL_SPEED = 5;

@@ -1,14 +1,9 @@
 package com.mrcrayfish.furniture.refurbished.entity;
 
-import com.mrcrayfish.framework.api.sync.Serializers;
-import com.mrcrayfish.framework.api.sync.SyncedClassKey;
-import com.mrcrayfish.framework.api.sync.SyncedDataKey;
 import com.mrcrayfish.furniture.refurbished.core.ModEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModSyncedDataKeys;
-import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -22,7 +17,6 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-
 import org.jetbrains.annotations.Nullable;
 
 /**

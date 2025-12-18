@@ -16,14 +16,13 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -32,7 +31,6 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Function;
@@ -84,13 +82,13 @@ public class NeoForgeClientHelper implements IClientHelper
     }
 
     @Override
-    public RenderType getTelevisionScreenRenderType(ResourceLocation id)
+    public RenderType getTelevisionScreenRenderType(Identifier id)
     {
         return NeoForgeRenderType.televisionScreen(id);
     }
 
     @Override
-    public RenderType createPaletteImageRenderType(ResourceLocation id)
+    public RenderType createPaletteImageRenderType(Identifier id)
     {
         return NeoForgeRenderType.createPaletteImage(id);
     }
@@ -122,7 +120,7 @@ public class NeoForgeClientHelper implements IClientHelper
         return RenderPipelines.MATRICES_PROJECTION_SNIPPET;
     }
 
-    private Function<ResourceLocation, TextureAtlasSprite> getBlockTextures()
+    private Function<Identifier, TextureAtlasSprite> getBlockTextures()
     {
         return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS)::getSprite;
     }

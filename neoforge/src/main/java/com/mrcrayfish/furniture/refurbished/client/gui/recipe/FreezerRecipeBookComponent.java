@@ -11,7 +11,7 @@ import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeCollection;
 import net.minecraft.client.gui.screens.recipebook.SearchRecipeBookCategory;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.inventory.Slot;
@@ -35,10 +35,10 @@ public class FreezerRecipeBookComponent extends RecipeBookComponent<FreezerMenu>
         new RecipeBookComponent.TabInfo(Items.LAVA_BUCKET, Items.FERN, ModRecipeBookCategories.FREEZER_MISC.get())
     ));
     private static final WidgetSprites FILTER_SPRITES = new WidgetSprites(
-        ResourceLocation.withDefaultNamespace("recipe_book/filter_enabled"),
-        ResourceLocation.withDefaultNamespace("recipe_book/filter_disabled"),
-        ResourceLocation.withDefaultNamespace("recipe_book/filter_enabled_highlighted"),
-        ResourceLocation.withDefaultNamespace("recipe_book/filter_disabled_highlighted")
+        Identifier.withDefaultNamespace("recipe_book/filter_enabled"),
+        Identifier.withDefaultNamespace("recipe_book/filter_disabled"),
+        Identifier.withDefaultNamespace("recipe_book/filter_enabled_highlighted"),
+        Identifier.withDefaultNamespace("recipe_book/filter_disabled_highlighted")
     );
 
     public FreezerRecipeBookComponent(FreezerMenu menu)
@@ -47,9 +47,9 @@ public class FreezerRecipeBookComponent extends RecipeBookComponent<FreezerMenu>
     }
 
     @Override
-    protected void initFilterButtonTextures()
+    protected WidgetSprites getFilterButtonTextures()
     {
-        this.filterButton.initTextureValues(FILTER_SPRITES);
+        return FILTER_SPRITES;
     }
 
     @Override

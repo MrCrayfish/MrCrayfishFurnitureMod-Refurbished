@@ -1,7 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.crafting;
 
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
-import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookCategories;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeSerializers;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;

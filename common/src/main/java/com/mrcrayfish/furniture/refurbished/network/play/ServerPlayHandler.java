@@ -10,12 +10,7 @@ import com.mrcrayfish.furniture.refurbished.computer.app.PaddleBall;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.electricity.Connection;
 import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
-import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
-import com.mrcrayfish.furniture.refurbished.inventory.DoorMatMenu;
-import com.mrcrayfish.furniture.refurbished.inventory.IPowerSwitchMenu;
-import com.mrcrayfish.furniture.refurbished.inventory.PostBoxMenu;
-import com.mrcrayfish.furniture.refurbished.inventory.RecycleBinMenu;
-import com.mrcrayfish.furniture.refurbished.inventory.WorkbenchMenu;
+import com.mrcrayfish.furniture.refurbished.inventory.*;
 import com.mrcrayfish.furniture.refurbished.item.PackageItem;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryResult;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
@@ -28,7 +23,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-
 import org.jetbrains.annotations.Nullable;
 
 /**

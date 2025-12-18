@@ -15,14 +15,13 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-import org.jetbrains.annotations.Nullable;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
@@ -31,7 +30,7 @@ import java.util.Queue;
  */
 public class DoorMatScreen extends AbstractContainerScreen<DoorMatMenu>
 {
-    private static final ResourceLocation TEXTURE = Utils.resource("textures/gui/container/door_mat.png");
+    private static final Identifier TEXTURE = Utils.resource("textures/gui/container/door_mat.png");
     private static final PaletteImage[] PRESETS = {
             ImagePresets.BLANK,
             ImagePresets.HEART,

@@ -5,7 +5,6 @@ import com.mrcrayfish.furniture.refurbished.network.play.ClientPlayHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-
 import org.jetbrains.annotations.Nullable;
 
 /**

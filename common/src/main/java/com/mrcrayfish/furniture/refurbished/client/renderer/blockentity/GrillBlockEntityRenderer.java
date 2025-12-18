@@ -6,7 +6,6 @@ import com.mrcrayfish.furniture.refurbished.blockentity.FlipAnimation;
 import com.mrcrayfish.furniture.refurbished.blockentity.GrillBlockEntity;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.state.CookingItemStackRenderState;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.state.GrillRenderState;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;

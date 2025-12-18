@@ -6,7 +6,9 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.players.NameAndId;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -33,7 +35,7 @@ public record ClientMailbox(UUID mailboxId, Optional<NameAndId> owner, Optional<
     }
 
     @Override
-    public Optional<NameAndId> getOwner()
+    public Optional<NameAndId> getOwner(@Nullable MinecraftServer server)
     {
         return this.owner;
     }

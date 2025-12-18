@@ -7,7 +7,7 @@ import com.mrcrayfish.furniture.refurbished.blockentity.IHomeControlDevice;
 import com.mrcrayfish.furniture.refurbished.computer.Program;
 import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.Collections;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  */
 public class HomeControl extends Program
 {
-    public HomeControl(ResourceLocation id, IComputer computer)
+    public HomeControl(Identifier id, IComputer computer)
     {
         super(id, computer);
     }

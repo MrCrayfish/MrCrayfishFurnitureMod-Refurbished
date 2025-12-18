@@ -3,17 +3,18 @@ package com.mrcrayfish.furniture.refurbished.image;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mrcrayfish.furniture.refurbished.blockentity.IPaintable;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * Keeps track of currently drawn PaletteImages and manages load/unload from memory
@@ -35,7 +36,7 @@ public class TextureCache
         return instance;
     }
 
-    private final Map<ResourceLocation, Entry> entries = new HashMap<>();
+    private final Map<Identifier, Entry> entries = new HashMap<>();
 
     private TextureCache() {}
 
@@ -64,7 +65,7 @@ public class TextureCache
      * @return a texture id linking to a registered dynamic texture
      */
     @Nullable
-    public ResourceLocation getOrCacheImage(IPaintable paintable)
+    public Identifier getOrCacheImage(IPaintable paintable)
     {
         PaletteImage image = paintable.getImage();
         if(image != null)
@@ -98,7 +99,7 @@ public class TextureCache
     @Nullable
     public RenderType getRenderType(IPaintable paintable)
     {
-        ResourceLocation id = this.getOrCacheImage(paintable);
+        Identifier id = this.getOrCacheImage(paintable);
         Entry entry = this.entries.get(id);
         if(entry != null && !entry.isExpired())
         {
@@ -113,7 +114,7 @@ public class TextureCache
      * @param id the id of the entry
      * @return the abstract texture of the cached entry or missing texture if not found
      */
-    public AbstractTexture getTexture(ResourceLocation id)
+    public AbstractTexture getTexture(Identifier id)
     {
         Entry entry = this.entries.get(id);
         if(entry != null && !entry.isExpired())
@@ -126,7 +127,7 @@ public class TextureCache
 
     private static class Entry
     {
-        private final ResourceLocation id;
+        private final Identifier id;
         private final DynamicTexture texture;
         private final RenderType renderType;
         private long lastDrawTime;
@@ -144,7 +145,7 @@ public class TextureCache
         /**
          * @return The identifier of this entry, based on the contents of the palette image
          */
-        public ResourceLocation getId()
+        public Identifier getId()
         {
             return this.id;
         }
@@ -201,5 +202,10 @@ public class TextureCache
             }
         }
         return nativeImage;
+    }
+
+    public static RenderType getOrStoreRenderType(Identifier id, Function<Identifier, RenderType> creator)
+    {
+        return null;
     }
 }

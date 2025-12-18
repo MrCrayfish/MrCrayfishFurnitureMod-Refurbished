@@ -13,10 +13,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Optional;
 
@@ -25,7 +24,7 @@ import java.util.Optional;
  */
 public class MarketplaceGraphics extends DisplayableProgram<Marketplace>
 {
-    private static final ResourceLocation TEXTURE = Utils.resource("textures/gui/program/marketplace.png");
+    private static final Identifier TEXTURE = Utils.resource("textures/gui/program/marketplace.png");
 
     private final Scene catalogueScene;
     private final Scene shoppingCartScene;

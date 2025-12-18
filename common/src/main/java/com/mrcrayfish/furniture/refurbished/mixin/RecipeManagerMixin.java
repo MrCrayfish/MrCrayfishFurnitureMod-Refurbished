@@ -5,7 +5,6 @@ import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardSlicingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.FreezerSolidifyingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.MicrowaveHeatingRecipe;
 import com.mrcrayfish.furniture.refurbished.crafting.OvenBakingRecipe;
-import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchContructingRecipe;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipePropertySet;

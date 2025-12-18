@@ -8,12 +8,11 @@ import com.mrcrayfish.furniture.refurbished.inventory.IPowerSwitchMenu;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageTogglePower;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
-import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
@@ -22,7 +21,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
  */
 public class AbstractStoveScreen<T extends AbstractContainerMenu & IElectricityMenu & IPowerSwitchMenu & IBakingMenu> extends ElectricityContainerScreen<T>
 {
-    private static final ResourceLocation TEXTURE = Utils.resource("textures/gui/container/stove.png");
+    private static final Identifier TEXTURE = Utils.resource("textures/gui/container/stove.png");
 
     protected OnOffSlider slider;
 

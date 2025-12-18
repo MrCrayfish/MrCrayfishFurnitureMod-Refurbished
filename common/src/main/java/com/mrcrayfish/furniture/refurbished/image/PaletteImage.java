@@ -5,12 +5,11 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
-import net.minecraft.Util;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.util.Util;
 
 import java.util.BitSet;
 import java.util.function.Supplier;
@@ -28,7 +27,7 @@ public class PaletteImage
     private static final int BITS_PER_INDEX = 4;
     public static final Codec<PaletteImage> CODEC = RecordCodecBuilder.create(builder -> {
         return builder.group(
-            ResourceLocation.CODEC.fieldOf("id").forGetter(PaletteImage::getId),
+            Identifier.CODEC.fieldOf("id").forGetter(PaletteImage::getId),
             Codec.INT.fieldOf("width").validate(val -> {
                 if(val >= 1 && val <= 128)
                     return DataResult.success(val);
@@ -53,7 +52,7 @@ public class PaletteImage
         return new PaletteImage(width, height, () -> BitSet.valueOf(data));
     });
 
-    protected final ResourceLocation id;
+    protected final Identifier id;
     protected final int width;
     protected final int height;
     protected final BitSet bits;
@@ -63,7 +62,7 @@ public class PaletteImage
         this(width, height, () -> new BitSet(width * height));
     }
 
-    private PaletteImage(ResourceLocation id, int width, int height, BitSet data)
+    private PaletteImage(Identifier id, int width, int height, BitSet data)
     {
         this.id = id;
         this.width = width;
@@ -86,7 +85,7 @@ public class PaletteImage
     /**
      * @return The id of this palette image
      */
-    public ResourceLocation getId()
+    public Identifier getId()
     {
         return this.id;
     }
@@ -179,9 +178,9 @@ public class PaletteImage
      * @param set the bit set contents of the palette image
      * @return a new resource location to identify the contents
      */
-    private ResourceLocation createImageId(BitSet set)
+    private Identifier createImageId(BitSet set)
     {
-        return Utils.resource("palette_image_" + Util.sanitizeName(Integer.toHexString(set.hashCode()), ResourceLocation::validPathChar));
+        return Utils.resource("palette_image_" + Util.sanitizeName(Integer.toHexString(set.hashCode()), Identifier::validPathChar));
     }
 
     /**

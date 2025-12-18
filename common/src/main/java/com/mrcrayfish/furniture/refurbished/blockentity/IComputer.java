@@ -3,9 +3,8 @@ package com.mrcrayfish.furniture.refurbished.blockentity;
 import com.mrcrayfish.furniture.refurbished.computer.Program;
 import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
-
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -43,7 +42,7 @@ public interface IComputer
      *
      * @param id the id of the program
      */
-    void launchProgram(@Nullable ResourceLocation id);
+    void launchProgram(@Nullable Identifier id);
 
     /**
      * @return The computer menu instance of the player using the computer

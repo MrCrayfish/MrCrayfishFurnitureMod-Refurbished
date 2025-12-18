@@ -8,7 +8,7 @@ import net.minecraft.client.data.models.blockstates.BlockModelDefinitionGenerato
 import net.minecraft.client.data.models.model.*;
 import net.minecraft.client.renderer.item.ClientItem;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
@@ -20,7 +20,7 @@ import java.util.Map;
 @SuppressWarnings("UnstableApiUsage")
 public class CommonItemModelsGenerator extends FrameworkGenerator
 {
-    public CommonItemModelsGenerator(Map<Block, BlockModelDefinitionGenerator> generators, Map<Item, ClientItem> items, Map<ResourceLocation, ModelInstance> models)
+    public CommonItemModelsGenerator(Map<Block, BlockModelDefinitionGenerator> generators, Map<Item, ClientItem> items, Map<Identifier, ModelInstance> models)
     {
         super(generators, items, models);
     }
@@ -55,10 +55,10 @@ public class CommonItemModelsGenerator extends FrameworkGenerator
         this.flatHandheldItemModel(ModItems.TELEVISION_REMOTE.get());
     }
 
-    private ResourceLocation blockTexture(Block block)
+    private Identifier blockTexture(Block block)
     {
-        ResourceLocation name = BuiltInRegistries.BLOCK.getKey(block);
-        return ResourceLocation.fromNamespaceAndPath(name.getNamespace(), "block/" + name.getPath());
+        Identifier name = BuiltInRegistries.BLOCK.getKey(block);
+        return Identifier.fromNamespaceAndPath(name.getNamespace(), "block/" + name.getPath());
     }
 
     private void flatHandheldItemModel(Item item)

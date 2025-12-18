@@ -1,12 +1,12 @@
 package com.mrcrayfish.furniture.refurbished.client.util;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * Author: MrCrayfish
  */
 public class VanillaTextures
 {
-    public static final ResourceLocation CREATIVE_TABS = ResourceLocation.withDefaultNamespace("textures/gui/container/creative_inventory/tabs.png");
-    public static final ResourceLocation RECIPE_BOOK = ResourceLocation.withDefaultNamespace("textures/gui/recipe_book.png");
+    public static final Identifier CREATIVE_TABS = Identifier.withDefaultNamespace("textures/gui/container/creative_inventory/tabs.png");
+    public static final Identifier RECIPE_BOOK = Identifier.withDefaultNamespace("textures/gui/recipe_book.png");
 }

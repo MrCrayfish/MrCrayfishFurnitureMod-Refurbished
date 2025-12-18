@@ -17,12 +17,12 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -84,13 +84,13 @@ public class FabricClientHelper implements IClientHelper
     }
 
     @Override
-    public RenderType getTelevisionScreenRenderType(ResourceLocation id)
+    public RenderType getTelevisionScreenRenderType(Identifier id)
     {
         return FabricRenderType.televisionScreen(id);
     }
 
     @Override
-    public RenderType createPaletteImageRenderType(ResourceLocation id)
+    public RenderType createPaletteImageRenderType(Identifier id)
     {
         return FabricRenderType.createPaletteImage(id);
     }

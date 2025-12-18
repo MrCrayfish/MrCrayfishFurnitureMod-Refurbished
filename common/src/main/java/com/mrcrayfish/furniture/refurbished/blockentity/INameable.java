@@ -1,7 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.blockentity;
 
 import net.minecraft.server.level.ServerPlayer;
-
 import org.jetbrains.annotations.Nullable;
 
 /**

@@ -3,20 +3,15 @@ package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.client.gui.recipe.OvenRecipeBookComponent;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.OnOffSlider;
-import com.mrcrayfish.furniture.refurbished.client.util.VanillaTextures;
 import com.mrcrayfish.furniture.refurbished.inventory.StoveMenu;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageTogglePower;
-import com.mrcrayfish.furniture.refurbished.platform.Services;
-import com.mrcrayfish.furniture.refurbished.util.Utils;
-import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
@@ -71,9 +66,9 @@ public class StoveScreen extends AbstractStoveScreen<StoveMenu> implements Recip
     }
 
     @Override
-    protected void renderSlots(GuiGraphics graphics)
+    protected void renderSlots(GuiGraphics graphics, int mouseX, int mouseY)
     {
-        super.renderSlots(graphics);
+        super.renderSlots(graphics, mouseX, mouseY);
         this.recipeBookComponent.renderGhostRecipe(graphics, false);
     }
 

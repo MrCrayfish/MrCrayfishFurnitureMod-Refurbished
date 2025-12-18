@@ -1,6 +1,5 @@
 package com.mrcrayfish.furniture.refurbished;
 
-import com.mrcrayfish.framework.api.FrameworkAPI;
 import com.mrcrayfish.framework.api.event.FrameworkPlayerEvents;
 import com.mrcrayfish.framework.api.event.FrameworkTickEvents;
 import com.mrcrayfish.furniture.refurbished.block.FryingPanBlock;
@@ -17,7 +16,6 @@ import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModDataComponents;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.electricity.LinkManager;
-import com.mrcrayfish.furniture.refurbished.entity.Seat;
 import com.mrcrayfish.furniture.refurbished.image.PaletteImage;
 import com.mrcrayfish.furniture.refurbished.item.PackageItem;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
@@ -59,7 +57,7 @@ public class Bootstrap
     {
         // Link Manager and Delivery Service events
         FrameworkTickEvents.START_SERVER.register(server -> {
-            DeliveryService.get(server).ifPresent(DeliveryService::serverTick);
+            DeliveryService.get(server).ifPresent(service -> service.serverTick(server));
             Computer.get().getServices().forEach(IService::tick);
         });
         FrameworkTickEvents.END_PLAYER.register(player -> {

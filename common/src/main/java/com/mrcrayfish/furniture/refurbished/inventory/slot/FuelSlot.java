@@ -1,6 +1,5 @@
 package com.mrcrayfish.furniture.refurbished.inventory.slot;
 
-import com.mrcrayfish.furniture.refurbished.platform.Services;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;

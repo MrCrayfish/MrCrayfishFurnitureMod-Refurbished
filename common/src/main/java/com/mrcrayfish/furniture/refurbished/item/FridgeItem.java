@@ -1,14 +1,9 @@
 package com.mrcrayfish.furniture.refurbished.item;
 
-import com.mrcrayfish.framework.api.Environment;
-import com.mrcrayfish.framework.api.util.TaskRunner;
 import com.mrcrayfish.furniture.refurbished.block.FreezerBlock;
 import com.mrcrayfish.furniture.refurbished.block.FridgeBlock;
 import com.mrcrayfish.furniture.refurbished.block.MetalType;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -16,9 +11,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.block.Block;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
