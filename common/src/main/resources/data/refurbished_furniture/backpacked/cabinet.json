@@ -1,9 +1,9 @@
 {
     "unlock_challenge": {
         "challenge": {
-            "type": "backpacked:craft_item",
-            "crafted_item": {
-                "items": [
+            "type": "backpacked:interact_with_block",
+            "block": {
+                "blocks": [
                     "refurbished_furniture:oak_storage_cabinet",
                     "refurbished_furniture:spruce_storage_cabinet",
                     "refurbished_furniture:birch_storage_cabinet",
