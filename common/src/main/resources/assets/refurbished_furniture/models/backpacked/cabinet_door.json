@@ -1,0 +1,21 @@
+{
+	"credit": "Model by MrCrayfish (https://x.com/MrCrayfish) using Blockbench. All Rights Reserved.",
+	"textures": {
+        "texture": "refurbished_furniture:backpack/cabinet"
+	},
+	"elements": [
+		{
+			"from": [8, 3.5, 8],
+			"to": [17, 12.5, 10],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
+			"faces": {
+				"north": {"uv": [0, 0, 4.5, 4.5], "texture": "#texture"},
+				"east": {"uv": [7, 9, 8, 13.5], "texture": "#texture"},
+				"south": {"uv": [0, 4.5, 4.5, 9], "texture": "#texture"},
+				"west": {"uv": [9, 7, 10, 11.5], "texture": "#texture"},
+				"up": {"uv": [14.5, 8, 10, 7], "texture": "#texture"},
+				"down": {"uv": [14.5, 8, 10, 9], "texture": "#texture"}
+			}
+		}
+	]
+}

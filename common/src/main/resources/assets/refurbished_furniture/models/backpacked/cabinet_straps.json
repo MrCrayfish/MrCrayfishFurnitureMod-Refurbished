@@ -1,0 +1,48 @@
+{
+	"credit": "Model by MrCrayfish (https://x.com/MrCrayfish) using Blockbench. All Rights Reserved.",
+	"textures": {
+		"texture": "refurbished_furniture:backpack/cabinet"
+	},
+	"elements": [
+		{
+			"from": [5, 1, 4],
+			"to": [6, 9, 8],
+			"rotation": {"angle": 0, "axis": "y", "origin": [5, 0, 8]},
+			"faces": {
+				"north": {"uv": [8, 9, 8.5, 13], "texture": "#texture"},
+				"up": {"uv": [10.5, 11, 10, 9], "texture": "#texture"}
+			}
+		},
+		{
+			"from": [4, 1, 4],
+			"to": [5, 2, 8],
+			"shade": false,
+			"rotation": {"angle": 0, "axis": "y", "origin": [5, 1, 8]},
+			"faces": {
+				"north": {"uv": [10, 11, 10.5, 11.5], "texture": "#texture"},
+				"south": {"uv": [11, 10, 11.5, 10.5], "texture": "#texture"},
+				"west": {"uv": [10.5, 9, 12.5, 9.5], "texture": "#texture"}
+			}
+		},
+		{
+			"from": [10, 1, 4],
+			"to": [11, 9, 8],
+			"shade": false,
+			"rotation": {"angle": 0, "axis": "y", "origin": [11, 0, 8]},
+			"faces": {
+				"north": {"uv": [8.5, 9, 9, 13], "texture": "#texture"},
+				"up": {"uv": [11, 11.5, 10.5, 9.5], "texture": "#texture"}
+			}
+		},
+		{
+			"from": [11, 1, 4],
+			"to": [12, 2, 8],
+			"rotation": {"angle": 0, "axis": "y", "origin": [11, 1, 8]},
+			"faces": {
+				"north": {"uv": [11, 10.5, 11.5, 11], "texture": "#texture"},
+				"east": {"uv": [11, 9.5, 13, 10], "texture": "#texture"},
+				"south": {"uv": [11, 11, 11.5, 11.5], "texture": "#texture"}
+			}
+		}
+	]
+}

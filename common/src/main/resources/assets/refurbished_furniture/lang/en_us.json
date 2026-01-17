@@ -675,6 +675,7 @@
     "jei_category.refurbished_furniture.cutting_board_combining": "Combining",
     "jei_category.refurbished_furniture.workbench_constructing": "Constructing",
     "jei_category.refurbished_furniture.oven_baking": "Baking",
-    "jei_category.refurbished_furniture.sink_fluid_transmuting": "Fluid Transmuting"
-
+    "jei_category.refurbished_furniture.sink_fluid_transmuting": "Fluid Transmuting",
+    "backpack.refurbished_furniture.cabinet": "Storage Cabinet",
+    "backpack.refurbished_furniture.cabinet.unlock": "Craft any Storage Cabinet in MrCrayfish's Furniture Mod to unlock this backpack"
 }
