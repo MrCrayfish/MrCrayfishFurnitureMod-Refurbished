@@ -1,0 +1,135 @@
+{
+    "shelf_offset": [0, 0, -1.5],
+    "bobbing": false,
+    "display": {
+        "thirdperson_righthand": {
+            "rotation": [75, -45, 0],
+            "translation": [0.75, 6.75, 3.25]
+        },
+        "firstperson_righthand": {
+            "rotation": [0, -45, 0],
+            "translation": [-0.5, 4.5, 0.5],
+            "scale": [0.5, 0.5, 0.5]
+        },
+        "ground": {
+            "translation": [0, 4.75, -3.5]
+        },
+        "gui": {
+            "rotation": [30, 35, 0],
+            "translation": [-2.25, 5, 0],
+            "scale": [1.1, 1.1, 1.1]
+        },
+        "head": {
+            "rotation": [0, -180, 0],
+            "translation": [0, 14.5, 2.5]
+        },
+        "fixed": {
+            "rotation": [0, -180, 0],
+            "translation": [0, 3.5, 1]
+        },
+        "on_shelf": {
+            "translation": [0, 1.25, -4]
+        }
+    },
+    "renderer": {
+        "type": "backpacked:advanced",
+        "functions": [
+            {
+                "type": "backpacked:draw_model",
+                "model": "refurbished_furniture:backpacked/cabinet"
+            },
+            {
+                "type": "backpacked:push_matrix",
+                "functions": [
+                    {
+                        "type": "backpacked:translate_matrix",
+                        "x": -0.28125,
+                        "y": -0.21875,
+                        "z": 0.3125
+                    },
+                    {
+                        "type": "backpacked:conditional",
+                        "condition": {
+                            "type": "backpacked:test_value",
+                            "first": {
+                                "type": "backpacked:entity_data",
+                                "property": "attack_swing"
+                            },
+                            "second": 0.5,
+                            "comparison": "less_than_or_equal"
+                        },
+                        "functions": [
+                            {
+                                "type": "backpacked:rotate_matrix",
+                                "y": {
+                                    "type": "backpacked:and",
+                                    "first": {
+                                        "type": "backpacked:and",
+                                        "first": -35,
+                                        "second": {
+                                            "type": "backpacked:entity_data",
+                                            "property": "attack_swing"
+                                        },
+                                        "op": "multiply"
+                                    },
+                                    "second": 2,
+                                    "op": "multiply"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "backpacked:conditional",
+                        "condition": {
+                            "type": "backpacked:test_value",
+                            "first": {
+                                "type": "backpacked:entity_data",
+                                "property": "attack_swing"
+                            },
+                            "second": 0.5,
+                            "comparison": "greater_than"
+                        },
+                        "functions": [
+                            {
+                                "type": "backpacked:rotate_matrix",
+                                "y": {
+                                    "type": "backpacked:and",
+                                    "first": {
+                                        "type": "backpacked:and",
+                                        "first": {
+                                            "type": "backpacked:and",
+                                            "first": {
+                                                "type": "backpacked:and",
+                                                "first": {
+                                                    "type": "backpacked:and",
+                                                    "first": {
+                                                        "type": "backpacked:entity_data",
+                                                        "property": "attack_swing"
+                                                    },
+                                                    "second": 0.5,
+                                                    "op": "subtract"
+                                                },
+                                                "second": -1,
+                                                "op": "multiply"
+                                            },
+                                            "second": 0.5,
+                                            "op": "add"
+                                        },
+                                        "second": -35,
+                                        "op": "multiply"
+                                    },
+                                    "second": 2,
+                                    "op": "multiply"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "backpacked:draw_model",
+                        "model": "refurbished_furniture:backpacked/cabinet_door"
+                    }
+                ]
+            }
+        ]
+    }
+}

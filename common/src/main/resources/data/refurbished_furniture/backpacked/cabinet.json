@@ -1,0 +1,22 @@
+{
+    "unlock_challenge": {
+        "challenge": {
+            "type": "backpacked:craft_item",
+            "crafted_item": {
+                "items": [
+                    "refurbished_furniture:oak_storage_cabinet",
+                    "refurbished_furniture:spruce_storage_cabinet",
+                    "refurbished_furniture:birch_storage_cabinet",
+                    "refurbished_furniture:jungle_storage_cabinet",
+                    "refurbished_furniture:acacia_storage_cabinet",
+                    "refurbished_furniture:dark_oak_storage_cabinet",
+                    "refurbished_furniture:mangrove_storage_cabinet",
+                    "refurbished_furniture:cherry_storage_cabinet",
+                    "refurbished_furniture:crimson_storage_cabinet",
+                    "refurbished_furniture:warped_storage_cabinet"
+                ]
+            },
+            "count": 1
+        }
+    }
+}
