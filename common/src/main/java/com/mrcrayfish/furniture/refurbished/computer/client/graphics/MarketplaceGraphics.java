@@ -72,12 +72,12 @@ public class MarketplaceGraphics extends DisplayableProgram<Marketplace>
         {
             this.program = program;
             this.itemList = this.addWidget(new ComputerSelectionList<>(program.getWidth() - 10, program.getHeight() - 26, 0, 100, 30));
-            this.itemList.children().add(new Item());
-            this.itemList.children().add(new Item());
-            this.itemList.children().add(new Item());
-            this.itemList.children().add(new Item());
-            this.itemList.children().add(new Item());
-            this.itemList.children().add(new Item());
+            this.itemList.addEntry(new Item());
+            this.itemList.addEntry(new Item());
+            this.itemList.addEntry(new Item());
+            this.itemList.addEntry(new Item());
+            this.itemList.addEntry(new Item());
+            this.itemList.addEntry(new Item());
         }
 
         @Override

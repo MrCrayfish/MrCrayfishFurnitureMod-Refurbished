@@ -75,6 +75,12 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
     }
 
     @Override
+    public int addEntry(E e)
+    {
+        return super.addEntry(e);
+    }
+
+    @Override
     public boolean isMouseOver(double mouseX, double mouseY)
     {
         return mouseY >= this.getY() && mouseY <= this.getY() + this.getHeight() && mouseX >= this.getX() && mouseX <= this.getX() + this.getWidth();
