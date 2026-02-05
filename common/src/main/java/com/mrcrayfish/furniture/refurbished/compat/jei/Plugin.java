@@ -2,15 +2,7 @@ package com.mrcrayfish.furniture.refurbished.compat.jei;
 
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.ComputerScreen;
-import com.mrcrayfish.furniture.refurbished.compat.jei.categories.CuttingBoardCombiningCategory;
-import com.mrcrayfish.furniture.refurbished.compat.jei.categories.CuttingBoardSlicingCategory;
-import com.mrcrayfish.furniture.refurbished.compat.jei.categories.FreezerSolidifyingCategory;
-import com.mrcrayfish.furniture.refurbished.compat.jei.categories.FryingPanCookingCategory;
-import com.mrcrayfish.furniture.refurbished.compat.jei.categories.GrillCookingCategory;
-import com.mrcrayfish.furniture.refurbished.compat.jei.categories.MicrowaveHeatingCategory;
-import com.mrcrayfish.furniture.refurbished.compat.jei.categories.OvenBakingCategory;
-import com.mrcrayfish.furniture.refurbished.compat.jei.categories.ToasterToastingCategory;
-import com.mrcrayfish.furniture.refurbished.compat.jei.categories.WorkbenchConstructingCategory;
+import com.mrcrayfish.furniture.refurbished.compat.jei.categories.*;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
@@ -33,14 +25,17 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeInput;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,24 +48,15 @@ import java.util.stream.StreamSupport;
 /**
  * Author: MrCrayfish
  */
-/*
- * TODO add back JEI support for Fabric
- * Recipes need to be synced on 1.21.5+, Fabric doesn't seem to have the option yet
- *
- * Remember to add back fabric entrypoint
- * "jei_mod_plugin": [
- *     "com.mrcrayfish.furniture.refurbished.compat.jei.Plugin"
- * ]
- */
 @JeiPlugin
 public class Plugin implements IModPlugin
 {
-    public static final ResourceLocation TEXTURES = Utils.resource("textures/gui/jei.png");
-    public static final ResourceLocation TEXTURES_2 = Utils.resource("textures/gui/jei2.png");
+    public static final Identifier TEXTURES = Utils.resource("textures/gui/jei.png");
+    public static final Identifier TEXTURES_2 = Utils.resource("textures/gui/jei2.png");
     public static final DecimalFormat FORMATTER = new DecimalFormat("0.##s");
 
     @Override
-    public ResourceLocation getPluginUid()
+    public Identifier getPluginUid()
     {
         return Utils.resource("plugin");
     }
@@ -155,7 +141,7 @@ public class Plugin implements IModPlugin
             holders.addAll(this.getRecipes(RecipeType.CAMPFIRE_COOKING).stream().map(holder -> {
                 return Pair.of(holder.id(), ProcessingRecipe.Item.fromCookingRecipe(holder.value(), getRegistryAccess()));
             }).map(pair -> {
-                ResourceKey<Recipe<?>> key = ResourceKey.create(Registries.RECIPE, pair.left().location());
+                ResourceKey<Recipe<?>> key = ResourceKey.create(Registries.RECIPE, pair.left().identifier());
                 return new RecipeHolder<>(key, pair.right());
             }).toList());
         }
