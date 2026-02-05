@@ -229,8 +229,8 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
             {
                 if(!simulate)
                 {
-                    stack.shrink(1);
                     ItemStack remainingStack = stack.getItem().getCraftingRemainder();
+                    stack.shrink(1);
                     if(!remainingStack.isEmpty())
                     {
                         if(stack.isEmpty())
