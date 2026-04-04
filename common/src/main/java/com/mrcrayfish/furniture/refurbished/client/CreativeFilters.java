@@ -1,5 +1,6 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
+import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.framework.api.event.client.FrameworkClientConnectionEvents;
 import com.mrcrayfish.framework.api.event.client.FrameworkScreenEvents;
@@ -33,6 +34,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish
@@ -64,15 +66,15 @@ public class CreativeFilters
     private CreativeFilters()
     {
         ImmutableList.Builder<FilterCategory> builder = ImmutableList.builder();
-        builder.add(new FilterCategory(ModTags.Items.GENERAL, new ItemStack(ModBlocks.CHAIR_OAK.get())));
-        builder.add(new FilterCategory(ModTags.Items.BEDROOM, new ItemStack(ModBlocks.DRAWER_CHERRY.get())));
-        builder.add(new FilterCategory(ModTags.Items.KITCHEN, new ItemStack(ModBlocks.KITCHEN_SINK_YELLOW.get())));
-        builder.add(new FilterCategory(ModTags.Items.OUTDOORS, new ItemStack(ModBlocks.GRILL_RED.get())));
-        builder.add(new FilterCategory(ModTags.Items.BATHROOM, new ItemStack(ModBlocks.TOILET_OAK.get())));
-        builder.add(new FilterCategory(ModTags.Items.ELECTRONICS, new ItemStack(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get())));
-        builder.add(new FilterCategory(ModTags.Items.STORAGE, new ItemStack(ModBlocks.CRATE_BIRCH.get())));
-        builder.add(new FilterCategory(ModTags.Items.FOOD, new ItemStack(ModItems.SWEET_BERRY_JAM_TOAST.get())));
-        builder.add(new FilterCategory(ModTags.Items.ITEMS, new ItemStack(ModItems.SPATULA.get())));
+        builder.add(new FilterCategory(ModTags.Items.GENERAL, Suppliers.memoize(() -> new ItemStack(ModBlocks.CHAIR_OAK.get()))));
+        builder.add(new FilterCategory(ModTags.Items.BEDROOM, Suppliers.memoize(() -> new ItemStack(ModBlocks.DRAWER_CHERRY.get()))));
+        builder.add(new FilterCategory(ModTags.Items.KITCHEN, Suppliers.memoize(() -> new ItemStack(ModBlocks.KITCHEN_SINK_YELLOW.get()))));
+        builder.add(new FilterCategory(ModTags.Items.OUTDOORS, Suppliers.memoize(() -> new ItemStack(ModBlocks.GRILL_RED.get()))));
+        builder.add(new FilterCategory(ModTags.Items.BATHROOM, Suppliers.memoize(() -> new ItemStack(ModBlocks.TOILET_OAK.get()))));
+        builder.add(new FilterCategory(ModTags.Items.ELECTRONICS, Suppliers.memoize(() -> new ItemStack(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get()))));
+        builder.add(new FilterCategory(ModTags.Items.STORAGE, Suppliers.memoize(() -> new ItemStack(ModBlocks.CRATE_BIRCH.get()))));
+        builder.add(new FilterCategory(ModTags.Items.FOOD, Suppliers.memoize(() -> new ItemStack(ModItems.SWEET_BERRY_JAM_TOAST.get()))));
+        builder.add(new FilterCategory(ModTags.Items.ITEMS, Suppliers.memoize(() -> new ItemStack(ModItems.SPATULA.get()))));
         this.categories = builder.build();
 
         /* Initializes and injects widgets into the creative mode screen for the filter system */
@@ -261,12 +263,12 @@ public class CreativeFilters
     public static class FilterCategory
     {
         private final TagKey<Item> tag;
-        private final ItemStack icon;
+        private final Supplier<ItemStack> icon;
         private List<Item> items;
         private boolean enabled = true;
         private @Nullable FilterTab filterTab;
 
-        public FilterCategory(TagKey<Item> tag, ItemStack icon)
+        public FilterCategory(TagKey<Item> tag, Supplier<ItemStack> icon)
         {
             this.tag = tag;
             this.icon = icon;
@@ -285,7 +287,7 @@ public class CreativeFilters
          */
         public ItemStack getIcon()
         {
-            return this.icon;
+            return this.icon.get();
         }
 
         /**
