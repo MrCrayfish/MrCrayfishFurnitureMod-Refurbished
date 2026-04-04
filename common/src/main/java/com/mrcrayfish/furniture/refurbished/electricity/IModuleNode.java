@@ -54,8 +54,7 @@ public interface IModuleNode extends IElectricityNode
         }
     }
 
-    @Override
-    default void earlyNodeTick(Level level)
+    default void clearPowerSources()
     {
         this.getPowerSources().clear();
     }
