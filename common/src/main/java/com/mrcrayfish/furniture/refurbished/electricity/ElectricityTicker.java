@@ -44,20 +44,12 @@ public final class ElectricityTicker
     }
 
     /**
-     * Called before block entities. This method ticks all source nodes that are currently loaded.
-     * Electricity nodes that no longer exist or are unloaded are automatically removed.
-     */
-    public void earlyTick()
-    {
-        this.tickSet(this.modules, this::getModuleNode, IElectricityNode::earlyNodeTick);
-        this.tickSet(this.sources, this::getSourceNode, IElectricityNode::earlyNodeTick);
-    }
-
-    /**
      * A standard tick at the same time block entities are ticked
      */
     public void tick()
     {
+        this.tickSet(this.modules, this::getModuleNode, (node, level) -> node.clearPowerSources());
+        this.tickSet(this.sources, this::getSourceNode, IElectricityNode::earlyNodeTick);
         this.tickSet(this.modules, this::getModuleNode, IModuleNode::moduleTick);
     }
 
