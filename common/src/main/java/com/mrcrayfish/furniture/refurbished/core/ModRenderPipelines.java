@@ -21,6 +21,7 @@ public class ModRenderPipelines
             .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
             .withSampler("Sampler0")
             .withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS)
+            .withDepthStencilState(DepthStencilState.DEFAULT)
             .build();
 
     public static final RenderPipeline ELECTRICITY_BLIT = RenderPipeline.builder()
@@ -29,7 +30,6 @@ public class ModRenderPipelines
             .withFragmentShader("core/blit_screen")
             .withSampler("InSampler")
             .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
-            .withDepthStencilState(new DepthStencilState(CompareOp.ALWAYS_PASS, false)) // TODO 26.1.1 test
             .withVertexFormat(DefaultVertexFormat.EMPTY, VertexFormat.Mode.TRIANGLES)
             .build();
 
