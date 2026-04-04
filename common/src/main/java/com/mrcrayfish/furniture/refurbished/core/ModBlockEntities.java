@@ -14,11 +14,11 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 @RegistryContainer
 public class ModBlockEntities
 {
-    public static final RegistryEntry<BlockEntityType<WorkbenchBlockEntity>> WORKBENCH = RegistryEntry.blockEntity(Utils.resource("workbench"), WorkbenchBlockEntity::new, () -> new Block[] {
+    public static final RegistryEntry<BlockEntityType<WorkbenchBlockEntity>> WORKBENCH = RegistryEntry.blockEntity(Utils.id("workbench"), WorkbenchBlockEntity::new, () -> new Block[] {
             ModBlocks.WORKBENCH.get(),
     });
 
-    public static final RegistryEntry<BlockEntityType<DrawerBlockEntity>> DRAWER = RegistryEntry.blockEntity(Utils.resource("drawer"), DrawerBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<DrawerBlockEntity>> DRAWER = RegistryEntry.blockEntity(Utils.id("drawer"), DrawerBlockEntity::new, () -> new Block[]{
             ModBlocks.DRAWER_OAK.get(),
             ModBlocks.DRAWER_SPRUCE.get(),
             ModBlocks.DRAWER_BIRCH.get(),
@@ -32,7 +32,7 @@ public class ModBlockEntities
             ModBlocks.DRAWER_PALE_OAK.get()
     });
 
-    public static final RegistryEntry<BlockEntityType<CrateBlockEntity>> CRATE = RegistryEntry.blockEntity(Utils.resource("crate"), CrateBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<CrateBlockEntity>> CRATE = RegistryEntry.blockEntity(Utils.id("crate"), CrateBlockEntity::new, () -> new Block[]{
             ModBlocks.CRATE_OAK.get(),
             ModBlocks.CRATE_SPRUCE.get(),
             ModBlocks.CRATE_BIRCH.get(),
@@ -46,7 +46,7 @@ public class ModBlockEntities
             ModBlocks.CRATE_PALE_OAK.get()
     });
 
-    public static final RegistryEntry<BlockEntityType<KitchenDrawerBlockEntity>> KITCHEN_DRAWER = RegistryEntry.blockEntity(Utils.resource("kitchen_drawer"), KitchenDrawerBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<KitchenDrawerBlockEntity>> KITCHEN_DRAWER = RegistryEntry.blockEntity(Utils.id("kitchen_drawer"), KitchenDrawerBlockEntity::new, () -> new Block[]{
             ModBlocks.KITCHEN_DRAWER_OAK.get(),
             ModBlocks.KITCHEN_DRAWER_SPRUCE.get(),
             ModBlocks.KITCHEN_DRAWER_BIRCH.get(),
@@ -76,7 +76,7 @@ public class ModBlockEntities
             ModBlocks.KITCHEN_DRAWER_BLACK.get(),
     });
 
-    public static final RegistryEntry<BlockEntityType<KitchenSinkBlockEntity>> KITCHEN_SINK = RegistryEntry.blockEntity(Utils.resource("kitchen_sink"), KitchenSinkBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<KitchenSinkBlockEntity>> KITCHEN_SINK = RegistryEntry.blockEntity(Utils.id("kitchen_sink"), KitchenSinkBlockEntity::new, () -> new Block[]{
             ModBlocks.KITCHEN_SINK_OAK.get(),
             ModBlocks.KITCHEN_SINK_SPRUCE.get(),
             ModBlocks.KITCHEN_SINK_BIRCH.get(),
@@ -106,7 +106,7 @@ public class ModBlockEntities
             ModBlocks.KITCHEN_SINK_BLACK.get(),
     });
 
-    public static final RegistryEntry<BlockEntityType<GrillBlockEntity>> GRILL = RegistryEntry.blockEntity(Utils.resource("grill"), GrillBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<GrillBlockEntity>> GRILL = RegistryEntry.blockEntity(Utils.id("grill"), GrillBlockEntity::new, () -> new Block[]{
             ModBlocks.GRILL_WHITE.get(),
             ModBlocks.GRILL_ORANGE.get(),
             ModBlocks.GRILL_MAGENTA.get(),
@@ -125,7 +125,7 @@ public class ModBlockEntities
             ModBlocks.GRILL_BLACK.get(),
     });
 
-    public static final RegistryEntry<BlockEntityType<CoolerBlockEntity>> COOLER = RegistryEntry.blockEntity(Utils.resource("cooler"), CoolerBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<CoolerBlockEntity>> COOLER = RegistryEntry.blockEntity(Utils.id("cooler"), CoolerBlockEntity::new, () -> new Block[]{
             ModBlocks.COOLER_WHITE.get(),
             ModBlocks.COOLER_ORANGE.get(),
             ModBlocks.COOLER_MAGENTA.get(),
@@ -144,37 +144,37 @@ public class ModBlockEntities
             ModBlocks.COOLER_BLACK.get(),
     });
 
-    public static final RegistryEntry<BlockEntityType<FridgeBlockEntity>> FRIDGE = RegistryEntry.blockEntity(Utils.resource("fridge"), FridgeBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<FridgeBlockEntity>> FRIDGE = RegistryEntry.blockEntity(Utils.id("fridge"), FridgeBlockEntity::new, () -> new Block[]{
             ModBlocks.FRIDGE_LIGHT.get(),
             ModBlocks.FRIDGE_DARK.get()
     });
 
-    public static final RegistryEntry<BlockEntityType<FreezerBlockEntity>> FREEZER = RegistryEntry.blockEntity(Utils.resource("freezer"), Services.BLOCK_ENTITY::createFreezerBlockEntity, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<FreezerBlockEntity>> FREEZER = RegistryEntry.blockEntity(Utils.id("freezer"), Services.BLOCK_ENTITY::createFreezerBlockEntity, () -> new Block[]{
             ModBlocks.FREEZER_LIGHT.get(),
             ModBlocks.FREEZER_DARK.get()
     });
 
-    public static final RegistryEntry<BlockEntityType<ToasterBlockEntity>> TOASTER = RegistryEntry.blockEntity(Utils.resource("toaster"), ToasterBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<ToasterBlockEntity>> TOASTER = RegistryEntry.blockEntity(Utils.id("toaster"), ToasterBlockEntity::new, () -> new Block[]{
             ModBlocks.TOASTER_LIGHT.get(),
             ModBlocks.TOASTER_DARK.get()
     });
 
-    public static final RegistryEntry<BlockEntityType<MicrowaveBlockEntity>> MICROWAVE = RegistryEntry.blockEntity(Utils.resource("microwave"), MicrowaveBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<MicrowaveBlockEntity>> MICROWAVE = RegistryEntry.blockEntity(Utils.id("microwave"), MicrowaveBlockEntity::new, () -> new Block[]{
             ModBlocks.MICROWAVE_LIGHT.get(),
             ModBlocks.MICROWAVE_DARK.get()
     });
 
-    public static final RegistryEntry<BlockEntityType<StoveBlockEntity>> STOVE = RegistryEntry.blockEntity(Utils.resource("stove"), Services.BLOCK_ENTITY::createStoveBlockEntity, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<StoveBlockEntity>> STOVE = RegistryEntry.blockEntity(Utils.id("stove"), Services.BLOCK_ENTITY::createStoveBlockEntity, () -> new Block[]{
             ModBlocks.STOVE_LIGHT.get(),
             ModBlocks.STOVE_DARK.get()
     });
 
-    public static final RegistryEntry<BlockEntityType<RangeHoodBlockEntity>> RANGE_HOOD = RegistryEntry.blockEntity(Utils.resource("range_hood"), RangeHoodBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<RangeHoodBlockEntity>> RANGE_HOOD = RegistryEntry.blockEntity(Utils.id("range_hood"), RangeHoodBlockEntity::new, () -> new Block[]{
             ModBlocks.RANGE_HOOD_LIGHT.get(),
             ModBlocks.RANGE_HOOD_DARK.get()
     });
 
-    public static final RegistryEntry<BlockEntityType<CuttingBoardBlockEntity>> CUTTING_BOARD = RegistryEntry.blockEntity(Utils.resource("cutting_board"), CuttingBoardBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<CuttingBoardBlockEntity>> CUTTING_BOARD = RegistryEntry.blockEntity(Utils.id("cutting_board"), CuttingBoardBlockEntity::new, () -> new Block[]{
             ModBlocks.CUTTING_BOARD_OAK.get(),
             ModBlocks.CUTTING_BOARD_SPRUCE.get(),
             ModBlocks.CUTTING_BOARD_BIRCH.get(),
@@ -188,11 +188,11 @@ public class ModBlockEntities
             ModBlocks.CUTTING_BOARD_PALE_OAK.get(),
     });
 
-    public static final RegistryEntry<BlockEntityType<FryingPanBlockEntity>> FRYING_PAN = RegistryEntry.blockEntity(Utils.resource("frying_pan"), FryingPanBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<FryingPanBlockEntity>> FRYING_PAN = RegistryEntry.blockEntity(Utils.id("frying_pan"), FryingPanBlockEntity::new, () -> new Block[]{
             ModBlocks.FRYING_PAN.get()
     });
 
-    public static final RegistryEntry<BlockEntityType<MailboxBlockEntity>> MAIL_BOX = RegistryEntry.blockEntity(Utils.resource("mail_box"), MailboxBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<MailboxBlockEntity>> MAIL_BOX = RegistryEntry.blockEntity(Utils.id("mail_box"), MailboxBlockEntity::new, () -> new Block[]{
             ModBlocks.MAIL_BOX_OAK.get(),
             ModBlocks.MAIL_BOX_SPRUCE.get(),
             ModBlocks.MAIL_BOX_BIRCH.get(),
@@ -206,20 +206,20 @@ public class ModBlockEntities
             ModBlocks.MAIL_BOX_PALE_OAK.get()
     });
 
-    public static final RegistryEntry<BlockEntityType<PostBoxBlockEntity>> POST_BOX = RegistryEntry.blockEntity(Utils.resource("post_box"), PostBoxBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<PostBoxBlockEntity>> POST_BOX = RegistryEntry.blockEntity(Utils.id("post_box"), PostBoxBlockEntity::new, () -> new Block[]{
             ModBlocks.POST_BOX.get()
     });
 
-    public static final RegistryEntry<BlockEntityType<DoorbellBlockEntity>> DOORBELL = RegistryEntry.blockEntity(Utils.resource("doorbell"), DoorbellBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<DoorbellBlockEntity>> DOORBELL = RegistryEntry.blockEntity(Utils.id("doorbell"), DoorbellBlockEntity::new, () -> new Block[]{
             ModBlocks.DOORBELL.get(),
     });
 
-    public static final RegistryEntry<BlockEntityType<LightswitchBlockEntity>> LIGHTSWITCH = RegistryEntry.blockEntity(Utils.resource("lightswitch"), LightswitchBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<LightswitchBlockEntity>> LIGHTSWITCH = RegistryEntry.blockEntity(Utils.id("lightswitch"), LightswitchBlockEntity::new, () -> new Block[]{
             ModBlocks.LIGHTSWITCH_LIGHT.get(),
             ModBlocks.LIGHTSWITCH_DARK.get()
     });
 
-    public static final RegistryEntry<BlockEntityType<LightingBlockEntity>> LIGHTING = RegistryEntry.blockEntity(Utils.resource("ceiling_light"), LightingBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<LightingBlockEntity>> LIGHTING = RegistryEntry.blockEntity(Utils.id("ceiling_light"), LightingBlockEntity::new, () -> new Block[]{
             ModBlocks.CEILING_LIGHT_LIGHT.get(),
             ModBlocks.CEILING_LIGHT_DARK.get(),
             ModBlocks.LAMP_WHITE.get(),
@@ -240,12 +240,12 @@ public class ModBlockEntities
             ModBlocks.LAMP_BLACK.get()
     });
 
-    public static final RegistryEntry<BlockEntityType<ElectricityGeneratorBlockEntity>> ELECTRICITY_GENERATOR = RegistryEntry.blockEntity(Utils.resource("electricity_generator"), ElectricityGeneratorBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<ElectricityGeneratorBlockEntity>> ELECTRICITY_GENERATOR = RegistryEntry.blockEntity(Utils.id("electricity_generator"), ElectricityGeneratorBlockEntity::new, () -> new Block[]{
             ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get(),
             ModBlocks.ELECTRICITY_GENERATOR_DARK.get()
     });
 
-    public static final RegistryEntry<BlockEntityType<StorageJarBlockEntity>> STORAGE_JAR = RegistryEntry.blockEntity(Utils.resource("storage_jar"), StorageJarBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<StorageJarBlockEntity>> STORAGE_JAR = RegistryEntry.blockEntity(Utils.id("storage_jar"), StorageJarBlockEntity::new, () -> new Block[]{
             ModBlocks.STORAGE_JAR_OAK.get(),
             ModBlocks.STORAGE_JAR_SPRUCE.get(),
             ModBlocks.STORAGE_JAR_BIRCH.get(),
@@ -259,11 +259,11 @@ public class ModBlockEntities
             ModBlocks.STORAGE_JAR_PALE_OAK.get()
     });
 
-    public static final RegistryEntry<BlockEntityType<RecycleBinBlockEntity>> RECYCLE_BIN = RegistryEntry.blockEntity(Utils.resource("recycle_bin"), Services.BLOCK_ENTITY::createRecycleBinBlockEntity, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<RecycleBinBlockEntity>> RECYCLE_BIN = RegistryEntry.blockEntity(Utils.id("recycle_bin"), Services.BLOCK_ENTITY::createRecycleBinBlockEntity, () -> new Block[]{
             ModBlocks.RECYCLE_BIN.get()
     });
 
-    public static final RegistryEntry<BlockEntityType<CeilingFanBlockEntity>> CEILING_FAN = RegistryEntry.blockEntity(Utils.resource("ceiling_fan"), CeilingFanBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<CeilingFanBlockEntity>> CEILING_FAN = RegistryEntry.blockEntity(Utils.id("ceiling_fan"), CeilingFanBlockEntity::new, () -> new Block[]{
             ModBlocks.CEILING_FAN_OAK_LIGHT.get(),
             ModBlocks.CEILING_FAN_SPRUCE_LIGHT.get(),
             ModBlocks.CEILING_FAN_BIRCH_LIGHT.get(),
@@ -288,7 +288,7 @@ public class ModBlockEntities
             ModBlocks.CEILING_FAN_PALE_OAK_DARK.get()
     });
 
-    public static final RegistryEntry<BlockEntityType<StorageCabinetBlockEntity>> STORAGE_CABINET = RegistryEntry.blockEntity(Utils.resource("cabinet"), StorageCabinetBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<StorageCabinetBlockEntity>> STORAGE_CABINET = RegistryEntry.blockEntity(Utils.id("cabinet"), StorageCabinetBlockEntity::new, () -> new Block[]{
             ModBlocks.STORAGE_CABINET_OAK.get(),
             ModBlocks.STORAGE_CABINET_SPRUCE.get(),
             ModBlocks.STORAGE_CABINET_BIRCH.get(),
@@ -329,11 +329,11 @@ public class ModBlockEntities
             ModBlocks.KITCHEN_STORAGE_CABINET_BLACK.get()
     });
 
-    public static final RegistryEntry<BlockEntityType<PlateBlockEntity>> PLATE = RegistryEntry.blockEntity(Utils.resource("plate"), PlateBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<PlateBlockEntity>> PLATE = RegistryEntry.blockEntity(Utils.id("plate"), PlateBlockEntity::new, () -> new Block[]{
             ModBlocks.PLATE.get()
     });
 
-    public static final RegistryEntry<BlockEntityType<BasinBlockEntity>> BASIN = RegistryEntry.blockEntity(Utils.resource("basin"), BasinBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<BasinBlockEntity>> BASIN = RegistryEntry.blockEntity(Utils.id("basin"), BasinBlockEntity::new, () -> new Block[]{
             ModBlocks.BASIN_OAK.get(),
             ModBlocks.BASIN_SPRUCE.get(),
             ModBlocks.BASIN_BIRCH.get(),
@@ -363,7 +363,7 @@ public class ModBlockEntities
             ModBlocks.BASIN_BLACK.get()
     });
 
-    public static final RegistryEntry<BlockEntityType<ToiletBlockEntity>> TOILET = RegistryEntry.blockEntity(Utils.resource("toilet"), ToiletBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<ToiletBlockEntity>> TOILET = RegistryEntry.blockEntity(Utils.id("toilet"), ToiletBlockEntity::new, () -> new Block[]{
             ModBlocks.TOILET_OAK.get(),
             ModBlocks.TOILET_SPRUCE.get(),
             ModBlocks.TOILET_BIRCH.get(),
@@ -393,7 +393,7 @@ public class ModBlockEntities
             ModBlocks.TOILET_BLACK.get()
     });
 
-    public static final RegistryEntry<BlockEntityType<BathBlockEntity>> BATH = RegistryEntry.blockEntity(Utils.resource("bath"), BathBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<BathBlockEntity>> BATH = RegistryEntry.blockEntity(Utils.id("bath"), BathBlockEntity::new, () -> new Block[]{
             ModBlocks.BATH_OAK.get(),
             ModBlocks.BATH_SPRUCE.get(),
             ModBlocks.BATH_BIRCH.get(),
@@ -423,15 +423,15 @@ public class ModBlockEntities
             ModBlocks.BATH_BLACK.get()
     });
 
-    public static final RegistryEntry<BlockEntityType<TelevisionBlockEntity>> TELEVISION = RegistryEntry.blockEntity(Utils.resource("television"), TelevisionBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<TelevisionBlockEntity>> TELEVISION = RegistryEntry.blockEntity(Utils.id("television"), TelevisionBlockEntity::new, () -> new Block[]{
             ModBlocks.TELEVISION.get()
     });
 
-    public static final RegistryEntry<BlockEntityType<ComputerBlockEntity>> COMPUTER = RegistryEntry.blockEntity(Utils.resource("computer"), ComputerBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<ComputerBlockEntity>> COMPUTER = RegistryEntry.blockEntity(Utils.id("computer"), ComputerBlockEntity::new, () -> new Block[]{
             ModBlocks.COMPUTER.get()
     });
 
-    public static final RegistryEntry<BlockEntityType<DoorMatBlockEntity>> DOOR_MAT = RegistryEntry.blockEntity(Utils.resource("door_mat"), DoorMatBlockEntity::new, () -> new Block[]{
+    public static final RegistryEntry<BlockEntityType<DoorMatBlockEntity>> DOOR_MAT = RegistryEntry.blockEntity(Utils.id("door_mat"), DoorMatBlockEntity::new, () -> new Block[]{
             ModBlocks.DOOR_MAT.get()
     });
 }

@@ -21,13 +21,16 @@ import com.mrcrayfish.furniture.refurbished.item.PackageItem;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageToolAnimation;
+import com.mrcrayfish.furniture.refurbished.util.reflection.ReflectedMethod;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.cauldron.CauldronInteraction;
+import net.minecraft.core.cauldron.CauldronInteractions;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DispenserBlock;
@@ -39,6 +42,8 @@ import net.minecraft.world.phys.Vec3;
  */
 public class Bootstrap
 {
+    private static final ReflectedMethod<CauldronInteraction.Dispatcher, Void> DISPATCHER_PUT = new ReflectedMethod<>(CauldronInteraction.Dispatcher.class, "put", Item.class, CauldronInteraction.class);
+
     public static void init()
     {
         registerDispenserBehaviours();
@@ -46,10 +51,10 @@ public class Bootstrap
         registerFrameworkEvents();
 
         Computer computer = Computer.get();
-        computer.installProgram(Utils.resource("paddle_ball"), PaddleBall::new);
-        computer.installProgram(Utils.resource("home_control"), HomeControl::new);
-        computer.installProgram(Utils.resource("marketplace"), Marketplace::new);
-        computer.installProgram(Utils.resource("coin_miner"), CoinMiner::new);
+        computer.installProgram(Utils.id("paddle_ball"), PaddleBall::new);
+        computer.installProgram(Utils.id("home_control"), HomeControl::new);
+        computer.installProgram(Utils.id("marketplace"), Marketplace::new);
+        computer.installProgram(Utils.id("coin_miner"), CoinMiner::new);
         computer.installService(PaddleBall.SERVICE);
     }
 
@@ -122,7 +127,7 @@ public class Bootstrap
         DispenserBlock.registerBehavior(ModItems.PACKAGE::get, (source, stack) -> {
             Direction direction = source.state().getValue(DispenserBlock.FACING);
             Vec3 pos = source.pos().relative(direction).getCenter();
-            PackageItem.getPackagedItems(stack).stream().forEach(s -> {
+            PackageItem.getPackagedItems(stack).nonEmptyItemCopyStream().forEach(s -> {
                 Containers.dropItemStack(source.level(), pos.x, pos.y, pos.z, s);
             });
             return ItemStack.EMPTY;
@@ -132,7 +137,7 @@ public class Bootstrap
     private static void registerCauldronBehaviours()
     {
         // Adds the ability to remove the art from door mats by interacting with a water cauldron
-        CauldronInteraction.WATER.map().put(ModBlocks.DOOR_MAT.get().asItem(), (state, level, pos, player, hand, stack) -> {
+        DISPATCHER_PUT.invoke(CauldronInteractions.WATER, ModBlocks.DOOR_MAT.get().asItem(), (CauldronInteraction) (state, level, pos, player, hand, stack) -> {
             Block block = Block.byItem(stack.getItem());
             if(block == ModBlocks.DOOR_MAT.get()) {
                 PaletteImage image = stack.get(ModDataComponents.PALETTE_IMAGE.get());

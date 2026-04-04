@@ -66,9 +66,9 @@ import java.util.function.Consumer;
 public final class ElectricityRenderer implements ResourceManagerReloadListener
 {
     public static final String PASS_NAME = "refurbished_furniture_electricity";
-    public static final Identifier ID = Utils.resource("electricity_renderer");
-    private static final Identifier POWERABLE_AREA = Utils.resource("textures/misc/powerable_area.png");
-    private static final Identifier UNPOWERABLE_AREA = Utils.resource("textures/misc/unpowerable_area.png");
+    public static final Identifier ID = Utils.id("electricity_renderer");
+    private static final Identifier POWERABLE_AREA = Utils.id("textures/misc/powerable_area.png");
+    private static final Identifier UNPOWERABLE_AREA = Utils.id("textures/misc/unpowerable_area.png");
 
     private static ElectricityRenderer instance;
 

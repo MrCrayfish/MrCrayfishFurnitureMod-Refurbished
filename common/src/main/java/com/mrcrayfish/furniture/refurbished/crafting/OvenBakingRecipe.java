@@ -6,6 +6,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModRecipeSerializers;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.display.OvenRecipeDisplay;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -17,9 +18,9 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class OvenBakingRecipe extends ProcessingRecipe.ItemWithCount
+public class OvenBakingRecipe extends ProcessingRecipe.Item
 {
-    public OvenBakingRecipe(Category category, Ingredient ingredient, ItemStack result, int time)
+    public OvenBakingRecipe(Category category, Ingredient ingredient, ItemStackTemplate result, int time)
     {
         super(ModRecipeTypes.OVEN_BAKING.get(), category, ingredient, result, time);
     }

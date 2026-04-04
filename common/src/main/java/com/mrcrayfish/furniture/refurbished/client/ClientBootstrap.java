@@ -30,12 +30,14 @@ import com.mrcrayfish.furniture.refurbished.crafting.ProcessingRecipe;
 import com.mrcrayfish.furniture.refurbished.image.TextureCache;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
-import net.minecraft.client.renderer.BiomeColors;
+import net.minecraft.client.color.block.BlockTintSources;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.FoliageColor;
+
+import java.util.List;
 
 /**
  * Author: MrCrayfish
@@ -302,36 +304,19 @@ public class ClientBootstrap
         register.apply(ModParticleTypes.TAP_WATER.get(), TapWaterParticle.Provider::new);
     }
 
-    public static void registerBlockColors(BlockColorsRegister register)
+    public static void registerBlockTintSources(BlockTintSourceRegister register)
     {
-        register.apply((state, reader, pos, index) -> {
-            return reader != null && pos != null ? BiomeColors.getAverageFoliageColor(reader, pos) : FoliageColor.FOLIAGE_DEFAULT;
-        }, ModBlocks.HEDGE_OAK.get(), ModBlocks.HEDGE_JUNGLE.get(), ModBlocks.HEDGE_ACACIA.get(), ModBlocks.HEDGE_DARK_OAK.get());
-
-        register.apply((state, reader, pos, i) -> {
-            return FoliageColor.FOLIAGE_EVERGREEN;
-        }, ModBlocks.HEDGE_SPRUCE.get());
-
-        register.apply((state, reader, pos, i) -> {
-            return FoliageColor.FOLIAGE_BIRCH;
-        }, ModBlocks.HEDGE_BIRCH.get());
-
-        register.apply((state, reader, pos, i) -> {
-            return FoliageColor.FOLIAGE_MANGROVE;
-        }, ModBlocks.HEDGE_MANGROVE.get());
-
-        register.apply((state, reader, pos, i) -> {
-            if(state.hasProperty(StoveBlock.LIT) && state.getValue(StoveBlock.LIT)) {
-                return 0xFFCBCB;
-            }
-            return 0xFFFFFF;
-        }, ModBlocks.STOVE_LIGHT.get(), ModBlocks.STOVE_DARK.get());
+        register.apply(List.of(BlockTintSources.foliage()), ModBlocks.HEDGE_OAK.get(), ModBlocks.HEDGE_JUNGLE.get(), ModBlocks.HEDGE_ACACIA.get(), ModBlocks.HEDGE_DARK_OAK.get());
+        register.apply(List.of(BlockTintSources.constant(FoliageColor.FOLIAGE_EVERGREEN)), ModBlocks.HEDGE_SPRUCE.get());
+        register.apply(List.of(BlockTintSources.constant(FoliageColor.FOLIAGE_BIRCH)), ModBlocks.HEDGE_BIRCH.get());
+        register.apply(List.of(BlockTintSources.constant(FoliageColor.FOLIAGE_MANGROVE)), ModBlocks.HEDGE_MANGROVE.get());
+        register.apply(List.of(state -> state.hasProperty(StoveBlock.LIT) && state.getValue(StoveBlock.LIT) ? 0xFFFFCBCB : 0xFFFFFFFF), ModBlocks.STOVE_LIGHT.get(), ModBlocks.STOVE_DARK.get());
     }
 
     public static void registerHudOverlays(HudOverlayRegister register)
     {
-        register.apply(Utils.resource("power_indicator"), new NodeIndicatorOverlay());
-        register.apply(Utils.resource("cutting_board_helper"), new CuttingBoardHelperOverlay());
+        register.apply(Utils.id("power_indicator"), new NodeIndicatorOverlay());
+        register.apply(Utils.id("cutting_board_helper"), new CuttingBoardHelperOverlay());
     }
 
     public static void registerRecipeBookCategories(RecipeCategoryRegister register)

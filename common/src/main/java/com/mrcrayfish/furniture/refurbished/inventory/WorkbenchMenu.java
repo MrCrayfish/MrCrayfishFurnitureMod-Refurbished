@@ -129,7 +129,7 @@ public class WorkbenchMenu extends SimpleContainerMenu implements IElectricityMe
                 if(this.workbench.canCraft(recipe))
                 {
                     ItemStack result = this.result.getItem(0);
-                    ItemStack output = recipe.value().getResult().copy();
+                    ItemStack output = recipe.value().getResult().create();
                     if(!ItemStack.matches(result, output))
                     {
                         this.resultSlot.set(output.copy());

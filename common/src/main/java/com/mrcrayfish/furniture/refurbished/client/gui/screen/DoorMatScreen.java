@@ -9,7 +9,7 @@ import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageUpdatePainting;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import it.unimi.dsi.fastutil.Pair;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -30,7 +30,7 @@ import java.util.Queue;
  */
 public class DoorMatScreen extends AbstractContainerScreen<DoorMatMenu>
 {
-    private static final Identifier TEXTURE = Utils.resource("textures/gui/container/door_mat.png");
+    private static final Identifier TEXTURE = Utils.id("textures/gui/container/door_mat.png");
     private static final PaletteImage[] PRESETS = {
             ImagePresets.BLANK,
             ImagePresets.HEART,
@@ -54,9 +54,7 @@ public class DoorMatScreen extends AbstractContainerScreen<DoorMatMenu>
 
     public DoorMatScreen(DoorMatMenu menu, Inventory playerInventory, Component title)
     {
-        super(menu, playerInventory, title);
-        this.imageWidth = 134;
-        this.imageHeight = 103;
+        super(menu, playerInventory, title, 134, 103);
         this.image = PRESETS[0].copy();
     }
 
@@ -85,10 +83,10 @@ public class DoorMatScreen extends AbstractContainerScreen<DoorMatMenu>
     }
 
     @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {}
+    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {}
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick)
     {
         graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
         for(int y = 0; y < this.image.getHeight(); y++)

@@ -16,9 +16,9 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.BlockPos;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
@@ -27,10 +27,7 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 
 import java.util.List;
 import java.util.function.Function;
@@ -66,13 +63,11 @@ public class NeoForgeClientHelper implements IClientHelper
     }
 
     @Override
-    public FluidSprites getFluidSprites(Fluid fluid, BlockAndTintGetter getter, BlockPos pos, FluidState state)
+    public FluidSprites getFluidSprites(FluidState state)
     {
-        IClientFluidTypeExtensions extensions = IClientFluidTypeExtensions.of(fluid);
-        return new FluidSprites(
-            this.getBlockTextures().apply(extensions.getStillTexture(state, getter, pos)),
-            this.getBlockTextures().apply(extensions.getFlowingTexture(state, getter, pos))
-        );
+        // TODO 26.1.1 test
+        FluidModel model = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(state);
+        return new FluidSprites(model.stillMaterial().sprite(), model.flowingMaterial().sprite());
     }
 
     @Override

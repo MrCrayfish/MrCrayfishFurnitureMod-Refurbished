@@ -67,7 +67,7 @@ public class ToolAnimationRenderer
         FeatureRenderDispatcher renderDispatcher = Minecraft.getInstance().gameRenderer.getFeatureRenderDispatcher();
         SubmitNodeStorage storage = renderDispatcher.getSubmitNodeStorage();
         this.animationMap.forEach((pos, animation) -> {
-            int light = LevelRenderer.getLightColor(level, animation.pos);
+            int light = LevelRenderer.getLightCoords(level, animation.pos);
             animation.submit(poseStack, storage, light, partialTick);
         });
     }

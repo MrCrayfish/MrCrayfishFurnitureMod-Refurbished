@@ -63,6 +63,6 @@ public class WorkbenchConstructingCategory extends FurnitureRecipeCategory<Workb
                     .setBackground(this.helper.createDrawable(Plugin.TEXTURES_2, 0, 64, 18, 18), -1, -1)
                     .addItemStacks(stacks);
         }
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 96, 24).add(recipe.getResult());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 96, 24).add(recipe.getResult().create());
     }
 }

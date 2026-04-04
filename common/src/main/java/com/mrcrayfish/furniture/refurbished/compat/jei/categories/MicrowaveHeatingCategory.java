@@ -13,7 +13,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.types.IRecipeHolderType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
@@ -44,15 +44,15 @@ public class MicrowaveHeatingCategory extends FurnitureRecipeCategory<MicrowaveH
     {
         MicrowaveHeatingRecipe recipe = holder.value();
         builder.addSlot(RecipeIngredientRole.INPUT, 7, 10).add(recipe.getIngredient());
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 67, 10).add(recipe.getResult());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 67, 10).add(recipe.getResult().create()); // TODO 26.1.1 test
         this.waveform = this.helper.createAnimatedDrawable(this.helper.createDrawable(Plugin.TEXTURES, 93, 154, 24, 17), recipe.getTime(), IDrawableAnimated.StartDirection.LEFT, false);
     }
 
     @Override
-    public void draw(RecipeHolder<MicrowaveHeatingRecipe> recipe, IRecipeSlotsView view, GuiGraphics graphics, double mouseX, double mouseY)
+    public void draw(RecipeHolder<MicrowaveHeatingRecipe> recipe, IRecipeSlotsView view, GuiGraphicsExtractor extractor, double mouseX, double mouseY)
     {
-        super.draw(recipe, view, graphics, mouseX, mouseY);
-        this.waveform.draw(graphics, 30, 9);
-        this.drawSeconds(graphics, 42, 28, recipe.value().getTime());
+        super.draw(recipe, view, extractor, mouseX, mouseY);
+        this.waveform.draw(extractor, 30, 9);
+        this.drawSeconds(extractor, 42, 28, recipe.value().getTime());
     }
 }

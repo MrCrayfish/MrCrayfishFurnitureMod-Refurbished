@@ -26,6 +26,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -167,7 +168,7 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
             RandomSource rand = serverLevel.getRandom();
             for(int i = 0; i < 8; i++)
             {
-                serverLevel.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, stack), pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5, 1, rand.nextGaussian() * 0.15, rand.nextDouble() * 0.2, rand.nextGaussian() * 0.15, 0);
+                serverLevel.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, stack.getItem()), pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5, 1, rand.nextGaussian() * 0.15, rand.nextDouble() * 0.2, rand.nextGaussian() * 0.15, 0);
             }
         }
     }
@@ -199,7 +200,7 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
     private void spawnSliceResultFromRecipe(int sliceIndex, ItemStack stack, SingleItemRecipe recipe, boolean spawnIntoLevel)
     {
         Preconditions.checkNotNull(this.level);
-        ItemStack result = recipe.assemble(new SingleRecipeInput(stack), this.level.registryAccess());
+        ItemStack result = recipe.assemble(new SingleRecipeInput(stack));
         if(spawnIntoLevel)
         {
             this.spawnItemIntoLevel(this.level, result);
@@ -229,7 +230,7 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
     {
         Level level = Objects.requireNonNull(this.level);
         Vec3 vec = Vec3.atBottomCenterOf(this.worldPosition);
-        level.playSound(null, vec.x, vec.y, vec.z, ModSounds.BLOCK_CUTTING_BOARD_PLACED_INGREDIENT.get(), SoundSource.PLAYERS, 1.0F, pitch + 0.05F * (float) level.random.nextGaussian());
+        level.playSound(null, vec.x, vec.y, vec.z, ModSounds.BLOCK_CUTTING_BOARD_PLACED_INGREDIENT.get(), SoundSource.PLAYERS, 1.0F, pitch + 0.05F * (float) level.getRandom().nextGaussian());
     }
 
     /**
@@ -384,7 +385,7 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
             return;
 
         Level level = Objects.requireNonNull(this.level);
-        ItemStack stack = recipe.assemble(new ContainerInput(this), level.registryAccess());
+        ItemStack stack = recipe.assemble(new ContainerInput(this));
         List<ItemStack> remainingItems = this.getCraftingRemainingItems();
 
         this.clearContent();
@@ -422,10 +423,10 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
             ItemStack stack = this.getItem(i);
             if(!stack.isEmpty())
             {
-                ItemStack remainingStack = stack.getItem().getCraftingRemainder();
-                if(!remainingStack.isEmpty())
+                ItemStackTemplate remainder = stack.getItem().getCraftingRemainder();
+                if(remainder != null)
                 {
-                    remainingItems.add(remainingStack.copy());
+                    remainingItems.add(remainder.create());
                 }
             }
         }

@@ -51,7 +51,7 @@ public class ModTags
 
         private static TagKey<Item> tag(String name)
         {
-            return TagKey.create(Registries.ITEM, Utils.resource(name));
+            return TagKey.create(Registries.ITEM, Utils.id(name));
         }
 
         public static TagKey<Item> common(String name)
@@ -66,7 +66,7 @@ public class ModTags
 
         private static TagKey<Block> tag(String name)
         {
-            return TagKey.create(Registries.BLOCK, Utils.resource(name));
+            return TagKey.create(Registries.BLOCK, Utils.id(name));
         }
 
         private static TagKey<Block> common(String name)

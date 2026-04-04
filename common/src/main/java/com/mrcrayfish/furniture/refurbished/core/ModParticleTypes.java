@@ -12,8 +12,8 @@ import net.minecraft.core.particles.SimpleParticleType;
 @RegistryContainer
 public class ModParticleTypes
 {
-    public static final RegistryEntry<SimpleParticleType> BOUNCE = RegistryEntry.particleType(Utils.resource("bounce"), () -> Services.ENTITY.createSimpleParticleType(true));
-    public static final RegistryEntry<SimpleParticleType> SUPER_BOUNCE = RegistryEntry.particleType(Utils.resource("super_bounce"), () -> Services.ENTITY.createSimpleParticleType(true));
-    public static final RegistryEntry<SimpleParticleType> STEAM = RegistryEntry.particleType(Utils.resource("steam"), () -> Services.ENTITY.createSimpleParticleType(true));
-    public static final RegistryEntry<SimpleParticleType> TAP_WATER = RegistryEntry.particleType(Utils.resource("tap_water"), () -> Services.ENTITY.createSimpleParticleType(true));
+    public static final RegistryEntry<SimpleParticleType> BOUNCE = RegistryEntry.particleType(Utils.id("bounce"), () -> Services.ENTITY.createSimpleParticleType(true));
+    public static final RegistryEntry<SimpleParticleType> SUPER_BOUNCE = RegistryEntry.particleType(Utils.id("super_bounce"), () -> Services.ENTITY.createSimpleParticleType(true));
+    public static final RegistryEntry<SimpleParticleType> STEAM = RegistryEntry.particleType(Utils.id("steam"), () -> Services.ENTITY.createSimpleParticleType(true));
+    public static final RegistryEntry<SimpleParticleType> TAP_WATER = RegistryEntry.particleType(Utils.id("tap_water"), () -> Services.ENTITY.createSimpleParticleType(true));
 }

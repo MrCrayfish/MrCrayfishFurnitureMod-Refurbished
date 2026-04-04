@@ -23,7 +23,9 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
@@ -39,13 +41,37 @@ import java.util.function.Function;
  */
 public class WorkbenchContructingRecipe implements Recipe<SingleRecipeInput>
 {
+    public static final MapCodec<WorkbenchContructingRecipe> CODEC = RecordCodecBuilder.mapCodec(builder -> {
+        return builder.group(StackedIngredient.CODEC.listOf().fieldOf("materials").flatXmap(materials -> {
+            NonNullList<StackedIngredient> inputs = NonNullList.create();
+            inputs.addAll(materials);
+            return DataResult.success(inputs);
+        }, DataResult::success).forGetter(o -> {
+            return o.materials;
+        }), ItemStackTemplate.CODEC.fieldOf("result").forGetter(recipe -> {
+            return recipe.result;
+        }), Codec.BOOL.optionalFieldOf("show_notification", false).forGetter(recipe -> {
+            return recipe.notification;
+        })).apply(builder, WorkbenchContructingRecipe::new);
+    });
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, WorkbenchContructingRecipe> STREAM_CODEC = StreamCodec.composite(
+            StackedIngredient.STREAM_CODEC.apply(ByteBufCodecs.collection(NonNullList::createWithCapacity)),
+            WorkbenchContructingRecipe::getMaterials,
+            ItemStackTemplate.STREAM_CODEC,
+            WorkbenchContructingRecipe::getResult,
+            ByteBufCodecs.BOOL,
+            WorkbenchContructingRecipe::showNotification,
+            WorkbenchContructingRecipe::new
+    );
+
     // TODO allow recipe to change sound (drill for wood, saw for stone, weld for electronics)
     private final NonNullList<StackedIngredient> materials;
-    private final ItemStack result;
+    private final ItemStackTemplate result;
     private final boolean notification;
     private @Nullable PlacementInfo placementInfo;
 
-    public WorkbenchContructingRecipe(NonNullList<StackedIngredient> materials, ItemStack result, boolean notification)
+    public WorkbenchContructingRecipe(NonNullList<StackedIngredient> materials, ItemStackTemplate result, boolean notification)
     {
         this.materials = materials;
         this.result = result;
@@ -59,15 +85,21 @@ public class WorkbenchContructingRecipe implements Recipe<SingleRecipeInput>
     }
 
     @Override
-    public ItemStack assemble(SingleRecipeInput input, HolderLookup.Provider provider)
+    public ItemStack assemble(SingleRecipeInput input)
     {
-        return this.result.copy();
+        return this.result.create();
     }
 
     @Override
     public boolean showNotification()
     {
         return this.notification;
+    }
+
+    @Override
+    public String group()
+    {
+        return "";
     }
 
     @Override
@@ -105,62 +137,23 @@ public class WorkbenchContructingRecipe implements Recipe<SingleRecipeInput>
 
     public int getResultId()
     {
-        return Item.getId(this.result.getItem());
+        return Item.getId(this.result.item().value());
     }
 
-    public ItemStack getResult()
+    public ItemStackTemplate getResult()
     {
         return this.result;
     }
 
-    public static Builder builder(HolderLookup.RegistryLookup<Item> items, ItemLike result, int count, Function<ItemLike, Criterion<?>> hasItem, Function<TagKey<Item>, Criterion<?>> hasTag)
+    public static Builder builder(HolderLookup.RegistryLookup<Item> items, ItemStackTemplate result, int count, Function<ItemLike, Criterion<?>> hasItem, Function<TagKey<Item>, Criterion<?>> hasTag)
     {
-        return new Builder(items, result.asItem(), count, hasItem, hasTag);
-    }
-
-    public static class Serializer implements RecipeSerializer<WorkbenchContructingRecipe>
-    {
-        public static final MapCodec<WorkbenchContructingRecipe> CODEC = RecordCodecBuilder.mapCodec(builder -> {
-            return builder.group(StackedIngredient.CODEC.listOf().fieldOf("materials").flatXmap(materials -> {
-                NonNullList<StackedIngredient> inputs = NonNullList.create();
-                inputs.addAll(materials);
-                return DataResult.success(inputs);
-            }, DataResult::success).forGetter(o -> {
-                return o.materials;
-            }), ItemStack.CODEC.fieldOf("result").forGetter(recipe -> {
-                return recipe.result;
-            }), Codec.BOOL.optionalFieldOf("show_notification", false).forGetter(recipe -> {
-                return recipe.notification;
-            })).apply(builder, WorkbenchContructingRecipe::new);
-        });
-
-        public static final StreamCodec<RegistryFriendlyByteBuf, WorkbenchContructingRecipe> STREAM_CODEC = StreamCodec.composite(
-            StackedIngredient.STREAM_CODEC.apply(ByteBufCodecs.collection(NonNullList::createWithCapacity)),
-            WorkbenchContructingRecipe::getMaterials,
-            ItemStack.STREAM_CODEC,
-            WorkbenchContructingRecipe::getResult,
-            ByteBufCodecs.BOOL,
-            WorkbenchContructingRecipe::showNotification,
-            WorkbenchContructingRecipe::new
-        );
-
-        @Override
-        public MapCodec<WorkbenchContructingRecipe> codec()
-        {
-            return CODEC;
-        }
-
-        @Override
-        public StreamCodec<RegistryFriendlyByteBuf, WorkbenchContructingRecipe> streamCodec()
-        {
-            return STREAM_CODEC;
-        }
+        return new Builder(items, result, count, hasItem, hasTag);
     }
 
     public static class Builder implements RecipeBuilder
     {
         private final HolderLookup.RegistryLookup<Item> items;
-        private final Item result;
+        private final ItemStackTemplate result;
         private final int count;
         private final Function<ItemLike, Criterion<?>> hasItem;
         private final Function<TagKey<Item>, Criterion<?>> hasTag;
@@ -169,7 +162,7 @@ public class WorkbenchContructingRecipe implements Recipe<SingleRecipeInput>
         private RecipeCategory category = RecipeCategory.MISC;
         private boolean showNotification;
 
-        private Builder(HolderLookup.RegistryLookup<Item> items, Item result, int count, Function<ItemLike, Criterion<?>> hasItem, Function<TagKey<Item>, Criterion<?>> hasTag)
+        private Builder(HolderLookup.RegistryLookup<Item> items, ItemStackTemplate result, int count, Function<ItemLike, Criterion<?>> hasItem, Function<TagKey<Item>, Criterion<?>> hasTag)
         {
             this.items = items;
             this.result = result;
@@ -197,6 +190,12 @@ public class WorkbenchContructingRecipe implements Recipe<SingleRecipeInput>
             return this;
         }
 
+        @Override
+        public ResourceKey<Recipe<?>> defaultId()
+        {
+            return RecipeBuilder.getDefaultRecipeId(this.result);
+        }
+
         public Builder category(RecipeCategory category)
         {
             this.category = category;
@@ -210,12 +209,6 @@ public class WorkbenchContructingRecipe implements Recipe<SingleRecipeInput>
         }
 
         @Override
-        public Item getResult()
-        {
-            return this.result;
-        }
-
-        @Override
         public void save(RecipeOutput output, ResourceKey<Recipe<?>> id)
         {
             this.validate(id);
@@ -224,7 +217,7 @@ public class WorkbenchContructingRecipe implements Recipe<SingleRecipeInput>
                 .rewards(AdvancementRewards.Builder.recipe(id))
                 .requirements(AdvancementRequirements.Strategy.OR);
             this.criteria.forEach(builder::addCriterion);
-            output.accept(id, new WorkbenchContructingRecipe(this.materials, new ItemStack(this.result), this.showNotification), builder.build(id.identifier().withPrefix("recipes/" + this.category.getFolderName() + "/")));
+            output.accept(id, new WorkbenchContructingRecipe(this.materials, this.result, this.showNotification), builder.build(id.identifier().withPrefix("recipes/" + this.category.getFolderName() + "/")));
         }
 
         private void validate(ResourceKey<Recipe<?>> id)

@@ -305,20 +305,20 @@ public class ToasterBlockEntity extends ElectricityModuleProcessingLootBlockEnti
     {
         Preconditions.checkNotNull(this.level);
         SoundEvent event = heating ? ModSounds.BLOCK_TOASTER_DOWN.get() : ModSounds.BLOCK_TOASTER_POP.get();
-        this.level.playSound(null, this.worldPosition, event, SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * this.level.random.nextFloat());
+        this.level.playSound(null, this.worldPosition, event, SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * this.level.getRandom().nextFloat());
     }
 
     private void playInsertSound()
     {
         Preconditions.checkNotNull(this.level);
-        this.level.playSound(null, this.worldPosition, ModSounds.BLOCK_TOASTER_INSERT.get(), SoundSource.BLOCKS, 0.5F, 0.9F + 0.1F * this.level.random.nextFloat());
+        this.level.playSound(null, this.worldPosition, ModSounds.BLOCK_TOASTER_INSERT.get(), SoundSource.BLOCKS, 0.5F, 0.9F + 0.1F * this.level.getRandom().nextFloat());
     }
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, ToasterBlockEntity entity)
     {
         if(state.getValue(ToasterBlock.POWERED))
         {
-            level.addParticle(ParticleTypes.SMOKE, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 0.0, 0.1 * level.random.nextDouble(), 0.0);
+            level.addParticle(ParticleTypes.SMOKE, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 0.0, 0.1 * level.getRandom().nextDouble(), 0.0);
         }
     }
 

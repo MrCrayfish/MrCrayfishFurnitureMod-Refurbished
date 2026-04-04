@@ -197,7 +197,7 @@ public abstract class BathBlock extends FurnitureHorizontalEntityBlock implement
                 if(!entity.isSilent() && entity.isOnFire())
                 {
                     float volume = 0.7F;
-                    float pitch = 1.6F + 0.4F * (level.random.nextFloat() - level.random.nextFloat());
+                    float pitch = 1.6F + 0.4F * (level.getRandom().nextFloat() - level.getRandom().nextFloat());
                     level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.GENERIC_EXTINGUISH_FIRE, entity.getSoundSource(), volume, pitch);
                 }
                 entity.clearFire();

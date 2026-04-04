@@ -6,6 +6,7 @@ import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchContructingRecipe;
 import com.mrcrayfish.furniture.refurbished.platform.services.IRecipeHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SingleItemRecipe;
 
 import java.util.Collection;
@@ -17,9 +18,9 @@ import java.util.List;
 public class NeoForgeRecipeHelper implements IRecipeHelper
 {
     @Override
-    public <T extends SingleItemRecipe> SingleItemRecipe.Serializer<T> createSingleItemSerializer(ISingleBuilder<T> builder)
+    public <T extends SingleItemRecipe> RecipeSerializer<T> createSingleItemSerializer(ISingleBuilder<T> builder)
     {
-        return new SingleItemRecipe.Serializer<>(builder::create){};
+        return new RecipeSerializer<>(SingleItemRecipe.simpleMapCodec(builder::create), SingleItemRecipe.simpleStreamCodec(builder::create));
     }
 
     @Override

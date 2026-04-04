@@ -13,10 +13,10 @@ import net.minecraft.core.component.DataComponentType;
 @RegistryContainer
 public class ModDataComponents
 {
-    public static final RegistryEntry<DataComponentType<PaletteImage>> PALETTE_IMAGE = RegistryEntry.dataComponentType(Utils.resource("palette_image"), builder -> {
+    public static final RegistryEntry<DataComponentType<PaletteImage>> PALETTE_IMAGE = RegistryEntry.dataComponentType(Utils.id("palette_image"), builder -> {
         return builder.persistent(PaletteImage.CODEC);
     });
-    public static final RegistryEntry<DataComponentType<PackageInfo>> PACKAGE_INFO = RegistryEntry.dataComponentType(Utils.resource("package_info"), builder -> {
+    public static final RegistryEntry<DataComponentType<PackageInfo>> PACKAGE_INFO = RegistryEntry.dataComponentType(Utils.id("package_info"), builder -> {
         return builder.persistent(PackageInfo.CODEC).networkSynchronized(PackageInfo.STREAM_CODEC);
     });
 }

@@ -4,6 +4,7 @@ import com.mrcrayfish.framework.Registration;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.block.DoorMatBlock;
 import com.mrcrayfish.furniture.refurbished.core.ModDataComponents;
+import com.mrcrayfish.furniture.refurbished.util.reflection.ReflectedField;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
@@ -24,6 +25,7 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
@@ -40,6 +42,8 @@ public class CommonLootTableProvider extends LootTableProvider
 
     public static class FurnitureBlock extends BlockLootSubProvider
     {
+        private static final ReflectedField<BlockLootSubProvider, Map<ResourceKey<LootTable>, LootTable.Builder>> MAP_FIELD = new ReflectedField<>(BlockLootSubProvider.class, "map");
+
         protected FurnitureBlock(HolderLookup.Provider provider)
         {
             super(Collections.emptySet(), FeatureFlagSet.of(), provider);
@@ -49,7 +53,7 @@ public class CommonLootTableProvider extends LootTableProvider
         public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> consumer)
         {
             this.generate();
-            this.map.forEach(consumer);
+            MAP_FIELD.get(this).forEach(consumer);
         }
 
         @Override

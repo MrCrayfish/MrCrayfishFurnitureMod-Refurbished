@@ -13,7 +13,7 @@ import net.minecraft.network.protocol.PacketFlow;
 @RegistryContainer
 public final class Network
 {
-    private static final FrameworkNetwork PLAY = FrameworkAPI.createNetworkBuilder(Utils.resource("play"), 1)
+    private static final FrameworkNetwork PLAY = FrameworkAPI.createNetworkBuilder(Utils.id("play"), 1)
             .registerPlayMessage("sync_fluid", MessageSyncFluid.class, MessageSyncFluid.STREAM_CODEC, MessageSyncFluid::handle, PacketFlow.CLIENTBOUND)
             .registerPlayMessage("flip_animation", MessageFlipAnimation.class, MessageFlipAnimation.STREAM_CODEC, MessageFlipAnimation::handle, PacketFlow.CLIENTBOUND)
             .registerPlayMessage("set_name", MessageSetName.class, MessageSetName.STREAM_CODEC, MessageSetName::handle, PacketFlow.SERVERBOUND)

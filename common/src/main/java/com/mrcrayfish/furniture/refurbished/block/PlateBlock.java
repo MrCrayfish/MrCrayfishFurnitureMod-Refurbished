@@ -125,7 +125,7 @@ public class PlateBlock extends FallingBlock implements EntityBlock, BlockTagSup
         {
             Vec3 center = Vec3.atBottomCenterOf(pos);
             serverLevel.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, this.defaultBlockState()), center.x, center.y + 0.0625, center.z, 10, 0.25, 0.25, 0.25, 0);
-            serverLevel.playSound(null, center.x, center.y, center.z, SoundEvents.GLASS_BREAK, SoundSource.BLOCKS, 1.0F, 0.5F + 0.2F * level.random.nextFloat());
+            serverLevel.playSound(null, center.x, center.y, center.z, SoundEvents.GLASS_BREAK, SoundSource.BLOCKS, 1.0F, 0.5F + 0.2F * level.getRandom().nextFloat());
         }
     }
 

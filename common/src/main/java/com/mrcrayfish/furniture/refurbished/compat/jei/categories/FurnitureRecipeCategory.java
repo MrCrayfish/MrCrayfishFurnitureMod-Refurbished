@@ -6,7 +6,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.recipe.types.IRecipeHolderType;
 import mezz.jei.api.recipe.types.IRecipeType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -64,16 +64,16 @@ public abstract class FurnitureRecipeCategory<T extends Recipe<?>> implements IR
     }
 
     @Override
-    public void draw(RecipeHolder<T> recipe, IRecipeSlotsView view, GuiGraphics graphics, double mouseX, double mouseY)
+    public void draw(RecipeHolder<T> recipe, IRecipeSlotsView view, GuiGraphicsExtractor extractor, double mouseX, double mouseY)
     {
-        this.background.draw(graphics);
+        this.background.draw(extractor);
     }
 
-    protected void drawSeconds(GuiGraphics graphics, int x, int y, int ticks)
+    protected void drawSeconds(GuiGraphicsExtractor extractor, int x, int y, int ticks)
     {
         float seconds = ticks / 20.0F;
         String formattedTime = Plugin.FORMATTER.format(seconds);
         int width = Plugin.getFont().width(formattedTime) / 2;
-        graphics.drawString(Plugin.getFont(), formattedTime, x - width, y, 0xFF808080, false);
+        extractor.text(Plugin.getFont(), formattedTime, x - width, y, 0xFF808080, false);
     }
 }

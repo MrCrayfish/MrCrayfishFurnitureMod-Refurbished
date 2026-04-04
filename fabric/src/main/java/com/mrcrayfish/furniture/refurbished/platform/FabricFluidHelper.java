@@ -144,13 +144,13 @@ public class FabricFluidHelper implements IFluidHelper
         @Override
         public void load(ValueInput input)
         {
-            this.tank.readData(input);
+            this.tank.readValue(input);
         }
 
         @Override
         public void save(ValueOutput output)
         {
-            this.tank.writeData(output);
+            this.tank.writeValue(output);
         }
 
         public SingleFluidStorage getTank()

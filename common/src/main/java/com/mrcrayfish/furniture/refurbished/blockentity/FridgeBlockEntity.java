@@ -40,7 +40,7 @@ public class FridgeBlockEntity extends RowedStorageBlockEntity
     public void onOpen(Level level, BlockPos pos, BlockState state)
     {
         Vec3 center = Vec3.atCenterOf(this.worldPosition).relative(state.getValue(FridgeBlock.DIRECTION).getOpposite(), 0.5);
-        level.playSound(null, center.x, center.y, center.z, ModSounds.BLOCK_FRIDGE_OPEN.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.random.nextFloat());
+        level.playSound(null, center.x, center.y, center.z, ModSounds.BLOCK_FRIDGE_OPEN.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.getRandom().nextFloat());
         this.setDoorState(state, true);
     }
 
@@ -48,7 +48,7 @@ public class FridgeBlockEntity extends RowedStorageBlockEntity
     public void onClose(Level level, BlockPos pos, BlockState state)
     {
         Vec3 center = Vec3.atCenterOf(this.worldPosition).relative(state.getValue(FridgeBlock.DIRECTION).getOpposite(), 0.5);
-        level.playSound(null, center.x, center.y, center.z, ModSounds.BLOCK_FRIDGE_CLOSE.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.random.nextFloat());
+        level.playSound(null, center.x, center.y, center.z, ModSounds.BLOCK_FRIDGE_CLOSE.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.getRandom().nextFloat());
         this.setDoorState(state, false);
     }
 

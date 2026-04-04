@@ -56,7 +56,7 @@ import java.util.Optional;
 
 public class FurnitureMod implements ModInitializer, DataGeneratorEntrypoint
 {
-    public static final Fluid MILK = Registry.register(BuiltInRegistries.FLUID, Utils.resource("milk"), new Fluid()
+    public static final Fluid MILK = Registry.register(BuiltInRegistries.FLUID, Utils.id("milk"), new Fluid()
     {
         @Override
         public Item getBucket()

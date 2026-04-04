@@ -5,15 +5,12 @@ import com.mrcrayfish.furniture.refurbished.client.FluidSprites;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,7 +30,7 @@ public interface IClientHelper
     void setTooltipCache(Tooltip tooltip, List<FormattedCharSequence> lines);
 
     @Nullable
-    FluidSprites getFluidSprites(Fluid fluid, BlockAndTintGetter getter, BlockPos pos, FluidState state);
+    FluidSprites getFluidSprites(FluidState state);
 
     RenderType getElectricityRenderType();
 

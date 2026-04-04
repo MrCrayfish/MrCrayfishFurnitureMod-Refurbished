@@ -5,7 +5,7 @@ import com.mrcrayfish.furniture.refurbished.crafting.StackedIngredient;
 import com.mrcrayfish.furniture.refurbished.inventory.WorkbenchMenu;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.Holder;
@@ -48,18 +48,18 @@ public class ClientWorkbenchRecipeIngredientTooltip implements ClientTooltipComp
     }
 
     @Override
-    public void renderImage(Font font, int start, int top, int width, int height, GuiGraphics graphics)
+    public void extractImage(Font font, int start, int top, int width, int height, GuiGraphicsExtractor extractor)
     {
         ItemStack material = this.getStack().copy();
         material.setCount(this.material.count());
-        graphics.renderFakeItem(material, start, top);
-        graphics.renderItemDecorations(font, material, start, top);
+        extractor.fakeItem(material, start, top);
+        extractor.itemDecorations(font, material, start, top);
         MutableComponent name = material.getHoverName().copy().withStyle(ChatFormatting.GRAY);
-        graphics.drawString(font, name, start + 18 + 5, top + 4, 0xFFFFFFFF);
+        extractor.text(font, name, start + 18 + 5, top + 4, 0xFFFFFFFF);
 
         // Draw check or cross depending on if we have the materials
         boolean checked = this.menu.hasMaterials(this.material, this.counted);
-        graphics.blit(RenderPipelines.GUI_TEXTURED, WorkbenchScreen.WORKBENCH_TEXTURE, start, top, checked ? 246 : 240, 40, 6, 5, 256, 256);
+        extractor.blit(RenderPipelines.GUI_TEXTURED, WorkbenchScreen.WORKBENCH_TEXTURE, start, top, checked ? 246 : 240, 40, 6, 5, 256, 256);
     }
 
     private ItemStack getStack()

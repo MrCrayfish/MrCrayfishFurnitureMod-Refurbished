@@ -119,14 +119,14 @@ public class MicrowaveBlockEntity extends ElectricityModuleProcessingLootBlockEn
     @Override
     public void onOpen(Level level, BlockPos pos, BlockState state)
     {
-        level.playSound(null, this.worldPosition, ModSounds.BLOCK_MICROWAVE_OPEN.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.random.nextFloat());
+        level.playSound(null, this.worldPosition, ModSounds.BLOCK_MICROWAVE_OPEN.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.getRandom().nextFloat());
         this.setDoorState(state, true);
     }
 
     @Override
     public void onClose(Level level, BlockPos pos, BlockState state)
     {
-        level.playSound(null, this.worldPosition, ModSounds.BLOCK_MICROWAVE_CLOSE.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.random.nextFloat());
+        level.playSound(null, this.worldPosition, ModSounds.BLOCK_MICROWAVE_CLOSE.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.getRandom().nextFloat());
         this.setDoorState(state, false);
     }
 

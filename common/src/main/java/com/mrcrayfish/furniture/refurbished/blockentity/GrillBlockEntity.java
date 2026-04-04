@@ -200,7 +200,7 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
         if(level.getChunkSource() instanceof ServerChunkCache cache)
         {
             BlockPos pos = this.getBlockPos();
-            List<ServerPlayer> players = cache.chunkMap.getPlayers(new ChunkPos(pos), false);
+            List<ServerPlayer> players = cache.chunkMap.getPlayers(ChunkPos.containing(pos), false);
             players.forEach(player -> Network.getPlay().sendToPlayer(() -> player, new MessageFlipAnimation(pos, position)));
         }
     }
@@ -340,7 +340,7 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
                             Optional<? extends ProcessingRecipe> optional = this.getRecipe(this.cooking.get(i));
                             if(optional.isPresent())
                             {
-                                this.cooking.set(i, optional.get().getResult().copy());
+                                this.cooking.set(i, optional.get().getResult().create());
                             }
                         }
                         this.syncCookingSpace(i);
@@ -366,9 +366,9 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
         {
             if(this.isCooking())
             {
-                double posX = this.worldPosition.getX() + 0.2 + 0.6 * level.random.nextDouble();
+                double posX = this.worldPosition.getX() + 0.2 + 0.6 * level.getRandom().nextDouble();
                 double posY = this.worldPosition.getY() + 0.85;
-                double posZ = this.worldPosition.getZ() + 0.2 + 0.6 * level.random.nextDouble();
+                double posZ = this.worldPosition.getZ() + 0.2 + 0.6 * level.getRandom().nextDouble();
                 level.addParticle(ParticleTypes.FLAME, posX, posY, posZ, 0.0, 0.0, 0.0);
             }
 
@@ -376,7 +376,7 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
             {
                 if(!this.cooking.get(i).isEmpty())
                 {
-                    if(level.random.nextFloat() < 0.1F)
+                    if(level.getRandom().nextFloat() < 0.1F)
                     {
                         CookingSpace space = this.spaces.get(i);
                         if(space.isHalfCooked())
@@ -393,7 +393,7 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
                     if(this.remainingFuel > 0 && space.canCook() && !space.isCooked() && !space.getAnimation().isPlaying())
                     {
                         Vec3 spacePos = space.getWorldPosition();
-                        spacePos = spacePos.add(0.05 * level.random.nextGaussian(), 0, 0.05 * level.random.nextGaussian());
+                        spacePos = spacePos.add(0.05 * level.getRandom().nextGaussian(), 0, 0.05 * level.getRandom().nextGaussian());
                         this.spawnSteam(level, spacePos.x, spacePos.y, spacePos.z);
                     }
                 }
@@ -488,7 +488,7 @@ public class GrillBlockEntity extends BlockEntity implements WorldlyContainer
     {
         if(this.level instanceof ServerLevel serverLevel)
         {
-            return cache.getRecipeFor(new SingleRecipeInput(stack), serverLevel).map(RecipeHolder::value).map(recipe -> ProcessingRecipe.Item.fromCookingRecipe(recipe, this.level.registryAccess()));
+            return cache.getRecipeFor(new SingleRecipeInput(stack), serverLevel).map(RecipeHolder::value).map(recipe -> ProcessingRecipe.Item.fromCookingRecipe(recipe));
         }
         return Optional.empty();
     }

@@ -100,8 +100,8 @@ public class BasinBlockEntity extends BlockEntity implements IFluidContainerBloc
             tap = tap.relative(state.getValue(BasinBlock.DIRECTION), Utils.pixels(2));
             for(int i = 0; i < 5; i++)
             {
-                double x = tap.x + Utils.pixels(0.5) * level.random.nextGaussian();
-                double z = tap.z + Utils.pixels(0.5) * level.random.nextGaussian();
+                double x = tap.x + Utils.pixels(0.5) * level.getRandom().nextGaussian();
+                double z = tap.z + Utils.pixels(0.5) * level.getRandom().nextGaussian();
                 level.addParticle(ModParticleTypes.TAP_WATER.get(), x, tap.y, z, 0, 0, 0);
             }
             basin.animationTime--;

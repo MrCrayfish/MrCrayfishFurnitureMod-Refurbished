@@ -10,9 +10,9 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 @RegistryContainer
 public class ModSyncedDataKeys
 {
-    public static final SyncedClassKey<Seat> SEAT = new SyncedClassKey<>(Seat.class, Utils.resource("seat"));
+    public static final SyncedClassKey<Seat> SEAT = new SyncedClassKey<>(Seat.class, Utils.id("seat"));
     public static final SyncedDataKey<Seat, Boolean> LOCK_YAW = SyncedDataKey.builder(SEAT, Serializers.BOOLEAN)
-            .id(Utils.resource("lock_yaw"))
+            .id(Utils.id("lock_yaw"))
             .defaultValueSupplier(() -> false)
             .syncMode(SyncedDataKey.SyncMode.TRACKING_ONLY)
             .saveToFile()

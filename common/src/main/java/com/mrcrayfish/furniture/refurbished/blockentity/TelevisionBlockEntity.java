@@ -40,18 +40,18 @@ import java.util.stream.Collectors;
  */
 public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implements ILevelAudio
 {
-    public static final Channel WHITE_NOISE = new Channel(Utils.resource("white_noise"), ModSounds.BLOCK_TELEVISION_CHANNEL_WHITE_NOISE::get, 0);
-    public static final Channel BLACK_NOISE = new Channel(Utils.resource("black_noise"), ModSounds.BLOCK_TELEVISION_CHANNEL_WHITE_NOISE::get, 0);
-    public static final Channel HEART_SCREENSAVER = new Channel(Utils.resource("heart_screensaver"), () -> null, 10);
-    public static final Channel COLOUR_TEST = new Channel(Utils.resource("colour_test"), ModSounds.BLOCK_TELEVISION_CHANNEL_COLOUR_TEST::get, 1);
-    public static final Channel HEROBRINE = new Channel(Utils.resource("herobrine"), ModSounds.BLOCK_TELEVISION_CHANNEL_COLOUR_TEST::get, 0);
-    public static final Channel DANCE_MUSIC = new Channel(Utils.resource("dance_music"), ModSounds.BLOCK_TELEVISION_CHANNEL_DANCE_MUSIC::get, 10);
-    public static final Channel VILLAGER_NEWS = new Channel(Utils.resource("villager_news"), ModSounds.BLOCK_TELEVISION_CHANNEL_VILLAGER_NEWS::get, 10);
-    public static final Channel RIP_BLIZZARD = new Channel(Utils.resource("rip_blizzard"), ModSounds.BLOCK_TELEVISION_CHANNEL_CHIRP_SONG::get, 5);
-    public static final Channel OCEAN_SUNSET = new Channel(Utils.resource("ocean_sunset"), ModSounds.BLOCK_TELEVISION_CHANNEL_OCEAN_SUNSET::get, 10);
-    public static final Channel BLOCK_GAME = new Channel(Utils.resource("block_game"), ModSounds.BLOCK_TELEVISION_CHANNEL_BLOCKY_GAME::get, 10);
-    public static final Channel PONG = new Channel(Utils.resource("pong"), ModSounds.BLOCK_TELEVISION_CHANNEL_RETRO_SONG::get, 10);
-    public static final Channel SILLY_FACE = new Channel(Utils.resource("silly_face"), () -> null, 10);
+    public static final Channel WHITE_NOISE = new Channel(Utils.id("white_noise"), ModSounds.BLOCK_TELEVISION_CHANNEL_WHITE_NOISE::get, 0);
+    public static final Channel BLACK_NOISE = new Channel(Utils.id("black_noise"), ModSounds.BLOCK_TELEVISION_CHANNEL_WHITE_NOISE::get, 0);
+    public static final Channel HEART_SCREENSAVER = new Channel(Utils.id("heart_screensaver"), () -> null, 10);
+    public static final Channel COLOUR_TEST = new Channel(Utils.id("colour_test"), ModSounds.BLOCK_TELEVISION_CHANNEL_COLOUR_TEST::get, 1);
+    public static final Channel HEROBRINE = new Channel(Utils.id("herobrine"), ModSounds.BLOCK_TELEVISION_CHANNEL_COLOUR_TEST::get, 0);
+    public static final Channel DANCE_MUSIC = new Channel(Utils.id("dance_music"), ModSounds.BLOCK_TELEVISION_CHANNEL_DANCE_MUSIC::get, 10);
+    public static final Channel VILLAGER_NEWS = new Channel(Utils.id("villager_news"), ModSounds.BLOCK_TELEVISION_CHANNEL_VILLAGER_NEWS::get, 10);
+    public static final Channel RIP_BLIZZARD = new Channel(Utils.id("rip_blizzard"), ModSounds.BLOCK_TELEVISION_CHANNEL_CHIRP_SONG::get, 5);
+    public static final Channel OCEAN_SUNSET = new Channel(Utils.id("ocean_sunset"), ModSounds.BLOCK_TELEVISION_CHANNEL_OCEAN_SUNSET::get, 10);
+    public static final Channel BLOCK_GAME = new Channel(Utils.id("block_game"), ModSounds.BLOCK_TELEVISION_CHANNEL_BLOCKY_GAME::get, 10);
+    public static final Channel PONG = new Channel(Utils.id("pong"), ModSounds.BLOCK_TELEVISION_CHANNEL_RETRO_SONG::get, 10);
+    public static final Channel SILLY_FACE = new Channel(Utils.id("silly_face"), () -> null, 10);
     public static final List<Channel> VIEWABLE_CHANNELS = List.of(HEART_SCREENSAVER, COLOUR_TEST, DANCE_MUSIC, VILLAGER_NEWS, RIP_BLIZZARD, OCEAN_SUNSET, BLOCK_GAME, PONG, SILLY_FACE);
     public static final List<Channel> ALL_CHANNELS = Util.make(new ArrayList<>(), channels -> {
         channels.add(WHITE_NOISE);
@@ -167,7 +167,7 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
         if(!this.transitioning && this.isNodePowered() && !this.lockChannel)
         {
             Preconditions.checkState(this.level instanceof ServerLevel);
-            int transitionTime = this.level.random.nextInt(5, 20);
+            int transitionTime = this.level.getRandom().nextInt(5, 20);
             this.level.scheduleTick(this.worldPosition, this.getBlockState().getBlock(), transitionTime);
             this.lastChannel = this.currentChannel;
             this.setChannel(WHITE_NOISE);
@@ -191,7 +191,7 @@ public class TelevisionBlockEntity extends ElectricityModuleBlockEntity implemen
         channels.remove(this.lastChannel); // Don't select the current channel
         int totalWeight = channels.stream().mapToInt(Channel::weight).sum();
         int randomIndex = 0;
-        for(int i = this.level.random.nextIntBetweenInclusive(0, totalWeight); randomIndex < channels.size() - 1; randomIndex++)
+        for(int i = this.level.getRandom().nextIntBetweenInclusive(0, totalWeight); randomIndex < channels.size() - 1; randomIndex++)
         {
             i -= channels.get(randomIndex).weight();
             if(i < 0) break;

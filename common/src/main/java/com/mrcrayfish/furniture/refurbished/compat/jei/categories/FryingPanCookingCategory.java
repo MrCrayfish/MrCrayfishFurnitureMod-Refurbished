@@ -16,7 +16,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.types.IRecipeHolderType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -49,22 +49,22 @@ public class FryingPanCookingCategory extends FurnitureRecipeCategory<Processing
     {
         ProcessingRecipe.Item recipe = holder.value();
         builder.addSlot(RecipeIngredientRole.INPUT, 27, 6).add(recipe.getIngredient());
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 102, 36).add(recipe.getResult());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 102, 36).add(recipe.getResult().create()); // TODO 26.1.1 test
         builder.addSlot(RecipeIngredientRole.RENDER_ONLY, 74, 8).add(new ItemStack(ModItems.SPATULA.get()));
         this.arrow = this.helper.createAnimatedDrawable(this.helper.createDrawable(Plugin.TEXTURES, 93, 0, 24, 17), recipe.getTime(), IDrawableAnimated.StartDirection.LEFT, false);
     }
 
     @Override
-    public void draw(RecipeHolder<ProcessingRecipe.Item> holder, IRecipeSlotsView view, GuiGraphics graphics, double mouseX, double mouseY)
+    public void draw(RecipeHolder<ProcessingRecipe.Item> holder, IRecipeSlotsView view, GuiGraphicsExtractor extractor, double mouseX, double mouseY)
     {
-        super.draw(holder, view, graphics, mouseX, mouseY);
+        super.draw(holder, view, extractor, mouseX, mouseY);
         ProcessingRecipe.Item recipe = holder.value();
-        this.arrow.draw(graphics, 71, 36);
-        this.drawSeconds(graphics, 83, 55, recipe.getTime());
+        this.arrow.draw(extractor, 71, 36);
+        this.drawSeconds(extractor, 83, 55, recipe.getTime());
         if(recipe.getType() == net.minecraft.world.item.crafting.RecipeType.CAMPFIRE_COOKING)
         {
-            graphics.fill(102, 5, 102 + 16, 5 + 16, 0x33000000);
-            graphics.renderFakeItem(this.campfireStack, 102, 5);
+            extractor.fill(102, 5, 102 + 16, 5 + 16, 0x33000000);
+            extractor.fakeItem(this.campfireStack, 102, 5);
         }
     }
 

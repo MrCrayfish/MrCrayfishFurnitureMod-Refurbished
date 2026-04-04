@@ -4,6 +4,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModRecipeBookCategories;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeSerializers;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.*;
 
 /**
@@ -11,14 +12,15 @@ import net.minecraft.world.item.crafting.*;
  */
 public class CuttingBoardSlicingRecipe extends SingleItemRecipe
 {
-    public CuttingBoardSlicingRecipe(Ingredient ingredient, ItemStack result)
+    public CuttingBoardSlicingRecipe(Recipe.CommonInfo info, Ingredient ingredient, ItemStackTemplate result)
     {
-        super("", ingredient, result);
+        super(info, ingredient, result);
     }
 
-    public CuttingBoardSlicingRecipe(String group, Ingredient ingredient, ItemStack result)
+    @Override
+    public String group()
     {
-        this(ingredient, result);
+        return "";
     }
 
     @Override
@@ -37,11 +39,5 @@ public class CuttingBoardSlicingRecipe extends SingleItemRecipe
     public RecipeBookCategory recipeBookCategory()
     {
         return ModRecipeBookCategories.CUTTING_BOARD.get();
-    }
-
-    @Override
-    public ItemStack result()
-    {
-        return super.result();
     }
 }

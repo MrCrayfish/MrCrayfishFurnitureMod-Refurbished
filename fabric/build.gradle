@@ -2,22 +2,21 @@ import org.apache.commons.io.FilenameUtils
 
 plugins {
     id 'multiloader-loader'
-    id 'fabric-loom'
+    id 'net.fabricmc.fabric-loom'
 }
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
-    mappings loom.officialMojangMappings()
-    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
-    modImplementation "com.mrcrayfish:framework-fabric:${minecraft_version}-${framework_version}"
+    implementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    implementation "com.mrcrayfish:framework-fabric:${framework_version}+${minecraft_version}"
 
     // JEI
-    modCompileOnly "mezz.jei:jei-${jei_minecraft_version}-common-api:${jei_version}"
-    modRuntimeOnly "mezz.jei:jei-${jei_minecraft_version}-fabric:${jei_version}"
+    compileOnly "mezz.jei:jei-${jei_minecraft_version}-common-api:${jei_version}"
+    runtimeOnly "mezz.jei:jei-${jei_minecraft_version}-fabric:${jei_version}"
 
     // CraftTweaker
-    modCompileOnly "com.blamejared.crafttweaker:CraftTweaker-common-${crafttweaker_minecraft_version}:${crafttweaker_version}"
+    compileOnly "com.blamejared.crafttweaker:CraftTweaker-common-${crafttweaker_minecraft_version}:${crafttweaker_version}"
     //modRuntimeOnly "com.blamejared.crafttweaker:CraftTweaker-fabric-${crafttweaker_minecraft_version}:${crafttweaker_version}"
 }
 
@@ -55,12 +54,12 @@ loom {
 }
 
 tasks.register("signJar") {
-    dependsOn remapJar
+    dependsOn jar
     onlyIf {
         findProperty('keyStore') || System.getenv("KEYSTORE")
     }
     doLast {
-        def unsignedJar = remapJar.archiveFile.get().asFile
+        def unsignedJar = jar.archiveFile.get().asFile
         def name = FilenameUtils.removeExtension(unsignedJar.getName())
         def signedJar  = layout.buildDirectory.file("libs/%s-signed.jar".formatted(name)).get().asFile
         def signingKeyAlias = findProperty('keyStoreAlias') ?: System.getenv("KEYSTORE_ALIAS")
@@ -95,13 +94,6 @@ sourceSets.configureEach {
             attributes {
                 attribute(loaderAttribute, 'fabric')
             }
-        }
-    }
-}
-loom.remapConfigurations.configureEach {
-    configurations.named(it.name) {
-        attributes {
-            attribute(loaderAttribute, 'fabric')
         }
     }
 }

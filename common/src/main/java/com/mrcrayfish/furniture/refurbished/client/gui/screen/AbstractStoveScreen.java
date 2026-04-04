@@ -8,7 +8,7 @@ import com.mrcrayfish.furniture.refurbished.inventory.IPowerSwitchMenu;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageTogglePower;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -21,7 +21,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
  */
 public class AbstractStoveScreen<T extends AbstractContainerMenu & IElectricityMenu & IPowerSwitchMenu & IBakingMenu> extends ElectricityContainerScreen<T>
 {
-    private static final Identifier TEXTURE = Utils.resource("textures/gui/container/stove.png");
+    private static final Identifier TEXTURE = Utils.id("textures/gui/container/stove.png");
 
     protected OnOffSlider slider;
 
@@ -45,28 +45,28 @@ public class AbstractStoveScreen<T extends AbstractContainerMenu & IElectricityM
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick)
     {
         this.slider.setEnabled(this.menu.isEnabled());
-        super.render(graphics, mouseX, mouseY, partialTick);
+        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
         this.afterRender(graphics, mouseX, mouseY, partialTick);
     }
 
-    protected void afterRender(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    protected void afterRender(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick)
     {
-        this.renderTooltip(graphics, mouseX, mouseY);
+        this.extractTooltip(graphics, mouseX, mouseY);
 
         // TODO draw tooltip for progress
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
+    public void extractBackground(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick)
     {
-        super.renderBg(graphics, partialTick, mouseX, mouseY);
-        graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
+        super.extractBackground(extractor, mouseX, mouseY, partialTick);
+        extractor.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
 
         int offset = this.menu.isPowered() && this.menu.isEnabled() ? (int) (Util.getMillis() / 100) % 3 : 0;
-        graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos + 32, this.topPos + 23, 176, 16 + offset * 40, 40, 40, 256, 256);
+        extractor.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos + 32, this.topPos + 23, 176, 16 + offset * 40, 40, 40, 256, 256);
 
         for(int i = 0; i < 3; i++)
         {
@@ -75,7 +75,7 @@ public class AbstractStoveScreen<T extends AbstractContainerMenu & IElectricityM
             if(totalProgress == 0)
                 continue;
             int height = (int) Math.ceil(16 * (progress / (float) totalProgress));
-            graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos + 84 + i * 18, this.topPos + 36, 190, 0, 17, height, 256, 256);
+            extractor.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos + 84 + i * 18, this.topPos + 36, 190, 0, 17, height, 256, 256);
         }
     }
 }

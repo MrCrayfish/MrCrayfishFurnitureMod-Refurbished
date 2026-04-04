@@ -3,7 +3,7 @@ package com.mrcrayfish.furniture.refurbished.computer.client.widget;
 import com.mrcrayfish.furniture.refurbished.client.gui.ICustomSelectionList;
 import com.mrcrayfish.furniture.refurbished.client.util.ScreenHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.util.Mth;
@@ -145,23 +145,23 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
     }
 
     @Override
-    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void extractWidgetRenderState(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick)
     {
         // Draw outlines and background
-        graphics.fill(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), this.outlineColour);
-        graphics.fill(this.getX() + 1, this.getY() + 1, this.getX() + this.getWidth() - 1, this.getY() + this.getHeight() - 1, this.backgroundColour);
+        extractor.fill(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), this.outlineColour);
+        extractor.fill(this.getX() + 1, this.getY() + 1, this.getX() + this.getWidth() - 1, this.getY() + this.getHeight() - 1, this.backgroundColour);
 
         // Draw items
-        graphics.enableScissor(this.getRowLeft() - 1, this.getY() + 1, this.getRowRight() + 1, this.getY() + this.getHeight() - 1);
-        this.renderListItems(graphics, mouseX, mouseY, partialTick);
-        graphics.disableScissor();
+        extractor.enableScissor(this.getRowLeft() - 1, this.getY() + 1, this.getRowRight() + 1, this.getY() + this.getHeight() - 1);
+        this.extractListItems(extractor, mouseX, mouseY, partialTick);
+        extractor.disableScissor();
 
         // Only draw scroll bar if enough items
         int maxScroll = this.maxScrollAmount();
         if(maxScroll > 0)
         {
             // Draw divider between items and scroll bar
-            graphics.fill(this.scrollBarX() - this.contentPadding - 1, this.getY() + 1, this.scrollBarX() - this.contentPadding, this.getY() + this.getHeight() - 1, this.outlineColour);
+            extractor.fill(this.scrollBarX() - this.contentPadding - 1, this.getY() + 1, this.scrollBarX() - this.contentPadding, this.getY() + this.getHeight() - 1, this.outlineColour);
 
             // Draw scroll bar
             int scrollBarStart = this.scrollBarX();
@@ -169,12 +169,12 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
             int scrollBarHeight = this.getScrollbarHeight();
             int scrollBarTop = (int) (this.getScrollAreaTop() + (this.getScrollAreaHeight() - this.getScrollbarHeight()) * (this.scrollAmount() / maxScroll));
             int scrollBarColour = ScreenHelper.isMouseWithinBounds(mouseX, mouseY, scrollBarStart, scrollBarTop, this.scrollBarWidth, scrollBarHeight) ? this.scrollBarHighlightColour : this.scrollBarColour;
-            graphics.fill(scrollBarStart, scrollBarTop, scrollBarEnd, scrollBarTop + scrollBarHeight, scrollBarColour);
+            extractor.fill(scrollBarStart, scrollBarTop, scrollBarEnd, scrollBarTop + scrollBarHeight, scrollBarColour);
         }
     }
 
     @Override
-    protected void renderListItems(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    protected void extractListItems(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick)
     {
         int rowHeight = this.defaultEntryHeight;
         int rowCount = this.getItemCount();
@@ -189,7 +189,7 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
             E entry = this.children().get(i);
             if(entry.getY() <= this.getY() + this.getHeight())
             {
-                this.renderItem(graphics, mouseX, mouseY, partialTick, this.children().get(i));
+                this.extractItem(extractor, mouseX, mouseY, partialTick, this.children().get(i));
                 continue;
             }
             // Break if the item is below the content area. Also stops drawing subsequent items.
@@ -198,9 +198,9 @@ public class ComputerSelectionList<E extends ObjectSelectionList.Entry<E>> exten
     }
 
     @Override
-    protected void renderSelection(GuiGraphics graphics, E entry, int outlineColour)
+    protected void extractSelection(GuiGraphicsExtractor extractor, E entry, int outlineColour)
     {
-        graphics.fill(entry.getX() - 1, entry.getY() - 1, entry.getX() + entry.getWidth() + 1, entry.getY() + entry.getHeight() + 1, outlineColour);
+        extractor.fill(entry.getX() - 1, entry.getY() - 1, entry.getX() + entry.getWidth() + 1, entry.getY() + entry.getHeight() + 1, outlineColour);
     }
 
     @Override

@@ -14,7 +14,7 @@ import net.minecraft.world.item.crafting.display.RecipeDisplay;
 @RegistryContainer
 public class ModRecipeDisplays
 {
-    public static final RegistryEntry<RecipeDisplay.Type<FreezerRecipeDisplay>> FREEZER = RegistryEntry.recipeDisplay(Utils.resource("freezer"), () -> FreezerRecipeDisplay.TYPE);
-    public static final RegistryEntry<RecipeDisplay.Type<MicrowaveRecipeDisplay>> MICROWAVE = RegistryEntry.recipeDisplay(Utils.resource("microwave"), () -> MicrowaveRecipeDisplay.TYPE);
-    public static final RegistryEntry<RecipeDisplay.Type<OvenRecipeDisplay>> OVEN = RegistryEntry.recipeDisplay(Utils.resource("oven"), () -> OvenRecipeDisplay.TYPE);
+    public static final RegistryEntry<RecipeDisplay.Type<FreezerRecipeDisplay>> FREEZER = RegistryEntry.recipeDisplay(Utils.id("freezer"), () -> FreezerRecipeDisplay.TYPE);
+    public static final RegistryEntry<RecipeDisplay.Type<MicrowaveRecipeDisplay>> MICROWAVE = RegistryEntry.recipeDisplay(Utils.id("microwave"), () -> MicrowaveRecipeDisplay.TYPE);
+    public static final RegistryEntry<RecipeDisplay.Type<OvenRecipeDisplay>> OVEN = RegistryEntry.recipeDisplay(Utils.id("oven"), () -> OvenRecipeDisplay.TYPE);
 }

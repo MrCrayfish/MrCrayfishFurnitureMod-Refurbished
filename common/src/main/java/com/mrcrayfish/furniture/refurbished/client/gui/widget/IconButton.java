@@ -2,7 +2,7 @@ package com.mrcrayfish.furniture.refurbished.client.gui.widget;
 
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
@@ -15,7 +15,7 @@ import net.minecraft.util.ARGB;
  */
 public class IconButton extends Button
 {
-    public static final Identifier ICON_TEXTURES = Utils.resource("textures/gui/icons.png");
+    public static final Identifier ICON_TEXTURES = Utils.id("textures/gui/icons.png");
 
     private final Component label;
     private final int u, v;
@@ -39,9 +39,9 @@ public class IconButton extends Button
     }
 
     @Override
-    public void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
+    public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks)
     {
-        this.renderDefaultSprite(graphics);
+        this.extractDefaultSprite(graphics);
         Minecraft minecraft = Minecraft.getInstance();
         int contentWidth = 10 + minecraft.font.width(this.label) + (!this.label.getString().isEmpty() ? 4 : 0);
         int iconX = this.getX() + (this.width - contentWidth) / 2;

@@ -8,10 +8,11 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.data.models.MultiVariant;
 import net.minecraft.client.data.models.blockstates.*;
 import net.minecraft.client.data.models.model.*;
-import net.minecraft.client.renderer.block.model.Variant;
-import net.minecraft.client.renderer.block.model.multipart.CombinedCondition;
-import net.minecraft.client.renderer.block.model.multipart.Condition;
+import net.minecraft.client.renderer.block.dispatch.Variant;
+import net.minecraft.client.renderer.block.dispatch.multipart.CombinedCondition;
+import net.minecraft.client.renderer.block.dispatch.multipart.Condition;
 import net.minecraft.client.renderer.item.ClientItem;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -514,35 +515,35 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         this.workbench(ModBlocks.WORKBENCH.get());
     }
 
-    private Identifier blockTexture(Block block)
+    private Material blockTexture(Block block)
     {
         Identifier name = BuiltInRegistries.BLOCK.getKey(block);
-        return Identifier.fromNamespaceAndPath(name.getNamespace(), "block/" + name.getPath());
+        return new Material(Identifier.fromNamespaceAndPath(name.getNamespace(), "block/" + name.getPath()));
     }
 
-    private Identifier woodParticle(WoodType type)
+    private Material woodParticle(WoodType type)
     {
-        return Utils.resource("block/" + type.name() + "_particle");
+        return new Material(Utils.id("block/" + type.name() + "_particle"));
     }
 
-    private Identifier colourParticle(DyeColor color)
+    private Material colourParticle(DyeColor color)
     {
-        return Utils.resource("block/" + color.getName() + "_particle");
+        return new Material(Utils.id("block/" + color.getName() + "_particle"));
     }
 
-    private Identifier metalParticle(MetalType type)
+    private Material metalParticle(MetalType type)
     {
-        return Utils.resource("block/" + type.getName() + "_particle");
+        return new Material(Utils.id("block/" + type.getName() + "_particle"));
     }
 
-    private Identifier leafTexture(LeafType type)
+    private Material leafTexture(LeafType type)
     {
-        return Identifier.withDefaultNamespace("block/" + type.getName() + "_leaves");
+        return new Material(Identifier.withDefaultNamespace("block/" + type.getName() + "_leaves"));
     }
 
-    private Identifier stoneTexture(StoneType type)
+    private Material stoneTexture(StoneType type)
     {
-        return Identifier.withDefaultNamespace("block/" + type.getName());
+        return new Material(Identifier.withDefaultNamespace("block/" + type.getName()));
     }
 
     private void registerItemWithModel(Block block, Identifier location)
@@ -1269,7 +1270,7 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
     private void storageJar(StorageJarBlock block)
     {
         TextureMapping textures = new TextureMapping()
-            .put(TextureSlot.PARTICLE, Identifier.withDefaultNamespace("block/glass"))
+            .put(TextureSlot.PARTICLE, new Material(Identifier.withDefaultNamespace("block/glass")))
             .put(TextureSlot.TEXTURE, this.blockTexture(block));
         MultiVariant storageJarVariant = this.plainVariant(ModelDefinitions.STORAGE_JAR.create(block, textures, this.models::put));
         this.registerItemWithModelFromMultiVariant(block, storageJarVariant);
@@ -1353,7 +1354,7 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
         TextureMapping extraTextures = new TextureMapping();
         extraTextures.put(TextureSlot.TEXTURE, this.blockTexture(block));
         String name = "%s_%s_ceiling_fan_blade".formatted(block.getWoodType().name(), block.getMetalType().getName());
-        ModelDefinitions.CEILING_FAN_BLADE.create(Utils.resource("extra/" + name), extraTextures, this.models::put);
+        ModelDefinitions.CEILING_FAN_BLADE.create(Utils.id("extra/" + name), extraTextures, this.models::put);
     }
 
     private void storageCabinet(WoodenStorageCabinetBlock block)
@@ -1553,12 +1554,12 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
 
     private void plate(PlateBlock block)
     {
-        this.registerItemWithModel(block, Utils.resource("block/apricity_plate"));
+        this.registerItemWithModel(block, Utils.id("block/apricity_plate"));
         this.generators.put(block, MultiVariantGenerator.dispatch(block, this.variants(
-           this.plainModel(Utils.resource("block/apricity_plate")),
-           this.plainModel(Utils.resource("block/stardust_plate")),
-           this.plainModel(Utils.resource("block/cerulean_plate")),
-           this.plainModel(Utils.resource("block/tuscan_plate"))
+           this.plainModel(Utils.id("block/apricity_plate")),
+           this.plainModel(Utils.id("block/stardust_plate")),
+           this.plainModel(Utils.id("block/cerulean_plate")),
+           this.plainModel(Utils.id("block/tuscan_plate"))
         )));
     }
 
@@ -1806,8 +1807,8 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
 
     private void television(TelevisionBlock block)
     {
-        MultiVariant televisionOffVariant = this.plainVariant(Utils.resource("block/television_off"));
-        MultiVariant televisionOnVariant = this.plainVariant(Utils.resource("block/television_on"));
+        MultiVariant televisionOffVariant = this.plainVariant(Utils.id("block/television_off"));
+        MultiVariant televisionOnVariant = this.plainVariant(Utils.id("block/television_on"));
         this.registerItemWithModelFromMultiVariant(block, televisionOffVariant);
         this.generators.put(block, MultiVariantGenerator.dispatch(block)
             .with(PropertyDispatch.initial(TelevisionBlock.DIRECTION, TelevisionBlock.POWERED)
@@ -1823,8 +1824,8 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
 
     private void computer(ComputerBlock block)
     {
-        MultiVariant computerOffVariant = this.plainVariant(Utils.resource("block/computer_off"));
-        MultiVariant computerOnVariant = this.plainVariant(Utils.resource("block/computer_on"));
+        MultiVariant computerOffVariant = this.plainVariant(Utils.id("block/computer_off"));
+        MultiVariant computerOnVariant = this.plainVariant(Utils.id("block/computer_on"));
         this.registerItemWithModelFromMultiVariant(block, computerOffVariant);
         this.generators.put(block, MultiVariantGenerator.dispatch(block)
             .with(PropertyDispatch.initial(ComputerBlock.DIRECTION, ComputerBlock.POWERED)
@@ -1840,7 +1841,7 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
 
     private void doorMat(DoorMatBlock block)
     {
-        MultiVariant doorMatVariant = this.plainVariant(Utils.resource("block/door_mat"));
+        MultiVariant doorMatVariant = this.plainVariant(Utils.id("block/door_mat"));
         this.registerItemWithModelFromMultiVariant(block, doorMatVariant);
         this.generators.put(block, MultiVariantGenerator.dispatch(block)
             .with(PropertyDispatch.initial(DoorMatBlock.DIRECTION)
@@ -1852,8 +1853,8 @@ public class CommonBlockStatesGenerator extends FrameworkGenerator
 
     private void workbench(WorkbenchBlock block)
     {
-        MultiVariant workbenchOffVariant = this.plainVariant(Utils.resource("block/workbench_off"));
-        MultiVariant workbenchOnVariant = this.plainVariant(Utils.resource("block/workbench_on"));
+        MultiVariant workbenchOffVariant = this.plainVariant(Utils.id("block/workbench_off"));
+        MultiVariant workbenchOnVariant = this.plainVariant(Utils.id("block/workbench_on"));
         this.registerItemWithModelFromMultiVariant(block, workbenchOnVariant);
         this.generators.put(block, MultiVariantGenerator.dispatch(block)
             .with(PropertyDispatch.initial(WorkbenchBlock.DIRECTION, WorkbenchBlock.POWERED)

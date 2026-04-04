@@ -124,7 +124,7 @@ public class FreezerBlockEntity extends ElectricityModuleProcessingLootBlockEnti
     public void onOpen(Level level, BlockPos pos, BlockState state)
     {
         Vec3 door = Vec3.atCenterOf(this.worldPosition).relative(state.getValue(FreezerBlock.DIRECTION).getOpposite(), 0.5);
-        level.playSound(null, door.x, door.y, door.z, ModSounds.BLOCK_FREEZER_OPEN.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.random.nextFloat());
+        level.playSound(null, door.x, door.y, door.z, ModSounds.BLOCK_FREEZER_OPEN.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.getRandom().nextFloat());
         this.setDoorState(state, true);
     }
 
@@ -132,7 +132,7 @@ public class FreezerBlockEntity extends ElectricityModuleProcessingLootBlockEnti
     public void onClose(Level level, BlockPos pos, BlockState state)
     {
         Vec3 door = Vec3.atCenterOf(this.worldPosition).relative(state.getValue(FreezerBlock.DIRECTION).getOpposite(), 0.5);
-        level.playSound(null, door.x, door.y, door.z, ModSounds.BLOCK_FREEZER_CLOSE.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.random.nextFloat());
+        level.playSound(null, door.x, door.y, door.z, ModSounds.BLOCK_FREEZER_CLOSE.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.getRandom().nextFloat());
         this.setDoorState(state, false);
     }
 

@@ -3,6 +3,7 @@ package com.mrcrayfish.furniture.refurbished.data.model;
 import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.resources.Identifier;
 
 import java.util.Optional;
@@ -44,7 +45,7 @@ public abstract class ParentModel<T extends ParentModel<T>>
 
     public T setTexture(TextureSlot slot, Identifier texture)
     {
-        this.textures.put(slot, texture);
+        this.textures.put(slot, new Material(texture));
         return this.self();
     }
 

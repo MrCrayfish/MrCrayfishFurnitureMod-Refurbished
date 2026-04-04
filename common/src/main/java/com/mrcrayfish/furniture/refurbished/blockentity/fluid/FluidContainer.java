@@ -91,14 +91,14 @@ public abstract class FluidContainer
     /**
      * Loads this fluid container from the given compound tag
      *
-     * @param tag the compound tag to read from
+     * @param input the compound tag to read from
      */
     public abstract void load(ValueInput input);
 
     /**
      * Saves the fluid container to the given compound tag.
      *
-     * @param tag the compound tag to append the data to
+     * @param output the compound tag to append the data to
      */
     public abstract void save(ValueOutput output);
 
@@ -112,7 +112,7 @@ public abstract class FluidContainer
         if(level != null && level.getChunkSource() instanceof ServerChunkCache cache)
         {
             BlockPos pos = owner.getBlockPos();
-            List<ServerPlayer> players = cache.chunkMap.getPlayers(new ChunkPos(pos), false);
+            List<ServerPlayer> players = cache.chunkMap.getPlayers(ChunkPos.containing(pos), false);
             players.forEach(player -> Network.getPlay().sendToPlayer(() -> player, new MessageSyncFluid(pos, this.getStoredFluid(), this.getStoredAmount())));
         }
     }

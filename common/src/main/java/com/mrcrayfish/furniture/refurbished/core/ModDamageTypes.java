@@ -11,7 +11,7 @@ import net.minecraft.world.damagesource.DamageType;
  */
 public class ModDamageTypes
 {
-    public static final ResourceKey<DamageType> CEILING_FAN = ResourceKey.create(Registries.DAMAGE_TYPE, Utils.resource("ceiling_fan"));
+    public static final ResourceKey<DamageType> CEILING_FAN = ResourceKey.create(Registries.DAMAGE_TYPE, Utils.id("ceiling_fan"));
 
     public static void bootstrap(BootstrapContext<DamageType> context)
     {

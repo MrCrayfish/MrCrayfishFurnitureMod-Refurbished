@@ -13,7 +13,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.types.IRecipeHolderType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
@@ -44,15 +44,15 @@ public class ToasterToastingCategory extends FurnitureRecipeCategory<ToasterHeat
     {
         ToasterHeatingRecipe recipe = holder.value();
         builder.addSlot(RecipeIngredientRole.INPUT, 18, 4).add(recipe.getIngredient());
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 83, 19).add(recipe.getResult());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 83, 19).add(recipe.getResult().create());
         this.arrow = this.helper.createAnimatedDrawable(this.helper.createDrawable(Plugin.TEXTURES, 93, 0, 24, 17), recipe.getTime(), IDrawableAnimated.StartDirection.LEFT, false);
     }
 
     @Override
-    public void draw(RecipeHolder<ToasterHeatingRecipe> holder, IRecipeSlotsView view, GuiGraphics graphics, double mouseX, double mouseY)
+    public void draw(RecipeHolder<ToasterHeatingRecipe> holder, IRecipeSlotsView view, GuiGraphicsExtractor extractor, double mouseX, double mouseY)
     {
-        super.draw(holder, view, graphics, mouseX, mouseY);
-        this.arrow.draw(graphics, 52, 19);
-        this.drawSeconds(graphics, 64, 38, holder.value().getTime());
+        super.draw(holder, view, extractor, mouseX, mouseY);
+        this.arrow.draw(extractor, 52, 19);
+        this.drawSeconds(extractor, 64, 38, holder.value().getTime());
     }
 }

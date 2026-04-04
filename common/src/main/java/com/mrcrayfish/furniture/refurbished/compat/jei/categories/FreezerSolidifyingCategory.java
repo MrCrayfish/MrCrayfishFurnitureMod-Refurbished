@@ -13,7 +13,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.types.IRecipeHolderType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
@@ -44,15 +44,15 @@ public class FreezerSolidifyingCategory extends FurnitureRecipeCategory<FreezerS
     {
         FreezerSolidifyingRecipe recipe = holder.value();
         builder.addSlot(RecipeIngredientRole.INPUT, 7, 10).add(recipe.getIngredient());
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 67, 10).add(recipe.getResult());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 67, 10).add(recipe.getResult().create());
         this.arrow = this.helper.createAnimatedDrawable(this.helper.createDrawable(Plugin.TEXTURES, 93, 0, 24, 17), recipe.getTime(), IDrawableAnimated.StartDirection.LEFT, false);
     }
 
     @Override
-    public void draw(RecipeHolder<FreezerSolidifyingRecipe> holder, IRecipeSlotsView view, GuiGraphics graphics, double mouseX, double mouseY)
+    public void draw(RecipeHolder<FreezerSolidifyingRecipe> holder, IRecipeSlotsView view, GuiGraphicsExtractor extractor, double mouseX, double mouseY)
     {
-        super.draw(holder, view, graphics, mouseX, mouseY);
-        this.arrow.draw(graphics, 30, 9);
-        this.drawSeconds(graphics, 42, 28, holder.value().getTime());
+        super.draw(holder, view, extractor, mouseX, mouseY);
+        this.arrow.draw(extractor, 30, 9);
+        this.drawSeconds(extractor, 42, 28, holder.value().getTime());
     }
 }

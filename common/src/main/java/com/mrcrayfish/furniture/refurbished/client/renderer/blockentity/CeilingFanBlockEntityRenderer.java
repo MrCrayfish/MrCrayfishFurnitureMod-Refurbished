@@ -7,19 +7,18 @@ import com.mrcrayfish.furniture.refurbished.block.CeilingFanBlock;
 import com.mrcrayfish.furniture.refurbished.blockentity.CeilingFanBlockEntity;
 import com.mrcrayfish.furniture.refurbished.client.renderer.blockentity.state.CeilingFanRenderState;
 import com.mrcrayfish.furniture.refurbished.core.ModExtraModels;
+import com.mrcrayfish.furniture.refurbished.util.reflection.ReflectedField;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.debug.DebugScreenEntries;
-import net.minecraft.client.renderer.ShapeRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.model.BlockModelPart;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -34,7 +33,8 @@ import java.util.function.Supplier;
  */
 public class CeilingFanBlockEntityRenderer implements BlockEntityRenderer<CeilingFanBlockEntity, CeilingFanRenderState>
 {
-    private static final Map<Block, Supplier<BlockModelPart>> BLADE_MODEL_MAP = new Object2ObjectOpenHashMap<>();
+    private static final ReflectedField<BlockEntityRenderState, BlockState> BLOCK_STATE_FIELD = new ReflectedField<>(BlockEntityRenderState.class, "blockState");
+    private static final Map<Block, Supplier<BlockStateModelPart>> BLADE_MODEL_MAP = new Object2ObjectOpenHashMap<>();
 
     private final EntityRenderDispatcher entityRenderer;
 
@@ -66,7 +66,7 @@ public class CeilingFanBlockEntityRenderer implements BlockEntityRenderer<Ceilin
         poseStack.mulPose(renderState.direction.getRotation());
         poseStack.mulPose(Axis.YP.rotationDegrees(renderState.rotation));
         poseStack.translate(-0.5, -0.5, -0.5);
-        BlockModelPart model = this.getCeilingFanBladeModel(renderState.blockState);
+        BlockStateModelPart model = this.getCeilingFanBladeModel(BLOCK_STATE_FIELD.get(renderState));
         StandaloneModelRenderer.submitDraw(collector, model, poseStack, 1, 1, 1, renderState.lightCoords, OverlayTexture.NO_OVERLAY);
         poseStack.popPose();
 
@@ -78,11 +78,11 @@ public class CeilingFanBlockEntityRenderer implements BlockEntityRenderer<Ceilin
         }
     }
 
-    private BlockModelPart getCeilingFanBladeModel(BlockState state)
+    private BlockStateModelPart getCeilingFanBladeModel(BlockState state)
     {
         if(state.getBlock() instanceof CeilingFanBlock block)
         {
-            Supplier<BlockModelPart> supplier = BLADE_MODEL_MAP.get(block);
+            Supplier<BlockStateModelPart> supplier = BLADE_MODEL_MAP.get(block);
             if(supplier != null)
             {
                 return supplier.get();
@@ -91,7 +91,7 @@ public class CeilingFanBlockEntityRenderer implements BlockEntityRenderer<Ceilin
         return ModExtraModels.OAK_LIGHT_CEILING_FAN_BLADE.getModel();
     }
 
-    public static void registerFanBlade(Block block, Supplier<BlockModelPart> modelSupplier)
+    public static void registerFanBlade(Block block, Supplier<BlockStateModelPart> modelSupplier)
     {
         BLADE_MODEL_MAP.putIfAbsent(block, modelSupplier);
     }

@@ -31,6 +31,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.StackedContentsCompatible;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -282,7 +283,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     public void onOpen(Level level, BlockPos pos, BlockState state)
     {
         Vec3 center = Vec3.atCenterOf(this.worldPosition).relative(state.getValue(StoveBlock.DIRECTION).getOpposite(), 0.5);
-        level.playSound(null, center.x, center.y, center.z, ModSounds.BLOCK_STOVE_OPEN.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.random.nextFloat());
+        level.playSound(null, center.x, center.y, center.z, ModSounds.BLOCK_STOVE_OPEN.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.getRandom().nextFloat());
         this.setDoorState(state, true);
     }
 
@@ -290,7 +291,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
     public void onClose(Level level, BlockPos pos, BlockState state)
     {
         Vec3 center = Vec3.atCenterOf(this.worldPosition).relative(state.getValue(StoveBlock.DIRECTION).getOpposite(), 0.5);
-        level.playSound(null, center.x, center.y, center.z, ModSounds.BLOCK_STOVE_CLOSE.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.random.nextFloat());
+        level.playSound(null, center.x, center.y, center.z, ModSounds.BLOCK_STOVE_CLOSE.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.getRandom().nextFloat());
         this.setDoorState(state, false);
     }
 
@@ -612,10 +613,8 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
             ItemStack stack = StoveBlockEntity.this.getItem(this.inputIndex);
             if(!stack.isEmpty())
             {
-                ItemStack remainingItem = stack.getMaxStackSize() == 1 ? stack.getItem().getCraftingRemainder() : ItemStack.EMPTY;
                 Optional<? extends ProcessingRecipe> optional = this.getRecipe();
-                Level level = Objects.requireNonNull(StoveBlockEntity.this.getLevel());
-                ItemStack result = optional.map(recipe -> recipe.assemble(new SingleRecipeInput(stack), level.registryAccess())).orElse(ItemStack.EMPTY);
+                ItemStack result = optional.map(recipe -> recipe.assemble(new SingleRecipeInput(stack))).orElse(ItemStack.EMPTY);
                 stack.shrink(1);
                 if(!result.isEmpty())
                 {
@@ -630,17 +629,18 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
                         outputStack.grow(copy.getCount());
                         StoveBlockEntity.this.setChanged();
                     }
-                    if(!remainingItem.isEmpty())
+                    ItemStackTemplate remainder = stack.getMaxStackSize() == 1 ? stack.getItem().getCraftingRemainder() : null;
+                    if(remainder != null)
                     {
                         if(stack.isEmpty())
                         {
-                            StoveBlockEntity.this.setItem(this.inputIndex, remainingItem.copy());
+                            StoveBlockEntity.this.setItem(this.inputIndex, remainder.create());
                         }
                         else
                         {
                             // Fallback and drop the item into the world
                             Vec3 pos = StoveBlockEntity.this.getBlockPos().getCenter().add(0, 0.5, 0);
-                            Containers.dropItemStack(StoveBlockEntity.this.level, pos.x, pos.y, pos.z, remainingItem.copy());
+                            Containers.dropItemStack(StoveBlockEntity.this.level, pos.x, pos.y, pos.z, remainder.create());
                         }
                     }
                 }
@@ -663,7 +663,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
                 }
 
                 Level level = Objects.requireNonNull(StoveBlockEntity.this.getLevel());
-                ItemStack result = optional.get().assemble(new SingleRecipeInput(stack), level.registryAccess());
+                ItemStack result = optional.get().assemble(new SingleRecipeInput(stack));
                 return this.canOutput(result);
             }
             return false;

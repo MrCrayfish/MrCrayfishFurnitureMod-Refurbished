@@ -10,7 +10,7 @@ import com.mrcrayfish.furniture.refurbished.electricity.LinkManager;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -22,7 +22,7 @@ import net.minecraft.world.phys.BlockHitResult;
 public class NodeIndicatorOverlay implements IHudOverlay
 {
     @Override
-    public void draw(GuiGraphics graphics, DeltaTracker deltaTracker)
+    public void draw(GuiGraphicsExtractor extractor, DeltaTracker deltaTracker)
     {
         Minecraft mc = Minecraft.getInstance();
         if(mc.level == null || mc.hitResult == null)
@@ -38,7 +38,7 @@ public class NodeIndicatorOverlay implements IHudOverlay
             double linkLength = handler.getLinkLength();
             if(linkLength > LinkManager.MAX_LINK_LENGTH)
             {
-                this.drawLabel(mc, graphics, Components.GUI_LINK_TOO_LONG, 40, 0);
+                this.drawLabel(mc, extractor, Components.GUI_LINK_TOO_LONG, 40, 0);
                 return;
             }
 
@@ -47,20 +47,20 @@ public class NodeIndicatorOverlay implements IHudOverlay
             {
                 if(target.isSourceNode() && linking.isSourceNode())
                 {
-                    this.drawLabel(mc, graphics, Components.GUI_LINK_INVALID_NODE, 40, 0);
+                    this.drawLabel(mc, extractor, Components.GUI_LINK_INVALID_NODE, 40, 0);
                     return;
                 }
 
                 int nodeLinkLength = (int) (linking.getNodePosition().getCenter().distanceTo(target.getNodePosition().getCenter()) + 0.5);
                 if(nodeLinkLength > LinkManager.MAX_LINK_LENGTH)
                 {
-                    this.drawLabel(mc, graphics, Components.GUI_LINK_TOO_LONG, 40, 0);
+                    this.drawLabel(mc, extractor, Components.GUI_LINK_TOO_LONG, 40, 0);
                     return;
                 }
 
                 if(target.isNodeConnectionLimitReached())
                 {
-                    this.drawLabel(mc, graphics, Components.GUI_LINK_TOO_MANY, 40, 0);
+                    this.drawLabel(mc, extractor, Components.GUI_LINK_TOO_MANY, 40, 0);
                     return;
                 }
 
@@ -68,26 +68,26 @@ public class NodeIndicatorOverlay implements IHudOverlay
                 {
                     if(handler.isLinkOutsidePowerableArea())
                     {
-                        this.drawLabel(mc, graphics, Components.GUI_LINK_UNPOWERABLE, 30, 0);
+                        this.drawLabel(mc, extractor, Components.GUI_LINK_UNPOWERABLE, 30, 0);
                         return;
                     }
 
                     Component label = Utils.translation("gui", "progress", target.getNodeConnections().size(), Components.GUI_SLASH, target.getNodeMaximumConnections());
-                    this.drawLabel(mc, graphics, label, 0, 10);
+                    this.drawLabel(mc, extractor, label, 0, 10);
                     return;
                 }
             }
 
             if(handler.isLinkOutsidePowerableArea())
             {
-                this.drawLabel(mc, graphics, Components.GUI_LINK_OUTSIDE_AREA, 40, 0);
+                this.drawLabel(mc, extractor, Components.GUI_LINK_OUTSIDE_AREA, 40, 0);
                 return;
             }
         }
         else if(target != null)
         {
             Component label = Utils.translation("gui", "progress", target.getNodeConnections().size(), Components.GUI_SLASH, target.getNodeMaximumConnections());
-            this.drawLabel(mc, graphics, label, 0, 10);
+            this.drawLabel(mc, extractor, label, 0, 10);
             return;
         }
 
@@ -96,7 +96,7 @@ public class NodeIndicatorOverlay implements IHudOverlay
         {
             if(connection.isCrossingPowerableZone(mc.level))
             {
-                this.drawLabel(mc, graphics, Components.GUI_LINK_OUTSIDE_AREA, 40, 0);
+                this.drawLabel(mc, extractor, Components.GUI_LINK_OUTSIDE_AREA, 40, 0);
                 return;
             }
         }
@@ -108,31 +108,31 @@ public class NodeIndicatorOverlay implements IHudOverlay
             {
                 if(!Config.SERVER.electricity.cheats.everythingIsPowered.get())
                 {
-                    this.drawLabel(mc, graphics, Components.GUI_NO_POWER, 20, 20);
+                    this.drawLabel(mc, extractor, Components.GUI_NO_POWER, 20, 20);
                 }
             }
         }
     }
 
-    private void drawLabel(Minecraft mc, GuiGraphics graphics, Component label, int iconU, int iconV)
+    private void drawLabel(Minecraft mc, GuiGraphicsExtractor extractor, Component label, int iconU, int iconV)
     {
         int padding = 3;
         int iconSize = 10;
         int messageWidth = mc.font.width(label);
         int contentWidth = padding + iconSize + padding + messageWidth + padding;
         int contentHeight = padding + mc.font.lineHeight + padding;
-        int contentStart = (graphics.guiWidth() - contentWidth) / 2;
-        int contentTop = (graphics.guiHeight() - contentHeight) / 2 + 50;
+        int contentStart = (extractor.guiWidth() - contentWidth) / 2;
+        int contentTop = (extractor.guiHeight() - contentHeight) / 2 + 50;
 
         // Draw background with "rounded" corners
-        graphics.fill(contentStart, contentTop + 1, contentStart + 1, contentTop + contentHeight - 1, 0x77000000);
-        graphics.fill(contentStart + 1, contentTop, contentStart + contentWidth - 1, contentTop + contentHeight, 0x77000000);
-        graphics.fill(contentStart + contentWidth - 1, contentTop + 1, contentStart + contentWidth, contentTop + contentHeight - 1, 0x77000000);
+        extractor.fill(contentStart, contentTop + 1, contentStart + 1, contentTop + contentHeight - 1, 0x77000000);
+        extractor.fill(contentStart + 1, contentTop, contentStart + contentWidth - 1, contentTop + contentHeight, 0x77000000);
+        extractor.fill(contentStart + contentWidth - 1, contentTop + 1, contentStart + contentWidth, contentTop + contentHeight - 1, 0x77000000);
 
         // Draw icon
-        graphics.blit(RenderPipelines.GUI_TEXTURED, IconButton.ICON_TEXTURES, contentStart + padding, contentTop + padding, iconU, iconV, iconSize, iconSize, 64, 64);
+        extractor.blit(RenderPipelines.GUI_TEXTURED, IconButton.ICON_TEXTURES, contentStart + padding, contentTop + padding, iconU, iconV, iconSize, iconSize, 64, 64);
 
         // Draw message
-        graphics.drawString(mc.font, label, contentStart + padding + iconSize + padding, contentTop + padding + 1, 0xFFFFFFFF);
+        extractor.text(mc.font, label, contentStart + padding + iconSize + padding, contentTop + padding + 1, 0xFFFFFFFF);
     }
 }

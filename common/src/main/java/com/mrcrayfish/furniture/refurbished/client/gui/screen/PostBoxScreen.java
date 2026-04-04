@@ -10,7 +10,7 @@ import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageSendPackage;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.KeyEvent;
@@ -41,7 +41,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
     private static final Component MAILBOXES_LABEL = Utils.translation("gui", "mailboxes");
     private static final MutableComponent DEFAULT_MAILBOX_NAME = Utils.translation("gui", "default_mailbox_name");
     private static final MutableComponent UNKNOWN_MAILBOX_OWNER = Utils.translation("gui", "unknown_mailbox_owner");
-    private static final Identifier POST_BOX_TEXTURE = Utils.resource("textures/gui/container/post_box.png");
+    private static final Identifier POST_BOX_TEXTURE = Utils.id("textures/gui/container/post_box.png");
     private static final Identifier SCROLLER_SPRITE = Identifier.withDefaultNamespace("container/villager/scroller");
     private static final Identifier SCROLLER_DISABLED_SPRITE = Identifier.withDefaultNamespace("container/villager/scroller_disabled");
     private static final Map<UUID, PlayerInfo> PLAYER_INFO_CACHE = new HashMap<>();
@@ -73,9 +73,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
 
     public PostBoxScreen(PostBoxMenu menu, Inventory playerInventory, Component title)
     {
-        super(menu, playerInventory, Component.empty());
-        this.imageWidth = 283;
-        this.imageHeight = 172;
+        super(menu, playerInventory, Component.empty(), 283, 172);
         this.inventoryLabelX = 113;
         this.inventoryLabelY = this.imageHeight - 93;
         this.updateSearchFilter();
@@ -137,28 +135,28 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void extractRenderState(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick)
     {
         this.sendButton.active = this.selected != null && !this.menu.getContainer().isEmpty();
         this.searchEditBox.setTextColor(this.searchEditBox.getValue().isEmpty() && !this.searchEditBox.isFocused() ? 0xFF707070 : 0xFFE0E0E0);
-        super.render(graphics, mouseX, mouseY, partialTick);
-        this.renderTooltip(graphics, mouseX, mouseY);
+        super.extractRenderState(extractor, mouseX, mouseY, partialTick);
+        this.extractTooltip(extractor, mouseX, mouseY);
     }
 
     @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY)
+    protected void extractLabels(GuiGraphicsExtractor extractor, int mouseX, int mouseY)
     {
-        super.renderLabels(graphics, mouseX, mouseY);
-        graphics.drawString(this.font, MAILBOXES_LABEL, this.titleLabelX, this.titleLabelY, 0xFFE0E0E0, false);
+        super.extractLabels(extractor, mouseX, mouseY);
+        extractor.text(this.font, MAILBOXES_LABEL, this.titleLabelX, this.titleLabelY, 0xFFE0E0E0, false);
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
+    public void extractBackground(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick)
     {
-        graphics.blit(RenderPipelines.GUI_TEXTURED, POST_BOX_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth + 25, this.imageHeight, 512, 256);
+        extractor.blit(RenderPipelines.GUI_TEXTURED, POST_BOX_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth + 25, this.imageHeight, 512, 256);
 
         // Draw mailboxes list
-        graphics.enableScissor(this.leftPos + CONTAINER_LEFT, this.topPos + CONTAINER_TOP, this.leftPos + CONTAINER_LEFT + CONTAINER_WIDTH, this.topPos + CONTAINER_TOP + CONTAINER_HEIGHT);
+        extractor.enableScissor(this.leftPos + CONTAINER_LEFT, this.topPos + CONTAINER_TOP, this.leftPos + CONTAINER_LEFT + CONTAINER_WIDTH, this.topPos + CONTAINER_TOP + CONTAINER_HEIGHT);
         int scroll = this.clampScroll(this.scroll + this.getDeltaScroll(mouseY));
         int startIndex = Mth.clamp(scroll / MAILBOX_ENTRY_HEIGHT, 0, Math.max(0, this.mailboxes.size() - MAX_VISIBLE_ITEMS));
         int maxItems = Math.min(MAX_VISIBLE_ITEMS, this.mailboxes.size());
@@ -171,14 +169,14 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
             boolean selected = this.selected == mailbox;
 
             // Draw the background of the mailbox entry
-            graphics.blit(RenderPipelines.GUI_TEXTURED, POST_BOX_TEXTURE, entryX, entryY, 0, selected ? 172 : 186, MAILBOX_ENTRY_WIDTH, MAILBOX_ENTRY_HEIGHT, 512, 256);
+            extractor.blit(RenderPipelines.GUI_TEXTURED, POST_BOX_TEXTURE, entryX, entryY, 0, selected ? 172 : 186, MAILBOX_ENTRY_WIDTH, MAILBOX_ENTRY_HEIGHT, 512, 256);
 
             // Draw the face of the player's skin
             Optional<NameAndId> optional = mailbox.getOwner();
             if(optional.isPresent())
             {
                 PlayerInfo info = this.getPlayerInfo(optional.get());
-                PlayerFaceRenderer.draw(graphics, info.getSkin(), entryX + 3, entryY + 3, 8);
+                PlayerFaceExtractor.extractRenderState(extractor, info.getSkin(), entryX + 3, entryY + 3, 8);
             }
 
             // Draw the name of the mailbox
@@ -186,7 +184,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
                 .filter(s -> !s.isBlank())
                 .map(Component::literal)
                 .orElse(DEFAULT_MAILBOX_NAME);
-            graphics.drawString(this.font, mailboxName, entryX + 15, entryY + 3, selected ? 0xFFFFFF55 : 0xFFFFFFFF);
+            extractor.text(this.font, mailboxName, entryX + 15, entryY + 3, selected ? 0xFFFFFF55 : 0xFFFFFFFF);
 
             // Create a tooltip of the owners username if the cursor hovers the face image
             if(this.isHovering((entryX - this.leftPos) + 3, (entryY - this.topPos) + 3, 8, 8, mouseX, mouseY))
@@ -195,13 +193,13 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
                     .map(NameAndId::name)
                     .map(Component::literal)
                     .orElse(UNKNOWN_MAILBOX_OWNER);
-                graphics.setTooltipForNextFrame(ownerName, mouseX, mouseY);
+                extractor.setTooltipForNextFrame(ownerName, mouseX, mouseY);
             }
         }
-        graphics.disableScissor();
+        extractor.disableScissor();
 
         // Draw scroll bar
-        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.canScroll() ? SCROLLER_SPRITE : SCROLLER_DISABLED_SPRITE, this.leftPos + CONTAINER_LEFT + CONTAINER_WIDTH + 1, this.topPos + CONTAINER_TOP + this.getScrollBarOffset(mouseY), SCROLL_BAR_WIDTH, SCROLL_BAR_HEIGHT);
+        extractor.blitSprite(RenderPipelines.GUI_TEXTURED, this.canScroll() ? SCROLLER_SPRITE : SCROLLER_DISABLED_SPRITE, this.leftPos + CONTAINER_LEFT + CONTAINER_WIDTH + 1, this.topPos + CONTAINER_TOP + this.getScrollBarOffset(mouseY), SCROLL_BAR_WIDTH, SCROLL_BAR_HEIGHT);
 
         // Draw icons in item slots
         for(int j = 0; j < 3; j++)
@@ -210,7 +208,7 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
             {
                 if(this.menu.getContainer().getItem(j * 2 + i).isEmpty())
                 {
-                    graphics.blit(RenderPipelines.GUI_TEXTURED, POST_BOX_TEXTURE, this.leftPos + 235 + i * 18, this.topPos + 14 + j * 18, 85, 172, 16, 16, 512, 256);
+                    extractor.blit(RenderPipelines.GUI_TEXTURED, POST_BOX_TEXTURE, this.leftPos + 235 + i * 18, this.topPos + 14 + j * 18, 85, 172, 16, 16, 512, 256);
                 }
             }
         }
@@ -223,31 +221,31 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
             int responseToastWidth = 4 + contentWidth + 3;
             int responseToastLeft = this.leftPos + this.imageWidth / 2 - responseToastWidth / 2;
             int responseToastTop = this.topPos - 22;
-            graphics.enableScissor(responseToastLeft, this.topPos - 22, responseToastLeft + responseToastWidth, this.topPos);
-            graphics.pose().pushMatrix();
+            extractor.enableScissor(responseToastLeft, this.topPos - 22, responseToastLeft + responseToastWidth, this.topPos);
+            extractor.pose().pushMatrix();
             if(this.responseTimer < 5)
             {
                 float frameTime = this.minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false);
-                graphics.pose().translate(0, (5 - (this.responseTimer + frameTime)) * 5);
+                extractor.pose().translate(0, (5 - (this.responseTimer + frameTime)) * 5);
             }
             else if(MAX_RESPONSE_DISPLAY_TIME - this.responseTimer < 5)
             {
                 float frameTime = this.minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false);
                 float offset = 5 - (MAX_RESPONSE_DISPLAY_TIME - (this.responseTimer + frameTime));
-                graphics.pose().translate(0, offset * 5);
+                extractor.pose().translate(0, offset * 5);
             }
             int toastU = this.responseSuccess ? 8 : 0;
-            graphics.blit(RenderPipelines.GUI_TEXTURED, POST_BOX_TEXTURE, responseToastLeft, responseToastTop, toastU, 200, 4, 18, 512, 256);
-            graphics.blit(RenderPipelines.GUI_TEXTURED, POST_BOX_TEXTURE, responseToastLeft + 4, responseToastTop, toastU + 4, 200, contentWidth, 18, 1, 18, 512, 256);
-            graphics.blit(RenderPipelines.GUI_TEXTURED, POST_BOX_TEXTURE, responseToastLeft + 4 + contentWidth, responseToastTop, toastU + 5, 200, 3, 18, 512, 256);
-            graphics.drawString(this.font, responseMessage, responseToastLeft + 6, responseToastTop + 5, 0xFFFFFFFF);
-            graphics.pose().popMatrix();
-            graphics.disableScissor();
+            extractor.blit(RenderPipelines.GUI_TEXTURED, POST_BOX_TEXTURE, responseToastLeft, responseToastTop, toastU, 200, 4, 18, 512, 256);
+            extractor.blit(RenderPipelines.GUI_TEXTURED, POST_BOX_TEXTURE, responseToastLeft + 4, responseToastTop, toastU + 4, 200, contentWidth, 18, 1, 18, 512, 256);
+            extractor.blit(RenderPipelines.GUI_TEXTURED, POST_BOX_TEXTURE, responseToastLeft + 4 + contentWidth, responseToastTop, toastU + 5, 200, 3, 18, 512, 256);
+            extractor.text(this.font, responseMessage, responseToastLeft + 6, responseToastTop + 5, 0xFFFFFFFF);
+            extractor.pose().popMatrix();
+            extractor.disableScissor();
         }
 
         if(this.isHovering(91, 5, 10, 10, mouseX, mouseY))
         {
-            graphics.setTooltipForNextFrame(ScreenHelper.createMultilineTooltip(List.of(
+            extractor.setTooltipForNextFrame(ScreenHelper.createMultilineTooltip(List.of(
                 Utils.translation("gui", "how_to").withStyle(ChatFormatting.GOLD),
                 Utils.translation("gui", "post_box_info"))
             ).toCharSequence(this.minecraft), mouseX, mouseY);

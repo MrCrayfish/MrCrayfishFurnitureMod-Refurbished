@@ -40,7 +40,7 @@ public class CrateBlockEntity extends RowedStorageBlockEntity
     public void onOpen(Level level, BlockPos pos, BlockState state)
     {
         Vec3 top = Vec3.upFromBottomCenterOf(pos, 1.0);
-        level.playSound(null, top.x, top.y, top.z, SoundEvents.BARREL_OPEN, SoundSource.BLOCKS, 0.5F, 0.7F + 0.1F * level.random.nextFloat());
+        level.playSound(null, top.x, top.y, top.z, SoundEvents.BARREL_OPEN, SoundSource.BLOCKS, 0.5F, 0.7F + 0.1F * level.getRandom().nextFloat());
         this.setLidState(state, true);
     }
 
@@ -48,7 +48,7 @@ public class CrateBlockEntity extends RowedStorageBlockEntity
     public void onClose(Level level, BlockPos pos, BlockState state)
     {
         Vec3 top = Vec3.upFromBottomCenterOf(pos, 1.0);
-        level.playSound(null, top.x, top.y, top.z, SoundEvents.BARREL_CLOSE, SoundSource.BLOCKS, 0.5F, 0.7F + 0.1F * level.random.nextFloat());
+        level.playSound(null, top.x, top.y, top.z, SoundEvents.BARREL_CLOSE, SoundSource.BLOCKS, 0.5F, 0.7F + 0.1F * level.getRandom().nextFloat());
         this.setLidState(state, false);
     }
 

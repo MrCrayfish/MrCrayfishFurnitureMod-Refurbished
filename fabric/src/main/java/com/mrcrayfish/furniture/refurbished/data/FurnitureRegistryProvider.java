@@ -1,7 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.data;
 
 import com.mrcrayfish.furniture.refurbished.core.ModDamageTypes;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.damagesource.DamageType;
@@ -13,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
  */
 public class FurnitureRegistryProvider extends FabricDynamicRegistryProvider
 {
-    public FurnitureRegistryProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture)
+    public FurnitureRegistryProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture)
     {
         super(output, registriesFuture);
     }

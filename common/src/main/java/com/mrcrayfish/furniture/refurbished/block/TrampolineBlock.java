@@ -175,11 +175,11 @@ public class TrampolineBlock extends FurnitureBlock implements BlockTagSupplier
             {
                 entity = player;
             }
-            level.playSound(entity, pos, ModSounds.BLOCK_TRAMPOLINE_BOUNCE.get(), SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.2F + 0.9F);
+            level.playSound(entity, pos, ModSounds.BLOCK_TRAMPOLINE_BOUNCE.get(), SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.2F + 0.9F);
         }
         else
         {
-            level.playSound(null, pos, ModSounds.BLOCK_TRAMPOLINE_BOUNCE.get(), SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.2F + 0.9F);
+            level.playSound(null, pos, ModSounds.BLOCK_TRAMPOLINE_BOUNCE.get(), SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.2F + 0.9F);
         }
     }
 
@@ -234,7 +234,7 @@ public class TrampolineBlock extends FurnitureBlock implements BlockTagSupplier
     {
         if(level.isClientSide())
         {
-            level.playLocalSound(pos, ModSounds.BLOCK_TRAMPOLINE_SUPER_BOUNCE.get(), SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.1F + 0.75F, false);
+            level.playLocalSound(pos, ModSounds.BLOCK_TRAMPOLINE_SUPER_BOUNCE.get(), SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.1F + 0.75F, false);
             this.spawnBounceParticle(level, entity, pos, true);
         }
     }

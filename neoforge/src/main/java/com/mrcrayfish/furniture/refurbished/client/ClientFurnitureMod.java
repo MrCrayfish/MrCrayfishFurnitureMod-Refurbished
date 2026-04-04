@@ -6,7 +6,6 @@ import com.mrcrayfish.furniture.refurbished.client.registration.ScreenRegister;
 import com.mrcrayfish.furniture.refurbished.client.electricity.ElectricityRenderer;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.chat.Component;
@@ -37,7 +36,9 @@ public class ClientFurnitureMod
     {
         ClientBootstrap.registerBlockEntityRenderers(event::registerBlockEntityRenderer);
         ClientBootstrap.registerEntityRenderers(event::registerEntityRenderer);
-        ClientBootstrap.registerRenderTypes(ItemBlockRenderTypes::setRenderLayer);
+
+        // TODO 26.1.1 i think this is automatically detected now
+        //ClientBootstrap.registerRenderTypes(ItemBlockRenderTypes::setRenderLayer);
     }
 
     @SubscribeEvent
@@ -65,9 +66,9 @@ public class ClientFurnitureMod
     }
 
     @SubscribeEvent
-    private static void onRegisterBlockColors(RegisterColorHandlersEvent.Block event)
+    private static void onRegisterBlockColors(RegisterColorHandlersEvent.BlockTintSources event)
     {
-        ClientBootstrap.registerBlockColors(event::register);
+        ClientBootstrap.registerBlockTintSources(event::register);
     }
 
     @SubscribeEvent

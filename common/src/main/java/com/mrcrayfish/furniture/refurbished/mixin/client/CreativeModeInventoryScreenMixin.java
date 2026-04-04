@@ -3,7 +3,7 @@ package com.mrcrayfish.furniture.refurbished.mixin.client;
 import com.mrcrayfish.furniture.refurbished.client.CreativeFilters;
 import com.mrcrayfish.furniture.refurbished.core.ModCreativeTabs;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.world.item.CreativeModeTab;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,8 +32,8 @@ public class CreativeModeInventoryScreenMixin
         }
     }
 
-    @Inject(method = "renderLabels", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)V"))
-    private void furnitureRefurbishedBeforeRenderLabels(GuiGraphics graphics, int mouseX, int mouseY, CallbackInfo ci)
+    @Inject(method = "extractLabels", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;text(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)V"))
+    private void furnitureRefurbishedBeforeRenderLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY, CallbackInfo ci)
     {
         if(selectedTab == ModCreativeTabs.MAIN.get())
         {
@@ -47,13 +47,13 @@ public class CreativeModeInventoryScreenMixin
         }
     }
 
-    @ModifyArg(method = "renderLabels", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)V"), index = 2)
+    @ModifyArg(method = "extractLabels", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;text(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)V"), index = 2)
     private int furnitureRefurbishedRenderLabels(int original)
     {
         return selectedTab == ModCreativeTabs.MAIN.get() ? original + 2 : original;
     }
 
-    @ModifyArg(method = "renderLabels", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)V"), index = 5)
+    @ModifyArg(method = "extractLabels", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;text(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)V"), index = 5)
     private boolean furnitureRefurbishedRenderLabels(boolean original)
     {
         return selectedTab == ModCreativeTabs.MAIN.get();

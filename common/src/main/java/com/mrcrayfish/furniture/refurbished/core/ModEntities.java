@@ -13,5 +13,5 @@ import net.minecraft.world.entity.MobCategory;
 @RegistryContainer
 public class ModEntities
 {
-    public static final RegistryEntry<EntityType<Seat>> SEAT = RegistryEntry.entityType(Utils.resource("seat"), () -> EntityType.Builder.<Seat>of((entityType, level) -> new Seat(level), MobCategory.MISC).sized(0, 0));
+    public static final RegistryEntry<EntityType<Seat>> SEAT = RegistryEntry.entityType(Utils.id("seat"), () -> EntityType.Builder.<Seat>of((entityType, level) -> new Seat(level), MobCategory.MISC).sized(0, 0));
 }

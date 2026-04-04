@@ -1,12 +1,15 @@
 package com.mrcrayfish.furniture.refurbished.platform;
 
 import com.mrcrayfish.furniture.refurbished.platform.services.IPlatformHelper;
-import net.fabricmc.fabric.api.registry.FuelRegistryEvents;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.entity.FuelValues;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Consumer;
 
 public class FabricPlatformHelper implements IPlatformHelper
 {
@@ -32,5 +35,11 @@ public class FabricPlatformHelper implements IPlatformHelper
     public int getBurnTime(@Nullable RecipeType<?> type, FuelValues values, ItemStack stack)
     {
         return values.burnDuration(stack);
+    }
+
+    @Override
+    public void displayItemsAcceptor(CreativeModeTab.Builder builder, Consumer<Consumer<ItemLike>> consumer)
+    {
+        builder.displayItems((_, output) -> consumer.accept(output::accept));
     }
 }

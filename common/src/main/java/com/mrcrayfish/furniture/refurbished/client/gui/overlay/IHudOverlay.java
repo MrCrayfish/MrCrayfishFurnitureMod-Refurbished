@@ -1,12 +1,12 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.overlay;
 
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 /**
  * Author: MrCrayfish
  */
 public interface IHudOverlay
 {
-    void draw(GuiGraphics graphics, DeltaTracker deltaTracker);
+    void draw(GuiGraphicsExtractor extractor, DeltaTracker deltaTracker);
 }

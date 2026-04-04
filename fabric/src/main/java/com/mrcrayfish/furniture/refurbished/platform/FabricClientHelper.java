@@ -11,15 +11,13 @@ import com.mrcrayfish.furniture.refurbished.inventory.FabricFreezerMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.FabricMicrowaveMenu;
 import com.mrcrayfish.furniture.refurbished.inventory.FabricStoveMenu;
 import com.mrcrayfish.furniture.refurbished.platform.services.IClientHelper;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.BlockPos;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -27,10 +25,7 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -65,16 +60,11 @@ public class FabricClientHelper implements IClientHelper
     }
 
     @Override
-    @Nullable
-    public FluidSprites getFluidSprites(Fluid fluid, BlockAndTintGetter getter, BlockPos pos, FluidState state)
+    public FluidSprites getFluidSprites(FluidState state)
     {
-        FluidRenderHandler handler = FluidRenderHandlerRegistry.INSTANCE.get(fluid);
-        if(handler != null)
-        {
-            TextureAtlasSprite[] sprites = handler.getFluidSprites(getter, pos, state);
-            return new FluidSprites(sprites[0], sprites[1]);
-        }
-        return null;
+        // TODO 26.1.1 test
+        FluidModel model = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(state);
+        return new FluidSprites(model.stillMaterial().sprite(), model.flowingMaterial().sprite());
     }
 
     @Override

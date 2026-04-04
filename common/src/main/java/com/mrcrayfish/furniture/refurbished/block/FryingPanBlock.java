@@ -137,18 +137,18 @@ public class FryingPanBlock extends FurnitureHorizontalEntityBlock implements Bl
         {
             if(!fryingPan.getItem(0).isEmpty() && fryingPan.isFlippingNeeded())
             {
-                double posX = pos.getX() + 0.35 + 0.3 * level.random.nextDouble();
+                double posX = pos.getX() + 0.35 + 0.3 * level.getRandom().nextDouble();
                 double posY = pos.getY() + 0.15;
-                double posZ = pos.getZ() + 0.35 + 0.3 * level.random.nextDouble();
+                double posZ = pos.getZ() + 0.35 + 0.3 * level.getRandom().nextDouble();
                 level.addParticle(ParticleTypes.SMOKE, pos.getX() + 0.5, pos.getY() + 0.125, pos.getZ() + 0.5, 0, 0.05, 0);
                 fryingPan.spawnSteam(level, posX, posY, posZ);
             }
 
             if(state.getValue(LIT) && fryingPan.getItem(0).isEmpty() && source.nextInt(2) == 0)
             {
-                double posX = pos.getX() + 0.3 + 0.4 * level.random.nextDouble();
+                double posX = pos.getX() + 0.3 + 0.4 * level.getRandom().nextDouble();
                 double posY = pos.getY() + 0.15;
-                double posZ = pos.getZ() + 0.3 + 0.4 * level.random.nextDouble();
+                double posZ = pos.getZ() + 0.3 + 0.4 * level.getRandom().nextDouble();
                 level.addParticle(ModParticleTypes.STEAM.get(), posX, posY, posZ, 0, 0.05, 0);
             }
         }

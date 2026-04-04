@@ -1,20 +1,16 @@
 package com.mrcrayfish.furniture.refurbished.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.client.electricity.ElectricityRenderer;
 import com.mrcrayfish.furniture.refurbished.core.ModRenderPipelines;
-import com.mrcrayfish.furniture.refurbished.image.TextureCache;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.rendertype.OutputTarget;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
 
-import java.util.Optional;
 import java.util.function.Function;
 
 /**
@@ -31,7 +27,7 @@ public class NeoForgeRenderType
             .useLightmap()
             .sortOnUpload()
             .setOutputTarget(ELECTRICITY_TARGET)
-            .withTexture("Sampler0", Utils.resource("textures/misc/electricity_nodes.png"))
+            .withTexture("Sampler0", Utils.id("textures/misc/electricity_nodes.png"))
             .createRenderSetup());
 
     private static final Function<Identifier, RenderType> TELEVISION_SCREEN = Util.memoize((id) ->

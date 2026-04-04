@@ -180,7 +180,7 @@ public class PaletteImage
      */
     private Identifier createImageId(BitSet set)
     {
-        return Utils.resource("palette_image_" + Util.sanitizeName(Integer.toHexString(set.hashCode()), Identifier::validPathChar));
+        return Utils.id("palette_image_" + Util.sanitizeName(Integer.toHexString(set.hashCode()), Identifier::validPathChar));
     }
 
     /**

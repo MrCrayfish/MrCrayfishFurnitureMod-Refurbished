@@ -69,9 +69,9 @@ public class PackageItem extends Item
         ItemStack stack = player.getItemInHand(hand);
         if(!level.isClientSide())
         {
-            float pitch = 0.9F + 0.2F * level.random.nextFloat();
+            float pitch = 0.9F + 0.2F * level.getRandom().nextFloat();
             level.playSound(null, player.getX(), player.getY(), player.getZ(), ModSounds.ITEM_PACKAGE_OPEN.get(), SoundSource.PLAYERS, 1.0F, pitch);
-            getPackagedItems(stack).stream().forEach(s -> Containers.dropItemStack(level, player.getX(), player.getY(), player.getZ(), s));
+            getPackagedItems(stack).nonEmptyItemCopyStream().forEach(s -> Containers.dropItemStack(level, player.getX(), player.getY(), player.getZ(), s));
             player.setItemInHand(hand, ItemStack.EMPTY);
         }
         stack.shrink(1);

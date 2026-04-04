@@ -12,10 +12,10 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.MaterialSet;
+import net.minecraft.client.resources.model.sprite.SpriteGetter;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.Mth;
@@ -27,11 +27,11 @@ import org.jetbrains.annotations.Nullable;
  */
 public class TelevisionBlockEntityRenderer implements BlockEntityRenderer<TelevisionBlockEntity, TelevisionRenderState>
 {
-    private final MaterialSet materials;
+    private final SpriteGetter sprites;
 
     public TelevisionBlockEntityRenderer(BlockEntityRendererProvider.Context context)
     {
-        this.materials = context.materials();
+        this.sprites = context.sprites();
     }
 
     @Override
@@ -58,9 +58,9 @@ public class TelevisionBlockEntityRenderer implements BlockEntityRenderer<Televi
             stack.translate(0.5, 0, 0.5);
             stack.mulPose(Axis.YN.rotation(Mth.HALF_PI * renderState.direction.get2DDataValue()));
             stack.translate(-0.5, 0, -0.345);
-            Material material = CustomSheets.getTelevisionChannelMaterial(renderState.currentChannel);
-            RenderType renderType = material.renderType(ClientServices.PLATFORM::getTelevisionScreenRenderType);
-            TextureAtlasSprite sprite = this.materials.get(material);
+            SpriteId spriteId = CustomSheets.getTelevisionChannelMaterial(renderState.currentChannel);
+            RenderType renderType = spriteId.renderType(ClientServices.PLATFORM::getTelevisionScreenRenderType);
+            TextureAtlasSprite sprite = this.sprites.get(spriteId);
             collector.submitCustomGeometry(stack, renderType, (pose, consumer) -> {
                 float offset = 0.003125F;
                 Vec3i normal = renderState.direction.getUnitVec3i();

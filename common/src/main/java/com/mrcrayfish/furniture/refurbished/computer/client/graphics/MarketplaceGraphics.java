@@ -9,7 +9,7 @@ import com.mrcrayfish.furniture.refurbished.computer.client.widget.ComputerButto
 import com.mrcrayfish.furniture.refurbished.computer.client.widget.ComputerSelectionList;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -24,7 +24,7 @@ import java.util.Optional;
  */
 public class MarketplaceGraphics extends DisplayableProgram<Marketplace>
 {
-    private static final Identifier TEXTURE = Utils.resource("textures/gui/program/marketplace.png");
+    private static final Identifier TEXTURE = Utils.id("textures/gui/program/marketplace.png");
 
     private final Scene catalogueScene;
     private final Scene shoppingCartScene;
@@ -52,14 +52,14 @@ public class MarketplaceGraphics extends DisplayableProgram<Marketplace>
         public void updateWidgets(int contentStart, int contentTop) {}
 
         @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+        public void render(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick)
         {
             Icon icon = Display.get().getIcon(this.program.getProgram().getId());
             if(icon != null)
             {
-                graphics.blit(RenderPipelines.GUI_TEXTURED, icon.texture(), (this.program.getWidth() - 16) / 2, 10, icon.u(), icon.v(), 16, 16, 128, 128);
+                extractor.blit(RenderPipelines.GUI_TEXTURED, icon.texture(), (this.program.getWidth() - 16) / 2, 10, icon.u(), icon.v(), 16, 16, 128, 128);
             }
-            graphics.drawCenteredString(Minecraft.getInstance().font, "Coming Soon!", MAX_CONTENT_WIDTH / 4, 35, 0xFFFFFFFF);
+            extractor.centeredText(Minecraft.getInstance().font, "Coming Soon!", MAX_CONTENT_WIDTH / 4, 35, 0xFFFFFFFF);
         }
     }
 
@@ -87,11 +87,11 @@ public class MarketplaceGraphics extends DisplayableProgram<Marketplace>
         }
 
         @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+        public void render(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick)
         {
-            graphics.fill(0, 0, this.program.getWidth(), 16, 0xFF653938);
-            graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, 5, 2, 0, 0, 12, 12, 12, 12);
-            graphics.drawString(Minecraft.getInstance().font, Integer.toString(this.getEmeraldCount()), 50, 5, 0xFFFFFFFF);
+            extractor.fill(0, 0, this.program.getWidth(), 16, 0xFF653938);
+            extractor.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, 5, 2, 0, 0, 12, 12, 12, 12);
+            extractor.text(Minecraft.getInstance().font, Integer.toString(this.getEmeraldCount()), 50, 5, 0xFFFFFFFF);
         }
 
         private int getEmeraldCount()
@@ -117,11 +117,11 @@ public class MarketplaceGraphics extends DisplayableProgram<Marketplace>
             }
 
             @Override
-            public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float partialTick)
+            public void extractContent(GuiGraphicsExtractor extractor, int mouseX, int mouseY, boolean hovered, float partialTick)
             {
-                graphics.fill(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), 0xFFFFFFFF);
+                extractor.fill(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), 0xFFFFFFFF);
                 this.buyButton.setPosition(this.getX() + this.getWidth() - this.buyButton.getWidth(), this.getY());
-                this.buyButton.render(graphics, mouseX, mouseY, partialTick);
+                this.buyButton.extractRenderState(extractor, mouseX, mouseY, partialTick);
             }
 
             @Override
@@ -147,7 +147,7 @@ public class MarketplaceGraphics extends DisplayableProgram<Marketplace>
         }
 
         @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+        public void render(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick)
         {
 
         }
@@ -167,7 +167,7 @@ public class MarketplaceGraphics extends DisplayableProgram<Marketplace>
         }
 
         @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+        public void render(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick)
         {
 
         }

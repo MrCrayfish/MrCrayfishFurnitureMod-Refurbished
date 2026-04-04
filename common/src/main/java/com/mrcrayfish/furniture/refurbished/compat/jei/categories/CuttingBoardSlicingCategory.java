@@ -8,6 +8,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.CuttingBoardSlicingRecipe;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
+import com.mrcrayfish.furniture.refurbished.util.reflection.ReflectedMethod;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
@@ -16,7 +17,10 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.types.IRecipeHolderType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.SingleItemRecipe;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -26,6 +30,7 @@ import java.util.function.Supplier;
  */
 public class CuttingBoardSlicingCategory extends FurnitureRecipeCategory<CuttingBoardSlicingRecipe>
 {
+    private static final ReflectedMethod<SingleItemRecipe, ItemStackTemplate> RESULT_METHOD = new ReflectedMethod<>(SingleItemRecipe.class, "result");
     public static final Supplier<IRecipeHolderType<CuttingBoardSlicingRecipe>> TYPE = IRecipeHolderType.createDeferred(ModRecipeTypes.CUTTING_BOARD_SLICING::get);
 
     private final List<ItemStack> knives;
@@ -45,7 +50,7 @@ public class CuttingBoardSlicingCategory extends FurnitureRecipeCategory<Cutting
     {
         CuttingBoardSlicingRecipe recipe = holder.value();
         builder.addSlot(RecipeIngredientRole.INPUT, 25, 6).add(recipe.input());
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 111, 10).add(recipe.result());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 111, 10).add(RESULT_METHOD.invoke(recipe).create());
         builder.addSlot(RecipeIngredientRole.CRAFTING_STATION, 73, 11).addItemStacks(this.knives);
     }
 

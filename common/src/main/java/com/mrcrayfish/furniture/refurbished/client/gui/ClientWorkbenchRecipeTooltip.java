@@ -5,7 +5,7 @@ import com.mrcrayfish.furniture.refurbished.crafting.StackedIngredient;
 import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchContructingRecipe;
 import com.mrcrayfish.furniture.refurbished.inventory.WorkbenchMenu;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.Holder;
@@ -49,7 +49,7 @@ public class ClientWorkbenchRecipeTooltip implements ClientTooltipComponent
     }
 
     @Override
-    public void renderImage(Font font, int start, int top, int width, int height, GuiGraphics graphics)
+    public void extractImage(Font font, int start, int top, int width, int height, GuiGraphicsExtractor extractor)
     {
         Map<Integer, Integer> counted = new HashMap<>();
         List<StackedIngredient> materials = this.recipe.getMaterials();
@@ -57,12 +57,12 @@ public class ClientWorkbenchRecipeTooltip implements ClientTooltipComponent
         {
             StackedIngredient material = materials.get(i);
             ItemStack copy = this.getDisplayStack(i, material);
-            graphics.renderFakeItem(copy, start + i * 18, top);
-            graphics.renderItemDecorations(font, copy, start + i * 18, top);
+            extractor.fakeItem(copy, start + i * 18, top);
+            extractor.itemDecorations(font, copy, start + i * 18, top);
 
             // Draw check or cross depending on if we have the materials
             boolean checked = this.menu.hasMaterials(material, counted);
-            graphics.blit(RenderPipelines.GUI_TEXTURED, WorkbenchScreen.WORKBENCH_TEXTURE, start + i * 18, top, checked ? 246 : 240, 40, 6, 5, 256, 256);
+            extractor.blit(RenderPipelines.GUI_TEXTURED, WorkbenchScreen.WORKBENCH_TEXTURE, start + i * 18, top, checked ? 246 : 240, 40, 6, 5, 256, 256);
         }
     }
 

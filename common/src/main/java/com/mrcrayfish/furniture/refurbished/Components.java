@@ -37,7 +37,7 @@ public class Components
     public static final Component GUI_PLACEABLE = Utils.translation("gui", "placeable");
     public static final Component GUI_WITHDRAW_EXPERIENCE = Utils.translation("gui", "withdraw_experience");
 
-    public static final FontDescription ICON_FONT = new FontDescription.Resource(Utils.resource("icons"));
+    public static final FontDescription ICON_FONT = new FontDescription.Resource(Utils.id("icons"));
 
     public static MutableComponent getIcon(FontIcons icon)
     {

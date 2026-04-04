@@ -11,19 +11,19 @@ import net.minecraft.world.item.crafting.RecipeBookCategory;
 @RegistryContainer
 public class ModRecipeBookCategories
 {
-    public static final RegistryEntry<RecipeBookCategory> FREEZER_BLOCKS = RegistryEntry.recipeBookCategory(Utils.resource("freezer_blocks"));
-    public static final RegistryEntry<RecipeBookCategory> FREEZER_ITEMS = RegistryEntry.recipeBookCategory(Utils.resource("freezer_items"));
-    public static final RegistryEntry<RecipeBookCategory> FREEZER_FOOD = RegistryEntry.recipeBookCategory(Utils.resource("freezer_food"));
-    public static final RegistryEntry<RecipeBookCategory> FREEZER_MISC = RegistryEntry.recipeBookCategory(Utils.resource("freezer_misc"));
-    public static final RegistryEntry<RecipeBookCategory> MICROWAVE_BLOCKS = RegistryEntry.recipeBookCategory(Utils.resource("microwave_blocks"));
-    public static final RegistryEntry<RecipeBookCategory> MICROWAVE_ITEMS = RegistryEntry.recipeBookCategory(Utils.resource("microwave_items"));
-    public static final RegistryEntry<RecipeBookCategory> MICROWAVE_FOOD = RegistryEntry.recipeBookCategory(Utils.resource("microwave_food"));
-    public static final RegistryEntry<RecipeBookCategory> MICROWAVE_MISC = RegistryEntry.recipeBookCategory(Utils.resource("microwave_misc"));
-    public static final RegistryEntry<RecipeBookCategory> OVEN_BLOCKS = RegistryEntry.recipeBookCategory(Utils.resource("oven_blocks"));
-    public static final RegistryEntry<RecipeBookCategory> OVEN_ITEMS = RegistryEntry.recipeBookCategory(Utils.resource("oven_items"));
-    public static final RegistryEntry<RecipeBookCategory> OVEN_FOOD = RegistryEntry.recipeBookCategory(Utils.resource("oven_food"));
-    public static final RegistryEntry<RecipeBookCategory> OVEN_MISC = RegistryEntry.recipeBookCategory(Utils.resource("oven_misc"));
-    public static final RegistryEntry<RecipeBookCategory> TOASTER = RegistryEntry.recipeBookCategory(Utils.resource("toaster"));
-    public static final RegistryEntry<RecipeBookCategory> GRILL = RegistryEntry.recipeBookCategory(Utils.resource("grill"));
-    public static final RegistryEntry<RecipeBookCategory> CUTTING_BOARD = RegistryEntry.recipeBookCategory(Utils.resource("cutting_board"));
+    public static final RegistryEntry<RecipeBookCategory> FREEZER_BLOCKS = RegistryEntry.recipeBookCategory(Utils.id("freezer_blocks"));
+    public static final RegistryEntry<RecipeBookCategory> FREEZER_ITEMS = RegistryEntry.recipeBookCategory(Utils.id("freezer_items"));
+    public static final RegistryEntry<RecipeBookCategory> FREEZER_FOOD = RegistryEntry.recipeBookCategory(Utils.id("freezer_food"));
+    public static final RegistryEntry<RecipeBookCategory> FREEZER_MISC = RegistryEntry.recipeBookCategory(Utils.id("freezer_misc"));
+    public static final RegistryEntry<RecipeBookCategory> MICROWAVE_BLOCKS = RegistryEntry.recipeBookCategory(Utils.id("microwave_blocks"));
+    public static final RegistryEntry<RecipeBookCategory> MICROWAVE_ITEMS = RegistryEntry.recipeBookCategory(Utils.id("microwave_items"));
+    public static final RegistryEntry<RecipeBookCategory> MICROWAVE_FOOD = RegistryEntry.recipeBookCategory(Utils.id("microwave_food"));
+    public static final RegistryEntry<RecipeBookCategory> MICROWAVE_MISC = RegistryEntry.recipeBookCategory(Utils.id("microwave_misc"));
+    public static final RegistryEntry<RecipeBookCategory> OVEN_BLOCKS = RegistryEntry.recipeBookCategory(Utils.id("oven_blocks"));
+    public static final RegistryEntry<RecipeBookCategory> OVEN_ITEMS = RegistryEntry.recipeBookCategory(Utils.id("oven_items"));
+    public static final RegistryEntry<RecipeBookCategory> OVEN_FOOD = RegistryEntry.recipeBookCategory(Utils.id("oven_food"));
+    public static final RegistryEntry<RecipeBookCategory> OVEN_MISC = RegistryEntry.recipeBookCategory(Utils.id("oven_misc"));
+    public static final RegistryEntry<RecipeBookCategory> TOASTER = RegistryEntry.recipeBookCategory(Utils.id("toaster"));
+    public static final RegistryEntry<RecipeBookCategory> GRILL = RegistryEntry.recipeBookCategory(Utils.id("grill"));
+    public static final RegistryEntry<RecipeBookCategory> CUTTING_BOARD = RegistryEntry.recipeBookCategory(Utils.id("cutting_board"));
 }

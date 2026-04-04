@@ -9,7 +9,7 @@ import com.mrcrayfish.furniture.refurbished.inventory.IProcessingMenu;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageTogglePower;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -21,7 +21,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
  */
 public abstract class AbstractMicrowaveScreen<T extends AbstractContainerMenu & IElectricityMenu & IPowerSwitchMenu & IProcessingMenu> extends ElectricityContainerScreen<T>
 {
-    private static final Identifier TEXTURE = Utils.resource("textures/gui/container/microwave.png");
+    private static final Identifier TEXTURE = Utils.id("textures/gui/container/microwave.png");
 
     protected OnOffSlider slider;
 
@@ -45,31 +45,31 @@ public abstract class AbstractMicrowaveScreen<T extends AbstractContainerMenu & 
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick)
     {
         this.slider.setEnabled(this.menu.isEnabled());
-        super.render(graphics, mouseX, mouseY, partialTick);
+        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
         this.afterRender(graphics, mouseX, mouseY, partialTick);
     }
 
-    protected void afterRender(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    protected void afterRender(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick)
     {
-        this.renderTooltip(graphics, mouseX, mouseY);
+        this.extractTooltip(graphics, mouseX, mouseY);
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
+    public void extractBackground(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick)
     {
-        super.renderBg(graphics, partialTick, mouseX, mouseY);
-        graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
+        super.extractBackground(extractor, mouseX, mouseY, partialTick);
+        extractor.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
         if(this.menu.getMaxProcessTime() > 0 && this.menu.getProcessTime() >= 0)
         {
             int width = (int) Math.ceil(25 * (this.menu.getProcessTime() / (float) this.menu.getMaxProcessTime()));
-            graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos + 71, this.topPos + 34, 176, 0, width, 17, 256, 256);
+            extractor.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos + 71, this.topPos + 34, 176, 0, width, 17, 256, 256);
         }
         if(this.menu.getProcessTime() > 0 && this.menu.getMaxProcessTime() > 0 && ScreenHelper.isMouseWithinBounds(mouseX, mouseY, this.leftPos + 71, this.topPos + 34, 25, 17))
         {
-            graphics.setTooltipForNextFrame(Utils.translation("gui", "progress", this.menu.getProcessTime(), Components.GUI_SLASH, this.menu.getMaxProcessTime()), mouseX, mouseY);
+            extractor.setTooltipForNextFrame(Utils.translation("gui", "progress", this.menu.getProcessTime(), Components.GUI_SLASH, this.menu.getMaxProcessTime()), mouseX, mouseY);
         }
     }
 }

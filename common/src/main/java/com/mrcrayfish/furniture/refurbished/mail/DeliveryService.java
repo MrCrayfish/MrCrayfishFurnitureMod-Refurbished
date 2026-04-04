@@ -23,7 +23,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
 // TODO require ender pearl to send items
 
@@ -41,7 +40,7 @@ public class DeliveryService extends SavedData
     }));
 
     @SuppressWarnings("DataFlowIssue")
-    private static final SavedDataType<DeliveryService> TYPE = new SavedDataType<>("refurbished_furniture_delivery_service", DeliveryService::new, CODEC, null);
+    private static final SavedDataType<DeliveryService> TYPE = new SavedDataType<>(Utils.id("delivery_service"), DeliveryService::new, CODEC, null);
 
     public static Optional<DeliveryService> get(MinecraftServer server)
     {

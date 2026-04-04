@@ -13,7 +13,7 @@ import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
@@ -39,8 +39,8 @@ import java.util.function.Consumer;
  */
 public class CreativeFilters
 {
-    private static final Identifier SELECTED_FILTER_TAB = Utils.resource("filter_tab_selected");
-    private static final Identifier UNSELECTED_FILTER_TAB = Utils.resource("filter_tab_unselected");
+    private static final Identifier SELECTED_FILTER_TAB = Utils.id("filter_tab_selected");
+    private static final Identifier UNSELECTED_FILTER_TAB = Utils.id("filter_tab_unselected");
 
     private static CreativeFilters instance;
 
@@ -97,7 +97,7 @@ public class CreativeFilters
         });
 
         /* Handles sending an event when the current creative mode tab is changed */
-        FrameworkScreenEvents.BEFORE_DRAW.register((screen, graphics, mouseX, mouseY, partialTick) -> {
+        FrameworkScreenEvents.BEFORE_EXTRACT.register((screen, graphics, mouseX, mouseY, partialTick) -> {
             if(screen instanceof CreativeModeInventoryScreen creativeScreen) {
                 CreativeModeTab tab = ClientServices.PLATFORM.getSelectedCreativeModeTab();
                 if(this.lastTab != tab) {
@@ -244,7 +244,7 @@ public class CreativeFilters
         return false;
     }
 
-    private void drawFilterTabTooltips(GuiGraphics graphics, int mouseX, int mouseY)
+    private void drawFilterTabTooltips(GuiGraphicsExtractor extractor, int mouseX, int mouseY)
     {
         for(FilterCategory category : this.categories)
         {
@@ -252,7 +252,7 @@ public class CreativeFilters
             if(tab != null && tab.visible && tab.isHovered())
             {
                 Minecraft mc = Minecraft.getInstance();
-                graphics.setTooltipForNextFrame(tab.cachedTooltip.toCharSequence(mc), mouseX, mouseY);
+                extractor.setTooltipForNextFrame(tab.cachedTooltip.toCharSequence(mc), mouseX, mouseY);
                 return;
             }
         }
@@ -394,10 +394,10 @@ public class CreativeFilters
         }
 
         @Override
-        public void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
+        public void extractContents(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTicks)
         {
-            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.category.isEnabled() ? SELECTED_FILTER_TAB : UNSELECTED_FILTER_TAB, this.getX(), this.getY(), 32, 26);
-            graphics.renderItem(this.category.getIcon(), this.getX() + 8, this.getY() + 5);
+            extractor.blitSprite(RenderPipelines.GUI_TEXTURED, this.category.isEnabled() ? SELECTED_FILTER_TAB : UNSELECTED_FILTER_TAB, this.getX(), this.getY(), 32, 26);
+            extractor.fakeItem(this.category.getIcon(), this.getX() + 8, this.getY() + 5); // TODO 26.1.1 test
         }
     }
 }

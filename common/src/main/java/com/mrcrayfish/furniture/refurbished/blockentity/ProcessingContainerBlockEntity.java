@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -244,7 +245,7 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
                     return false;
                 }
 
-                ItemStack result = optional.get().assemble(new SingleRecipeInput(stack), this.level.registryAccess());
+                ItemStack result = optional.get().assemble(new SingleRecipeInput(stack));
                 if(!this.canOutput(stack, result))
                 {
                     return false;
@@ -272,9 +273,8 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
             ItemStack stack = this.getItem(slot);
             if(!stack.isEmpty())
             {
-                ItemStack remainingStack = stack.getItem().getCraftingRemainder();
                 Optional<? extends ProcessingRecipe> optional = this.getRecipe(this.processRecipeCache[i], stack);
-                ItemStack result = optional.map(recipe -> recipe.assemble(new SingleRecipeInput(stack), this.level.registryAccess())).orElse(ItemStack.EMPTY);
+                ItemStack result = optional.map(recipe -> recipe.assemble(new SingleRecipeInput(stack))).orElse(ItemStack.EMPTY);
                 stack.shrink(1);
                 if(!result.isEmpty())
                 {
@@ -284,17 +284,19 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
                         this.pushOutput(copy);
                         this.setChanged();
                     }
-                    if(!remainingStack.isEmpty())
+
+                    ItemStackTemplate remainder = stack.getItem().getCraftingRemainder();
+                    if(remainder != null)
                     {
                         if(stack.isEmpty())
                         {
-                            this.setItem(slot, remainingStack.copy());
+                            this.setItem(slot, remainder.create());
                         }
                         else
                         {
                             // Fallback and drop the item into the world
                             Vec3 pos = this.getBlockPos().getCenter().add(0, 0.5, 0);
-                            Containers.dropItemStack(this.level, pos.x, pos.y, pos.z, remainingStack.copy());
+                            Containers.dropItemStack(this.level, pos.x, pos.y, pos.z, remainder.create());
                         }
                     }
                 }
@@ -331,7 +333,7 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
                 return true;
 
             // Special case where input can output to itself, instead of a different slot
-            if(this.isOutputInput(slot) && stack.getItem().getCraftingRemainder().isEmpty())
+            if(this.isOutputInput(slot) && stack.getItem().getCraftingRemainder() == null)
                 return true;
 
             if(ItemStack.isSameItemSameComponents(result, stack))

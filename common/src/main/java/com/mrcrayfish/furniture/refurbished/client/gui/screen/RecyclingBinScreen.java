@@ -10,7 +10,7 @@ import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageTogglePower;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageWithdrawExperience;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -28,15 +28,14 @@ import java.text.DecimalFormat;
 public class RecyclingBinScreen extends ElectricityContainerScreen<RecycleBinMenu>
 {
     private static final DecimalFormat FORMAT = new DecimalFormat("0.###");
-    private static final Identifier RECYCLING_BIN_TEXTURE = Utils.resource("textures/gui/container/recycle_bin.png");
+    private static final Identifier RECYCLING_BIN_TEXTURE = Utils.id("textures/gui/container/recycle_bin.png");
 
     private OnOffSlider slider;
     private Button withdrawButton;
 
     public RecyclingBinScreen(RecycleBinMenu menu, Inventory playerInventory, Component title)
     {
-        super(menu, playerInventory, title);
-        this.imageHeight = 193;
+        super(menu, playerInventory, title, DEFAULT_IMAGE_WIDTH, 193);
         this.inventoryLabelY = this.imageHeight - 94;
     }
 
@@ -53,24 +52,24 @@ public class RecyclingBinScreen extends ElectricityContainerScreen<RecycleBinMen
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick)
     {
         this.slider.setEnabled(this.menu.isEnabled());
         this.withdrawButton.active = this.getExperiencePoints() >= 1;
-        super.render(graphics, mouseX, mouseY, partialTick);
-        this.renderTooltip(graphics, mouseX, mouseY);
+        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
+        this.extractTooltip(graphics, mouseX, mouseY);
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
+    public void extractBackground(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick)
     {
-        super.renderBg(graphics, partialTick, mouseX, mouseY);
-        graphics.blit(RenderPipelines.GUI_TEXTURED, RECYCLING_BIN_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
+        super.extractBackground(extractor, mouseX, mouseY, partialTick);
+        extractor.blit(RenderPipelines.GUI_TEXTURED, RECYCLING_BIN_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
         if(this.menu.getProcessTime() >= 0)
         {
             int maxProcessTime = Config.SERVER.recycleBin.processingTime.get();
             int width = (int) Math.ceil(25 * (this.menu.getProcessTime() / (float) maxProcessTime));
-            graphics.blit(RenderPipelines.GUI_TEXTURED, RECYCLING_BIN_TEXTURE, this.leftPos + 85, this.topPos + 28, 176, 0, width, 17, 256, 256);
+            extractor.blit(RenderPipelines.GUI_TEXTURED, RECYCLING_BIN_TEXTURE, this.leftPos + 85, this.topPos + 28, 176, 0, width, 17, 256, 256);
         }
         int maxLevel = Config.SERVER.recycleBin.maximumExperienceLevels.get();
         double currentLevel = Mth.clamp(this.getExperienceLevel(), 0, maxLevel);
@@ -84,13 +83,13 @@ public class RecyclingBinScreen extends ElectricityContainerScreen<RecycleBinMen
         MultiBufferSource.BufferSource source = this.minecraft.renderBuffers().bufferSource();
         this.minecraft.font.drawInBatch8xOutline(levelLabel.getVisualOrderText(), this.leftPos + 68 - labelWidth, this.topPos + 60, 0xFFC8FF8F, 0xFF2D2102, matrix, source, 0xF000F0);*/
 
-        graphics.drawString(this.font, levelLabel, this.leftPos + 68 - labelWidth, this.topPos + 59, 0xFFC8FF8F, true);
+        extractor.text(this.font, levelLabel, this.leftPos + 68 - labelWidth, this.topPos + 59, 0xFFC8FF8F, true);
 
-        this.drawExperienceFluid(graphics, (float) (currentLevel / maxLevel));
+        this.drawExperienceFluid(extractor, (float) (currentLevel / maxLevel));
 
         if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, this.leftPos + 118, this.topPos + 22, 32, 48))
         {
-            graphics.setTooltipForNextFrame(Utils.translation("gui", "experience_points", (int) this.getExperiencePoints()), mouseX, mouseY);
+            extractor.setTooltipForNextFrame(Utils.translation("gui", "experience_points", (int) this.getExperiencePoints()), mouseX, mouseY);
         }
     }
 
@@ -116,18 +115,18 @@ public class RecyclingBinScreen extends ElectricityContainerScreen<RecycleBinMen
         return ((double) 325 / 18) + Math.sqrt(((double) 2 / 9) * (points - ((double) 54215 / 72)));
     }
 
-    private void drawExperienceFluid(GuiGraphics graphics, float amount)
+    private void drawExperienceFluid(GuiGraphicsExtractor extractor, float amount)
     {
         int yOffset = 48 - (int) (48 * amount);
         int height = (int) (48 * amount);
         float animation = (Mth.sin(Util.getMillis() / 500F) + 1) / 2F;
-        this.drawBlitWithAlpha(graphics, this.leftPos + 118, this.topPos + 22 + yOffset, 176, 17, 32, height, animation);
-        this.drawBlitWithAlpha(graphics, this.leftPos + 118, this.topPos + 22 + yOffset, 208, 17, 32, height, 1.0F - animation);
+        this.drawBlitWithAlpha(extractor, this.leftPos + 118, this.topPos + 22 + yOffset, 176, 17, 32, height, animation);
+        this.drawBlitWithAlpha(extractor, this.leftPos + 118, this.topPos + 22 + yOffset, 208, 17, 32, height, 1.0F - animation);
     }
 
-    private void drawBlitWithAlpha(GuiGraphics graphics, int x, int y, int u, int v, int width, int height, float alpha)
+    private void drawBlitWithAlpha(GuiGraphicsExtractor extractor, int x, int y, int u, int v, int width, int height, float alpha)
     {
         int color = ARGB.colorFromFloat(Mth.clamp(alpha + 0.2F, 0, 1), 1.0F, 1.0F, 1.0F);
-        graphics.blit(RenderPipelines.GUI_TEXTURED, RECYCLING_BIN_TEXTURE, x, y, u, v, width, height, 256, 256, color);
+        extractor.blit(RenderPipelines.GUI_TEXTURED, RECYCLING_BIN_TEXTURE, x, y, u, v, width, height, 256, 256, color);
     }
 }

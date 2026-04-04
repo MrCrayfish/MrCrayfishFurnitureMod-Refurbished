@@ -104,7 +104,7 @@ public class ChairBlock extends FurnitureHorizontalBlock implements BlockTagSupp
     {
         if(player.isCrouching() && Seat.availableAt(level, pos) && this.canTuck(state, level, pos))
         {
-            level.playSound(null, pos, ModSounds.BLOCK_CHAIR_SLIDE.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.random.nextFloat());
+            level.playSound(null, pos, ModSounds.BLOCK_CHAIR_SLIDE.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.getRandom().nextFloat());
             level.setBlock(pos, state.setValue(TUCKED, !state.getValue(TUCKED)), UPDATE_ALL);
             return InteractionResult.SUCCESS;
         }

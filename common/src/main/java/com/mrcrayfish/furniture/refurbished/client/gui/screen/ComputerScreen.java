@@ -8,7 +8,7 @@ import com.mrcrayfish.furniture.refurbished.computer.client.Window;
 import com.mrcrayfish.furniture.refurbished.inventory.ComputerMenu;
 import com.mrcrayfish.furniture.refurbished.mixin.client.ScreenAccessor;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.input.KeyEvent;
@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class ComputerScreen extends ElectricityContainerScreen<ComputerMenu>
 {
-    public static final Identifier TEXTURE = Utils.resource("textures/gui/container/computer.png");
+    public static final Identifier TEXTURE = Utils.id("textures/gui/container/computer.png");
     private static final int DISPLAY_LEFT = 15;
     private static final int DISPLAY_TOP = 15;
     public static final int DISPLAY_WIDTH = 226;
@@ -41,11 +41,9 @@ public class ComputerScreen extends ElectricityContainerScreen<ComputerMenu>
 
     public ComputerScreen(ComputerMenu menu, Inventory playerInventory, Component title)
     {
-        super(menu, playerInventory, title);
+        super(menu, playerInventory, title, 256, 150);
         this.desktop = new Desktop(this);
         this.desktop.getShortcuts().forEach(this::addWidget);
-        this.imageWidth = 256;
-        this.imageHeight = 150;
         this.getComputer().setScreen(this);
     }
 
@@ -97,20 +95,20 @@ public class ComputerScreen extends ElectricityContainerScreen<ComputerMenu>
     }
 
     @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY)
+    protected void extractLabels(GuiGraphicsExtractor extractor, int mouseX, int mouseY)
     {
         // Stop default labels from rendering
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
+    public void extractBackground(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick)
     {
-        super.renderBg(graphics, partialTick, mouseX, mouseY);
+        super.extractBackground(extractor, mouseX, mouseY, partialTick);
 
         float frameTime = this.minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(true);
 
         // Draw background
-        graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
+        extractor.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
 
         // Draw desktop and window
         int displayLeft = this.leftPos + DISPLAY_LEFT;
@@ -124,18 +122,18 @@ public class ComputerScreen extends ElectricityContainerScreen<ComputerMenu>
             float time = (LOADING_TIME - (this.loading - frameTime)) / (float) LOADING_TIME;
             int loadingBarStart = displayLeft + (DISPLAY_WIDTH - LOADING_BAR_WIDTH) / 2;
             int loadingBarWidth = (int) (LOADING_BAR_WIDTH * time);
-            graphics.fill(loadingBarStart - 1, displayBottom - 31, loadingBarStart + LOADING_BAR_WIDTH + 1, displayBottom - 23, 0xFF47403E);
-            graphics.fill(loadingBarStart, displayBottom - 30, loadingBarStart + loadingBarWidth, displayBottom - 24, 0xFFFFFFFF);
-            graphics.drawCenteredString(this.font, Components.GUI_BOOTING, displayLeft + DISPLAY_WIDTH / 2, displayBottom - 42, 0xFFFFFFFF);
-            graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, displayLeft + (DISPLAY_WIDTH - 32) / 2, displayTop + 23, 0, this.imageHeight, 32, 36, 16, 18, 256, 256);
+            extractor.fill(loadingBarStart - 1, displayBottom - 31, loadingBarStart + LOADING_BAR_WIDTH + 1, displayBottom - 23, 0xFF47403E);
+            extractor.fill(loadingBarStart, displayBottom - 30, loadingBarStart + loadingBarWidth, displayBottom - 24, 0xFFFFFFFF);
+            extractor.centeredText(this.font, Components.GUI_BOOTING, displayLeft + DISPLAY_WIDTH / 2, displayBottom - 42, 0xFFFFFFFF);
+            extractor.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, displayLeft + (DISPLAY_WIDTH - 32) / 2, displayTop + 23, 0, this.imageHeight, 32, 36, 16, 18, 256, 256);
             return;
         }
 
-        graphics.enableScissor(displayLeft, displayTop, displayEnd, displayBottom);
-        this.desktop.render(graphics, mouseX, mouseY, partialTick);
+        extractor.enableScissor(displayLeft, displayTop, displayEnd, displayBottom);
+        this.desktop.render(extractor, mouseX, mouseY, partialTick);
         Window window = this.getOrCreateWindow();
-        if(window != null) window.render(graphics, this.font, mouseX, mouseY, frameTime);
-        graphics.disableScissor();
+        if(window != null) window.render(extractor, this.font, mouseX, mouseY, frameTime);
+        extractor.disableScissor();
     }
 
     @Override

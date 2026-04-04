@@ -13,7 +13,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.types.IRecipeHolderType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
@@ -46,17 +46,17 @@ public class OvenBakingCategory extends FurnitureRecipeCategory<OvenBakingRecipe
     {
         OvenBakingRecipe recipe = holder.value();
         builder.addSlot(RecipeIngredientRole.INPUT, 58, 5).add(recipe.getIngredient());
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 58, 41).add(recipe.getResult());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 58, 41).add(recipe.getResult().create()); // TODO 26.1.1 test
         this.arrow = this.helper.createAnimatedDrawable(this.helper.createDrawable(Plugin.TEXTURES_2, 160, 0, 17, 16), recipe.getTime(), IDrawableAnimated.StartDirection.TOP, false);
     }
 
     @Override
-    public void draw(RecipeHolder<OvenBakingRecipe> holder, IRecipeSlotsView view, GuiGraphics graphics, double mouseX, double mouseY)
+    public void draw(RecipeHolder<OvenBakingRecipe> holder, IRecipeSlotsView view, GuiGraphicsExtractor extractor, double mouseX, double mouseY)
     {
-        super.draw(holder, view, graphics, mouseX, mouseY);
+        super.draw(holder, view, extractor, mouseX, mouseY);
         int offset = (int) (Util.getMillis() / 100) % 3;
-        graphics.blit(RenderPipelines.GUI_TEXTURED, Plugin.TEXTURES_2, 5, 10, 120, offset * 40, 40, 40, 40, 40, 256, 256);
-        this.arrow.draw(graphics, 57, 23);
-        this.drawSeconds(graphics, 14, 53, holder.value().getTime());
+        extractor.blit(RenderPipelines.GUI_TEXTURED, Plugin.TEXTURES_2, 5, 10, 120, offset * 40, 40, 40, 40, 40, 256, 256);
+        this.arrow.draw(extractor, 57, 23);
+        this.drawSeconds(extractor, 14, 53, holder.value().getTime());
     }
 }

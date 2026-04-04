@@ -40,7 +40,7 @@ public class DrawerBlockEntity extends RowedStorageBlockEntity
     public void onOpen(Level level, BlockPos pos, BlockState state)
     {
         Vec3 draw = Vec3.atCenterOf(this.worldPosition).add(0, 0.1875, 0).relative(state.getValue(DrawerBlock.DIRECTION).getOpposite(), 0.5);
-        level.playSound(null, draw.x, draw.y, draw.z, ModSounds.BLOCK_DRAWER_OPEN.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.random.nextFloat());
+        level.playSound(null, draw.x, draw.y, draw.z, ModSounds.BLOCK_DRAWER_OPEN.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.getRandom().nextFloat());
         this.setDrawState(state, true);
     }
 
@@ -48,7 +48,7 @@ public class DrawerBlockEntity extends RowedStorageBlockEntity
     public void onClose(Level level, BlockPos pos, BlockState state)
     {
         Vec3 draw = Vec3.atCenterOf(this.worldPosition).add(0, 0.1875, 0).relative(state.getValue(DrawerBlock.DIRECTION).getOpposite(), 0.5);
-        level.playSound(null, draw.x, draw.y, draw.z, ModSounds.BLOCK_DRAWER_CLOSE.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.random.nextFloat());
+        level.playSound(null, draw.x, draw.y, draw.z, ModSounds.BLOCK_DRAWER_CLOSE.get(), SoundSource.BLOCKS, 1.0F, 0.9F + 0.1F * level.getRandom().nextFloat());
         this.setDrawState(state, false);
     }
 

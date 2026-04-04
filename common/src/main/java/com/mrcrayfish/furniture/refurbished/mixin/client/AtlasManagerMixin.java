@@ -2,7 +2,7 @@ package com.mrcrayfish.furniture.refurbished.mixin.client;
 
 import com.mrcrayfish.furniture.refurbished.client.CustomSheets;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
-import net.minecraft.client.resources.model.AtlasManager;
+import net.minecraft.client.resources.model.sprite.AtlasManager;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -29,7 +29,7 @@ public class AtlasManagerMixin
     private static void refurbishedFurnitureInit(CallbackInfo ci)
     {
         List<AtlasManager.AtlasConfig> atlases = new ArrayList<>(KNOWN_ATLASES);
-        atlases.add(new AtlasManager.AtlasConfig(CustomSheets.TV_CHANNELS_SHEET, Utils.resource("tv_channels"), false));
+        atlases.add(new AtlasManager.AtlasConfig(CustomSheets.TV_CHANNELS_SHEET, Utils.id("tv_channels"), false));
         KNOWN_ATLASES = List.copyOf(atlases); // Restore the immutability of the original map
     }
 }

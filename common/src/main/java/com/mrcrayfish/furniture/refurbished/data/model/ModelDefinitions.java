@@ -176,17 +176,17 @@ public class ModelDefinitions
 
     private static ModelTemplate block(String name, TextureSlot ... textures)
     {
-        return new ModelTemplate(Optional.of(Utils.resource("block/" + name)), Optional.empty(), textures);
+        return new ModelTemplate(Optional.of(Utils.id("block/" + name)), Optional.empty(), textures);
     }
 
     private static ModelTemplate block(String name, String suffix, TextureSlot ... textures)
     {
-        return new ModelTemplate(Optional.of(Utils.resource("block/" + name)), Optional.of(suffix), textures);
+        return new ModelTemplate(Optional.of(Utils.id("block/" + name)), Optional.of(suffix), textures);
     }
 
     private static ModelTemplate item(String name, TextureSlot ... textures)
     {
-        return new ModelTemplate(Optional.of(Utils.resource("item/" + name)), Optional.empty(), textures);
+        return new ModelTemplate(Optional.of(Utils.id("item/" + name)), Optional.empty(), textures);
     }
 
     public static Set<Identifier> all()

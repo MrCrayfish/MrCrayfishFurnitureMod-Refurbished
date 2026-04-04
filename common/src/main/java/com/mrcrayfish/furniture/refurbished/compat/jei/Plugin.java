@@ -51,14 +51,14 @@ import java.util.stream.StreamSupport;
 @JeiPlugin
 public class Plugin implements IModPlugin
 {
-    public static final Identifier TEXTURES = Utils.resource("textures/gui/jei.png");
-    public static final Identifier TEXTURES_2 = Utils.resource("textures/gui/jei2.png");
+    public static final Identifier TEXTURES = Utils.id("textures/gui/jei.png");
+    public static final Identifier TEXTURES_2 = Utils.id("textures/gui/jei2.png");
     public static final DecimalFormat FORMATTER = new DecimalFormat("0.##s");
 
     @Override
     public Identifier getPluginUid()
     {
-        return Utils.resource("plugin");
+        return Utils.id("plugin");
     }
 
     @Override
@@ -139,7 +139,7 @@ public class Plugin implements IModPlugin
         if(Config.SERVER.recipes.inheritCampfireRecipes.get())
         {
             holders.addAll(this.getRecipes(RecipeType.CAMPFIRE_COOKING).stream().map(holder -> {
-                return Pair.of(holder.id(), ProcessingRecipe.Item.fromCookingRecipe(holder.value(), getRegistryAccess()));
+                return Pair.of(holder.id(), ProcessingRecipe.Item.fromCookingRecipe(holder.value()));
             }).map(pair -> {
                 ResourceKey<Recipe<?>> key = ResourceKey.create(Registries.RECIPE, pair.left().identifier());
                 return new RecipeHolder<>(key, pair.right());

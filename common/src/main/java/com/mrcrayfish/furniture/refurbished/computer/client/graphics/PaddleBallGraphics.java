@@ -11,7 +11,7 @@ import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessagePaddleBall;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -26,7 +26,7 @@ import org.lwjgl.glfw.GLFW;
  */
 public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
 {
-    private static final Identifier TEXTURE = Utils.resource("textures/gui/program/paddle_ball.png");
+    private static final Identifier TEXTURE = Utils.id("textures/gui/program/paddle_ball.png");
 
     private float ballX;
     private float lastBallX;
@@ -201,9 +201,9 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
         }
 
         @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+        public void render(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick)
         {
-            graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, (this.game.width - 128) / 2, 10, 16, 0, 128, 24, 256, 256);
+            extractor.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, (this.game.width - 128) / 2, 10, 16, 0, 128, 24, 256, 256);
         }
 
         private static class MenuButton extends ComputerButton
@@ -214,13 +214,13 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
             }
 
             @Override
-            protected void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+            public void extractContents(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick)
             {
-                super.renderContents(graphics, mouseX, mouseY, partialTick);
+                super.extractContents(extractor, mouseX, mouseY, partialTick);
                 if(this.isActive() && this.isHoveredOrFocused())
                 {
-                    graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.getX() - 6, this.getY() + 6, 12, 0, 4, 4, 256, 256);
-                    graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.getX() + this.getWidth() + 2, this.getY() + 6, 12, 0, 4, 4, 256, 256);
+                    extractor.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.getX() - 6, this.getY() + 6, 12, 0, 4, 4, 256, 256);
+                    extractor.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.getX() + this.getWidth() + 2, this.getY() + 6, 12, 0, 4, 4, 256, 256);
                 }
             }
         }
@@ -248,9 +248,9 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
         }
 
         @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+        public void render(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick)
         {
-            graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, (this.game.width - 128) / 2, 10, 16, 0, 128, 24, 256, 256);
+            extractor.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, (this.game.width - 128) / 2, 10, 16, 0, 128, 24, 256, 256);
 
             String loading = switch((int) (Util.getMillis() / 300L % 4L)) {
                 default -> "O o o";
@@ -258,8 +258,8 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
                 case 2 -> "o o O";
             };
             Minecraft mc = Minecraft.getInstance();
-            graphics.drawCenteredString(mc.font, loading, this.game.width / 2, 50, 0xFFD3CCBE);
-            graphics.drawCenteredString(mc.font, this.game.translation("searching_players"), this.game.width / 2, 40, 0xFFD3CCBE);
+            extractor.centeredText(mc.font, loading, this.game.width / 2, 50, 0xFFD3CCBE);
+            extractor.centeredText(mc.font, this.game.translation("searching_players"), this.game.width / 2, 40, 0xFFD3CCBE);
         }
     }
 
@@ -296,81 +296,81 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
         }
 
         @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+        public void render(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick)
         {
             this.backButton.active = this.game.wonGame != null;
             this.backButton.visible = this.game.wonGame != null;
 
             Minecraft mc = Minecraft.getInstance();
 
-            graphics.pose().pushMatrix();
-            graphics.pose().translate(PaddleBall.BOARD_WIDTH / 2, 4);
+            extractor.pose().pushMatrix();
+            extractor.pose().translate(PaddleBall.BOARD_WIDTH / 2, 4);
 
             // Draw player score
-            graphics.pose().pushMatrix();
+            extractor.pose().pushMatrix();
             String label = Integer.toString(this.game.playerScore);
             int width = mc.font.width(label) * 2;
-            graphics.pose().translate(-width - 7, 0);
-            graphics.pose().scale(2, 2);
-            graphics.drawString(mc.font, label, 0, 0, 0xFF2F2F33, false);
-            graphics.pose().popMatrix();
+            extractor.pose().translate(-width - 7, 0);
+            extractor.pose().scale(2, 2);
+            extractor.text(mc.font, label, 0, 0, 0xFF2F2F33, false);
+            extractor.pose().popMatrix();
 
-            graphics.pose().pushMatrix();
-            graphics.pose().scale(2, 2);
+            extractor.pose().pushMatrix();
+            extractor.pose().scale(2, 2);
             int breakWidth = mc.font.width(label) / 2;
-            graphics.drawString(mc.font, "-", -breakWidth, 0, 0xFF2F2F33, false);
-            graphics.pose().popMatrix();
+            extractor.text(mc.font, "-", -breakWidth, 0, 0xFF2F2F33, false);
+            extractor.pose().popMatrix();
 
             // Draw opponent score
-            graphics.pose().pushMatrix();
-            graphics.pose().translate(7, 0);
-            graphics.pose().scale(2, 2);
-            graphics.drawString(mc.font, Integer.toString(this.game.opponentScore), 0, 0, 0xFF2F2F33, false);
-            graphics.pose().popMatrix();
+            extractor.pose().pushMatrix();
+            extractor.pose().translate(7, 0);
+            extractor.pose().scale(2, 2);
+            extractor.text(mc.font, Integer.toString(this.game.opponentScore), 0, 0, 0xFF2F2F33, false);
+            extractor.pose().popMatrix();
 
-            graphics.pose().popMatrix();
+            extractor.pose().popMatrix();
 
             // Draw name tags
-            graphics.drawString(mc.font, this.game.translation("you"), 5, 5, 0xFF2F2F33, false);
+            extractor.text(mc.font, this.game.translation("you"), 5, 5, 0xFF2F2F33, false);
             String opponentName = this.game.opponentName;
-            graphics.drawString(mc.font, opponentName, PaddleBall.BOARD_WIDTH - 5 - mc.font.width(opponentName), 5, 0xFF2F2F33, false);
+            extractor.text(mc.font, opponentName, PaddleBall.BOARD_WIDTH - 5 - mc.font.width(opponentName), 5, 0xFF2F2F33, false);
 
             // Draw host paddle
-            graphics.pose().pushMatrix();
+            extractor.pose().pushMatrix();
             float smoothHostPos = Mth.lerp(partialTick, this.game.lastPlayerPos, this.game.playerPos);
-            graphics.pose().translate(4, smoothHostPos);
-            graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, 0, 0, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT, 256, 256);
-            graphics.pose().popMatrix();
+            extractor.pose().translate(4, smoothHostPos);
+            extractor.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, 0, 0, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT, 256, 256);
+            extractor.pose().popMatrix();
 
             // Draw opponent paddle
-            graphics.pose().pushMatrix();
+            extractor.pose().pushMatrix();
             float smoothOpponentPos = Mth.lerp(partialTick, this.game.lastOpponentPos, this.game.opponentPos);
-            graphics.pose().translate((PaddleBall.BOARD_WIDTH) - 8, smoothOpponentPos);
-            graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, -2, 0, 6, 0, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT, 256, 256);
-            graphics.pose().popMatrix();
+            extractor.pose().translate((PaddleBall.BOARD_WIDTH) - 8, smoothOpponentPos);
+            extractor.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, -2, 0, 6, 0, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT, PaddleBall.PADDLE_WIDTH + 2, PaddleBall.PADDLE_HEIGHT, 256, 256);
+            extractor.pose().popMatrix();
 
             // Draw ball
-            graphics.pose().pushMatrix();
+            extractor.pose().pushMatrix();
             float smoothBallX = Mth.lerp(partialTick, this.game.lastBallX, this.game.ballX);
             float smoothBallY = Mth.lerp(partialTick, this.game.lastBallY, this.game.ballY);
             smoothBallX = this.game.leftPaddle ? smoothBallX : PaddleBall.BOARD_WIDTH - smoothBallX;
-            graphics.pose().translate(smoothBallX, smoothBallY);
-            graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, 12, 0, 4, 4, 4, 4, 256, 256);
-            graphics.pose().popMatrix();
+            extractor.pose().translate(smoothBallX, smoothBallY);
+            extractor.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, 12, 0, 4, 4, 4, 4, 256, 256);
+            extractor.pose().popMatrix();
 
             if(this.game.scoreAnimation > 0 && (this.game.scoreAnimation / 5) % 2 == 0)
             {
-                graphics.pose().pushMatrix();
-                graphics.pose().translate((PaddleBall.BOARD_WIDTH - PaddleBall.PADDLE_WIDTH) * this.game.scoreSide, 0);
-                graphics.fill(0, 0, PaddleBall.PADDLE_WIDTH, PaddleBall.BOARD_HEIGHT, 0xFF653938);
-                graphics.pose().popMatrix();
+                extractor.pose().pushMatrix();
+                extractor.pose().translate((PaddleBall.BOARD_WIDTH - PaddleBall.PADDLE_WIDTH) * this.game.scoreSide, 0);
+                extractor.fill(0, 0, PaddleBall.PADDLE_WIDTH, PaddleBall.BOARD_HEIGHT, 0xFF653938);
+                extractor.pose().popMatrix();
             }
 
             if(this.game.wonGame != null && this.game.displayLabel != null)
             {
                 Component bannerLabel = this.game.displayLabel;
                 int bannerColour = this.game.wonGame ? 0xFF376337 : 0xFF653938;
-                graphics.drawCenteredString(mc.font, bannerLabel, this.game.width / 2, 40, bannerColour);
+                extractor.centeredText(mc.font, bannerLabel, this.game.width / 2, 40, bannerColour);
             }
         }
 

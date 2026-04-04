@@ -5,7 +5,7 @@ import com.mrcrayfish.furniture.refurbished.computer.client.widget.ComputerButto
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageComputerOpenProgram;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 
@@ -59,7 +59,7 @@ public class Window
         this.displayable.tick();
     }
 
-    public void render(GuiGraphics graphics, Font font, int mouseX, int mouseY, float partialTick)
+    public void render(GuiGraphicsExtractor extractor, Font font, int mouseX, int mouseY, float partialTick)
     {
         int windowEnd = this.windowStart + this.windowWidth;
         int windowBottom = this.windowTop + this.windowHeight;
@@ -71,16 +71,16 @@ public class Window
         int contentBottom = this.windowTop + this.windowHeight - 1;
 
         // Draw window frame
-        graphics.fill(this.windowStart + 1, this.windowTop, windowEnd - 1, windowBottom, this.displayable.getWindowOutlineColour());
-        graphics.fill(this.windowStart, this.windowTop + 1, windowEnd, windowBottom - 1, this.displayable.getWindowOutlineColour());
-        graphics.fill(titleBarStart, titleBarTop, titleBarEnd, titleBarBottom, this.displayable.getWindowTitleBarColour());
-        graphics.fill(this.contentStart, this.contentTop, contentEnd, contentBottom, this.displayable.getWindowBackgroundColour());
-        graphics.drawString(font, this.displayable.getProgram().getTitle(), titleBarStart + 5, titleBarTop + 1, this.displayable.getWindowTitleLabelColour(), false);
+        extractor.fill(this.windowStart + 1, this.windowTop, windowEnd - 1, windowBottom, this.displayable.getWindowOutlineColour());
+        extractor.fill(this.windowStart, this.windowTop + 1, windowEnd, windowBottom - 1, this.displayable.getWindowOutlineColour());
+        extractor.fill(titleBarStart, titleBarTop, titleBarEnd, titleBarBottom, this.displayable.getWindowTitleBarColour());
+        extractor.fill(this.contentStart, this.contentTop, contentEnd, contentBottom, this.displayable.getWindowBackgroundColour());
+        extractor.text(font, this.displayable.getProgram().getTitle(), titleBarStart + 5, titleBarTop + 1, this.displayable.getWindowTitleLabelColour(), false);
 
         // Draw displayable content
-        graphics.enableScissor(this.contentStart, this.contentTop, contentEnd, contentBottom);
-        this.displayable.render(graphics, mouseX, mouseY, partialTick);
-        graphics.disableScissor();
+        extractor.enableScissor(this.contentStart, this.contentTop, contentEnd, contentBottom);
+        this.displayable.render(extractor, mouseX, mouseY, partialTick);
+        extractor.disableScissor();
     }
 
     public void onClose()

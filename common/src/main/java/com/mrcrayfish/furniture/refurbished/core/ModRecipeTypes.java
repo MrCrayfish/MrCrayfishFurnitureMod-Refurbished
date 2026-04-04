@@ -17,15 +17,15 @@ import java.util.function.Supplier;
 @RegistryContainer
 public class ModRecipeTypes
 {
-    public static final RegistryEntry<RecipeType<WorkbenchContructingRecipe>> WORKBENCH_CONSTRUCTING = RegistryEntry.recipeType(Utils.resource("workbench_constructing"));
-    public static final RegistryEntry<RecipeType<ProcessingRecipe.Item>> GRILL_COOKING = RegistryEntry.recipeType(Utils.resource("grill_cooking"));
-    public static final RegistryEntry<RecipeType<FreezerSolidifyingRecipe>> FREEZER_SOLIDIFYING = RegistryEntry.recipeType(Utils.resource("freezer_solidifying"));
-    public static final RegistryEntry<RecipeType<ToasterHeatingRecipe>> TOASTER_HEATING = RegistryEntry.recipeType(Utils.resource("toaster_heating"));
-    public static final RegistryEntry<RecipeType<CuttingBoardSlicingRecipe>> CUTTING_BOARD_SLICING = RegistryEntry.recipeType(Utils.resource("cutting_board_slicing"));
-    public static final RegistryEntry<RecipeType<CuttingBoardCombiningRecipe>> CUTTING_BOARD_COMBINING = RegistryEntry.recipeType(Utils.resource("cutting_board_combining"));
-    public static final RegistryEntry<RecipeType<MicrowaveHeatingRecipe>> MICROWAVE_HEATING = RegistryEntry.recipeType(Utils.resource("microwave_heating"));
-    public static final RegistryEntry<RecipeType<ProcessingRecipe.Item>> FRYING_PAN_COOKING = RegistryEntry.recipeType(Utils.resource("frying_pan_cooking"));
-    public static final RegistryEntry<RecipeType<OvenBakingRecipe>> OVEN_BAKING = RegistryEntry.recipeType(Utils.resource("oven_baking"));
+    public static final RegistryEntry<RecipeType<WorkbenchContructingRecipe>> WORKBENCH_CONSTRUCTING = RegistryEntry.recipeType(Utils.id("workbench_constructing"));
+    public static final RegistryEntry<RecipeType<ProcessingRecipe.Item>> GRILL_COOKING = RegistryEntry.recipeType(Utils.id("grill_cooking"));
+    public static final RegistryEntry<RecipeType<FreezerSolidifyingRecipe>> FREEZER_SOLIDIFYING = RegistryEntry.recipeType(Utils.id("freezer_solidifying"));
+    public static final RegistryEntry<RecipeType<ToasterHeatingRecipe>> TOASTER_HEATING = RegistryEntry.recipeType(Utils.id("toaster_heating"));
+    public static final RegistryEntry<RecipeType<CuttingBoardSlicingRecipe>> CUTTING_BOARD_SLICING = RegistryEntry.recipeType(Utils.id("cutting_board_slicing"));
+    public static final RegistryEntry<RecipeType<CuttingBoardCombiningRecipe>> CUTTING_BOARD_COMBINING = RegistryEntry.recipeType(Utils.id("cutting_board_combining"));
+    public static final RegistryEntry<RecipeType<MicrowaveHeatingRecipe>> MICROWAVE_HEATING = RegistryEntry.recipeType(Utils.id("microwave_heating"));
+    public static final RegistryEntry<RecipeType<ProcessingRecipe.Item>> FRYING_PAN_COOKING = RegistryEntry.recipeType(Utils.id("frying_pan_cooking"));
+    public static final RegistryEntry<RecipeType<OvenBakingRecipe>> OVEN_BAKING = RegistryEntry.recipeType(Utils.id("oven_baking"));
 
     // A list of recipe types that should be ignored when ClientRecipeBook#getCategory is called
     // This just prevents warning of unknown recipe since they don't use the recipe book system

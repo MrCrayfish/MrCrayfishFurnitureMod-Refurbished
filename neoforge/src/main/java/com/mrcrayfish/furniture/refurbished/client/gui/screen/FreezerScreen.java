@@ -3,18 +3,17 @@ package com.mrcrayfish.furniture.refurbished.client.gui.screen;
 import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.client.gui.recipe.FreezerRecipeBookComponent;
 import com.mrcrayfish.furniture.refurbished.client.gui.widget.OnOffSlider;
-import com.mrcrayfish.furniture.refurbished.client.util.VanillaTextures;
 import com.mrcrayfish.furniture.refurbished.inventory.FreezerMenu;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageTogglePower;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
 
@@ -59,18 +58,18 @@ public class FreezerScreen extends AbstractFreezerScreen<FreezerMenu> implements
     }
 
     @Override
-    protected void afterRender(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    protected void afterRender(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick)
     {
-        this.recipeBookComponent.render(graphics, mouseX, mouseY, partialTick);
-        this.renderTooltip(graphics, mouseX, mouseY);
-        this.recipeBookComponent.renderTooltip(graphics, mouseX, mouseY, this.hoveredSlot);
+        this.recipeBookComponent.extractRenderState(extractor, mouseX, mouseY, partialTick);
+        this.extractTooltip(extractor, mouseX, mouseY);
+        this.recipeBookComponent.extractTooltip(extractor, mouseX, mouseY, this.hoveredSlot);
     }
 
     @Override
-    protected void renderSlots(GuiGraphics graphics, int mouseX, int mouseY)
+    protected void extractSlots(GuiGraphicsExtractor extractor, int mouseX, int mouseY)
     {
-        super.renderSlots(graphics, mouseX, mouseY);
-        this.recipeBookComponent.renderGhostRecipe(graphics, true);
+        super.extractSlots(extractor, mouseX, mouseY);
+        this.recipeBookComponent.extractGhostRecipe(extractor, true);
     }
 
     @Override
@@ -98,9 +97,9 @@ public class FreezerScreen extends AbstractFreezerScreen<FreezerMenu> implements
     }
 
     @Override
-    protected void slotClicked(Slot slot, int mouseX, int mouseY, ClickType type)
+    protected void slotClicked(Slot slot, int mouseX, int mouseY, ContainerInput input)
     {
-        super.slotClicked(slot, mouseX, mouseY, type);
+        super.slotClicked(slot, mouseX, mouseY, input);
         this.recipeBookComponent.slotClicked(slot);
     }
 

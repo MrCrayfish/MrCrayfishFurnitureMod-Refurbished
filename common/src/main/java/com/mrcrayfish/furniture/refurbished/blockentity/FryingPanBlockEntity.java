@@ -30,6 +30,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -142,9 +143,9 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
     {
         if(this.isCooking() && !this.getAnimation().isPlaying())
         {
-            double posX = pos.getX() + 0.35 + 0.3 * level.random.nextDouble();
+            double posX = pos.getX() + 0.35 + 0.3 * level.getRandom().nextDouble();
             double posY = pos.getY() + 0.15;
-            double posZ = pos.getZ() + 0.35 + 0.3 * level.random.nextDouble();
+            double posZ = pos.getZ() + 0.35 + 0.3 * level.getRandom().nextDouble();
             level.addParticle(new DustParticleOptions(OIL_COLOUR, 0.25F), posX, posY, posZ, 0, -0.05, 0);
             this.spawnSteam(level, posX, posY, posZ);
         }
@@ -236,18 +237,18 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
         ItemStack stack = this.getItem(0);
         if(!stack.isEmpty())
         {
-            ItemStack remainingStack = stack.getItem().getCraftingRemainder();
+            ItemStackTemplate remainder = stack.getItem().getCraftingRemainder();
             Optional<? extends ProcessingRecipe> optional = this.getRecipe(stack);
-            ItemStack result = optional.map(recipe -> recipe.getResult().copy()).orElse(ItemStack.EMPTY);
+            ItemStack result = optional.map(recipe -> recipe.getResult().create()).orElse(ItemStack.EMPTY);
             stack.shrink(1);
             if(!result.isEmpty())
             {
                 ItemStack copy = result.copy();
                 this.setItem(0, copy);
-                if(!remainingStack.isEmpty())
+                if(remainder != null)
                 {
                     BlockPos pos = this.worldPosition;
-                    this.level.addFreshEntity(new ItemEntity(this.level, pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5, remainingStack.copy()));
+                    this.level.addFreshEntity(new ItemEntity(this.level, pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5, remainder.create()));
                 }
             }
         }
@@ -316,7 +317,7 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
         {
             return cache.getRecipeFor(new SingleRecipeInput(stack), serverLevel)
                 .map(RecipeHolder::value)
-                .map(recipe -> ProcessingRecipe.Item.fromCookingRecipe(recipe, this.level.registryAccess()));
+                .map(recipe -> ProcessingRecipe.Item.fromCookingRecipe(recipe));
         }
         return Optional.empty();
     }
@@ -408,7 +409,7 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
         if(level.getChunkSource() instanceof ServerChunkCache cache)
         {
             BlockPos pos = this.getBlockPos();
-            List<ServerPlayer> players = cache.chunkMap.getPlayers(new ChunkPos(pos), false);
+            List<ServerPlayer> players = cache.chunkMap.getPlayers(ChunkPos.containing(pos), false);
             players.forEach(player -> Network.getPlay().sendToPlayer(() -> player, new MessageFlipAnimation(pos, 0)));
         }
     }

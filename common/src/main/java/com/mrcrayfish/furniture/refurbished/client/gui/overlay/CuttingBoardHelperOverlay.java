@@ -2,7 +2,7 @@ package com.mrcrayfish.furniture.refurbished.client.gui.overlay;
 
 import com.mrcrayfish.furniture.refurbished.blockentity.CuttingBoardBlockEntity;
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.Item;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public class CuttingBoardHelperOverlay implements IHudOverlay
     private static final int TITLE_HEIGHT = 13;
 
     @Override
-    public void draw(GuiGraphics graphics, DeltaTracker deltaTracker)
+    public void draw(GuiGraphicsExtractor extractor, DeltaTracker deltaTracker)
     {
         // TODO replace with overlay
 

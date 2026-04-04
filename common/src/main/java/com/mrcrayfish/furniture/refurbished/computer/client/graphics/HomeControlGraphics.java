@@ -9,7 +9,7 @@ import com.mrcrayfish.furniture.refurbished.computer.client.widget.ComputerSelec
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageHomeControl;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.CommonComponents;
@@ -68,9 +68,9 @@ public class HomeControlGraphics extends DisplayableProgram<HomeControl>
         }
 
         @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+        public void render(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick)
         {
-            graphics.fill(0, 0, this.graphics.getWidth(), 20, 0xFF262626);
+            extractor.fill(0, 0, this.graphics.getWidth(), 20, 0xFF262626);
         }
     }
 
@@ -96,10 +96,10 @@ public class HomeControlGraphics extends DisplayableProgram<HomeControl>
         }
 
         @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+        public void render(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick)
         {
-            graphics.fill(0, 0, this.graphics.getWidth(), 20, 0xFF262626);
-            graphics.drawWordWrap(Minecraft.getInstance().font, this.infoText, 5, 25, this.graphics.getWidth() - 10, 0xFF47403E);
+            extractor.fill(0, 0, this.graphics.getWidth(), 20, 0xFF262626);
+            extractor.textWithWordWrap(Minecraft.getInstance().font, this.infoText, 5, 25, this.graphics.getWidth() - 10, 0xFF47403E);
         }
     }
 
@@ -126,13 +126,13 @@ public class HomeControlGraphics extends DisplayableProgram<HomeControl>
         }
 
         @Override
-        public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float partialTick)
+        public void extractContent(GuiGraphicsExtractor extractor, int mouseX, int mouseY, boolean hovered, float partialTick)
         {
             this.updateButtonLabel();
-            graphics.fill(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), 0xFF47403E);
-            graphics.drawString(Minecraft.getInstance().font, this.device.getDeviceName(), this.getX() + 5, this.getY() + 4, 0xFF222225, false);
+            extractor.fill(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), 0xFF47403E);
+            extractor.text(Minecraft.getInstance().font, this.device.getDeviceName(), this.getX() + 5, this.getY() + 4, 0xFF222225, false);
             this.button.setPosition(this.getX() + this.getWidth() - this.button.getWidth() - 1, this.getY() + 1);
-            this.button.render(graphics, mouseX, mouseY, partialTick);
+            this.button.extractRenderState(extractor, mouseX, mouseY, partialTick);
         }
 
         @Override

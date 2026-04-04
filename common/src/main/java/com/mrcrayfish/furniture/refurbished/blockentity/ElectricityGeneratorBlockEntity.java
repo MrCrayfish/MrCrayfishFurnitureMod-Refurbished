@@ -20,6 +20,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -229,19 +230,19 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
             {
                 if(!simulate)
                 {
-                    ItemStack remainingStack = stack.getItem().getCraftingRemainder();
+                    ItemStackTemplate remainder = stack.getItem().getCraftingRemainder();
                     stack.shrink(1);
-                    if(!remainingStack.isEmpty())
+                    if(remainder != null)
                     {
                         if(stack.isEmpty())
                         {
-                            this.setItem(0, remainingStack.copy());
+                            this.setItem(0, remainder.create());
                         }
                         else
                         {
                             // Fallback and drop the item into the world
                             Vec3 pos = this.getBlockPos().getCenter().add(0, 0.5, 0);
-                            Containers.dropItemStack(this.level, pos.x, pos.y, pos.z, remainingStack.copy());
+                            Containers.dropItemStack(this.level, pos.x, pos.y, pos.z, remainder.create());
                         }
                     }
                     if(this.totalEnergy != energy)

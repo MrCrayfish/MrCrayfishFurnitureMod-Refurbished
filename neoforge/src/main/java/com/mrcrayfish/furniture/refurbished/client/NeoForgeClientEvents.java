@@ -70,11 +70,11 @@ public class NeoForgeClientEvents
     @SubscribeEvent
     private static void onSetupFrameGraph(FrameGraphSetupEvent event)
     {
-        ElectricityRenderer.get().setupFramePass(event.getFrameGrapBuilder(), event.getCamera().position());
+        ElectricityRenderer.get().setupFramePass(event.getFrameGrapBuilder(), event.getCameraState().pos);
     }
 
     @SubscribeEvent
-    private static void afterEntities(RenderLevelStageEvent.AfterEntities event)
+    private static void afterEntities(RenderLevelStageEvent.AfterWeather event) // TODO 26.1.1 test after weather
     {
         ElectricityRenderer.get().renderPowerableArea(event.getLevelRenderState().cameraRenderState.pos);
     }

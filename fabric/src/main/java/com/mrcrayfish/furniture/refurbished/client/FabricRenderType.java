@@ -27,7 +27,7 @@ public class FabricRenderType
             .useLightmap()
             .sortOnUpload()
             .setOutputTarget(ELECTRICITY_TARGET)
-            .withTexture("Sampler0", Utils.resource("textures/misc/electricity_nodes.png"))
+            .withTexture("Sampler0", Utils.id("textures/misc/electricity_nodes.png"))
             .createRenderSetup());
 
     private static final Function<Identifier, RenderType> TELEVISION_SCREEN = Util.memoize((id) ->

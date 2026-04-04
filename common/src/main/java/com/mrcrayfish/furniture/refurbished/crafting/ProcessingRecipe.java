@@ -3,13 +3,12 @@ package com.mrcrayfish.furniture.refurbished.crafting;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.mrcrayfish.furniture.refurbished.util.reflection.ReflectedMethod;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.FriendlyByteBuf;
@@ -18,6 +17,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
@@ -33,11 +33,11 @@ public abstract class ProcessingRecipe implements Recipe<SingleRecipeInput>
     protected final RecipeType<? extends Recipe<SingleRecipeInput>> type;
     protected final Category category;
     protected final Ingredient ingredient;
-    protected final ItemStack result;
+    protected final ItemStackTemplate result;
     protected final int time;
     private @Nullable PlacementInfo placementInfo;
 
-    public ProcessingRecipe(RecipeType<? extends Recipe<SingleRecipeInput>> type, Category category, Ingredient ingredient, ItemStack result, int time)
+    public ProcessingRecipe(RecipeType<? extends Recipe<SingleRecipeInput>> type, Category category, Ingredient ingredient, ItemStackTemplate result, int time)
     {
         this.type = type;
         this.category = category;
@@ -58,15 +58,27 @@ public abstract class ProcessingRecipe implements Recipe<SingleRecipeInput>
     }
 
     @Override
+    public String group()
+    {
+        return "";
+    }
+
+    @Override
+    public boolean showNotification()
+    {
+        return false;
+    }
+
+    @Override
     public boolean matches(SingleRecipeInput input, Level level)
     {
         return this.ingredient.test(input.item());
     }
 
     @Override
-    public ItemStack assemble(SingleRecipeInput input, HolderLookup.Provider provider)
+    public ItemStack assemble(SingleRecipeInput input)
     {
-        return this.result.copy();
+        return this.result.create();
     }
 
     @Override
@@ -92,7 +104,7 @@ public abstract class ProcessingRecipe implements Recipe<SingleRecipeInput>
      *
      * @return The output itemstack
      */
-    public ItemStack getResult()
+    public ItemStackTemplate getResult()
     {
         return this.result;
     }
@@ -105,14 +117,14 @@ public abstract class ProcessingRecipe implements Recipe<SingleRecipeInput>
         return this.time;
     }
 
-    public static <T extends ProcessingRecipe> Builder<T> builder(Factory<T> factory, Category category, Ingredient input, ItemStack output, int processTime)
+    public static <T extends ProcessingRecipe> Builder<T> builder(Factory<T> factory, Category category, Ingredient input, ItemStackTemplate output, int processTime)
     {
         return new Builder<>(factory, category, input, output, processTime);
     }
 
     public interface Factory<T extends ProcessingRecipe>
     {
-        T create(Category category, Ingredient input, ItemStack result, int processTime);
+        T create(Category category, Ingredient input, ItemStackTemplate result, int processTime);
     }
 
     public static class Builder<T extends ProcessingRecipe> implements RecipeBuilder
@@ -120,11 +132,11 @@ public abstract class ProcessingRecipe implements Recipe<SingleRecipeInput>
         protected final Category category;
         protected final Factory<T> factory;
         protected final Ingredient input;
-        protected final ItemStack output;
+        protected final ItemStackTemplate output;
         protected final int processTime;
         protected final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
 
-        private Builder(Factory<T> factory, Category category, Ingredient input, ItemStack output, int processTime)
+        private Builder(Factory<T> factory, Category category, Ingredient input, ItemStackTemplate output, int processTime)
         {
             this.factory = factory;
             this.category = category;
@@ -147,9 +159,14 @@ public abstract class ProcessingRecipe implements Recipe<SingleRecipeInput>
         }
 
         @Override
-        public net.minecraft.world.item.Item getResult()
+        public ResourceKey<Recipe<?>> defaultId()
         {
-            return this.output.getItem();
+            return RecipeBuilder.getDefaultRecipeId(this.output);
+        }
+
+        public ItemStackTemplate getOutput()
+        {
+            return this.output;
         }
 
         @Override
@@ -166,14 +183,16 @@ public abstract class ProcessingRecipe implements Recipe<SingleRecipeInput>
 
     public static abstract class Item extends ProcessingRecipe
     {
-        public Item(RecipeType<? extends Recipe<SingleRecipeInput>> type, Category category, Ingredient ingredient, ItemStack result, int time)
+        private static final ReflectedMethod<AbstractCookingRecipe, ItemStackTemplate> RESULT_METHOD = new ReflectedMethod<>(AbstractCookingRecipe.class, "result");
+
+        public Item(RecipeType<? extends Recipe<SingleRecipeInput>> type, Category category, Ingredient ingredient, ItemStackTemplate result, int time)
         {
             super(type, category, ingredient, result, time);
         }
 
-        public static ProcessingRecipe.Item fromCookingRecipe(AbstractCookingRecipe recipe, RegistryAccess access)
+        public static ProcessingRecipe.Item fromCookingRecipe(AbstractCookingRecipe recipe)
         {
-            return new ProcessingRecipe.Item(recipe.getType(), Category.FOOD, recipe.input(), recipe.assemble(new SingleRecipeInput(ItemStack.EMPTY), access), recipe.cookingTime())
+            return new ProcessingRecipe.Item(recipe.getType(), Category.FOOD, recipe.input(), RESULT_METHOD.invoke(recipe), recipe.cookingTime())
             {
                 @Override
                 public RecipeSerializer<? extends Recipe<SingleRecipeInput>> getSerializer()
@@ -195,110 +214,35 @@ public abstract class ProcessingRecipe implements Recipe<SingleRecipeInput>
             };
         }
 
-        public static class Serializer<T extends ProcessingRecipe> implements RecipeSerializer<T>
+        public static <T extends ProcessingRecipe> MapCodec<T> createCodec(Factory<T> factory, int defaultTime)
         {
-            private final Factory<T> factory;
-            private final int defaultTime;
-            private final MapCodec<T> codec;
-            private final StreamCodec<RegistryFriendlyByteBuf, T> streamCodec;
-
-            public Serializer(Factory<T> factory, int defaultTime)
-            {
-                this.factory = factory;
-                this.defaultTime = defaultTime;
-                this.codec = RecordCodecBuilder.mapCodec(builder -> {
-                    return builder.group(Category.CODEC.fieldOf("category").forGetter(recipe -> {
-                            return recipe.category;
-                    }), Ingredient.CODEC.fieldOf("ingredient").forGetter((recipe) -> {
-                        return recipe.ingredient;
-                    }), ItemStack.SINGLE_ITEM_CODEC.fieldOf("result").forGetter((recipe) -> {
-                        return recipe.result;
-                    }),  Codec.INT.fieldOf("time").orElse(this.defaultTime).forGetter(recipe -> {
-                        return recipe.time;
-                    })).apply(builder, this.factory::create);
-                });
-                this.streamCodec = StreamCodec.of((buf, recipe) -> {
-                    recipe.category.toNetwork(buf);
-                    Ingredient.CONTENTS_STREAM_CODEC.encode(buf, recipe.ingredient);
-                    ItemStack.STREAM_CODEC.encode(buf, recipe.result);
-                    buf.writeVarInt(recipe.time);
-                }, buf -> {
-                    Category category = Category.fromNetwork(buf);
-                    Ingredient input = Ingredient.CONTENTS_STREAM_CODEC.decode(buf);
-                    ItemStack output = ItemStack.STREAM_CODEC.decode(buf);
-                    int processTime = buf.readVarInt();
-                    return this.factory.create(category, input, output, processTime);
-                });
-            }
-
-            @Override
-            public MapCodec<T> codec()
-            {
-                return this.codec;
-            }
-
-            @Override
-            public StreamCodec<RegistryFriendlyByteBuf, T> streamCodec()
-            {
-                return this.streamCodec;
-            }
-        }
-    }
-
-    public static abstract class ItemWithCount extends ProcessingRecipe
-    {
-        public ItemWithCount(RecipeType<? extends Recipe<SingleRecipeInput>> type, Category category, Ingredient ingredient, ItemStack result, int time)
-        {
-            super(type, category, ingredient, result, time);
+            return RecordCodecBuilder.mapCodec(builder -> {
+                return builder.group(Category.CODEC.fieldOf("category").forGetter(recipe -> {
+                    return recipe.category;
+                }), Ingredient.CODEC.fieldOf("ingredient").forGetter(recipe -> {
+                    return recipe.ingredient;
+                }), ItemStackTemplate.CODEC.fieldOf("result").forGetter(recipe -> {
+                    return recipe.result;
+                }),  Codec.INT.fieldOf("time").orElse(defaultTime).forGetter(recipe -> {
+                    return recipe.time;
+                })).apply(builder, factory::create);
+            });
         }
 
-        public static class Serializer<T extends ProcessingRecipe> implements RecipeSerializer<T>
+        public static <T extends ProcessingRecipe> StreamCodec<RegistryFriendlyByteBuf, T> createStreamCodec(Factory<T> factory, int defaultTime)
         {
-            private final Factory<T> factory;
-            private final int defaultTime;
-            private final MapCodec<T> codec;
-            private final StreamCodec<RegistryFriendlyByteBuf, T> streamCodec;
-
-            public Serializer(Factory<T> factory, int defaultTime)
-            {
-                this.factory = factory;
-                this.defaultTime = defaultTime;
-                this.codec = RecordCodecBuilder.mapCodec(builder -> {
-                    return builder.group(Category.CODEC.fieldOf("category").forGetter(recipe -> {
-                        return recipe.category;
-                    }), Ingredient.CODEC.fieldOf("ingredient").forGetter((recipe) -> {
-                        return recipe.ingredient;
-                    }), ItemStack.CODEC.fieldOf("result").forGetter((recipe) -> {
-                        return recipe.result;
-                    }),  Codec.INT.fieldOf("time").orElse(this.defaultTime).forGetter(recipe -> {
-                        return recipe.time;
-                    })).apply(builder, this.factory::create);
-                });
-                this.streamCodec = StreamCodec.of((buf, recipe) -> {
-                    recipe.category.toNetwork(buf);
-                    Ingredient.CONTENTS_STREAM_CODEC.encode(buf, recipe.ingredient);
-                    ItemStack.STREAM_CODEC.encode(buf, recipe.result);
-                    buf.writeVarInt(recipe.time);
-                }, buf -> {
-                    Category category = Category.fromNetwork(buf);
-                    Ingredient input = Ingredient.CONTENTS_STREAM_CODEC.decode(buf);
-                    ItemStack output = ItemStack.STREAM_CODEC.decode(buf);
-                    int processTime = buf.readVarInt();
-                    return this.factory.create(category, input, output, processTime);
-                });
-            }
-
-            @Override
-            public MapCodec<T> codec()
-            {
-                return this.codec;
-            }
-
-            @Override
-            public StreamCodec<RegistryFriendlyByteBuf, T> streamCodec()
-            {
-                return this.streamCodec;
-            }
+            return StreamCodec.of((buf, recipe) -> {
+                recipe.category.toNetwork(buf);
+                Ingredient.CONTENTS_STREAM_CODEC.encode(buf, recipe.ingredient);
+                ItemStackTemplate.STREAM_CODEC.encode(buf, recipe.result);
+                buf.writeVarInt(recipe.time);
+            }, buf -> {
+                Category category = Category.fromNetwork(buf);
+                Ingredient input = Ingredient.CONTENTS_STREAM_CODEC.decode(buf);
+                ItemStackTemplate output = ItemStackTemplate.STREAM_CODEC.decode(buf);
+                int processTime = buf.readVarInt();
+                return factory.create(category, input, output, processTime);
+            });
         }
     }
 

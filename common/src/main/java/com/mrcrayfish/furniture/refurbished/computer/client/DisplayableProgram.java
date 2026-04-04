@@ -3,7 +3,7 @@ package com.mrcrayfish.furniture.refurbished.computer.client;
 import com.google.common.base.Preconditions;
 import com.mrcrayfish.furniture.refurbished.client.gui.screen.ComputerScreen;
 import com.mrcrayfish.furniture.refurbished.computer.Program;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
@@ -55,18 +55,18 @@ public abstract class DisplayableProgram<T extends Program>
         }
     }
 
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void render(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick)
     {
         if(this.scene != null)
         {
             // Render scene
-            graphics.pose().pushMatrix();
-            graphics.pose().translate(this.contentStart, this.contentTop);
-            this.scene.render(graphics, mouseX, mouseY, partialTick);
-            graphics.pose().popMatrix();
+            extractor.pose().pushMatrix();
+            extractor.pose().translate(this.contentStart, this.contentTop);
+            this.scene.render(extractor, mouseX, mouseY, partialTick);
+            extractor.pose().popMatrix();
 
             // Render widgets
-            this.scene.getRenderables().forEach(widget -> widget.render(graphics, mouseX, mouseY, partialTick));
+            this.scene.getRenderables().forEach(widget -> widget.extractRenderState(extractor, mouseX, mouseY, partialTick));
         }
     }
 

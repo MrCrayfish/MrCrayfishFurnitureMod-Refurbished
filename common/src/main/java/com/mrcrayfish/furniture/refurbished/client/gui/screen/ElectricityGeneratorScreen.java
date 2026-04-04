@@ -10,7 +10,7 @@ import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageTogglePower;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import it.unimi.dsi.fastutil.Pair;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -22,7 +22,7 @@ import net.minecraft.world.entity.player.Inventory;
  */
 public class ElectricityGeneratorScreen extends AbstractContainerScreen<ElectricityGeneratorMenu>
 {
-    private static final Identifier TEXTURE = Utils.resource("textures/gui/container/electricity_generator.png");
+    private static final Identifier TEXTURE = Utils.id("textures/gui/container/electricity_generator.png");
 
     protected OnOffSlider slider;
 
@@ -41,41 +41,42 @@ public class ElectricityGeneratorScreen extends AbstractContainerScreen<Electric
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void extractRenderState(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick)
     {
         this.slider.setEnabled(this.menu.isEnabled());
-        super.render(graphics, mouseX, mouseY, partialTick);
-        this.renderTooltip(graphics, mouseX, mouseY);
+        super.extractRenderState(extractor, mouseX, mouseY, partialTick);
+        this.extractTooltip(extractor, mouseX, mouseY);
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
+    public void extractBackground(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick)
     {
-        graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
+        super.extractBackground(extractor, mouseX, mouseY, partialTick);
+        extractor.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
         if(this.menu.getEnergy() > 0 && this.menu.getTotalEnergy() > 0)
         {
             float normalEnergy = this.menu.getEnergy() / (float) this.menu.getTotalEnergy();
             int v = (int) Math.ceil(14 * normalEnergy);
-            graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos + 26, this.topPos + 25 + 14 - v, 176, 14 - v, 14, v, 256, 256);
+            extractor.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, this.leftPos + 26, this.topPos + 25 + 14 - v, 176, 14 - v, 14, v, 256, 256);
         }
         Status status = this.getStatus();
-        graphics.blit(RenderPipelines.GUI_TEXTURED, IconButton.ICON_TEXTURES, this.leftPos + 66, this.topPos + 29, status.iconU, status.iconV, 10, 10, 64, 64);
-        graphics.blit(RenderPipelines.GUI_TEXTURED, IconButton.ICON_TEXTURES, this.leftPos + 66, this.topPos + 46, 0, 10, 10, 10, 64, 64);
+        extractor.blit(RenderPipelines.GUI_TEXTURED, IconButton.ICON_TEXTURES, this.leftPos + 66, this.topPos + 29, status.iconU, status.iconV, 10, 10, 64, 64);
+        extractor.blit(RenderPipelines.GUI_TEXTURED, IconButton.ICON_TEXTURES, this.leftPos + 66, this.topPos + 46, 0, 10, 10, 10, 64, 64);
 
         if(this.menu.getEnergy() > 0 && this.menu.getTotalEnergy() > 0 && ScreenHelper.isMouseWithinBounds(mouseX, mouseY, this.leftPos + 26, this.topPos + 25, 14, 14))
         {
-            graphics.setTooltipForNextFrame(Utils.translation("gui", "progress", this.menu.getEnergy(), Components.GUI_SLASH, this.menu.getTotalEnergy()), mouseX, mouseY);
+            extractor.setTooltipForNextFrame(Utils.translation("gui", "progress", this.menu.getEnergy(), Components.GUI_SLASH, this.menu.getTotalEnergy()), mouseX, mouseY);
         }
     }
 
     @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY)
+    protected void extractLabels(GuiGraphicsExtractor extractor, int mouseX, int mouseY)
     {
-        super.renderLabels(graphics, mouseX, mouseY);
+        super.extractLabels(extractor, mouseX, mouseY);
         Status status = this.getStatus();
-        graphics.drawString(this.font, status.label, 80, 30, status.textColour, true);
+        extractor.text(this.font, status.label, 80, 30, status.textColour, true);
         Pair<Component, Integer> pair = this.getNodeCount();
-        graphics.drawString(this.font, pair.left(), 80, 47, pair.right(), true);
+        extractor.text(this.font, pair.left(), 80, 47, pair.right(), true);
     }
 
     private Pair<Component, Integer> getNodeCount()

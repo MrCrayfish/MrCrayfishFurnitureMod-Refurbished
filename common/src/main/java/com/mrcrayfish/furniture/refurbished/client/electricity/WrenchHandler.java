@@ -228,7 +228,7 @@ public class WrenchHandler
         if((oldResult == null || !oldResult.equals(newResult)) && newResult instanceof ConnectionHitResult)
         {
             Vec3 pos = newResult.getLocation();
-            float pitch = 1.0F + 0.05F * level.random.nextFloat();
+            float pitch = 1.0F + 0.05F * level.getRandom().nextFloat();
             level.playSound(player, pos.x, pos.y, pos.z, ModSounds.ITEM_WRENCH_HOVER_LINK.get(), SoundSource.BLOCKS, 1.0F, pitch);
         }
     }

@@ -6,7 +6,7 @@ import com.mrcrayfish.furniture.refurbished.computer.client.DisplayableProgram;
 import com.mrcrayfish.furniture.refurbished.computer.client.Icon;
 import com.mrcrayfish.furniture.refurbished.computer.client.Scene;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 
 /**
@@ -33,14 +33,14 @@ public class CoinMinerGraphics extends DisplayableProgram<CoinMiner>
         public void updateWidgets(int contentStart, int contentTop) {}
 
         @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+        public void render(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick)
         {
             Icon icon = Display.get().getIcon(this.program.getProgram().getId());
             if(icon != null)
             {
-                graphics.blit(RenderPipelines.GUI_TEXTURED, icon.texture(), (this.program.getWidth() - 16) / 2, 10, icon.u(), icon.v(), 16, 16, 128, 128);
+                extractor.blit(RenderPipelines.GUI_TEXTURED, icon.texture(), (this.program.getWidth() - 16) / 2, 10, icon.u(), icon.v(), 16, 16, 128, 128);
             }
-            graphics.drawCenteredString(Minecraft.getInstance().font, "Coming Soon!", MAX_CONTENT_WIDTH / 4, 35, 0xFFFFFFFF);
+            extractor.centeredText(Minecraft.getInstance().font, "Coming Soon!", MAX_CONTENT_WIDTH / 4, 35, 0xFFFFFFFF);
         }
     }
 }

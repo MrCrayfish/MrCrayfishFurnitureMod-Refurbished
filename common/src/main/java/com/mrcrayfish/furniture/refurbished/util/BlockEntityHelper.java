@@ -45,7 +45,7 @@ public class BlockEntityHelper
                     return output.buildResult();
                 }
             });
-            List<ServerPlayer> players = cache.chunkMap.getPlayers(new ChunkPos(pos), false);
+            List<ServerPlayer> players = cache.chunkMap.getPlayers(ChunkPos.containing(pos), false);
             players.forEach(player -> player.connection.send(packet));
         }
     }
@@ -57,7 +57,7 @@ public class BlockEntityHelper
         {
             BlockPos pos = entity.getBlockPos();
             ClientboundBlockEntityDataPacket packet = ClientboundBlockEntityDataPacket.create(entity, consumer);
-            List<ServerPlayer> players = cache.chunkMap.getPlayers(new ChunkPos(pos), false);
+            List<ServerPlayer> players = cache.chunkMap.getPlayers(ChunkPos.containing(pos), false);
             players.forEach(player -> player.connection.send(packet));
         }
     }

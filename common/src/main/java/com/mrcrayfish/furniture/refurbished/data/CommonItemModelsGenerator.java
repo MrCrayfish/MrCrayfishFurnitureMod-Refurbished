@@ -7,6 +7,7 @@ import com.mrcrayfish.furniture.refurbished.data.model.ModelDefinitions;
 import net.minecraft.client.data.models.blockstates.BlockModelDefinitionGenerator;
 import net.minecraft.client.data.models.model.*;
 import net.minecraft.client.renderer.item.ClientItem;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
@@ -55,10 +56,10 @@ public class CommonItemModelsGenerator extends FrameworkGenerator
         this.flatHandheldItemModel(ModItems.TELEVISION_REMOTE.get());
     }
 
-    private Identifier blockTexture(Block block)
+    private Material blockTexture(Block block)
     {
         Identifier name = BuiltInRegistries.BLOCK.getKey(block);
-        return Identifier.fromNamespaceAndPath(name.getNamespace(), "block/" + name.getPath());
+        return new Material(Identifier.fromNamespaceAndPath(name.getNamespace(), "block/" + name.getPath()));
     }
 
     private void flatHandheldItemModel(Item item)

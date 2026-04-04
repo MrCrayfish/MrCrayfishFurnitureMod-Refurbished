@@ -15,6 +15,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -684,7 +685,7 @@ public class CommonRecipeProvider extends RecipeProvider
         this.ovenBaking(ProcessingRecipe.Category.FOOD, ModItems.RAW_VEGETABLE_PIZZA.get(), ModItems.COOKED_VEGETABLE_PIZZA.get(), 1, 1200, 0F);
         this.ovenBaking(ProcessingRecipe.Category.FOOD, ModItems.RAW_MEATLOVERS_PIZZA.get(), ModItems.COOKED_MEATLOVERS_PIZZA.get(), 1, 1200, 0F);
 
-        SpecialRecipeBuilder.special(DoorMatCopyRecipe::new).save(this.output, Constants.MOD_ID + ":door_mat_copy");
+        SpecialRecipeBuilder.special(() -> new DoorMatCloneRecipe(Ingredient.of(ModBlocks.DOOR_MAT.get()), new ItemStackTemplate(ModBlocks.DOOR_MAT.get().asItem()))).save(this.output, Constants.MOD_ID + ":door_mat_copy");
     }
 
     private void simpleCombined(ItemLike first, ItemLike second, ItemLike result, int count, RecipeCategory category)
@@ -1069,19 +1070,19 @@ public class CommonRecipeProvider extends RecipeProvider
 
     private void workbenchConstructing(String name, ItemLike result, int count, Material<?> ... materials)
     {
-        WorkbenchContructingRecipe.Builder builder = WorkbenchContructingRecipe.builder(this.items, result, count, this::has, this::has);
+        WorkbenchContructingRecipe.Builder builder = WorkbenchContructingRecipe.builder(this.items, new ItemStackTemplate(result.asItem()), count, this::has, this::has);
         for(Material<?> material : materials)
         {
             builder.requiresMaterial(material);
         }
-        ResourceKey<Recipe<?>> key = ResourceKey.create(Registries.RECIPE, Utils.resource("constructing/" + name));
+        ResourceKey<Recipe<?>> key = ResourceKey.create(Registries.RECIPE, Utils.id("constructing/" + name));
         builder.save(this.output, key);
     }
 
     private <T extends ProcessingRecipe> void processing(ProcessingRecipe.Factory<T> factory, String folder, ProcessingRecipe.Category category, Ingredient ingredient, ItemLike result, int count, int time)
     {
-        ResourceKey<Recipe<?>> key = ResourceKey.create(Registries.RECIPE, Utils.resource(folder + "/" + Utils.getItemName(result.asItem())));
-        ProcessingRecipe.builder(factory, category, ingredient, new ItemStack(result, count), time).save(this.output, key);
+        ResourceKey<Recipe<?>> key = ResourceKey.create(Registries.RECIPE, Utils.id(folder + "/" + Utils.getItemName(result.asItem())));
+        ProcessingRecipe.builder(factory, category, ingredient, new ItemStackTemplate(result.asItem(), count), time).save(this.output, key);
     }
 
     private void grillCooking(ProcessingRecipe.Category category, ItemLike rawItem, ItemLike cookedItem, int cookingTime, float experience)
@@ -1119,19 +1120,19 @@ public class CommonRecipeProvider extends RecipeProvider
         String baseName = Utils.getItemName(baseItem.asItem());
         String resultName = Utils.getItemName(resultItem.asItem());
         SingleItemRecipeBuilder builder = new SingleItemRecipeBuilder(RecipeCategory.MISC, CuttingBoardSlicingRecipe::new, Ingredient.of(baseItem), resultItem, resultCount);
-        ResourceKey<Recipe<?>> key = ResourceKey.create(Registries.RECIPE, Utils.resource("slicing/" + resultName + "_from_" + baseName));
+        ResourceKey<Recipe<?>> key = ResourceKey.create(Registries.RECIPE, Utils.id("slicing/" + resultName + "_from_" + baseName));
         builder.unlockedBy("has_" + baseName, this.has(baseItem)).save(this.output, key);
     }
 
     private void cuttingBoardCombining(ItemLike combinedItem, int count, Ingredient ... inputs)
     {
         String baseName = Utils.getItemName(combinedItem.asItem());
-        CuttingBoardCombiningRecipe.Builder builder = new CuttingBoardCombiningRecipe.Builder(new ItemStack(combinedItem, count));
+        CuttingBoardCombiningRecipe.Builder builder = new CuttingBoardCombiningRecipe.Builder(new ItemStackTemplate(combinedItem.asItem(), count));
         for(int i = inputs.length - 1; i >= 0; i--) // Reverse order since the code visualises the stacked items in the level
         {
             builder.add(inputs[i]);
         }
-        ResourceKey<Recipe<?>> key = ResourceKey.create(Registries.RECIPE, Utils.resource("combining/" + baseName));
+        ResourceKey<Recipe<?>> key = ResourceKey.create(Registries.RECIPE, Utils.id("combining/" + baseName));
         builder.save(this.output, key);
     }
 
