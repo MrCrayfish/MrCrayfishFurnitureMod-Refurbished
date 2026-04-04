@@ -24,18 +24,19 @@ public class LevelRendererMixin
     @Nullable
     private ClientLevel level;
 
-    @Inject(method = "renderLevel", at = @At(value = "HEAD"))
-    private void refurbishedFurnitureStartRenderLevel(GraphicsResourceAllocator allocator, DeltaTracker tracker, boolean p_109603_, Camera camera, Matrix4f p_254120_, Matrix4f p_323920_, Matrix4f p_449678_, GpuBufferSlice p_425977_, Vector4f p_425544_, boolean p_426302_, CallbackInfo ci)
+    @Inject(method = "extractLevel", at = @At(value = "HEAD"))
+    private void refurbishedFurnitureStartRenderLevel(DeltaTracker tracker, Camera camera, float deltaPartialTick, CallbackInfo ci)
     {
         if(this.level != null)
         {
             /* Before rendering the level, we need to clear out any cached electricity nodes that
              * are no longer valid, ensuring only the correct nodes and connection are drawn while
              * also preventing a potential memory leak. */
+            // TODO dont do this every frame
             ((CachedElectricityNodes) this.level).refurbishedFurniture$RemoveInvalidElectricityNodes();
 
             // Submits tool renders to the storage
-            ToolAnimationRenderer.get().submit(this.level, camera.position(), tracker.getGameTimeDeltaPartialTick(false));
+            ToolAnimationRenderer.get().submit(this.level, camera.position(), deltaPartialTick);
         }
     }
 }
