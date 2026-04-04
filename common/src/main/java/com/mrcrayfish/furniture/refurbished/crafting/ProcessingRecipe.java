@@ -183,7 +183,7 @@ public abstract class ProcessingRecipe implements Recipe<SingleRecipeInput>
 
     public static abstract class Item extends ProcessingRecipe
     {
-        private static final ReflectedMethod<AbstractCookingRecipe, ItemStackTemplate> RESULT_METHOD = new ReflectedMethod<>(AbstractCookingRecipe.class, "result");
+        private static final ReflectedMethod<SingleItemRecipe, ItemStackTemplate> RESULT_METHOD = new ReflectedMethod<>(SingleItemRecipe.class, "result");
 
         public Item(RecipeType<? extends Recipe<SingleRecipeInput>> type, Category category, Ingredient ingredient, ItemStackTemplate result, int time)
         {
