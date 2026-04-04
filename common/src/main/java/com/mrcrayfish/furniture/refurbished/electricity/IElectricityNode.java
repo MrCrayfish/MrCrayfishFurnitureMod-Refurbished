@@ -332,16 +332,6 @@ public interface IElectricityNode
     }
 
     /**
-     * Registers this electricity node into the electricity ticker
-     *
-     * @param level the level of this electricity node
-     */
-    default void registerElectricityNodeTicker(Level level)
-    {
-        ElectricityTicker.get(level).addElectricityNode(this);
-    }
-
-    /**
      * Called at the start of the level tick, before block entities. Be careful, make sure to check
      * for client side if providing any custom behaviour.
      *
