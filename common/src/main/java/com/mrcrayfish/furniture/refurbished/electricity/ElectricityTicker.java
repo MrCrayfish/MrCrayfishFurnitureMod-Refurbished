@@ -134,11 +134,11 @@ public final class ElectricityTicker
 
     public static ElectricityTicker get(Level level)
     {
-        return ((ElectricityTicker.Access) level).refurbishedFurniture$GetElectricityTicker();
+        return ((ElectricityTicker.Access) level).refurbished_furniture$GetElectricityTicker();
     }
 
     public interface Access
     {
-        ElectricityTicker refurbishedFurniture$GetElectricityTicker();
+        ElectricityTicker refurbished_furniture$GetElectricityTicker();
     }
 }

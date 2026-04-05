@@ -6,7 +6,7 @@ import java.util.Set;
 
 public interface CachedElectricityNodes
 {
-    Set<IElectricityNode> refurbishedFurniture$ElectricityNodes();
+    Set<IElectricityNode> refurbished_furniture$ElectricityNodes();
 
-    void refurbishedFurniture$RemoveInvalidElectricityNodes();
+    void refurbished_furniture$RemoveInvalidElectricityNodes();
 }

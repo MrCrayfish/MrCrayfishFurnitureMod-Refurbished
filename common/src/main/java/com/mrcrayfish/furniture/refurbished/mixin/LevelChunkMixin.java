@@ -2,7 +2,6 @@ package com.mrcrayfish.furniture.refurbished.mixin;
 
 import com.llamalad7.mixinextras.expression.Definition;
 import com.llamalad7.mixinextras.expression.Expression;
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mrcrayfish.furniture.refurbished.electricity.IElectricityNode;
 import net.minecraft.core.BlockPos;
@@ -29,7 +28,7 @@ public class LevelChunkMixin
     @Definition(id = "removeThis", local = @Local(name = "removeThis", type = BlockEntity.class))
     @Expression("removeThis != null")
     @Inject(method = "removeBlockEntity", at = @At(value = "MIXINEXTRAS:EXPRESSION"))
-    private void refurbishedFurniture$AfterRemoveBlockEntity(BlockPos pos, CallbackInfo ci, @Local(name = "removeThis") BlockEntity entity)
+    private void refurbished_furniture$AfterRemoveBlockEntity(BlockPos pos, CallbackInfo ci, @Local(name = "removeThis") BlockEntity entity)
     {
         if(!this.level.isClientSide() && entity instanceof IElectricityNode node)
         {

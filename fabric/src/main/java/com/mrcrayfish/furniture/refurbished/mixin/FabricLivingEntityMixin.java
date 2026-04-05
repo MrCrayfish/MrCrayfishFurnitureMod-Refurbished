@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class FabricLivingEntityMixin
 {
     @Inject(method = "checkFallDamage", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;sendParticles(Lnet/minecraft/core/particles/ParticleOptions;DDDIDDDD)I"), cancellable = true)
-    private void refurbishedFurnitureBeforeLandingParticle(double d, boolean bl, BlockState state, BlockPos pos, CallbackInfo ci)
+    private void refurbished_furniture$BeforeLandingParticle(double d, boolean bl, BlockState state, BlockPos pos, CallbackInfo ci)
     {
         // Prevents spawning landing particles when landing on a trampoline
         if(state.getBlock() instanceof TrampolineBlock)

@@ -32,7 +32,7 @@ public class RecipeManagerMixin
     private static Map<ResourceKey<RecipePropertySet>, RecipeManager.IngredientExtractor> RECIPE_PROPERTY_SETS;
 
     @Inject(method = "<clinit>", at = @At(value = "TAIL"))
-    private static void afterStaticInit(CallbackInfo ci)
+    private static void refurbished_furniture$AfterStaticInit(CallbackInfo ci)
     {
         // Linked hash map to preserve original vanilla order
         Map<ResourceKey<RecipePropertySet>, RecipeManager.IngredientExtractor> copy = new LinkedHashMap<>(RECIPE_PROPERTY_SETS);

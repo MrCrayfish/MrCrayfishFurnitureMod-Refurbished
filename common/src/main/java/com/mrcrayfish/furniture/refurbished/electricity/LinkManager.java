@@ -31,7 +31,7 @@ public class LinkManager
         ServerLevel level = server.getLevel(Level.OVERWORLD);
         if(level != null)
         {
-            return Optional.of(((Access) level).refurbishedFurniture$GetLinkManager());
+            return Optional.of(((Access) level).refurbished_furniture$GetLinkManager());
         }
         return Optional.empty();
     }
@@ -129,6 +129,6 @@ public class LinkManager
 
     public interface Access
     {
-        LinkManager refurbishedFurniture$GetLinkManager();
+        LinkManager refurbished_furniture$GetLinkManager();
     }
 }

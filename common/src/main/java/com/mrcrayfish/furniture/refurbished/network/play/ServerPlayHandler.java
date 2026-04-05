@@ -227,7 +227,7 @@ public class ServerPlayHandler
     {
         if(player instanceof LocalPlayer localPlayer)
         {
-            ((ClientRecipes.Access) localPlayer.connection).refurbishedFurniture$clientRecipes().accept(message.recipes());
+            ((ClientRecipes.Access) localPlayer.connection).refurbished_furniture$clientRecipes().accept(message.recipes());
         }
     }
 }

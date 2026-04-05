@@ -12,5 +12,5 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 public interface EntityAccessor
 {
     @Invoker("getBlockPosBelowThatAffectsMyMovement")
-    BlockPos refurbishedFurnitureBlockPosAffectsMovement();
+    BlockPos refurbished_furniture$BlockPosAffectsMovement();
 }

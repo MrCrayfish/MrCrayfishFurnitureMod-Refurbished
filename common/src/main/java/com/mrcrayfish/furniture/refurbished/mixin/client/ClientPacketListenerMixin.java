@@ -16,7 +16,7 @@ public class ClientPacketListenerMixin implements ClientRecipes.Access
 
     @Unique
     @Override
-    public ClientRecipes refurbishedFurniture$clientRecipes()
+    public ClientRecipes refurbished_furniture$clientRecipes()
     {
         if(this.refurbished_furniture$syncedRecipes == null)
         {

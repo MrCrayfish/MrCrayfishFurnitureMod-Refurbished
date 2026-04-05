@@ -3,7 +3,6 @@ package com.mrcrayfish.furniture.refurbished.mixin;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mrcrayfish.furniture.refurbished.block.TrampolineBlock;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.Level;
@@ -16,7 +15,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 /**
  * Author: MrCrayfish
@@ -28,13 +26,13 @@ public abstract class EntityMixin
     private Level level;
 
     @Unique
-    private float refurbishedFurniture$fallPower;
+    private float refurbished_furniture$fallPower;
 
     @Shadow
     public abstract BlockPos getBlockPosBelowThatAffectsMyMovement();
 
     @Inject(method = "getBlockJumpFactor", at = @At(value = "RETURN"), cancellable = true)
-    private void refurbishedFurnitureJumpFactor(CallbackInfoReturnable<Float> cir)
+    private void refurbished_furniture$ModifyJumpFactor(CallbackInfoReturnable<Float> cir)
     {
         BlockPos pos = this.getBlockPosBelowThatAffectsMyMovement();
         BlockState state = this.level.getBlockState(pos);
@@ -46,12 +44,12 @@ public abstract class EntityMixin
 
     @SuppressWarnings({"DataFlowIssue", "deprecation"})
     @Inject(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getOnPosLegacy()Lnet/minecraft/core/BlockPos;", ordinal = 0))
-    private void refurbishedFurnitureTrampolinePhysics(MoverType type, Vec3 motion, CallbackInfo info, @Local(ordinal = 1) Vec3 moved)
+    private void refurbished_furniture$ApplyTrampolinePhysics(MoverType type, Vec3 motion, CallbackInfo info, @Local(ordinal = 1) Vec3 moved)
     {
         Entity entity = (Entity) (Object) this;
         if(entity.onGround())
         {
-            if(this.refurbishedFurniture$fallPower > 0)
+            if(this.refurbished_furniture$fallPower > 0)
             {
                 BlockPos pos = entity.getOnPosLegacy();
                 BlockState state = entity.level().getBlockState(pos);
@@ -59,15 +57,15 @@ public abstract class EntityMixin
                 {
                     if(state.getBlock() instanceof TrampolineBlock trampoline)
                     {
-                        trampoline.applyPhysics(pos, state, entity, this.refurbishedFurniture$fallPower);
+                        trampoline.applyPhysics(pos, state, entity, this.refurbished_furniture$fallPower);
                     }
                 }
-                this.refurbishedFurniture$fallPower = 0;
+                this.refurbished_furniture$fallPower = 0;
             }
         }
         else if(moved.y < 0.0)
         {
-            this.refurbishedFurniture$fallPower -= (float) moved.y;
+            this.refurbished_furniture$fallPower -= (float) moved.y;
         }
     }
 }

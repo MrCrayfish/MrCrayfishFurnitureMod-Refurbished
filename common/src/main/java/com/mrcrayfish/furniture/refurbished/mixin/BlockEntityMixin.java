@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class BlockEntityMixin
 {
     @Inject(method = "setLevel", at = @At(value = "TAIL"))
-    private void refurbishedFurniture$SetLevelTail(Level level, CallbackInfo ci)
+    private void refurbished_furniture$SetLevelTail(Level level, CallbackInfo ci)
     {
         if(this instanceof IElectricityNode node)
         {

@@ -26,7 +26,7 @@ public class AtlasManagerMixin
     private static List<AtlasManager.AtlasConfig> KNOWN_ATLASES;
 
     @Inject(method = "<clinit>", at = @At(value = "TAIL"))
-    private static void refurbishedFurnitureInit(CallbackInfo ci)
+    private static void refurbished_furniture$InitStaticAtlas(CallbackInfo ci)
     {
         List<AtlasManager.AtlasConfig> atlases = new ArrayList<>(KNOWN_ATLASES);
         atlases.add(new AtlasManager.AtlasConfig(CustomSheets.TV_CHANNELS_SHEET, Utils.id("tv_channels"), false));

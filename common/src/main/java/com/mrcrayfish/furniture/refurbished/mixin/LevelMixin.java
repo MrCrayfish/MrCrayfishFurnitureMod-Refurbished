@@ -15,20 +15,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class LevelMixin implements ElectricityTicker.Access
 {
     @Unique
-    private ElectricityTicker refurbishedFurniture$electricityTicker;
+    private final ElectricityTicker refurbished_furniture$electricityTicker = new ElectricityTicker((Level) (Object) this);
 
     @Override
-    public ElectricityTicker refurbishedFurniture$GetElectricityTicker()
+    public ElectricityTicker refurbished_furniture$GetElectricityTicker()
     {
-        if(this.refurbishedFurniture$electricityTicker == null)
-        {
-            this.refurbishedFurniture$electricityTicker = new ElectricityTicker((Level) (Object) this);
-        }
-        return this.refurbishedFurniture$electricityTicker;
+        return this.refurbished_furniture$electricityTicker;
     }
 
     @Inject(method = "tickBlockEntities", at = @At(value = "INVOKE", target = "Ljava/util/List;isEmpty()Z", ordinal = 0))
-    private void refurbishedFurniture$TickBlockEntitiesHead(CallbackInfo ci)
+    private void refurbished_furniture$TickBlockEntitiesHead(CallbackInfo ci)
     {
         this.refurbished_furniture$electricityTicker.tick();
     }

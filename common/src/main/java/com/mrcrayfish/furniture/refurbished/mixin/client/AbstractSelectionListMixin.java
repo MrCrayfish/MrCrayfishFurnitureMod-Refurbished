@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class AbstractSelectionListMixin
 {
     @Inject(method = "getEntryAtPosition", at = @At(value = "HEAD"), cancellable = true)
-    private void refurbishedFurnitureGetEntry(double mouseX, double mouseY, CallbackInfoReturnable<Object> cir)
+    private void refurbished_furniture$GetEntry(double mouseX, double mouseY, CallbackInfoReturnable<Object> cir)
     {
         AbstractSelectionList<?> list = (AbstractSelectionList<?>) (Object) this;
         if(list instanceof ICustomSelectionList<?> custom)
@@ -25,7 +25,7 @@ public class AbstractSelectionListMixin
     }
 
     @Inject(method = "getFirstEntryY", at = @At(value = "HEAD"), cancellable = true)
-    private void refurbishedFurnitureGetFirstY(CallbackInfoReturnable<Integer> cir)
+    private void refurbished_furniture$ModifyFirstY(CallbackInfoReturnable<Integer> cir)
     {
         AbstractSelectionList<?> list = (AbstractSelectionList<?>) (Object) this;
         if(list instanceof ICustomSelectionList<?> custom)
@@ -35,7 +35,7 @@ public class AbstractSelectionListMixin
     }
 
     @Inject(method = "repositionEntries", at = @At(value = "HEAD"), cancellable = true)
-    private void refurbishedFurnitureGetFirstY(CallbackInfo ci)
+    private void refurbished_furniture$RepositionEntries(CallbackInfo ci)
     {
         AbstractSelectionList<?> list = (AbstractSelectionList<?>) (Object) this;
         if(list instanceof ICustomSelectionList<?> custom)

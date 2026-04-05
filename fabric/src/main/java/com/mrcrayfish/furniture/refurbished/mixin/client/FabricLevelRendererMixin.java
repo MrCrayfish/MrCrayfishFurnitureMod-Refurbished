@@ -28,26 +28,26 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class FabricLevelRendererMixin
 {
     @Inject(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiling/ProfilerFiller;pop()V", ordinal = 0))
-    private void refurbishedFurnitureExtract(GraphicsResourceAllocator graphicsResourceAllocator, DeltaTracker deltaTracker, boolean bl, Camera camera, Matrix4f matrix4f, Matrix4f matrix4f2, Matrix4f matrix4f3, GpuBufferSlice gpuBufferSlice, Vector4f vector4f, boolean bl2, CallbackInfo ci, @Local(ordinal = 0) ProfilerFiller profiler)
+    private void refurbished_furniture$Extract(GraphicsResourceAllocator graphicsResourceAllocator, DeltaTracker deltaTracker, boolean bl, Camera camera, Matrix4f matrix4f, Matrix4f matrix4f2, Matrix4f matrix4f3, GpuBufferSlice gpuBufferSlice, Vector4f vector4f, boolean bl2, CallbackInfo ci, @Local(ordinal = 0) ProfilerFiller profiler)
     {
         profiler.popPush("refurbished_furniture_electricity");
         ElectricityRenderer.get().extract(camera);
     }
 
     @Inject(method = "renderLevel", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/framegraph/FrameGraphBuilder;addPass(Ljava/lang/String;)Lcom/mojang/blaze3d/framegraph/FramePass;", ordinal = 0))
-    private void refurbishedFurnitureSetupFrameGraph(GraphicsResourceAllocator graphicsResourceAllocator, DeltaTracker deltaTracker, boolean bl, Camera camera, Matrix4f matrix4f, Matrix4f matrix4f2, Matrix4f matrix4f3, GpuBufferSlice gpuBufferSlice, Vector4f vector4f, boolean bl2, CallbackInfo ci, @Local(ordinal = 0) FrameGraphBuilder builder)
+    private void refurbished_furniture$SetupFrameGraph(GraphicsResourceAllocator graphicsResourceAllocator, DeltaTracker deltaTracker, boolean bl, Camera camera, Matrix4f matrix4f, Matrix4f matrix4f2, Matrix4f matrix4f3, GpuBufferSlice gpuBufferSlice, Vector4f vector4f, boolean bl2, CallbackInfo ci, @Local(ordinal = 0) FrameGraphBuilder builder)
     {
         ElectricityRenderer.get().setupFramePass(builder, camera.position());
     }
 
     @Inject(method = "renderLevel", at = @At(value = "RETURN"))
-    private void refurbishedFurnitureRenderLevel(GraphicsResourceAllocator p_361796_, DeltaTracker p_348530_, boolean p_109603_, Camera camera, Matrix4f projMatrix, Matrix4f p_323920_, Matrix4f p_449678_, GpuBufferSlice p_425977_, Vector4f p_425544_, boolean p_426302_, CallbackInfo ci)
+    private void refurbished_furniture$AfterRenderLevel(GraphicsResourceAllocator p_361796_, DeltaTracker p_348530_, boolean p_109603_, Camera camera, Matrix4f projMatrix, Matrix4f p_323920_, Matrix4f p_449678_, GpuBufferSlice p_425977_, Vector4f p_425544_, boolean p_426302_, CallbackInfo ci)
     {
         ElectricityRenderer.get().blitToScreen();
     }
 
     @Inject(method = "method_62214", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;checkPoseStack(Lcom/mojang/blaze3d/vertex/PoseStack;)V", ordinal = 0))
-    private void refurbishedFurnitureRenderPowerableArea(GpuBufferSlice gpuBufferSlice, LevelRenderState levelRenderState, ProfilerFiller profilerFiller, Matrix4f matrix4f, ResourceHandle resourceHandle, ResourceHandle resourceHandle2, boolean bl, ResourceHandle resourceHandle3, ResourceHandle resourceHandle4, CallbackInfo ci)
+    private void refurbished_furniture$RenderPowerableArea(GpuBufferSlice gpuBufferSlice, LevelRenderState levelRenderState, ProfilerFiller profilerFiller, Matrix4f matrix4f, ResourceHandle resourceHandle, ResourceHandle resourceHandle2, boolean bl, ResourceHandle resourceHandle3, ResourceHandle resourceHandle4, CallbackInfo ci)
     {
         ElectricityRenderer.get().renderPowerableArea(levelRenderState.cameraRenderState.pos);
         Minecraft.getInstance().renderBuffers().bufferSource().endBatch(ClientServices.PLATFORM.getTelevisionScreenRenderType(CustomSheets.TV_CHANNELS_SHEET));
@@ -55,7 +55,7 @@ public class FabricLevelRendererMixin
 
     // Prevents the block outline from rendering while the player is holding a wrench
     @Inject(method = "extractBlockOutline", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getShape(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/phys/shapes/CollisionContext;)Lnet/minecraft/world/phys/shapes/VoxelShape;"), cancellable = true)
-    private void refurbishedFurniture$BeforeBlockOutline(Camera camera, LevelRenderState levelRenderState, CallbackInfo ci)
+    private void refurbished_furniture$BeforeBlockOutline(Camera camera, LevelRenderState levelRenderState, CallbackInfo ci)
     {
         Minecraft mc = Minecraft.getInstance();
         if(mc.player != null)

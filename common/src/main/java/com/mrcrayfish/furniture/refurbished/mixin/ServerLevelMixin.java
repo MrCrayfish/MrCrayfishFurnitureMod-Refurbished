@@ -15,7 +15,7 @@ public class ServerLevelMixin implements LinkManager.Access
     private LinkManager refurbishedFurniture$linkManager;
 
     @Override
-    public LinkManager refurbishedFurniture$GetLinkManager()
+    public LinkManager refurbished_furniture$GetLinkManager()
     {
         if(this.refurbishedFurniture$linkManager == null)
         {

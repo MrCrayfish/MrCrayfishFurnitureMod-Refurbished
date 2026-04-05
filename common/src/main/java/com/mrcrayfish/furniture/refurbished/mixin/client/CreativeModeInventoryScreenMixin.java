@@ -24,7 +24,7 @@ public class CreativeModeInventoryScreenMixin
     private static CreativeModeTab selectedTab;
 
     @Inject(method = "mouseScrolled", at = @At(value = "HEAD"), cancellable = true)
-    private void refurbishedFurnitureMouseScrollHead(double mouseX, double mouseY, double scrollX, double scrollY, CallbackInfoReturnable<Boolean> cir)
+    private void refurbished_furniture$MouseScrollHead(double mouseX, double mouseY, double scrollX, double scrollY, CallbackInfoReturnable<Boolean> cir)
     {
         if(CreativeFilters.get().onMouseScroll(mouseX, mouseY, scrollY))
         {
@@ -33,7 +33,7 @@ public class CreativeModeInventoryScreenMixin
     }
 
     @Inject(method = "extractLabels", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;text(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)V"))
-    private void furnitureRefurbishedBeforeRenderLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY, CallbackInfo ci)
+    private void refurbished_furniture$DrawTitleBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, CallbackInfo ci)
     {
         if(selectedTab == ModCreativeTabs.MAIN.get())
         {
@@ -48,13 +48,13 @@ public class CreativeModeInventoryScreenMixin
     }
 
     @ModifyArg(method = "extractLabels", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;text(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)V"), index = 2)
-    private int furnitureRefurbishedRenderLabels(int original)
+    private int refurbished_furniture$OffsetTitleY(int original)
     {
         return selectedTab == ModCreativeTabs.MAIN.get() ? original + 2 : original;
     }
 
     @ModifyArg(method = "extractLabels", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;text(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)V"), index = 5)
-    private boolean furnitureRefurbishedRenderLabels(boolean original)
+    private boolean refurbished_furniture$DisableTitleShadow(boolean original)
     {
         return selectedTab == ModCreativeTabs.MAIN.get();
     }

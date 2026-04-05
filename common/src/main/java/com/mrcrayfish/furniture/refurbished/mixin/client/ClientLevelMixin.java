@@ -23,26 +23,26 @@ import java.util.Set;
 public class ClientLevelMixin implements CachedElectricityNodes
 {
     @Unique
-    private final Set<IElectricityNode> refurbishedFurniture$electricityNodes = new ReferenceOpenHashSet<>();
+    private final Set<IElectricityNode> refurbished_furniture$electricityNodes = new ReferenceOpenHashSet<>();
 
     @Inject(method = "onBlockEntityAdded", at = @At(value = "TAIL"))
-    private void refurbishedFurnitureBlockEntityAdded(BlockEntity entity, CallbackInfo ci)
+    private void refurbished_furniture$OnBlockEntityAdded(BlockEntity entity, CallbackInfo ci)
     {
         if(entity instanceof IElectricityNode node)
         {
-            this.refurbishedFurniture$electricityNodes.add(node);
+            this.refurbished_furniture$electricityNodes.add(node);
         }
     }
 
     @Override
-    public Set<IElectricityNode> refurbishedFurniture$ElectricityNodes()
+    public Set<IElectricityNode> refurbished_furniture$ElectricityNodes()
     {
-        return Collections.unmodifiableSet(this.refurbishedFurniture$electricityNodes);
+        return Collections.unmodifiableSet(this.refurbished_furniture$electricityNodes);
     }
 
     @Override
-    public void refurbishedFurniture$RemoveInvalidElectricityNodes()
+    public void refurbished_furniture$RemoveInvalidElectricityNodes()
     {
-        this.refurbishedFurniture$electricityNodes.removeIf(node -> !node.isNodeValid());
+        this.refurbished_furniture$electricityNodes.removeIf(node -> !node.isNodeValid());
     }
 }

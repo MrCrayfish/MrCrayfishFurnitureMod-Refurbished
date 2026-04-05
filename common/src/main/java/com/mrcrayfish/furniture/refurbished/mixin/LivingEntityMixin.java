@@ -18,11 +18,11 @@ public abstract class LivingEntityMixin
 {
     @SuppressWarnings("DataFlowIssue")
     @Inject(method = "jumpFromGround", at = @At(value = "TAIL"))
-    private void refurbishedFurnitureOnJump(CallbackInfo ci)
+    private void refurbished_furniture$OnJump(CallbackInfo ci)
     {
         LivingEntity entity = (LivingEntity) (Object) this;
         EntityAccessor accessor = (EntityAccessor) entity;
-        BlockPos pos = accessor.refurbishedFurnitureBlockPosAffectsMovement();
+        BlockPos pos = accessor.refurbished_furniture$BlockPosAffectsMovement();
         Level level = entity.level();
         BlockState state = level.getBlockState(pos);
         if(state.getBlock() instanceof TrampolineBlock block)

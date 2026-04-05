@@ -460,7 +460,7 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
         Minecraft mc = Minecraft.getInstance();
         if(mc.level == null)
             return;
-        ((CachedElectricityNodes) mc.level).refurbishedFurniture$ElectricityNodes().forEach(node -> {
+        ((CachedElectricityNodes) mc.level).refurbished_furniture$ElectricityNodes().forEach(node -> {
             double maxDistance = Config.CLIENT.electricityViewDistance.get();
             double distance = node.getNodePosition().distToCenterSqr(camera.position());
             if(distance <= maxDistance * maxDistance) {

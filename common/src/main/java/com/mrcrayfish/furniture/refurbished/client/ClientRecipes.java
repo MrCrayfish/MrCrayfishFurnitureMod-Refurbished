@@ -27,13 +27,13 @@ public class ClientRecipes
 
     public interface Access
     {
-        ClientRecipes refurbishedFurniture$clientRecipes();
+        ClientRecipes refurbished_furniture$clientRecipes();
     }
 
     public static Optional<ClientRecipes> get()
     {
         return Optional.ofNullable(Minecraft.getInstance().getConnection()).map(listener -> {
-            return ((Access) listener).refurbishedFurniture$clientRecipes();
+            return ((Access) listener).refurbished_furniture$clientRecipes();
         });
     }
 }

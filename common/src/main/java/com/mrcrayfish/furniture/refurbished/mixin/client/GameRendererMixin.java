@@ -13,13 +13,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class GameRendererMixin
 {
     @Inject(method = "renderLevel", at = @At(value = "HEAD"))
-    private void refurbishedFurnitureRenderLevelHead(DeltaTracker deltaTracker, CallbackInfo ci)
+    private void refurbished_furniture$RenderLevelHead(DeltaTracker deltaTracker, CallbackInfo ci)
     {
         WrenchHandler.get().startRenderLevel(deltaTracker.getGameTimeDeltaPartialTick(true));
     }
 
     @Inject(method = "resize", at = @At(value = "TAIL"))
-    private void refurbishedFurnitureOnResize(int width, int height, CallbackInfo ci)
+    private void refurbished_furniture$OnWindowResize(int width, int height, CallbackInfo ci)
     {
         ElectricityRenderer.get().resize(width, height);
     }
