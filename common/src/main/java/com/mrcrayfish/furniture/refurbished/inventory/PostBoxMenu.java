@@ -7,6 +7,7 @@ import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.inventory.slot.PostBoxSlot;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
 import com.mrcrayfish.furniture.refurbished.mail.IMailbox;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -101,11 +102,10 @@ public class PostBoxMenu extends SimpleContainerMenu
         return Collections.unmodifiableList(this.mailboxes);
     }
 
-    public record CustomData(Collection<IMailbox> mailboxes) implements IMenuData<PostBoxMenu.CustomData>
+    public record CustomData(Collection<ClientMailbox> mailboxes) implements IMenuData<PostBoxMenu.CustomData>
     {
         public static final StreamCodec<RegistryFriendlyByteBuf, CustomData> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.collection(ArrayList::new, ClientMailbox.STREAM_CODEC),
-            CustomData::mailboxes,
+            ByteBufCodecs.collection(ArrayList::new, ClientMailbox.STREAM_CODEC), CustomData::mailboxes,
             CustomData::new
         );
 

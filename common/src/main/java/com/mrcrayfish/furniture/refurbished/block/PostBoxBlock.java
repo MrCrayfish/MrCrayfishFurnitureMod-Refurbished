@@ -5,12 +5,14 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.MapCodec;
 import com.mrcrayfish.framework.api.FrameworkAPI;
 import com.mrcrayfish.furniture.refurbished.blockentity.PostBoxBlockEntity;
+import com.mrcrayfish.furniture.refurbished.client.ClientMailbox;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
 import com.mrcrayfish.furniture.refurbished.inventory.PostBoxMenu;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
 import com.mrcrayfish.furniture.refurbished.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
@@ -64,8 +66,13 @@ public class PostBoxBlock extends FurnitureHorizontalEntityBlock implements Bloc
     {
         if(!level.isClientSide() && level.getBlockEntity(pos) instanceof PostBoxBlockEntity postBox)
         {
-            DeliveryService.get(((ServerLevel) level).getServer()).ifPresent(service -> {
-                FrameworkAPI.openMenuWithData((ServerPlayer) player, postBox, new PostBoxMenu.CustomData(service.getMailboxes()));
+            MinecraftServer server = ((ServerLevel) level).getServer();
+            DeliveryService.get(server).ifPresent(service -> {
+                List<ClientMailbox> mailboxes = service.getMailboxes()
+                    .stream()
+                    .map(mailbox -> new ClientMailbox(mailbox.getId(), mailbox.getOwner(server), mailbox.getCustomName()))
+                    .toList();
+                FrameworkAPI.openMenuWithData((ServerPlayer) player, postBox, new PostBoxMenu.CustomData(mailboxes));
             });
             return InteractionResult.CONSUME;
         }

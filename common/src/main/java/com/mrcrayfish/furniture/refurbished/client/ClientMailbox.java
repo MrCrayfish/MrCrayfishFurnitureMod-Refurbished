@@ -18,13 +18,10 @@ import java.util.UUID;
  */
 public record ClientMailbox(UUID mailboxId, Optional<NameAndId> owner, Optional<String> customName) implements IMailbox
 {
-    public static final StreamCodec<RegistryFriendlyByteBuf, IMailbox> STREAM_CODEC = StreamCodec.composite(
-        UUIDUtil.STREAM_CODEC,
-        IMailbox::getId,
-        ByteBufCodecs.optional(CustomCodecs.NAME_AND_ID),
-        IMailbox::getOwner,
-        ByteBufCodecs.optional(ByteBufCodecs.stringUtf8(256)),
-        IMailbox::getCustomName,
+    public static final StreamCodec<RegistryFriendlyByteBuf, ClientMailbox> STREAM_CODEC = StreamCodec.composite(
+        UUIDUtil.STREAM_CODEC, ClientMailbox::mailboxId,
+        ByteBufCodecs.optional(CustomCodecs.NAME_AND_ID), ClientMailbox::owner,
+        ByteBufCodecs.optional(ByteBufCodecs.stringUtf8(256)), ClientMailbox::customName,
         ClientMailbox::new
     );
 
