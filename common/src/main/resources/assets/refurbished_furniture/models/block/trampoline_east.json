@@ -7,7 +7,6 @@
 			"faces": {
 				"north": {"uv": [9.5, 7, 11, 7.75], "texture": "#texture", "tintindex": 0},
 				"east": {"uv": [3, 6.25, 11, 7], "texture": "#texture", "tintindex": 0},
-				"south": {"uv": [16, 5, 17.5, 5.75], "texture": "#texture", "tintindex": 0},
 				"west": {"uv": [0, 7.75, 6.5, 8.5], "texture": "#texture", "tintindex": 0},
 				"up": {"uv": [0, 0, 1.5, 3.25], "texture": "#texture", "tintindex": 0},
 				"down": {"uv": [0, 10.75, 1.5, 14], "texture": "#texture", "tintindex": 0}

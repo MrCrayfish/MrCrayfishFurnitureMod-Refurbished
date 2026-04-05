@@ -27,7 +27,6 @@
 			"from": [13, 10, 3],
 			"to": [16, 13, 16],
 			"faces": {
-				"north": {"uv": [16, 5.75, 17.5, 6.5], "texture": "#texture", "tintindex": 0},
 				"east": {"uv": [3, 6.25, 9.5, 7], "texture": "#texture", "tintindex": 0},
 				"west": {"uv": [4.5, 5.5, 11, 6.25], "texture": "#texture", "tintindex": 0},
 				"up": {"uv": [9.5, 0.75, 11, 4], "texture": "#texture", "tintindex": 0},
