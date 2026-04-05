@@ -103,7 +103,7 @@ public class Desktop
         if(level != null)
         {
             // 6000 to offset midnight to be exactly when the moon is directly up
-            long time = (level.getOverworldClockTime() + 6000L) % 24000L; // TODO 26.1.1 test
+            long time = (level.getOverworldClockTime() + 6000L) % 24000L;
             long hours = time / 1000L;
             long minutes = 60 * (time % 1000L) / 1000L;
             return "%d:%02d".formatted(hours, minutes);

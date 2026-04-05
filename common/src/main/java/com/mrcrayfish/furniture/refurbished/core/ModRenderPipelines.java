@@ -41,6 +41,6 @@ public class ModRenderPipelines
             .withColorTargetState(new ColorTargetState(BlendFunction.OVERLAY))
             .withCull(false)
             .withVertexFormat(DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS)
-            .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, true, -3.0F, -3.0F)) // TODO 26.1.1 test
+            .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, true, -3.0F, -3.0F))
             .build();
 }

@@ -62,7 +62,6 @@ public class FabricClientHelper implements IClientHelper
     @Override
     public FluidSprites getFluidSprites(FluidState state)
     {
-        // TODO 26.1.1 test
         FluidModel model = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(state);
         return new FluidSprites(model.stillMaterial().sprite(), model.flowingMaterial().sprite());
     }

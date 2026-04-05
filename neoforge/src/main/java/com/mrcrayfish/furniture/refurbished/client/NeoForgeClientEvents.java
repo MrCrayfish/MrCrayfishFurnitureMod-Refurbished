@@ -74,7 +74,7 @@ public class NeoForgeClientEvents
     }
 
     @SubscribeEvent
-    private static void afterEntities(RenderLevelStageEvent.AfterWeather event) // TODO 26.1.1 test after weather
+    private static void afterEntities(RenderLevelStageEvent.AfterWeather event)
     {
         ElectricityRenderer.get().renderPowerableArea(event.getLevelRenderState().cameraRenderState.pos);
     }

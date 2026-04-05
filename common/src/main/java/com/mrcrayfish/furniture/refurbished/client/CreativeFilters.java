@@ -399,7 +399,7 @@ public class CreativeFilters
         public void extractContents(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTicks)
         {
             extractor.blitSprite(RenderPipelines.GUI_TEXTURED, this.category.isEnabled() ? SELECTED_FILTER_TAB : UNSELECTED_FILTER_TAB, this.getX(), this.getY(), 32, 26);
-            extractor.fakeItem(this.category.getIcon(), this.getX() + 8, this.getY() + 5); // TODO 26.1.1 test
+            extractor.fakeItem(this.category.getIcon(), this.getX() + 8, this.getY() + 5);
         }
     }
 }
