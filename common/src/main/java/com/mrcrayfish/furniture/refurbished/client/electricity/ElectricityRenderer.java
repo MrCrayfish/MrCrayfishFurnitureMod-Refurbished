@@ -416,7 +416,7 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
                         RenderSystem.bindDefaultUniforms(pass);
                         pass.setUniform("DynamicTransforms", slice);
                         pass.setIndexBuffer(indexBuffer, indexType);
-                        pass.bindTexture("Sampler0", texture.getTextureView(), RenderSystem.getSamplerCache().getClampToEdge(FilterMode.LINEAR));
+                        pass.bindTexture("Sampler0", texture.getTextureView(), texture.getSampler());
                         pass.setVertexBuffer(0, vertexBuffer);
                         pass.drawIndexed(0, 0, data.drawState().indexCount(), 1);
                     }
