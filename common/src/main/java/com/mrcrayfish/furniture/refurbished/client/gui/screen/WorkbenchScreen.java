@@ -177,19 +177,14 @@ public class WorkbenchScreen extends ElectricityContainerScreen<WorkbenchMenu>
     }
 
     @Override
-    protected void extractMenuBackground(GuiGraphicsExtractor graphics)
-    {
-        super.extractMenuBackground(graphics);
-    }
-
-    @Override
     public void extractBackground(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick)
     {
+        super.extractBackground(extractor, mouseX, mouseY, partialTick);
+
         extractor.blit(RenderPipelines.GUI_TEXTURED, WORKBENCH_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
         this.renderScrollbar(extractor, mouseY);
         this.renderRecipes(extractor, partialTick, mouseX, mouseY);
         this.renderOverlay(extractor);
-        super.extractBackground(extractor, mouseX, mouseY, partialTick);
 
         if(this.isHovering(199, 5, 10, 10, mouseX, mouseY))
         {

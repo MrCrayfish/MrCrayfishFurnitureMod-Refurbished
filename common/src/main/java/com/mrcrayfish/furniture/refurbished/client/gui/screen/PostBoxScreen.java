@@ -153,6 +153,8 @@ public class PostBoxScreen extends AbstractContainerScreen<PostBoxMenu>
     @Override
     public void extractBackground(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick)
     {
+        super.extractBackground(extractor, mouseX, mouseY, partialTick);
+
         extractor.blit(RenderPipelines.GUI_TEXTURED, POST_BOX_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth + 25, this.imageHeight, 512, 256);
 
         // Draw mailboxes list
