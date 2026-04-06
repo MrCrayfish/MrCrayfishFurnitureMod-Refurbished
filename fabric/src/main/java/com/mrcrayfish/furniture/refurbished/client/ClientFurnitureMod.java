@@ -48,7 +48,6 @@ public class ClientFurnitureMod implements ClientModInitializer
         });
         ClientBootstrap.registerBlockEntityRenderers(BlockEntityRenderers::register);
         ClientBootstrap.registerEntityRenderers(EntityRenderers::register);
-        //ClientBootstrap.registerRenderTypes(Render::putBlock); // TODO 26.1.1 test
         ClientBootstrap.registerBlockTintSources(BlockColorRegistry::register);
         ClientBootstrap.registerHudOverlays((id, overlay) -> HudElementRegistry.addLast(id, overlay::draw));
         ClientBootstrap.registerParticleProviders(new ParticleProviderRegister() {

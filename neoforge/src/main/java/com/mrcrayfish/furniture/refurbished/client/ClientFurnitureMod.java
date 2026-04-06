@@ -36,9 +36,6 @@ public class ClientFurnitureMod
     {
         ClientBootstrap.registerBlockEntityRenderers(event::registerBlockEntityRenderer);
         ClientBootstrap.registerEntityRenderers(event::registerEntityRenderer);
-
-        // TODO 26.1.1 i think this is automatically detected now
-        //ClientBootstrap.registerRenderTypes(ItemBlockRenderTypes::setRenderLayer);
     }
 
     @SubscribeEvent
