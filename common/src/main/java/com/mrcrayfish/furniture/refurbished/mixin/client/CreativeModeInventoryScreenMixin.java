@@ -46,7 +46,7 @@ public class CreativeModeInventoryScreenMixin
             graphics.fill(contentStart, contentTop + 1, contentStart + 1, contentTop + contentHeight - 1, 0x77000000);
             graphics.fill(contentStart + 1, contentTop, contentStart + contentWidth - 1, contentTop + contentHeight, 0x77000000);
             graphics.fill(contentStart + contentWidth - 1, contentTop + 1, contentStart + contentWidth, contentTop + contentHeight - 1, 0x77000000);
-            graphics.text(font, component, 10, 6, color, false);
+            graphics.text(font, component, 10, 6, color, true);
         }
         else
         {
