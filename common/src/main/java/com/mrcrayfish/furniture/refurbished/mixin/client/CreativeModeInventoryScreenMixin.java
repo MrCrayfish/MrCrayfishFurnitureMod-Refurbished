@@ -1,17 +1,19 @@
 package com.mrcrayfish.furniture.refurbished.mixin.client;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mrcrayfish.furniture.refurbished.client.CreativeFilters;
 import com.mrcrayfish.furniture.refurbished.core.ModCreativeTabs;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
@@ -32,8 +34,8 @@ public class CreativeModeInventoryScreenMixin
         }
     }
 
-    @Inject(method = "extractLabels", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;text(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)V"))
-    private void refurbished_furniture$DrawTitleBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, CallbackInfo ci)
+    @WrapOperation(method = "extractLabels", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;text(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)V"))
+    private void refurbished_furniture$DrawCreativeTabTitle(GuiGraphicsExtractor graphics, Font font, Component component, int x, int y, int color, int shadow, Operation<Void> original)
     {
         if(selectedTab == ModCreativeTabs.MAIN.get())
         {
@@ -44,18 +46,11 @@ public class CreativeModeInventoryScreenMixin
             graphics.fill(contentStart, contentTop + 1, contentStart + 1, contentTop + contentHeight - 1, 0x77000000);
             graphics.fill(contentStart + 1, contentTop, contentStart + contentWidth - 1, contentTop + contentHeight, 0x77000000);
             graphics.fill(contentStart + contentWidth - 1, contentTop + 1, contentStart + contentWidth, contentTop + contentHeight - 1, 0x77000000);
+            graphics.text(font, component, 10, 6, color, false);
         }
-    }
-
-    @ModifyArg(method = "extractLabels", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;text(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)V"), index = 2)
-    private int refurbished_furniture$OffsetTitleY(int original)
-    {
-        return selectedTab == ModCreativeTabs.MAIN.get() ? original + 2 : original;
-    }
-
-    @ModifyArg(method = "extractLabels", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;text(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)V"), index = 5)
-    private boolean refurbished_furniture$DisableTitleShadow(boolean original)
-    {
-        return selectedTab == ModCreativeTabs.MAIN.get();
+        else
+        {
+            original.call(graphics, font, component, x, y, color, shadow);
+        }
     }
 }

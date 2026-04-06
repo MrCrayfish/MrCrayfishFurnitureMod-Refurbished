@@ -17,8 +17,7 @@ public class AbstractSelectionListMixin
     @Inject(method = "getEntryAtPosition", at = @At(value = "HEAD"), cancellable = true)
     private void refurbished_furniture$GetEntry(double mouseX, double mouseY, CallbackInfoReturnable<Object> cir)
     {
-        AbstractSelectionList<?> list = (AbstractSelectionList<?>) (Object) this;
-        if(list instanceof ICustomSelectionList<?> custom)
+        if(this instanceof ICustomSelectionList<?> custom)
         {
             cir.setReturnValue(custom.getEntry(mouseX, mouseY));
         }
@@ -27,8 +26,7 @@ public class AbstractSelectionListMixin
     @Inject(method = "getFirstEntryY", at = @At(value = "HEAD"), cancellable = true)
     private void refurbished_furniture$ModifyFirstY(CallbackInfoReturnable<Integer> cir)
     {
-        AbstractSelectionList<?> list = (AbstractSelectionList<?>) (Object) this;
-        if(list instanceof ICustomSelectionList<?> custom)
+        if(this instanceof ICustomSelectionList<?> custom)
         {
             cir.setReturnValue(custom.getStartEntryY());
         }
@@ -37,8 +35,7 @@ public class AbstractSelectionListMixin
     @Inject(method = "repositionEntries", at = @At(value = "HEAD"), cancellable = true)
     private void refurbished_furniture$RepositionEntries(CallbackInfo ci)
     {
-        AbstractSelectionList<?> list = (AbstractSelectionList<?>) (Object) this;
-        if(list instanceof ICustomSelectionList<?> custom)
+        if(this instanceof ICustomSelectionList<?> custom)
         {
             custom.arrangeEntries();
             ci.cancel();
