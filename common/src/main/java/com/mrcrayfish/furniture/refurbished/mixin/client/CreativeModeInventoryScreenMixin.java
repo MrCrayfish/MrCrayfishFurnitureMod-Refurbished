@@ -35,7 +35,7 @@ public class CreativeModeInventoryScreenMixin
     }
 
     @WrapOperation(method = "extractLabels", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;text(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)V"))
-    private void refurbished_furniture$DrawCreativeTabTitle(GuiGraphicsExtractor graphics, Font font, Component component, int x, int y, int color, int shadow, Operation<Void> original)
+    private void refurbished_furniture$DrawCreativeTabTitle(GuiGraphicsExtractor graphics, Font font, Component component, int x, int y, int color, boolean shadow, Operation<Void> original)
     {
         if(selectedTab == ModCreativeTabs.MAIN.get())
         {
