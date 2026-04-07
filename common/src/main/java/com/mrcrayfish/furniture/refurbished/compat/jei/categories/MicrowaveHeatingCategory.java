@@ -44,7 +44,7 @@ public class MicrowaveHeatingCategory extends FurnitureRecipeCategory<MicrowaveH
     {
         MicrowaveHeatingRecipe recipe = holder.value();
         builder.addSlot(RecipeIngredientRole.INPUT, 7, 10).add(recipe.getIngredient());
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 67, 10).add(recipe.getResult().create()); // TODO 26.1.1 test
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 67, 10).add(recipe.getResult());
         this.waveform = this.helper.createAnimatedDrawable(this.helper.createDrawable(Plugin.TEXTURES, 93, 154, 24, 17), recipe.getTime(), IDrawableAnimated.StartDirection.LEFT, false);
     }
 

@@ -49,7 +49,7 @@ public class FryingPanCookingCategory extends FurnitureRecipeCategory<Processing
     {
         ProcessingRecipe.Item recipe = holder.value();
         builder.addSlot(RecipeIngredientRole.INPUT, 27, 6).add(recipe.getIngredient());
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 102, 36).add(recipe.getResult().create()); // TODO 26.1.1 test
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 102, 36).add(recipe.getResult());
         builder.addSlot(RecipeIngredientRole.RENDER_ONLY, 74, 8).add(new ItemStack(ModItems.SPATULA.get()));
         this.arrow = this.helper.createAnimatedDrawable(this.helper.createDrawable(Plugin.TEXTURES, 93, 0, 24, 17), recipe.getTime(), IDrawableAnimated.StartDirection.LEFT, false);
     }

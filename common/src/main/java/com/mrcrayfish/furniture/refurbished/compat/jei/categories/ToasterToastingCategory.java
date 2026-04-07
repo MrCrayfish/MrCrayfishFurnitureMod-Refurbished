@@ -44,7 +44,7 @@ public class ToasterToastingCategory extends FurnitureRecipeCategory<ToasterHeat
     {
         ToasterHeatingRecipe recipe = holder.value();
         builder.addSlot(RecipeIngredientRole.INPUT, 18, 4).add(recipe.getIngredient());
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 83, 19).add(recipe.getResult().create());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 83, 19).add(recipe.getResult());
         this.arrow = this.helper.createAnimatedDrawable(this.helper.createDrawable(Plugin.TEXTURES, 93, 0, 24, 17), recipe.getTime(), IDrawableAnimated.StartDirection.LEFT, false);
     }
 

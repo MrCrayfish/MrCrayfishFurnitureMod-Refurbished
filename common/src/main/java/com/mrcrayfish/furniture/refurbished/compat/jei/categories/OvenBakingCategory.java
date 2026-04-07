@@ -46,7 +46,7 @@ public class OvenBakingCategory extends FurnitureRecipeCategory<OvenBakingRecipe
     {
         OvenBakingRecipe recipe = holder.value();
         builder.addSlot(RecipeIngredientRole.INPUT, 58, 5).add(recipe.getIngredient());
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 58, 41).add(recipe.getResult().create()); // TODO 26.1.1 test
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 58, 41).add(recipe.getResult());
         this.arrow = this.helper.createAnimatedDrawable(this.helper.createDrawable(Plugin.TEXTURES_2, 160, 0, 17, 16), recipe.getTime(), IDrawableAnimated.StartDirection.TOP, false);
     }
 

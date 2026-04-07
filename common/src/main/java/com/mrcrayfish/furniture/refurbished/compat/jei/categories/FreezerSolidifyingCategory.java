@@ -44,7 +44,7 @@ public class FreezerSolidifyingCategory extends FurnitureRecipeCategory<FreezerS
     {
         FreezerSolidifyingRecipe recipe = holder.value();
         builder.addSlot(RecipeIngredientRole.INPUT, 7, 10).add(recipe.getIngredient());
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 67, 10).add(recipe.getResult().create());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 67, 10).add(recipe.getResult());
         this.arrow = this.helper.createAnimatedDrawable(this.helper.createDrawable(Plugin.TEXTURES, 93, 0, 24, 17), recipe.getTime(), IDrawableAnimated.StartDirection.LEFT, false);
     }
 

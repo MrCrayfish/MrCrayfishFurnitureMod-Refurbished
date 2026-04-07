@@ -50,7 +50,7 @@ public class CuttingBoardSlicingCategory extends FurnitureRecipeCategory<Cutting
     {
         CuttingBoardSlicingRecipe recipe = holder.value();
         builder.addSlot(RecipeIngredientRole.INPUT, 25, 6).add(recipe.input());
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 111, 10).add(RESULT_METHOD.invoke(recipe).create());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 111, 10).add(RESULT_METHOD.invoke(recipe));
         builder.addSlot(RecipeIngredientRole.CRAFTING_STATION, 73, 11).addItemStacks(this.knives);
     }
 

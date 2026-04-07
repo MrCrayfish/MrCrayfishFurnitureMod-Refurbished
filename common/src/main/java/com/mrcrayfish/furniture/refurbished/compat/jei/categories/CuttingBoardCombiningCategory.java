@@ -42,6 +42,6 @@ public class CuttingBoardCombiningCategory extends FurnitureRecipeCategory<Cutti
         {
             builder.addSlot(RecipeIngredientRole.INPUT, 25, 69 - i * 16).add(ingredients.get(i));
         }
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 77, 69).add(recipe.getResult().create()); // TODO 26.1.1 test
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 77, 69).add(recipe.getResult());
     }
 }

@@ -49,7 +49,7 @@ public class GrillCookingCategory extends FurnitureRecipeCategory<ProcessingReci
     {
         ProcessingRecipe.Item recipe = holder.value();
         builder.addSlot(RecipeIngredientRole.INPUT, 26, 6).add(recipe.getIngredient());
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 99, 31).add(recipe.getResult().create()); // TODO 26.1.1 test
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 99, 31).add(recipe.getResult());
         builder.addSlot(RecipeIngredientRole.RENDER_ONLY, 71, 3).add(new ItemStack(ModItems.SPATULA.get()));
         this.arrow = this.helper.createAnimatedDrawable(this.helper.createDrawable(Plugin.TEXTURES, 133, 136, 24, 17), recipe.getTime(), IDrawableAnimated.StartDirection.LEFT, false);
     }
