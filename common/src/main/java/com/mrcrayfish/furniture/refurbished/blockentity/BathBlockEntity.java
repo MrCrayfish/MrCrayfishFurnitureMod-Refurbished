@@ -68,9 +68,10 @@ public class BathBlockEntity extends BlockEntity implements IFluidContainerBlock
         {
             Direction direction = state.getValue(BathBlock.DIRECTION);
             Level level = Objects.requireNonNull(this.level);
-            if(level.getBlockEntity(this.worldPosition.relative(direction)) instanceof BathBlockEntity bath)
+            BlockPos relativePos = this.worldPosition.relative(direction);
+            if(level.getBlockEntity(relativePos) instanceof BathBlockEntity bath && bath.isHead())
             {
-                return bath.getFluidContainer();
+                return bath.tank;
             }
         }
         return null;
