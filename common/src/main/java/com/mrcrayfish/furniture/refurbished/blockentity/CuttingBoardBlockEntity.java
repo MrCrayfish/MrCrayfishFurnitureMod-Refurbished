@@ -113,6 +113,11 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
             this.setItem(placeIndex, copy);
             return true;
         }
+        else if(heldItem.isEmpty())
+        {
+            this.removeItem();
+            return true;
+        }
         return false;
     }
 
