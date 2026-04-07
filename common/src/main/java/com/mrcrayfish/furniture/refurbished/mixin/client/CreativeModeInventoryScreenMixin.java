@@ -42,7 +42,7 @@ public class CreativeModeInventoryScreenMixin
             int contentStart = 8;
             int contentTop = 4;
             int contentHeight = 12;
-            int contentWidth = Minecraft.getInstance().font.width(selectedTab.getDisplayName()) + 4;
+            int contentWidth = font.width(component) + 4;
             graphics.fill(contentStart, contentTop + 1, contentStart + 1, contentTop + contentHeight - 1, 0x77000000);
             graphics.fill(contentStart + 1, contentTop, contentStart + contentWidth - 1, contentTop + contentHeight, 0x77000000);
             graphics.fill(contentStart + contentWidth - 1, contentTop + 1, contentStart + contentWidth, contentTop + contentHeight - 1, 0x77000000);
