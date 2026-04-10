@@ -52,11 +52,12 @@ jobs:
           JKS: ${{ secrets.MRCRAYFISH_JKS }}
         if: ${{ env.JKS != '' }}
         run:
-          echo "${{ env.JKS }}" > ./keystore.jks.tmp
-          base64 -d -i ./keystore.jks.tmp > ./keystore.jks
-          rm ./keystore.jks.tmp
-          echo "keystore=./keystore.jks" >> "$GITHUB_OUTPUT"
-          echo "Keystore succesfully loaded into ./keystore.jks"
+          echo "${{ env.JKS }}" > keystore.jks.tmp
+          base64 -d -i keystore.jks.tmp > keystore.jks
+          rm keystore.jks.tmp
+          KEYSTORE_PATH="$(pwd)/keystore.jks"
+          echo "keystore=$KEYSTORE_PATH" >> "$GITHUB_OUTPUT"
+          echo "Keystore succesfully loaded into ./keystore.jks" >> $GITHUB_STEP_SUMMARY
       - name: Make gradlew executable
         run: chmod +x ./gradlew
       - name: Data Generation (NeoForge)
