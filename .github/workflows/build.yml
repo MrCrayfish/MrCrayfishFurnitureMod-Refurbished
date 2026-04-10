@@ -51,7 +51,7 @@ jobs:
         env:
           JKS: ${{ secrets.MRCRAYFISH_JKS }}
         if: ${{ env.JKS != '' }}
-        run:
+        run: |
           echo "${{ env.JKS }}" > keystore.jks.tmp
           base64 -d -i keystore.jks.tmp > keystore.jks
           rm keystore.jks.tmp
