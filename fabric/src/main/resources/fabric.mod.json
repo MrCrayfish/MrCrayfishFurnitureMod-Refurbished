@@ -39,6 +39,9 @@
         "java": ">=${java_version}",
         "framework": ">=${framework_version}"
     },
+    "breaks": {
+        "jei": "<${jei_version}"
+    },
     "conflicts": {
         "mighty_mail": "*"
     },
