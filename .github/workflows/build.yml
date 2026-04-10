@@ -57,7 +57,7 @@ jobs:
           rm keystore.jks.tmp
           KEYSTORE_PATH="$(pwd)/keystore.jks"
           echo "keystore=$KEYSTORE_PATH" >> "$GITHUB_OUTPUT"
-          echo "Keystore succesfully loaded into ./keystore.jks" >> $GITHUB_STEP_SUMMARY
+          echo "Keystore succesfully loaded into ./keystore.jks"
       - name: Make gradlew executable
         run: chmod +x ./gradlew
       - name: Data Generation (NeoForge)
