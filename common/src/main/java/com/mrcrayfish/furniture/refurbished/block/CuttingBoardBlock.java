@@ -76,20 +76,22 @@ public class CuttingBoardBlock extends FurnitureHorizontalEntityBlock implements
     {
         if(level.getBlockEntity(pos) instanceof CuttingBoardBlockEntity cuttingBoard)
         {
+            if(level.isClientSide())
+            {
+                return InteractionResult.SUCCESS;
+            }
+
             ItemStack heldItem = player.getItemInHand(hand);
             if(heldItem.is(ConventionalTags.Items.TOOLS_KNIVES))
             {
                 boolean dropAsEntity = !Services.ENTITY.isFakePlayer(player);
                 if(cuttingBoard.sliceItem(level, dropAsEntity))
                 {
-                    if(!level.isClientSide())
-                    {
-                        heldItem.hurtAndBreak(1, player, hand.asEquipmentSlot());
-                    }
+                    heldItem.hurtAndBreak(1, player, hand.asEquipmentSlot());
                 }
                 return InteractionResult.SUCCESS;
             }
-            else if(cuttingBoard.placeItem(heldItem)) // Modify to only be server side
+            else if(cuttingBoard.placeItem(heldItem, !player.getAbilities().instabuild))
             {
                 return InteractionResult.SUCCESS;
             }

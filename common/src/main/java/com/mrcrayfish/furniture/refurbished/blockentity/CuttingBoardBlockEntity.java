@@ -94,16 +94,20 @@ public class CuttingBoardBlockEntity extends BasicLootBlockEntity
      * cutting board recipe.
      *
      * @param heldItem the item to place on the cutting board
+     * @param consumeItem if the held item should be consumed after being placed
      * @return True if an item was placed
      */
-    public boolean placeItem(ItemStack heldItem)
+    public boolean placeItem(ItemStack heldItem, boolean consumeItem)
     {
         int placeIndex = this.getPlaceIndex();
         if(this.canPlaceItem(placeIndex, heldItem))
         {
             ItemStack copy = heldItem.copy();
             copy.setCount(1);
-            heldItem.shrink(1);
+            if(consumeItem)
+            {
+                heldItem.shrink(1);
+            }
             if(!this.level.isClientSide())
             {
                 this.placedByPlayer = true;
