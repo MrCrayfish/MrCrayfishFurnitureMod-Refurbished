@@ -595,7 +595,7 @@ public class CommonRecipeProvider extends RecipeProvider
         this.freezerSolidifying(ProcessingRecipe.Category.BLOCKS, Items.PACKED_ICE, Items.BLUE_ICE, 2400, 1.0F);
 
         // Toasting
-        this.toasterHeating(ProcessingRecipe.Category.FOOD, ModItems.BREAD_SLICE.get(), ModItems.TOAST.get(), 300, 0.5F);
+        this.toasterHeating(ProcessingRecipe.Category.FOOD, Ingredient.of(this.items.getOrThrow(ModTags.Items.TOASTER_BREAD_SLICES)), ModItems.TOAST.get(), 300, 0.5F);
         this.toasterHeating(ProcessingRecipe.Category.FOOD, ModItems.CHEESE_SANDWICH.get(), ModItems.CHEESE_TOASTIE.get(), 400, 0.5F);
 
         // Slicing
@@ -1098,6 +1098,11 @@ public class CommonRecipeProvider extends RecipeProvider
     private void toasterHeating(ProcessingRecipe.Category category, ItemLike baseItem, ItemLike heatedItem, int heatingTime, float experience)
     {
         this.processing(ToasterHeatingRecipe::new, "toasting", category, Ingredient.of(baseItem), heatedItem, 1, heatingTime);
+    }
+
+    private void toasterHeating(ProcessingRecipe.Category category, Ingredient ingredient, ItemLike heatedItem, int heatingTime, float experience)
+    {
+        this.processing(ToasterHeatingRecipe::new, "toasting", category, ingredient, heatedItem, 1, heatingTime);
     }
 
     private void microwaveHeating(ProcessingRecipe.Category category, ItemLike baseItem, ItemLike heatedItem, int heatingTime, float experience)

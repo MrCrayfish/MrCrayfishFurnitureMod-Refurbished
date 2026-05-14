@@ -34,6 +34,7 @@ public class ModTags
         public static final TagKey<Item> TOOLS_KNIVES = tag("tools/knives");
         public static final TagKey<Item> GRILLS = tag("grills");
         public static final TagKey<Item> COOLERS = tag("coolers");
+        public static final TagKey<Item> TOASTER_BREAD_SLICES = tag("toaster_bread_slices");
         public static final TagKey<Item> TRAMPOLINES = tag("trampolines");
         public static final TagKey<Item> SOFAS = tag("sofas");
         public static final TagKey<Item> STOOLS = tag("stools");

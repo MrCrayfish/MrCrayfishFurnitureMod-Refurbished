@@ -12,7 +12,9 @@ public class ConventionalTags
 {
     public static class Items
     {
+        public static final TagKey<Item> TOOLS_KNIFE = tag("c", "tools/knife");
         public static final TagKey<Item> TOOLS_KNIVES = tag("c", "tools/knives");
+        public static final TagKey<Item> FARMERS_DELIGHT_TOOLS_KNIVES = tag("farmersdelight", "tools/knives");
 
         public static TagKey<Item> tag(String modId, String name)
         {

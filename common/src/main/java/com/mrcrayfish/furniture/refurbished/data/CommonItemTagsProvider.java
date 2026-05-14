@@ -7,6 +7,9 @@ import com.mrcrayfish.furniture.refurbished.core.ModTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.VanillaItemTagsProvider;
+import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
 import java.util.concurrent.CompletableFuture;
@@ -1084,7 +1087,17 @@ public class CommonItemTagsProvider extends VanillaItemTagsProvider
             .add(Items.HONEYCOMB_BLOCK);
 
         this.tag(ConventionalTags.Items.TOOLS_KNIVES)
-            .addTag(ModTags.Items.TOOLS_KNIVES);
+            .addTag(ModTags.Items.TOOLS_KNIVES)
+            .addOptionalTag(ConventionalTags.Items.TOOLS_KNIFE)
+            .addOptionalTag(ConventionalTags.Items.FARMERS_DELIGHT_TOOLS_KNIVES);
+        this.addOptionalItem(ConventionalTags.Items.TOOLS_KNIVES, "farmersdelight", "flint_knife");
+        this.addOptionalItem(ConventionalTags.Items.TOOLS_KNIVES, "farmersdelight", "iron_knife");
+        this.addOptionalItem(ConventionalTags.Items.TOOLS_KNIVES, "farmersdelight", "golden_knife");
+        this.addOptionalItem(ConventionalTags.Items.TOOLS_KNIVES, "farmersdelight", "diamond_knife");
+        this.addOptionalItem(ConventionalTags.Items.TOOLS_KNIVES, "farmersdelight", "netherite_knife");
+        this.addOptionalItem(ConventionalTags.Items.TOOLS_KNIVES, "farmersdelight", "copper_knife");
+        this.addOptionalItem(ConventionalTags.Items.TOOLS_KNIVES, "moredelight", "wooden_knife");
+        this.addOptionalItem(ConventionalTags.Items.TOOLS_KNIVES, "moredelight", "stone_knife");
 
         // Common tags
         this.tag(ModTags.Items.COMMON_ENCHANTABLES)
@@ -1098,10 +1111,20 @@ public class CommonItemTagsProvider extends VanillaItemTagsProvider
             .add(ModItems.BREAD_SLICE.get())
             .add(ModItems.TOAST.get());
 
+        this.tag(ModTags.Items.TOASTER_BREAD_SLICES)
+            .add(ModItems.BREAD_SLICE.get());
+        this.addOptionalItem(ModTags.Items.TOASTER_BREAD_SLICES, "farmersdelight", "bread_slice");
+        this.addOptionalItem(ModTags.Items.TOASTER_BREAD_SLICES, "moredelight", "bread_slice");
+
         this.tag(ModTags.Items.COMMON_TOOLS_KNIVES)
             .addTag(ModTags.Items.TOOLS_KNIVES);
 
         this.tag(ModTags.Items.COMMON_TOOLS_WRENCH)
             .add(ModItems.WRENCH.get());
+    }
+
+    private void addOptionalItem(TagKey<Item> tag, String namespace, String path)
+    {
+        this.getOrCreateRawBuilder(tag).addOptionalElement(Identifier.fromNamespaceAndPath(namespace, path));
     }
 }
