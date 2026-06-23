@@ -91,6 +91,13 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
     private TextureTarget electricityTarget;
     private ResourceHandle<TextureTarget> handle;
     private boolean takenScreenshot;
+    // TEMPORARY diagnostic throttle counters for the missing-overlay investigation; remove once resolved.
+    private long debugLastLogMillis;
+    private long debugLastLogMillis2;
+    private long debugLastLogMillis3;
+    private long debugLastLogMillis4;
+    private long debugLastLogMillis5;
+    private long debugLastLogMillis6;
 
     private ElectricityRenderer()
     {
@@ -188,7 +195,14 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
     {
         this.renderState.reset();
 
-        if(WrenchHandler.isHoldingWrench())
+        boolean holdingWrench = WrenchHandler.isHoldingWrench();
+        if(System.currentTimeMillis() - this.debugLastLogMillis > 1000)
+        {
+            this.debugLastLogMillis = System.currentTimeMillis();
+            Constants.LOG.info("[ElectricityDebug] extract() called, holdingWrench={}", holdingWrench);
+        }
+
+        if(holdingWrench)
         {
             WrenchHandler handler = WrenchHandler.get();
             handler.extractLinkingConnection(this.renderState);
@@ -216,6 +230,14 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
                 }
             });
         }
+
+        if(System.currentTimeMillis() - this.debugLastLogMillis2 > 1000)
+        {
+            this.debugLastLogMillis2 = System.currentTimeMillis();
+            Constants.LOG.info("[ElectricityDebug] extract() result: nodes={}, connections={}, link={}, isCreatingLink={}, selectedNode={}",
+                this.renderState.nodes.size(), this.renderState.connections.size(), this.renderState.link != null,
+                WrenchHandler.get().isCreatingLink(), WrenchHandler.get().getSelectedNode());
+        }
     }
 
     private void submitElectricityRenderState(ElectricityRenderState renderState, PoseStack stack)
@@ -238,6 +260,13 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
         // Reset shader enabled cache for this frame
         this.shaderEnabled = null;
 
+        // TEMPORARY diagnostic: confirms setupFramePass is actually being invoked by the frame graph.
+        if(System.currentTimeMillis() - this.debugLastLogMillis3 > 1000)
+        {
+            this.debugLastLogMillis3 = System.currentTimeMillis();
+            Constants.LOG.info("[ElectricityDebug] setupFramePass() called");
+        }
+
         // Create the frame pass
         ResourceHandle<TextureTarget> handle = builder.importExternal(PASS_NAME, this.electricityTarget);
         FramePass pass = builder.addPass(PASS_NAME);
@@ -253,6 +282,14 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
             PoseStack stack = new PoseStack();
             stack.translate(-camera.x, -camera.y, -camera.z);
             this.submitElectricityRenderState(this.renderState, stack);
+
+            // TEMPORARY diagnostic: confirms whether anything actually made it into storage to draw.
+            if(System.currentTimeMillis() - this.debugLastLogMillis4 > 1000)
+            {
+                this.debugLastLogMillis4 = System.currentTimeMillis();
+                Constants.LOG.info("[ElectricityDebug] storage before draw: nodeSubmits={}, connectionSubmits={}, linkingConnectionSubmits={}",
+                    this.storage.nodeSubmits.size(), this.storage.connectionSubmits.size(), this.storage.linkingConnectionSubmits.size());
+            }
 
             // Draw the rest of the electricity features.
             // MC 26.2 removed MultiBufferSource entirely; build a one-off BufferBuilder and submit
@@ -272,6 +309,13 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
 
                 try(MeshData data = vertexConsumer.build())
                 {
+                    // TEMPORARY diagnostic: confirms whether MeshData was even produced (null = no vertices written)
+                    // and what indexCount is about to be submitted.
+                    if(System.currentTimeMillis() - this.debugLastLogMillis5 > 1000)
+                    {
+                        this.debugLastLogMillis5 = System.currentTimeMillis();
+                        Constants.LOG.info("[ElectricityDebug] MeshData={}, indexCount={}", data != null, data != null ? data.drawState().indexCount() : -1);
+                    }
                     if(data != null)
                     {
                         RenderSystem.AutoStorageIndexBuffer autoIndexBuffer = RenderSystem.getSequentialBuffer(renderType.primitiveTopology());
@@ -393,6 +437,13 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
         PowerableAreaRenderState renderState = new PowerableAreaRenderState();
         WrenchHandler handler = WrenchHandler.get();
         handler.extractPowerableArea(renderState, camera);
+        // TEMPORARY diagnostic: confirms whether renderPowerableArea is even being called, and why it
+        // early-returns if it does (no shape = powerableArea.getPowerableAreaShape() returned null).
+        if(System.currentTimeMillis() - this.debugLastLogMillis6 > 1000)
+        {
+            this.debugLastLogMillis6 = System.currentTimeMillis();
+            Constants.LOG.info("[ElectricityDebug] renderPowerableArea() called, shape={}, alpha={}", renderState.shape != null, renderState.alpha);
+        }
         if(renderState.shape == null || renderState.alpha <= 0)
             return;
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.1.3] - DEBUG BUILD: diagnostic logging for still-missing electricity overlay
+
+User reported 1.1.2's fix did not resolve the missing wrench link line (and confirmed the powerable-area border outline is also missing, ruling out the off-screen-texture/blit path as the sole cause — that path draws directly to the main screen). Added temporary throttled (~1/sec) `Constants.LOG.info` calls at every stage of the render chain to find where it actually breaks: `GameRenderer#renderLevel` mixin firing, `WrenchHandler.isHoldingWrench()`, `ElectricityRenderer#extract()` entry/exit (node/connection/link counts), `setupFramePass()` entry, storage contents right before the draw, `MeshData`/indexCount right before `drawFromBuffer`, and `renderPowerableArea()`'s early-return conditions. **Remove this logging once the real bug is found** — it is not a fix, just instrumentation.
+
 ## [1.1.2] - Fix invisible electricity overlay (nodes, connections, wrench link line)
 
 The wrench's in-progress link line (and, as a side effect of the same bug, existing connection lines and electricity node markers) never rendered. `ElectricityRenderer#setupFramePass`'s `PreparedRenderType#drawFromBuffer(vertexBuffer, indexBuffer, indexType, ...)` call had its three trailing int params in the wrong order — `(indexCount, 0, 0)` instead of `(baseVertex=0, firstIndex=0, indexCount)` — which silently submitted a draw call requesting **zero indices**, so nothing in that batch (all electricity overlay geometry shares one draw call) ever reached the screen. Confirmed the correct parameter order via `StagedVertexBuffer.ExecuteInfo`'s record field order: `(vertexBuffer, indexBuffer, indexType, baseVertex, firstIndex, indexCount)`. The separate `renderPowerableArea`/`blitToScreen` draw calls (manual `RenderPass#drawIndexed`/`#draw`, a different code path) already had the correct argument order and were unaffected.
