@@ -359,6 +359,13 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
      */
     private void drawElectricityGeometry(Vec3 camera)
     {
+        // TEMPORARY smoke test: clears electricityTarget to solid opaque red and returns immediately,
+        // skipping the normal clear-to-transparent + geometry draw below. If this red is NOT visible
+        // in the Ctrl+Alt+Shift screenshot dump, the screenshot tool itself cannot read this texture
+        // back correctly, and the prior "solid black" results don't actually prove the draw failed.
+        RenderSystem.getDevice().createCommandEncoder().clearColorTexture(this.electricityTarget.getColorTexture(), new Vector4f(1.0F, 0.0F, 0.0F, 1.0F));
+        if(true) return;
+
         // Clear the electricity texture
         GpuTexture colorTexture = this.electricityTarget.getColorTexture();
         GpuTexture depthTexture = this.electricityTarget.getDepthTexture();

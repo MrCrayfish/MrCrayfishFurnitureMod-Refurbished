@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.9] - DEBUG BUILD: smoke test for electricityTarget itself
+
+1.1.8's fix (moving the geometry draw out of the unordered `FrameGraphBuilder` pass) did NOT change the result - the raw `electricityTarget` screenshot dump is still solid black, exactly as before. This is suspicious: if the matrix-timing theory were correct and now fixed, geometry that was previously transformed off-screen should show up *somewhere* (even if mispositioned), not remain perfectly flat black with zero variation, twice in a row.
+
+Added a temporary solid-red `clearColorTexture` smoke test directly on `electricityTarget`, replacing the entire normal clear+draw for this build (early return after the clear). This tests two things at once: (1) in normal gameplay, does the final composited screen show a red tint (confirms the blit→main-target path still works end-to-end with real content in the source texture, not just an empty one); (2) does the Ctrl+Alt+Shift screenshot dump show red (confirms the screenshot tool can actually read this texture's contents back at all). If gameplay shows red but the screenshot doesn't, the screenshot tool itself has been giving a false "black" reading this whole time, and the real geometry draw may have been working all along.
+
 ## [1.1.8] - Likely fix: geometry draw moved out of unordered FrameGraphBuilder pass
 
 1.1.7's raw `electricityTarget` screenshot dump was solid black with zero variation - confirming the geometry draw genuinely writes nothing into the texture, despite every prior diagnostic (indexCount, no exceptions) reporting success. This ruled out the blit/compositing step entirely (already proven sound via 1.1.5's smoke test) and pointed upstream, to the draw that's supposed to populate `electricityTarget`.
