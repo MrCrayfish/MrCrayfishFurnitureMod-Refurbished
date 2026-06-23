@@ -101,6 +101,7 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
     private long debugLastLogMillis7;
     private long debugLastLogMillis8;
     private long debugLastLogMillis9;
+    private long debugLastLogMillis10;
 
     private ElectricityRenderer()
     {
@@ -329,7 +330,30 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
                         // drawFromBuffer(vertexBuffer, indexBuffer, indexType, baseVertex, firstIndex, indexCount) -
                         // order confirmed via StagedVertexBuffer.ExecuteInfo's record field order (the prior
                         // (indexCount, 0, 0) ordering passed indexCount=0, silently drawing nothing at all).
-                        renderType.prepare().drawFromBuffer(vertexBuffer, indexBuffer, indexType, 0, 0, data.drawState().indexCount());
+                        // drawFromBuffer resolves its target via the RenderType's declared OutputTarget UNLESS
+                        // RenderSystem.outputColorTextureOverride/outputDepthTextureOverride is non-null, in which
+                        // case it redirects there instead - confirmed via PreparedRenderType#drawFromBuffer bytecode.
+                        // Our pass runs via our own FrameGraphBuilder outside the normal world-render submission
+                        // flow, where these overrides may still be set from elsewhere, silently redirecting our
+                        // draw away from electricityTarget. Force them null for the duration of our own draw.
+                        var savedColorOverride = RenderSystem.outputColorTextureOverride;
+                        var savedDepthOverride = RenderSystem.outputDepthTextureOverride;
+                        if(System.currentTimeMillis() - this.debugLastLogMillis10 > 1000)
+                        {
+                            this.debugLastLogMillis10 = System.currentTimeMillis();
+                            Constants.LOG.info("[ElectricityDebug] outputColorTextureOverride was set={} before our draw", savedColorOverride != null);
+                        }
+                        RenderSystem.outputColorTextureOverride = null;
+                        RenderSystem.outputDepthTextureOverride = null;
+                        try
+                        {
+                            renderType.prepare().drawFromBuffer(vertexBuffer, indexBuffer, indexType, 0, 0, data.drawState().indexCount());
+                        }
+                        finally
+                        {
+                            RenderSystem.outputColorTextureOverride = savedColorOverride;
+                            RenderSystem.outputDepthTextureOverride = savedDepthOverride;
+                        }
                     }
                 }
             }
@@ -375,11 +399,6 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
             }
             if(electricityTexture != null && mainTexture != null)
             {
-                // TEMPORARY smoke test: paints the whole screen solid translucent red, bypassing our
-                // custom pipeline/shader entirely. If this is NOT visible in-game, something later in the
-                // frame is overwriting this region; if it IS visible, the bug is in our blit shader/pipeline.
-                RenderSystem.getDevice().createCommandEncoder().clearColorTexture(mainTexture.texture(), new org.joml.Vector4f(1.0F, 0.0F, 0.0F, 0.5F));
-
                 try(RenderPass pass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Blit", mainTexture, Optional.empty()))
                 {
                     pass.setPipeline(ModRenderPipelines.ELECTRICITY_BLIT);
