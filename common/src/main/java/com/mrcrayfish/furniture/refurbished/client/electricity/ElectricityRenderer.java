@@ -417,12 +417,16 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
                     // the "Projection" uniform if RenderSystem.getProjectionMatrixBuffer() is non-null - if
                     // it's null here, our pipeline (which declares MATRICES_PROJECTION) draws with no
                     // projection matrix bound at all, which could explain geometry vanishing with no error.
+                    var prepared = renderType.prepare();
                     if(System.currentTimeMillis() - this.debugLastLogMillis11 > 1000)
                     {
                         this.debugLastLogMillis11 = System.currentTimeMillis();
                         Constants.LOG.info("[ElectricityDebug] projectionMatrixBuffer non-null before draw={}", RenderSystem.getProjectionMatrixBuffer() != null);
+                        Constants.LOG.info("[ElectricityDebug] prepared: textures={}, dynamicTransforms non-null={}, outputTarget={}",
+                            prepared.textures().stream().map(t -> t.name() + "=" + (t.textureView() != null)).toList(),
+                            prepared.dynamicTransforms() != null, prepared.outputTarget());
                     }
-                    renderType.prepare().drawFromBuffer(vertexBuffer, indexBuffer, indexType, 0, 0, data.drawState().indexCount());
+                    prepared.drawFromBuffer(vertexBuffer, indexBuffer, indexType, 0, 0, data.drawState().indexCount());
                 }
             }
         }

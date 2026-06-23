@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.11] - DEBUG BUILD: inspect PreparedRenderType's actual texture/transform bindings
+
+1.1.10 confirmed `projectionMatrixBuffer` is non-null at draw time - that theory is ruled out too. Every checkpoint reachable via logging now reports success (extraction, storage, MeshData/indexCount, projection matrix), yet a direct raw-texture screenshot dump of `electricityTarget` still showed solid black with real geometry active (confirmed by the user holding the wrench and linking nodes during capture).
+
+Added a deeper diagnostic: capturing the `PreparedRenderType` returned by `renderType.prepare()` separately (instead of chaining `.drawFromBuffer(...)` directly) so its actual resolved texture list, `dynamicTransforms`, and `outputTarget` can be logged. If `textures()` doesn't contain a `Sampler0` entry with a real (non-null) `GpuTextureView`, the shader would sample an unbound/garbage texture and multiply it against vertex color, producing exactly this symptom - real geometry, real transform, but invisible output. Also logs the actual resolved `outputTarget` to confirm it really is our `electricityTarget` and not something else.
+
 ## [1.1.10] - DEBUG BUILD: check whether the projection matrix is bound at all
 
 1.1.9's smoke test confirmed `electricityTarget` can be written to and read back correctly (solid red was visible in both normal gameplay and the screenshot dump) - the screenshot tool was never the problem, and the clear/blit paths are fully sound. This isolates the bug specifically to drawing *vertex geometry* into the texture: the `ELECTRICITY` pipeline (unlike `ELECTRICITY_BLIT` or a plain `clearColorTexture` call) declares `BindGroupLayouts.MATRICES_PROJECTION`, which neither of the previously-proven-working paths use.
