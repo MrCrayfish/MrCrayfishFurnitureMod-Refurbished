@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.12] - Architectural change: route geometry through SubmitNodeCollector instead of manual drawFromBuffer
+
+1.1.11 confirmed every binding the manual draw path relies on resolves correctly - `Sampler0` and `Sampler2` (lightmap) both bound to real, non-null texture views, `dynamicTransforms` non-null, the resolved `outputTarget` correctly pointing at `electricityTarget`, and the projection matrix non-null. Every layer reachable through logging or bytecode inspection has now checked out, yet a raw `electricityTarget` screenshot dump still showed solid black with real geometry active. This is the practical limit of what can be diagnosed without a GPU frame-capture tool.
+
+Rather than continue guessing at the manual `RenderType#prepare().drawFromBuffer(...)` path (inherited largely unchanged from 26.1.2's `MultiBufferSource`-based original, now reimplemented by hand for 26.2's API), this build routes electricity geometry through `SubmitNodeCollector#submitCustomGeometry(...)` - the same deferred-submission mechanism this mod's `ToolAnimationRenderer` already uses successfully every frame, and the same one vanilla itself uses for all off-screen/custom-target effects. Node markers, connections, and the in-progress wrench link line are now submitted directly from `LevelRenderer#submitBlockEntities` (the same mixin hook `ToolAnimationRenderer` already hooks into), instead of being collected into a `SubmitStorage` and manually built into a `BufferBuilder`/`MeshData`/`GpuBuffer` pair drawn via a `FrameGraphBuilder` pass or, most recently, directly inside `blitToScreen()`.
+
+Removed: the `SubmitStorage`/`NodeSubmit`/`ConnectionSubmit`/`LinkingConnectionSubmit` indirection, the manual vertex/index buffer construction, the `FrameGraphBuilder`/`FramePass`/`ResourceHandle` fields tied to the old (now fully decommissioned) frame-pass scheduling, and all related temporary diagnostic logging for that path. `electricityTarget`'s clear now happens once per frame inside the new `submit()` method. `blitToScreen()` is unchanged - it already proved itself correct via the earlier solid-red smoke test, and still only does the final composite-to-main-screen step.
+
 ## [1.1.11] - DEBUG BUILD: inspect PreparedRenderType's actual texture/transform bindings
 
 1.1.10 confirmed `projectionMatrixBuffer` is non-null at draw time - that theory is ruled out too. Every checkpoint reachable via logging now reports success (extraction, storage, MeshData/indexCount, projection matrix), yet a direct raw-texture screenshot dump of `electricityTarget` still showed solid black with real geometry active (confirmed by the user holding the wrench and linking nodes during capture).

@@ -2,6 +2,7 @@ package com.mrcrayfish.furniture.refurbished.mixin.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.client.ToolAnimationRenderer;
+import com.mrcrayfish.furniture.refurbished.client.electricity.ElectricityRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -31,5 +32,6 @@ public class LevelRendererMixin
             float partialTick = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(true);
             ToolAnimationRenderer.get().submit(level, renderState.cameraRenderState.pos, collector, partialTick);
         }
+        ElectricityRenderer.get().submit(collector, renderState.cameraRenderState.pos);
     }
 }
