@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.8] - Likely fix: geometry draw moved out of unordered FrameGraphBuilder pass
+
+1.1.7's raw `electricityTarget` screenshot dump was solid black with zero variation - confirming the geometry draw genuinely writes nothing into the texture, despite every prior diagnostic (indexCount, no exceptions) reporting success. This ruled out the blit/compositing step entirely (already proven sound via 1.1.5's smoke test) and pointed upstream, to the draw that's supposed to populate `electricityTarget`.
+
+Root cause: `setupFramePass()` added our geometry draw via `builder.addPass(...)` / `pass.executes(...)` at the very first `addPass` call inside `LevelRenderer#render` - before any of the world's own passes exist. `FrameGraphBuilder` schedules `executes()` callbacks by resolving the dependency graph (`reads()`/`readsAndWrites()`/`requires()`), not by registration order, and our pass had no dependency relationship forcing it to run after the world's main scene pass establishes `RenderSystem`'s current projection/view matrix uniforms for the frame. `PreparedRenderType#drawFromBuffer` automatically calls `RenderSystem.bindDefaultUniforms(pass)`, which binds whatever matrices are *currently* set globally - if our pass ran before those were valid for this frame, our geometry would be transformed with stale/wrong matrices and projected somewhere invisible, with no exception anywhere in the chain.
+
+Fix: removed the `FrameGraphBuilder` pass entirely. `setupFramePass()` now just records the camera position; the actual clear + geometry draw moved into `blitToScreen()` (called at `LevelRenderer#render`'s `RETURN`), running synchronously right before the existing blit - a point in the frame already proven correct via 1.1.5's solid-red smoke test. This guarantees our draw happens after the world's matrices are valid, with no scheduling ambiguity.
+
 ## [1.1.7] - DEBUG BUILD: enable raw electricityTarget screenshot dump
 
 1.1.6's `outputColorTextureOverride` fix did NOT resolve the issue - user confirmed the override was already `false` (never set), so that was a real but irrelevant hardening fix, not the actual bug. Also ruled out: `FabricRenderType.ELECTRICITY_TARGET`'s `OutputTarget` supplier resolves to the exact same `ElectricityRenderer.electricityTarget` instance used in `blitToScreen` (lazy supplier, confirmed by reading both call sites) - not a stale/duplicate-texture-target issue either.

@@ -90,6 +90,8 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
     private Boolean shaderEnabled;
     private TextureTarget electricityTarget;
     private ResourceHandle<TextureTarget> handle;
+    private Vec3 lastCameraPos;
+    private boolean framePassSetup;
     private boolean takenScreenshot;
     // TEMPORARY diagnostic throttle counters for the missing-overlay investigation; remove once resolved.
     private long debugLastLogMillis;
@@ -271,96 +273,20 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
             Constants.LOG.info("[ElectricityDebug] setupFramePass() called");
         }
 
-        // Create the frame pass
-        ResourceHandle<TextureTarget> handle = builder.importExternal(PASS_NAME, this.electricityTarget);
-        FramePass pass = builder.addPass(PASS_NAME);
-        this.handle = pass.readsAndWrites(handle);
-        pass.executes(() ->
-        {
-            // Clear the electricity texture
-            GpuTexture colorTexture = this.electricityTarget.getColorTexture();
-            GpuTexture depthTexture = this.electricityTarget.getDepthTexture();
-            RenderSystem.getDevice().createCommandEncoder().clearColorAndDepthTextures(colorTexture, new Vector4f(0, 0, 0, 0), depthTexture, 1.0);
-
-            // Submit the states to storage
-            PoseStack stack = new PoseStack();
-            stack.translate(-camera.x, -camera.y, -camera.z);
-            this.submitElectricityRenderState(this.renderState, stack);
-
-            // TEMPORARY diagnostic: confirms whether anything actually made it into storage to draw.
-            if(System.currentTimeMillis() - this.debugLastLogMillis4 > 1000)
-            {
-                this.debugLastLogMillis4 = System.currentTimeMillis();
-                Constants.LOG.info("[ElectricityDebug] storage before draw: nodeSubmits={}, connectionSubmits={}, linkingConnectionSubmits={}",
-                    this.storage.nodeSubmits.size(), this.storage.connectionSubmits.size(), this.storage.linkingConnectionSubmits.size());
-            }
-
-            // Draw the rest of the electricity features.
-            // MC 26.2 removed MultiBufferSource entirely; build a one-off BufferBuilder and submit
-            // it through the RenderType's own PreparedRenderType, which carries the pipeline/texture
-            // bindings already declared in FabricRenderType.ELECTRICITY's RenderSetup.
-            RenderType renderType = ClientServices.PLATFORM.getElectricityRenderType();
-            try(ByteBufferBuilder byteBufferBuilder = new ByteBufferBuilder(renderType.format().getVertexSize() * 256))
-            {
-                BufferBuilder vertexConsumer = new BufferBuilder(byteBufferBuilder, renderType.primitiveTopology(), renderType.format());
-                this.storage.linkingConnectionSubmits.forEach(submit -> {
-                    this.renderLinkingConnection(submit.pose, vertexConsumer, submit.linkingConnectionRenderState);
-                });
-                this.storage.nodeSubmits.forEach(submit -> submit.renderer.accept(submit.pose, vertexConsumer));
-                this.storage.connectionSubmits.forEach(submit -> {
-                    this.renderConnection(submit.pose, vertexConsumer, submit.connectionRenderState);
-                });
-
-                try(MeshData data = vertexConsumer.build())
-                {
-                    // TEMPORARY diagnostic: confirms whether MeshData was even produced (null = no vertices written)
-                    // and what indexCount is about to be submitted.
-                    if(System.currentTimeMillis() - this.debugLastLogMillis5 > 1000)
-                    {
-                        this.debugLastLogMillis5 = System.currentTimeMillis();
-                        Constants.LOG.info("[ElectricityDebug] MeshData={}, indexCount={}", data != null, data != null ? data.drawState().indexCount() : -1);
-                    }
-                    if(data != null)
-                    {
-                        RenderSystem.AutoStorageIndexBuffer autoIndexBuffer = RenderSystem.getSequentialBuffer(renderType.primitiveTopology());
-                        IndexType indexType = autoIndexBuffer.type();
-                        GpuBuffer indexBuffer = autoIndexBuffer.getBuffer(data.drawState().indexCount());
-                        GpuBuffer vertexBuffer = RenderSystem.getDevice().createBuffer(() -> "Electricity vertex buffer", GpuBuffer.USAGE_VERTEX | GpuBuffer.USAGE_COPY_DST, data.vertexBuffer().remaining());
-                        RenderSystem.getDevice().createCommandEncoder().writeToBuffer(vertexBuffer.slice(), data.vertexBuffer());
-                        // drawFromBuffer(vertexBuffer, indexBuffer, indexType, baseVertex, firstIndex, indexCount) -
-                        // order confirmed via StagedVertexBuffer.ExecuteInfo's record field order (the prior
-                        // (indexCount, 0, 0) ordering passed indexCount=0, silently drawing nothing at all).
-                        // drawFromBuffer resolves its target via the RenderType's declared OutputTarget UNLESS
-                        // RenderSystem.outputColorTextureOverride/outputDepthTextureOverride is non-null, in which
-                        // case it redirects there instead - confirmed via PreparedRenderType#drawFromBuffer bytecode.
-                        // Our pass runs via our own FrameGraphBuilder outside the normal world-render submission
-                        // flow, where these overrides may still be set from elsewhere, silently redirecting our
-                        // draw away from electricityTarget. Force them null for the duration of our own draw.
-                        var savedColorOverride = RenderSystem.outputColorTextureOverride;
-                        var savedDepthOverride = RenderSystem.outputDepthTextureOverride;
-                        if(System.currentTimeMillis() - this.debugLastLogMillis10 > 1000)
-                        {
-                            this.debugLastLogMillis10 = System.currentTimeMillis();
-                            Constants.LOG.info("[ElectricityDebug] outputColorTextureOverride was set={} before our draw", savedColorOverride != null);
-                        }
-                        RenderSystem.outputColorTextureOverride = null;
-                        RenderSystem.outputDepthTextureOverride = null;
-                        try
-                        {
-                            renderType.prepare().drawFromBuffer(vertexBuffer, indexBuffer, indexType, 0, 0, data.drawState().indexCount());
-                        }
-                        finally
-                        {
-                            RenderSystem.outputColorTextureOverride = savedColorOverride;
-                            RenderSystem.outputDepthTextureOverride = savedDepthOverride;
-                        }
-                    }
-                }
-            }
-
-            // Clear storage after drawing
-            this.storage.clear();
-        });
+        // PREVIOUSLY this scheduled the actual geometry draw via a FrameGraphBuilder pass added here
+        // (registered at the very first builder.addPass(...) call in LevelRenderer#render, i.e. before
+        // the world's own passes exist). The FrameGraphBuilder schedules pass.executes() callbacks by
+        // dependency-graph order, not registration order, and our pass had no requires()/reads()
+        // relationship forcing it to run after the world's main scene pass sets up RenderSystem's
+        // current projection/view matrix uniforms - so drawFromBuffer's automatic bindDefaultUniforms()
+        // call could bind stale/wrong matrices, transforming our geometry off-screen with no error.
+        // Confirmed via a raw electricityTarget screenshot dump: indexCount was always correct, but the
+        // texture itself stayed solid black. The actual draw now happens in blitToScreen() instead,
+        // which runs at LevelRenderer#render's RETURN (guaranteed after the world's matrices are valid -
+        // already proven via a solid-color smoke test in that exact code path). Just remember the camera
+        // position here for the camera-relative pose translate used when building geometry.
+        this.lastCameraPos = camera;
+        this.framePassSetup = true;
     }
 
     /**
@@ -378,17 +304,23 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
             this.drawDeferredCalls(stack);
         }*/
 
-        this.tryAndTakeDebugScreenshot();
-
         // TEMPORARY diagnostic: confirms whether blitToScreen even reaches the draw call.
         if(System.currentTimeMillis() - this.debugLastLogMillis7 > 1000)
         {
             this.debugLastLogMillis7 = System.currentTimeMillis();
-            Constants.LOG.info("[ElectricityDebug] blitToScreen() called, handle={}", this.handle != null);
+            Constants.LOG.info("[ElectricityDebug] blitToScreen() called, framePassSetup={}", this.framePassSetup);
         }
 
-        // Only blit to the main texture if render pass handle was created
-        if(this.handle != null)
+        // Only proceed if setupFramePass ran earlier this frame (gives us a camera position to use)
+        if(this.framePassSetup)
+        {
+            this.drawElectricityGeometry(this.lastCameraPos);
+        }
+
+        this.tryAndTakeDebugScreenshot();
+
+        // Only blit to the main texture if the geometry pass actually ran this frame
+        if(this.framePassSetup)
         {
             GpuTextureView mainTexture = Minecraft.getInstance().gameRenderer.mainRenderTarget().getColorTextureView();
             GpuTextureView electricityTexture = this.electricityTarget.getColorTextureView();
@@ -415,8 +347,78 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
             }
         }
 
-        // Once drawn, remove handle
-        this.handle = null;
+        // Once drawn, reset for next frame
+        this.framePassSetup = false;
+    }
+
+    /**
+     * Clears the electricity texture and draws node markers, connections, and the in-progress wrench
+     * link line into it. Runs synchronously inside blitToScreen() (called at LevelRenderer#render's
+     * RETURN) rather than via a deferred FrameGraphBuilder pass.executes() callback - see the comment
+     * in setupFramePass() for why that timing mattered.
+     */
+    private void drawElectricityGeometry(Vec3 camera)
+    {
+        // Clear the electricity texture
+        GpuTexture colorTexture = this.electricityTarget.getColorTexture();
+        GpuTexture depthTexture = this.electricityTarget.getDepthTexture();
+        RenderSystem.getDevice().createCommandEncoder().clearColorAndDepthTextures(colorTexture, new Vector4f(0, 0, 0, 0), depthTexture, 1.0);
+
+        // Submit the states to storage
+        PoseStack stack = new PoseStack();
+        stack.translate(-camera.x, -camera.y, -camera.z);
+        this.submitElectricityRenderState(this.renderState, stack);
+
+        // TEMPORARY diagnostic: confirms whether anything actually made it into storage to draw.
+        if(System.currentTimeMillis() - this.debugLastLogMillis4 > 1000)
+        {
+            this.debugLastLogMillis4 = System.currentTimeMillis();
+            Constants.LOG.info("[ElectricityDebug] storage before draw: nodeSubmits={}, connectionSubmits={}, linkingConnectionSubmits={}",
+                this.storage.nodeSubmits.size(), this.storage.connectionSubmits.size(), this.storage.linkingConnectionSubmits.size());
+        }
+
+        // Draw the rest of the electricity features.
+        // MC 26.2 removed MultiBufferSource entirely; build a one-off BufferBuilder and submit
+        // it through the RenderType's own PreparedRenderType, which carries the pipeline/texture
+        // bindings already declared in FabricRenderType.ELECTRICITY's RenderSetup.
+        RenderType renderType = ClientServices.PLATFORM.getElectricityRenderType();
+        try(ByteBufferBuilder byteBufferBuilder = new ByteBufferBuilder(renderType.format().getVertexSize() * 256))
+        {
+            BufferBuilder vertexConsumer = new BufferBuilder(byteBufferBuilder, renderType.primitiveTopology(), renderType.format());
+            this.storage.linkingConnectionSubmits.forEach(submit -> {
+                this.renderLinkingConnection(submit.pose, vertexConsumer, submit.linkingConnectionRenderState);
+            });
+            this.storage.nodeSubmits.forEach(submit -> submit.renderer.accept(submit.pose, vertexConsumer));
+            this.storage.connectionSubmits.forEach(submit -> {
+                this.renderConnection(submit.pose, vertexConsumer, submit.connectionRenderState);
+            });
+
+            try(MeshData data = vertexConsumer.build())
+            {
+                // TEMPORARY diagnostic: confirms whether MeshData was even produced (null = no vertices written)
+                // and what indexCount is about to be submitted.
+                if(System.currentTimeMillis() - this.debugLastLogMillis5 > 1000)
+                {
+                    this.debugLastLogMillis5 = System.currentTimeMillis();
+                    Constants.LOG.info("[ElectricityDebug] MeshData={}, indexCount={}", data != null, data != null ? data.drawState().indexCount() : -1);
+                }
+                if(data != null)
+                {
+                    RenderSystem.AutoStorageIndexBuffer autoIndexBuffer = RenderSystem.getSequentialBuffer(renderType.primitiveTopology());
+                    IndexType indexType = autoIndexBuffer.type();
+                    GpuBuffer indexBuffer = autoIndexBuffer.getBuffer(data.drawState().indexCount());
+                    GpuBuffer vertexBuffer = RenderSystem.getDevice().createBuffer(() -> "Electricity vertex buffer", GpuBuffer.USAGE_VERTEX | GpuBuffer.USAGE_COPY_DST, data.vertexBuffer().remaining());
+                    RenderSystem.getDevice().createCommandEncoder().writeToBuffer(vertexBuffer.slice(), data.vertexBuffer());
+                    // drawFromBuffer(vertexBuffer, indexBuffer, indexType, baseVertex, firstIndex, indexCount) -
+                    // order confirmed via StagedVertexBuffer.ExecuteInfo's record field order (the prior
+                    // (indexCount, 0, 0) ordering passed indexCount=0, silently drawing nothing at all).
+                    renderType.prepare().drawFromBuffer(vertexBuffer, indexBuffer, indexType, 0, 0, data.drawState().indexCount());
+                }
+            }
+        }
+
+        // Clear storage after drawing
+        this.storage.clear();
     }
 
     /**
