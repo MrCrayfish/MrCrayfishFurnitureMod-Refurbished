@@ -279,7 +279,10 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
                         GpuBuffer indexBuffer = autoIndexBuffer.getBuffer(data.drawState().indexCount());
                         GpuBuffer vertexBuffer = RenderSystem.getDevice().createBuffer(() -> "Electricity vertex buffer", GpuBuffer.USAGE_VERTEX | GpuBuffer.USAGE_COPY_DST, data.vertexBuffer().remaining());
                         RenderSystem.getDevice().createCommandEncoder().writeToBuffer(vertexBuffer.slice(), data.vertexBuffer());
-                        renderType.prepare().drawFromBuffer(vertexBuffer, indexBuffer, indexType, data.drawState().indexCount(), 0, 0);
+                        // drawFromBuffer(vertexBuffer, indexBuffer, indexType, baseVertex, firstIndex, indexCount) -
+                        // order confirmed via StagedVertexBuffer.ExecuteInfo's record field order (the prior
+                        // (indexCount, 0, 0) ordering passed indexCount=0, silently drawing nothing at all).
+                        renderType.prepare().drawFromBuffer(vertexBuffer, indexBuffer, indexType, 0, 0, data.drawState().indexCount());
                     }
                 }
             }

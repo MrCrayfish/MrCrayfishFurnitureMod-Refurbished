@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.1.2] - Fix invisible electricity overlay (nodes, connections, wrench link line)
+
+The wrench's in-progress link line (and, as a side effect of the same bug, existing connection lines and electricity node markers) never rendered. `ElectricityRenderer#setupFramePass`'s `PreparedRenderType#drawFromBuffer(vertexBuffer, indexBuffer, indexType, ...)` call had its three trailing int params in the wrong order — `(indexCount, 0, 0)` instead of `(baseVertex=0, firstIndex=0, indexCount)` — which silently submitted a draw call requesting **zero indices**, so nothing in that batch (all electricity overlay geometry shares one draw call) ever reached the screen. Confirmed the correct parameter order via `StagedVertexBuffer.ExecuteInfo`'s record field order: `(vertexBuffer, indexBuffer, indexType, baseVertex, firstIndex, indexCount)`. The separate `renderPowerableArea`/`blitToScreen` draw calls (manual `RenderPass#drawIndexed`/`#draw`, a different code path) already had the correct argument order and were unaffected.
+
 ## [1.1.1] - Fix LevelRenderer/LevelExtractor mixin crash on launch
 
 Launch crash: `@Shadow field level was not located in the target class net.minecraft.client.renderer.LevelRenderer`. MC 26.2 split LevelRenderer's entire per-frame extraction phase (the `level` field, `extractLevel`, and `extractBlockOutline`) out into a brand-new `net.minecraft.client.renderer.extract.LevelExtractor` class. `LevelRenderer#renderLevel` was also renamed to `render` (and dropped its `ChunkSectionsToRender` parameter). This affected three mixins:
