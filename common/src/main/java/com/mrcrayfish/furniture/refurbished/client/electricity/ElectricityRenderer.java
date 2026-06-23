@@ -375,6 +375,11 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
             }
             if(electricityTexture != null && mainTexture != null)
             {
+                // TEMPORARY smoke test: paints the whole screen solid translucent red, bypassing our
+                // custom pipeline/shader entirely. If this is NOT visible in-game, something later in the
+                // frame is overwriting this region; if it IS visible, the bug is in our blit shader/pipeline.
+                RenderSystem.getDevice().createCommandEncoder().clearColorTexture(mainTexture.texture(), new org.joml.Vector4f(1.0F, 0.0F, 0.0F, 0.5F));
+
                 try(RenderPass pass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Blit", mainTexture, Optional.empty()))
                 {
                     pass.setPipeline(ModRenderPipelines.ELECTRICITY_BLIT);
