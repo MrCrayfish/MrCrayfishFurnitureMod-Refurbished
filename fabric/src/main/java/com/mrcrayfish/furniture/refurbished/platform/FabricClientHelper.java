@@ -105,10 +105,4 @@ public class FabricClientHelper implements IClientHelper
         return new FabricStoveScreen((FabricStoveMenu) menu, playerInventory, title);
     }
 
-    @Override
-    public RenderPipeline.Snippet getMatricesProjectionSnippet()
-    {
-        return RenderPipelines.MATRICES_PROJECTION_SNIPPET;
-    }
-
 }

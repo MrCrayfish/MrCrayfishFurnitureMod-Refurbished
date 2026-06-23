@@ -71,7 +71,7 @@ public class ClientPlayHandler
     public static void handleMessageClearMessage(MessageClearMessage message)
     {
         Minecraft mc = Minecraft.getInstance();
-        if(mc.screen instanceof PostBoxScreen postBox)
+        if(mc.gui.screen() instanceof PostBoxScreen postBox)
         {
             postBox.clearMessage();
         }
@@ -84,7 +84,7 @@ public class ClientPlayHandler
             Minecraft mc = Minecraft.getInstance();
             Component title = Utils.translation("gui", "doorbell_rang");
             Component description = Component.literal(message.name());
-            mc.getToastManager().addToast(new ItemToast(title, description, new ItemStack(Items.BELL)));
+            mc.gui.toastManager().addToast(new ItemToast(title, description, new ItemStack(Items.BELL)));
         }
     }
 
@@ -179,7 +179,6 @@ public class ClientPlayHandler
         if(mc.level != null && mc.level.getEntity(message.entityId()) instanceof ItemEntity entity)
         {
             EntityRenderDispatcher dispatcher = mc.getEntityRenderDispatcher();
-            RenderBuffers buffers = mc.renderBuffers();
             Vec3 pos = Vec3.atCenterOf(message.pos());
             // TODO 1.21.10 can't reimplement at this time
             //EntityRenderState entityRenderState = mc.getEntityRenderDispatcher().extractEntity(entity, 1.0F);
@@ -214,7 +213,7 @@ public class ClientPlayHandler
     public static void handleMessageShowDeliveryResult(MessageShowDeliveryResult message)
     {
         Minecraft mc = Minecraft.getInstance();
-        if(mc.screen instanceof PostBoxScreen postBox)
+        if(mc.gui.screen() instanceof PostBoxScreen postBox)
         {
             postBox.showResponse(message.result());
         }

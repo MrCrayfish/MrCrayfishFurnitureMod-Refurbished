@@ -1,5 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.client.gui.overlay;
 
+import net.minecraft.world.phys.Vec3;
+
 import com.mrcrayfish.furniture.refurbished.Components;
 import com.mrcrayfish.furniture.refurbished.Config;
 import com.mrcrayfish.furniture.refurbished.client.electricity.WrenchHandler;
@@ -51,7 +53,7 @@ public class NodeIndicatorOverlay implements IHudOverlay
                     return;
                 }
 
-                int nodeLinkLength = (int) (linking.getNodePosition().getCenter().distanceTo(target.getNodePosition().getCenter()) + 0.5);
+                int nodeLinkLength = (int) (Vec3.atCenterOf(linking.getNodePosition()).distanceTo(Vec3.atCenterOf(target.getNodePosition())) + 0.5);
                 if(nodeLinkLength > LinkManager.MAX_LINK_LENGTH)
                 {
                     this.drawLabel(mc, extractor, Components.GUI_LINK_TOO_LONG, 40, 0);

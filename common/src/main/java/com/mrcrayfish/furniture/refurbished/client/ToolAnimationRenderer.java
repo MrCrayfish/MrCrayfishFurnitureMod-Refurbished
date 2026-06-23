@@ -4,10 +4,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.SubmitNodeStorage;
-import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
@@ -55,20 +53,23 @@ public class ToolAnimationRenderer
     }
 
     /**
-     * Renders all active animations in the level
+     * Renders all active animations in the level.
+     * MC 26.2 removed GameRenderer#getFeatureRenderDispatcher()'s SubmitNodeStorage accessor (and
+     * LevelRenderer.getLightCoords); this is now called from a SubmitNodeCollector already supplied
+     * by the level-render submission phase (see LevelRendererMixin) instead of fetching one internally.
      *
      * @param level the current level
+     * @param camera the current camera position
+     * @param collector the submit node collector for the current level render submission pass
      * @param partialTick the current partial tick
      */
-    public void submit(Level level, Vec3 camera, float partialTick)
+    public void submit(Level level, Vec3 camera, SubmitNodeCollector collector, float partialTick)
     {
         PoseStack poseStack = new PoseStack();
         poseStack.translate(-camera.x, -camera.y, -camera.z);
-        FeatureRenderDispatcher renderDispatcher = Minecraft.getInstance().gameRenderer.getFeatureRenderDispatcher();
-        SubmitNodeStorage storage = renderDispatcher.getSubmitNodeStorage();
         this.animationMap.forEach((pos, animation) -> {
-            int light = LevelRenderer.getLightCoords(level, animation.pos);
-            animation.submit(poseStack, storage, light, partialTick);
+            int light = LightCoordsUtil.getLightCoords(level, animation.pos);
+            animation.submit(poseStack, collector, light, partialTick);
         });
     }
 

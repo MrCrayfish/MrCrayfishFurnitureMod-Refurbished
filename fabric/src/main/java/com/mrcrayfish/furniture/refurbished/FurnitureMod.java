@@ -11,12 +11,12 @@ import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchContructingRecipe;
 import com.mrcrayfish.furniture.refurbished.data.CommonBlockStatesGenerator;
-import com.mrcrayfish.furniture.refurbished.data.CommonBlockTagsProvider;
 import com.mrcrayfish.furniture.refurbished.data.CommonItemModelsGenerator;
-import com.mrcrayfish.furniture.refurbished.data.CommonItemTagsProvider;
 import com.mrcrayfish.furniture.refurbished.data.CommonLootTableProvider;
 import com.mrcrayfish.furniture.refurbished.data.CommonRecipeProvider;
 import com.mrcrayfish.furniture.refurbished.data.FurnitureRegistryProvider;
+import com.mrcrayfish.furniture.refurbished.datagen.FabricBlockTagsProvider;
+import com.mrcrayfish.furniture.refurbished.datagen.FabricItemTagsProvider;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageWorkbench;
 import com.mrcrayfish.furniture.refurbished.platform.FabricFluidHelper;
@@ -227,8 +227,8 @@ public class FurnitureMod implements ModInitializer, DataGeneratorEntrypoint
     public void onInitializeDataGenerator(FabricDataGenerator generator)
     {
         FabricDataGenerator.Pack pack = generator.createPack();
-        pack.addProvider(CommonBlockTagsProvider::new);
-        pack.addProvider(CommonItemTagsProvider::new);
+        pack.addProvider(FabricBlockTagsProvider::new);
+        pack.addProvider(FabricItemTagsProvider::new);
         pack.addProvider(CommonLootTableProvider::new);
         pack.addProvider(CommonRecipeProvider.Runner::new);
         pack.addProvider(FurnitureRegistryProvider::new);

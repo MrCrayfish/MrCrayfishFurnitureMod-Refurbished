@@ -61,11 +61,9 @@ public class FabricLevelRendererMixin
         ElectricityRenderer.get().renderPowerableArea(this.levelRenderState.cameraRenderState.pos);
     }
 
-    @Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;checkPoseStack(Lcom/mojang/blaze3d/vertex/PoseStack;)V"))
-    private void refurbished_furniture$EndBatch(GpuBufferSlice terrainFog, LevelRenderState levelRenderState, ProfilerFiller profiler, ChunkSectionsToRender chunkSectionsToRender, ResourceHandle entityOutlineTarget, ResourceHandle translucentTarget, ResourceHandle mainTarget, ResourceHandle itemEntityTarget, ResourceHandle particleTarget, boolean renderOutline, Matrix4fc modelViewMatrix, CallbackInfo ci)
-    {
-        Minecraft.getInstance().renderBuffers().bufferSource().endBatch(ClientServices.PLATFORM.getTelevisionScreenRenderType(CustomSheets.TV_CHANNELS_SHEET));
-    }
+    // MC 26.2 removed MultiBufferSource/manual endBatch entirely - the deferred SubmitNodeCollector
+    // pipeline flushes RenderTypes automatically, so this manual flush (formerly needed before the
+    // pose-stack validation check) is obsolete and was removed along with its injection.
 
     // Prevents the block outline from rendering while the player is holding a wrench
     @Inject(method = "extractBlockOutline", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getShape(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/phys/shapes/CollisionContext;)Lnet/minecraft/world/phys/shapes/VoxelShape;"), cancellable = true)

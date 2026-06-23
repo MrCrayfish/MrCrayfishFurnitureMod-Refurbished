@@ -1,11 +1,13 @@
 package com.mrcrayfish.furniture.refurbished.mixin.client;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrcrayfish.furniture.refurbished.client.ToolAnimationRenderer;
 import com.mrcrayfish.furniture.refurbished.client.electricity.CachedElectricityNodes;
-import net.minecraft.client.Camera;
-import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.level.LevelRenderState;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -21,7 +23,7 @@ public class LevelRendererMixin
     private ClientLevel level;
 
     @Inject(method = "extractLevel", at = @At(value = "HEAD"))
-    private void refurbished_furniture$StartExtractLevel(DeltaTracker tracker, Camera camera, float deltaPartialTick, CallbackInfo ci)
+    private void refurbished_furniture$StartExtractLevel(CallbackInfo ci)
     {
         if(this.level != null)
         {
@@ -30,9 +32,19 @@ public class LevelRendererMixin
              * also preventing a potential memory leak. */
             // TODO dont do this every frame
             ((CachedElectricityNodes) this.level).refurbished_furniture$RemoveInvalidElectricityNodes();
+        }
+    }
 
-            // Submits tool renders to the storage
-            ToolAnimationRenderer.get().submit(this.level, camera.position(), deltaPartialTick);
+    // MC 26.2 removed the public SubmitNodeStorage accessor this mod used to stash tool animation
+    // draws into during extractLevel; submitBlockEntities is the level-render submission phase that
+    // actually has a SubmitNodeCollector available, so tool animations are submitted directly here instead.
+    @Inject(method = "submitBlockEntities", at = @At(value = "HEAD"))
+    private void refurbished_furniture$SubmitToolAnimations(PoseStack poseStack, LevelRenderState renderState, SubmitNodeCollector collector, CallbackInfo ci)
+    {
+        if(this.level != null)
+        {
+            float partialTick = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(true);
+            ToolAnimationRenderer.get().submit(this.level, renderState.cameraRenderState.pos, collector, partialTick);
         }
     }
 }

@@ -49,7 +49,7 @@ public class CeilingFanBlockEntity extends ElectricityModuleBlockEntity implemen
     public CeilingFanBlockEntity(BlockPos pos, BlockState state)
     {
         super(ModBlockEntities.CEILING_FAN.get(), pos, state);
-        this.audioPosition = pos.getCenter().add(0, 0.375, 0);
+        this.audioPosition = Vec3.atCenterOf(pos).add(0, 0.375, 0);
     }
 
     @Override

@@ -20,6 +20,6 @@ public class FurnitureScreens
             return true;
         });
         screen.setValidator(s -> !s.isBlank() && s.length() <= maxLength);
-        mc.setScreen(screen);
+        mc.gui.setScreen(screen);
     }
 }

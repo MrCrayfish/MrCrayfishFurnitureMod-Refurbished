@@ -183,15 +183,9 @@ public class TrampolineBlock extends FurnitureBlock implements BlockTagSupplier
         }
     }
 
-    @Override
-    public void updateEntityMovementAfterFallOn(BlockGetter getter, Entity entity)
-    {
-        Vec3 movement = entity.getDeltaMovement();
-        if(movement.y < 0)
-        {
-            super.updateEntityMovementAfterFallOn(getter, entity);
-        }
-    }
+    // updateEntityMovementAfterFallOn was removed from Block in MC 26.2 with no direct replacement;
+    // this only ever conditionally delegated to the vanilla default behavior, which fallOn() above
+    // already fully overrides for this block.
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)

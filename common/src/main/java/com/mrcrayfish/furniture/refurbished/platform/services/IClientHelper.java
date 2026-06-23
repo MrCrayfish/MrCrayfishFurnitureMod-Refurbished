@@ -46,6 +46,4 @@ public interface IClientHelper
 
     @SuppressWarnings("rawtypes")
     AbstractContainerScreen createStoveScreen(AbstractContainerMenu menu, Inventory playerInventory, Component title);
-
-    RenderPipeline.Snippet getMatricesProjectionSnippet();
 }

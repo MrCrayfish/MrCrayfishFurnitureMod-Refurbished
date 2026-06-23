@@ -18,6 +18,9 @@ java {
 
 repositories {
     mavenCentral()
+    // Resolves the locally-published 26.2 Framework fork (com.mrcrayfish:framework-*)
+    // when GitHub Packages credentials for the upstream MrCrayfish repo aren't configured.
+    mavenLocal()
     // https://docs.gradle.org/current/userguide/declaring_repositories.html#declaring_content_exclusively_found_in_one_repository
     exclusiveContent {
         forRepository {
@@ -165,10 +168,12 @@ publishing {
 }
 
 signing {
+    // Only register the sign task when a key is actually configured, otherwise
+    // publishToMavenLocal fails looking for a non-existent .asc artifact.
     if (System.getenv("SIGNING_KEY")) {
         def signingKey = System.getenv("SIGNING_KEY")
         def signingPassword = System.getenv("SIGNING_PASSPHRASE")
         useInMemoryPgpKeys(signingKey, signingPassword)
+        sign publishing.publications.mavenJava
     }
-    sign publishing.publications.mavenJava
 }

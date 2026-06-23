@@ -1,5 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.client.electricity;
 
+import com.mojang.blaze3d.GpuFormat;
+import com.mojang.blaze3d.IndexType;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
@@ -28,7 +30,6 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.AbstractTexture;
@@ -151,7 +152,7 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
         if(this.electricityTarget != null)
             this.electricityTarget.destroyBuffers();
         Window window = Minecraft.getInstance().getWindow();
-        this.electricityTarget = new TextureTarget("Refurbished Furniture Electricity Overlay", window.getWidth(), window.getHeight(), true);
+        this.electricityTarget = new TextureTarget("Refurbished Furniture Electricity Overlay", window.getWidth(), window.getHeight(), true, GpuFormat.RGBA8_UNORM);
     }
 
     /**
@@ -246,27 +247,42 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
             // Clear the electricity texture
             GpuTexture colorTexture = this.electricityTarget.getColorTexture();
             GpuTexture depthTexture = this.electricityTarget.getDepthTexture();
-            RenderSystem.getDevice().createCommandEncoder().clearColorAndDepthTextures(colorTexture, 0, depthTexture, 1);
+            RenderSystem.getDevice().createCommandEncoder().clearColorAndDepthTextures(colorTexture, new Vector4f(0, 0, 0, 0), depthTexture, 1.0);
 
             // Submit the states to storage
             PoseStack stack = new PoseStack();
             stack.translate(-camera.x, -camera.y, -camera.z);
             this.submitElectricityRenderState(this.renderState, stack);
 
-            // Draw the rests of the electricity features
+            // Draw the rest of the electricity features.
+            // MC 26.2 removed MultiBufferSource entirely; build a one-off BufferBuilder and submit
+            // it through the RenderType's own PreparedRenderType, which carries the pipeline/texture
+            // bindings already declared in FabricRenderType.ELECTRICITY's RenderSetup.
             RenderType renderType = ClientServices.PLATFORM.getElectricityRenderType();
-            MultiBufferSource.BufferSource source = Minecraft.getInstance().renderBuffers().bufferSource();
-            VertexConsumer vertexConsumer = source.getBuffer(renderType);
-            this.storage.linkingConnectionSubmits.forEach(submit -> {
-                this.renderLinkingConnection(submit.pose, vertexConsumer, submit.linkingConnectionRenderState);
-            });
-            this.storage.nodeSubmits.forEach(submit -> submit.renderer.accept(submit.pose, vertexConsumer));
-            this.storage.connectionSubmits.forEach(submit -> {
-                this.renderConnection(submit.pose, vertexConsumer, submit.connectionRenderState);
-            });
+            try(ByteBufferBuilder byteBufferBuilder = new ByteBufferBuilder(renderType.format().getVertexSize() * 256))
+            {
+                BufferBuilder vertexConsumer = new BufferBuilder(byteBufferBuilder, renderType.primitiveTopology(), renderType.format());
+                this.storage.linkingConnectionSubmits.forEach(submit -> {
+                    this.renderLinkingConnection(submit.pose, vertexConsumer, submit.linkingConnectionRenderState);
+                });
+                this.storage.nodeSubmits.forEach(submit -> submit.renderer.accept(submit.pose, vertexConsumer));
+                this.storage.connectionSubmits.forEach(submit -> {
+                    this.renderConnection(submit.pose, vertexConsumer, submit.connectionRenderState);
+                });
 
-            // End the render type so it is drawn to the separate texture
-            source.endBatch(renderType);
+                try(MeshData data = vertexConsumer.build())
+                {
+                    if(data != null)
+                    {
+                        RenderSystem.AutoStorageIndexBuffer autoIndexBuffer = RenderSystem.getSequentialBuffer(renderType.primitiveTopology());
+                        IndexType indexType = autoIndexBuffer.type();
+                        GpuBuffer indexBuffer = autoIndexBuffer.getBuffer(data.drawState().indexCount());
+                        GpuBuffer vertexBuffer = RenderSystem.getDevice().createBuffer(() -> "Electricity vertex buffer", GpuBuffer.USAGE_VERTEX | GpuBuffer.USAGE_COPY_DST, data.vertexBuffer().remaining());
+                        RenderSystem.getDevice().createCommandEncoder().writeToBuffer(vertexBuffer.slice(), data.vertexBuffer());
+                        renderType.prepare().drawFromBuffer(vertexBuffer, indexBuffer, indexType, data.drawState().indexCount(), 0, 0);
+                    }
+                }
+            }
 
             // Clear storage after drawing
             this.storage.clear();
@@ -293,16 +309,17 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
         // Only blit to the main texture if render pass handle was created
         if(this.handle != null)
         {
-            GpuTextureView mainTexture = Minecraft.getInstance().getMainRenderTarget().getColorTextureView();
+            GpuTextureView mainTexture = Minecraft.getInstance().gameRenderer.mainRenderTarget().getColorTextureView();
             GpuTextureView electricityTexture = this.electricityTarget.getColorTextureView();
             if(electricityTexture != null && mainTexture != null)
             {
-                try(RenderPass pass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Blit", mainTexture, OptionalInt.empty()))
+                try(RenderPass pass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Blit", mainTexture, Optional.empty()))
                 {
                     pass.setPipeline(ModRenderPipelines.ELECTRICITY_BLIT);
                     RenderSystem.bindDefaultUniforms(pass);
                     pass.bindTexture("InSampler", electricityTexture, RenderSystem.getSamplerCache().getClampToEdge(FilterMode.LINEAR));
-                    pass.draw(0, 3);
+                    // MC 26.2: draw(vertexCount, instanceCount, firstVertex, firstInstance) - Vulkan-style, confirmed via vanilla GuiRenderer bytecode.
+                    pass.draw(3, 1, 0, 0);
                 }
             }
         }
@@ -382,16 +399,16 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
         // Draw the powerable zone border
         boolean shaders = ElectricityRenderer.get().isIrisShadersEnabled();
         RenderPipeline pipeline = shaders ? RenderPipelines.WORLD_BORDER : ModRenderPipelines.POWERABLE_AREA;
-        try(ByteBufferBuilder quadBuilder = new ByteBufferBuilder(pipeline.getVertexFormat().getVertexSize() * 4))
+        try(ByteBufferBuilder quadBuilder = new ByteBufferBuilder(pipeline.getVertexFormatBinding(0).getVertexSize() * 4))
         {
-            BufferBuilder vertexBuilder = new BufferBuilder(quadBuilder, pipeline.getVertexFormatMode(), pipeline.getVertexFormat());
+            BufferBuilder vertexBuilder = new BufferBuilder(quadBuilder, pipeline.getPrimitiveTopology(), pipeline.getVertexFormatBinding(0));
             renderState.shape.toAabbs().forEach(box -> drawPowerableAreaBox(stack.last(), vertexBuilder, box));
             try(MeshData data = vertexBuilder.build())
             {
                 if(data != null)
                 {
-                    RenderTarget mainTarget = Minecraft.getInstance().getMainRenderTarget();
-                    RenderTarget weatherTarget = Minecraft.getInstance().levelRenderer.getWeatherTarget();
+                    RenderTarget mainTarget = Minecraft.getInstance().gameRenderer.mainRenderTarget();
+                    RenderTarget weatherTarget = Minecraft.getInstance().levelRenderer.weatherTarget();
                     GpuTextureView mainColor = mainTarget.getColorTextureView();
                     GpuTextureView mainDepth = mainTarget.getDepthTextureView();
                     if(weatherTarget != null)
@@ -400,9 +417,9 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
                         //mainDepth = weatherTarget.getDepthTextureView();
                     }
 
-                    GpuBufferSlice slice = RenderSystem.getDynamicUniforms().writeTransform(RenderSystem.getModelViewMatrix(), new Vector4f(1.0F, 1.0F, 1.0F, 0.6F * renderState.alpha), new Vector3f(), new Matrix4f());
-                    RenderSystem.AutoStorageIndexBuffer autoIndexBuffer = RenderSystem.getSequentialBuffer(pipeline.getVertexFormatMode());
-                    VertexFormat.IndexType indexType = autoIndexBuffer.type();
+                    GpuBufferSlice slice = RenderSystem.getDynamicUniforms().writeTransform(RenderSystem.getModelViewMatrixCopy(), new Vector4f(1.0F, 1.0F, 1.0F, 0.6F * renderState.alpha), new Vector3f(), new Matrix4f());
+                    RenderSystem.AutoStorageIndexBuffer autoIndexBuffer = RenderSystem.getSequentialBuffer(pipeline.getPrimitiveTopology());
+                    IndexType indexType = autoIndexBuffer.type();
                     GpuBuffer indexBuffer = autoIndexBuffer.getBuffer(data.drawState().indexCount());
 
                     GpuBuffer vertexBuffer = RenderSystem.getDevice().createBuffer(() -> "Powerable Area vertex buffer", GpuBuffer.USAGE_VERTEX | GpuBuffer.USAGE_COPY_DST, data.vertexBuffer().remaining());
@@ -410,15 +427,16 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
 
                     AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(renderState.invalid ? UNPOWERABLE_AREA : POWERABLE_AREA);
 
-                    try(RenderPass pass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Powerable Area", mainColor, OptionalInt.empty(), mainDepth, OptionalDouble.empty()))
+                    try(RenderPass pass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Powerable Area", mainColor, Optional.empty(), mainDepth, OptionalDouble.empty()))
                     {
                         pass.setPipeline(pipeline);
                         RenderSystem.bindDefaultUniforms(pass);
                         pass.setUniform("DynamicTransforms", slice);
                         pass.setIndexBuffer(indexBuffer, indexType);
                         pass.bindTexture("Sampler0", texture.getTextureView(), texture.getSampler());
-                        pass.setVertexBuffer(0, vertexBuffer);
-                        pass.drawIndexed(0, 0, data.drawState().indexCount(), 1);
+                        pass.setVertexBuffer(0, vertexBuffer.slice());
+                        // MC 26.2: drawIndexed(indexCount, instanceCount, firstIndex, baseVertex, firstInstance) - Vulkan-style, confirmed via vanilla GuiRenderer bytecode.
+                        pass.drawIndexed(data.drawState().indexCount(), 1, 0, 0, 0);
                     }
                 }
             }
