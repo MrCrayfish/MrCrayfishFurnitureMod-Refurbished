@@ -546,7 +546,10 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
      */
     private void tryAndTakeDebugScreenshot()
     {
-        if(Services.PLATFORM.isDevelopmentEnvironment())
+        // TEMPORARY: dev-env gate disabled so the user can dump electricityTarget's raw contents
+        // directly to disk (Ctrl+Alt+Shift) while investigating the missing-overlay bug. Restore
+        // `Services.PLATFORM.isDevelopmentEnvironment()` once resolved.
+        if(true)
         {
             Minecraft mc = Minecraft.getInstance();
             if(mc.hasShiftDown() && mc.hasAltDown() && mc.hasControlDown())

@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.7] - DEBUG BUILD: enable raw electricityTarget screenshot dump
+
+1.1.6's `outputColorTextureOverride` fix did NOT resolve the issue - user confirmed the override was already `false` (never set), so that was a real but irrelevant hardening fix, not the actual bug. Also ruled out: `FabricRenderType.ELECTRICITY_TARGET`'s `OutputTarget` supplier resolves to the exact same `ElectricityRenderer.electricityTarget` instance used in `blitToScreen` (lazy supplier, confirmed by reading both call sites) - not a stale/duplicate-texture-target issue either.
+
+There's an existing (but normally dev-environment-gated) debug tool, `tryAndTakeDebugScreenshot()`, that dumps `electricityTarget`'s raw contents directly to a PNG via `Screenshot.grab(...)` - completely bypassing `blitToScreen`, the main render target, and everything else. Temporarily disabled the `Services.PLATFORM.isDevelopmentEnvironment()` gate (`if(true)` instead) so this works in a normal launched client. Hold **Ctrl+Alt+Shift** while holding the wrench near nodes to trigger it; the PNG saves to the game directory alongside normal screenshots.
+
+This is the most direct possible test: if the dumped PNG shows visible node markers/connection lines, the geometry draw into `electricityTarget` works correctly and the bug is 100% isolated to `blitToScreen`'s sampling/shader step (already proven structurally sound via 1.1.5's solid-red smoke test, so likely a UV/sampling-specific issue). If the PNG is blank/fully transparent, the bug is upstream - in the `ELECTRICITY` pipeline draw itself (vertex color/alpha, blend state, or the `RenderSetup`'s texture binding for the node-icon sprite sheet).
+
 ## [1.1.6] - Likely fix: electricity geometry draw redirected to wrong render target
 
 1.1.5's smoke test confirmed the blit pass itself (and its injection point/timing) is correct - a solid red overlay painted directly onto the main render target via this exact code path WAS visible in-game. This isolates the bug to the upstream draw that's supposed to populate `electricityTarget` with node/connection/link geometry, despite every checkpoint (indexCount, no exceptions) reporting success.
