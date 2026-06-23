@@ -98,6 +98,9 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
     private long debugLastLogMillis4;
     private long debugLastLogMillis5;
     private long debugLastLogMillis6;
+    private long debugLastLogMillis7;
+    private long debugLastLogMillis8;
+    private long debugLastLogMillis9;
 
     private ElectricityRenderer()
     {
@@ -353,11 +356,23 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
 
         this.tryAndTakeDebugScreenshot();
 
+        // TEMPORARY diagnostic: confirms whether blitToScreen even reaches the draw call.
+        if(System.currentTimeMillis() - this.debugLastLogMillis7 > 1000)
+        {
+            this.debugLastLogMillis7 = System.currentTimeMillis();
+            Constants.LOG.info("[ElectricityDebug] blitToScreen() called, handle={}", this.handle != null);
+        }
+
         // Only blit to the main texture if render pass handle was created
         if(this.handle != null)
         {
             GpuTextureView mainTexture = Minecraft.getInstance().gameRenderer.mainRenderTarget().getColorTextureView();
             GpuTextureView electricityTexture = this.electricityTarget.getColorTextureView();
+            if(System.currentTimeMillis() - this.debugLastLogMillis8 > 1000)
+            {
+                this.debugLastLogMillis8 = System.currentTimeMillis();
+                Constants.LOG.info("[ElectricityDebug] blitToScreen() textures: mainTexture={}, electricityTexture={}", mainTexture != null, electricityTexture != null);
+            }
             if(electricityTexture != null && mainTexture != null)
             {
                 try(RenderPass pass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Blit", mainTexture, Optional.empty()))
@@ -367,6 +382,11 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
                     pass.bindTexture("InSampler", electricityTexture, RenderSystem.getSamplerCache().getClampToEdge(FilterMode.LINEAR));
                     // MC 26.2: draw(vertexCount, instanceCount, firstVertex, firstInstance) - Vulkan-style, confirmed via vanilla GuiRenderer bytecode.
                     pass.draw(3, 1, 0, 0);
+                    if(System.currentTimeMillis() - this.debugLastLogMillis9 > 1000)
+                    {
+                        this.debugLastLogMillis9 = System.currentTimeMillis();
+                        Constants.LOG.info("[ElectricityDebug] blitToScreen() draw issued successfully");
+                    }
                 }
             }
         }

@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.1.4] - DEBUG BUILD: add blitToScreen diagnostics
+
+1.1.3's diagnostics confirmed the geometry pipeline works correctly (real nodes/connections collected, indexCount=504 submitted to the GPU) - user confirmed via screenshots that node markers and connection lines are still completely invisible regardless, while the actual link logic (server-side) works fine. This narrows the bug to the `blitToScreen()` step (compositing the off-screen electricity texture onto the main screen) - never previously instrumented. Added logging for whether `blitToScreen()` fires at all, whether `this.handle`/`mainTexture`/`electricityTexture` are non-null, and whether the blit draw call completes without throwing.
+
 ## [1.1.3] - DEBUG BUILD: diagnostic logging for still-missing electricity overlay
 
 User reported 1.1.2's fix did not resolve the missing wrench link line (and confirmed the powerable-area border outline is also missing, ruling out the off-screen-texture/blit path as the sole cause — that path draws directly to the main screen). Added temporary throttled (~1/sec) `Constants.LOG.info` calls at every stage of the render chain to find where it actually breaks: `GameRenderer#renderLevel` mixin firing, `WrenchHandler.isHoldingWrench()`, `ElectricityRenderer#extract()` entry/exit (node/connection/link counts), `setupFramePass()` entry, storage contents right before the draw, `MeshData`/indexCount right before `drawFromBuffer`, and `renderPowerableArea()`'s early-return conditions. **Remove this logging once the real bug is found** — it is not a fix, just instrumentation.
