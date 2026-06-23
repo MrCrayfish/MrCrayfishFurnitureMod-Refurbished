@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.1.1] - Fix LevelRenderer/LevelExtractor mixin crash on launch
+
+Launch crash: `@Shadow field level was not located in the target class net.minecraft.client.renderer.LevelRenderer`. MC 26.2 split LevelRenderer's entire per-frame extraction phase (the `level` field, `extractLevel`, and `extractBlockOutline`) out into a brand-new `net.minecraft.client.renderer.extract.LevelExtractor` class. `LevelRenderer#renderLevel` was also renamed to `render` (and dropped its `ChunkSectionsToRender` parameter). This affected three mixins:
+
+- `LevelRendererMixin` (common): removed the broken `@Shadow private ClientLevel level` entirely; the electricity-node cleanup that used to run there moved to a new `LevelExtractorMixin` (common) targeting `LevelExtractor#extract`, which actually still has a `level` field. The tool-animation submission hook (added in 1.1.0) stays on `LevelRenderer#submitBlockEntities`, reading `Minecraft.getInstance().level` directly instead of a shadowed field.
+- `FabricLevelRendererMixin`: retargeted `renderLevel` → `render` (and dropped the now-nonexistent `ChunkSectionsToRender` param from the injector signatures) for the electricity frame-pass setup and blit-to-screen hooks.
+- New `FabricLevelExtractorMixin`: holds the electricity camera-extract call (`LevelExtractor#extract` HEAD) and the wrench block-outline-cancel hook (`LevelExtractor#extractBlockOutline`, both moved off the old `LevelRenderer`-targeting mixin where they no longer resolved).
+
+Confirmed via vanilla `LevelExtractor`/`LevelRenderer` bytecode (`javap -p -c`) that all new targets exist with matching signatures. Re-ran `:fabric:runDatagen` after the fix with no mixin errors (a partial sanity check only — datagen doesn't render a world, so the actual per-frame render path is still unverified in-game).
+
 ## [1.1.0] - MC 26.2 upgrade
 
 Ported from Minecraft 26.1.2 to 26.2 (Fabric + NeoForge). Both subprojects build successfully and datagen (recipes, tags, loot tables) runs cleanly on both loaders; not yet launch-tested in-game.
