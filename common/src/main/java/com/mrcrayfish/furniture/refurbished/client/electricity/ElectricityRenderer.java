@@ -104,6 +104,7 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
     private long debugLastLogMillis8;
     private long debugLastLogMillis9;
     private long debugLastLogMillis10;
+    private long debugLastLogMillis11;
 
     private ElectricityRenderer()
     {
@@ -359,13 +360,6 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
      */
     private void drawElectricityGeometry(Vec3 camera)
     {
-        // TEMPORARY smoke test: clears electricityTarget to solid opaque red and returns immediately,
-        // skipping the normal clear-to-transparent + geometry draw below. If this red is NOT visible
-        // in the Ctrl+Alt+Shift screenshot dump, the screenshot tool itself cannot read this texture
-        // back correctly, and the prior "solid black" results don't actually prove the draw failed.
-        RenderSystem.getDevice().createCommandEncoder().clearColorTexture(this.electricityTarget.getColorTexture(), new Vector4f(1.0F, 0.0F, 0.0F, 1.0F));
-        if(true) return;
-
         // Clear the electricity texture
         GpuTexture colorTexture = this.electricityTarget.getColorTexture();
         GpuTexture depthTexture = this.electricityTarget.getDepthTexture();
@@ -419,6 +413,15 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
                     // drawFromBuffer(vertexBuffer, indexBuffer, indexType, baseVertex, firstIndex, indexCount) -
                     // order confirmed via StagedVertexBuffer.ExecuteInfo's record field order (the prior
                     // (indexCount, 0, 0) ordering passed indexCount=0, silently drawing nothing at all).
+                    // TEMPORARY diagnostic: drawFromBuffer's automatic bindDefaultUniforms() call only sets
+                    // the "Projection" uniform if RenderSystem.getProjectionMatrixBuffer() is non-null - if
+                    // it's null here, our pipeline (which declares MATRICES_PROJECTION) draws with no
+                    // projection matrix bound at all, which could explain geometry vanishing with no error.
+                    if(System.currentTimeMillis() - this.debugLastLogMillis11 > 1000)
+                    {
+                        this.debugLastLogMillis11 = System.currentTimeMillis();
+                        Constants.LOG.info("[ElectricityDebug] projectionMatrixBuffer non-null before draw={}", RenderSystem.getProjectionMatrixBuffer() != null);
+                    }
                     renderType.prepare().drawFromBuffer(vertexBuffer, indexBuffer, indexType, 0, 0, data.drawState().indexCount());
                 }
             }

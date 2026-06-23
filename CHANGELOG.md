@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.10] - DEBUG BUILD: check whether the projection matrix is bound at all
+
+1.1.9's smoke test confirmed `electricityTarget` can be written to and read back correctly (solid red was visible in both normal gameplay and the screenshot dump) - the screenshot tool was never the problem, and the clear/blit paths are fully sound. This isolates the bug specifically to drawing *vertex geometry* into the texture: the `ELECTRICITY` pipeline (unlike `ELECTRICITY_BLIT` or a plain `clearColorTexture` call) declares `BindGroupLayouts.MATRICES_PROJECTION`, which neither of the previously-proven-working paths use.
+
+`PreparedRenderType#drawFromBuffer` calls `RenderSystem.bindDefaultUniforms(pass)` automatically, which only sets the "Projection" uniform if `RenderSystem.getProjectionMatrixBuffer()` is non-null - confirmed via bytecode, it's silently skipped otherwise (no error). Since our draw now runs at the very end of `LevelRenderer#render()`, outside the normal world-render submission context that would populate this global static field, it's plausible this buffer is null or stale by the time we draw, leaving our pipeline with no projection matrix at all - which would transform every vertex into garbage clip-space coordinates with zero indication of failure anywhere in the chain.
+
+Added one throttled log right before the `drawFromBuffer` call reporting whether `getProjectionMatrixBuffer()` is null at that exact point. If null, that's the confirmed root cause and the fix is to snapshot/reapply the world's projection matrix ourselves before drawing.
+
 ## [1.1.9] - DEBUG BUILD: smoke test for electricityTarget itself
 
 1.1.8's fix (moving the geometry draw out of the unordered `FrameGraphBuilder` pass) did NOT change the result - the raw `electricityTarget` screenshot dump is still solid black, exactly as before. This is suspicious: if the matrix-timing theory were correct and now fixed, geometry that was previously transformed off-screen should show up *somewhere* (even if mispositioned), not remain perfectly flat black with zero variation, twice in a row.
