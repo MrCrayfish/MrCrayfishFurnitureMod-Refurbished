@@ -89,14 +89,6 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
     private TextureTarget electricityTarget;
     private boolean framePassSetup;
     private boolean takenScreenshot;
-    // TEMPORARY diagnostic throttle counters for the missing-overlay investigation; remove once resolved.
-    private long debugLastLogMillis;
-    private long debugLastLogMillis2;
-    private long debugLastLogMillis4;
-    private long debugLastLogMillis6;
-    private long debugLastLogMillis7;
-    private long debugLastLogMillis8;
-    private long debugLastLogMillis9;
 
     private ElectricityRenderer()
     {
@@ -195,12 +187,6 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
         this.renderState.reset();
 
         boolean holdingWrench = WrenchHandler.isHoldingWrench();
-        if(System.currentTimeMillis() - this.debugLastLogMillis > 1000)
-        {
-            this.debugLastLogMillis = System.currentTimeMillis();
-            Constants.LOG.info("[ElectricityDebug] extract() called, holdingWrench={}", holdingWrench);
-        }
-
         if(holdingWrench)
         {
             WrenchHandler handler = WrenchHandler.get();
@@ -229,14 +215,6 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
                 }
             });
         }
-
-        if(System.currentTimeMillis() - this.debugLastLogMillis2 > 1000)
-        {
-            this.debugLastLogMillis2 = System.currentTimeMillis();
-            Constants.LOG.info("[ElectricityDebug] extract() result: nodes={}, connections={}, link={}, isCreatingLink={}, selectedNode={}",
-                this.renderState.nodes.size(), this.renderState.connections.size(), this.renderState.link != null,
-                WrenchHandler.get().isCreatingLink(), WrenchHandler.get().getSelectedNode());
-        }
     }
 
     /**
@@ -253,15 +231,7 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
 
     /**
      * Submits node markers, connections, and the in-progress wrench link line through the normal
-     * deferred SubmitNodeCollector pipeline (the same mechanism used by ToolAnimationRenderer),
-     * instead of manually building a buffer and calling drawFromBuffer ourselves. The manual approach
-     * - building a one-off BufferBuilder and submitting it via RenderType#prepare().drawFromBuffer()
-     * from a FrameGraphBuilder pass, then later from blitToScreen() directly - was verified correct at
-     * every layer reachable via logging and bytecode inspection (real indexCount, valid projection
-     * matrix, valid texture bindings, correct output target) yet a raw electricityTarget screenshot
-     * dump still showed solid black with real geometry active. Routing through the same
-     * SubmitNodeCollector path the engine itself uses for all other custom/off-screen-target geometry
-     * removes whatever undiagnosable assumption the manual path was violating.
+     * deferred SubmitNodeCollector pipeline (the same mechanism used by ToolAnimationRenderer).
      *
      * @param collector the SubmitNodeCollector for this frame, from LevelRenderer#submitBlockEntities
      * @param camera the current camera position
@@ -291,13 +261,6 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
             collector.submitCustomGeometry(stack, renderType, (pose, consumer) -> this.renderLinkingConnection(pose, consumer, link));
         }
 
-        if(System.currentTimeMillis() - this.debugLastLogMillis4 > 1000)
-        {
-            this.debugLastLogMillis4 = System.currentTimeMillis();
-            Constants.LOG.info("[ElectricityDebug] submit() via SubmitNodeCollector: nodes={}, connections={}, link={}",
-                this.renderState.nodes.size(), this.renderState.connections.size(), this.renderState.link != null);
-        }
-
         this.framePassSetup = true;
     }
 
@@ -316,13 +279,6 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
             this.drawDeferredCalls(stack);
         }*/
 
-        // TEMPORARY diagnostic: confirms whether blitToScreen even reaches the draw call.
-        if(System.currentTimeMillis() - this.debugLastLogMillis7 > 1000)
-        {
-            this.debugLastLogMillis7 = System.currentTimeMillis();
-            Constants.LOG.info("[ElectricityDebug] blitToScreen() called, framePassSetup={}", this.framePassSetup);
-        }
-
         this.tryAndTakeDebugScreenshot();
 
         // Only blit to the main texture if submit() ran earlier this frame
@@ -330,11 +286,6 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
         {
             GpuTextureView mainTexture = Minecraft.getInstance().gameRenderer.mainRenderTarget().getColorTextureView();
             GpuTextureView electricityTexture = this.electricityTarget.getColorTextureView();
-            if(System.currentTimeMillis() - this.debugLastLogMillis8 > 1000)
-            {
-                this.debugLastLogMillis8 = System.currentTimeMillis();
-                Constants.LOG.info("[ElectricityDebug] blitToScreen() textures: mainTexture={}, electricityTexture={}", mainTexture != null, electricityTexture != null);
-            }
             if(electricityTexture != null && mainTexture != null)
             {
                 try(RenderPass pass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Blit", mainTexture, Optional.empty()))
@@ -344,11 +295,6 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
                     pass.bindTexture("InSampler", electricityTexture, RenderSystem.getSamplerCache().getClampToEdge(FilterMode.LINEAR));
                     // MC 26.2: draw(vertexCount, instanceCount, firstVertex, firstInstance) - Vulkan-style, confirmed via vanilla GuiRenderer bytecode.
                     pass.draw(3, 1, 0, 0);
-                    if(System.currentTimeMillis() - this.debugLastLogMillis9 > 1000)
-                    {
-                        this.debugLastLogMillis9 = System.currentTimeMillis();
-                        Constants.LOG.info("[ElectricityDebug] blitToScreen() draw issued successfully");
-                    }
                 }
             }
         }
@@ -420,13 +366,6 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
         PowerableAreaRenderState renderState = new PowerableAreaRenderState();
         WrenchHandler handler = WrenchHandler.get();
         handler.extractPowerableArea(renderState, camera);
-        // TEMPORARY diagnostic: confirms whether renderPowerableArea is even being called, and why it
-        // early-returns if it does (no shape = powerableArea.getPowerableAreaShape() returned null).
-        if(System.currentTimeMillis() - this.debugLastLogMillis6 > 1000)
-        {
-            this.debugLastLogMillis6 = System.currentTimeMillis();
-            Constants.LOG.info("[ElectricityDebug] renderPowerableArea() called, shape={}, alpha={}", renderState.shape != null, renderState.alpha);
-        }
         if(renderState.shape == null || renderState.alpha <= 0)
             return;
 
@@ -485,10 +424,7 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
      */
     private void tryAndTakeDebugScreenshot()
     {
-        // TEMPORARY: dev-env gate disabled so the user can dump electricityTarget's raw contents
-        // directly to disk (Ctrl+Alt+Shift) while investigating the missing-overlay bug. Restore
-        // `Services.PLATFORM.isDevelopmentEnvironment()` once resolved.
-        if(true)
+        if(Services.PLATFORM.isDevelopmentEnvironment())
         {
             Minecraft mc = Minecraft.getInstance();
             if(mc.hasShiftDown() && mc.hasAltDown() && mc.hasControlDown())
