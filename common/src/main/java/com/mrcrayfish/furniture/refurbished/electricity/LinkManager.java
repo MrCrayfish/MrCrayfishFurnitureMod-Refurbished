@@ -1,5 +1,7 @@
 package com.mrcrayfish.furniture.refurbished.electricity;
 
+import net.minecraft.world.phys.Vec3;
+
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.core.ModSounds;
 import com.mrcrayfish.furniture.refurbished.network.Network;
@@ -70,7 +72,7 @@ public class LinkManager
             if(lastNode.isSourceNode() && node.isSourceNode())
                 return;
 
-            int linkLength = (int) (lastNode.getNodePosition().getCenter().distanceTo(node.getNodePosition().getCenter()) + 0.5);
+            int linkLength = (int) (Vec3.atCenterOf(lastNode.getNodePosition()).distanceTo(Vec3.atCenterOf(node.getNodePosition())) + 0.5);
             if(linkLength <= MAX_LINK_LENGTH)
             {
                 this.lastNodeMap.remove(player.getUUID());

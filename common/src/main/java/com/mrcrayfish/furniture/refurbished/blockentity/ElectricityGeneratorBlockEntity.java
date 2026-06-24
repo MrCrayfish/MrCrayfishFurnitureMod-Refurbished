@@ -64,7 +64,7 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
     public ElectricityGeneratorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
     {
         super(type, pos, state, 1);
-        this.audioPosition = pos.getCenter().add(0, -0.375, 0);
+        this.audioPosition = Vec3.atCenterOf(pos).add(0, -0.375, 0);
     }
 
     @Override
@@ -241,7 +241,7 @@ public class ElectricityGeneratorBlockEntity extends ElectricitySourceLootBlockE
                         else
                         {
                             // Fallback and drop the item into the world
-                            Vec3 pos = this.getBlockPos().getCenter().add(0, 0.5, 0);
+                            Vec3 pos = Vec3.atCenterOf(this.getBlockPos()).add(0, 0.5, 0);
                             Containers.dropItemStack(this.level, pos.x, pos.y, pos.z, remainder.create());
                         }
                     }

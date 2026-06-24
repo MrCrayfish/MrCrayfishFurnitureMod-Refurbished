@@ -37,15 +37,8 @@ public class NeoForgeClientEvents
         }
     }
 
-    @SubscribeEvent
-    private static void onRenderLevelStage(RenderLevelStageEvent.AfterLevel event)
-    {
-        Minecraft mc = Minecraft.getInstance();
-        if(mc.player == null || mc.level == null)
-            return;
-
-        mc.renderBuffers().bufferSource().endBatch(ClientServices.PLATFORM.getTelevisionScreenRenderType(CustomSheets.TV_CHANNELS_SHEET));
-    }
+    // MC 26.2 removed MultiBufferSource/manual endBatch entirely - the deferred SubmitNodeCollector
+    // pipeline flushes RenderTypes automatically, so the manual flush this handler did is obsolete.
 
     @SubscribeEvent
     private static void onDrawHighlight(ExtractBlockOutlineRenderStateEvent event)
@@ -83,7 +76,6 @@ public class NeoForgeClientEvents
     private static void afterRenderLevel(RenderLevelStageEvent.AfterLevel event)
     {
         ElectricityRenderer.get().blitToScreen();
-        Minecraft.getInstance().renderBuffers().bufferSource().endBatch(ClientServices.PLATFORM.getTelevisionScreenRenderType(CustomSheets.TV_CHANNELS_SHEET));
     }
 
     @SubscribeEvent

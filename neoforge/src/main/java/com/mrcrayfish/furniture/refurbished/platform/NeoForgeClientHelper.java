@@ -108,12 +108,6 @@ public class NeoForgeClientHelper implements IClientHelper
         return new StoveScreen((StoveMenu) menu, playerInventory, title);
     }
 
-    @Override
-    public RenderPipeline.Snippet getMatricesProjectionSnippet()
-    {
-        return RenderPipelines.MATRICES_PROJECTION_SNIPPET;
-    }
-
     private Function<Identifier, TextureAtlasSprite> getBlockTextures()
     {
         return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS)::getSprite;

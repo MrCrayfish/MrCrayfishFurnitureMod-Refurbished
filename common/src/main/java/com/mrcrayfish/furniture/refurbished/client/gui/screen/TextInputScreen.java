@@ -59,11 +59,11 @@ public class TextInputScreen extends Screen
             this.editBox.setValue(this.input);
         }
         this.addRenderableWidget(this.closeButton = Button.builder(Component.literal("Close"), btn -> {
-            this.minecraft.setScreen(null);
+            this.minecraft.gui.setScreen(null);
         }).pos(startX + 6, startY + 45).size((WINDOW_WIDTH - 12) / 2 - 2, 20).build());
         this.addRenderableWidget(this.acceptButton = Button.builder(MoreObjects.firstNonNull(this.acceptLabel, Component.literal("Accept")), btn -> {
             if(this.callback.apply(this.input)) {
-                this.minecraft.setScreen(null);
+                this.minecraft.gui.setScreen(null);
             }
         }).pos(startX + (WINDOW_WIDTH - 12) / 2 + 2 + 6, startY + 45).size((WINDOW_WIDTH - 12) / 2 - 2, 20).build());
         this.updateAcceptButton(this.input);

@@ -269,7 +269,7 @@ public class WrenchHandler
         // within the powerable area to be considered valid.
         if(this.selectedNodePos != null)
         {
-            Vec3 start = this.selectedNodePos.getCenter();
+            Vec3 start = Vec3.atCenterOf(this.selectedNodePos);
             Vec3 end = this.getLinkEnd(player, partialTick);
             this.linkInsideArea = this.powerableArea.containsLine(level, start, end);
             return;
@@ -282,8 +282,8 @@ public class WrenchHandler
             Connection connection = hitResult.getConnection();
             if(connection != null)
             {
-                Vec3 start = connection.getPosA().getCenter();
-                Vec3 end = connection.getPosB().getCenter();
+                Vec3 start = Vec3.atCenterOf(connection.getPosA());
+                Vec3 end = Vec3.atCenterOf(connection.getPosB());
                 this.linkInsideArea = this.powerableArea.containsLine(level, start, end);
             }
         }
@@ -362,7 +362,7 @@ public class WrenchHandler
         IElectricityNode node = this.getTargetNode();
         if(node != null && !this.isSelectedNode(node) && this.canLinkToNode(node))
         {
-            return node.getNodePosition().getCenter();
+            return Vec3.atCenterOf(node.getNodePosition());
         }
         return player.getViewVector(partialTick).normalize().scale(1.5).add(player.getEyePosition(partialTick));
     }
@@ -445,8 +445,8 @@ public class WrenchHandler
         {
             Vec3 rayStart = player.getEyePosition(partialTick);
             Vec3 rayEnd = rayStart.add(player.getViewVector(partialTick).normalize().scale(range));
-            Vec3 linkStart = connectionRenderState.a().getCenter();
-            Vec3 linkEnd = connectionRenderState.b().getCenter();
+            Vec3 linkStart = Vec3.atCenterOf(connectionRenderState.a());
+            Vec3 linkEnd = Vec3.atCenterOf(connectionRenderState.b());
             Vector3d result =  new Vector3d();
             double squareDistance = Intersectiond.findClosestPointsLineSegments(rayStart.x, rayStart.y, rayStart.z, rayEnd.x, rayEnd.y, rayEnd.z, linkStart.x, linkStart.y, linkStart.z, linkEnd.x, linkEnd.y, linkEnd.z, new Vector3d(), result);
             double distance = Math.sqrt(squareDistance);

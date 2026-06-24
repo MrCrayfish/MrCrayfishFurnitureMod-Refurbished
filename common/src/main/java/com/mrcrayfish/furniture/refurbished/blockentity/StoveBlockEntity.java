@@ -639,7 +639,7 @@ public class StoveBlockEntity extends ElectricityModuleLootBlockEntity implement
                         else
                         {
                             // Fallback and drop the item into the world
-                            Vec3 pos = StoveBlockEntity.this.getBlockPos().getCenter().add(0, 0.5, 0);
+                            Vec3 pos = Vec3.atCenterOf(StoveBlockEntity.this.getBlockPos()).add(0, 0.5, 0);
                             Containers.dropItemStack(StoveBlockEntity.this.level, pos.x, pos.y, pos.z, remainder.create());
                         }
                     }

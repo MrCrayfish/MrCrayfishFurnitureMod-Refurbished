@@ -126,7 +126,7 @@ public class Bootstrap
         // Spawns the items contained in a package into the level
         DispenserBlock.registerBehavior(ModItems.PACKAGE::get, (source, stack) -> {
             Direction direction = source.state().getValue(DispenserBlock.FACING);
-            Vec3 pos = source.pos().relative(direction).getCenter();
+            Vec3 pos = Vec3.atCenterOf(source.pos().relative(direction));
             PackageItem.getPackagedItems(stack).nonEmptyItemCopyStream().forEach(s -> {
                 Containers.dropItemStack(source.level(), pos.x, pos.y, pos.z, s);
             });

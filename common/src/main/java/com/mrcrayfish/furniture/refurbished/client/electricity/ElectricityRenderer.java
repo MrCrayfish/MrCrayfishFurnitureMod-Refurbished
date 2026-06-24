@@ -1,14 +1,14 @@
 package com.mrcrayfish.furniture.refurbished.client.electricity;
 
+import com.mojang.blaze3d.GpuFormat;
+import com.mojang.blaze3d.IndexType;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
-import com.mojang.blaze3d.framegraph.FramePass;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.resource.ResourceHandle;
 import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.FilterMode;
@@ -28,8 +28,8 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.core.BlockPos;
@@ -81,14 +81,13 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
         return instance;
     }
 
-    private final SubmitStorage storage = new SubmitStorage();
     private final PoseStack poseStack = new PoseStack();
     private final ElectricityRenderState renderState = new ElectricityRenderState();
     private @Nullable Class<?> irisClass;
     private Method shaderPack;
     private Boolean shaderEnabled;
     private TextureTarget electricityTarget;
-    private ResourceHandle<TextureTarget> handle;
+    private boolean framePassSetup;
     private boolean takenScreenshot;
 
     private ElectricityRenderer()
@@ -151,7 +150,7 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
         if(this.electricityTarget != null)
             this.electricityTarget.destroyBuffers();
         Window window = Minecraft.getInstance().getWindow();
-        this.electricityTarget = new TextureTarget("Refurbished Furniture Electricity Overlay", window.getWidth(), window.getHeight(), true);
+        this.electricityTarget = new TextureTarget("Refurbished Furniture Electricity Overlay", window.getWidth(), window.getHeight(), true, GpuFormat.RGBA8_UNORM);
     }
 
     /**
@@ -187,7 +186,8 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
     {
         this.renderState.reset();
 
-        if(WrenchHandler.isHoldingWrench())
+        boolean holdingWrench = WrenchHandler.isHoldingWrench();
+        if(holdingWrench)
         {
             WrenchHandler handler = WrenchHandler.get();
             handler.extractLinkingConnection(this.renderState);
@@ -217,60 +217,51 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
         }
     }
 
-    private void submitElectricityRenderState(ElectricityRenderState renderState, PoseStack stack)
-    {
-        renderState.nodes.forEach(box -> this.storage.submitNode(stack, box));
-        renderState.connections.forEach(connection -> this.storage.submitConnection(stack, connection));
-        if(renderState.link != null)
-            this.storage.submitLinkingConnection(stack, renderState.link);
-    }
-
     /**
      * Sets up the frame pass required to draw the electricity texture target
      *
      * @param builder the FrameGraphBuilder of the current frame
      * @param camera the current camera instance
      */
-    @SuppressWarnings("DataFlowIssue")
     public void setupFramePass(FrameGraphBuilder builder, Vec3 camera)
     {
         // Reset shader enabled cache for this frame
         this.shaderEnabled = null;
+    }
 
-        // Create the frame pass
-        ResourceHandle<TextureTarget> handle = builder.importExternal(PASS_NAME, this.electricityTarget);
-        FramePass pass = builder.addPass(PASS_NAME);
-        this.handle = pass.readsAndWrites(handle);
-        pass.executes(() ->
+    /**
+     * Submits node markers, connections, and the in-progress wrench link line through the normal
+     * deferred SubmitNodeCollector pipeline (the same mechanism used by ToolAnimationRenderer).
+     *
+     * @param collector the SubmitNodeCollector for this frame, from LevelRenderer#submitBlockEntities
+     * @param camera the current camera position
+     */
+    public void submit(SubmitNodeCollector collector, Vec3 camera)
+    {
+        // Clear the electricity texture once per frame
+        GpuTexture colorTexture = this.electricityTarget.getColorTexture();
+        GpuTexture depthTexture = this.electricityTarget.getDepthTexture();
+        RenderSystem.getDevice().createCommandEncoder().clearColorAndDepthTextures(colorTexture, new Vector4f(0, 0, 0, 0), depthTexture, 1.0);
+
+        PoseStack stack = new PoseStack();
+        stack.translate(-camera.x, -camera.y, -camera.z);
+        RenderType renderType = ClientServices.PLATFORM.getElectricityRenderType();
+
+        this.renderState.nodes.forEach(state -> collector.submitCustomGeometry(stack, renderType, (pose, consumer) -> {
+            drawTexturedBox(pose, consumer, state.box, 0, 0, 0.25F, 0.25F);
+            if(state.highlighted)
+            {
+                drawInvertedColouredBox(pose, consumer, state.box.inflate(0.03125), state.highlightColour, 0.7F);
+            }
+        }));
+        this.renderState.connections.forEach(state -> collector.submitCustomGeometry(stack, renderType, (pose, consumer) -> this.renderConnection(pose, consumer, state)));
+        if(this.renderState.link != null)
         {
-            // Clear the electricity texture
-            GpuTexture colorTexture = this.electricityTarget.getColorTexture();
-            GpuTexture depthTexture = this.electricityTarget.getDepthTexture();
-            RenderSystem.getDevice().createCommandEncoder().clearColorAndDepthTextures(colorTexture, 0, depthTexture, 1);
+            LinkingConnectionRenderState link = this.renderState.link;
+            collector.submitCustomGeometry(stack, renderType, (pose, consumer) -> this.renderLinkingConnection(pose, consumer, link));
+        }
 
-            // Submit the states to storage
-            PoseStack stack = new PoseStack();
-            stack.translate(-camera.x, -camera.y, -camera.z);
-            this.submitElectricityRenderState(this.renderState, stack);
-
-            // Draw the rests of the electricity features
-            RenderType renderType = ClientServices.PLATFORM.getElectricityRenderType();
-            MultiBufferSource.BufferSource source = Minecraft.getInstance().renderBuffers().bufferSource();
-            VertexConsumer vertexConsumer = source.getBuffer(renderType);
-            this.storage.linkingConnectionSubmits.forEach(submit -> {
-                this.renderLinkingConnection(submit.pose, vertexConsumer, submit.linkingConnectionRenderState);
-            });
-            this.storage.nodeSubmits.forEach(submit -> submit.renderer.accept(submit.pose, vertexConsumer));
-            this.storage.connectionSubmits.forEach(submit -> {
-                this.renderConnection(submit.pose, vertexConsumer, submit.connectionRenderState);
-            });
-
-            // End the render type so it is drawn to the separate texture
-            source.endBatch(renderType);
-
-            // Clear storage after drawing
-            this.storage.clear();
-        });
+        this.framePassSetup = true;
     }
 
     /**
@@ -290,26 +281,28 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
 
         this.tryAndTakeDebugScreenshot();
 
-        // Only blit to the main texture if render pass handle was created
-        if(this.handle != null)
+        // Only blit to the main texture if submit() ran earlier this frame
+        if(this.framePassSetup)
         {
-            GpuTextureView mainTexture = Minecraft.getInstance().getMainRenderTarget().getColorTextureView();
+            GpuTextureView mainTexture = Minecraft.getInstance().gameRenderer.mainRenderTarget().getColorTextureView();
             GpuTextureView electricityTexture = this.electricityTarget.getColorTextureView();
             if(electricityTexture != null && mainTexture != null)
             {
-                try(RenderPass pass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Blit", mainTexture, OptionalInt.empty()))
+                try(RenderPass pass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Blit", mainTexture, Optional.empty()))
                 {
                     pass.setPipeline(ModRenderPipelines.ELECTRICITY_BLIT);
                     RenderSystem.bindDefaultUniforms(pass);
                     pass.bindTexture("InSampler", electricityTexture, RenderSystem.getSamplerCache().getClampToEdge(FilterMode.LINEAR));
-                    pass.draw(0, 3);
+                    // MC 26.2: draw(vertexCount, instanceCount, firstVertex, firstInstance) - Vulkan-style, confirmed via vanilla GuiRenderer bytecode.
+                    pass.draw(3, 1, 0, 0);
                 }
             }
         }
 
-        // Once drawn, remove handle
-        this.handle = null;
+        // Once drawn, reset for next frame
+        this.framePassSetup = false;
     }
+
 
     /**
      *
@@ -382,16 +375,16 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
         // Draw the powerable zone border
         boolean shaders = ElectricityRenderer.get().isIrisShadersEnabled();
         RenderPipeline pipeline = shaders ? RenderPipelines.WORLD_BORDER : ModRenderPipelines.POWERABLE_AREA;
-        try(ByteBufferBuilder quadBuilder = new ByteBufferBuilder(pipeline.getVertexFormat().getVertexSize() * 4))
+        try(ByteBufferBuilder quadBuilder = new ByteBufferBuilder(pipeline.getVertexFormatBinding(0).getVertexSize() * 4))
         {
-            BufferBuilder vertexBuilder = new BufferBuilder(quadBuilder, pipeline.getVertexFormatMode(), pipeline.getVertexFormat());
+            BufferBuilder vertexBuilder = new BufferBuilder(quadBuilder, pipeline.getPrimitiveTopology(), pipeline.getVertexFormatBinding(0));
             renderState.shape.toAabbs().forEach(box -> drawPowerableAreaBox(stack.last(), vertexBuilder, box));
             try(MeshData data = vertexBuilder.build())
             {
                 if(data != null)
                 {
-                    RenderTarget mainTarget = Minecraft.getInstance().getMainRenderTarget();
-                    RenderTarget weatherTarget = Minecraft.getInstance().levelRenderer.getWeatherTarget();
+                    RenderTarget mainTarget = Minecraft.getInstance().gameRenderer.mainRenderTarget();
+                    RenderTarget weatherTarget = Minecraft.getInstance().levelRenderer.weatherTarget();
                     GpuTextureView mainColor = mainTarget.getColorTextureView();
                     GpuTextureView mainDepth = mainTarget.getDepthTextureView();
                     if(weatherTarget != null)
@@ -400,9 +393,9 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
                         //mainDepth = weatherTarget.getDepthTextureView();
                     }
 
-                    GpuBufferSlice slice = RenderSystem.getDynamicUniforms().writeTransform(RenderSystem.getModelViewMatrix(), new Vector4f(1.0F, 1.0F, 1.0F, 0.6F * renderState.alpha), new Vector3f(), new Matrix4f());
-                    RenderSystem.AutoStorageIndexBuffer autoIndexBuffer = RenderSystem.getSequentialBuffer(pipeline.getVertexFormatMode());
-                    VertexFormat.IndexType indexType = autoIndexBuffer.type();
+                    GpuBufferSlice slice = RenderSystem.getDynamicUniforms().writeTransform(RenderSystem.getModelViewMatrixCopy(), new Vector4f(1.0F, 1.0F, 1.0F, 0.6F * renderState.alpha), new Vector3f(), new Matrix4f());
+                    RenderSystem.AutoStorageIndexBuffer autoIndexBuffer = RenderSystem.getSequentialBuffer(pipeline.getPrimitiveTopology());
+                    IndexType indexType = autoIndexBuffer.type();
                     GpuBuffer indexBuffer = autoIndexBuffer.getBuffer(data.drawState().indexCount());
 
                     GpuBuffer vertexBuffer = RenderSystem.getDevice().createBuffer(() -> "Powerable Area vertex buffer", GpuBuffer.USAGE_VERTEX | GpuBuffer.USAGE_COPY_DST, data.vertexBuffer().remaining());
@@ -410,15 +403,16 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
 
                     AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(renderState.invalid ? UNPOWERABLE_AREA : POWERABLE_AREA);
 
-                    try(RenderPass pass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Powerable Area", mainColor, OptionalInt.empty(), mainDepth, OptionalDouble.empty()))
+                    try(RenderPass pass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Powerable Area", mainColor, Optional.empty(), mainDepth, OptionalDouble.empty()))
                     {
                         pass.setPipeline(pipeline);
                         RenderSystem.bindDefaultUniforms(pass);
                         pass.setUniform("DynamicTransforms", slice);
                         pass.setIndexBuffer(indexBuffer, indexType);
                         pass.bindTexture("Sampler0", texture.getTextureView(), texture.getSampler());
-                        pass.setVertexBuffer(0, vertexBuffer);
-                        pass.drawIndexed(0, 0, data.drawState().indexCount(), 1);
+                        pass.setVertexBuffer(0, vertexBuffer.slice());
+                        // MC 26.2: drawIndexed(indexCount, instanceCount, firstIndex, baseVertex, firstInstance) - Vulkan-style, confirmed via vanilla GuiRenderer bytecode.
+                        pass.drawIndexed(data.drawState().indexCount(), 1, 0, 0, 0);
                     }
                 }
             }
@@ -467,46 +461,6 @@ public final class ElectricityRenderer implements ResourceManagerReloadListener
                 consumer.accept(node);
             }
         });
-    }
-
-    private static class SubmitStorage
-    {
-        private final List<NodeSubmit> nodeSubmits = new ArrayList<>();
-        private final List<ConnectionSubmit> connectionSubmits = new ArrayList<>();
-        private final List<LinkingConnectionSubmit> linkingConnectionSubmits = new ArrayList<>();
-
-        public void submitNode(PoseStack poseStack, NodeRenderState state)
-        {
-            this.nodeSubmits.add(new NodeSubmit(poseStack.last().copy(), (pose, consumer) -> {
-                drawTexturedBox(pose, consumer, state.box, 0, 0, 0.25F, 0.25F);
-                if(state.highlighted) {
-                    drawInvertedColouredBox(pose, consumer, state.box.inflate(0.03125), state.highlightColour, 0.7F);
-                }
-            }));
-        }
-
-        public void submitConnection(PoseStack poseStack, ConnectionRenderState state)
-        {
-            this.connectionSubmits.add(new ConnectionSubmit(poseStack.last().copy(), state));
-        }
-
-        public void submitLinkingConnection(PoseStack poseStack, LinkingConnectionRenderState state)
-        {
-            this.linkingConnectionSubmits.add(new LinkingConnectionSubmit(poseStack.last().copy(), state));
-        }
-
-        private void clear()
-        {
-            this.nodeSubmits.clear();
-            this.connectionSubmits.clear();
-            this.linkingConnectionSubmits.clear();
-        }
-
-        private record NodeSubmit(PoseStack.Pose pose, BiConsumer<PoseStack.Pose, VertexConsumer> renderer) {}
-
-        private record ConnectionSubmit(PoseStack.Pose pose, ConnectionRenderState connectionRenderState) {}
-
-        private record LinkingConnectionSubmit(PoseStack.Pose pose, LinkingConnectionRenderState linkingConnectionRenderState) {}
     }
 
     /**

@@ -1,26 +1,32 @@
 package com.mrcrayfish.furniture.refurbished.core;
 
+import com.mojang.blaze3d.PrimitiveTopology;
 import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.ColorTargetState;
 import com.mojang.blaze3d.pipeline.DepthStencilState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.CompareOp;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mrcrayfish.framework.api.registry.RegistryContainer;
-import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
+import net.minecraft.client.renderer.BindGroupLayouts;
 
 @RegistryContainer(clientOnly = true)
 public class ModRenderPipelines
 {
-    public static final RenderPipeline ELECTRICITY = RenderPipeline.builder(ClientServices.PLATFORM.getMatricesProjectionSnippet())
+    // MC 26.2 moved sampler declarations from RenderPipeline.Builder#withSampler(String) into
+    // BindGroupLayout, and split withVertexFormat(format, mode) into withVertexBinding + withPrimitiveTopology.
+    // The old platform-specific "matrices projection snippet" was removed - BindGroupLayouts.MATRICES_PROJECTION
+    // (plain vanilla, no longer loader-specific) is the direct replacement, added as another bind group layout.
+    public static final RenderPipeline ELECTRICITY = RenderPipeline.builder()
             .withLocation(Utils.id("pipeline/electricity"))
             .withVertexShader("core/position_tex_color")
             .withFragmentShader("core/position_tex_color")
             .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
-            .withSampler("Sampler0")
-            .withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS)
+            .withBindGroupLayout(BindGroupLayouts.MATRICES_PROJECTION)
+            .withBindGroupLayout(BindGroupLayouts.SAMPLER0)
+            .withVertexBinding(0, DefaultVertexFormat.POSITION_TEX_COLOR)
+            .withPrimitiveTopology(PrimitiveTopology.QUADS)
             .withDepthStencilState(DepthStencilState.DEFAULT)
             .build();
 
@@ -28,19 +34,23 @@ public class ModRenderPipelines
             .withLocation(Utils.id("pipeline/electricity_blit"))
             .withVertexShader("core/screenquad")
             .withFragmentShader("core/blit_screen")
-            .withSampler("InSampler")
+            .withBindGroupLayout(BindGroupLayouts.IN_SAMPLER)
             .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
-            .withVertexFormat(DefaultVertexFormat.EMPTY, VertexFormat.Mode.TRIANGLES)
+            // Screen-quad blit pipelines don't bind a vertex buffer at all (confirmed via vanilla
+            // ENTITY_OUTLINE_BLIT's bytecode) - the vertex shader generates the triangle procedurally.
+            .withPrimitiveTopology(PrimitiveTopology.TRIANGLES)
             .build();
 
-    public static final RenderPipeline POWERABLE_AREA = RenderPipeline.builder(ClientServices.PLATFORM.getMatricesProjectionSnippet())
+    public static final RenderPipeline POWERABLE_AREA = RenderPipeline.builder()
             .withLocation(Utils.id("pipeline/powerable_area"))
             .withVertexShader("core/rendertype_world_border")
             .withFragmentShader("core/rendertype_world_border")
-            .withSampler("Sampler0")
+            .withBindGroupLayout(BindGroupLayouts.MATRICES_PROJECTION)
+            .withBindGroupLayout(BindGroupLayouts.SAMPLER0)
             .withColorTargetState(new ColorTargetState(BlendFunction.OVERLAY))
             .withCull(false)
-            .withVertexFormat(DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS)
+            .withVertexBinding(0, DefaultVertexFormat.POSITION_TEX)
+            .withPrimitiveTopology(PrimitiveTopology.QUADS)
             .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, true, -3.0F, -3.0F))
             .build();
 }

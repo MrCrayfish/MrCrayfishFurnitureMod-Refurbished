@@ -8,6 +8,7 @@
         "FabricLivingEntityMixin"
     ],
     "client": [
+        "client.FabricLevelExtractorMixin",
         "client.FabricLevelRendererMixin"
     ],
     "injectors": {
