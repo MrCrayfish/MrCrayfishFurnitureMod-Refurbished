@@ -11,6 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -70,7 +71,7 @@ public class LinkManager
             if(lastNode.isSourceNode() && node.isSourceNode())
                 return;
 
-            int linkLength = (int) (lastNode.getNodePosition().getCenter().distanceTo(node.getNodePosition().getCenter()) + 0.5);
+            int linkLength = (int) (Vec3.atCenterOf(lastNode.getNodePosition()).distanceTo(Vec3.atCenterOf(node.getNodePosition())) + 0.5);
             if(linkLength <= MAX_LINK_LENGTH)
             {
                 this.lastNodeMap.remove(player.getUUID());

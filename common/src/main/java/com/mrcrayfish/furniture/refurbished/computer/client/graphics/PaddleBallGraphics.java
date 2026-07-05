@@ -184,7 +184,7 @@ public class PaddleBallGraphics extends DisplayableProgram<PaddleBall>
 
             // Disable the vs player button if not in a server
             Minecraft mc = Minecraft.getInstance();
-            if((mc.getSingleplayerServer() == null || mc.isSingleplayer()) && mc.getCurrentServer() == null)
+            if((mc.getSingleplayerServer() == null || !mc.isMultiplayerServer()) && mc.getCurrentServer() == null)
             {
                 this.playVsButton.setTooltip(Tooltip.create(this.game.translation("server_required")));
                 this.playVsButton.active = false;

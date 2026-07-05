@@ -22,6 +22,7 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.fluid.FluidStacksResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidUtil;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 import java.util.function.Consumer;
 
@@ -58,7 +59,8 @@ public class NeoForgeFluidHelper implements IFluidHelper
     @Override
     public InteractionResult performInteractionWithBlock(Player player, InteractionHand hand, Level level, BlockPos pos, Direction face)
     {
-        return FluidUtil.interactWithFluidHandler(player, hand, level, pos, face) ? InteractionResult.SUCCESS : InteractionResult.PASS;
+        // TODO 26.2 test
+        return FluidUtil.interactWithFluidHandler(player, hand, level, pos, face, Transaction.openRoot()) ? InteractionResult.SUCCESS : InteractionResult.PASS;
     }
 
     @Override

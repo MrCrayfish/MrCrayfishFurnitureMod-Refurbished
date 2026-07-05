@@ -5,7 +5,6 @@ import com.mrcrayfish.furniture.refurbished.client.electricity.ElectricityRender
 import com.mrcrayfish.furniture.refurbished.client.electricity.WrenchHandler;
 import com.mrcrayfish.furniture.refurbished.compat.jei.SyncedRecipes;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
-import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
@@ -44,7 +43,8 @@ public class NeoForgeClientEvents
         if(mc.player == null || mc.level == null)
             return;
 
-        mc.renderBuffers().bufferSource().endBatch(ClientServices.PLATFORM.getTelevisionScreenRenderType(CustomSheets.TV_CHANNELS_SHEET));
+        // TODO 26.2 test
+        //mc.renderBuffers().bufferSource().endBatch(ClientServices.PLATFORM.getTelevisionScreenRenderType(CustomSheets.TV_CHANNELS_SHEET));
     }
 
     @SubscribeEvent
@@ -62,18 +62,6 @@ public class NeoForgeClientEvents
     }
 
     @SubscribeEvent
-    private static void onExtractLevelRenderState(ExtractLevelRenderStateEvent event)
-    {
-        ElectricityRenderer.get().extract(event.getCamera());
-    }
-
-    @SubscribeEvent
-    private static void onSetupFrameGraph(FrameGraphSetupEvent event)
-    {
-        ElectricityRenderer.get().setupFramePass(event.getFrameGrapBuilder(), event.getCameraState().pos);
-    }
-
-    @SubscribeEvent
     private static void afterEntities(RenderLevelStageEvent.AfterWeather event)
     {
         ElectricityRenderer.get().renderPowerableArea(event.getLevelRenderState().cameraRenderState.pos);
@@ -82,8 +70,8 @@ public class NeoForgeClientEvents
     @SubscribeEvent
     private static void afterRenderLevel(RenderLevelStageEvent.AfterLevel event)
     {
-        ElectricityRenderer.get().blitToScreen();
-        Minecraft.getInstance().renderBuffers().bufferSource().endBatch(ClientServices.PLATFORM.getTelevisionScreenRenderType(CustomSheets.TV_CHANNELS_SHEET));
+        // TODO 26.2 test
+        //Minecraft.getInstance().renderBuffers().bufferSource().endBatch(ClientServices.PLATFORM.getTelevisionScreenRenderType(CustomSheets.TV_CHANNELS_SHEET));
     }
 
     @SubscribeEvent

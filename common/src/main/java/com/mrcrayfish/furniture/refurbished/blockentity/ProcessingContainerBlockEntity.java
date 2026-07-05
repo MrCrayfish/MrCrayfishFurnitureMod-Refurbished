@@ -295,7 +295,7 @@ public abstract class ProcessingContainerBlockEntity extends BasicLootBlockEntit
                         else
                         {
                             // Fallback and drop the item into the world
-                            Vec3 pos = this.getBlockPos().getCenter().add(0, 0.5, 0);
+                            Vec3 pos = Vec3.atCenterOf(this.getBlockPos()).add(0, 0.5, 0);
                             Containers.dropItemStack(this.level, pos.x, pos.y, pos.z, remainder.create());
                         }
                     }

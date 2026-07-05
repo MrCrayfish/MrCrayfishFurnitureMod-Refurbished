@@ -22,8 +22,8 @@ import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 @RegistryContainer
 public class ModItems
 {
-    public static final RegistryEntry<FridgeItem> FRIDGE_LIGHT = RegistryEntry.item(Utils.id("light_fridge"), properties -> new FridgeItem(ModBlocks.FRIDGE_LIGHT.get(), ModBlocks.FREEZER_LIGHT.get(), properties), Item.Properties::new);
-    public static final RegistryEntry<FridgeItem> FRIDGE_DARK = RegistryEntry.item(Utils.id("dark_fridge"), properties -> new FridgeItem(ModBlocks.FRIDGE_DARK.get(), ModBlocks.FREEZER_DARK.get(), properties), Item.Properties::new);
+    public static final RegistryEntry<Item> FRIDGE_LIGHT = RegistryEntry.item(Utils.id("light_fridge"), properties -> new FridgeItem(ModBlocks.FRIDGE_LIGHT.get(), ModBlocks.FREEZER_LIGHT.get(), properties), Item.Properties::new);
+    public static final RegistryEntry<Item> FRIDGE_DARK = RegistryEntry.item(Utils.id("dark_fridge"), properties -> new FridgeItem(ModBlocks.FRIDGE_DARK.get(), ModBlocks.FREEZER_DARK.get(), properties), Item.Properties::new);
     public static final RegistryEntry<Item> SPATULA = RegistryEntry.item(Utils.id("spatula"), Item::new, () -> new Item.Properties().durability(256).sword(ToolMaterial.WOOD, 3.0F, -2.4F));
     public static final RegistryEntry<Item> KNIFE = RegistryEntry.item(Utils.id("knife"), Item::new, () -> new Item.Properties().durability(256).sword(ToolMaterial.STONE, 3.0F, -2.4F));
     public static final RegistryEntry<Item> PACKAGE = RegistryEntry.item(Utils.id("package"), PackageItem::new, () -> new Item.Properties().stacksTo(1));
@@ -46,5 +46,5 @@ public class ModItems
     public static final RegistryEntry<Item> RAW_MEATLOVERS_PIZZA = RegistryEntry.item(Utils.id("raw_meatlovers_pizza"), Item::new, Item.Properties::new);
     public static final RegistryEntry<Item> COOKED_MEATLOVERS_PIZZA = RegistryEntry.item(Utils.id("cooked_meatlovers_pizza"), Item::new, Item.Properties::new);
     public static final RegistryEntry<Item> MEATLOVERS_PIZZA_SLICE = RegistryEntry.item(Utils.id("meatlovers_pizza_slice"), Item::new, () -> new Item.Properties().food(new FoodProperties.Builder().nutrition(8).saturationModifier(0.8F).build(), Consumables.defaultFood().onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.HASTE, 100), 1.0F)).build()));
-    public static final RegistryEntry<TelevisionRemoteItem> TELEVISION_REMOTE = RegistryEntry.item(Utils.id("television_remote"), TelevisionRemoteItem::new, () -> new Item.Properties().stacksTo(1));
+    public static final RegistryEntry<Item> TELEVISION_REMOTE = RegistryEntry.item(Utils.id("television_remote"), TelevisionRemoteItem::new, () -> new Item.Properties().stacksTo(1));
 }

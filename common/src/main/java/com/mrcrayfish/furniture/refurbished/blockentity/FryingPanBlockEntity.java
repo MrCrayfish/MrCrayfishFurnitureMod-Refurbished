@@ -77,7 +77,7 @@ public class FryingPanBlockEntity extends BasicLootBlockEntity implements ICooki
         super(type, pos, state, 1);
         this.recipeCache = RecipeManager.createCheck(recipeType);
         this.campfireCookingCache = RecipeManager.createCheck(RecipeType.CAMPFIRE_COOKING);
-        this.audioPosition = pos.getCenter().add(0, -0.375, 0);
+        this.audioPosition = Vec3.atCenterOf(pos).add(0, -0.375, 0);
     }
 
     public boolean isFlippingNeeded()

@@ -5,12 +5,10 @@ import com.mrcrayfish.framework.api.registry.RegistryEntry;
 import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.platform.Services;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
-import com.mrcrayfish.furniture.refurbished.util.reflection.ReflectedMethod;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
 
 /**
  * Author: MrCrayfish

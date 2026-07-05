@@ -67,7 +67,7 @@ public class StorageJarRenderer implements BlockEntityRenderer<StorageJarBlockEn
         {
             renderState.showLabel = result.getBlockPos().equals(entity.getBlockPos());
         }
-        renderState.distanceToCamera = camera.distanceToSqr(entity.getBlockPos().getCenter());
+        renderState.distanceToCamera = camera.distanceToSqr(Vec3.atCenterOf(entity.getBlockPos()));
     }
 
     @Override
@@ -100,7 +100,7 @@ public class StorageJarRenderer implements BlockEntityRenderer<StorageJarBlockEn
 
         if(renderState.showLabel && renderState.label != null)
         {
-            collector.submitNameTag(stack, new Vec3(0.5, 0.5, 0.5), 0, renderState.label, true, renderState.lightCoords, renderState.distanceToCamera, cameraState);
+            collector.submitNameTag(stack, new Vec3(0.5, 0.5, 0.5), 0, renderState.label, true, renderState.lightCoords, cameraState);
         }
     }
 }

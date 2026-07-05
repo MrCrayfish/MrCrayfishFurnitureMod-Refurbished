@@ -2,7 +2,6 @@ package com.mrcrayfish.furniture.refurbished.crafting;
 
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeSerializers;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeBookCategories;

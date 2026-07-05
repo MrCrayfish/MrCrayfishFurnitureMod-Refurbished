@@ -68,6 +68,5 @@ public class ClientFurnitureMod implements ClientModInitializer
         });
 
         FluidRenderingRegistry.register(FurnitureMod.MILK, new FluidModel.Unbaked(new Material(Utils.id("block/milk_still")), new Material(Utils.id("block/milk_still")), null, null));
-        ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloadListener(ElectricityRenderer.ID, ElectricityRenderer.get());
     }
 }

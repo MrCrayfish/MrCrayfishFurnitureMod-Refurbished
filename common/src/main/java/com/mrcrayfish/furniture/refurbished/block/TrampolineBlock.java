@@ -183,7 +183,8 @@ public class TrampolineBlock extends FurnitureBlock implements BlockTagSupplier
         }
     }
 
-    @Override
+    // TODO 26.2 find how to reimplement bounce
+    /*@Override
     public void updateEntityMovementAfterFallOn(BlockGetter getter, Entity entity)
     {
         Vec3 movement = entity.getDeltaMovement();
@@ -191,7 +192,7 @@ public class TrampolineBlock extends FurnitureBlock implements BlockTagSupplier
         {
             super.updateEntityMovementAfterFallOn(getter, entity);
         }
-    }
+    }*/
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)

@@ -14,7 +14,6 @@ import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -54,7 +53,7 @@ public class CommonRecipeProvider extends RecipeProvider
 
         ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.MISC, ModBlocks.ELECTRICITY_GENERATOR_DARK.get())
                 .requires(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.get())
-                .requires(Items.BLACK_DYE)
+                .requires(Items.DYE.black())
                 .unlockedBy("has_iron_ingot", this.has(Items.IRON_INGOT))
                 .unlockedBy("has_redstone", this.has(Items.REDSTONE))
                 .save(this.output);
@@ -226,70 +225,70 @@ public class CommonRecipeProvider extends RecipeProvider
         this.woodenKitchenStorageCabinet(Blocks.CRIMSON_PLANKS, ModBlocks.KITCHEN_STORAGE_CABINET_CRIMSON.get());
         this.woodenKitchenStorageCabinet(Blocks.WARPED_PLANKS, ModBlocks.KITCHEN_STORAGE_CABINET_WARPED.get());
         this.woodenKitchenStorageCabinet(Blocks.PALE_OAK_PLANKS, ModBlocks.KITCHEN_STORAGE_CABINET_PALE_OAK.get());
-        this.colouredKitchenCabinetry(Items.WHITE_DYE, ModBlocks.KITCHEN_CABINETRY_WHITE.get());
-        this.colouredKitchenCabinetry(Items.ORANGE_DYE, ModBlocks.KITCHEN_CABINETRY_ORANGE.get());
-        this.colouredKitchenCabinetry(Items.MAGENTA_DYE, ModBlocks.KITCHEN_CABINETRY_MAGENTA.get());
-        this.colouredKitchenCabinetry(Items.LIGHT_BLUE_DYE, ModBlocks.KITCHEN_CABINETRY_LIGHT_BLUE.get());
-        this.colouredKitchenCabinetry(Items.YELLOW_DYE, ModBlocks.KITCHEN_CABINETRY_YELLOW.get());
-        this.colouredKitchenCabinetry(Items.LIME_DYE, ModBlocks.KITCHEN_CABINETRY_LIME.get());
-        this.colouredKitchenCabinetry(Items.PINK_DYE, ModBlocks.KITCHEN_CABINETRY_PINK.get());
-        this.colouredKitchenCabinetry(Items.GRAY_DYE, ModBlocks.KITCHEN_CABINETRY_GRAY.get());
-        this.colouredKitchenCabinetry(Items.LIGHT_GRAY_DYE, ModBlocks.KITCHEN_CABINETRY_LIGHT_GRAY.get());
-        this.colouredKitchenCabinetry(Items.CYAN_DYE, ModBlocks.KITCHEN_CABINETRY_CYAN.get());
-        this.colouredKitchenCabinetry(Items.PURPLE_DYE, ModBlocks.KITCHEN_CABINETRY_PURPLE.get());
-        this.colouredKitchenCabinetry(Items.BLUE_DYE, ModBlocks.KITCHEN_CABINETRY_BLUE.get());
-        this.colouredKitchenCabinetry(Items.BROWN_DYE, ModBlocks.KITCHEN_CABINETRY_BROWN.get());
-        this.colouredKitchenCabinetry(Items.GREEN_DYE, ModBlocks.KITCHEN_CABINETRY_GREEN.get());
-        this.colouredKitchenCabinetry(Items.RED_DYE, ModBlocks.KITCHEN_CABINETRY_RED.get());
-        this.colouredKitchenCabinetry(Items.BLACK_DYE, ModBlocks.KITCHEN_CABINETRY_BLACK.get());
-        this.colouredKitchenDrawer(Items.WHITE_DYE, ModBlocks.KITCHEN_DRAWER_WHITE.get());
-        this.colouredKitchenDrawer(Items.ORANGE_DYE, ModBlocks.KITCHEN_DRAWER_ORANGE.get());
-        this.colouredKitchenDrawer(Items.MAGENTA_DYE, ModBlocks.KITCHEN_DRAWER_MAGENTA.get());
-        this.colouredKitchenDrawer(Items.LIGHT_BLUE_DYE, ModBlocks.KITCHEN_DRAWER_LIGHT_BLUE.get());
-        this.colouredKitchenDrawer(Items.YELLOW_DYE, ModBlocks.KITCHEN_DRAWER_YELLOW.get());
-        this.colouredKitchenDrawer(Items.LIME_DYE, ModBlocks.KITCHEN_DRAWER_LIME.get());
-        this.colouredKitchenDrawer(Items.PINK_DYE, ModBlocks.KITCHEN_DRAWER_PINK.get());
-        this.colouredKitchenDrawer(Items.GRAY_DYE, ModBlocks.KITCHEN_DRAWER_GRAY.get());
-        this.colouredKitchenDrawer(Items.LIGHT_GRAY_DYE, ModBlocks.KITCHEN_DRAWER_LIGHT_GRAY.get());
-        this.colouredKitchenDrawer(Items.CYAN_DYE, ModBlocks.KITCHEN_DRAWER_CYAN.get());
-        this.colouredKitchenDrawer(Items.PURPLE_DYE, ModBlocks.KITCHEN_DRAWER_PURPLE.get());
-        this.colouredKitchenDrawer(Items.BLUE_DYE, ModBlocks.KITCHEN_DRAWER_BLUE.get());
-        this.colouredKitchenDrawer(Items.BROWN_DYE, ModBlocks.KITCHEN_DRAWER_BROWN.get());
-        this.colouredKitchenDrawer(Items.GREEN_DYE, ModBlocks.KITCHEN_DRAWER_GREEN.get());
-        this.colouredKitchenDrawer(Items.RED_DYE, ModBlocks.KITCHEN_DRAWER_RED.get());
-        this.colouredKitchenDrawer(Items.BLACK_DYE, ModBlocks.KITCHEN_DRAWER_BLACK.get());
-        this.colouredKitchenSink(Items.WHITE_DYE, ModBlocks.KITCHEN_SINK_WHITE.get());
-        this.colouredKitchenSink(Items.ORANGE_DYE, ModBlocks.KITCHEN_SINK_ORANGE.get());
-        this.colouredKitchenSink(Items.MAGENTA_DYE, ModBlocks.KITCHEN_SINK_MAGENTA.get());
-        this.colouredKitchenSink(Items.LIGHT_BLUE_DYE, ModBlocks.KITCHEN_SINK_LIGHT_BLUE.get());
-        this.colouredKitchenSink(Items.YELLOW_DYE, ModBlocks.KITCHEN_SINK_YELLOW.get());
-        this.colouredKitchenSink(Items.LIME_DYE, ModBlocks.KITCHEN_SINK_LIME.get());
-        this.colouredKitchenSink(Items.PINK_DYE, ModBlocks.KITCHEN_SINK_PINK.get());
-        this.colouredKitchenSink(Items.GRAY_DYE, ModBlocks.KITCHEN_SINK_GRAY.get());
-        this.colouredKitchenSink(Items.LIGHT_GRAY_DYE, ModBlocks.KITCHEN_SINK_LIGHT_GRAY.get());
-        this.colouredKitchenSink(Items.CYAN_DYE, ModBlocks.KITCHEN_SINK_CYAN.get());
-        this.colouredKitchenSink(Items.PURPLE_DYE, ModBlocks.KITCHEN_SINK_PURPLE.get());
-        this.colouredKitchenSink(Items.BLUE_DYE, ModBlocks.KITCHEN_SINK_BLUE.get());
-        this.colouredKitchenSink(Items.BROWN_DYE, ModBlocks.KITCHEN_SINK_BROWN.get());
-        this.colouredKitchenSink(Items.GREEN_DYE, ModBlocks.KITCHEN_SINK_GREEN.get());
-        this.colouredKitchenSink(Items.RED_DYE, ModBlocks.KITCHEN_SINK_RED.get());
-        this.colouredKitchenSink(Items.BLACK_DYE, ModBlocks.KITCHEN_SINK_BLACK.get());
-        this.colouredKitchenStorageCabinet(Items.WHITE_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_WHITE.get());
-        this.colouredKitchenStorageCabinet(Items.ORANGE_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_ORANGE.get());
-        this.colouredKitchenStorageCabinet(Items.MAGENTA_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_MAGENTA.get());
-        this.colouredKitchenStorageCabinet(Items.LIGHT_BLUE_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_LIGHT_BLUE.get());
-        this.colouredKitchenStorageCabinet(Items.YELLOW_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_YELLOW.get());
-        this.colouredKitchenStorageCabinet(Items.LIME_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_LIME.get());
-        this.colouredKitchenStorageCabinet(Items.PINK_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_PINK.get());
-        this.colouredKitchenStorageCabinet(Items.GRAY_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_GRAY.get());
-        this.colouredKitchenStorageCabinet(Items.LIGHT_GRAY_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_LIGHT_GRAY.get());
-        this.colouredKitchenStorageCabinet(Items.CYAN_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_CYAN.get());
-        this.colouredKitchenStorageCabinet(Items.PURPLE_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_PURPLE.get());
-        this.colouredKitchenStorageCabinet(Items.BLUE_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_BLUE.get());
-        this.colouredKitchenStorageCabinet(Items.BROWN_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_BROWN.get());
-        this.colouredKitchenStorageCabinet(Items.GREEN_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_GREEN.get());
-        this.colouredKitchenStorageCabinet(Items.RED_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_RED.get());
-        this.colouredKitchenStorageCabinet(Items.BLACK_DYE, ModBlocks.KITCHEN_STORAGE_CABINET_BLACK.get());
+        this.colouredKitchenCabinetry(Items.DYE.white(), ModBlocks.KITCHEN_CABINETRY_WHITE.get());
+        this.colouredKitchenCabinetry(Items.DYE.orange(), ModBlocks.KITCHEN_CABINETRY_ORANGE.get());
+        this.colouredKitchenCabinetry(Items.DYE.magenta(), ModBlocks.KITCHEN_CABINETRY_MAGENTA.get());
+        this.colouredKitchenCabinetry(Items.DYE.lightBlue(), ModBlocks.KITCHEN_CABINETRY_LIGHT_BLUE.get());
+        this.colouredKitchenCabinetry(Items.DYE.yellow(), ModBlocks.KITCHEN_CABINETRY_YELLOW.get());
+        this.colouredKitchenCabinetry(Items.DYE.lime(), ModBlocks.KITCHEN_CABINETRY_LIME.get());
+        this.colouredKitchenCabinetry(Items.DYE.pink(), ModBlocks.KITCHEN_CABINETRY_PINK.get());
+        this.colouredKitchenCabinetry(Items.DYE.gray(), ModBlocks.KITCHEN_CABINETRY_GRAY.get());
+        this.colouredKitchenCabinetry(Items.DYE.lightGray(), ModBlocks.KITCHEN_CABINETRY_LIGHT_GRAY.get());
+        this.colouredKitchenCabinetry(Items.DYE.cyan(), ModBlocks.KITCHEN_CABINETRY_CYAN.get());
+        this.colouredKitchenCabinetry(Items.DYE.purple(), ModBlocks.KITCHEN_CABINETRY_PURPLE.get());
+        this.colouredKitchenCabinetry(Items.DYE.blue(), ModBlocks.KITCHEN_CABINETRY_BLUE.get());
+        this.colouredKitchenCabinetry(Items.DYE.brown(), ModBlocks.KITCHEN_CABINETRY_BROWN.get());
+        this.colouredKitchenCabinetry(Items.DYE.green(), ModBlocks.KITCHEN_CABINETRY_GREEN.get());
+        this.colouredKitchenCabinetry(Items.DYE.red(), ModBlocks.KITCHEN_CABINETRY_RED.get());
+        this.colouredKitchenCabinetry(Items.DYE.black(), ModBlocks.KITCHEN_CABINETRY_BLACK.get());
+        this.colouredKitchenDrawer(Items.DYE.white(), ModBlocks.KITCHEN_DRAWER_WHITE.get());
+        this.colouredKitchenDrawer(Items.DYE.orange(), ModBlocks.KITCHEN_DRAWER_ORANGE.get());
+        this.colouredKitchenDrawer(Items.DYE.magenta(), ModBlocks.KITCHEN_DRAWER_MAGENTA.get());
+        this.colouredKitchenDrawer(Items.DYE.lightBlue(), ModBlocks.KITCHEN_DRAWER_LIGHT_BLUE.get());
+        this.colouredKitchenDrawer(Items.DYE.yellow(), ModBlocks.KITCHEN_DRAWER_YELLOW.get());
+        this.colouredKitchenDrawer(Items.DYE.lime(), ModBlocks.KITCHEN_DRAWER_LIME.get());
+        this.colouredKitchenDrawer(Items.DYE.pink(), ModBlocks.KITCHEN_DRAWER_PINK.get());
+        this.colouredKitchenDrawer(Items.DYE.gray(), ModBlocks.KITCHEN_DRAWER_GRAY.get());
+        this.colouredKitchenDrawer(Items.DYE.lightGray(), ModBlocks.KITCHEN_DRAWER_LIGHT_GRAY.get());
+        this.colouredKitchenDrawer(Items.DYE.cyan(), ModBlocks.KITCHEN_DRAWER_CYAN.get());
+        this.colouredKitchenDrawer(Items.DYE.purple(), ModBlocks.KITCHEN_DRAWER_PURPLE.get());
+        this.colouredKitchenDrawer(Items.DYE.blue(), ModBlocks.KITCHEN_DRAWER_BLUE.get());
+        this.colouredKitchenDrawer(Items.DYE.brown(), ModBlocks.KITCHEN_DRAWER_BROWN.get());
+        this.colouredKitchenDrawer(Items.DYE.green(), ModBlocks.KITCHEN_DRAWER_GREEN.get());
+        this.colouredKitchenDrawer(Items.DYE.red(), ModBlocks.KITCHEN_DRAWER_RED.get());
+        this.colouredKitchenDrawer(Items.DYE.black(), ModBlocks.KITCHEN_DRAWER_BLACK.get());
+        this.colouredKitchenSink(Items.DYE.white(), ModBlocks.KITCHEN_SINK_WHITE.get());
+        this.colouredKitchenSink(Items.DYE.orange(), ModBlocks.KITCHEN_SINK_ORANGE.get());
+        this.colouredKitchenSink(Items.DYE.magenta(), ModBlocks.KITCHEN_SINK_MAGENTA.get());
+        this.colouredKitchenSink(Items.DYE.lightBlue(), ModBlocks.KITCHEN_SINK_LIGHT_BLUE.get());
+        this.colouredKitchenSink(Items.DYE.yellow(), ModBlocks.KITCHEN_SINK_YELLOW.get());
+        this.colouredKitchenSink(Items.DYE.lime(), ModBlocks.KITCHEN_SINK_LIME.get());
+        this.colouredKitchenSink(Items.DYE.pink(), ModBlocks.KITCHEN_SINK_PINK.get());
+        this.colouredKitchenSink(Items.DYE.gray(), ModBlocks.KITCHEN_SINK_GRAY.get());
+        this.colouredKitchenSink(Items.DYE.lightGray(), ModBlocks.KITCHEN_SINK_LIGHT_GRAY.get());
+        this.colouredKitchenSink(Items.DYE.cyan(), ModBlocks.KITCHEN_SINK_CYAN.get());
+        this.colouredKitchenSink(Items.DYE.purple(), ModBlocks.KITCHEN_SINK_PURPLE.get());
+        this.colouredKitchenSink(Items.DYE.blue(), ModBlocks.KITCHEN_SINK_BLUE.get());
+        this.colouredKitchenSink(Items.DYE.brown(), ModBlocks.KITCHEN_SINK_BROWN.get());
+        this.colouredKitchenSink(Items.DYE.green(), ModBlocks.KITCHEN_SINK_GREEN.get());
+        this.colouredKitchenSink(Items.DYE.red(), ModBlocks.KITCHEN_SINK_RED.get());
+        this.colouredKitchenSink(Items.DYE.black(), ModBlocks.KITCHEN_SINK_BLACK.get());
+        this.colouredKitchenStorageCabinet(Items.DYE.white(), ModBlocks.KITCHEN_STORAGE_CABINET_WHITE.get());
+        this.colouredKitchenStorageCabinet(Items.DYE.orange(), ModBlocks.KITCHEN_STORAGE_CABINET_ORANGE.get());
+        this.colouredKitchenStorageCabinet(Items.DYE.magenta(), ModBlocks.KITCHEN_STORAGE_CABINET_MAGENTA.get());
+        this.colouredKitchenStorageCabinet(Items.DYE.lightBlue(), ModBlocks.KITCHEN_STORAGE_CABINET_LIGHT_BLUE.get());
+        this.colouredKitchenStorageCabinet(Items.DYE.yellow(), ModBlocks.KITCHEN_STORAGE_CABINET_YELLOW.get());
+        this.colouredKitchenStorageCabinet(Items.DYE.lime(), ModBlocks.KITCHEN_STORAGE_CABINET_LIME.get());
+        this.colouredKitchenStorageCabinet(Items.DYE.pink(), ModBlocks.KITCHEN_STORAGE_CABINET_PINK.get());
+        this.colouredKitchenStorageCabinet(Items.DYE.gray(), ModBlocks.KITCHEN_STORAGE_CABINET_GRAY.get());
+        this.colouredKitchenStorageCabinet(Items.DYE.lightGray(), ModBlocks.KITCHEN_STORAGE_CABINET_LIGHT_GRAY.get());
+        this.colouredKitchenStorageCabinet(Items.DYE.cyan(), ModBlocks.KITCHEN_STORAGE_CABINET_CYAN.get());
+        this.colouredKitchenStorageCabinet(Items.DYE.purple(), ModBlocks.KITCHEN_STORAGE_CABINET_PURPLE.get());
+        this.colouredKitchenStorageCabinet(Items.DYE.blue(), ModBlocks.KITCHEN_STORAGE_CABINET_BLUE.get());
+        this.colouredKitchenStorageCabinet(Items.DYE.brown(), ModBlocks.KITCHEN_STORAGE_CABINET_BROWN.get());
+        this.colouredKitchenStorageCabinet(Items.DYE.green(), ModBlocks.KITCHEN_STORAGE_CABINET_GREEN.get());
+        this.colouredKitchenStorageCabinet(Items.DYE.red(), ModBlocks.KITCHEN_STORAGE_CABINET_RED.get());
+        this.colouredKitchenStorageCabinet(Items.DYE.black(), ModBlocks.KITCHEN_STORAGE_CABINET_BLACK.get());
         this.toaster(ModBlocks.TOASTER_LIGHT.get(), ModBlocks.TOASTER_DARK.get());
         this.microwave(ModBlocks.MICROWAVE_LIGHT.get(), ModBlocks.MICROWAVE_DARK.get());
         this.stove(ModBlocks.STOVE_LIGHT.get(), ModBlocks.STOVE_DARK.get());
@@ -319,38 +318,38 @@ public class CommonRecipeProvider extends RecipeProvider
         this.crate(Blocks.CRIMSON_PLANKS, ModBlocks.CRATE_CRIMSON.get());
         this.crate(Blocks.WARPED_PLANKS, ModBlocks.CRATE_WARPED.get());
         this.crate(Blocks.PALE_OAK_PLANKS, ModBlocks.CRATE_PALE_OAK.get());
-        this.grill(Items.WHITE_DYE, ModBlocks.GRILL_WHITE.get());
-        this.grill(Items.ORANGE_DYE, ModBlocks.GRILL_ORANGE.get());
-        this.grill(Items.MAGENTA_DYE, ModBlocks.GRILL_MAGENTA.get());
-        this.grill(Items.LIGHT_BLUE_DYE, ModBlocks.GRILL_LIGHT_BLUE.get());
-        this.grill(Items.YELLOW_DYE, ModBlocks.GRILL_YELLOW.get());
-        this.grill(Items.LIME_DYE, ModBlocks.GRILL_LIME.get());
-        this.grill(Items.PINK_DYE, ModBlocks.GRILL_PINK.get());
-        this.grill(Items.GRAY_DYE, ModBlocks.GRILL_GRAY.get());
-        this.grill(Items.LIGHT_GRAY_DYE, ModBlocks.GRILL_LIGHT_GRAY.get());
-        this.grill(Items.CYAN_DYE, ModBlocks.GRILL_CYAN.get());
-        this.grill(Items.PURPLE_DYE, ModBlocks.GRILL_PURPLE.get());
-        this.grill(Items.BLUE_DYE, ModBlocks.GRILL_BLUE.get());
-        this.grill(Items.BROWN_DYE, ModBlocks.GRILL_BROWN.get());
-        this.grill(Items.GREEN_DYE, ModBlocks.GRILL_GREEN.get());
-        this.grill(Items.RED_DYE, ModBlocks.GRILL_RED.get());
-        this.grill(Items.BLACK_DYE, ModBlocks.GRILL_BLACK.get());
-        this.cooler(Items.WHITE_DYE, ModBlocks.COOLER_WHITE.get());
-        this.cooler(Items.ORANGE_DYE, ModBlocks.COOLER_ORANGE.get());
-        this.cooler(Items.MAGENTA_DYE, ModBlocks.COOLER_MAGENTA.get());
-        this.cooler(Items.LIGHT_BLUE_DYE, ModBlocks.COOLER_LIGHT_BLUE.get());
-        this.cooler(Items.YELLOW_DYE, ModBlocks.COOLER_YELLOW.get());
-        this.cooler(Items.LIME_DYE, ModBlocks.COOLER_LIME.get());
-        this.cooler(Items.PINK_DYE, ModBlocks.COOLER_PINK.get());
-        this.cooler(Items.GRAY_DYE, ModBlocks.COOLER_GRAY.get());
-        this.cooler(Items.LIGHT_GRAY_DYE, ModBlocks.COOLER_LIGHT_GRAY.get());
-        this.cooler(Items.CYAN_DYE, ModBlocks.COOLER_CYAN.get());
-        this.cooler(Items.PURPLE_DYE, ModBlocks.COOLER_PURPLE.get());
-        this.cooler(Items.BLUE_DYE, ModBlocks.COOLER_BLUE.get());
-        this.cooler(Items.BROWN_DYE, ModBlocks.COOLER_BROWN.get());
-        this.cooler(Items.GREEN_DYE, ModBlocks.COOLER_GREEN.get());
-        this.cooler(Items.RED_DYE, ModBlocks.COOLER_RED.get());
-        this.cooler(Items.BLACK_DYE, ModBlocks.COOLER_BLACK.get());
+        this.grill(Items.DYE.white(), ModBlocks.GRILL_WHITE.get());
+        this.grill(Items.DYE.orange(), ModBlocks.GRILL_ORANGE.get());
+        this.grill(Items.DYE.magenta(), ModBlocks.GRILL_MAGENTA.get());
+        this.grill(Items.DYE.lightBlue(), ModBlocks.GRILL_LIGHT_BLUE.get());
+        this.grill(Items.DYE.yellow(), ModBlocks.GRILL_YELLOW.get());
+        this.grill(Items.DYE.lime(), ModBlocks.GRILL_LIME.get());
+        this.grill(Items.DYE.pink(), ModBlocks.GRILL_PINK.get());
+        this.grill(Items.DYE.gray(), ModBlocks.GRILL_GRAY.get());
+        this.grill(Items.DYE.lightGray(), ModBlocks.GRILL_LIGHT_GRAY.get());
+        this.grill(Items.DYE.cyan(), ModBlocks.GRILL_CYAN.get());
+        this.grill(Items.DYE.purple(), ModBlocks.GRILL_PURPLE.get());
+        this.grill(Items.DYE.blue(), ModBlocks.GRILL_BLUE.get());
+        this.grill(Items.DYE.brown(), ModBlocks.GRILL_BROWN.get());
+        this.grill(Items.DYE.green(), ModBlocks.GRILL_GREEN.get());
+        this.grill(Items.DYE.red(), ModBlocks.GRILL_RED.get());
+        this.grill(Items.DYE.black(), ModBlocks.GRILL_BLACK.get());
+        this.cooler(Items.DYE.white(), ModBlocks.COOLER_WHITE.get());
+        this.cooler(Items.DYE.orange(), ModBlocks.COOLER_ORANGE.get());
+        this.cooler(Items.DYE.magenta(), ModBlocks.COOLER_MAGENTA.get());
+        this.cooler(Items.DYE.lightBlue(), ModBlocks.COOLER_LIGHT_BLUE.get());
+        this.cooler(Items.DYE.yellow(), ModBlocks.COOLER_YELLOW.get());
+        this.cooler(Items.DYE.lime(), ModBlocks.COOLER_LIME.get());
+        this.cooler(Items.DYE.pink(), ModBlocks.COOLER_PINK.get());
+        this.cooler(Items.DYE.gray(), ModBlocks.COOLER_GRAY.get());
+        this.cooler(Items.DYE.lightGray(), ModBlocks.COOLER_LIGHT_GRAY.get());
+        this.cooler(Items.DYE.cyan(), ModBlocks.COOLER_CYAN.get());
+        this.cooler(Items.DYE.purple(), ModBlocks.COOLER_PURPLE.get());
+        this.cooler(Items.DYE.blue(), ModBlocks.COOLER_BLUE.get());
+        this.cooler(Items.DYE.brown(), ModBlocks.COOLER_BROWN.get());
+        this.cooler(Items.DYE.green(), ModBlocks.COOLER_GREEN.get());
+        this.cooler(Items.DYE.red(), ModBlocks.COOLER_RED.get());
+        this.cooler(Items.DYE.black(), ModBlocks.COOLER_BLACK.get());
         this.mailbox(Blocks.OAK_PLANKS, ModBlocks.MAIL_BOX_OAK.get());
         this.mailbox(Blocks.SPRUCE_PLANKS, ModBlocks.MAIL_BOX_SPRUCE.get());
         this.mailbox(Blocks.BIRCH_PLANKS, ModBlocks.MAIL_BOX_BIRCH.get());
@@ -363,22 +362,22 @@ public class CommonRecipeProvider extends RecipeProvider
         this.mailbox(Blocks.WARPED_PLANKS, ModBlocks.MAIL_BOX_WARPED.get());
         this.mailbox(Blocks.PALE_OAK_PLANKS, ModBlocks.MAIL_BOX_PALE_OAK.get());
         this.postBox(ModBlocks.POST_BOX.get());
-        this.trampoline(Items.WHITE_DYE, ModBlocks.TRAMPOLINE_WHITE.get());
-        this.trampoline(Items.ORANGE_DYE, ModBlocks.TRAMPOLINE_ORANGE.get());
-        this.trampoline(Items.MAGENTA_DYE, ModBlocks.TRAMPOLINE_MAGENTA.get());
-        this.trampoline(Items.LIGHT_BLUE_DYE, ModBlocks.TRAMPOLINE_LIGHT_BLUE.get());
-        this.trampoline(Items.YELLOW_DYE, ModBlocks.TRAMPOLINE_YELLOW.get());
-        this.trampoline(Items.LIME_DYE, ModBlocks.TRAMPOLINE_LIME.get());
-        this.trampoline(Items.PINK_DYE, ModBlocks.TRAMPOLINE_PINK.get());
-        this.trampoline(Items.GRAY_DYE, ModBlocks.TRAMPOLINE_GRAY.get());
-        this.trampoline(Items.LIGHT_GRAY_DYE, ModBlocks.TRAMPOLINE_LIGHT_GRAY.get());
-        this.trampoline(Items.CYAN_DYE, ModBlocks.TRAMPOLINE_CYAN.get());
-        this.trampoline(Items.PURPLE_DYE, ModBlocks.TRAMPOLINE_PURPLE.get());
-        this.trampoline(Items.BLUE_DYE, ModBlocks.TRAMPOLINE_BLUE.get());
-        this.trampoline(Items.BROWN_DYE, ModBlocks.TRAMPOLINE_BROWN.get());
-        this.trampoline(Items.GREEN_DYE, ModBlocks.TRAMPOLINE_GREEN.get());
-        this.trampoline(Items.RED_DYE, ModBlocks.TRAMPOLINE_RED.get());
-        this.trampoline(Items.BLACK_DYE, ModBlocks.TRAMPOLINE_BLACK.get());
+        this.trampoline(Items.DYE.white(), ModBlocks.TRAMPOLINE_WHITE.get());
+        this.trampoline(Items.DYE.orange(), ModBlocks.TRAMPOLINE_ORANGE.get());
+        this.trampoline(Items.DYE.magenta(), ModBlocks.TRAMPOLINE_MAGENTA.get());
+        this.trampoline(Items.DYE.lightBlue(), ModBlocks.TRAMPOLINE_LIGHT_BLUE.get());
+        this.trampoline(Items.DYE.yellow(), ModBlocks.TRAMPOLINE_YELLOW.get());
+        this.trampoline(Items.DYE.lime(), ModBlocks.TRAMPOLINE_LIME.get());
+        this.trampoline(Items.DYE.pink(), ModBlocks.TRAMPOLINE_PINK.get());
+        this.trampoline(Items.DYE.gray(), ModBlocks.TRAMPOLINE_GRAY.get());
+        this.trampoline(Items.DYE.lightGray(), ModBlocks.TRAMPOLINE_LIGHT_GRAY.get());
+        this.trampoline(Items.DYE.cyan(), ModBlocks.TRAMPOLINE_CYAN.get());
+        this.trampoline(Items.DYE.purple(), ModBlocks.TRAMPOLINE_PURPLE.get());
+        this.trampoline(Items.DYE.blue(), ModBlocks.TRAMPOLINE_BLUE.get());
+        this.trampoline(Items.DYE.brown(), ModBlocks.TRAMPOLINE_BROWN.get());
+        this.trampoline(Items.DYE.green(), ModBlocks.TRAMPOLINE_GREEN.get());
+        this.trampoline(Items.DYE.red(), ModBlocks.TRAMPOLINE_RED.get());
+        this.trampoline(Items.DYE.black(), ModBlocks.TRAMPOLINE_BLACK.get());
         this.hedge(Blocks.OAK_LEAVES, ModBlocks.HEDGE_OAK.get());
         this.hedge(Blocks.SPRUCE_LEAVES, ModBlocks.HEDGE_SPRUCE.get());
         this.hedge(Blocks.BIRCH_LEAVES, ModBlocks.HEDGE_BIRCH.get());
@@ -416,54 +415,54 @@ public class CommonRecipeProvider extends RecipeProvider
         this.latticeFenceGate(Blocks.WARPED_PLANKS, ModBlocks.LATTICE_FENCE_GATE_WARPED.get());
         this.latticeFenceGate(Blocks.PALE_OAK_PLANKS, ModBlocks.LATTICE_FENCE_GATE_PALE_OAK.get());
         this.doorMat(ModBlocks.DOOR_MAT.get());
-        this.sofa(Items.WHITE_DYE, ModBlocks.SOFA_WHITE.get());
-        this.sofa(Items.ORANGE_DYE, ModBlocks.SOFA_ORANGE.get());
-        this.sofa(Items.MAGENTA_DYE, ModBlocks.SOFA_MAGENTA.get());
-        this.sofa(Items.LIGHT_BLUE_DYE, ModBlocks.SOFA_LIGHT_BLUE.get());
-        this.sofa(Items.YELLOW_DYE, ModBlocks.SOFA_YELLOW.get());
-        this.sofa(Items.LIME_DYE, ModBlocks.SOFA_LIME.get());
-        this.sofa(Items.PINK_DYE, ModBlocks.SOFA_PINK.get());
-        this.sofa(Items.GRAY_DYE, ModBlocks.SOFA_GRAY.get());
-        this.sofa(Items.LIGHT_GRAY_DYE, ModBlocks.SOFA_LIGHT_GRAY.get());
-        this.sofa(Items.CYAN_DYE, ModBlocks.SOFA_CYAN.get());
-        this.sofa(Items.PURPLE_DYE, ModBlocks.SOFA_PURPLE.get());
-        this.sofa(Items.BLUE_DYE, ModBlocks.SOFA_BLUE.get());
-        this.sofa(Items.BROWN_DYE, ModBlocks.SOFA_BROWN.get());
-        this.sofa(Items.GREEN_DYE, ModBlocks.SOFA_GREEN.get());
-        this.sofa(Items.RED_DYE, ModBlocks.SOFA_RED.get());
-        this.sofa(Items.BLACK_DYE, ModBlocks.SOFA_BLACK.get());
-        this.stool(Items.WHITE_DYE, ModBlocks.STOOL_WHITE.get());
-        this.stool(Items.ORANGE_DYE, ModBlocks.STOOL_ORANGE.get());
-        this.stool(Items.MAGENTA_DYE, ModBlocks.STOOL_MAGENTA.get());
-        this.stool(Items.LIGHT_BLUE_DYE, ModBlocks.STOOL_LIGHT_BLUE.get());
-        this.stool(Items.YELLOW_DYE, ModBlocks.STOOL_YELLOW.get());
-        this.stool(Items.LIME_DYE, ModBlocks.STOOL_LIME.get());
-        this.stool(Items.PINK_DYE, ModBlocks.STOOL_PINK.get());
-        this.stool(Items.GRAY_DYE, ModBlocks.STOOL_GRAY.get());
-        this.stool(Items.LIGHT_GRAY_DYE, ModBlocks.STOOL_LIGHT_GRAY.get());
-        this.stool(Items.CYAN_DYE, ModBlocks.STOOL_CYAN.get());
-        this.stool(Items.PURPLE_DYE, ModBlocks.STOOL_PURPLE.get());
-        this.stool(Items.BLUE_DYE, ModBlocks.STOOL_BLUE.get());
-        this.stool(Items.BROWN_DYE, ModBlocks.STOOL_BROWN.get());
-        this.stool(Items.GREEN_DYE, ModBlocks.STOOL_GREEN.get());
-        this.stool(Items.RED_DYE, ModBlocks.STOOL_RED.get());
-        this.stool(Items.BLACK_DYE, ModBlocks.STOOL_BLACK.get());
-        this.lamp(Items.WHITE_DYE, ModBlocks.LAMP_WHITE.get());
-        this.lamp(Items.ORANGE_DYE, ModBlocks.LAMP_ORANGE.get());
-        this.lamp(Items.MAGENTA_DYE, ModBlocks.LAMP_MAGENTA.get());
-        this.lamp(Items.LIGHT_BLUE_DYE, ModBlocks.LAMP_LIGHT_BLUE.get());
-        this.lamp(Items.YELLOW_DYE, ModBlocks.LAMP_YELLOW.get());
-        this.lamp(Items.LIME_DYE, ModBlocks.LAMP_LIME.get());
-        this.lamp(Items.PINK_DYE, ModBlocks.LAMP_PINK.get());
-        this.lamp(Items.GRAY_DYE, ModBlocks.LAMP_GRAY.get());
-        this.lamp(Items.LIGHT_GRAY_DYE, ModBlocks.LAMP_LIGHT_GRAY.get());
-        this.lamp(Items.CYAN_DYE, ModBlocks.LAMP_CYAN.get());
-        this.lamp(Items.PURPLE_DYE, ModBlocks.LAMP_PURPLE.get());
-        this.lamp(Items.BLUE_DYE, ModBlocks.LAMP_BLUE.get());
-        this.lamp(Items.BROWN_DYE, ModBlocks.LAMP_BROWN.get());
-        this.lamp(Items.GREEN_DYE, ModBlocks.LAMP_GREEN.get());
-        this.lamp(Items.RED_DYE, ModBlocks.LAMP_RED.get());
-        this.lamp(Items.BLACK_DYE, ModBlocks.LAMP_BLACK.get());
+        this.sofa(Items.DYE.white(), ModBlocks.SOFA_WHITE.get());
+        this.sofa(Items.DYE.orange(), ModBlocks.SOFA_ORANGE.get());
+        this.sofa(Items.DYE.magenta(), ModBlocks.SOFA_MAGENTA.get());
+        this.sofa(Items.DYE.lightBlue(), ModBlocks.SOFA_LIGHT_BLUE.get());
+        this.sofa(Items.DYE.yellow(), ModBlocks.SOFA_YELLOW.get());
+        this.sofa(Items.DYE.lime(), ModBlocks.SOFA_LIME.get());
+        this.sofa(Items.DYE.pink(), ModBlocks.SOFA_PINK.get());
+        this.sofa(Items.DYE.gray(), ModBlocks.SOFA_GRAY.get());
+        this.sofa(Items.DYE.lightGray(), ModBlocks.SOFA_LIGHT_GRAY.get());
+        this.sofa(Items.DYE.cyan(), ModBlocks.SOFA_CYAN.get());
+        this.sofa(Items.DYE.purple(), ModBlocks.SOFA_PURPLE.get());
+        this.sofa(Items.DYE.blue(), ModBlocks.SOFA_BLUE.get());
+        this.sofa(Items.DYE.brown(), ModBlocks.SOFA_BROWN.get());
+        this.sofa(Items.DYE.green(), ModBlocks.SOFA_GREEN.get());
+        this.sofa(Items.DYE.red(), ModBlocks.SOFA_RED.get());
+        this.sofa(Items.DYE.black(), ModBlocks.SOFA_BLACK.get());
+        this.stool(Items.DYE.white(), ModBlocks.STOOL_WHITE.get());
+        this.stool(Items.DYE.orange(), ModBlocks.STOOL_ORANGE.get());
+        this.stool(Items.DYE.magenta(), ModBlocks.STOOL_MAGENTA.get());
+        this.stool(Items.DYE.lightBlue(), ModBlocks.STOOL_LIGHT_BLUE.get());
+        this.stool(Items.DYE.yellow(), ModBlocks.STOOL_YELLOW.get());
+        this.stool(Items.DYE.lime(), ModBlocks.STOOL_LIME.get());
+        this.stool(Items.DYE.pink(), ModBlocks.STOOL_PINK.get());
+        this.stool(Items.DYE.gray(), ModBlocks.STOOL_GRAY.get());
+        this.stool(Items.DYE.lightGray(), ModBlocks.STOOL_LIGHT_GRAY.get());
+        this.stool(Items.DYE.cyan(), ModBlocks.STOOL_CYAN.get());
+        this.stool(Items.DYE.purple(), ModBlocks.STOOL_PURPLE.get());
+        this.stool(Items.DYE.blue(), ModBlocks.STOOL_BLUE.get());
+        this.stool(Items.DYE.brown(), ModBlocks.STOOL_BROWN.get());
+        this.stool(Items.DYE.green(), ModBlocks.STOOL_GREEN.get());
+        this.stool(Items.DYE.red(), ModBlocks.STOOL_RED.get());
+        this.stool(Items.DYE.black(), ModBlocks.STOOL_BLACK.get());
+        this.lamp(Items.DYE.white(), ModBlocks.LAMP_WHITE.get());
+        this.lamp(Items.DYE.orange(), ModBlocks.LAMP_ORANGE.get());
+        this.lamp(Items.DYE.magenta(), ModBlocks.LAMP_MAGENTA.get());
+        this.lamp(Items.DYE.lightBlue(), ModBlocks.LAMP_LIGHT_BLUE.get());
+        this.lamp(Items.DYE.yellow(), ModBlocks.LAMP_YELLOW.get());
+        this.lamp(Items.DYE.lime(), ModBlocks.LAMP_LIME.get());
+        this.lamp(Items.DYE.pink(), ModBlocks.LAMP_PINK.get());
+        this.lamp(Items.DYE.gray(), ModBlocks.LAMP_GRAY.get());
+        this.lamp(Items.DYE.lightGray(), ModBlocks.LAMP_LIGHT_GRAY.get());
+        this.lamp(Items.DYE.cyan(), ModBlocks.LAMP_CYAN.get());
+        this.lamp(Items.DYE.purple(), ModBlocks.LAMP_PURPLE.get());
+        this.lamp(Items.DYE.blue(), ModBlocks.LAMP_BLUE.get());
+        this.lamp(Items.DYE.brown(), ModBlocks.LAMP_BROWN.get());
+        this.lamp(Items.DYE.green(), ModBlocks.LAMP_GREEN.get());
+        this.lamp(Items.DYE.red(), ModBlocks.LAMP_RED.get());
+        this.lamp(Items.DYE.black(), ModBlocks.LAMP_BLACK.get());
         this.ceilingFan(Blocks.OAK_PLANKS, ModBlocks.CEILING_FAN_OAK_LIGHT.get(), ModBlocks.CEILING_FAN_OAK_DARK.get());
         this.ceilingFan(Blocks.SPRUCE_PLANKS, ModBlocks.CEILING_FAN_SPRUCE_LIGHT.get(), ModBlocks.CEILING_FAN_SPRUCE_DARK.get());
         this.ceilingFan(Blocks.BIRCH_PLANKS, ModBlocks.CEILING_FAN_BIRCH_LIGHT.get(), ModBlocks.CEILING_FAN_BIRCH_DARK.get());
@@ -512,22 +511,22 @@ public class CommonRecipeProvider extends RecipeProvider
         this.woodenToilet(Blocks.CRIMSON_PLANKS, ModBlocks.TOILET_CRIMSON.get());
         this.woodenToilet(Blocks.WARPED_PLANKS, ModBlocks.TOILET_WARPED.get());
         this.woodenToilet(Blocks.PALE_OAK_PLANKS, ModBlocks.TOILET_PALE_OAK.get());
-        this.colouredToilet(Items.WHITE_DYE, ModBlocks.TOILET_WHITE.get());
-        this.colouredToilet(Items.ORANGE_DYE, ModBlocks.TOILET_ORANGE.get());
-        this.colouredToilet(Items.MAGENTA_DYE, ModBlocks.TOILET_MAGENTA.get());
-        this.colouredToilet(Items.LIGHT_BLUE_DYE, ModBlocks.TOILET_LIGHT_BLUE.get());
-        this.colouredToilet(Items.YELLOW_DYE, ModBlocks.TOILET_YELLOW.get());
-        this.colouredToilet(Items.LIME_DYE, ModBlocks.TOILET_LIME.get());
-        this.colouredToilet(Items.PINK_DYE, ModBlocks.TOILET_PINK.get());
-        this.colouredToilet(Items.GRAY_DYE, ModBlocks.TOILET_GRAY.get());
-        this.colouredToilet(Items.LIGHT_GRAY_DYE, ModBlocks.TOILET_LIGHT_GRAY.get());
-        this.colouredToilet(Items.CYAN_DYE, ModBlocks.TOILET_CYAN.get());
-        this.colouredToilet(Items.PURPLE_DYE, ModBlocks.TOILET_PURPLE.get());
-        this.colouredToilet(Items.BLUE_DYE, ModBlocks.TOILET_BLUE.get());
-        this.colouredToilet(Items.BROWN_DYE, ModBlocks.TOILET_BROWN.get());
-        this.colouredToilet(Items.GREEN_DYE, ModBlocks.TOILET_GREEN.get());
-        this.colouredToilet(Items.RED_DYE, ModBlocks.TOILET_RED.get());
-        this.colouredToilet(Items.BLACK_DYE, ModBlocks.TOILET_BLACK.get());
+        this.colouredToilet(Items.DYE.white(), ModBlocks.TOILET_WHITE.get());
+        this.colouredToilet(Items.DYE.orange(), ModBlocks.TOILET_ORANGE.get());
+        this.colouredToilet(Items.DYE.magenta(), ModBlocks.TOILET_MAGENTA.get());
+        this.colouredToilet(Items.DYE.lightBlue(), ModBlocks.TOILET_LIGHT_BLUE.get());
+        this.colouredToilet(Items.DYE.yellow(), ModBlocks.TOILET_YELLOW.get());
+        this.colouredToilet(Items.DYE.lime(), ModBlocks.TOILET_LIME.get());
+        this.colouredToilet(Items.DYE.pink(), ModBlocks.TOILET_PINK.get());
+        this.colouredToilet(Items.DYE.gray(), ModBlocks.TOILET_GRAY.get());
+        this.colouredToilet(Items.DYE.lightGray(), ModBlocks.TOILET_LIGHT_GRAY.get());
+        this.colouredToilet(Items.DYE.cyan(), ModBlocks.TOILET_CYAN.get());
+        this.colouredToilet(Items.DYE.purple(), ModBlocks.TOILET_PURPLE.get());
+        this.colouredToilet(Items.DYE.blue(), ModBlocks.TOILET_BLUE.get());
+        this.colouredToilet(Items.DYE.brown(), ModBlocks.TOILET_BROWN.get());
+        this.colouredToilet(Items.DYE.green(), ModBlocks.TOILET_GREEN.get());
+        this.colouredToilet(Items.DYE.red(), ModBlocks.TOILET_RED.get());
+        this.colouredToilet(Items.DYE.black(), ModBlocks.TOILET_BLACK.get());
         this.woodenBasin(Blocks.OAK_PLANKS, ModBlocks.BASIN_OAK.get());
         this.woodenBasin(Blocks.SPRUCE_PLANKS, ModBlocks.BASIN_SPRUCE.get());
         this.woodenBasin(Blocks.BIRCH_PLANKS, ModBlocks.BASIN_BIRCH.get());
@@ -539,22 +538,22 @@ public class CommonRecipeProvider extends RecipeProvider
         this.woodenBasin(Blocks.CRIMSON_PLANKS, ModBlocks.BASIN_CRIMSON.get());
         this.woodenBasin(Blocks.WARPED_PLANKS, ModBlocks.BASIN_WARPED.get());
         this.woodenBasin(Blocks.PALE_OAK_PLANKS, ModBlocks.BASIN_PALE_OAK.get());
-        this.colouredBasin(Items.WHITE_DYE, ModBlocks.BASIN_WHITE.get());
-        this.colouredBasin(Items.ORANGE_DYE, ModBlocks.BASIN_ORANGE.get());
-        this.colouredBasin(Items.MAGENTA_DYE, ModBlocks.BASIN_MAGENTA.get());
-        this.colouredBasin(Items.LIGHT_BLUE_DYE, ModBlocks.BASIN_LIGHT_BLUE.get());
-        this.colouredBasin(Items.YELLOW_DYE, ModBlocks.BASIN_YELLOW.get());
-        this.colouredBasin(Items.LIME_DYE, ModBlocks.BASIN_LIME.get());
-        this.colouredBasin(Items.PINK_DYE, ModBlocks.BASIN_PINK.get());
-        this.colouredBasin(Items.GRAY_DYE, ModBlocks.BASIN_GRAY.get());
-        this.colouredBasin(Items.LIGHT_GRAY_DYE, ModBlocks.BASIN_LIGHT_GRAY.get());
-        this.colouredBasin(Items.CYAN_DYE, ModBlocks.BASIN_CYAN.get());
-        this.colouredBasin(Items.PURPLE_DYE, ModBlocks.BASIN_PURPLE.get());
-        this.colouredBasin(Items.BLUE_DYE, ModBlocks.BASIN_BLUE.get());
-        this.colouredBasin(Items.BROWN_DYE, ModBlocks.BASIN_BROWN.get());
-        this.colouredBasin(Items.GREEN_DYE, ModBlocks.BASIN_GREEN.get());
-        this.colouredBasin(Items.RED_DYE, ModBlocks.BASIN_RED.get());
-        this.colouredBasin(Items.BLACK_DYE, ModBlocks.BASIN_BLACK.get());
+        this.colouredBasin(Items.DYE.white(), ModBlocks.BASIN_WHITE.get());
+        this.colouredBasin(Items.DYE.orange(), ModBlocks.BASIN_ORANGE.get());
+        this.colouredBasin(Items.DYE.magenta(), ModBlocks.BASIN_MAGENTA.get());
+        this.colouredBasin(Items.DYE.lightBlue(), ModBlocks.BASIN_LIGHT_BLUE.get());
+        this.colouredBasin(Items.DYE.yellow(), ModBlocks.BASIN_YELLOW.get());
+        this.colouredBasin(Items.DYE.lime(), ModBlocks.BASIN_LIME.get());
+        this.colouredBasin(Items.DYE.pink(), ModBlocks.BASIN_PINK.get());
+        this.colouredBasin(Items.DYE.gray(), ModBlocks.BASIN_GRAY.get());
+        this.colouredBasin(Items.DYE.lightGray(), ModBlocks.BASIN_LIGHT_GRAY.get());
+        this.colouredBasin(Items.DYE.cyan(), ModBlocks.BASIN_CYAN.get());
+        this.colouredBasin(Items.DYE.purple(), ModBlocks.BASIN_PURPLE.get());
+        this.colouredBasin(Items.DYE.blue(), ModBlocks.BASIN_BLUE.get());
+        this.colouredBasin(Items.DYE.brown(), ModBlocks.BASIN_BROWN.get());
+        this.colouredBasin(Items.DYE.green(), ModBlocks.BASIN_GREEN.get());
+        this.colouredBasin(Items.DYE.red(), ModBlocks.BASIN_RED.get());
+        this.colouredBasin(Items.DYE.black(), ModBlocks.BASIN_BLACK.get());
         this.woodenBath(Blocks.OAK_PLANKS, ModBlocks.BATH_OAK.get());
         this.woodenBath(Blocks.SPRUCE_PLANKS, ModBlocks.BATH_SPRUCE.get());
         this.woodenBath(Blocks.BIRCH_PLANKS, ModBlocks.BATH_BIRCH.get());
@@ -566,22 +565,22 @@ public class CommonRecipeProvider extends RecipeProvider
         this.woodenBath(Blocks.CRIMSON_PLANKS, ModBlocks.BATH_CRIMSON.get());
         this.woodenBath(Blocks.WARPED_PLANKS, ModBlocks.BATH_WARPED.get());
         this.woodenBath(Blocks.PALE_OAK_PLANKS, ModBlocks.BATH_PALE_OAK.get());
-        this.colouredBath(Items.WHITE_DYE, ModBlocks.BATH_WHITE.get());
-        this.colouredBath(Items.ORANGE_DYE, ModBlocks.BATH_ORANGE.get());
-        this.colouredBath(Items.MAGENTA_DYE, ModBlocks.BATH_MAGENTA.get());
-        this.colouredBath(Items.LIGHT_BLUE_DYE, ModBlocks.BATH_LIGHT_BLUE.get());
-        this.colouredBath(Items.YELLOW_DYE, ModBlocks.BATH_YELLOW.get());
-        this.colouredBath(Items.LIME_DYE, ModBlocks.BATH_LIME.get());
-        this.colouredBath(Items.PINK_DYE, ModBlocks.BATH_PINK.get());
-        this.colouredBath(Items.GRAY_DYE, ModBlocks.BATH_GRAY.get());
-        this.colouredBath(Items.LIGHT_GRAY_DYE, ModBlocks.BATH_LIGHT_GRAY.get());
-        this.colouredBath(Items.CYAN_DYE, ModBlocks.BATH_CYAN.get());
-        this.colouredBath(Items.PURPLE_DYE, ModBlocks.BATH_PURPLE.get());
-        this.colouredBath(Items.BLUE_DYE, ModBlocks.BATH_BLUE.get());
-        this.colouredBath(Items.BROWN_DYE, ModBlocks.BATH_BROWN.get());
-        this.colouredBath(Items.GREEN_DYE, ModBlocks.BATH_GREEN.get());
-        this.colouredBath(Items.RED_DYE, ModBlocks.BATH_RED.get());
-        this.colouredBath(Items.BLACK_DYE, ModBlocks.BATH_BLACK.get());
+        this.colouredBath(Items.DYE.white(), ModBlocks.BATH_WHITE.get());
+        this.colouredBath(Items.DYE.orange(), ModBlocks.BATH_ORANGE.get());
+        this.colouredBath(Items.DYE.magenta(), ModBlocks.BATH_MAGENTA.get());
+        this.colouredBath(Items.DYE.lightBlue(), ModBlocks.BATH_LIGHT_BLUE.get());
+        this.colouredBath(Items.DYE.yellow(), ModBlocks.BATH_YELLOW.get());
+        this.colouredBath(Items.DYE.lime(), ModBlocks.BATH_LIME.get());
+        this.colouredBath(Items.DYE.pink(), ModBlocks.BATH_PINK.get());
+        this.colouredBath(Items.DYE.gray(), ModBlocks.BATH_GRAY.get());
+        this.colouredBath(Items.DYE.lightGray(), ModBlocks.BATH_LIGHT_GRAY.get());
+        this.colouredBath(Items.DYE.cyan(), ModBlocks.BATH_CYAN.get());
+        this.colouredBath(Items.DYE.purple(), ModBlocks.BATH_PURPLE.get());
+        this.colouredBath(Items.DYE.blue(), ModBlocks.BATH_BLUE.get());
+        this.colouredBath(Items.DYE.brown(), ModBlocks.BATH_BROWN.get());
+        this.colouredBath(Items.DYE.green(), ModBlocks.BATH_GREEN.get());
+        this.colouredBath(Items.DYE.red(), ModBlocks.BATH_RED.get());
+        this.colouredBath(Items.DYE.black(), ModBlocks.BATH_BLACK.get());
         this.television(ModBlocks.TELEVISION.get());
         this.computer(ModBlocks.COMPUTER.get());
 
@@ -610,34 +609,34 @@ public class CommonRecipeProvider extends RecipeProvider
         this.cuttingBoardSlicing(Blocks.HONEYCOMB_BLOCK, Items.HONEYCOMB, 4);
         this.cuttingBoardSlicing(Blocks.MANGROVE_ROOTS, Items.STICK, 8);
         this.cuttingBoardSlicing(Blocks.SLIME_BLOCK, Items.SLIME_BALL, 9);
-        this.cuttingBoardSlicing(Items.SPIDER_EYE, Items.RED_DYE, 1);
-        this.cuttingBoardSlicing(Items.ROTTEN_FLESH, Items.BROWN_DYE, 1);
-        this.cuttingBoardSlicing(Items.SWEET_BERRIES, Items.RED_DYE, 1);
-        this.cuttingBoardSlicing(Items.GLOW_BERRIES, Items.ORANGE_DYE, 1);
-        this.cuttingBoardSlicing(Items.DRIED_KELP, Items.BLACK_DYE, 1);
-        this.cuttingBoardSlicing(Items.SEAGRASS, Items.GREEN_DYE, 1);
-        this.cuttingBoardSlicing(Items.LILY_PAD, Items.GREEN_DYE, 1);
-        this.cuttingBoardSlicing(Items.DANDELION, Items.YELLOW_DYE, 2);
-        this.cuttingBoardSlicing(Items.POPPY, Items.RED_DYE, 2);
-        this.cuttingBoardSlicing(Items.BLUE_ORCHID, Items.LIGHT_BLUE_DYE, 2);
-        this.cuttingBoardSlicing(Items.ALLIUM, Items.MAGENTA_DYE, 2);
-        this.cuttingBoardSlicing(Items.AZURE_BLUET, Items.LIGHT_GRAY_DYE, 2);
-        this.cuttingBoardSlicing(Items.RED_TULIP, Items.RED_DYE, 2);
-        this.cuttingBoardSlicing(Items.ORANGE_TULIP, Items.ORANGE_DYE, 2);
-        this.cuttingBoardSlicing(Items.WHITE_TULIP, Items.WHITE_DYE, 2);
-        this.cuttingBoardSlicing(Items.PINK_TULIP, Items.PINK_DYE, 2);
-        this.cuttingBoardSlicing(Items.OXEYE_DAISY, Items.WHITE_DYE, 2);
-        this.cuttingBoardSlicing(Items.CORNFLOWER, Items.BLUE_DYE, 2);
-        this.cuttingBoardSlicing(Items.LILY_OF_THE_VALLEY, Items.WHITE_DYE, 2);
-        this.cuttingBoardSlicing(Items.TORCHFLOWER, Items.ORANGE_DYE, 2);
-        this.cuttingBoardSlicing(Items.WITHER_ROSE, Items.BLACK_DYE, 2);
-        this.cuttingBoardSlicing(Items.PINK_PETALS, Items.PINK_DYE, 2);
-        this.cuttingBoardSlicing(Items.SPORE_BLOSSOM, Items.PINK_DYE, 2);
-        this.cuttingBoardSlicing(Items.SUNFLOWER, Items.YELLOW_DYE, 3);
-        this.cuttingBoardSlicing(Items.LILAC, Items.MAGENTA_DYE, 3);
-        this.cuttingBoardSlicing(Items.ROSE_BUSH, Items.RED_DYE, 3);
-        this.cuttingBoardSlicing(Items.PEONY, Items.PINK_DYE, 3);
-        this.cuttingBoardSlicing(Items.PITCHER_PLANT, Items.CYAN_DYE, 3);
+        this.cuttingBoardSlicing(Items.SPIDER_EYE, Items.DYE.red(), 1);
+        this.cuttingBoardSlicing(Items.ROTTEN_FLESH, Items.DYE.brown(), 1);
+        this.cuttingBoardSlicing(Items.SWEET_BERRIES, Items.DYE.red(), 1);
+        this.cuttingBoardSlicing(Items.GLOW_BERRIES, Items.DYE.orange(), 1);
+        this.cuttingBoardSlicing(Items.DRIED_KELP, Items.DYE.black(), 1);
+        this.cuttingBoardSlicing(Items.SEAGRASS, Items.DYE.green(), 1);
+        this.cuttingBoardSlicing(Items.LILY_PAD, Items.DYE.green(), 1);
+        this.cuttingBoardSlicing(Items.DANDELION, Items.DYE.yellow(), 2);
+        this.cuttingBoardSlicing(Items.POPPY, Items.DYE.red(), 2);
+        this.cuttingBoardSlicing(Items.BLUE_ORCHID, Items.DYE.lightBlue(), 2);
+        this.cuttingBoardSlicing(Items.ALLIUM, Items.DYE.magenta(), 2);
+        this.cuttingBoardSlicing(Items.AZURE_BLUET, Items.DYE.lightGray(), 2);
+        this.cuttingBoardSlicing(Items.RED_TULIP, Items.DYE.red(), 2);
+        this.cuttingBoardSlicing(Items.ORANGE_TULIP, Items.DYE.orange(), 2);
+        this.cuttingBoardSlicing(Items.WHITE_TULIP, Items.DYE.white(), 2);
+        this.cuttingBoardSlicing(Items.PINK_TULIP, Items.DYE.pink(), 2);
+        this.cuttingBoardSlicing(Items.OXEYE_DAISY, Items.DYE.white(), 2);
+        this.cuttingBoardSlicing(Items.CORNFLOWER, Items.DYE.blue(), 2);
+        this.cuttingBoardSlicing(Items.LILY_OF_THE_VALLEY, Items.DYE.white(), 2);
+        this.cuttingBoardSlicing(Items.TORCHFLOWER, Items.DYE.orange(), 2);
+        this.cuttingBoardSlicing(Items.WITHER_ROSE, Items.DYE.black(), 2);
+        this.cuttingBoardSlicing(Items.PINK_PETALS, Items.DYE.pink(), 2);
+        this.cuttingBoardSlicing(Items.SPORE_BLOSSOM, Items.DYE.pink(), 2);
+        this.cuttingBoardSlicing(Items.SUNFLOWER, Items.DYE.yellow(), 3);
+        this.cuttingBoardSlicing(Items.LILAC, Items.DYE.magenta(), 3);
+        this.cuttingBoardSlicing(Items.ROSE_BUSH, Items.DYE.red(), 3);
+        this.cuttingBoardSlicing(Items.PEONY, Items.DYE.pink(), 3);
+        this.cuttingBoardSlicing(Items.PITCHER_PLANT, Items.DYE.cyan(), 3);
         this.cuttingBoardSlicing(ModItems.COOKED_VEGETABLE_PIZZA.get(), ModItems.VEGETABLE_PIZZA_SLICE.get(), 6);
         this.cuttingBoardSlicing(ModItems.COOKED_MEATLOVERS_PIZZA.get(), ModItems.MEATLOVERS_PIZZA_SLICE.get(), 6);
 
@@ -719,22 +718,22 @@ public class CommonRecipeProvider extends RecipeProvider
 
     private void woodenKitchenCabinetry(Block plank, Block result)
     {
-        this.workbenchConstructing(result, 2, Material.of(plank, 8), Material.of(Items.WHITE_DYE, 1));
+        this.workbenchConstructing(result, 2, Material.of(plank, 8), Material.of(Items.DYE.white(), 1));
     }
 
     private void woodenKitchenDrawer(Block plank, Block result)
     {
-        this.workbenchConstructing(result, 2, Material.of(plank, 12), Material.of(Items.WHITE_DYE, 1));
+        this.workbenchConstructing(result, 2, Material.of(plank, 12), Material.of(Items.DYE.white(), 1));
     }
 
     private void woodenKitchenSink(Block plank, Block result)
     {
-        this.workbenchConstructing(result, 1, Material.of(plank, 10), Material.of(Items.COPPER_INGOT, 1), Material.of(Items.QUARTZ_BLOCK, 1), Material.of(Items.WHITE_DYE, 1));
+        this.workbenchConstructing(result, 1, Material.of(plank, 10), Material.of(Items.COPPER_INGOT, 1), Material.of(Items.QUARTZ_BLOCK, 1), Material.of(Items.DYE.white(), 1));
     }
 
     private void woodenKitchenStorageCabinet(Block plank, Block result)
     {
-        this.workbenchConstructing(result, 2, Material.of(plank, 12), Material.of(Items.WHITE_DYE, 1));
+        this.workbenchConstructing(result, 2, Material.of(plank, 12), Material.of(Items.DYE.white(), 1));
     }
 
     private void colouredKitchenCabinetry(Item dye, Block result)
@@ -787,54 +786,54 @@ public class CommonRecipeProvider extends RecipeProvider
     private void toaster(Block light, Block dark)
     {
         this.workbenchConstructing(light, 1, Material.of(Items.IRON_INGOT, 4), Material.of(Items.REDSTONE, 2));
-        this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
+        this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.DYE.black(), 1));
         ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.DECORATIONS, dark)
                 .requires(light)
-                .requires(Items.BLACK_DYE)
+                .requires(Items.DYE.black())
                 .unlockedBy("has_toaster", this.has(light))
-                .unlockedBy("has_dye", this.has(Items.BLACK_DYE))
+                .unlockedBy("has_dye", this.has(Items.DYE.black()))
                 .save(this.output);
     }
 
     private void microwave(Block light, Block dark)
     {
         this.workbenchConstructing(light, 1, Material.of(Items.IRON_INGOT, 6), Material.of(Items.GLASS, 1), Material.of(Items.REDSTONE, 4));
-        this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
+        this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.DYE.black(), 1));
         ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.DECORATIONS, dark)
                 .requires(light)
-                .requires(Items.BLACK_DYE)
+                .requires(Items.DYE.black())
                 .unlockedBy("has_microwave", this.has(light))
-                .unlockedBy("has_dye", this.has(Items.BLACK_DYE))
+                .unlockedBy("has_dye", this.has(Items.DYE.black()))
                 .save(this.output);
     }
 
     private void stove(Block light, Block dark)
     {
         this.workbenchConstructing(light, 1, Material.of(Items.IRON_INGOT, 12), Material.of(Items.GLASS, 1), Material.of(Items.REDSTONE, 6));
-        this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
+        this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.DYE.black(), 1));
         ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.DECORATIONS, dark)
                 .requires(light)
-                .requires(Items.BLACK_DYE)
+                .requires(Items.DYE.black())
                 .unlockedBy("has_stove", this.has(light))
-                .unlockedBy("has_dye", this.has(Items.BLACK_DYE))
+                .unlockedBy("has_dye", this.has(Items.DYE.black()))
                 .save(this.output);
     }
 
     private void rangeHood(Block light, Block dark)
     {
         this.workbenchConstructing(light, 1, Material.of(Items.IRON_INGOT, 2), Material.of(Items.REDSTONE, 2));
-        this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
+        this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.DYE.black(), 1));
         ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.DECORATIONS, dark)
                 .requires(light)
-                .requires(Items.BLACK_DYE)
+                .requires(Items.DYE.black())
                 .unlockedBy("has_range_hood", this.has(light))
-                .unlockedBy("has_dye", this.has(Items.BLACK_DYE))
+                .unlockedBy("has_dye", this.has(Items.DYE.black()))
                 .save(this.output);
     }
 
     private void fryingPan(Block result)
     {
-        this.workbenchConstructing(result, 1, Material.of(Items.IRON_INGOT, 3), Material.of(Items.LEATHER, 1), Material.of(Items.BLACK_DYE, 1));
+        this.workbenchConstructing(result, 1, Material.of(Items.IRON_INGOT, 3), Material.of(Items.LEATHER, 1), Material.of(Items.DYE.black(), 1));
     }
 
     private void recyclingBin(Block result)
@@ -869,7 +868,7 @@ public class CommonRecipeProvider extends RecipeProvider
 
     private void cooler(Item dye, Block result)
     {
-        this.workbenchConstructing(result, 1, Material.of("planks", ItemTags.PLANKS, 4), Material.of(Items.WHITE_DYE, 1), Material.of("colouring_dye", dye, 1));
+        this.workbenchConstructing(result, 1, Material.of("planks", ItemTags.PLANKS, 4), Material.of(Items.DYE.white(), 1), Material.of("colouring_dye", dye, 1));
         ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.DECORATIONS, result)
                 .requires(dye)
                 .requires(ModTags.Items.COOLERS)
@@ -885,7 +884,7 @@ public class CommonRecipeProvider extends RecipeProvider
 
     private void postBox(Block result)
     {
-        this.workbenchConstructing(result, 1, Material.of(Items.IRON_INGOT, 10), Material.of("planks", ItemTags.PLANKS, 8), Material.of(Items.BLUE_DYE, 1));
+        this.workbenchConstructing(result, 1, Material.of(Items.IRON_INGOT, 10), Material.of("planks", ItemTags.PLANKS, 8), Material.of(Items.DYE.blue(), 1));
     }
 
     private void trampoline(Item dye, Block result)
@@ -925,7 +924,7 @@ public class CommonRecipeProvider extends RecipeProvider
 
     private void sofa(Item dye, Block result)
     {
-        this.workbenchConstructing(result, 2, Material.of("planks", ItemTags.PLANKS, 6), Material.of(Items.WHEAT, 16), Material.of(Items.WHITE_WOOL, 2), Material.of(dye, 1));
+        this.workbenchConstructing(result, 2, Material.of("planks", ItemTags.PLANKS, 6), Material.of(Items.WHEAT, 16), Material.of(Items.WOOL.white(), 2), Material.of(dye, 1));
         ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.DECORATIONS, result)
                 .requires(dye)
                 .requires(ModTags.Items.SOFAS)
@@ -935,7 +934,7 @@ public class CommonRecipeProvider extends RecipeProvider
 
     private void stool(Item dye, Block result)
     {
-        this.workbenchConstructing(result, 2, Material.of("planks", ItemTags.PLANKS, 3), Material.of(Items.WHEAT, 8), Material.of(Items.WHITE_WOOL, 1), Material.of(dye, 1));
+        this.workbenchConstructing(result, 2, Material.of("planks", ItemTags.PLANKS, 3), Material.of(Items.WHEAT, 8), Material.of(Items.WOOL.white(), 1), Material.of(dye, 1));
         ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.DECORATIONS, result)
                 .requires(dye)
                 .requires(ModTags.Items.STOOLS)
@@ -945,7 +944,7 @@ public class CommonRecipeProvider extends RecipeProvider
 
     private void lamp(Item dye, Block result)
     {
-        this.workbenchConstructing(result, 1, Material.of("planks", ItemTags.PLANKS, 2), Material.of(Items.REDSTONE, 4), Material.of(Items.GLOWSTONE_DUST, 4), Material.of(Items.WHITE_WOOL, 1), Material.of(dye, 1));
+        this.workbenchConstructing(result, 1, Material.of("planks", ItemTags.PLANKS, 2), Material.of(Items.REDSTONE, 4), Material.of(Items.GLOWSTONE_DUST, 4), Material.of(Items.WOOL.white(), 1), Material.of(dye, 1));
         ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.DECORATIONS, result)
                 .requires(dye)
                 .requires(ModTags.Items.LAMPS)
@@ -956,36 +955,36 @@ public class CommonRecipeProvider extends RecipeProvider
     private void ceilingFan(Block plank, Block light, Block dark)
     {
         this.workbenchConstructing(light, 1, Material.of(Items.IRON_INGOT, 3), Material.of(plank, 4), Material.of(Items.REDSTONE, 4), Material.of(Items.GLOWSTONE_DUST, 4));
-        this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
+        this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.DYE.black(), 1));
         ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.DECORATIONS, dark)
                 .requires(light)
-                .requires(Items.BLACK_DYE)
+                .requires(Items.DYE.black())
                 .unlockedBy("has_ceiling_fan", this.has(light))
-                .unlockedBy("has_dye", this.has(Items.BLACK_DYE))
+                .unlockedBy("has_dye", this.has(Items.DYE.black()))
                 .save(this.output);
     }
 
     private void ceilingLight(Block light, Block dark)
     {
         this.workbenchConstructing(light, 1, Material.of(Items.IRON_INGOT, 2), Material.of(Items.REDSTONE, 3), Material.of(Items.GLOWSTONE_DUST, 4));
-        this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
+        this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.DYE.black(), 1));
         ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.DECORATIONS, dark)
                 .requires(light)
-                .requires(Items.BLACK_DYE)
+                .requires(Items.DYE.black())
                 .unlockedBy("has_ceiling_light", this.has(light))
-                .unlockedBy("has_dye", this.has(Items.BLACK_DYE))
+                .unlockedBy("has_dye", this.has(Items.DYE.black()))
                 .save(this.output);
     }
 
     private void lightswitch(Block light, Block dark)
     {
         this.workbenchConstructing(light, 1, Material.of(Items.IRON_INGOT, 2), Material.of(Items.REDSTONE, 3));
-        this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
+        this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.DYE.black(), 1));
         ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.DECORATIONS, dark)
                 .requires(light)
-                .requires(Items.BLACK_DYE)
+                .requires(Items.DYE.black())
                 .unlockedBy("has_lightswitch", this.has(light))
-                .unlockedBy("has_dye", this.has(Items.BLACK_DYE))
+                .unlockedBy("has_dye", this.has(Items.DYE.black()))
                 .save(this.output);
     }
 
@@ -1043,12 +1042,12 @@ public class CommonRecipeProvider extends RecipeProvider
     private void fridge(Item light, Item dark)
     {
         this.workbenchConstructing(light, 1, Material.of(Items.IRON_INGOT, 9), Material.of(Items.COPPER_INGOT, 3), Material.of(Items.REDSTONE, 4));
-        this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.BLACK_DYE, 1));
+        this.workbenchConstructing(dark, 1, Material.of(light, 1), Material.of(Items.DYE.black(), 1));
         ShapelessRecipeBuilder.shapeless(this.items, RecipeCategory.DECORATIONS, dark)
                 .requires(light)
-                .requires(Items.BLACK_DYE)
+                .requires(Items.DYE.black())
                 .unlockedBy("has_fridge", this.has(light))
-                .unlockedBy("has_dye", this.has(Items.BLACK_DYE))
+                .unlockedBy("has_dye", this.has(Items.DYE.black()))
                 .save(this.output);
     }
 

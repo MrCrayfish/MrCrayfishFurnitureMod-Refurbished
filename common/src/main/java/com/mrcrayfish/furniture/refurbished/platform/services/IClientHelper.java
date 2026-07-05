@@ -48,4 +48,6 @@ public interface IClientHelper
     AbstractContainerScreen createStoveScreen(AbstractContainerMenu menu, Inventory playerInventory, Component title);
 
     RenderPipeline.Snippet getMatricesProjectionSnippet();
+
+    RenderPipeline.Snippet getGlobalSnippet();
 }

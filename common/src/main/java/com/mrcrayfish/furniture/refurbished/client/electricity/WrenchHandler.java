@@ -269,7 +269,7 @@ public class WrenchHandler
         // within the powerable area to be considered valid.
         if(this.selectedNodePos != null)
         {
-            Vec3 start = this.selectedNodePos.getCenter();
+            Vec3 start = Vec3.atCenterOf(this.selectedNodePos);
             Vec3 end = this.getLinkEnd(player, partialTick);
             this.linkInsideArea = this.powerableArea.containsLine(level, start, end);
             return;
@@ -282,8 +282,8 @@ public class WrenchHandler
             Connection connection = hitResult.getConnection();
             if(connection != null)
             {
-                Vec3 start = connection.getPosA().getCenter();
-                Vec3 end = connection.getPosB().getCenter();
+                Vec3 start = Vec3.atCenterOf(connection.getPosA());
+                Vec3 end = Vec3.atCenterOf(connection.getPosB());
                 this.linkInsideArea = this.powerableArea.containsLine(level, start, end);
             }
         }
@@ -317,7 +317,7 @@ public class WrenchHandler
             state.start = Vec3.atCenterOf(this.selectedNodePos);
             state.end = this.getLinkEnd(mc.player, mc.getDeltaTracker().getGameTimeDeltaPartialTick(false));
             state.colour = this.getLinkColour();
-            renderState.link = state;
+            renderState.linkingConnectionRenderState = state;
         }
     }
 
@@ -330,18 +330,18 @@ public class WrenchHandler
     public void extractPowerableArea(PowerableAreaRenderState renderState, Vec3 camera)
     {
         VoxelShape areaShape = this.powerableArea.getPowerableAreaShape();
-        if(areaShape == null)
-            return;
-
         renderState.shape = areaShape;
         renderState.alpha = 1.0F;
         renderState.invalid = !this.linkInsideArea;
+
+        if(areaShape == null)
+            return;
 
         // When in a powerable area, the alpha is affected by how close the player is to the border
         if(this.linkInsideArea)
         {
             double nearDistanceSqr = NEAR_DISTANCE * NEAR_DISTANCE;
-            renderState.alpha = renderState.shape.closestPointTo(camera)
+            renderState.alpha = areaShape.closestPointTo(camera)
                 .map(vec -> vec.distanceToSqr(camera))
                 .map(val -> 1.0F - (float) Mth.clamp(val / nearDistanceSqr, 0, 1))
                 .orElse(0F);
@@ -362,7 +362,7 @@ public class WrenchHandler
         IElectricityNode node = this.getTargetNode();
         if(node != null && !this.isSelectedNode(node) && this.canLinkToNode(node))
         {
-            return node.getNodePosition().getCenter();
+            return Vec3.atCenterOf(node.getNodePosition());
         }
         return player.getViewVector(partialTick).normalize().scale(1.5).add(player.getEyePosition(partialTick));
     }
@@ -440,13 +440,13 @@ public class WrenchHandler
         Vec3 hit = Vec3.ZERO;
 
         // Hacky but we can just use the current render states
-        ElectricityRenderState renderState = ElectricityRenderer.get().getRenderState();
-        for(ConnectionRenderState connectionRenderState : renderState.connections)
+        ElectricityRenderState renderState = ElectricityRenderer.get().getElectricityRenderState();
+        for(ConnectionRenderState connectionRenderState : renderState.connectionRenderStates)
         {
             Vec3 rayStart = player.getEyePosition(partialTick);
             Vec3 rayEnd = rayStart.add(player.getViewVector(partialTick).normalize().scale(range));
-            Vec3 linkStart = connectionRenderState.a().getCenter();
-            Vec3 linkEnd = connectionRenderState.b().getCenter();
+            Vec3 linkStart = Vec3.atCenterOf(connectionRenderState.a());
+            Vec3 linkEnd = Vec3.atCenterOf(connectionRenderState.b());
             Vector3d result =  new Vector3d();
             double squareDistance = Intersectiond.findClosestPointsLineSegments(rayStart.x, rayStart.y, rayStart.z, rayEnd.x, rayEnd.y, rayEnd.z, linkStart.x, linkStart.y, linkStart.z, linkEnd.x, linkEnd.y, linkEnd.z, new Vector3d(), result);
             double distance = Math.sqrt(squareDistance);

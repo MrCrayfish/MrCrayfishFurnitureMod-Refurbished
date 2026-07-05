@@ -108,7 +108,12 @@ public class FabricClientHelper implements IClientHelper
     @Override
     public RenderPipeline.Snippet getMatricesProjectionSnippet()
     {
-        return RenderPipelines.MATRICES_PROJECTION_SNIPPET;
+        return RenderPipelines.MATRICES_FOG_SNIPPET;
     }
 
+    @Override
+    public RenderPipeline.Snippet getGlobalSnippet()
+    {
+        return RenderPipelines.GLOBALS_SNIPPET;
+    }
 }

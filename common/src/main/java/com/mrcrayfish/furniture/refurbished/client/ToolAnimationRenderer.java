@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
@@ -12,6 +11,7 @@ import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -62,14 +62,16 @@ public class ToolAnimationRenderer
      */
     public void submit(Level level, Vec3 camera, float partialTick)
     {
+        // TODO 26.2 test
         PoseStack poseStack = new PoseStack();
         poseStack.translate(-camera.x, -camera.y, -camera.z);
-        FeatureRenderDispatcher renderDispatcher = Minecraft.getInstance().gameRenderer.getFeatureRenderDispatcher();
-        SubmitNodeStorage storage = renderDispatcher.getSubmitNodeStorage();
+        FeatureRenderDispatcher renderDispatcher = Minecraft.getInstance().gameRenderer.featureRenderDispatcher();
+        SubmitNodeStorage storage = new SubmitNodeStorage();
         this.animationMap.forEach((pos, animation) -> {
-            int light = LevelRenderer.getLightCoords(level, animation.pos);
+            int light = LightCoordsUtil.getLightCoords(level, animation.pos);
             animation.submit(poseStack, storage, light, partialTick);
         });
+        renderDispatcher.renderAllFeatures(storage);
     }
 
     /**

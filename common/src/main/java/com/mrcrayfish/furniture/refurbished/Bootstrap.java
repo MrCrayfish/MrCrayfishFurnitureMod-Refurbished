@@ -21,8 +21,8 @@ import com.mrcrayfish.furniture.refurbished.item.PackageItem;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageToolAnimation;
-import com.mrcrayfish.furniture.refurbished.util.reflection.ReflectedMethod;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
+import com.mrcrayfish.furniture.refurbished.util.reflection.ReflectedMethod;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.cauldron.CauldronInteraction;
@@ -126,7 +126,7 @@ public class Bootstrap
         // Spawns the items contained in a package into the level
         DispenserBlock.registerBehavior(ModItems.PACKAGE::get, (source, stack) -> {
             Direction direction = source.state().getValue(DispenserBlock.FACING);
-            Vec3 pos = source.pos().relative(direction).getCenter();
+            Vec3 pos = Vec3.atCenterOf(source.pos().relative(direction));
             PackageItem.getPackagedItems(stack).nonEmptyItemCopyStream().forEach(s -> {
                 Containers.dropItemStack(source.level(), pos.x, pos.y, pos.z, s);
             });

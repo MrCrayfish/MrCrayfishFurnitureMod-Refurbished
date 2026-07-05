@@ -31,7 +31,6 @@ import com.mrcrayfish.furniture.refurbished.image.TextureCache;
 import com.mrcrayfish.furniture.refurbished.platform.ClientServices;
 import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.minecraft.client.color.block.BlockTintSources;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeType;

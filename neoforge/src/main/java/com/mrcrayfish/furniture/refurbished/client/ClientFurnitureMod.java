@@ -76,12 +76,6 @@ public class ClientFurnitureMod
         });
     }
 
-    @SubscribeEvent
-    private static void onRegisterListeners(AddClientReloadListenersEvent event)
-    {
-        event.addListener(ElectricityRenderer.ID, ElectricityRenderer.get());
-    }
-
     /*@SubscribeEvent
     private static void onRegisterRecipeCategories(RegisterRecipeBookCategoriesEvent event)
     {

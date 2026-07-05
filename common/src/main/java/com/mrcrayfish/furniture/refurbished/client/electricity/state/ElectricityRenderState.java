@@ -1,23 +1,25 @@
 package com.mrcrayfish.furniture.refurbished.client.electricity.state;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.HashSet;
 import java.util.Set;
 
 public class ElectricityRenderState
 {
-    public LinkingConnectionRenderState link;
-    public Set<NodeRenderState> nodes = new HashSet<>();
-    public Set<ConnectionRenderState> connections = new HashSet<>();
+    public @Nullable LinkingConnectionRenderState linkingConnectionRenderState;
+    public final Set<NodeRenderState> nodeRenderStates = new HashSet<>();
+    public final Set<ConnectionRenderState> connectionRenderStates = new HashSet<>();
 
     public void reset()
     {
-        this.link = null;
-        this.nodes.clear();
-        this.connections.clear();
+        this.linkingConnectionRenderState = null;
+        this.nodeRenderStates.clear();
+        this.connectionRenderStates.clear();
     }
 
     public boolean isEmpty()
     {
-        return this.link == null && this.nodes.isEmpty() && this.connections.isEmpty();
+        return this.linkingConnectionRenderState == null && this.nodeRenderStates.isEmpty() && this.connectionRenderStates.isEmpty();
     }
 }

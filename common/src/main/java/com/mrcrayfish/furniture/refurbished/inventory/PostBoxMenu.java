@@ -7,7 +7,6 @@ import com.mrcrayfish.furniture.refurbished.core.ModMenuTypes;
 import com.mrcrayfish.furniture.refurbished.inventory.slot.PostBoxSlot;
 import com.mrcrayfish.furniture.refurbished.mail.DeliveryService;
 import com.mrcrayfish.furniture.refurbished.mail.IMailbox;
-import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
