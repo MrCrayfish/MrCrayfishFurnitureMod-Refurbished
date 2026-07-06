@@ -16,9 +16,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -329,13 +331,18 @@ public class WrenchHandler
      */
     public void extractPowerableArea(PowerableAreaRenderState renderState, Vec3 camera)
     {
+        renderState.reset();
+
         VoxelShape areaShape = this.powerableArea.getPowerableAreaShape();
-        renderState.shape = areaShape;
+        if(areaShape == null)
+            return;
+
         renderState.alpha = 1.0F;
         renderState.invalid = !this.linkInsideArea;
 
-        if(areaShape == null)
-            return;
+        for(AABB box : areaShape.toAabbs())
+            this.extractPowerableAreaQuads(renderState, box);
+
 
         // When in a powerable area, the alpha is affected by how close the player is to the border
         if(this.linkInsideArea)
@@ -346,6 +353,91 @@ public class WrenchHandler
                 .map(val -> 1.0F - (float) Mth.clamp(val / nearDistanceSqr, 0, 1))
                 .orElse(0F);
             renderState.alpha = 1.0F - (float) Math.pow(1.0F - renderState.alpha, 5);
+        }
+    }
+
+    private void extractPowerableAreaQuads(PowerableAreaRenderState renderState, AABB box)
+    {
+        float offset = Util.getMillis() * 0.001F;
+        float width = (float) (box.maxX - box.minX);
+        float height = (float) (box.maxY - box.minY);
+        if(width > 0.01)
+        {
+            // North
+            renderState.sides.add(new SimpleQuad(
+                (float) box.minX, (float) box.minY, (float) box.minZ,
+                (float) box.maxX, (float) box.minY, (float) box.minZ,
+                (float) box.maxX, (float) box.maxY, (float) box.minZ,
+                (float) box.minX, (float) box.maxY, (float) box.minZ,
+                0, height + offset,
+                width, height + offset,
+                width, offset,
+                0, offset
+            ));
+            // South
+            renderState.sides.add(new SimpleQuad(
+                (float) box.maxX, (float) box.minY, (float) box.maxZ,
+                (float) box.minX, (float) box.minY, (float) box.maxZ,
+                (float) box.minX, (float) box.maxY, (float) box.maxZ,
+                (float) box.maxX, (float) box.maxY, (float) box.maxZ,
+                0, height + offset,
+                width, height + offset,
+                width, offset,
+                0, offset
+            ));
+        }
+        width = (float) (box.maxZ - box.minZ);
+        if(width > 0.01)
+        {
+            // West
+            renderState.sides.add(new SimpleQuad(
+                (float) box.minX, (float) box.minY, (float) box.maxZ,
+                (float) box.minX, (float) box.minY, (float) box.minZ,
+                (float) box.minX, (float) box.maxY, (float) box.minZ,
+                (float) box.minX, (float) box.maxY, (float) box.maxZ,
+                0, height + offset,
+                width, height + offset,
+                width, offset,
+                0, offset
+            ));
+            // East
+            renderState.sides.add(new SimpleQuad(
+                (float) box.maxX, (float) box.minY, (float) box.minZ,
+                (float) box.maxX, (float) box.minY, (float) box.maxZ,
+                (float) box.maxX, (float) box.maxY, (float) box.maxZ,
+                (float) box.maxX, (float) box.maxY, (float) box.minZ,
+                0, height + offset,
+                width, height + offset,
+                width, offset,
+                0, offset
+            ));
+        }
+        width = (float) (box.maxX - box.minX);
+        height = (float) (box.maxZ - box.minZ);
+        if(width > 0.01)
+        {
+            // Up
+            renderState.sides.add(new SimpleQuad(
+                (float) box.minX, (float) box.maxY, (float) box.minZ,
+                (float) box.minX, (float) box.maxY, (float) box.maxZ,
+                (float) box.maxX, (float) box.maxY, (float) box.maxZ,
+                (float) box.maxX, (float) box.maxY, (float) box.minZ,
+                height, width + offset,
+                height, offset,
+                0, offset,
+                0, width + offset
+            ));
+            // Down
+            renderState.sides.add(new SimpleQuad(
+                (float) box.minX, (float) box.minY, (float) box.minZ,
+                (float) box.maxX, (float) box.minY, (float) box.minZ,
+                (float) box.maxX, (float) box.minY, (float) box.maxZ,
+                (float) box.minX, (float) box.minY, (float) box.maxZ,
+                0, height + offset,
+                width, height + offset,
+                width, offset,
+                0, offset
+            ));
         }
     }
 

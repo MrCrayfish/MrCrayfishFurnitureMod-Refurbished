@@ -1,11 +1,20 @@
 package com.mrcrayfish.furniture.refurbished.client.electricity.state;
 
-import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.Nullable;
+import com.mrcrayfish.furniture.refurbished.client.electricity.SimpleQuad;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PowerableAreaRenderState
 {
-    public @Nullable VoxelShape shape;
+    public List<SimpleQuad> sides = new ArrayList<>();
     public float alpha;
     public boolean invalid;
+
+    public void reset()
+    {
+        this.sides = new ArrayList<>();
+        this.alpha = 0;
+        this.invalid = false;
+    }
 }

@@ -372,7 +372,7 @@ public final class ElectricityRenderer
             return;
 
         // If there is no shape, do not render
-        if(this.powerableAreaRenderState.shape == null)
+        if(this.powerableAreaRenderState.sides == null)
             return;
 
         // No point drawing if the alpha is zero
@@ -394,11 +394,11 @@ public final class ElectricityRenderer
         GpuBuffer powerableIndexBuffer;
         GpuBuffer powerableAreaBuffer;
 
-        List<AABB> boxes = this.powerableAreaRenderState.shape.toAabbs();
-        try(ByteBufferBuilder quadBuilder = new ByteBufferBuilder(boxes.size() * 4 * DefaultVertexFormat.POSITION_TEX.getVertexSize()))
+        List<SimpleQuad> quads = this.powerableAreaRenderState.sides;
+        try(ByteBufferBuilder quadBuilder = ByteBufferBuilder.exactlySized(quads.size() * PrimitiveTopology.QUADS.primitiveLength * DefaultVertexFormat.POSITION_TEX.getVertexSize()))
         {
             BufferBuilder vertexBuilder = new BufferBuilder(quadBuilder, PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_TEX);
-            boxes.forEach(box -> drawPowerableAreaBox(stack.last(), vertexBuilder, box));
+            drawPowerableAreaBox(stack.last(), vertexBuilder, this.powerableAreaRenderState.sides);
             try(MeshData vertexData = vertexBuilder.buildOrThrow())
             {
                 var autoIndexBuffer = RenderSystem.getSequentialBuffer(PrimitiveTopology.QUADS);
@@ -634,56 +634,18 @@ public final class ElectricityRenderer
     /**
      * Draws a texture box from an AABB. The position of the box is determined by the AABB.
      *
-     * @param pose      the current pose stack pose
-     * @param consumer  the vertex consumer to accept the data. Must be VERTEX and UV only
-     * @param box       the AABB box to draw
+     * @param pose     the current pose stack pose
+     * @param consumer the vertex consumer to accept the data. Must be VERTEX and UV only
+     * @param quads    a list of quads to draw
      */
-    private static void drawPowerableAreaBox(PoseStack.Pose pose, VertexConsumer consumer, AABB box)
+    private static void drawPowerableAreaBox(PoseStack.Pose pose, VertexConsumer consumer, List<SimpleQuad> quads)
     {
-        float offset = Util.getMillis() * 0.001F;
-        float width = (float) (box.maxX - box.minX);
-        float height = (float) (box.maxY - box.minY);
-        if(width > 0.01)
+        for(SimpleQuad quad : quads)
         {
-            // North
-            consumer.addVertex(pose, (float) box.minX, (float) box.minY, (float) box.minZ).setUv(0, height + offset);
-            consumer.addVertex(pose, (float) box.maxX, (float) box.minY, (float) box.minZ).setUv(width, height + offset);
-            consumer.addVertex(pose, (float) box.maxX, (float) box.maxY, (float) box.minZ).setUv(width, offset);
-            consumer.addVertex(pose, (float) box.minX, (float) box.maxY, (float) box.minZ).setUv(0, offset);
-            // South
-            consumer.addVertex(pose, (float) box.maxX, (float) box.minY, (float) box.maxZ).setUv(0, height + offset);
-            consumer.addVertex(pose, (float) box.minX, (float) box.minY, (float) box.maxZ).setUv(width, height + offset);
-            consumer.addVertex(pose, (float) box.minX, (float) box.maxY, (float) box.maxZ).setUv(width, offset);
-            consumer.addVertex(pose, (float) box.maxX, (float) box.maxY, (float) box.maxZ).setUv(0, offset);
-        }
-        width = (float) (box.maxZ - box.minZ);
-        if(width > 0.01)
-        {
-            // West
-            consumer.addVertex(pose, (float) box.minX, (float) box.minY, (float) box.maxZ).setUv(0, height + offset);
-            consumer.addVertex(pose, (float) box.minX, (float) box.minY, (float) box.minZ).setUv(width, height + offset);
-            consumer.addVertex(pose, (float) box.minX, (float) box.maxY, (float) box.minZ).setUv(width, offset);
-            consumer.addVertex(pose, (float) box.minX, (float) box.maxY, (float) box.maxZ).setUv(0, offset);
-            // East
-            consumer.addVertex(pose, (float) box.maxX, (float) box.minY, (float) box.minZ).setUv(0, height + offset);
-            consumer.addVertex(pose, (float) box.maxX, (float) box.minY, (float) box.maxZ).setUv(width, height + offset);
-            consumer.addVertex(pose, (float) box.maxX, (float) box.maxY, (float) box.maxZ).setUv(width, offset);
-            consumer.addVertex(pose, (float) box.maxX, (float) box.maxY, (float) box.minZ).setUv(0, offset);
-        }
-        width = (float) (box.maxX - box.minX);
-        height = (float) (box.maxZ - box.minZ);
-        if(width > 0.01)
-        {
-            // Up
-            consumer.addVertex(pose, (float) box.minX, (float) box.maxY, (float) box.minZ).setUv(height, width + offset);
-            consumer.addVertex(pose, (float) box.minX, (float) box.maxY, (float) box.maxZ).setUv(height, offset);
-            consumer.addVertex(pose, (float) box.maxX, (float) box.maxY, (float) box.maxZ).setUv(0, offset);
-            consumer.addVertex(pose, (float) box.maxX, (float) box.maxY, (float) box.minZ).setUv(0, width + offset);
-            // Down
-            consumer.addVertex(pose, (float) box.minX, (float) box.minY, (float) box.minZ).setUv(0, height + offset);
-            consumer.addVertex(pose, (float) box.maxX, (float) box.minY, (float) box.minZ).setUv(width, height + offset);
-            consumer.addVertex(pose, (float) box.maxX, (float) box.minY, (float) box.maxZ).setUv(width, offset);
-            consumer.addVertex(pose, (float) box.minX, (float) box.minY, (float) box.maxZ).setUv(0, offset);
+            consumer.addVertex(pose, quad.x1(), quad.y1(), quad.z1()).setUv(quad.u1(), quad.v1());
+            consumer.addVertex(pose, quad.x2(), quad.y2(), quad.z2()).setUv(quad.u2(), quad.v2());
+            consumer.addVertex(pose, quad.x3(), quad.y3(), quad.z3()).setUv(quad.u3(), quad.v3());
+            consumer.addVertex(pose, quad.x4(), quad.y4(), quad.z4()).setUv(quad.u4(), quad.v4());
         }
     }
 }

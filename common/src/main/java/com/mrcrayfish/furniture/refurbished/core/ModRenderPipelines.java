@@ -42,9 +42,9 @@ public class ModRenderPipelines
             .withFragmentShader("core/rendertype_world_border")
             .withBindGroupLayout(BindGroupLayouts.SAMPLER0)
             .withColorTargetState(new ColorTargetState(BlendFunction.OVERLAY))
-            .withCull(false)
+            .withCull(true)
             .withVertexBinding(0, DefaultVertexFormat.POSITION_TEX)
             .withPrimitiveTopology(PrimitiveTopology.QUADS)
-            .withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, true, -3.0F, -3.0F))
+            .withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, true, 3.0F, 3.0F))
             .build();
 }
