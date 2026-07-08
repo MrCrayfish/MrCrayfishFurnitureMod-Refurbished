@@ -35,9 +35,8 @@ public abstract class ElectricityContainerScreen<T extends AbstractContainerMenu
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick)
+    public void extractRenderState(GuiGraphicsExtractor extractor, int mouseX, int mouseY, float a)
     {
-        super.extractBackground(extractor, mouseX, mouseY, partialTick);
         if(!this.menu.isPowered())
         {
             int iconSize = 10;
@@ -63,12 +62,13 @@ public abstract class ElectricityContainerScreen<T extends AbstractContainerMenu
             if(ScreenHelper.isMouseWithinBounds(mouseX, mouseY, bannerStart, bannerTop, bannerWidth, 18))
             {
                 Tooltip tooltip = ScreenHelper.createMultilineTooltip(List.of(
-                    Components.GUI_NO_POWER.plainCopy().withStyle(ChatFormatting.RED),
-                    Components.GUI_CONNECT_TO_POWER
+                        Components.GUI_NO_POWER.plainCopy().withStyle(ChatFormatting.RED),
+                        Components.GUI_CONNECT_TO_POWER
                 ));
                 extractor.setTooltipForNextFrame(tooltip.toCharSequence(this.minecraft), mouseX, mouseY);
             }
         }
+        super.extractRenderState(extractor, mouseX, mouseY, a);
     }
 
     protected int getBannerTop()
