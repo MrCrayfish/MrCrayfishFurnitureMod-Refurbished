@@ -36,7 +36,7 @@ public class WrenchHandler
     private static final int DEFAULT_LINK_COLOUR = 0xFFFFFFFF;
     private static final int SUCCESS_LINK_COLOUR = 0xFFB5FF4C;
     private static final int ERROR_LINK_COLOUR = 0xFFC33636;
-    private static final double NEAR_DISTANCE = 10.0;
+    private static final double NEAR_DISTANCE = 100.0;
 
     private static WrenchHandler instance;
 
@@ -341,8 +341,9 @@ public class WrenchHandler
         renderState.invalid = !this.linkInsideArea;
 
         for(AABB box : areaShape.toAabbs())
+        {
             this.extractPowerableAreaQuads(renderState, box);
-
+        }
 
         // When in a powerable area, the alpha is affected by how close the player is to the border
         if(this.linkInsideArea)
