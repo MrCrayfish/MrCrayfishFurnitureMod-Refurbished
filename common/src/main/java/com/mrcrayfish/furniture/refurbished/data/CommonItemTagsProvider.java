@@ -6,26 +6,25 @@ import com.mrcrayfish.furniture.refurbished.core.ModItems;
 import com.mrcrayfish.furniture.refurbished.core.ModTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.tags.TagAppender;
 import net.minecraft.data.tags.VanillaItemTagsProvider;
 import net.minecraft.references.BlockItemIds;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 /**
  * Author: MrCrayfish
  */
-public class CommonItemTagsProvider extends VanillaItemTagsProvider
+public class CommonItemTagsProvider
 {
-    public CommonItemTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider)
-    {
-        super(output, lookupProvider);
-    }
-
-    @Override
-    protected void addTags(HolderLookup.Provider provider)
+    public static void addTags(Function<TagKey<Item>, TagAppender<Item>> tag)
     {
         // TODO throw exception if items are not in a category tag
-        this.tag(ModTags.Items.GENERAL)
+        tag.apply(ModTags.Items.GENERAL)
             .add(ModBlocks.WORKBENCH.getItemKey())
             .add(ModBlocks.TABLE_OAK.getItemKey())
             .add(ModBlocks.TABLE_SPRUCE.getItemKey())
@@ -115,7 +114,7 @@ public class CommonItemTagsProvider extends VanillaItemTagsProvider
             .add(ModBlocks.STORAGE_CABINET_WARPED.getItemKey())
             .add(ModBlocks.STORAGE_CABINET_PALE_OAK.getItemKey());
 
-        this.tag(ModTags.Items.BEDROOM)
+        tag.apply(ModTags.Items.BEDROOM)
             .add(ModBlocks.DESK_OAK.getItemKey())
             .add(ModBlocks.DESK_SPRUCE.getItemKey())
             .add(ModBlocks.DESK_BIRCH.getItemKey())
@@ -208,7 +207,7 @@ public class CommonItemTagsProvider extends VanillaItemTagsProvider
             .add(ModBlocks.STOOL_RED.getItemKey())
             .add(ModBlocks.STOOL_BLACK.getItemKey());
 
-        this.tag(ModTags.Items.KITCHEN)
+        tag.apply(ModTags.Items.KITCHEN)
             .add(ModBlocks.KITCHEN_CABINETRY_OAK.getItemKey())
             .add(ModBlocks.KITCHEN_CABINETRY_SPRUCE.getItemKey())
             .add(ModBlocks.KITCHEN_CABINETRY_BIRCH.getItemKey())
@@ -366,7 +365,7 @@ public class CommonItemTagsProvider extends VanillaItemTagsProvider
             .add(ModItems.SPATULA.getKey())
             .add(ModItems.KNIFE.getKey());
 
-        this.tag(ModTags.Items.OUTDOORS)
+        tag.apply(ModTags.Items.OUTDOORS)
             .add(ModBlocks.CRATE_OAK.getItemKey())
             .add(ModBlocks.CRATE_SPRUCE.getItemKey())
             .add(ModBlocks.CRATE_BIRCH.getItemKey())
@@ -481,7 +480,7 @@ public class CommonItemTagsProvider extends VanillaItemTagsProvider
             .add(ModItems.SPATULA.getKey())
             .add(ModItems.KNIFE.getKey());
 
-        this.tag(ModTags.Items.BATHROOM)
+        tag.apply(ModTags.Items.BATHROOM)
             .add(ModBlocks.TOILET_OAK.getItemKey())
             .add(ModBlocks.TOILET_SPRUCE.getItemKey())
             .add(ModBlocks.TOILET_BIRCH.getItemKey())
@@ -564,7 +563,7 @@ public class CommonItemTagsProvider extends VanillaItemTagsProvider
             .add(ModBlocks.BATH_RED.getItemKey())
             .add(ModBlocks.BATH_BLACK.getItemKey());
 
-        this.tag(ModTags.Items.ELECTRONICS)
+        tag.apply(ModTags.Items.ELECTRONICS)
             .add(ModBlocks.WORKBENCH.getItemKey())
             .add(ModBlocks.ELECTRICITY_GENERATOR_LIGHT.getItemKey())
             .add(ModBlocks.ELECTRICITY_GENERATOR_DARK.getItemKey())
@@ -621,7 +620,7 @@ public class CommonItemTagsProvider extends VanillaItemTagsProvider
             .add(ModBlocks.COMPUTER.getItemKey())
             .add(ModItems.TELEVISION_REMOTE.getKey());
 
-        this.tag(ModTags.Items.STORAGE)
+        tag.apply(ModTags.Items.STORAGE)
             .add(ModBlocks.DRAWER_OAK.getItemKey())
             .add(ModBlocks.DRAWER_SPRUCE.getItemKey())
             .add(ModBlocks.DRAWER_BIRCH.getItemKey())
@@ -778,7 +777,7 @@ public class CommonItemTagsProvider extends VanillaItemTagsProvider
             .add(ModBlocks.KITCHEN_STORAGE_CABINET_RED.getItemKey())
             .add(ModBlocks.KITCHEN_STORAGE_CABINET_BLACK.getItemKey());
 
-        this.tag(ModTags.Items.FOOD)
+        tag.apply(ModTags.Items.FOOD)
             .add(ModItems.SEA_SALT.getKey())
             .add(ModItems.WHEAT_FLOUR.getKey())
             .add(ModItems.DOUGH.getKey())
@@ -798,12 +797,12 @@ public class CommonItemTagsProvider extends VanillaItemTagsProvider
             .add(ModItems.COOKED_MEATLOVERS_PIZZA.getKey())
             .add(ModItems.MEATLOVERS_PIZZA_SLICE.getKey());
 
-        this.tag(ModTags.Items.ITEMS)
+        tag.apply(ModTags.Items.ITEMS)
             .add(ModItems.SPATULA.getKey())
             .add(ModItems.KNIFE.getKey())
             .add(ModItems.WRENCH.getKey());
 
-        this.tag(ModTags.Items.WOODEN_KITCHEN_CABINETRY)
+        tag.apply(ModTags.Items.WOODEN_KITCHEN_CABINETRY)
             .add(ModBlocks.KITCHEN_CABINETRY_OAK.getItemKey())
             .add(ModBlocks.KITCHEN_CABINETRY_SPRUCE.getItemKey())
             .add(ModBlocks.KITCHEN_CABINETRY_BIRCH.getItemKey())
@@ -816,7 +815,7 @@ public class CommonItemTagsProvider extends VanillaItemTagsProvider
             .add(ModBlocks.KITCHEN_CABINETRY_WARPED.getItemKey())
             .add(ModBlocks.KITCHEN_CABINETRY_PALE_OAK.getItemKey());
 
-        this.tag(ModTags.Items.WOODEN_KITCHEN_DRAWERS)
+        tag.apply(ModTags.Items.WOODEN_KITCHEN_DRAWERS)
             .add(ModBlocks.KITCHEN_DRAWER_OAK.getItemKey())
             .add(ModBlocks.KITCHEN_DRAWER_SPRUCE.getItemKey())
             .add(ModBlocks.KITCHEN_DRAWER_BIRCH.getItemKey())
@@ -829,7 +828,7 @@ public class CommonItemTagsProvider extends VanillaItemTagsProvider
             .add(ModBlocks.KITCHEN_DRAWER_WARPED.getItemKey())
             .add(ModBlocks.KITCHEN_DRAWER_PALE_OAK.getItemKey());
 
-        this.tag(ModTags.Items.WOODEN_KITCHEN_SINKS)
+        tag.apply(ModTags.Items.WOODEN_KITCHEN_SINKS)
             .add(ModBlocks.KITCHEN_SINK_OAK.getItemKey())
             .add(ModBlocks.KITCHEN_SINK_SPRUCE.getItemKey())
             .add(ModBlocks.KITCHEN_SINK_BIRCH.getItemKey())
@@ -842,7 +841,7 @@ public class CommonItemTagsProvider extends VanillaItemTagsProvider
             .add(ModBlocks.KITCHEN_SINK_WARPED.getItemKey())
             .add(ModBlocks.KITCHEN_SINK_PALE_OAK.getItemKey());
 
-        this.tag(ModTags.Items.WOODEN_KITCHEN_STORAGE_CABINETS)
+        tag.apply(ModTags.Items.WOODEN_KITCHEN_STORAGE_CABINETS)
             .add(ModBlocks.KITCHEN_STORAGE_CABINET_OAK.getItemKey())
             .add(ModBlocks.KITCHEN_STORAGE_CABINET_SPRUCE.getItemKey())
             .add(ModBlocks.KITCHEN_STORAGE_CABINET_BIRCH.getItemKey())
@@ -855,7 +854,7 @@ public class CommonItemTagsProvider extends VanillaItemTagsProvider
             .add(ModBlocks.KITCHEN_STORAGE_CABINET_WARPED.getItemKey())
             .add(ModBlocks.KITCHEN_STORAGE_CABINET_PALE_OAK.getItemKey());
 
-        this.tag(ModTags.Items.COLOURED_KITCHEN_CABINETRY)
+        tag.apply(ModTags.Items.COLOURED_KITCHEN_CABINETRY)
             .add(ModBlocks.KITCHEN_CABINETRY_WHITE.getItemKey())
             .add(ModBlocks.KITCHEN_CABINETRY_ORANGE.getItemKey())
             .add(ModBlocks.KITCHEN_CABINETRY_MAGENTA.getItemKey())
@@ -873,7 +872,7 @@ public class CommonItemTagsProvider extends VanillaItemTagsProvider
             .add(ModBlocks.KITCHEN_CABINETRY_RED.getItemKey())
             .add(ModBlocks.KITCHEN_CABINETRY_BLACK.getItemKey());
 
-        this.tag(ModTags.Items.COLOURED_KITCHEN_DRAWERS)
+        tag.apply(ModTags.Items.COLOURED_KITCHEN_DRAWERS)
             .add(ModBlocks.KITCHEN_DRAWER_WHITE.getItemKey())
             .add(ModBlocks.KITCHEN_DRAWER_ORANGE.getItemKey())
             .add(ModBlocks.KITCHEN_DRAWER_MAGENTA.getItemKey())
@@ -891,7 +890,7 @@ public class CommonItemTagsProvider extends VanillaItemTagsProvider
             .add(ModBlocks.KITCHEN_DRAWER_RED.getItemKey())
             .add(ModBlocks.KITCHEN_DRAWER_BLACK.getItemKey());
 
-        this.tag(ModTags.Items.COLOURED_KITCHEN_SINKS)
+        tag.apply(ModTags.Items.COLOURED_KITCHEN_SINKS)
             .add(ModBlocks.KITCHEN_SINK_WHITE.getItemKey())
             .add(ModBlocks.KITCHEN_SINK_ORANGE.getItemKey())
             .add(ModBlocks.KITCHEN_SINK_MAGENTA.getItemKey())
@@ -909,7 +908,7 @@ public class CommonItemTagsProvider extends VanillaItemTagsProvider
             .add(ModBlocks.KITCHEN_SINK_RED.getItemKey())
             .add(ModBlocks.KITCHEN_SINK_BLACK.getItemKey());
 
-        this.tag(ModTags.Items.COLOURED_KITCHEN_STORAGE_CABINETS)
+        tag.apply(ModTags.Items.COLOURED_KITCHEN_STORAGE_CABINETS)
             .add(ModBlocks.KITCHEN_STORAGE_CABINET_WHITE.getItemKey())
             .add(ModBlocks.KITCHEN_STORAGE_CABINET_ORANGE.getItemKey())
             .add(ModBlocks.KITCHEN_STORAGE_CABINET_MAGENTA.getItemKey())
@@ -927,9 +926,9 @@ public class CommonItemTagsProvider extends VanillaItemTagsProvider
             .add(ModBlocks.KITCHEN_STORAGE_CABINET_RED.getItemKey())
             .add(ModBlocks.KITCHEN_STORAGE_CABINET_BLACK.getItemKey());
 
-        this.tag(ModTags.Items.TOOLS_KNIVES).add(ModItems.KNIFE.getKey());
+        tag.apply(ModTags.Items.TOOLS_KNIVES).add(ModItems.KNIFE.getKey());
 
-        this.tag(ModTags.Items.GRILLS)
+        tag.apply(ModTags.Items.GRILLS)
             .add(ModBlocks.GRILL_WHITE.getItemKey())
             .add(ModBlocks.GRILL_ORANGE.getItemKey())
             .add(ModBlocks.GRILL_MAGENTA.getItemKey())
@@ -947,7 +946,7 @@ public class CommonItemTagsProvider extends VanillaItemTagsProvider
             .add(ModBlocks.GRILL_RED.getItemKey())
             .add(ModBlocks.GRILL_BLACK.getItemKey());
 
-        this.tag(ModTags.Items.COOLERS)
+        tag.apply(ModTags.Items.COOLERS)
             .add(ModBlocks.COOLER_WHITE.getItemKey())
             .add(ModBlocks.COOLER_ORANGE.getItemKey())
             .add(ModBlocks.COOLER_MAGENTA.getItemKey())
@@ -965,7 +964,7 @@ public class CommonItemTagsProvider extends VanillaItemTagsProvider
             .add(ModBlocks.COOLER_RED.getItemKey())
             .add(ModBlocks.COOLER_BLACK.getItemKey());
 
-        this.tag(ModTags.Items.TRAMPOLINES)
+        tag.apply(ModTags.Items.TRAMPOLINES)
             .add(ModBlocks.TRAMPOLINE_WHITE.getItemKey())
             .add(ModBlocks.TRAMPOLINE_ORANGE.getItemKey())
             .add(ModBlocks.TRAMPOLINE_MAGENTA.getItemKey())
@@ -983,7 +982,7 @@ public class CommonItemTagsProvider extends VanillaItemTagsProvider
             .add(ModBlocks.TRAMPOLINE_RED.getItemKey())
             .add(ModBlocks.TRAMPOLINE_BLACK.getItemKey());
 
-        this.tag(ModTags.Items.SOFAS)
+        tag.apply(ModTags.Items.SOFAS)
             .add(ModBlocks.SOFA_WHITE.getItemKey())
             .add(ModBlocks.SOFA_ORANGE.getItemKey())
             .add(ModBlocks.SOFA_MAGENTA.getItemKey())
@@ -1001,7 +1000,7 @@ public class CommonItemTagsProvider extends VanillaItemTagsProvider
             .add(ModBlocks.SOFA_RED.getItemKey())
             .add(ModBlocks.SOFA_BLACK.getItemKey());
 
-        this.tag(ModTags.Items.STOOLS)
+        tag.apply(ModTags.Items.STOOLS)
             .add(ModBlocks.STOOL_WHITE.getItemKey())
             .add(ModBlocks.STOOL_ORANGE.getItemKey())
             .add(ModBlocks.STOOL_MAGENTA.getItemKey())
@@ -1019,7 +1018,7 @@ public class CommonItemTagsProvider extends VanillaItemTagsProvider
             .add(ModBlocks.STOOL_RED.getItemKey())
             .add(ModBlocks.STOOL_BLACK.getItemKey());
 
-        this.tag(ModTags.Items.LAMPS)
+        tag.apply(ModTags.Items.LAMPS)
             .add(ModBlocks.LAMP_WHITE.getItemKey())
             .add(ModBlocks.LAMP_ORANGE.getItemKey())
             .add(ModBlocks.LAMP_MAGENTA.getItemKey())
@@ -1037,7 +1036,7 @@ public class CommonItemTagsProvider extends VanillaItemTagsProvider
             .add(ModBlocks.LAMP_RED.getItemKey())
             .add(ModBlocks.LAMP_BLACK.getItemKey());
 
-        this.tag(ModTags.Items.WOODEN_TOILETS)
+        tag.apply(ModTags.Items.WOODEN_TOILETS)
             .add(ModBlocks.TOILET_OAK.getItemKey())
             .add(ModBlocks.TOILET_SPRUCE.getItemKey())
             .add(ModBlocks.TOILET_BIRCH.getItemKey())
@@ -1050,7 +1049,7 @@ public class CommonItemTagsProvider extends VanillaItemTagsProvider
             .add(ModBlocks.TOILET_WARPED.getItemKey())
             .add(ModBlocks.TOILET_PALE_OAK.getItemKey());
 
-        this.tag(ModTags.Items.WOODEN_BASINS)
+        tag.apply(ModTags.Items.WOODEN_BASINS)
             .add(ModBlocks.BASIN_OAK.getItemKey())
             .add(ModBlocks.BASIN_SPRUCE.getItemKey())
             .add(ModBlocks.BASIN_BIRCH.getItemKey())
@@ -1063,7 +1062,7 @@ public class CommonItemTagsProvider extends VanillaItemTagsProvider
             .add(ModBlocks.BASIN_WARPED.getItemKey())
             .add(ModBlocks.BASIN_PALE_OAK.getItemKey());
 
-        this.tag(ModTags.Items.WOODEN_BATHS)
+        tag.apply(ModTags.Items.WOODEN_BATHS)
             .add(ModBlocks.BATH_OAK.getItemKey())
             .add(ModBlocks.BATH_SPRUCE.getItemKey())
             .add(ModBlocks.BATH_BIRCH.getItemKey())
@@ -1076,32 +1075,32 @@ public class CommonItemTagsProvider extends VanillaItemTagsProvider
             .add(ModBlocks.BATH_WARPED.getItemKey())
             .add(ModBlocks.BATH_PALE_OAK.getItemKey());
 
-        this.tag(ModTags.Items.DISPLAY_AS_BLOCK)
-            .add(BlockItemIds.MANGROVE_ROOTS)
-            .add(BlockItemIds.PUMPKIN)
-            .add(BlockItemIds.MELON)
-            .add(BlockItemIds.SLIME_BLOCK)
-            .add(BlockItemIds.HONEYCOMB_BLOCK);
+        tag.apply(ModTags.Items.DISPLAY_AS_BLOCK)
+            .add(BlockItemIds.MANGROVE_ROOTS.item())
+            .add(BlockItemIds.PUMPKIN.item())
+            .add(BlockItemIds.MELON.item())
+            .add(BlockItemIds.SLIME_BLOCK.item())
+            .add(BlockItemIds.HONEYCOMB_BLOCK.item());
 
-        this.tag(ConventionalTags.Items.TOOLS_KNIVES)
+        tag.apply(ConventionalTags.Items.TOOLS_KNIVES)
             .addTag(ModTags.Items.TOOLS_KNIVES);
 
         // Common tags
-        this.tag(ModTags.Items.COMMON_ENCHANTABLES)
+        tag.apply(ModTags.Items.COMMON_ENCHANTABLES)
             .add(ModItems.KNIFE.getKey())
             .add(ModItems.SPATULA.getKey());
 
-        this.tag(ModTags.Items.COMMON_FOODS)
+        tag.apply(ModTags.Items.COMMON_FOODS)
             .addTag(ModTags.Items.FOOD);
 
-        this.tag(ModTags.Items.COMMON_FOODS_BREAD)
+        tag.apply(ModTags.Items.COMMON_FOODS_BREAD)
             .add(ModItems.BREAD_SLICE.getKey())
             .add(ModItems.TOAST.getKey());
 
-        this.tag(ModTags.Items.COMMON_TOOLS_KNIVES)
+        tag.apply(ModTags.Items.COMMON_TOOLS_KNIVES)
             .addTag(ModTags.Items.TOOLS_KNIVES);
 
-        this.tag(ModTags.Items.COMMON_TOOLS_WRENCH)
+        tag.apply(ModTags.Items.COMMON_TOOLS_WRENCH)
             .add(ModItems.WRENCH.getKey());
     }
 }

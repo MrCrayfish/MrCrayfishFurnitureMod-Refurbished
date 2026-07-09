@@ -5,38 +5,31 @@ import com.mrcrayfish.furniture.refurbished.Constants;
 import com.mrcrayfish.furniture.refurbished.compat.CompatibilityTags;
 import com.mrcrayfish.furniture.refurbished.core.ModBlocks;
 import com.mrcrayfish.furniture.refurbished.data.tag.BlockTagSupplier;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.data.tags.TagAppender;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 /**
  * Author: MrCrayfish
  */
-public class CommonBlockTagsProvider extends TagsProvider<Block>
+public class CommonBlockTagsProvider
 {
-    public CommonBlockTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> completableFuture)
-    {
-        super(output, Registries.BLOCK, completableFuture);
-    }
-
-    @Override
-    protected void addTags(HolderLookup.Provider provider)
+    public static void addTags(Function<TagKey<Block>, TagAppender<Block>> tag)
     {
         // Dynamically registers block tags using a provider implemented on the block
         Registration.get(Registries.BLOCK).stream().filter(entry -> entry.getId().getNamespace().equals(Constants.MOD_ID)).forEach(entry -> {
             Block block = (Block) entry.get();
             if(block instanceof BlockTagSupplier supplier) {
-                supplier.getTags().forEach(key -> this.tag(key).add(block.builtInRegistryHolder().key()));
+                supplier.getTags().forEach(key -> tag.apply(key).add(block.builtInRegistryHolder().key()));
             } else {
                 throw new IllegalArgumentException("Block doesn't implement BlockTagSupplier: " + entry.getId());
             }
         });
-        this.tag(BlockTags.COMBINATION_STEP_SOUND_BLOCKS)
+        tag.apply(BlockTags.COMBINATION_STEP_SOUND_BLOCKS)
             .add(ModBlocks.STEPPING_STONES_STONE.getBlockKey())
             .add(ModBlocks.STEPPING_STONES_GRANITE.getBlockKey())
             .add(ModBlocks.STEPPING_STONES_DIORITE.getBlockKey())
@@ -44,11 +37,11 @@ public class CommonBlockTagsProvider extends TagsProvider<Block>
             .add(ModBlocks.STEPPING_STONES_DEEPSLATE.getBlockKey());
 
         // Compatibility to allow stove to act as a heating source for farmers delight
-        this.tag(CompatibilityTags.Blocks.FARMERS_DELIGHT_HEAT_SOURCES)
+        tag.apply(CompatibilityTags.Blocks.FARMERS_DELIGHT_HEAT_SOURCES)
             .add(ModBlocks.STOVE_LIGHT.getBlockKey())
             .add(ModBlocks.STOVE_DARK.getBlockKey());
 
-        this.tag(BlockTags.FENCES)
+        tag.apply(BlockTags.FENCES)
             .add(ModBlocks.LATTICE_FENCE_OAK.getBlockKey())
             .add(ModBlocks.LATTICE_FENCE_SPRUCE.getBlockKey())
             .add(ModBlocks.LATTICE_FENCE_BIRCH.getBlockKey())
@@ -60,7 +53,7 @@ public class CommonBlockTagsProvider extends TagsProvider<Block>
             .add(ModBlocks.LATTICE_FENCE_CRIMSON.getBlockKey())
             .add(ModBlocks.LATTICE_FENCE_WARPED.getBlockKey());
 
-        this.tag(BlockTags.FENCE_GATES)
+        tag.apply(BlockTags.FENCE_GATES)
             .add(ModBlocks.LATTICE_FENCE_GATE_OAK.getBlockKey())
             .add(ModBlocks.LATTICE_FENCE_GATE_SPRUCE.getBlockKey())
             .add(ModBlocks.LATTICE_FENCE_GATE_BIRCH.getBlockKey())
@@ -73,7 +66,7 @@ public class CommonBlockTagsProvider extends TagsProvider<Block>
             .add(ModBlocks.LATTICE_FENCE_GATE_WARPED.getBlockKey());
 
         // Prevent these blocks from being picked up in Carry On mod
-        this.tag(CompatibilityTags.Blocks.CARRY_ON_BLACKLIST)
+        tag.apply(CompatibilityTags.Blocks.CARRY_ON_BLACKLIST)
             .add(ModBlocks.FRIDGE_LIGHT.getBlockKey())
             .add(ModBlocks.FRIDGE_DARK.getBlockKey())
             .add(ModBlocks.FREEZER_LIGHT.getBlockKey())

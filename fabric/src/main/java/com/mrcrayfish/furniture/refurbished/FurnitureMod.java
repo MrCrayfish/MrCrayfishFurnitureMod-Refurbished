@@ -24,6 +24,7 @@ import com.mrcrayfish.furniture.refurbished.util.Utils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -31,8 +32,11 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -43,6 +47,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
@@ -227,8 +232,18 @@ public class FurnitureMod implements ModInitializer, DataGeneratorEntrypoint
     public void onInitializeDataGenerator(FabricDataGenerator generator)
     {
         FabricDataGenerator.Pack pack = generator.createPack();
-        pack.addProvider(CommonBlockTagsProvider::new);
-        pack.addProvider(CommonItemTagsProvider::new);
+        pack.addProvider((output, lookup) -> new FabricTagsProvider<>(output, Registries.BLOCK, lookup) {
+            @Override
+            protected void addTags(HolderLookup.Provider provider) {
+                CommonBlockTagsProvider.addTags(this::tag);
+            }
+        });
+        pack.addProvider((output, lookup) -> new FabricTagsProvider<>(output, Registries.ITEM, lookup) {
+            @Override
+            protected void addTags(HolderLookup.Provider provider) {
+                CommonItemTagsProvider.addTags(this::tag);
+            }
+        });
         pack.addProvider(CommonLootTableProvider::new);
         pack.addProvider(CommonRecipeProvider.Runner::new);
         pack.addProvider(FurnitureRegistryProvider::new);

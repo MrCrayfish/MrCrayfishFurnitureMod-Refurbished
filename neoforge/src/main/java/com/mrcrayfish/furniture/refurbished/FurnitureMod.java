@@ -6,22 +6,20 @@ import com.mrcrayfish.furniture.refurbished.blockentity.fluid.IFluidContainerBlo
 import com.mrcrayfish.furniture.refurbished.core.ModBlockEntities;
 import com.mrcrayfish.furniture.refurbished.core.ModRecipeTypes;
 import com.mrcrayfish.furniture.refurbished.crafting.WorkbenchContructingRecipe;
-import com.mrcrayfish.furniture.refurbished.data.CommonBlockStatesGenerator;
-import com.mrcrayfish.furniture.refurbished.data.CommonBlockTagsProvider;
-import com.mrcrayfish.furniture.refurbished.data.CommonItemModelsGenerator;
-import com.mrcrayfish.furniture.refurbished.data.CommonItemTagsProvider;
-import com.mrcrayfish.furniture.refurbished.data.CommonLootTableProvider;
-import com.mrcrayfish.furniture.refurbished.data.CommonRecipeProvider;
-import com.mrcrayfish.furniture.refurbished.data.RegistriesProvider;
+import com.mrcrayfish.furniture.refurbished.data.*;
 import com.mrcrayfish.furniture.refurbished.network.Network;
 import com.mrcrayfish.furniture.refurbished.network.message.MessageWorkbench;
 import com.mrcrayfish.furniture.refurbished.platform.NeoForgeFluidHelper;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
@@ -34,9 +32,6 @@ import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
-import net.neoforged.neoforge.fluids.capability.templates.EmptyFluidHandler;
-import net.neoforged.neoforge.items.wrapper.InvWrapper;
-import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
 import net.neoforged.neoforge.transfer.item.VanillaContainerWrapper;
 import net.neoforged.neoforge.transfer.item.WorldlyContainerWrapper;
 
@@ -66,8 +61,18 @@ public class FurnitureMod
         DataGenerator generator = event.getGenerator();
         PackOutput output = generator.getPackOutput();
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
-        event.createProvider(CommonBlockTagsProvider::new);
-        event.addProvider(new CommonItemTagsProvider(output, lookupProvider));
+        event.addProvider(new TagsProvider<Block>(output, Registries.BLOCK, lookupProvider) {
+            @Override
+            protected void addTags(HolderLookup.Provider provider) {
+                CommonBlockTagsProvider.addTags(this::tag);
+            }
+        });
+        event.addProvider(new TagsProvider<Item>(output, Registries.ITEM, lookupProvider) {
+            @Override
+            protected void addTags(HolderLookup.Provider provider) {
+                CommonItemTagsProvider.addTags(this::tag);
+            }
+        });
         event.addProvider(new DatapackBuiltinEntriesProvider(output, lookupProvider, RegistriesProvider.BUILDER, Set.of(Constants.MOD_ID)));
         event.addProvider(new FrameworkModelProvider(output, CommonBlockStatesGenerator::new, CommonItemModelsGenerator::new));
         event.createProvider(CommonLootTableProvider::new);
